@@ -5,14 +5,14 @@ Kodein is a very simple and yet very useful IoC container. It's feature set is v
 
 Kodein allows you to:
 
-- Lazily instanciate your dependencies when needed
+- Lazily instantiate your dependencies when needed
 - Stop caring about dependency initialization order
 - Detect dependency loop (at runtime)
 - Easily bind classes or interfaces to their instances or provider
 
 Kodein does *not* allow you to:
 
-- Automatically instanciate your dependencies via injected constructor and reflexivity. For that, you need Guice.
+- Automatically instantiate your dependencies via injected constructor and reflexivity. For that, you need Guice.
 - Have dependency injection validated at compile time. For that, you need Dagger.
 
 
