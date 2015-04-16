@@ -35,6 +35,7 @@ public class Controller(private val app: Application) : KodeinHolder {
 }
 ```
 
+Or you can have a look at the [Android demo project](https://github.com/SalomonBrys/Kodein/tree/master/AndroidDemo).
 
 Install
 -------
@@ -204,6 +205,9 @@ class MyFragment : Fragment(), KodeinHolder {
 	private val ds: DataSource by injectInstance()
 }
 ```
+
+Have a look at the [Android demo project](https://github.com/SalomonBrys/Kodein/tree/master/AndroidDemo)!
+
 
 Advanced use
 ------------
