@@ -119,13 +119,13 @@ constant("serverURL") with "https://my.server.url"
 
 #### Transitive dependency
 With those lazily instanciated dependencies, a dependency (very) often needs another dependency. Such object should have their dependencies passed to their constructor. Thanks to Kotlin's killer type inference engine, Kodein makes retrieval of transitive dependencies really easy:  
-Say you have a class that needs a Random:
+Say you have the following class:
 ```kotlin
 public class Dice(private val random: Random, private val max: Int) {
 /*...*/
 }
 ```
-Then it is really easy to get RandomDice's transitive dependencies, simply use `it.instance()` or `it.instance(name)`:
+Then it is really easy to bind RandomDice with it's transitive dependencies, simply use `it.instance()` or `it.instance(name)`:
 ```kotlin
 bind<Random>() with { SecureRandom() }
 constant("max") with 5
@@ -142,7 +142,7 @@ public fun Kodein.Builder.bindAPI() {
 }
 ```
 Then, in your binding block, simply call `bindAPI()`.  
-It is considered good behaviour to use such module functions.
+It is considered good practice to use such module functions.
 
 
 Injection: Dependency retrieval
@@ -165,7 +165,7 @@ val dice = diceProvider()
 ```
 
 #### Via a lazy property
-Lazy property allow you to resolve the dependency upon first access. For Kodein lazy properties to work, the class must implements `KodeinHolder`.
+Lazy properties allow you to resolve the dependency upon first access. For Kodein lazy properties to work, the class must implements `KodeinHolder`.
 ```kotlin
 public class Controller(private val app: Application) : KodeinHolder {
 	override val kodein: Kodein get() = app.kodein
@@ -219,5 +219,5 @@ bind<Manager>() with singleton { Manager(it.provider(), it.provider()) }
 ```
 
 #### Create your own scopes
-Actually... There are no scopes. Just functions that act as provider proxy functions. If you are interested in creating your own scopes beside `singleton`, `threadSingleton` and `instance`, have a look at them in the scopes.kt file.  
+Actually... There are no scopes. Just functions that act as provider proxy functions. If you are interested in creating your own scopes beside `singleton`, `threadSingleton` and `instance`, have a look at them in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/src/main/kotlin/Scopes.kt) file.  
 Basically, to create a scope, you need to create a function that returns a provider function: `(Kodein) -> T`.
