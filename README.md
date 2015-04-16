@@ -171,7 +171,7 @@ public class Controller(private val app: Application) : KodeinHolder {
 	override val kodein: Kodein get() = app.kodein
 
 	private val ds: DataSource by injectInstance()
-	private val diceProvider: Provider<Dice> by injectProvider()
+	private val diceProvider: () -> Dice by injectProvider()
 	private val maxThread: Int by injectInstance("maxThread")
 }
 ```
