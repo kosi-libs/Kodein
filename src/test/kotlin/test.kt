@@ -4,6 +4,7 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
 import assertThrown
+import com.github.salomonbrys.kodein.typeToken
 import org.testng.annotations.Test
 import kotlin.test.expect
 
@@ -273,15 +274,10 @@ public fun TypeNotFound() {
     }
 }
 
-public fun Kodein.Builder.bindAPI() {
-    bind<Person>() with { Person() }
-}
-
 Test(
         priority = 31,
         groups = array("error"),
-        dependsOnGroups = array("binding", "named"),
-        expectedExceptions = array()
+        dependsOnGroups = array("binding", "named")
 )
 public fun NameNotFound() {
 
@@ -293,4 +289,22 @@ public fun NameNotFound() {
     assertThrown<IllegalStateException> {
         kodein<Person>("schtroumpf")
     }
+}
+
+Test(
+        priority = 40,
+        groups = array("erasure"),
+        dependsOnGroups = array("binding")
+)
+public fun TypeErasure() {
+
+    val la = listOf(A(null))
+    val lb = listOf(B(null))
+
+    val kodein = Kodein {
+        bind<List<A>>() with instance( la )
+        bind<List<B>>() with instance( lb )
+    }
+
+    println(typeToken<String>())
 }

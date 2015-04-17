@@ -1,26 +1,27 @@
 package com.github.salomonbrys.kodein
 
+import java.lang.reflect.Type
 import java.util.HashMap
 
 /**
  * Kodein IoC Container
  */
 public class Kodein private(
-        private val _map: Map<Kodein.Key<out Any>, (Kodein) -> Any>,
+        private val _map: Map<Kodein.Key, (Kodein) -> Any>,
         private val _node: Kodein.Node? = null
 ) {
 
-    private class Node(private val _key: Key<*>, private val _parent: Node?) {
-        fun check(search: Key<*>) {
+    private class Node(private val _key: Key, private val _parent: Node?) {
+        fun check(search: Key) {
             if (!_check(search))
                 throw DependencyLoopException(tree(_key))
         }
 
-        private fun _check(search: Key<*>): Boolean {
+        private fun _check(search: Key): Boolean {
             return if (_key == search) false else (_parent?._check(search) ?: true)
         }
 
-        private fun tree(first: Key<*>): String {
+        private fun tree(first: Key): String {
             return "$_key\n        -> ${_parent?.tree(first) ?: first}"
         }
     }
@@ -33,8 +34,8 @@ public class Kodein private(
     /**
      * A Key is a Pair(Type, Tag) that defines a binding
      */
-    public data class Key<T: Any>(
-        val type: Class<T>,
+    public data class Key(
+        val type: Type,
         val tag: Any? = null
     )
 
@@ -43,7 +44,7 @@ public class Kodein private(
      */
     public class Builder(init: Builder.() -> Unit) {
 
-        internal val map: MutableMap<Key<out Any>, (Kodein) -> Any>
+        internal val map: MutableMap<Key, (Kodein) -> Any>
 
         init {
             map = HashMap()
@@ -53,7 +54,7 @@ public class Kodein private(
         /**
          * Binds a type. Second part of the DSL `bind<type>() with ...`
          */
-        public open inner class TypeBinder<T : Any> internal(val key: Key<T>) {
+        public open inner class TypeBinder<T : Any> internal(val key: Key) {
             public fun <R : T> with(provider: (Kodein) -> R): Unit { map[key] = provider }
         }
 
@@ -67,12 +68,12 @@ public class Kodein private(
         /**
          * Binds an untagged type. Must be followed by [with].
          */
-        public fun <T : Any> bind(type: Class<T>, tag: Any? = null): TypeBinder<T> = TypeBinder(Key(type, tag))
+        public fun <T : Any> bind(type: Type, tag: Any? = null): TypeBinder<T> = TypeBinder(Key(type, tag))
 
         /**
          * Binds a tagged type. Must be followed by [with].
          */
-        public inline fun <reified T : Any> bind(tag: Any? = null): TypeBinder<T> = bind(javaClass<T>(), tag)
+        public inline fun <reified T : Any> bind(tag: Any? = null): TypeBinder<T> = bind(typeToken<T>(), tag)
 
         /**
          * Binds a constant. Must be followed by [with].
@@ -85,7 +86,7 @@ public class Kodein private(
      */
     public constructor(init: Builder.() -> Unit) : this(Builder(init).map)
 
-    public fun <T : Any> _findUnsafeProvider(key: Key<T>): (() -> Any) {
+    public fun _findUnsafeProvider(key: Key): (() -> Any) {
         val prov = _map[key]
         if (prov == null)
             throw IllegalStateException("No binding found for $key")
@@ -93,12 +94,12 @@ public class Kodein private(
         return { prov(Kodein(_map, Node(key, _node))) }
     }
 
-    public inline fun <reified T : Any> _provider(key: Key<T>): (() -> T) {
+    public inline fun <reified T : Any> _provider(key: Key): (() -> T) {
         val prov = _findUnsafeProvider(key)
         return {
             val instance = prov()
             if (instance !is T)
-                throw IllegalStateException("Binding found for $key is ${instance.javaClass}, not ${javaClass<T>()}")
+                throw IllegalStateException("Binding found for $key is ${instance.javaClass}, not ${typeToken<T>()}")
             instance
         }
     }
@@ -108,16 +109,16 @@ public class Kodein private(
      *
      * Whether a provider will re-create a new instance at each call or not depends on the binding scope.
      */
-    public inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = _provider(Key(javaClass<T>(), tag))
+    public inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = _provider(Key(typeToken<T>(), tag))
 
-    public inline fun <reified T : Any> _instance(key: Key<T>): T = _provider(key).invoke()
+    public inline fun <reified T : Any> _instance(key: Key): T = _provider<T>(key).invoke()
 
     /**
      * Gets an instance for the given type and tag.
      *
      * Whether the returned object is a new instance at each call or not depends on the binding scope.
      */
-    public inline fun <reified T : Any> instance(tag: Any? = null): T = _instance(Key(javaClass<T>(), tag))
+    public inline fun <reified T : Any> instance(tag: Any? = null): T = _instance(Key(typeToken<T>(), tag))
 
     /**
      * Same as instance(tag)
