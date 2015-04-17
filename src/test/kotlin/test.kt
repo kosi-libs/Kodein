@@ -105,6 +105,32 @@ public fun InstanceBindingGetProvider() {
     assert(System.identityHashCode(p2()) == System.identityHashCode(p))
 }
 
+Test(
+        priority = 3,
+        groups = array("binding")
+)
+public fun NullBindingGetInstance() {
+
+    val kodein = Kodein {}
+
+    val p = kodein.instanceOrNull<Person>()
+
+    assert(p == null)
+}
+
+Test(
+        priority = 3,
+        groups = array("binding")
+)
+public fun NullBindingGetProvider() {
+
+    val kodein = Kodein {}
+
+    val p = kodein.providerOrNull<Person>()
+
+    assert(p == null)
+}
+
 
 Test(
         priority = 10,

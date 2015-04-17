@@ -86,16 +86,18 @@ public class Kodein private(
      */
     public constructor(init: Builder.() -> Unit) : this(Builder(init).map)
 
-    public fun _findUnsafeProvider(key: Key): (() -> Any) {
+    public fun _findUnsafeProvider(key: Key): (() -> Any)? {
         val prov = _map[key]
         if (prov == null)
-            throw IllegalStateException("No binding found for $key")
+            return null
         _node?.check(key)
         return { prov(Kodein(_map, Node(key, _node))) }
     }
 
-    public inline fun <reified T : Any> _provider(key: Key): (() -> T) {
+    public inline fun <reified T : Any> _providerOrNull(key: Key): (() -> T)? {
         val prov = _findUnsafeProvider(key)
+        if (prov == null)
+            return null
         return {
             val instance = prov()
             if (instance !is T)
@@ -104,21 +106,42 @@ public class Kodein private(
         }
     }
 
+    public inline fun <reified T : Any> _provider(key: Key): (() -> T) {
+        val prov = _providerOrNull<T>(key)
+        if (prov == null)
+            throw IllegalStateException("No binding found for $key")
+        return prov
+    }
+
     /**
      * Gets a provider for the given type and tag.
      *
      * Whether a provider will re-create a new instance at each call or not depends on the binding scope.
+     * Throws an IllegalStateException if the provider could not be found.
      */
     public inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = _provider(Key(typeToken<T>(), tag))
 
-    public inline fun <reified T : Any> _instance(key: Key): T = _provider<T>(key).invoke()
+    /**
+     * Gets a provider for the given type and tag, or null if none is found.
+     *
+     * Whether a provider will re-create a new instance at each call or not depends on the binding scope.
+     */
+    public inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = _providerOrNull(Key(typeToken<T>(), tag))
 
     /**
      * Gets an instance for the given type and tag.
      *
      * Whether the returned object is a new instance at each call or not depends on the binding scope.
+     * Throws an IllegalStateException if the instance could not be found.
      */
-    public inline fun <reified T : Any> instance(tag: Any? = null): T = _instance(Key(typeToken<T>(), tag))
+    public inline fun <reified T : Any> instance(tag: Any? = null): T = _provider<T>(Key(typeToken<T>(), tag)).invoke()
+
+    /**
+     * Gets an instance for the given type and tag, or null if none is found.
+     *
+     * Whether the returned object is a new instance at each call or not depends on the binding scope.
+     */
+    public inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = _providerOrNull<T>(Key(typeToken<T>(), tag))?.invoke()
 
     /**
      * Same as instance(tag)
