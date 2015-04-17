@@ -75,7 +75,7 @@ val kodein by lazyKodein {
 Bindings: Declaring dependencies
 --------------------------------
 
-Bindings are delared inside a Kodein initialization block. Bindings are not subject to type erasure (e.g. You can bind both a List<Int> and a List<String> to different lists).
+Bindings are delared inside a Kodein initialization block, they are not subject to type erasure (e.g. You can bind both a List&lt;Int&gt; and a List&lt;String&gt; to different list instances).
 
 There are different ways to declare a bindings:
 
