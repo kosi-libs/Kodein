@@ -26,7 +26,7 @@ test {
 
 group = "com.github.salomonbrys.kodein"
 archivesBaseName = "kodein"
-version = '1.0'
+version = '1.1'
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'

@@ -331,6 +331,4 @@ public fun TypeErasure() {
         bind<List<A>>() with instance( la )
         bind<List<B>>() with instance( lb )
     }
-
-    println(typeToken<String>())
 }

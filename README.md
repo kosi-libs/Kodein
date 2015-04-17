@@ -45,12 +45,12 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 Gradle:
 ```
-compile 'com.github.salomonbrys.kodein:kodein:1.0'
+compile 'com.github.salomonbrys.kodein:kodein:1.1'
 ```
 
 
@@ -75,7 +75,9 @@ val kodein by lazyKodein {
 Bindings: Declaring dependencies
 --------------------------------
 
-Bindings are delared inside a Kodein initialization block. There are different ways to declare a bindings:
+Bindings are delared inside a Kodein initialization block. Bindings are not subject to type erasure (e.g. You can bind both a List<Int> and a List<String> to different lists).
+
+There are different ways to declare a bindings:
 
 #### Provider binding
 This binds a type to a provider function. Each time you need a person instance, the provider will be called.
