@@ -75,13 +75,13 @@ val kodein by lazyKodein {
 Bindings: Declaring dependencies
 --------------------------------
 
-Bindings are delared inside a Kodein initialization block, they are not subject to type erasure (e.g. You can bind both a List&lt;Int&gt; and a List&lt;String&gt; to different list instances).
+Bindings are delared inside a Kodein initialization block, they are not subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>` to different list instances).
 
 There are different ways to declare a bindings:
 
 #### Provider binding
 This binds a type to a provider function. Each time you need a person instance, the provider will be called.
-For example, here is a binding that creates a new `Person` entry each time the IoC container needs a `Person` instance:
+For example, here is a binding that creates a new `Dice` entry each time the IoC container needs a `Dice` instance:
 ```kotlin
 bind<Dice>() with { RandomDice(5) }
 ```
@@ -94,7 +94,7 @@ bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 
 #### Thread singleton binding
 This is the same as the singleton binding, except that each thread gets a different instance. Therefore, the provided function is called once per thread needing the instance.
-```kotlin
+```kotlindi
 bind<Cache>() with threadSingleton { LRUCache(16 * 1024) }
 ```
 
@@ -195,7 +195,7 @@ class MyApp : Application() : KodeinHolder {
 	}
 }
 ```
-- Apply `KodeinHolder` on all `Activities`, `Fragment`, `Service` or any other `Context` object that need injection. It is important to implement the kodein property using `Delegates.lazy` because `getApplication()` will not work at construction.
+- Apply `KodeinHolder` on all `Activities`, `Fragment`, `Service` or any other `Context` object that needs injection. It is important to implement the kodein property using `Delegates.lazy` because `getApplication()` will not work at construction.
 ```kotlin
 class MyActivity : Activity(), KodeinHolder {
 	override val kodein by Delegates.lazy { (getApplication() as MyApp).kodein }
