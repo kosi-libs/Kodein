@@ -6,7 +6,7 @@ import kotlin.properties.ReadOnlyProperty
 /**
  * Must be implemented by property injected classes
  */
-public trait KodeinHolder {
+public interface KodeinHolder {
     public val kodein: Kodein
 }
 

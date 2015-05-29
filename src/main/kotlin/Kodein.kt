@@ -6,7 +6,7 @@ import java.util.HashMap
 /**
  * Kodein IoC Container
  */
-public class Kodein private(
+public class Kodein private constructor(
         private val _map: Map<Kodein.Key, (Kodein) -> Any>,
         private val _node: Kodein.Node? = null
 ) {
@@ -29,7 +29,7 @@ public class Kodein private(
     /**
      * Exception thrown when there is a dependency loop.
      */
-    public class DependencyLoopException internal(message: String) : RuntimeException(message)
+    public class DependencyLoopException internal constructor(message: String) : RuntimeException(message)
 
     /**
      * A Key is a Pair(Type, Tag) that defines a binding
@@ -54,14 +54,14 @@ public class Kodein private(
         /**
          * Binds a type. Second part of the DSL `bind<type>() with ...`
          */
-        public open inner class TypeBinder<T : Any> internal(val key: Key) {
+        public open inner class TypeBinder<T : Any> internal constructor(val key: Key) {
             public fun <R : T> with(provider: (Kodein) -> R): Unit { map[key] = provider }
         }
 
         /**
          * Binds a constant. Second part of the DSL `constant(tag) with ...`
          */
-        public inner class ConstantBinder internal(val tag: Any) {
+        public inner class ConstantBinder internal constructor(val tag: Any) {
             public fun with(value: Any): Unit { map[Key(value.javaClass, tag)] = { value } }
         }
 
@@ -84,20 +84,16 @@ public class Kodein private(
     /**
      * @param init Binding block
      */
-    public constructor(init: Builder.() -> Unit) : this(Builder(init).map)
+    public constructor(init: Kodein.Builder.() -> Unit) : this(Kodein.Builder(init).map)
 
     public fun _findUnsafeProvider(key: Key): (() -> Any)? {
-        val prov = _map[key]
-        if (prov == null)
-            return null
+        val prov = _map[key] ?: return null
         _node?.check(key)
         return { prov(Kodein(_map, Node(key, _node))) }
     }
 
     public inline fun <reified T : Any> _providerOrNull(key: Key): (() -> T)? {
-        val prov = _findUnsafeProvider(key)
-        if (prov == null)
-            return null
+        val prov = _findUnsafeProvider(key) ?: return null
         return {
             val instance = prov()
             if (instance !is T)
@@ -107,10 +103,7 @@ public class Kodein private(
     }
 
     public inline fun <reified T : Any> _provider(key: Key): (() -> T) {
-        val prov = _providerOrNull<T>(key)
-        if (prov == null)
-            throw IllegalStateException("No binding found for $key")
-        return prov
+        return _providerOrNull<T>(key) ?: throw IllegalStateException("No binding found for $key")
     }
 
     /**

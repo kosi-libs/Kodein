@@ -6,6 +6,7 @@ import com.github.salomonbrys.kodein.singleton
 import assertThrown
 import com.github.salomonbrys.kodein.typeToken
 import org.testng.annotations.Test
+import kotlin.reflect.KClass
 import kotlin.test.expect
 
 public data class Person( public val name: String? = null )
@@ -16,7 +17,7 @@ public data class C(val a: A?)
 
 Test(
         priority = 0,
-        groups = array("binding")
+        groups = arrayOf("binding")
 )
 public fun ProviderBindingGetInstance() {
 
@@ -30,7 +31,7 @@ public fun ProviderBindingGetInstance() {
 
 Test(
         priority = 0,
-        groups = array("binding")
+        groups = arrayOf("binding")
 )
 public fun ProviderBindingGetProvider() {
 
@@ -45,7 +46,7 @@ public fun ProviderBindingGetProvider() {
 
 Test(
         priority = 1,
-        groups = array("binding")
+        groups = arrayOf("binding")
 )
 public fun SingletonBindingGetInstance() {
 
@@ -59,7 +60,7 @@ public fun SingletonBindingGetInstance() {
 
 Test(
         priority = 1,
-        groups = array("binding")
+        groups = arrayOf("binding")
 )
 public fun SingletonBindingGetProvider() {
 
@@ -73,7 +74,7 @@ public fun SingletonBindingGetProvider() {
 
 Test(
         priority = 2,
-        groups = array("binding")
+        groups = arrayOf("binding")
 )
 public fun InstanceBindingGetInstance() {
 
@@ -90,7 +91,7 @@ public fun InstanceBindingGetInstance() {
 
 Test(
         priority = 2,
-        groups = array("binding")
+        groups = arrayOf("binding")
 )
 public fun InstanceBindingGetProvider() {
 
@@ -107,7 +108,7 @@ public fun InstanceBindingGetProvider() {
 
 Test(
         priority = 3,
-        groups = array("binding")
+        groups = arrayOf("binding")
 )
 public fun NullBindingGetInstance() {
 
@@ -120,7 +121,7 @@ public fun NullBindingGetInstance() {
 
 Test(
         priority = 3,
-        groups = array("binding")
+        groups = arrayOf("binding")
 )
 public fun NullBindingGetProvider() {
 
@@ -134,8 +135,8 @@ public fun NullBindingGetProvider() {
 
 Test(
         priority = 10,
-        groups = array("named"),
-        dependsOnGroups = array("binding")
+        groups = arrayOf("named"),
+        dependsOnGroups = arrayOf("binding")
 )
 public fun NamedProviderBindingGetInstance() {
     val kodein = Kodein {
@@ -152,8 +153,8 @@ public fun NamedProviderBindingGetInstance() {
 
 Test(
         priority = 10,
-        groups = array("named"),
-        dependsOnGroups = array("binding")
+        groups = arrayOf("named"),
+        dependsOnGroups = arrayOf("binding")
 )
 public fun NamedProviderBindingGetProvider() {
     val kodein = Kodein {
@@ -170,8 +171,8 @@ public fun NamedProviderBindingGetProvider() {
 
 Test(
         priority = 11,
-        groups = array("named"),
-        dependsOnGroups = array("binding")
+        groups = arrayOf("named"),
+        dependsOnGroups = arrayOf("binding")
 )
 public fun NamedSingletonBindingGetInstance() {
     val kodein = Kodein {
@@ -188,8 +189,8 @@ public fun NamedSingletonBindingGetInstance() {
 
 Test(
         priority = 11,
-        groups = array("named"),
-        dependsOnGroups = array("binding")
+        groups = arrayOf("named"),
+        dependsOnGroups = arrayOf("binding")
 )
 public fun NamedSingletonBindingGetProvider() {
     val kodein = Kodein {
@@ -206,8 +207,8 @@ public fun NamedSingletonBindingGetProvider() {
 
 Test(
         priority = 12,
-        groups = array("named"),
-        dependsOnGroups = array("binding")
+        groups = arrayOf("named"),
+        dependsOnGroups = arrayOf("binding")
 )
 public fun NamedInstanceBindingGetInstance() {
 
@@ -228,8 +229,8 @@ public fun NamedInstanceBindingGetInstance() {
 
 Test(
         priority = 12,
-        groups = array("named"),
-        dependsOnGroups = array("binding")
+        groups = arrayOf("named"),
+        dependsOnGroups = arrayOf("binding")
 )
 public fun NamedInstanceBindingGetProvider() {
 
@@ -248,11 +249,43 @@ public fun NamedInstanceBindingGetProvider() {
     assert(System.identityHashCode(p2()) == System.identityHashCode(p3()))
 }
 
+Test(
+        priority = 13,
+        groups = arrayOf("named"),
+        dependsOnGroups = arrayOf("binding")
+)
+public fun ConstantBindingGetInstance() {
+
+    val kodein = Kodein {
+        constant("answer") with 42
+    }
+
+    val c: Int = kodein("answer")
+
+    assert(c == 42)
+}
+
+Test(
+        priority = 14,
+        groups = arrayOf("named"),
+        dependsOnGroups = arrayOf("binding")
+)
+public fun ConstantBindingGetProvider() {
+
+    val kodein = Kodein {
+        constant("answer") with 42
+    }
+
+    val c = kodein.provider<Int>("answer")
+
+    assert(c() == 42)
+}
+
 
 Test(
         priority = 20,
-        groups = array("loop"),
-        dependsOnGroups = array("binding")
+        groups = arrayOf("loop"),
+        dependsOnGroups = arrayOf("binding")
 )
 public fun DependencyLoop() {
 
@@ -269,8 +302,8 @@ public fun DependencyLoop() {
 
 Test(
         priority = 21,
-        groups = array("loop"),
-        dependsOnGroups = array("binding", "named")
+        groups = arrayOf("loop"),
+        dependsOnGroups = arrayOf("binding", "named")
 )
 public fun NoDependencyLoop() {
 
@@ -287,9 +320,9 @@ public fun NoDependencyLoop() {
 
 Test(
         priority = 30,
-        groups = array("error"),
-        dependsOnGroups = array("binding"),
-        expectedExceptions = array()
+        groups = arrayOf("error"),
+        dependsOnGroups = arrayOf("binding"),
+        expectedExceptions = arrayOf()
 )
 public fun TypeNotFound() {
 
@@ -302,8 +335,8 @@ public fun TypeNotFound() {
 
 Test(
         priority = 31,
-        groups = array("error"),
-        dependsOnGroups = array("binding", "named")
+        groups = arrayOf("error"),
+        dependsOnGroups = arrayOf("binding", "named")
 )
 public fun NameNotFound() {
 
@@ -319,8 +352,8 @@ public fun NameNotFound() {
 
 Test(
         priority = 40,
-        groups = array("erasure"),
-        dependsOnGroups = array("binding")
+        groups = arrayOf("erasure"),
+        dependsOnGroups = arrayOf("binding")
 )
 public fun TypeErasure() {
 

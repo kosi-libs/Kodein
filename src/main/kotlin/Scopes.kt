@@ -35,7 +35,7 @@ public fun <T : Any> Kodein.Builder.threadSingleton(creator: (Kodein) -> T): (Ko
             instance = creator(kodein)
             storage.set(instance)
         }
-        instance!!
+        instance
     }
 }
 
