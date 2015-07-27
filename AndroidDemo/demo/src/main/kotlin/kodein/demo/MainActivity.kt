@@ -16,6 +16,7 @@ public class MainActivity : Activity(), KodeinHolder {
 
     public val coffeeMaker: CoffeeMaker by injectInstance()
     public val log: Logger by injectInstance()
+    public val foobar: Bar<Foo> by injectInstance()
 
     public val textView: TextView by Delegates.lazy { findViewById(R.id.text) as TextView }
 
@@ -23,7 +24,7 @@ public class MainActivity : Activity(), KodeinHolder {
         super<Activity>.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        textView.setText(log.text)
+        textView.setText(log.text + foobar.name)
 
         log.callback = {
             textView.setText(log.text)

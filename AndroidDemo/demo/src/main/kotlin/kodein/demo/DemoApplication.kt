@@ -18,6 +18,8 @@ public class DemoApplication : Application(), KodeinHolder {
         bind<Logger>() with instance(Logger())
 
         bind<CoffeeMaker>() with singleton { CoffeeMaker(it.instance(), it.instance(), it.instance(), it.provider()) }
+
+        bindFooBar()
     }
 
 

@@ -1,12 +1,12 @@
 buildscript {
-    ext.kotlin_version = '0.11.91.1'
+    ext.kotlin_version = '0.12.1218'
 
     repositories {
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.1'
+        classpath 'com.android.tools.build:gradle:1.2.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -39,5 +39,5 @@ android {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile 'com.github.salomonbrys.kodein:kodein:1.0'
+    compile 'com.github.salomonbrys.kodein:kodein:1.2'
 }
