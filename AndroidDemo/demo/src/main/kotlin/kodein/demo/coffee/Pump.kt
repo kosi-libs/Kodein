@@ -1,5 +1,5 @@
 package kodein.demo.coffee
 
-public trait Pump {
+public interface Pump {
     fun pumpWater()
 }

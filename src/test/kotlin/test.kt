@@ -1,11 +1,13 @@
 package com.github.salomonbrys.kodein.test
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.singleton
 import assertThrown
-import com.github.salomonbrys.kodein.typeToken
-import org.testng.annotations.Test
+import com.github.salomonbrys.kodein.*
+import junit.framework.TestCase
+import org.junit.Assert.*
+import org.junit.FixMethodOrder
+import org.junit.Test
+import org.junit.runners.MethodSorters
+import java.lang.reflect.ParameterizedType
 import kotlin.reflect.KClass
 import kotlin.test.expect
 
@@ -15,353 +17,272 @@ public data class A(val b: B?)
 public data class B(val c: C?)
 public data class C(val a: A?)
 
-Test(
-        priority = 0,
-        groups = arrayOf("binding")
-)
-public fun ProviderBindingGetInstance() {
+FixMethodOrder(MethodSorters.NAME_ASCENDING)
+class KodeinTests : TestCase() {
 
-    val kodein = Kodein { bind<Person>() with { Person() } }
+    public Test fun test00_ProviderBindingGetInstance() {
 
-    val p1: Person = kodein()
-    val p2: Person = kodein()
+        val kodein = Kodein { bind<Person>() with { Person() } }
 
-    assert(System.identityHashCode(p1) != System.identityHashCode(p2))
-}
+        val p1: Person = kodein()
+        val p2: Person = kodein()
 
-Test(
-        priority = 0,
-        groups = arrayOf("binding")
-)
-public fun ProviderBindingGetProvider() {
-
-    val kodein = Kodein { bind<Person>() with { Person() } }
-
-    val p1 = kodein.provider<Person>()
-    val p2 = kodein.provider<Person>()
-
-    assert(System.identityHashCode(p1()) != System.identityHashCode(p2()))
-}
-
-
-Test(
-        priority = 1,
-        groups = arrayOf("binding")
-)
-public fun SingletonBindingGetInstance() {
-
-    val kodein = Kodein { bind<Person>() with singleton { Person() } }
-
-    val p1: Person = kodein()
-    val p2: Person = kodein()
-
-    assert(System.identityHashCode(p1) == System.identityHashCode(p2))
-}
-
-Test(
-        priority = 1,
-        groups = arrayOf("binding")
-)
-public fun SingletonBindingGetProvider() {
-
-    val kodein = Kodein { bind<Person>() with singleton { Person() } }
-
-    val p1 = kodein.provider<Person>()
-    val p2 = kodein.provider<Person>()
-
-    assert(System.identityHashCode(p1()) == System.identityHashCode(p2()))
-}
-
-Test(
-        priority = 2,
-        groups = arrayOf("binding")
-)
-public fun InstanceBindingGetInstance() {
-
-    val p = Person()
-
-    val kodein = Kodein { bind<Person>() with instance(p) }
-
-    val p1: Person = kodein()
-    val p2: Person = kodein()
-
-    assert(System.identityHashCode(p1) == System.identityHashCode(p))
-    assert(System.identityHashCode(p2) == System.identityHashCode(p))
-}
-
-Test(
-        priority = 2,
-        groups = arrayOf("binding")
-)
-public fun InstanceBindingGetProvider() {
-
-    val p = Person()
-
-    val kodein = Kodein { bind<Person>() with instance(p) }
-
-    val p1 = kodein.provider<Person>()
-    val p2 = kodein.provider<Person>()
-
-    assert(System.identityHashCode(p1()) == System.identityHashCode(p))
-    assert(System.identityHashCode(p2()) == System.identityHashCode(p))
-}
-
-Test(
-        priority = 3,
-        groups = arrayOf("binding")
-)
-public fun NullBindingGetInstance() {
-
-    val kodein = Kodein {}
-
-    val p = kodein.instanceOrNull<Person>()
-
-    assert(p == null)
-}
-
-Test(
-        priority = 3,
-        groups = arrayOf("binding")
-)
-public fun NullBindingGetProvider() {
-
-    val kodein = Kodein {}
-
-    val p = kodein.providerOrNull<Person>()
-
-    assert(p == null)
-}
-
-
-Test(
-        priority = 10,
-        groups = arrayOf("named"),
-        dependsOnGroups = arrayOf("binding")
-)
-public fun NamedProviderBindingGetInstance() {
-    val kodein = Kodein {
-        bind<Person>() with { Person() }
-        bind<Person>("named") with { Person("Salomon") }
+        assertNotSame(p1, p2)
     }
 
-    val p1: Person = kodein()
-    val p2: Person = kodein("named")
+    public Test fun test01_ProviderBindingGetProvider() {
 
-    assert(p1.name == null)
-    assert(p2.name == "Salomon")
-}
+        val kodein = Kodein { bind<Person>() with { Person() } }
 
-Test(
-        priority = 10,
-        groups = arrayOf("named"),
-        dependsOnGroups = arrayOf("binding")
-)
-public fun NamedProviderBindingGetProvider() {
-    val kodein = Kodein {
-        bind<Person>() with { Person() }
-        bind<Person>("named") with { Person("Salomon") }
+        val p1 = kodein.provider<Person>()
+        val p2 = kodein.provider<Person>()
+
+        assertNotSame(p1(), p2())
     }
 
-    val p1 = kodein.provider<Person>()
-    val p2 = kodein.provider<Person>("named")
 
-    assert(p1().name == null)
-    assert(p2().name == "Salomon")
-}
+    public Test fun test10_SingletonBindingGetInstance() {
 
-Test(
-        priority = 11,
-        groups = arrayOf("named"),
-        dependsOnGroups = arrayOf("binding")
-)
-public fun NamedSingletonBindingGetInstance() {
-    val kodein = Kodein {
-        bind<Person>() with singleton { Person() }
-        bind<Person>("named") with singleton { Person("Salomon") }
+        val kodein = Kodein { bind<Person>() with singleton { Person() } }
+
+        val p1: Person = kodein()
+        val p2: Person = kodein()
+
+        assertSame(p1, p2)
     }
 
-    val p1: Person = kodein("named")
-    val p2: Person = kodein("named")
+    public Test fun test11_SingletonBindingGetProvider() {
 
-    assert(p1.name == "Salomon")
-    assert(System.identityHashCode(p1) == System.identityHashCode(p2))
-}
+        val kodein = Kodein { bind<Person>() with singleton { Person() } }
 
-Test(
-        priority = 11,
-        groups = arrayOf("named"),
-        dependsOnGroups = arrayOf("binding")
-)
-public fun NamedSingletonBindingGetProvider() {
-    val kodein = Kodein {
-        bind<Person>() with singleton { Person() }
-        bind<Person>("named") with singleton { Person("Salomon") }
+        val p1 = kodein.provider<Person>()
+        val p2 = kodein.provider<Person>()
+
+        assertSame(p1(), p2())
     }
 
-    val p1 = kodein.provider<Person>("named")
-    val p2 = kodein.provider<Person>("named")
+    public Test fun test20_InstanceBindingGetInstance() {
 
-    assert(p1().name == "Salomon")
-    assert(System.identityHashCode(p1()) == System.identityHashCode(p2()))
-}
+        val p = Person()
 
-Test(
-        priority = 12,
-        groups = arrayOf("named"),
-        dependsOnGroups = arrayOf("binding")
-)
-public fun NamedInstanceBindingGetInstance() {
+        val kodein = Kodein { bind<Person>() with instance(p) }
 
-    val kodein = Kodein {
-        bind<Person>() with instance(Person())
-        bind<Person>("named") with instance(Person("Salomon"))
+        val p1: Person = kodein()
+        val p2: Person = kodein()
+
+        assertSame(p1, p)
+        assertSame(p2, p)
     }
 
-    val p1: Person = kodein()
-    val p2: Person = kodein("named")
-    val p3: Person = kodein("named")
+    public Test fun test21_InstanceBindingGetProvider() {
 
-    assert(p1.name == null)
-    assert(p2.name == "Salomon")
-    assert(System.identityHashCode(p1) != System.identityHashCode(p2))
-    assert(System.identityHashCode(p2) == System.identityHashCode(p3))
-}
+        val p = Person()
 
-Test(
-        priority = 12,
-        groups = arrayOf("named"),
-        dependsOnGroups = arrayOf("binding")
-)
-public fun NamedInstanceBindingGetProvider() {
+        val kodein = Kodein { bind<Person>() with instance(p) }
 
-    val kodein = Kodein {
-        bind<Person>() with instance(Person())
-        bind<Person>("named") with instance(Person("Salomon"))
+        val p1 = kodein.provider<Person>()
+        val p2 = kodein.provider<Person>()
+
+        assertSame(p1(), p)
+        assertSame(p2(), p)
     }
 
-    val p1 = kodein.provider<Person>()
-    val p2 = kodein.provider<Person>("named")
-    val p3 = kodein.provider<Person>("named")
+    public Test fun test30_NullBindingGetInstance() {
 
-    assert(p1().name == null)
-    assert(p2().name == "Salomon")
-    assert(System.identityHashCode(p1()) != System.identityHashCode(p2()))
-    assert(System.identityHashCode(p2()) == System.identityHashCode(p3()))
-}
+        val kodein = Kodein {}
 
-Test(
-        priority = 13,
-        groups = arrayOf("named"),
-        dependsOnGroups = arrayOf("binding")
-)
-public fun ConstantBindingGetInstance() {
+        val p = kodein.instanceOrNull<Person>()
 
-    val kodein = Kodein {
-        constant("answer") with 42
+        assertNull(p)
     }
 
-    val c: Int = kodein("answer")
+    public Test fun test31_NullBindingGetProvider() {
 
-    assert(c == 42)
-}
+        val kodein = Kodein {}
 
-Test(
-        priority = 14,
-        groups = arrayOf("named"),
-        dependsOnGroups = arrayOf("binding")
-)
-public fun ConstantBindingGetProvider() {
+        val p = kodein.providerOrNull<Person>()
 
-    val kodein = Kodein {
-        constant("answer") with 42
+        assertNull(p)
     }
 
-    val c = kodein.provider<Int>("answer")
 
-    assert(c() == 42)
-}
+    public Test fun test40_NamedProviderBindingGetInstance() {
+        val kodein = Kodein {
+            bind<Person>() with { Person() }
+            bind<Person>("named") with { Person("Salomon") }
+        }
 
+        val p1: Person = kodein()
+        val p2: Person = kodein("named")
 
-Test(
-        priority = 20,
-        groups = arrayOf("loop"),
-        dependsOnGroups = arrayOf("binding")
-)
-public fun DependencyLoop() {
-
-    val kodein = Kodein {
-        bind<A>() with singleton { A(it()) }
-        bind<B>() with singleton { B(it()) }
-        bind<C>() with singleton { C(it()) }
+        assertNull(p1.name)
+        assertEquals(p2.name, "Salomon")
     }
 
-    assertThrown<Kodein.DependencyLoopException> {
-        kodein<A>()
-    }
-}
+    public Test fun test41_NamedProviderBindingGetProvider() {
+        val kodein = Kodein {
+            bind<Person>() with { Person() }
+            bind<Person>("named") with { Person("Salomon") }
+        }
 
-Test(
-        priority = 21,
-        groups = arrayOf("loop"),
-        dependsOnGroups = arrayOf("binding", "named")
-)
-public fun NoDependencyLoop() {
+        val p1 = kodein.provider<Person>()
+        val p2 = kodein.provider<Person>("named")
 
-    val kodein = Kodein {
-        bind<A>() with singleton { A(it()) }
-        bind<A>("root") with singleton { A(null) }
-        bind<B>() with singleton { B(it()) }
-        bind<C>() with singleton { C(it("root")) }
+        assertNull(p1().name)
+        assertEquals(p2().name, "Salomon")
     }
 
-    val a = kodein<A>()
-    assert(a.b?.c?.a != null)
-}
+    public Test fun test50_NamedSingletonBindingGetInstance() {
+        val kodein = Kodein {
+            bind<Person>() with singleton { Person() }
+            bind<Person>("named") with singleton { Person("Salomon") }
+        }
 
-Test(
-        priority = 30,
-        groups = arrayOf("error"),
-        dependsOnGroups = arrayOf("binding"),
-        expectedExceptions = arrayOf()
-)
-public fun TypeNotFound() {
+        val p1: Person = kodein("named")
+        val p2: Person = kodein("named")
 
-    val kodein = Kodein {}
-
-    assertThrown<IllegalStateException> {
-        kodein<Person>()
-    }
-}
-
-Test(
-        priority = 31,
-        groups = arrayOf("error"),
-        dependsOnGroups = arrayOf("binding", "named")
-)
-public fun NameNotFound() {
-
-    val kodein = Kodein {
-        bind<Person>() with { Person() }
-        bind<Person>("named") with { Person("Salomon") }
+        assertEquals(p1.name, "Salomon")
+        assertSame(p1, p2)
     }
 
-    assertThrown<IllegalStateException> {
-        kodein<Person>("schtroumpf")
+    public Test fun test51_NamedSingletonBindingGetProvider() {
+        val kodein = Kodein {
+            bind<Person>() with singleton { Person() }
+            bind<Person>("named") with singleton { Person("Salomon") }
+        }
+
+        val p1 = kodein.provider<Person>("named")
+        val p2 = kodein.provider<Person>("named")
+
+        assertEquals(p1().name, "Salomon")
+        assertSame(p1(), p2())
     }
-}
 
-Test(
-        priority = 40,
-        groups = arrayOf("erasure"),
-        dependsOnGroups = arrayOf("binding")
-)
-public fun TypeErasure() {
+    public Test fun test60_NamedInstanceBindingGetInstance() {
 
-    val la = listOf(A(null))
-    val lb = listOf(B(null))
+        val kodein = Kodein {
+            bind<Person>() with instance(Person())
+            bind<Person>("named") with instance(Person("Salomon"))
+        }
 
-    val kodein = Kodein {
-        bind<List<A>>() with instance( la )
-        bind<List<B>>() with instance( lb )
+        val p1: Person = kodein()
+        val p2: Person = kodein("named")
+        val p3: Person = kodein("named")
+
+        assertNull(p1.name)
+        assertEquals(p2.name, "Salomon")
+        assertNotSame(p1, p2)
+        assertSame(p2, p3)
     }
+
+    public Test fun test61_NamedInstanceBindingGetProvider() {
+
+        val kodein = Kodein {
+            bind<Person>() with instance(Person())
+            bind<Person>("named") with instance(Person("Salomon"))
+        }
+
+        val p1 = kodein.provider<Person>()
+        val p2 = kodein.provider<Person>("named")
+        val p3 = kodein.provider<Person>("named")
+
+        assertNull(p1().name)
+        assertEquals(p2().name, "Salomon")
+        assertNotSame(p1(), p2())
+        assertSame(p2(), p3())
+    }
+
+    public Test fun test70_ConstantBindingGetInstance() {
+
+        val kodein = Kodein {
+            constant("answer") with 42
+        }
+
+        val c: Int = kodein("answer")
+
+        assertEquals(c, 42)
+    }
+
+    public Test fun test71_ConstantBindingGetProvider() {
+
+        val kodein = Kodein {
+            constant("answer") with 42
+        }
+
+        val c = kodein.provider<Int>("answer")
+
+        assertEquals(c(), 42)
+    }
+
+
+    public Test fun test80_DependencyLoop() {
+
+        val kodein = Kodein {
+            bind<A>() with singleton { A(it()) }
+            bind<B>() with singleton { B(it()) }
+            bind<C>() with singleton { C(it()) }
+        }
+
+        assertThrown<Kodein.DependencyLoopException> {
+            kodein<A>()
+        }
+    }
+
+    public Test fun test81_NoDependencyLoop() {
+
+        val kodein = Kodein {
+            bind<A>() with singleton { A(it()) }
+            bind<A>("root") with singleton { A(null) }
+            bind<B>() with singleton { B(it()) }
+            bind<C>() with singleton { C(it("root")) }
+        }
+
+        val a = kodein<A>()
+        assertNotNull(a.b?.c?.a)
+    }
+
+    public Test fun test82_TypeNotFound() {
+
+        val kodein = Kodein {}
+
+        assertThrown<IllegalStateException> {
+            kodein<Person>()
+        }
+    }
+
+    public Test fun test83_NameNotFound() {
+
+        val kodein = Kodein {
+            bind<Person>() with { Person() }
+            bind<Person>("named") with { Person("Salomon") }
+        }
+
+        assertThrown<IllegalStateException> {
+            kodein<Person>("schtroumpf")
+        }
+    }
+
+    public Test fun test90_TypeErasure() {
+
+        val la = listOf(A(null))
+        val lb = listOf(B(null))
+
+        val kodein = Kodein {
+            bind<List<A>>() with instance( la )
+            bind<List<B>>() with instance( lb )
+        }
+
+        assertSame(kodein<List<A>>(), la)
+        assertSame(kodein<List<B>>(), lb)
+    }
+
+    public Test fun test91_ParameterizedTypeWrap() {
+        val typeLS1 = KodeinParameterizedType((object : TypeToken<List<String>>() {}).type as ParameterizedType)
+        val typeLS2 = KodeinParameterizedType((object : TypeToken<List<String>>() {}).type as ParameterizedType)
+        val typeLI = KodeinParameterizedType((object : TypeToken<List<Int>>() {}).type as ParameterizedType)
+
+        assertEquals(typeLS1, typeLS2)
+        assertNotEquals(typeLS1, typeLI)
+    }
+
 }
