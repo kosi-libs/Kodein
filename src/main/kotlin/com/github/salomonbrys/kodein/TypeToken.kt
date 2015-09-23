@@ -23,15 +23,15 @@ public abstract class TypeToken<T> {
     }
 
     private fun extractType(): Type {
-        val t = javaClass.getGenericSuperclass()
+        val t = javaClass.genericSuperclass
 
         if (t !is ParameterizedType)
             throw RuntimeException("Invalid TypeToken; must specify type parameters")
 
-        if (t.getRawType() != javaClass<TypeToken<*>>())
+        if (t.rawType != TypeToken::class.java)
             throw RuntimeException("Invalid TypeToken; must directly extend TypeToken")
 
-        return t.getActualTypeArguments()[0]
+        return t.actualTypeArguments[0]
     }
 }
 
@@ -85,9 +85,9 @@ public class KodeinParameterizedType(public val type: ParameterizedType) : Type 
             if (type !is ParameterizedType)
                 throw RuntimeException("Invalid TypeToken; must specify type parameters")
 
-            var hashCode = HashCode(type.getRawType());
-            for (arg in type.getActualTypeArguments())
-                hashCode *= 31 + HashCode(if (arg is WildcardType) arg.getUpperBounds()[0] else arg)
+            var hashCode = HashCode(type.rawType);
+            for (arg in type.actualTypeArguments)
+                hashCode *= 31 + HashCode(if (arg is WildcardType) arg.upperBounds[0] else arg)
             return hashCode
         }
 
@@ -96,18 +96,18 @@ public class KodeinParameterizedType(public val type: ParameterizedType) : Type 
                 return left == right
 
             if (left is WildcardType)
-                return Equals(left.getUpperBounds()[0], right)
+                return Equals(left.upperBounds[0], right)
             if (right is WildcardType)
-                return Equals(left, right.getUpperBounds()[0])
+                return Equals(left, right.upperBounds[0])
 
             if (left !is ParameterizedType || right !is ParameterizedType)
                 return false
 
-            if (!Equals(left.getRawType(), right.getRawType()))
+            if (!Equals(left.rawType, right.rawType))
                 return false;
 
-            val leftArgs = left.getActualTypeArguments()
-            val rightArgs = right.getActualTypeArguments()
+            val leftArgs = left.actualTypeArguments
+            val rightArgs = right.actualTypeArguments
             if (leftArgs.size() != rightArgs.size())
                 return false;
 

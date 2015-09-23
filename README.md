@@ -45,16 +45,17 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 Gradle:
 ```
-compile 'com.github.salomonbrys.kodein:kodein:1.3.0'
+compile 'com.github.salomonbrys.kodein:kodein:1.4.0'
 ```
 
  - Version 1.1 is compatible with Kotlin M11
- - Version 1.3.0 are compatible with Kotlin M12
+ - Version 1.3.0 is compatible with Kotlin M12
+ - Version 1.4.0 is compatible with Kotlin M13
 
 
 Initializing Kodein

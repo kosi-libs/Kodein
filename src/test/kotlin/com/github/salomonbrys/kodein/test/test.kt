@@ -1,6 +1,5 @@
 package com.github.salomonbrys.kodein.test
 
-import assertThrown
 import com.github.salomonbrys.kodein.*
 import junit.framework.TestCase
 import org.junit.Assert.*
@@ -8,8 +7,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import java.lang.reflect.ParameterizedType
-import kotlin.reflect.KClass
-import kotlin.test.expect
+import kotlin.concurrent.thread
 
 public data class Person( public val name: String? = null )
 
@@ -17,10 +15,10 @@ public data class A(val b: B?)
 public data class B(val c: C?)
 public data class C(val a: A?)
 
-FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KodeinTests : TestCase() {
 
-    public Test fun test00_ProviderBindingGetInstance() {
+    public @Test fun test00_0_ProviderBindingGetInstance() {
 
         val kodein = Kodein { bind<Person>() with { Person() } }
 
@@ -30,7 +28,7 @@ class KodeinTests : TestCase() {
         assertNotSame(p1, p2)
     }
 
-    public Test fun test01_ProviderBindingGetProvider() {
+    public @Test fun test00_1_ProviderBindingGetProvider() {
 
         val kodein = Kodein { bind<Person>() with { Person() } }
 
@@ -41,7 +39,7 @@ class KodeinTests : TestCase() {
     }
 
 
-    public Test fun test10_SingletonBindingGetInstance() {
+    public @Test fun test01_0_SingletonBindingGetInstance() {
 
         val kodein = Kodein { bind<Person>() with singleton { Person() } }
 
@@ -51,7 +49,7 @@ class KodeinTests : TestCase() {
         assertSame(p1, p2)
     }
 
-    public Test fun test11_SingletonBindingGetProvider() {
+    public @Test fun test01_1_SingletonBindingGetProvider() {
 
         val kodein = Kodein { bind<Person>() with singleton { Person() } }
 
@@ -61,7 +59,51 @@ class KodeinTests : TestCase() {
         assertSame(p1(), p2())
     }
 
-    public Test fun test20_InstanceBindingGetInstance() {
+    public @Test fun test02_0_ThreadSingletonBindingGetInstance() {
+        val kodein = Kodein { bind<Person>() with threadSingleton { Person() } }
+
+        var tp1: Person? = null;
+
+        val t = thread {
+            tp1 = kodein()
+            val tp2: Person = kodein()
+
+            assertSame(tp1, tp2)
+        }
+
+        val p1: Person = kodein()
+        val p2: Person = kodein()
+
+        assertSame(p1, p2)
+
+        t.join()
+
+        assertNotSame(p1, tp1)
+    }
+
+    public @Test fun test02_1_ThreadSingletonBindingGetProvider() {
+        val kodein = Kodein { bind<Person>() with threadSingleton { Person() } }
+
+        var tp1: Person? = null;
+
+        val t = thread {
+            tp1 = kodein.provider<Person>().invoke()
+            val tp2 = kodein.provider<Person>().invoke()
+
+            assertSame(tp1, tp2)
+        }
+
+        val p1 = kodein.provider<Person>().invoke()
+        val p2 = kodein.provider<Person>().invoke()
+
+        assertSame(p1, p2)
+
+        t.join()
+
+        assertNotSame(p1, tp1)
+    }
+
+    public @Test fun test03_0_InstanceBindingGetInstance() {
 
         val p = Person()
 
@@ -74,7 +116,7 @@ class KodeinTests : TestCase() {
         assertSame(p2, p)
     }
 
-    public Test fun test21_InstanceBindingGetProvider() {
+    public @Test fun test03_1_InstanceBindingGetProvider() {
 
         val p = Person()
 
@@ -87,7 +129,7 @@ class KodeinTests : TestCase() {
         assertSame(p2(), p)
     }
 
-    public Test fun test30_NullBindingGetInstance() {
+    public @Test fun test04_0_NullBindingGetInstance() {
 
         val kodein = Kodein {}
 
@@ -96,7 +138,7 @@ class KodeinTests : TestCase() {
         assertNull(p)
     }
 
-    public Test fun test31_NullBindingGetProvider() {
+    public @Test fun test04_1_NullBindingGetProvider() {
 
         val kodein = Kodein {}
 
@@ -105,8 +147,7 @@ class KodeinTests : TestCase() {
         assertNull(p)
     }
 
-
-    public Test fun test40_NamedProviderBindingGetInstance() {
+    public @Test fun test05_0_NamedProviderBindingGetInstance() {
         val kodein = Kodein {
             bind<Person>() with { Person() }
             bind<Person>("named") with { Person("Salomon") }
@@ -119,7 +160,7 @@ class KodeinTests : TestCase() {
         assertEquals(p2.name, "Salomon")
     }
 
-    public Test fun test41_NamedProviderBindingGetProvider() {
+    public @Test fun test05_1_NamedProviderBindingGetProvider() {
         val kodein = Kodein {
             bind<Person>() with { Person() }
             bind<Person>("named") with { Person("Salomon") }
@@ -132,7 +173,7 @@ class KodeinTests : TestCase() {
         assertEquals(p2().name, "Salomon")
     }
 
-    public Test fun test50_NamedSingletonBindingGetInstance() {
+    public @Test fun test06_0_NamedSingletonBindingGetInstance() {
         val kodein = Kodein {
             bind<Person>() with singleton { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -145,7 +186,7 @@ class KodeinTests : TestCase() {
         assertSame(p1, p2)
     }
 
-    public Test fun test51_NamedSingletonBindingGetProvider() {
+    public @Test fun test06_1_NamedSingletonBindingGetProvider() {
         val kodein = Kodein {
             bind<Person>() with singleton { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -158,7 +199,7 @@ class KodeinTests : TestCase() {
         assertSame(p1(), p2())
     }
 
-    public Test fun test60_NamedInstanceBindingGetInstance() {
+    public @Test fun test07_0_NamedInstanceBindingGetInstance() {
 
         val kodein = Kodein {
             bind<Person>() with instance(Person())
@@ -175,7 +216,7 @@ class KodeinTests : TestCase() {
         assertSame(p2, p3)
     }
 
-    public Test fun test61_NamedInstanceBindingGetProvider() {
+    public @Test fun test07_1_NamedInstanceBindingGetProvider() {
 
         val kodein = Kodein {
             bind<Person>() with instance(Person())
@@ -192,7 +233,7 @@ class KodeinTests : TestCase() {
         assertSame(p2(), p3())
     }
 
-    public Test fun test70_ConstantBindingGetInstance() {
+    public @Test fun test08_0_ConstantBindingGetInstance() {
 
         val kodein = Kodein {
             constant("answer") with 42
@@ -203,7 +244,7 @@ class KodeinTests : TestCase() {
         assertEquals(c, 42)
     }
 
-    public Test fun test71_ConstantBindingGetProvider() {
+    public @Test fun test08_1_ConstantBindingGetProvider() {
 
         val kodein = Kodein {
             constant("answer") with 42
@@ -215,7 +256,7 @@ class KodeinTests : TestCase() {
     }
 
 
-    public Test fun test80_DependencyLoop() {
+    public @Test fun test09_0_DependencyLoop() {
 
         val kodein = Kodein {
             bind<A>() with singleton { A(it()) }
@@ -228,7 +269,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    public Test fun test81_NoDependencyLoop() {
+    public @Test fun test09_1_NoDependencyLoop() {
 
         val kodein = Kodein {
             bind<A>() with singleton { A(it()) }
@@ -241,7 +282,7 @@ class KodeinTests : TestCase() {
         assertNotNull(a.b?.c?.a)
     }
 
-    public Test fun test82_TypeNotFound() {
+    public @Test fun test09_2_TypeNotFound() {
 
         val kodein = Kodein {}
 
@@ -250,7 +291,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    public Test fun test83_NameNotFound() {
+    public @Test fun test09_3_NameNotFound() {
 
         val kodein = Kodein {
             bind<Person>() with { Person() }
@@ -262,7 +303,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    public Test fun test90_TypeErasure() {
+    public @Test fun test10_0_TypeErasure() {
 
         val la = listOf(A(null))
         val lb = listOf(B(null))
@@ -276,13 +317,44 @@ class KodeinTests : TestCase() {
         assertSame(kodein<List<B>>(), lb)
     }
 
-    public Test fun test91_ParameterizedTypeWrap() {
+    public @Test fun test10_1_ParameterizedTypeWrap() {
         val typeLS1 = KodeinParameterizedType((object : TypeToken<List<String>>() {}).type as ParameterizedType)
         val typeLS2 = KodeinParameterizedType((object : TypeToken<List<String>>() {}).type as ParameterizedType)
         val typeLI = KodeinParameterizedType((object : TypeToken<List<Int>>() {}).type as ParameterizedType)
 
         assertEquals(typeLS1, typeLS2)
         assertNotEquals(typeLS1, typeLI)
+    }
+
+    public class PersonInject(override val kodein: Kodein) : KodeinHolder {
+        val newPerson: () -> Person by injectProvider()
+        val salomon: Person by injectInstance("named")
+    }
+
+    public @Test fun test11_0_Class() {
+        val kodein = Kodein {
+            bind<Person>() with { Person() }
+            bind<Person>("named") with { Person("Salomon") }
+        }
+
+        val inject = PersonInject(kodein)
+        assertNotSame(inject.newPerson(), inject.newPerson())
+        assertEquals(inject.salomon.name, "Salomon")
+    }
+
+    public class PersonModule : KodeinHolder {
+        override val kodein by lazyKodein {
+            bind<Person>() with { Person() }
+            bind<Person>("named") with { Person("Salomon") }
+        }
+        val newPerson: () -> Person by injectProvider()
+        val salomon: Person by injectInstance("named")
+    }
+
+    public @Test fun test11_1_Module() {
+        val test = PersonModule()
+        assertNotSame(test.newPerson(), test.newPerson())
+        assertEquals(test.salomon.name, "Salomon")
     }
 
 }

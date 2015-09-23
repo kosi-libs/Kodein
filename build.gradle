@@ -1,6 +1,6 @@
 
 buildscript {
-    ext.kotlin_version = '0.12.1230'
+    ext.kotlin_version = '0.13.1514'
     repositories {
         mavenCentral()
     }
@@ -26,7 +26,7 @@ test {
 
 group = "com.github.salomonbrys.kodein"
 archivesBaseName = "kodein"
-version = '1.3.0'
+version = '1.4.0'
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'

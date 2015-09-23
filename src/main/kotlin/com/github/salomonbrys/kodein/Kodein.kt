@@ -12,7 +12,7 @@ public class Kodein private constructor(
 ) {
 
     private class Node(private val _key: Key, private val _parent: Node?) {
-        fun check(search: Key) {
+        internal fun check(search: Key) {
             if (!_check(search))
                 throw DependencyLoopException(tree(_key))
         }

@@ -1,4 +1,4 @@
-
+package com.github.salomonbrys.kodein.test
 public  inline fun <reified T : Throwable> assertThrown(body: () -> Unit) {
     try {
         body()
@@ -8,5 +8,5 @@ public  inline fun <reified T : Throwable> assertThrown(body: () -> Unit) {
             return
         throw t
     }
-    throw AssertionError("Exepected ${javaClass<T>().getName()} to be thrown")
+    throw AssertionError("Exepected ${T::class.java.name} to be thrown")
 }
