@@ -139,5 +139,5 @@ public class Kodein private constructor(
     /**
      * Same as instance(tag)
      */
-    public inline fun <reified T : Any> invoke(tag: Any? = null): T = instance(tag)
+    operator public inline fun <reified T : Any> invoke(tag: Any? = null): T = instance(tag)
 }

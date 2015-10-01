@@ -23,15 +23,15 @@ An example is always better than a thousand words:
 ```kotlin
 public class Application : KodeinHolder {
     override val kodein by lazyKodein {
-		bind<Dice>() with { RandomDice(0, 5) }
-		bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+        bind<Dice>() with { RandomDice(0, 5) }
+        bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
     }
 }
 
 public class Controller(private val app: Application) : KodeinHolder {
-	override val kodein: Kodein get() = app.kodein
+    override val kodein: Kodein get() = app.kodein
 
-	private val user: DataSource by injectInstance()
+    private val user: DataSource by injectInstance()
 }
 ```
 
@@ -45,17 +45,18 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 Gradle:
 ```
-compile 'com.github.salomonbrys.kodein:kodein:1.4.0'
+compile 'com.github.salomonbrys.kodein:kodein:1.5.0'
 ```
 
  - Version 1.1 is compatible with Kotlin M11
  - Version 1.3.0 is compatible with Kotlin M12
  - Version 1.4.0 is compatible with Kotlin M13
+ - Version 1.5.0 is compatible with Kotlin M14
 
 
 Initializing Kodein
@@ -131,11 +132,11 @@ public class Dice(private val random: Random, private val max: Int) {
 /*...*/
 }
 ```
-Then it is really easy to bind RandomDice with it's transitive dependencies, simply use `it.instance()` or `it.instance(name)`:
+Then it is really easy to bind RandomDice with it's transitive dependencies, simply use `it()` or `it(tag)`:
 ```kotlin
 bind<Random>() with { SecureRandom() }
 constant("max") with 5
-bind<Dice>() with { Dice(it.instance(), it.instance("max")) }
+bind<Dice>() with { Dice(it(), it("max")) }
 ```
 
 #### Modules
