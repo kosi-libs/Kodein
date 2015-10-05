@@ -20,17 +20,17 @@ class KodeinTests : TestCase() {
 
     public @Test fun test00_0_ProviderBindingGetInstance() {
 
-        val kodein = Kodein { bind<Person>() with { Person() } }
+        val kodein = Kodein { bind<Person>() with factory { Person() } }
 
-        val p1: Person = kodein()
-        val p2: Person = kodein()
+        val p1: Person = kodein.instance()
+        val p2: Person = kodein.instance()
 
         assertNotSame(p1, p2)
     }
 
     public @Test fun test00_1_ProviderBindingGetProvider() {
 
-        val kodein = Kodein { bind<Person>() with { Person() } }
+        val kodein = Kodein { bind<Person>() with factory { Person() } }
 
         val p1 = kodein.provider<Person>()
         val p2 = kodein.provider<Person>()
@@ -43,8 +43,8 @@ class KodeinTests : TestCase() {
 
         val kodein = Kodein { bind<Person>() with singleton { Person() } }
 
-        val p1: Person = kodein()
-        val p2: Person = kodein()
+        val p1: Person = kodein.instance()
+        val p2: Person = kodein.instance()
 
         assertSame(p1, p2)
     }
@@ -65,14 +65,14 @@ class KodeinTests : TestCase() {
         var tp1: Person? = null;
 
         val t = thread {
-            tp1 = kodein()
-            val tp2: Person = kodein()
+            tp1 = kodein.instance()
+            val tp2: Person = kodein.instance()
 
             assertSame(tp1, tp2)
         }
 
-        val p1: Person = kodein()
-        val p2: Person = kodein()
+        val p1: Person = kodein.instance()
+        val p2: Person = kodein.instance()
 
         assertSame(p1, p2)
 
@@ -109,8 +109,8 @@ class KodeinTests : TestCase() {
 
         val kodein = Kodein { bind<Person>() with instance(p) }
 
-        val p1: Person = kodein()
-        val p2: Person = kodein()
+        val p1: Person = kodein.instance()
+        val p2: Person = kodein.instance()
 
         assertSame(p1, p)
         assertSame(p2, p)
@@ -149,12 +149,12 @@ class KodeinTests : TestCase() {
 
     public @Test fun test05_0_NamedProviderBindingGetInstance() {
         val kodein = Kodein {
-            bind<Person>() with { Person() }
-            bind<Person>("named") with { Person("Salomon") }
+            bind<Person>() with factory { Person() }
+            bind<Person>("named") with factory { Person("Salomon") }
         }
 
-        val p1: Person = kodein()
-        val p2: Person = kodein("named")
+        val p1: Person = kodein.instance()
+        val p2: Person = kodein.instance("named")
 
         assertNull(p1.name)
         assertEquals(p2.name, "Salomon")
@@ -162,8 +162,8 @@ class KodeinTests : TestCase() {
 
     public @Test fun test05_1_NamedProviderBindingGetProvider() {
         val kodein = Kodein {
-            bind<Person>() with { Person() }
-            bind<Person>("named") with { Person("Salomon") }
+            bind<Person>() with factory { Person() }
+            bind<Person>("named") with factory { Person("Salomon") }
         }
 
         val p1 = kodein.provider<Person>()
@@ -179,8 +179,8 @@ class KodeinTests : TestCase() {
             bind<Person>("named") with singleton { Person("Salomon") }
         }
 
-        val p1: Person = kodein("named")
-        val p2: Person = kodein("named")
+        val p1: Person = kodein.instance("named")
+        val p2: Person = kodein.instance("named")
 
         assertEquals(p1.name, "Salomon")
         assertSame(p1, p2)
@@ -206,9 +206,9 @@ class KodeinTests : TestCase() {
             bind<Person>("named") with instance(Person("Salomon"))
         }
 
-        val p1: Person = kodein()
-        val p2: Person = kodein("named")
-        val p3: Person = kodein("named")
+        val p1: Person = kodein.instance()
+        val p2: Person = kodein.instance("named")
+        val p3: Person = kodein.instance("named")
 
         assertNull(p1.name)
         assertEquals(p2.name, "Salomon")
@@ -239,7 +239,7 @@ class KodeinTests : TestCase() {
             constant("answer") with 42
         }
 
-        val c: Int = kodein("answer")
+        val c: Int = kodein.instance("answer")
 
         assertEquals(c, 42)
     }
@@ -259,26 +259,26 @@ class KodeinTests : TestCase() {
     public @Test fun test09_0_DependencyLoop() {
 
         val kodein = Kodein {
-            bind<A>() with singleton { A(it()) }
-            bind<B>() with singleton { B(it()) }
-            bind<C>() with singleton { C(it()) }
+            bind<A>() with singleton { A(instance()) }
+            bind<B>() with singleton { B(instance()) }
+            bind<C>() with singleton { C(instance()) }
         }
 
         assertThrown<Kodein.DependencyLoopException> {
-            kodein<A>()
+            kodein.instance<A>()
         }
     }
 
     public @Test fun test09_1_NoDependencyLoop() {
 
         val kodein = Kodein {
-            bind<A>() with singleton { A(it()) }
+            bind<A>() with singleton { A(instance()) }
             bind<A>("root") with singleton { A(null) }
-            bind<B>() with singleton { B(it()) }
-            bind<C>() with singleton { C(it("root")) }
+            bind<B>() with singleton { B(instance()) }
+            bind<C>() with singleton { C(instance("root")) }
         }
 
-        val a = kodein<A>()
+        val a = kodein.instance<A>()
         assertNotNull(a.b?.c?.a)
     }
 
@@ -287,19 +287,19 @@ class KodeinTests : TestCase() {
         val kodein = Kodein {}
 
         assertThrown<IllegalStateException> {
-            kodein<Person>()
+            kodein.instance<Person>()
         }
     }
 
     public @Test fun test09_3_NameNotFound() {
 
         val kodein = Kodein {
-            bind<Person>() with { Person() }
-            bind<Person>("named") with { Person("Salomon") }
+            bind<Person>() with factory { Person() }
+            bind<Person>("named") with factory { Person("Salomon") }
         }
 
         assertThrown<IllegalStateException> {
-            kodein<Person>("schtroumpf")
+            kodein.instance<Person>("schtroumpf")
         }
     }
 
@@ -313,8 +313,8 @@ class KodeinTests : TestCase() {
             bind<List<B>>() with instance( lb )
         }
 
-        assertSame(kodein<List<A>>(), la)
-        assertSame(kodein<List<B>>(), lb)
+        assertSame(kodein.instance<List<A>>(), la)
+        assertSame(kodein.instance<List<B>>(), lb)
     }
 
     public @Test fun test10_1_ParameterizedTypeWrap() {
@@ -326,15 +326,15 @@ class KodeinTests : TestCase() {
         assertNotEquals(typeLS1, typeLI)
     }
 
-    public class PersonInject(override val kodein: Kodein) : KodeinHolder {
-        val newPerson: () -> Person by injectProvider()
-        val salomon: Person by injectInstance("named")
+    public class PersonInject(val kodein: Kodein) {
+        val newPerson: () -> Person by kodein.injectProvider()
+        val salomon: Person by kodein.injectInstance("named")
     }
 
     public @Test fun test11_0_Class() {
         val kodein = Kodein {
-            bind<Person>() with { Person() }
-            bind<Person>("named") with { Person("Salomon") }
+            bind<Person>() with factory { Person() }
+            bind<Person>("named") with factory { Person("Salomon") }
         }
 
         val inject = PersonInject(kodein)
@@ -342,13 +342,13 @@ class KodeinTests : TestCase() {
         assertEquals(inject.salomon.name, "Salomon")
     }
 
-    public class PersonModule : KodeinHolder {
-        override val kodein by lazyKodein {
-            bind<Person>() with { Person() }
-            bind<Person>("named") with { Person("Salomon") }
+    public class PersonModule {
+        val kodein = lazyKodein {
+            bind<Person>() with factory { Person() }
+            bind<Person>("named") with factory { Person("Salomon") }
         }
-        val newPerson: () -> Person by injectProvider()
-        val salomon: Person by injectInstance("named")
+        val newPerson: () -> Person by kodein.injectProvider()
+        val salomon: Person by kodein.injectInstance("named")
     }
 
     public @Test fun test11_1_Module() {

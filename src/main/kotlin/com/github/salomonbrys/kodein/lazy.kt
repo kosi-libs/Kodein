@@ -1,13 +1,6 @@
 package com.github.salomonbrys.kodein
 
 /**
- * Must be implemented by property injected classes
- */
-public interface KodeinHolder {
-    public val kodein: Kodein
-}
-
-/**
  * Allows to lazily create a Kodein object
  */
 public fun lazyKodein(init: Kodein.Builder.() -> Unit): Lazy<Kodein> = lazy { Kodein(init) }
@@ -18,9 +11,29 @@ public inline fun <reified T : Any> lazyProvider(tag: Any? = null, noinline kode
 /**
  * To be used as a property delegate to inject an instance
  */
-public inline fun <reified T : Any> KodeinHolder.injectInstance(tag: Any? = null) : Lazy<T>       = lazyInstance(tag) { kodein }
+public inline fun <reified T : Any> Kodein.injectInstance(tag: Any? = null) : Lazy<T>       = lazyInstance(tag) { this }
 
 /**
  * To be used as a property delegate to inject a provider
  */
-public inline fun <reified T : Any> KodeinHolder.injectProvider(tag: Any? = null) : Lazy<() -> T> = lazyProvider(tag) { kodein }
+public inline fun <reified T : Any> Kodein.injectProvider(tag: Any? = null) : Lazy<() -> T> = lazyProvider(tag) { this }
+
+/**
+ * To be used as a property delegate to inject an instance
+ */
+public inline fun <reified T : Any> Lazy<Kodein>.injectInstance(tag: Any? = null) : Lazy<T> = lazyInstance(tag) { this.value }
+
+/**
+ * To be used as a property delegate to inject a provider
+ */
+public inline fun <reified T : Any> Lazy<Kodein>.injectProvider(tag: Any? = null) : Lazy<T> = lazyInstance(tag) { this.value }
+
+/**
+ * To be used as a property delegate to inject an instance
+ */
+public inline fun <reified T : Any> (() -> Kodein).injectInstance(tag: Any? = null) : Lazy<T> = lazyInstance(tag) { this() }
+
+/**
+ * To be used as a property delegate to inject a provider
+ */
+public inline fun <reified T : Any> (() -> Kodein).injectProvider(tag: Any? = null) : Lazy<T> = lazyInstance(tag) { this() }

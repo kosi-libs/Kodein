@@ -1,13 +1,13 @@
 package com.github.salomonbrys.kodein
 
 import java.lang.reflect.Type
-import java.util.HashMap
+import java.util.*
 
 /**
  * Kodein IoC Container
  */
 public class Kodein private constructor(
-        private val _map: Map<Kodein.Key, (Kodein) -> Any>,
+        private val _map: Map<Kodein.Key, Scoped<Any>>,
         private val _node: Kodein.Node? = null
 ) {
 
@@ -44,7 +44,7 @@ public class Kodein private constructor(
      */
     public class Builder(init: Builder.() -> Unit) {
 
-        internal val map: MutableMap<Key, (Kodein) -> Any>
+        internal val map: MutableMap<Key, Scoped<Any>>
 
         init {
             map = HashMap()
@@ -55,14 +55,14 @@ public class Kodein private constructor(
          * Binds a type. Second part of the DSL `bind<type>() with ...`
          */
         public open inner class TypeBinder<T : Any> internal constructor(val key: Key) {
-            public fun <R : T> with(provider: (Kodein) -> R): Unit { map[key] = provider }
+            public fun <R : T> with(factory: Scoped<R>): Unit { map[key] = factory }
         }
 
         /**
          * Binds a constant. Second part of the DSL `constant(tag) with ...`
          */
         public inner class ConstantBinder internal constructor(val tag: Any) {
-            public fun with(value: Any): Unit { map[Key(value.javaClass, tag)] = { value } }
+            public fun with(value: Any): Unit { map[Key(value.javaClass, tag)] = instance(value) }
         }
 
         /**
@@ -89,7 +89,7 @@ public class Kodein private constructor(
     public fun _findUnsafeProvider(key: Key): (() -> Any)? {
         val prov = _map[key] ?: return null
         _node?.check(key)
-        return { prov(Kodein(_map, Node(key, _node))) }
+        return { prov.getInstance(Kodein(_map, Node(key, _node))) }
     }
 
     public inline fun <reified T : Any> _providerOrNull(key: Key): (() -> T)? {
@@ -135,9 +135,4 @@ public class Kodein private constructor(
      * Whether the returned object is a new instance at each call or not depends on the binding scope.
      */
     public inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = _providerOrNull<T>(Key(typeToken<T>(), tag))?.invoke()
-
-    /**
-     * Same as instance(tag)
-     */
-    operator public inline fun <reified T : Any> invoke(tag: Any? = null): T = instance(tag)
 }

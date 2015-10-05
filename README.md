@@ -1,7 +1,7 @@
 Kodein: Kotlin Dependency Injection
 ===================================
 
-Kodein is a very simple and yet very useful IoC container. It's feature set is very small, making it very easy to use and configure.
+Kodein is a very simple and yet very useful Dependency Injection container. It's feature set is very small, making it very easy to use and configure.
 
 Kodein allows you to:
 
@@ -15,6 +15,12 @@ Kodein does *not* allow you to:
 - Automatically instantiate your dependencies via injected constructor and reflexivity. For that, you need Guice.
 - Have dependency injection validated at compile time. For that, you need Dagger.
 
+Kodein is a good choice because:
+
+- It is small, fast and optimized (makes extensive use of `inline`)
+- It proposes a very simple and readable declarative DSL
+- It is not subject to type erasure (like Java)
+- It integrates nicely with Android
 
 Example
 -------
