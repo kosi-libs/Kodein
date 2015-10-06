@@ -7,7 +7,7 @@ import java.util.*
  * Kodein IoC Container
  */
 public class Kodein private constructor(
-        private val _map: Map<Kodein.Key, Scoped<Any>>,
+        private val _map: Map<Kodein.Key, Factory<*, Any>>,
         private val _node: Kodein.Node? = null
 ) {
 
@@ -31,20 +31,27 @@ public class Kodein private constructor(
      */
     public class DependencyLoopException internal constructor(message: String) : RuntimeException(message)
 
+    public data class Bind(
+            val type: Type,
+            val tag: Any?
+    ) {
+        override fun toString() = "bind<${type.typeName}>(${ if (tag != null) "\"$tag\"" else "" })"
+    }
+
     /**
      * A Key is a Pair(Type, Tag) that defines a binding
      */
     public data class Key(
-        val type: Type,
-        val tag: Any? = null
-    )
+            val bind: Bind,
+            val argType: Type
+        )
 
     /**
      * Allows for the building of a Kodein object by defining bindings
      */
     public class Builder(init: Builder.() -> Unit) {
 
-        internal val map: MutableMap<Key, Scoped<Any>>
+        internal val map: MutableMap<Key, Factory<*, Any>>
 
         init {
             map = HashMap()
@@ -54,21 +61,23 @@ public class Kodein private constructor(
         /**
          * Binds a type. Second part of the DSL `bind<type>() with ...`
          */
-        public open inner class TypeBinder<T : Any> internal constructor(val key: Key) {
-            public fun <R : T> with(factory: Scoped<R>): Unit { map[key] = factory }
+        public open inner class TypeBinder<T : Any> internal constructor(val bind: Bind) {
+            public fun <R : T, A> with(factory: Factory<A, R>): Unit {
+                map[Key(bind, factory.argType)] = factory
+            }
         }
 
         /**
          * Binds a constant. Second part of the DSL `constant(tag) with ...`
          */
         public inner class ConstantBinder internal constructor(val tag: Any) {
-            public fun with(value: Any): Unit { map[Key(value.javaClass, tag)] = instance(value) }
+            public fun with(value: Any): Unit { map[Key(Bind(value.javaClass, tag), Unit.javaClass)] = instance(value) }
         }
 
         /**
          * Binds an untagged type. Must be followed by [with].
          */
-        public fun <T : Any> bind(type: Type, tag: Any? = null): TypeBinder<T> = TypeBinder(Key(type, tag))
+        public fun <T : Any> bind(type: Type, tag: Any? = null): TypeBinder<T> = TypeBinder(Bind(type, tag))
 
         /**
          * Binds a tagged type. Must be followed by [with].
@@ -86,25 +95,42 @@ public class Kodein private constructor(
      */
     public constructor(init: Kodein.Builder.() -> Unit) : this(Kodein.Builder(init).map)
 
-    public fun _findUnsafeProvider(key: Key): (() -> Any)? {
-        val prov = _map[key] ?: return null
+    public val registered: Map<Bind, String> = _map.mapKeys { it.getKey().bind } .mapValues { it.getValue().scopeName }
+
+    public inner class NotFoundException(message: String) : RuntimeException("$message\nRegistered in Kodein:\n" + registered.map { "        ${it.key.toString()} with ${it.value}" } .join("\n"));
+
+    @Suppress("UNCHECKED_CAST")
+    public fun <A, T : Any> _unsafeFindFactory(key: Key): ((A) -> T)? {
+        val factory = _map[key] ?: return null
         _node?.check(key)
-        return { prov.getInstance(Kodein(_map, Node(key, _node))) }
+        return { arg -> (factory as Factory<A, T>).getInstance(Kodein(_map, Node(key, _node)), arg) }
     }
 
-    public inline fun <reified T : Any> _providerOrNull(key: Key): (() -> T)? {
-        val prov = _findUnsafeProvider(key) ?: return null
-        return {
-            val instance = prov()
+    public inline fun <A, reified T : Any> _factoryOrNull(key: Key): ((A) -> T)? {
+        val prov = _unsafeFindFactory<A, T>(key) ?: return null
+        return { arg ->
+            val instance = prov(arg)
             if (instance !is T)
-                throw IllegalStateException("Binding found for $key is ${instance.javaClass}, not ${typeToken<T>()}")
+                throw NotFoundException("Binding found for ${key.bind} is ${instance.javaClass}, not ${typeToken<T>()}")
             instance
         }
     }
 
-    public inline fun <reified T : Any> _provider(key: Key): (() -> T) {
-        return _providerOrNull<T>(key) ?: throw IllegalStateException("No binding found for $key")
+    public inline fun <A, reified T : Any> _nonNullFactory(key: Key): ((A) -> T)
+            = _factoryOrNull<A, T>(key) ?: throw NotFoundException("No factory found for $key")
+
+    public inline fun <reified A, reified T : Any> factory(tag: Any? = null): ((A) -> T) = _nonNullFactory<A, T>(Key(Bind(typeToken<T>(), tag), typeToken<A>()))
+
+    public inline fun <reified A, reified T : Any> factoryOrNull(tag: Any? = null): ((A) -> T)? = _factoryOrNull<A, T>(Key(Bind(typeToken<T>(), tag), typeToken<A>()))
+
+
+    public inline fun <reified T : Any> _providerOrNull(bind: Bind): (() -> T)? {
+        val factory = _factoryOrNull<Unit, T>(Key(bind, Unit.javaClass)) ?: return null
+        return { factory(Unit) }
     }
+
+    public inline fun <reified T : Any> _nonNullProvider(bind: Bind): (() -> T)
+            = _providerOrNull<T>(bind) ?: throw NotFoundException("No provider found for $bind")
 
     /**
      * Gets a provider for the given type and tag.
@@ -112,14 +138,14 @@ public class Kodein private constructor(
      * Whether a provider will re-create a new instance at each call or not depends on the binding scope.
      * Throws an IllegalStateException if the provider could not be found.
      */
-    public inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = _provider(Key(typeToken<T>(), tag))
+    public inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = _nonNullProvider(Bind(typeToken<T>(), tag))
 
     /**
      * Gets a provider for the given type and tag, or null if none is found.
      *
      * Whether a provider will re-create a new instance at each call or not depends on the binding scope.
      */
-    public inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = _providerOrNull(Key(typeToken<T>(), tag))
+    public inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = _providerOrNull(Bind(typeToken<T>(), tag))
 
     /**
      * Gets an instance for the given type and tag.
@@ -127,12 +153,13 @@ public class Kodein private constructor(
      * Whether the returned object is a new instance at each call or not depends on the binding scope.
      * Throws an IllegalStateException if the instance could not be found.
      */
-    public inline fun <reified T : Any> instance(tag: Any? = null): T = _provider<T>(Key(typeToken<T>(), tag)).invoke()
+    public inline fun <reified T : Any> instance(tag: Any? = null): T = _nonNullProvider<T>(Bind(typeToken<T>(), tag)).invoke()
 
     /**
      * Gets an instance for the given type and tag, or null if none is found.
      *
      * Whether the returned object is a new instance at each call or not depends on the binding scope.
      */
-    public inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = _providerOrNull<T>(Key(typeToken<T>(), tag))?.invoke()
+    public inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = _providerOrNull<T>(Bind(typeToken<T>(), tag))?.invoke()
+
 }

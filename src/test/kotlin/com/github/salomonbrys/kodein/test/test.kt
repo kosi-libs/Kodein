@@ -20,7 +20,7 @@ class KodeinTests : TestCase() {
 
     public @Test fun test00_0_ProviderBindingGetInstance() {
 
-        val kodein = Kodein { bind<Person>() with factory { Person() } }
+        val kodein = Kodein { bind<Person>() with provider { Person() } }
 
         val p1: Person = kodein.instance()
         val p2: Person = kodein.instance()
@@ -30,7 +30,7 @@ class KodeinTests : TestCase() {
 
     public @Test fun test00_1_ProviderBindingGetProvider() {
 
-        val kodein = Kodein { bind<Person>() with factory { Person() } }
+        val kodein = Kodein { bind<Person>() with provider { Person() } }
 
         val p1 = kodein.provider<Person>()
         val p2 = kodein.provider<Person>()
@@ -38,6 +38,15 @@ class KodeinTests : TestCase() {
         assertNotSame(p1(), p2())
     }
 
+    public @Test fun test00_2_FactoryBindingGetProvider() {
+
+        val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
+
+        val p1 = kodein.factory<String, Person>()
+        val p2 = kodein.factory<String, Person>()
+
+        assertNotSame(p1("Salomon"), p2("Salomon"))
+    }
 
     public @Test fun test01_0_SingletonBindingGetInstance() {
 
@@ -149,8 +158,8 @@ class KodeinTests : TestCase() {
 
     public @Test fun test05_0_NamedProviderBindingGetInstance() {
         val kodein = Kodein {
-            bind<Person>() with factory { Person() }
-            bind<Person>("named") with factory { Person("Salomon") }
+            bind<Person>() with provider { Person() }
+            bind<Person>("named") with provider { Person("Salomon") }
         }
 
         val p1: Person = kodein.instance()
@@ -162,8 +171,8 @@ class KodeinTests : TestCase() {
 
     public @Test fun test05_1_NamedProviderBindingGetProvider() {
         val kodein = Kodein {
-            bind<Person>() with factory { Person() }
-            bind<Person>("named") with factory { Person("Salomon") }
+            bind<Person>() with provider { Person() }
+            bind<Person>("named") with provider { Person("Salomon") }
         }
 
         val p1 = kodein.provider<Person>()
@@ -286,7 +295,7 @@ class KodeinTests : TestCase() {
 
         val kodein = Kodein {}
 
-        assertThrown<IllegalStateException> {
+        assertThrown<Kodein.NotFoundException> {
             kodein.instance<Person>()
         }
     }
@@ -294,12 +303,34 @@ class KodeinTests : TestCase() {
     public @Test fun test09_3_NameNotFound() {
 
         val kodein = Kodein {
-            bind<Person>() with factory { Person() }
-            bind<Person>("named") with factory { Person("Salomon") }
+            bind<Person>() with provider { Person() }
+            bind<Person>("named") with provider { Person("Salomon") }
         }
 
-        assertThrown<IllegalStateException> {
+        assertThrown<Kodein.NotFoundException> {
             kodein.instance<Person>("schtroumpf")
+        }
+    }
+
+    public @Test fun test09_4_FactoryIsNotProvider() {
+
+        val kodein = Kodein {
+            bind<Person>() with factory { name: String -> Person(name) }
+        }
+
+        assertThrown<Kodein.NotFoundException> {
+            kodein.provider<Person>()
+        }
+    }
+
+    public @Test fun test09_5_ProviderIsNotFactory() {
+
+        val kodein = Kodein {
+            bind<Person>() with provider { Person() }
+        }
+
+        assertThrown<Kodein.NotFoundException> {
+            kodein.factory<Int, Person>()
         }
     }
 
@@ -333,8 +364,8 @@ class KodeinTests : TestCase() {
 
     public @Test fun test11_0_Class() {
         val kodein = Kodein {
-            bind<Person>() with factory { Person() }
-            bind<Person>("named") with factory { Person("Salomon") }
+            bind<Person>() with provider { Person() }
+            bind<Person>("named") with provider { Person("Salomon") }
         }
 
         val inject = PersonInject(kodein)
@@ -344,8 +375,8 @@ class KodeinTests : TestCase() {
 
     public class PersonModule {
         val kodein = lazyKodein {
-            bind<Person>() with factory { Person() }
-            bind<Person>("named") with factory { Person("Salomon") }
+            bind<Person>() with provider { Person() }
+            bind<Person>("named") with provider { Person("Salomon") }
         }
         val newPerson: () -> Person by kodein.injectProvider()
         val salomon: Person by kodein.injectInstance("named")

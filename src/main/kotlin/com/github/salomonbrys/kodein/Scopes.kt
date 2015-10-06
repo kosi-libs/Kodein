@@ -1,27 +1,40 @@
 package com.github.salomonbrys.kodein
 
+import java.lang.reflect.Type
 
-public interface Scoped<out T : Any> {
-    public fun getInstance(kodein: Kodein): T
+
+public interface Factory<in A, out T : Any> {
+    public fun getInstance(kodein: Kodein, arg: A): T
     public val scopeName: String;
+    public val argType: Type
 }
 
-public class ScopedFactory<out T : Any>(override val scopeName: String, private val _factory: Kodein.() -> T) : Scoped<T> {
-    override fun getInstance(kodein: Kodein) = kodein._factory()
+public class CFactory<A, out T : Any>(override val scopeName: String, private val _provider: Kodein.(A) -> T, override val argType: Type) : Factory<A, T> {
+    override fun getInstance(kodein: Kodein, arg: A) = kodein._provider(arg)
 }
 
-public fun <T : Any> Kodein.Builder.factory(factory: Kodein.() -> T): Scoped<T> = ScopedFactory("Factory", factory)
+public inline fun <reified A, T : Any> Kodein.Builder.factory(noinline factory: Kodein.(A) -> T): Factory<A, T> {
+    val type = typeToken<A>()
+    return CFactory<A, T>("factory<${type.typeName}>", factory, type)
+}
+
+public class CProvider<out T : Any>(override val scopeName: String, private val _provider: Kodein.() -> T) : Factory<Unit, T> {
+    override fun getInstance(kodein: Kodein, arg: Unit) = kodein._provider()
+    override val argType: Type = Unit.javaClass
+}
+
+public fun <T : Any> Kodein.Builder.provider(provider: Kodein.() -> T) = CProvider("provider", provider)
 
 /**
  * Singleton scope.
  *
  * Allows you to bind a lazily instanciated singleton with `bind<Type>() with singleton { MySingletonType() }`
  */
-public fun <T : Any> Kodein.Builder.singleton(creator: Kodein.() -> T): Scoped<T> {
+public fun <T : Any> Kodein.Builder.singleton(creator: Kodein.() -> T): CProvider<T> {
     var instance: T? = null
     val lock = Any()
 
-    return ScopedFactory("Singleton") {
+    return CProvider("singleton") {
         if (instance != null)
             instance!!
         else
@@ -38,10 +51,10 @@ public fun <T : Any> Kodein.Builder.singleton(creator: Kodein.() -> T): Scoped<T
  *
  * Allows you to bind a lazily instanciated thread singleton with `bind<Type>() with threadSingleton { MySingletonType() }`
  */
-public fun <T : Any> Kodein.Builder.threadSingleton(creator: Kodein.() -> T): Scoped<T> {
+public fun <T : Any> Kodein.Builder.threadSingleton(creator: Kodein.() -> T): CProvider<T> {
     val storage = ThreadLocal<T>()
 
-    return ScopedFactory("Thread Singleton") {
+    return CProvider("threadSingleton") {
         var instance = storage.get()
         if (instance == null) {
             instance = creator()
@@ -56,4 +69,4 @@ public fun <T : Any> Kodein.Builder.threadSingleton(creator: Kodein.() -> T): Sc
  *
  * Allows you to bind an instance with `bind<Type>() with instance( MyType() )`
  */
-public fun <T : Any> Kodein.Builder.instance(instance: T): Scoped<T> = ScopedFactory("Instance") { instance }
+public fun <T : Any> Kodein.Builder.instance(instance: T) = CProvider("instance") { instance }

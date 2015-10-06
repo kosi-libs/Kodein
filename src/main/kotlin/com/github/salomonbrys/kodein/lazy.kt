@@ -26,7 +26,7 @@ public inline fun <reified T : Any> Lazy<Kodein>.injectInstance(tag: Any? = null
 /**
  * To be used as a property delegate to inject a provider
  */
-public inline fun <reified T : Any> Lazy<Kodein>.injectProvider(tag: Any? = null) : Lazy<T> = lazyInstance(tag) { this.value }
+public inline fun <reified T : Any> Lazy<Kodein>.injectProvider(tag: Any? = null) : Lazy<() -> T> = lazyProvider(tag) { this.value }
 
 /**
  * To be used as a property delegate to inject an instance
@@ -36,4 +36,4 @@ public inline fun <reified T : Any> (() -> Kodein).injectInstance(tag: Any? = nu
 /**
  * To be used as a property delegate to inject a provider
  */
-public inline fun <reified T : Any> (() -> Kodein).injectProvider(tag: Any? = null) : Lazy<T> = lazyInstance(tag) { this() }
+public inline fun <reified T : Any> (() -> Kodein).injectProvider(tag: Any? = null) : Lazy<() -> T> = lazyProvider(tag) { this() }
