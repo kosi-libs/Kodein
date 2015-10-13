@@ -18,6 +18,6 @@ public class Thermosiphon(private val log: Logger, private val heater: Heater) :
     }
 }
 
-public fun Kodein.Builder.bindThermosiphon() {
-    bind<Pump>() with singleton { Thermosiphon(it.instance(), it.instance()) }
+public val thermosiphonModule = Kodein.Module {
+    bind<Pump>() with singleton { Thermosiphon(instance(), instance()) }
 }

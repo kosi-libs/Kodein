@@ -7,8 +7,8 @@ Kodein allows you to:
 
 - Lazily instantiate your dependencies when needed
 - Stop caring about dependency initialization order
-- Detect dependency loop (at runtime)
 - Easily bind classes or interfaces to their instances or provider
+- Easily debug your dependency bindings and recursions
 
 Kodein does *not* allow you to:
 
@@ -21,216 +21,498 @@ Kodein is a good choice because:
 - It proposes a very simple and readable declarative DSL
 - It is not subject to type erasure (like Java)
 - It integrates nicely with Android
+- It proposes a very kotlin-esque idiomatic API
+- It can be used in plain Java
+
+
 
 Example
 -------
 
 An example is always better than a thousand words:
+
 ```kotlin
-public class Application : KodeinHolder {
-    override val kodein by lazyKodein {
-        bind<Dice>() with { RandomDice(0, 5) }
-        bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
-    }
+val kodein = Kodein {
+    bind<Dice>() with provider { RandomDice(0, 5) }
+    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 }
 
-public class Controller(private val app: Application) : KodeinHolder {
-    override val kodein: Kodein get() = app.kodein
-
-    private val user: DataSource by injectInstance()
+public class Controller(private val kodein: Kodein) {
+    private val ds: DataSource by kodein.injectInstance()
 }
 ```
 
-Or you can have a look at the [Android demo project](https://github.com/SalomonBrys/Kodein/tree/master/AndroidDemo).
+
 
 Install
 -------
 
 Maven:
+
 ```
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>1.5.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
+
 Gradle:
+
 ```
-compile 'com.github.salomonbrys.kodein:kodein:1.5.0'
+compile 'com.github.salomonbrys.kodein:kodein:2.0.0'
+```
+
+Android:
+
+```
+compile 'com.github.salomonbrys.kodein:kodein-android:2.0.0'
 ```
 
  - Version 1.1 is compatible with Kotlin M11
  - Version 1.3.0 is compatible with Kotlin M12
  - Version 1.4.0 is compatible with Kotlin M13
- - Version 1.5.0 is compatible with Kotlin M14
+ - Version 2.0.0 is compatible with Kotlin M14
 
 
-Initializing Kodein
--------------------
+
+Bindings: Declaring dependencies
+--------------------------------
 
 You can initialize kodein in a variable:
+
 ```kotlin
 val kodein = Kodein {
 	/* Bindings */
 }
 ```
 
-Or you can lazily instanciate kodein when needed via a property delegate:
-```kotlin
-val kodein by lazyKodein {
-	/* Bindings */
-}
-```
-
-
-Bindings: Declaring dependencies
---------------------------------
-
-Bindings are delared inside a Kodein initialization block, they are not subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>` to different list instances).
+Bindings are delared inside a Kodein initialization block, they are not subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>` to different list instances, provider or factory).
 
 There are different ways to declare a bindings:
 
-#### Provider binding
-This binds a type to a provider function. Each time you need a person instance, the provider will be called.
-For example, here is a binding that creates a new `Dice` entry each time the IoC container needs a `Dice` instance:
+
+#### Factory binding
+
+This binds a type to a factory function.  
+A factory function is a function that takes an argument of a defined type and that returns an object of the binded type.  
+Each time you need an instance of the binded type, the function will be called.
+
+For example, here is a binding that creates a new `Dice` entry each time the IoC container needs a `Dice` instance, according to a given `Int` representing the number of sides:
+
 ```kotlin
-bind<Dice>() with { RandomDice(5) }
+bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
 ```
 
+
+#### Provider binding
+
+This binds a type to a provider function.  
+A provider function is a function that takes an argument of a defined type and that returns an object of the binded type. It's like a factory, but without arguments.  
+Each time you need an instance of the binded type, the function will be called.  
+For example, here is a binding that creates a new 6 sided `Dice` entry each time the IoC container needs a `Dice` instance:
+
+```kotlin
+bind<Dice>() with provider { RandomDice(6) }
+```
+
+
 #### Singleton binding
-This binds a type to an instance of this type that will lazily be created at first use. Therefore, the provided function will only be called once.
+
+This binds a type to an instance of this type that will lazily be created at first use. Therefore, the provided function will only be called once, the first time an instance is needed.
+
 ```kotlin
 bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 ```
 
+
 #### Thread singleton binding
+
 This is the same as the singleton binding, except that each thread gets a different instance. Therefore, the provided function is called once per thread needing the instance.
-```kotlindi
+
+```kotlin
 bind<Cache>() with threadSingleton { LRUCache(16 * 1024) }
 ```
 
+
 #### Instance binding
+
 This binds a type to an instance *already created*.
+
 ```kotlin
 bind<DataSource>() with instance(SqliteDataSource.open("path/to/file"))
 ```
 
+Note that instance is used with parenthesis. It is not given a function but an instance.
+
+
 #### Tagged bindings
+
 All bindings can be tagged to allow you to bind different instance of the same type:
 
 ```kotlin
-bind<DataSource>() with instance(SqliteDS.open("path/to/main"))
-bind<DataSource>("secondary") with instance(SqliteDS.open("path/to/secondary"))
+bind<Dice>() with provider { RandomDice(6) }
+bind<Dice>("DnD10") with provider { RandomDice(10) }
+bind<Dice>("DnD20") with provider { RandomDice(20) }
 ```
 
+Note that you can have multiple bindings of the same type, as long as they are binded with different tags. You can have only one binding of a type with no tag.
+
+
 #### Constant binding
+
 It is often useful to bind "configuration" constants (Such contants are always tagged):
+
 ```kotlin
 constant("maxThread") with 8
 constant("serverURL") with "https://my.server.url"
 ```
 
+Note The absence of curly braces. It is not given a function but an instance.
+
+
 #### Transitive dependency
+
 With those lazily instanciated dependencies, a dependency (very) often needs another dependency. Such object should have their dependencies passed to their constructor. Thanks to Kotlin's killer type inference engine, Kodein makes retrieval of transitive dependencies really easy:  
 Say you have the following class:
+
 ```kotlin
 public class Dice(private val random: Random, private val max: Int) {
 /*...*/
 }
 ```
-Then it is really easy to bind RandomDice with it's transitive dependencies, simply use `it()` or `it(tag)`:
+
+Then it is really easy to bind RandomDice with it's transitive dependencies, simply use `instance()` or `instance(tag)`:
+
 ```kotlin
-bind<Random>() with { SecureRandom() }
+bind<Random>() with provider { SecureRandom() }
 constant("max") with 5
-bind<Dice>() with { Dice(it(), it("max")) }
+bind<Dice>() with { Dice(instance(), instance("max")) }
 ```
 
-#### Modules
-Most IoC container allow you to define your bindings in seperate modules. This is very useful to have separate modules define their own binding instead of having only one central binding definition.  
-Kodein does not have module per se but this behaviour can be easily reproduced with functions.
+You can, of course, also use the functions `provider()`, `provider(tag)`, `factory()` and `factory(tag)`, 
+
+
+#### Scoped transitive dependency
+
+Sometimes, you may arrive to a situation where a singleton binded type depends on a provider binded type.  
+Something like this :
+
 ```kotlin
-public fun Kodein.Builder.bindAPI() {
+class GameEngine(private val rnd: Random) { /*...*/ }
+val kodein = Kodein {
+    bind<Random>() with provider { MySuperSecureRandom() } // A MySuperSecureRandom instance can only give one random result!
+    bind<GameEngine>() with singleton { GreatGameEngine(instance()) }
+}
+```
+
+Do you see the problem? In this case, `GreatGameEngine` will receive a `MySuperSecureRandom` instance, re-using always the same instance, making `MySuperSecureRandom` essentially a singleton itself inside `GreatGameEngine`.  
+The correction is very easy:
+
+```kotlin
+class GameEngine(private val () -> rnd: Random) { /*...*/ }
+val kodein = Kodein {
+    bind<Random>() with provider { MySuperSecureRandom() } // A MySuperSecureRandom instance can only give one random result!
+    bind<GameEngine>() with singleton { GreatGameEngine(provider()) }
+}
+```
+
+Therefore, I encourage you to follow this rule: *In a singleton, if you're not 100% sure that the transitive dependencies are themselves simgleton, then use providers*.
+
+
+#### Modules
+
+Kodein allows you to export your bindings in modules. It is very useful to have separate modules define their own bindings instead of having only one central binding definition.  
+A module is an object that you can construct the exact same way you construct a Kodein instance:
+
+```kotlin
+val apiModule = Kodein.Module {
     bind<API>() with singleton { APIImpl() }
     /* other bindings */
 }
 ```
-Then, in your binding block, simply call `bindAPI()`.  
-It is considered good practice to use such module functions.
+
+Then, in your Kodein binding block:
+
+```kotlin
+val kodein = Kodein {
+    import(apiModule)
+    /* other bindings */
+}
+```
+
 
 
 Injection: Dependency retrieval
 -------------------------------
 
-There are two ways to retrieve a dependency:
+In this chapter, these example bindings are used:
 
-#### Via a kodein object
+```kotlin
+bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
+bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+bind<Random>() with provider { SecureRandom() }
+constant("answer") with "fourty-two"
+```
+
+
+#### Retrieval rules
+
+When retrieving a dependency, the following rule applies:
+
+- A dependency binded with a `factory` can only be retrived as a factory method: `(A) -> T`.
+- A dependency binded with a `provider`, an `instance`, a `singleton` or a `constant` can be retrived:
+    * as a provider method: `() -> T`
+    * as an instance: `T`
+
+
+#### Via kodein methods
 
 You can retrieve a dependency via a Kodein instance:
+
 ```kotlin
-val dice = kodein.instance<Dice>()
+val diceFactory: (Int) -> Dice = kodein.factory()
+val dataSource: DataSource = kodein.instance()
+val randomProvider: () -> Random = kodein.provider()
+val answerConstant: String = kodein.instance("answer")
 ```
 
-If you need multiple instance, you can get a provider. A provider is a function that will provide you with an instance each time it is called. Whether this is a new instance or the same depends on the binding scope.
+When using a provider, whether the provider will give each time a new instance or the same depends on the binding scope.
+
+When asking for a type that was not binded, `Kodein.NotFoundException` will be thrown.
+
+If you're not sure (or simply don't know) if the type has been binded, you can use:
+
 ```kotlin
-val diceProvider = kodein.provider<Dice>()
-/*...*/
-val dice = diceProvider()
+val diceFactory: ((Int) -> Dice)? = kodein.factoryOrNull()
+val dataSource: DataSource? = kodein.instanceOrNull()
+val randomProvider: (() -> Random)? = kodein.providerOrNull()
+val answerConstant: String? = kodein.instanceOrNull("answer")
 ```
+
+You can retrive a provider from a factory binded type by using `toProvider`:
+
+```kotlin
+private val sixSideDiceProvider: () -> Dice = kodein.factory().toProvider(6)
+```
+
 
 #### Via a lazy property
-Lazy properties allow you to resolve the dependency upon first access. For Kodein lazy properties to work, the class must implements `KodeinHolder`.
-```kotlin
-public class Controller(private val app: Application) : KodeinHolder {
-	override val kodein: Kodein get() = app.kodein
 
-	private val ds: DataSource by injectInstance()
-	private val diceProvider: () -> Dice by injectProvider()
-	private val maxThread: Int by injectInstance("maxThread")
+Lazy properties allow you to resolve the dependency upon first access.
+
+```kotlin
+public class Controller(private val kodein: Kodein) {
+    private val diceFactory: (Int) -> Dice by kodein.lazyFactory()
+    private val dataSource: DataSource by kodein.lazyInstance()
+    private val randomProvider: () -> Random by kodein.lazyProvider()
+    private val answerConstant: String by kodein.lazyInstance("answer")
 }
 ```
+
+You can retrive a provider or an instance from a factory binded type by using `toLazyProvider` and `toLazyInstance`:
+
+```kotlin
+private val sixSideDiceProvider: () -> Dice by kodein.lazyFactory().toLazyProvider(6)
+private val tenSideDiceProvider: Dice by kodein.lazyFactory().toLazyInstance(10)
+```
+
+
+#### Via an injector
+
+An injector is an object that you can use to inject all injected values in an object.
+
+This allows your object to:
+
+ - retrieve all it's injected dependencies at once.
+ - declare its dependencies without a kodein instance.
+
+```kotlin
+public class Controller() {
+    private val injector = KodeinInjector()
+
+    private val diceFactory: (Int) -> Dice by injector.factory()
+    private val dataSource: DataSource by injector.instance()
+    private val randomProvider: () -> Random by injector.provider()
+    private val answerConstant: String by injector.instance("answer")
+    
+    public fun whenReady(kodein: Kodein) {
+        injector.inject(kodein)
+    }
+}
+```
+
+When accessing a property injected by an injector *before* calling `injector.inject(kodein)`, `KodeinInjector.UninjectedException` will be thrown.
+
+You can inject a provider or an instance from a factory binded type by using `toProvider` and `toInstance`:
+
+```kotlin
+private val sixSideDiceProvider: () -> Dice by injector.factory().toProvider(6)
+private val tenSideDiceProvider: Dice by injector.factory().toInstance(10)
+```
+
+
+#### In Java
+
+While Kodein does not allow you to declare modules or dependencies in Java, it does allow you to retrieve dependencies using a Java API.  
+Simply give `kodein.java` to your Java classes, and you can use Kodein in Java:
+
+```java
+public class JavaClass {
+    private Function1<Integer, Dice> diceFactory;
+    private Datasource dataSource;
+    private Function0<Random> randomProvider;
+    private String answerConstant;
+    
+    public JavaClass(JKodein kodein) {
+        diceFactory = kodein.factory(Integer.class, Dice.class);
+        dataSource = kodein.instance(Datasource.class);
+        randomProvider = kodein.provider(Random.class);
+        answerConstant = kodein.instance(String.class, "answer");
+    }
+}
+```
+
+Java is subject to type erasure, therefore, if you registered a generic class binding such as `bind<List<String>>()`, to retrieve it in Java, you need to use `TypeToken` to circumvent java's type erasure:
+
+```java
+List<String> list = kodein.instance(new TypeToken<List<String>>(){});
+```
+
 
 
 Android
 -------
 
-Kodein does work on Android (in fact, it was developed for an Android project).
+Kodein does work on Android (in fact, it was developed for an Android project). You can use Kodein as-is in your Android project or use the very small util library `kodein-android`.  
 
-To use Kodein on Android, simply:
+Here's how to use `kodein-android`: declare the dependency bindings in the Android `Application`, having it implements `KodeinApplication`:
 
-- Declare the dependency bindings in the Android `Application` with `lazyKodein`:
 ```kotin
-class MyApp : Application() : KodeinHolder {
-	override val kodein by lazyKodein {
-		bind<Dice>() with { RandomDice(0, 5) }
-		bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+class MyApp : Application(), KodeinApplication {
+	override val kodein = Kodein {
+	/* bindings... */
 	}
 }
 ```
-- Apply `KodeinHolder` on all `Activities`, `Fragment`, `Service` or any other `Context` object that needs injection. It is important to implement the kodein property using `Delegates.lazy` because `getApplication()` will not work at construction.
-```kotlin
-class MyActivity : Activity(), KodeinHolder {
-	override val kodein by Delegates.lazy { (getApplication() as MyApp).kodein }
-	private val ds: DataSource by injectInstance()
-}
 
-class MyFragment : Fragment(), KodeinHolder {
-	override val kodein by Delegates.lazy { (getActivity().getApplication() as MyApp).kodein }
-	private val ds: DataSource by injectInstance()
+Then, in your Activities, Fragments, and other context aware android classes, you can retrieve dependencies.
+
+There are two ways to access a kodein instance and your dependencies:
+
+
+#### Using appKodein
+
+`appKodein` is a function that will work in your context aware android classes provided that your application implements `KodeinApplication`:
+
+```kotlin
+class MyActivity : Activity() {
+    public val diceProvider: () -> Dice = appKodein.lazyProvider()  // appKodein without parenthesis
+    
+    override onCreate(savedInstanceState: Bundle?) {
+        val random: Random = appKodein().instance()   // appKodein with parenthesis
+    }
 }
 ```
 
+Note that `appKodein` is used without parenthesis to delegate lazy properties but with parenthesis to access the kodein instance.  
+That's because you cannot access the Application object and therefore the kodein instance while the activity is not initialized by Android.
+
+This method is really easy but it is not really optimized because the kodein instance will be re-fetched every time you use `appKodein`.  
+However, this method is very easy and readable, I recommend you use it if you have only a few dependencies to inject.
+
+
+#### Using lazyKodeinFromApp
+
+This is the more optimized way of injecting dependencies. It works the exact same way as the previous method, except that the kodein instance will be fetched only once.
+
+```kotlin
+class MyActivity : Activity() {
+    private val kodein = lazyKodeinFromApp()
+    public val diceProvider: () -> Dice = kodein.lazyProvider()  // kodein without parenthesis
+    
+    override onCreate(savedInstanceState: Bundle?) {
+        val random: Random = kodein().instance()   // kodein with parenthesis
+    }
+}
+```
+
+
+#### Using an injector
+
+Using an injector allows you to resolve all dependencies in onCreate, reducing the cost of dependency first-access.
+
+```kotlin
+class MyActivity : Activity() {
+    private val injector = KodeinInjector()
+
+    public val diceProvider: () -> Dice = injector.provider()
+    public val random: Random = injector.instance()
+    
+    override onCreate(savedInstanceState: Bundle?) {
+        injector.inject(appKodein())
+    }
+}
+```
+
+
+#### Android example project
+
 Have a look at the [Android demo project](https://github.com/SalomonBrys/Kodein/tree/master/AndroidDemo)!
+
+
+
+Debuging
+--------
+
+
+#### Print bindings
+
+You can easily print bindings with `println(kodein.bindingsDescription)`.
+
+Here's an example:
+
+```
+        bind<com.test.Dice>() with factory<Kotlin.Int>
+        bind<com.test.DataSource>() with singleton
+        bind<java.util.Random>() with provider
+        bind<java.lang.String>("answer") with instance
+```
+
+As you can see, it's really easy to understand which type with which tag is binded to which scope.
+
+
+#### Recursive dependency loop
+
+When it detects a recursive dependency, Kodein will throw a `Kodein.DependencyLoopException`. The message of the exception explains how to loop happened.
+
+Here's an example:
+
+```
+com.github.salomonbrys.kodein.Kodein$DependencyLoopException: Dependency recursion:
+       ╔═> bind<com.test.A>()
+       ╠─> bind<com.test.B>()
+       ╠─> bind<com.test.C>("yay")
+       ╚═> bind<com.test.A>()
+```
+
+From this, we can see that
+
+ - `com.test.A` depends on `com.test.B`
+ - `com.test.B` depends on `com.test.C` with the tag "Yay"
+ - `com.test.C` with the tag "Yay" depends on `com.test.A`
+
+And we have found the dependency loop.
+
 
 
 Advanced use
 ------------
 
-#### Transitive dependency scope violation
-Kodein does not check for transitive dependency scope violation. Meaning that should a singleton depends on a non singleton dependency, that dependency will be resolved only once for the singleton. That is why, when defining the binding of a singleton, it should take Provider for dependencies that you are not 100% sure are singletons:
-```kotlin
-bind<Manager>() with singleton { Manager(it.provider(), it.provider()) }
-```
 
 #### Create your own scopes
-Actually... There are no scopes. Just functions that act as provider proxy functions. If you are interested in creating your own scopes beside `singleton`, `threadSingleton` and `instance`, have a look at them in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/src/main/kotlin/Scopes.kt) file.  
-Basically, to create a scope, you need to create a function that returns a provider function: `(Kodein) -> T`.
+
+A scope is an extension function to `Kodein.Builder` that returns a `Factory<A, T>`.  
+You can use the `CFactory<A, T>` class for ease of use.  
+If your scope is provider scope (such as singleton), you can use the `CProvider<T>` class for ease of use.  
+Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/src/main/kotlin/com/github/salomonbrys/kodein/scopes.kt) file. The `singleton` scope is very easy to understand and is a good starting point.

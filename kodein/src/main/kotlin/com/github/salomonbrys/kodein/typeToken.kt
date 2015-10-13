@@ -6,6 +6,9 @@ import java.lang.reflect.WildcardType
 
 private var _needPTWrapperCache: Boolean? = null;
 
+/**
+ * Detectes whether KodeinParameterizedType is needed.
+ */
 public fun _needPTWrapper(): Boolean {
     if (_needPTWrapperCache == null)
         _needPTWrapperCache = (object : TypeToken<List<String>>() {}).type != (object : TypeToken<List<String>>() {}).type
@@ -50,6 +53,11 @@ public inline fun <reified T> typeToken(): Type {
     return type
 }
 
+/**
+ * Wraps a ParameterizedType and implements hashCode / equals.
+ * This is because some JVM implementation (such as Android 4.4 and earlier) does NOT implement hashcode / equals for
+ * ParameterizedType (I know...).
+ */
 public class KodeinParameterizedType(public val type: ParameterizedType) : Type {
 
     private var _hashCode: Int = 0;
@@ -118,4 +126,21 @@ public class KodeinParameterizedType(public val type: ParameterizedType) : Type 
             return true
         }
     }
+}
+
+private var hasTypeName = true
+
+public val Type.dispName: String get() {
+    if (hasTypeName)
+        try {
+            return typeName
+        }
+        catch (ignored: Throwable) {
+            hasTypeName = false
+        }
+
+    if (this is Class<*>)
+        return this.name
+
+    return toString()
 }

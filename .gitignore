@@ -9,6 +9,6 @@
 
 # GRADLE
 .gradle
-/build/
+build/
 gradle.properties
 local.properties

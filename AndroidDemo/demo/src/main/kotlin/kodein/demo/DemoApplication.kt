@@ -2,20 +2,19 @@ package kodein.demo
 
 import android.app.Application
 import com.github.salomonbrys.kodein.*
+import com.github.salomonbrys.kodein.android.KodeinApplication
 import kodein.demo.coffee.*
 
-public class DemoApplication : Application(), KodeinHolder {
+public class DemoApplication : Application(), KodeinApplication {
 
-    override val kodein: Kodein by lazyKodein {
-
+    override val kodein = Kodein {
         bind<Logger>() with instance(Logger())
 
-        bindThermosiphon()
-        bindElectricHeater()
+        import(thermosiphonModule)
+        import(electricHeaterModule)
 
-        bind<Coffee>() with { Coffee(it.instance()) }
-        bind<Kettle<Coffee>>() with singleton { Kettle<Coffee>(it.instance(), it.instance(), it.instance(), it.provider()) }
+        bind<Coffee>() with provider { Coffee(instance()) }
+        bind<Kettle<Coffee>>() with singleton { Kettle<Coffee>(instance(), instance(), instance(), provider()) }
     }
-
 
 }

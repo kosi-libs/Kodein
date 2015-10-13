@@ -357,35 +357,96 @@ class KodeinTests : TestCase() {
         assertNotEquals(typeLS1, typeLI)
     }
 
-    public class PersonInject(val kodein: Kodein) {
-        val newPerson: () -> Person by kodein.injectProvider()
-        val salomon: Person by kodein.injectInstance("named")
+    public class PersonLazy(val kodein: Kodein) {
+        val newPerson: () -> Person by kodein.lazyProvider()
+        val salomon: Person by kodein.lazyInstance("named")
+        val factory: (String) -> Person by kodein.lazyFactory("factory")
     }
 
     public @Test fun test11_0_Class() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
-            bind<Person>("named") with provider { Person("Salomon") }
+            bind<Person>("named") with singleton { Person("Salomon") }
+            bind<Person>("factory") with factory { name: String -> Person(name) }
         }
 
-        val inject = PersonInject(kodein)
-        assertNotSame(inject.newPerson(), inject.newPerson())
-        assertEquals(inject.salomon.name, "Salomon")
+        val lazied = PersonLazy(kodein)
+        assertNotSame(lazied.newPerson(), lazied.newPerson())
+        assertEquals(lazied.salomon.name, "Salomon")
+        assertSame(lazied.salomon, lazied.salomon)
+        assertNotSame(lazied.factory("Laila"), lazied.factory("Laila"))
+        assertEquals(lazied.factory("Laila").name, "Laila")
     }
 
-    public class PersonModule {
-        val kodein = lazyKodein {
+    public @Test fun test12_0_Module() {
+
+        val personModule = Kodein.Module {
             bind<Person>() with provider { Person() }
-            bind<Person>("named") with provider { Person("Salomon") }
+            bind<Person>("named") with singleton { Person("Salomon") }
+            bind<Person>("factory") with factory { name: String -> Person(name) }
         }
-        val newPerson: () -> Person by kodein.injectProvider()
-        val salomon: Person by kodein.injectInstance("named")
+
+        val kodein = Kodein {
+            import(personModule)
+        }
+
+        val lazied = PersonLazy(kodein)
+        assertNotSame(lazied.newPerson(), lazied.newPerson())
+        assertEquals(lazied.salomon.name, "Salomon")
+        assertSame(lazied.salomon, lazied.salomon)
+        assertNotSame(lazied.factory("Laila"), lazied.factory("Laila"))
+        assertEquals(lazied.factory("Laila").name, "Laila")
     }
 
-    public @Test fun test11_1_Module() {
-        val test = PersonModule()
-        assertNotSame(test.newPerson(), test.newPerson())
-        assertEquals(test.salomon.name, "Salomon")
+    class Recurs0(public val a: RecursA)
+    class RecursA(public val b: RecursB)
+    class RecursB(public val c: RecursC)
+    class RecursC(public val a: RecursA)
+
+    public @Test fun test13_0_Recursivedependencies() {
+
+        val kodein = Kodein {
+            bind<Recurs0>() with provider { Recurs0(instance()) }
+            bind<RecursA>() with provider { RecursA(instance()) }
+            bind<RecursA>() with provider { RecursA(instance()) }
+            bind<RecursB>() with provider { RecursB(instance("yay")) }
+            bind<RecursC>("yay") with provider { RecursC(instance()) }
+        }
+
+        assertThrown<Kodein.DependencyLoopException> {
+            kodein.instance<Recurs0>()
+        }
     }
 
+    public class PersonInject() {
+        val injector = KodeinInjector()
+        val newPerson: () -> Person by injector.provider()
+        val salomon: Person by injector.instance("named")
+        val factory: (String) -> Person by injector.factory("factory")
+    }
+
+    public @Test fun test14_0_InjectorInjected() {
+        val injected = PersonInject()
+
+        val kodein = Kodein {
+            bind<Person>() with provider { Person() }
+            bind<Person>("named") with singleton { Person("Salomon") }
+            bind<Person>("factory") with factory { name: String -> Person(name) }
+        }
+
+        injected.injector.inject(kodein);
+        assertNotSame(injected.newPerson(), injected.newPerson())
+        assertEquals(injected.salomon.name, "Salomon")
+        assertSame(injected.salomon, injected.salomon)
+        assertNotSame(injected.factory("Laila"), injected.factory("Laila"))
+        assertEquals(injected.factory("Laila").name, "Laila")
+    }
+
+    public @Test fun test14_1_InjectorNotInjected() {
+        val injected = PersonInject()
+
+        assertThrown<KodeinInjector.UninjectedException> {
+            injected.newPerson()
+        }
+    }
 }

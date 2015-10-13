@@ -24,6 +24,6 @@ public class ElectricHeater(private val log: Logger) : Heater {
     override val isHot: Boolean get() = heating;
 }
 
-public fun Kodein.Builder.bindElectricHeater() {
-    bind<Heater>() with singleton { ElectricHeater(it.instance()) }
+public val electricHeaterModule = Kodein.Module {
+    bind<Heater>() with singleton { ElectricHeater(instance()) }
 }
