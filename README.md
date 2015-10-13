@@ -98,7 +98,7 @@ This binds a type to a factory function.
 A factory function is a function that takes an argument of a defined type and that returns an object of the binded type.  
 Each time you need an instance of the binded type, the function will be called.
 
-For example, here is a binding that creates a new `Dice` entry each time the IoC container needs a `Dice` instance, according to a given `Int` representing the number of sides:
+For example, here is a binding that creates a new `Dice` entry each time the you need a `Dice` instance, according to a given `Int` representing the number of sides:
 
 ```kotlin
 bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
@@ -110,7 +110,7 @@ bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
 This binds a type to a provider function.  
 A provider function is a function that takes an argument of a defined type and that returns an object of the binded type. It's like a factory, but without arguments.  
 Each time you need an instance of the binded type, the function will be called.  
-For example, here is a binding that creates a new 6 sided `Dice` entry each time the IoC container needs a `Dice` instance:
+For example, here is a binding that creates a new 6 sided `Dice` entry each time you need a `Dice` instance:
 
 ```kotlin
 bind<Dice>() with provider { RandomDice(6) }
@@ -515,4 +515,12 @@ Advanced use
 A scope is an extension function to `Kodein.Builder` that returns a `Factory<A, T>`.  
 You can use the `CFactory<A, T>` class for ease of use.  
 If your scope is provider scope (such as singleton), you can use the `CProvider<T>` class for ease of use.  
-Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/src/main/kotlin/com/github/salomonbrys/kodein/scopes.kt) file. The `singleton` scope is very easy to understand and is a good starting point.
+Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/scopes.kt) file. The `singleton` scope is very easy to understand and is a good starting point.
+
+
+
+Let's talk!
+-----------
+
+You've read so far ?! You're awsome!
+Why don't you drop by the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/) on kotlin's slack?
