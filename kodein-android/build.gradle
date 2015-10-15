@@ -31,51 +31,53 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name 'Kodein-Android'
-                packaging 'jar'
-                artifactId 'kodein-android'
-                description 'Kotlin Dependency Injection for Android'
-                url 'https://github.com/SalomonBrys/Kodein'
-
-                licenses {
-                    license {
-                        name 'MIT'
-                        url 'http://opensource.org/licenses/MIT'
-                    }
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
                 }
 
-                developers {
-                    developer {
-                        id 'salomonbrys'
-                        name 'Salomon BRYS'
-                        email 'salomon.brys@gmail.com'
-                    }
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
                 }
 
-                scm {
+                pom.project {
+                    name 'Kodein-Android'
+                    packaging 'jar'
+                    artifactId 'kodein-android'
+                    description 'Kotlin Dependency Injection for Android'
                     url 'https://github.com/SalomonBrys/Kodein'
-                    connection 'scm:git:https://github.com/SalomonBrys/Kodein.git'
-                    developerConnection 'scm:git:git@github.com:SalomonBrys/Kodein.git'
-                    tag 'HEAD'
-                }
 
-                issueManagement {
-                    system 'GitHub Issues'
-                    url 'https://github.com/SalomonBrys/Kodein/issues'
+                    licenses {
+                        license {
+                            name 'MIT'
+                            url 'http://opensource.org/licenses/MIT'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'salomonbrys'
+                            name 'Salomon BRYS'
+                            email 'salomon.brys@gmail.com'
+                        }
+                    }
+
+                    scm {
+                        url 'https://github.com/SalomonBrys/Kodein'
+                        connection 'scm:git:https://github.com/SalomonBrys/Kodein.git'
+                        developerConnection 'scm:git:git@github.com:SalomonBrys/Kodein.git'
+                        tag 'HEAD'
+                    }
+
+                    issueManagement {
+                        system 'GitHub Issues'
+                        url 'https://github.com/SalomonBrys/Kodein/issues'
+                    }
                 }
             }
         }
