@@ -22,6 +22,9 @@ allprojects {
         mavenCentral()
     }
 
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+
     group = 'com.github.salomonbrys.kodein'
-    version = '2.0.0'
+    version = '2.1.0'
 }
