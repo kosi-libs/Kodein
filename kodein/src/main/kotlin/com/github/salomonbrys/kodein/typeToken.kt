@@ -1,5 +1,6 @@
 package com.github.salomonbrys.kodein
 
+import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
@@ -128,16 +129,25 @@ public class KodeinParameterizedType(public val type: ParameterizedType) : Type 
     }
 }
 
-private var hasTypeName = true
+private var _typeNameInitialized = false
+private var _typeNameMethod: Method? = null
+
 
 public val Type.dispName: String get() {
-    if (hasTypeName)
+    if (!_typeNameInitialized) {
+        _typeNameInitialized = true
         try {
-            return typeName
+            _typeNameMethod = Type::class.java.getMethod("getTypeName");
         }
-        catch (ignored: Throwable) {
-            hasTypeName = false
+        catch (ignored: Throwable) {}
+    }
+
+    val method = _typeNameMethod
+    if (method != null)
+        try {
+            return method.invoke(this) as String
         }
+        catch (ignored: Throwable) {}
 
     if (this is Class<*>)
         return this.name

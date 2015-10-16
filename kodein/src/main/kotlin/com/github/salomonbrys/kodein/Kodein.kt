@@ -76,9 +76,9 @@ public class Kodein internal constructor(public val _container: Container) {
     /**
      * This is for debug. It allows to print all binded keys.
      */
-    public val registeredBindings: Map<Kodein.Bind, String> = _container.registeredBindings
+    public val registeredBindings: Map<Kodein.Bind, String> get() = _container.registeredBindings
 
-    public val bindingsDescription: String = _container.bindingsDescription
+    public val bindingsDescription: String get() = _container.bindingsDescription
 
     /**
      * Exception thrown when there is a dependency loop.
