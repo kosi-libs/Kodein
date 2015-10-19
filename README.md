@@ -220,7 +220,8 @@ val kodein = Kodein {
 }
 ```
 
-Do you see the problem? In this case, `GreatGameEngine` will receive a `MySuperSecureRandom` instance, always re-using the same instance, making `MySuperSecureRandom` essentially a singleton inside `GreatGameEngine`.  
+Do you see the problem? In this case, `GreatGameEngine` will receive a `MySuperSecureRandom` instance, always re-using the same instance, making `MySuperSecureRandom` essentially a singleton inside `GreatGameEngine`.
+
 The correction is very easy:
 
 ```kotlin
@@ -533,7 +534,7 @@ Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys
 
 #### Bind the same type to different factories
 
-Yeah, when I said earlier that  I didn't mention earlier that "you can have multiple bindings of the same type, as long as they are binded with different tags", I lied. Beacause each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are binded as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be binded to it's own factory, which in turns means that you can bind the same type without tag to different factories.
+Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are binded with different tags", I lied. Beacause each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are binded as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be binded to it's own factory, which in turns means that you can bind the same type without tag to different factories. Please be cautious when using this knowledge, other less thorough readers may get confused with it.
 
 
 Let's talk!
