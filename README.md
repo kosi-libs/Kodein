@@ -454,8 +454,8 @@ Using an injector allows you to resolve all dependencies in onCreate, reducing t
 class MyActivity : Activity() {
     private val injector = KodeinInjector()
 
-    public val diceProvider: () -> Dice = injector.provider()
-    public val random: Random = injector.instance()
+    public val diceProvider: () -> Dice by injector.provider()
+    public val random: Random by injector.instance()
     
     override onCreate(savedInstanceState: Bundle?) {
         injector.inject(appKodein())
