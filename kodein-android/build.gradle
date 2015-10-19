@@ -20,14 +20,26 @@ signing {
     sign configurations.archives
 }
 
+configurations {
+  provided
+}
+
+sourceSets.main.compileClasspath += [configurations.provided]
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [configurations.provided]
+    }
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     compile project(':kodein')
 
-    compile 'com.google.android:android:4.0.1.2'
+    provided 'com.google.android:android:4.0.1.2'
 
-    compile 'com.google.android:support-v4:r7'
+    provided 'com.google.android:support-v4:r7'
 
     testCompile 'junit:junit:4.12'
 }
