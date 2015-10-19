@@ -9,7 +9,7 @@
 Kodein: Kotlin Dependency Injection
 ===================================
 
-Kodein is a very simple and yet very useful Dependency Injection container. It's feature set is very small, making it very easy to use and configure.
+Kodein is a very simple and yet very useful dependency retrieval container. It's feature set is very small, making it very easy to use and configure.
 
 Kodein allows you to:
 
@@ -156,7 +156,7 @@ Note that instance is used with parenthesis. It is not given a function but an i
 
 #### Tagged bindings
 
-All bindings can be tagged to allow you to bind different instance of the same type:
+All bindings can be tagged to allow you to bind different instances of the same type:
 
 ```kotlin
 bind<Dice>() with provider { RandomDice(6) }
@@ -178,6 +178,8 @@ constant("serverURL") with "https://my.server.url"
 
 Note The absence of curly braces. It is not given a function but an instance.
 
+You should only use constant bindings for very simple types without inheritance or interface (e.g. primitive types and data classes).
+
 
 #### Transitive dependency
 
@@ -185,7 +187,11 @@ With those lazily instanciated dependencies, a dependency (very) often needs ano
 Say you have the following class:
 
 ```kotlin
-public class Dice(private val random: Random, private val max: Int) {
+/* The class Dice needs:
+     - A Random implementation.
+     - The number of side of the dice.
+*/
+public class Dice(private val random: Random, private val sides: Int) {
 /*...*/
 }
 ```
@@ -214,18 +220,14 @@ val kodein = Kodein {
 }
 ```
 
-Do you see the problem? In this case, `GreatGameEngine` will receive a `MySuperSecureRandom` instance, re-using always the same instance, making `MySuperSecureRandom` essentially a singleton itself inside `GreatGameEngine`.  
+Do you see the problem? In this case, `GreatGameEngine` will receive a `MySuperSecureRandom` instance, always re-using the same instance, making `MySuperSecureRandom` essentially a singleton inside `GreatGameEngine`.  
 The correction is very easy:
 
 ```kotlin
-class GameEngine(private val () -> rnd: Random) { /*...*/ }
-val kodein = Kodein {
-    bind<Random>() with provider { MySuperSecureRandom() } // A MySuperSecureRandom instance can only give one random result!
-    bind<GameEngine>() with singleton { GreatGameEngine(provider()) }
-}
+class GameEngine(private val rnd: () -> Random) { /*...*/ }
 ```
 
-Therefore, I encourage you to follow this rule: *In a singleton, if you're not 100% sure that the transitive dependencies are themselves simgleton, then use providers*.
+I encourage you to follow this rule: *In a singleton, if you're not 100% sure that the transitive dependencies are themselves singletons, then use providers*.
 
 
 #### Modules
@@ -406,7 +408,7 @@ class MyApp : Application(), KodeinApplication {
 
 Then, in your Activities, Fragments, and other context aware android classes, you can retrieve dependencies.
 
-There are two ways to access a kodein instance and your dependencies:
+There are different ways to access a kodein instance and your dependencies:
 
 
 #### Using appKodein
@@ -415,7 +417,7 @@ There are two ways to access a kodein instance and your dependencies:
 
 ```kotlin
 class MyActivity : Activity() {
-    public val diceProvider: () -> Dice = appKodein.lazyProvider()  // appKodein without parenthesis
+    public val diceProvider: () -> Dice by appKodein.lazyProvider()  // appKodein without parenthesis
     
     override onCreate(savedInstanceState: Bundle?) {
         val random: Random = appKodein().instance()   // appKodein with parenthesis
@@ -426,17 +428,17 @@ class MyActivity : Activity() {
 Note that `appKodein` is used without parenthesis to delegate lazy properties but with parenthesis to access the kodein instance.  
 That's because you cannot access the Application object and therefore the kodein instance while the activity is not initialized by Android.
 
-This method is really easy but it is not really optimized because the kodein instance will be re-fetched every time you use `appKodein`.  
+This method is really easy but it is not really optimized because the kodein instance will be re-fetched every time you use `appKodein` (each time inducing a cast from `Application` to `KodeinApplication`).  
 However, this method is very easy and readable, I recommend you use it if you have only a few dependencies to inject.
 
 
 #### Using lazyKodeinFromApp
 
-This is the more optimized way of injecting dependencies. It works the exact same way as the previous method, except that the kodein instance will be fetched only once.
+This is a more optimized way of injecting dependencies. It works the exact same way as the previous method, except that the kodein instance will be fetched only once.
 
 ```kotlin
 class MyActivity : Activity() {
-    private val kodein = lazyKodeinFromApp()
+    private val kodein = lazyKodeinFromApp() // Note the use of = and not by
     public val diceProvider: () -> Dice = kodein.lazyProvider()  // kodein without parenthesis
     
     override onCreate(savedInstanceState: Bundle?) {
@@ -448,7 +450,7 @@ class MyActivity : Activity() {
 
 #### Using an injector
 
-Using an injector allows you to resolve all dependencies in onCreate, reducing the cost of dependency first-access.
+Using an injector allows you to resolve all dependencies in `onCreate`, reducing the cost of dependency first-access (but making more work happening in `onCreate`). As with the prvious method, the Kodein instance will only be fetched once.
 
 ```kotlin
 class MyActivity : Activity() {
@@ -462,6 +464,9 @@ class MyActivity : Activity() {
     }
 }
 ```
+
+Using this approach has an important advantage: as all dependencies are retrieved in `onCreate`, you can be sure that all your dependencies have been correctly been retrieved, meaning that there were no dependency loop or non-declared dependency.  
+You can have this certitude with the two previous methods only once you have accessed all dependencies at least once.
 
 
 #### Android example project
@@ -478,7 +483,7 @@ Debuging
 
 You can easily print bindings with `println(kodein.bindingsDescription)`.
 
-Here's an example:
+Here's an example of what this prints:
 
 ```
         bind<com.test.Dice>() with factory<Kotlin.Int>
@@ -525,6 +530,10 @@ You can use the `CFactory<A, T>` class for ease of use.
 If your scope is provider scope (such as singleton), you can use the `CProvider<T>` class for ease of use.  
 Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/scopes.kt) file. The `singleton` scope is very easy to understand and is a good starting point.
 
+
+#### Bind the same type to different factories
+
+Yeah, when I said earlier that  I didn't mention earlier that "you can have multiple bindings of the same type, as long as they are binded with different tags", I lied. Beacause each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are binded as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be binded to it's own factory, which in turns means that you can bind the same type without tag to different factories.
 
 
 Let's talk!
