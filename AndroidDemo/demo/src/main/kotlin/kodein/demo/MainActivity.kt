@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.TextView
 import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.dispName
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 

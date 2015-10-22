@@ -29,11 +29,11 @@ public class Kodein internal constructor(public val _container: Container) {
             val bind: Bind,
             val argType: Type
     ) {
-        override fun toString() = StringBuilder {
+        override fun toString() = buildString {
             if (bind.tag != null) append("\"${bind.tag}\": ")
             if (argType != Unit.javaClass) append("(${argType.dispName})") else append("()")
             append("-> ${bind.type.dispName}")
-        }.toString()
+        }
     }
 
     /**
@@ -57,11 +57,11 @@ public class Kodein internal constructor(public val _container: Container) {
         init { this.init() }
 
         public inner class TypeBinder<T : Any>(private val bind: Bind) {
-            public fun <R : T, A> with(factory: Factory<A, R>) = _builder.bind(Key(bind, factory.argType), factory)
+            public infix fun <R : T, A> with(factory: Factory<A, R>) = _builder.bind(Key(bind, factory.argType), factory)
         }
 
         public inner class ConstantBinder(private val tag: Any) {
-            public fun with(value: Any) = _builder.bind(Key(Bind(value.javaClass, tag), Unit.javaClass), instance(value))
+            public infix fun with(value: Any) = _builder.bind(Key(Bind(value.javaClass, tag), Unit.javaClass), instance(value))
         }
 
         public inline fun <reified T : Any> bind(tag: Any? = null): TypeBinder<T> = TypeBinder(Bind(typeToken<T>(), tag))

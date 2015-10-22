@@ -40,7 +40,7 @@ public class CFactory<A, out T : Any>(private val _scopeName: () -> String, priv
  */
 public inline fun <reified A, T : Any> Kodein.Builder.factory(noinline factory: Kodein.(A) -> T): Factory<A, T> {
     val type = typeToken<A>()
-    return CFactory<A, T>({"factory<${type.dispName}>"}, factory, type)
+    return CFactory({"factory<${type.dispName}>"}, factory, type)
 }
 
 /**

@@ -2,6 +2,7 @@ package com.github.salomonbrys.kodein
 
 import java.io.Serializable
 import java.util.*
+import kotlin.reflect.KProperty
 
 private object UNINITIALIZED_VALUE
 
@@ -24,7 +25,7 @@ public abstract class Injected<out T : Any> internal constructor(public val bind
             }
         }
 
-    public fun get(thisRef: Any?, property: PropertyMetadata): T = value
+    public operator fun getValue(thisRef: Any?, property: KProperty<*>): T = value
 
     public fun isInjected(): Boolean = _value !== UNINITIALIZED_VALUE
 
@@ -72,5 +73,5 @@ public class KodeinInjector() {
     public fun inject(kodein: Kodein) = _list.forEach { it._inject(kodein._container) }
 }
 
-public fun <A, T : Any> Injected<(A) -> T>.toProvider(arg: A): Lazy<() -> T> = lazy { { value(arg) } }
-public fun <A, T : Any> Injected<(A) -> T>.toInstance(arg: A): Lazy<T> = lazy { value(arg) }
+public fun <A, T : Any> Injected<(A) -> T>.toProvider(arg: A): Lazy<() -> T> = lazy { { this.value(arg) } }
+public fun <A, T : Any> Injected<(A) -> T>.toInstance(arg: A): Lazy<T> = lazy { this.value(arg) }

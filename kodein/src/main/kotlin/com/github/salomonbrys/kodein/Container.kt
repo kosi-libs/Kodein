@@ -58,9 +58,9 @@ public class Container private constructor(
     /**
      * This is for debug. It allows to print all binded keys.
      */
-    public val registeredBindings: Map<Kodein.Bind, String> get() = _map.mapKeys { it.getKey().bind } .mapValues { it.getValue().scopeName() }
+    public val registeredBindings: Map<Kodein.Bind, String> get() = _map.mapKeys { it.key.bind } .mapValues { it.value.scopeName() }
 
-    public val bindingsDescription: String get() = registeredBindings.map { "        ${it.key.toString()} with ${it.value}" } .join("\n")
+    public val bindingsDescription: String get() = registeredBindings.map { "        ${it.key.toString()} with ${it.value}" }.joinToString("\n")
 
     public fun notFoundException(reason: String): Kodein.NotFoundException
             = Kodein.NotFoundException("$reason\nRegistered in Kodein:\n" + bindingsDescription)

@@ -116,7 +116,7 @@ public class KodeinParameterizedType(public val type: ParameterizedType) : Type 
 
             val leftArgs = left.actualTypeArguments
             val rightArgs = right.actualTypeArguments
-            if (leftArgs.size() != rightArgs.size())
+            if (leftArgs.size != rightArgs.size)
                 return false;
 
             for (i in leftArgs.indices)

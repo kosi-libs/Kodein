@@ -1,4 +1,4 @@
-[![Kotlin M14](https://img.shields.io/badge/Kotlin-M14-blue.svg)](http://kotlinlang.org)
+[![Kotlin M14](https://img.shields.io/badge/Kotlin-1.0.0--beta--1038-blue.svg)](http://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22)
 [![Travis](https://img.shields.io/travis/SalomonBrys/Kodein.svg)](https://travis-ci.org/SalomonBrys/Kodein/builds)
 [![MIT License](https://img.shields.io/github/license/salomonbrys/kodein.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
@@ -61,26 +61,27 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>2.1.1</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
 Gradle:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein:2.1.1'
+compile 'com.github.salomonbrys.kodein:kodein:2.2.0'
 ```
 
 Android:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein-android:2.1.1'
+compile 'com.github.salomonbrys.kodein:kodein-android:2.2.0'
 ```
 
  - Version 1.1 is compatible with Kotlin M11
  - Version 1.3.0 is compatible with Kotlin M12
  - Version 1.4.0 is compatible with Kotlin M13
  - Version 2.1.1 is compatible with Kotlin M14
+ - Version 2.2.0 is compatible with Kotlin 1.0.0-Beta-1038
 
 
 
@@ -406,6 +407,8 @@ class MyApp : Application(), KodeinApplication {
 	}
 }
 ```
+
+Don't forget to declare the application in the `AndroidManifest.xml` file.
 
 Then, in your Activities, Fragments, and other context aware android classes, you can retrieve dependencies.
 
