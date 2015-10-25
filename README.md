@@ -454,7 +454,7 @@ class MyActivity : Activity() {
 
 #### Using an injector
 
-Using an injector allows you to resolve all dependencies in `onCreate`, reducing the cost of dependency first-access (but making more work happening in `onCreate`). As with the prvious method, the Kodein instance will only be fetched once.
+Using an injector allows you to resolve all dependencies in `onCreate`, reducing the cost of dependency first-access (but making more work happening in `onCreate`). As with the previous method, the Kodein instance will only be fetched once.
 
 ```kotlin
 class MyActivity : Activity() {
