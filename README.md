@@ -469,7 +469,7 @@ class MyActivity : Activity() {
 }
 ```
 
-Using this approach has an important advantage: as all dependencies are retrieved in `onCreate`, you can be sure that all your dependencies have been correctly been retrieved, meaning that there were no dependency loop or non-declared dependency.  
+Using this approach has an important advantage: as all dependencies are retrieved in `onCreate`, you can be sure that all your dependencies have correctly been retrieved, meaning that there were no dependency loop or non-declared dependency.  
 You can have this certitude with the two previous methods only once you have accessed all dependencies at least once.
 
 
@@ -501,7 +501,7 @@ As you can see, it's really easy to understand which type with which tag is bind
 
 #### Recursive dependency loop
 
-When it detects a recursive dependency, Kodein will throw a `Kodein.DependencyLoopException`. The message of the exception explains how to loop happened.
+When it detects a recursive dependency, Kodein will throw a `Kodein.DependencyLoopException`. The message of the exception explains how the loop happened.
 
 Here's an example:
 
