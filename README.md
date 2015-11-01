@@ -88,7 +88,7 @@ compile 'com.github.salomonbrys.kodein:kodein-android:2.2.0'
 Bindings: Declaring dependencies
 --------------------------------
 
-You can initialize kodein in a variable:
+You can initialize Kodein in a variable:
 
 ```kotlin
 val kodein = Kodein {
@@ -96,15 +96,14 @@ val kodein = Kodein {
 }
 ```
 
-Bindings are delared inside a Kodein initialization block, they are not subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>` to different list instances, provider or factory).
+Bindings are declared inside a Kodein initialization block, and they are not subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>` to different list instances, provider or factory).
 
-There are different ways to declare a bindings:
+There are different ways to declare bindings:
 
 
 #### Factory binding
 
-This binds a type to a factory function.  
-A factory function is a function that takes an argument of a defined type and that returns an object of the binded type.  
+This binds a type to a factory function, which is a function that takes an argument of a defined type and that returns an object of the binded type.  
 Each time you need an instance of the binded type, the function will be called.
 
 For example, here is a binding that creates a new `Dice` entry each time the you need a `Dice` instance, according to a given `Int` representing the number of sides:
@@ -116,8 +115,7 @@ bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
 
 #### Provider binding
 
-This binds a type to a provider function.  
-A provider function is a function that takes an argument of a defined type and that returns an object of the binded type. It's like a factory, but without arguments.  
+This binds a type to a provider function, which is a function that takes no arguments and returns an object of the binded type.
 Each time you need an instance of the binded type, the function will be called.  
 For example, here is a binding that creates a new 6 sided `Dice` entry each time you need a `Dice` instance:
 
@@ -128,7 +126,7 @@ bind<Dice>() with provider { RandomDice(6) }
 
 #### Singleton binding
 
-This binds a type to an instance of this type that will lazily be created at first use. Therefore, the provided function will only be called once, the first time an instance is needed.
+This binds a type to an instance of this type that will lazily be created at first use. Therefore, the provided function will only be called once: the first time an instance is needed.
 
 ```kotlin
 bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
@@ -137,7 +135,7 @@ bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 
 #### Thread singleton binding
 
-This is the same as the singleton binding, except that each thread gets a different instance. Therefore, the provided function is called once per thread needing the instance.
+This is the same as the singleton binding, except that each thread gets a different instance. Therefore, the provided function is called once per thread that needs the instance.
 
 ```kotlin
 bind<Cache>() with threadSingleton { LRUCache(16 * 1024) }
@@ -152,7 +150,7 @@ This binds a type to an instance *already created*.
 bind<DataSource>() with instance(SqliteDataSource.open("path/to/file"))
 ```
 
-Note that instance is used with parenthesis. It is not given a function but an instance.
+Note that instance is used with parenthesis. It is not given a function, but an instance.
 
 
 #### Tagged bindings
@@ -165,26 +163,26 @@ bind<Dice>("DnD10") with provider { RandomDice(10) }
 bind<Dice>("DnD20") with provider { RandomDice(20) }
 ```
 
-Note that you can have multiple bindings of the same type, as long as they are binded with different tags. You can have only one binding of a type with no tag.
+Note that you can have multiple bindings of the same type, as long as they are binded with different tags. You can have only one binding of a certain type with no tag.
 
 
 #### Constant binding
 
-It is often useful to bind "configuration" constants (Such contants are always tagged):
+It is often useful to bind "configuration" constants. These contants are always tagged:
 
 ```kotlin
 constant("maxThread") with 8
 constant("serverURL") with "https://my.server.url"
 ```
 
-Note The absence of curly braces. It is not given a function but an instance.
+Note the absence of curly braces. It is not given a function, but an instance.
 
 You should only use constant bindings for very simple types without inheritance or interface (e.g. primitive types and data classes).
 
 
 #### Transitive dependency
 
-With those lazily instanciated dependencies, a dependency (very) often needs another dependency. Such object should have their dependencies passed to their constructor. Thanks to Kotlin's killer type inference engine, Kodein makes retrieval of transitive dependencies really easy:  
+With those lazily instantiated dependencies, a dependency (very) often needs another dependency. Such object should have their dependencies passed to their constructor. Thanks to Kotlin's killer type inference engine, Kodein makes retrieval of transitive dependencies really easy.  
 Say you have the following class:
 
 ```kotlin
@@ -197,7 +195,7 @@ public class Dice(private val random: Random, private val sides: Int) {
 }
 ```
 
-Then it is really easy to bind RandomDice with it's transitive dependencies, simply use `instance()` or `instance(tag)`:
+Then it is really easy to bind RandomDice with it's transitive dependencies, by simply using `instance()` or `instance(tag)`:
 
 ```kotlin
 bind<Random>() with provider { SecureRandom() }
@@ -234,8 +232,8 @@ I encourage you to follow this rule: *In a singleton, if you're not 100% sure th
 
 #### Modules
 
-Kodein allows you to export your bindings in modules. It is very useful to have separate modules define their own bindings instead of having only one central binding definition.  
-A module is an object that you can construct the exact same way you construct a Kodein instance:
+Kodein allows you to export your bindings in modules. It is very useful to have separate modules defining their own bindings instead of having only one central binding definition.  
+A module is an object that you can construct the exact same way as you construct a Kodein instance:
 
 ```kotlin
 val apiModule = Kodein.Module {
@@ -278,7 +276,7 @@ When retrieving a dependency, the following rule applies:
     * as an instance: `T`
 
 
-#### Via kodein methods
+#### Via Kodein methods
 
 You can retrieve a dependency via a Kodein instance:
 
@@ -309,9 +307,9 @@ private val sixSideDiceProvider: () -> Dice = kodein.factory().toProvider(6)
 ```
 
 
-#### Via a lazy property
+#### Via lazy property
 
-Lazy properties allow you to resolve the dependency upon first access.
+Lazy properties allow you to resolve the dependency upon first access:
 
 ```kotlin
 public class Controller(private val kodein: Kodein) {
@@ -330,14 +328,14 @@ private val tenSideDiceProvider: Dice by kodein.lazyFactory().toLazyInstance(10)
 ```
 
 
-#### Via an injector
+#### Via injector
 
 An injector is an object that you can use to inject all injected values in an object.
 
 This allows your object to:
 
- - retrieve all it's injected dependencies at once.
- - declare its dependencies without a kodein instance.
+ - Retrieve all it's injected dependencies at once;
+ - Declare its dependencies without a Kodein instance.
 
 ```kotlin
 public class Controller() {
@@ -354,7 +352,7 @@ public class Controller() {
 }
 ```
 
-When accessing a property injected by an injector *before* calling `injector.inject(kodein)`, `KodeinInjector.UninjectedException` will be thrown.
+If you try to access a property injected by an injector *before* calling `injector.inject(kodein)`, `KodeinInjector.UninjectedException` will be thrown.
 
 You can inject a provider or an instance from a factory binded type by using `toProvider` and `toInstance`:
 
@@ -385,7 +383,7 @@ public class JavaClass {
 }
 ```
 
-Java is subject to type erasure, therefore, if you registered a generic class binding such as `bind<List<String>>()`, to retrieve it in Java, you need to use `TypeToken` to circumvent java's type erasure:
+Remember that Java is subject to type erasure. Therefore, if you registered a generic Class binding such as `bind<List<String>>()`, in order to retrieve it you have to use `TypeToken` to circumvent Java's type erasure:
 
 ```java
 List<String> list = kodein.instance(new TypeToken<List<String>>(){});
@@ -408,16 +406,16 @@ class MyApp : Application(), KodeinApplication {
 }
 ```
 
-Don't forget to declare the application in the `AndroidManifest.xml` file.
+Don't forget to declare the Application in the `AndroidManifest.xml` file.
 
 Then, in your Activities, Fragments, and other context aware android classes, you can retrieve dependencies.
 
-There are different ways to access a kodein instance and your dependencies:
+There are different ways to access a Kodein instance and your dependencies:
 
 
 #### Using appKodein
 
-`appKodein` is a function that will work in your context aware android classes provided that your application implements `KodeinApplication`:
+`appKodein` is a function that will work in your context aware Android classes provided that your Application implements `KodeinApplication`:
 
 ```kotlin
 class MyActivity : Activity() {
@@ -429,16 +427,16 @@ class MyActivity : Activity() {
 }
 ```
 
-Note that `appKodein` is used without parenthesis to delegate lazy properties but with parenthesis to access the kodein instance.  
-That's because you cannot access the Application object and therefore the kodein instance while the activity is not initialized by Android.
+Note that `appKodein` is used without parenthesis to delegate lazy properties but with parenthesis to access the Kodein instance.  
+That's because you cannot access the Application object and therefore the Kodein instance while the activity is not initialized by Android.
 
-This method is really easy but it is not really optimized because the kodein instance will be re-fetched every time you use `appKodein` (each time inducing a cast from `Application` to `KodeinApplication`).  
-However, this method is very easy and readable, I recommend you use it if you have only a few dependencies to inject.
+This method is really easy but it is not really optimized because the Kodein instance will be re-fetched every time you use `appKodein` (each time inducing a cast from `Application` to `KodeinApplication`).  
+However, this method is very easy and readable. I recommend it if you have only a few dependencies to inject.
 
 
 #### Using lazyKodeinFromApp
 
-This is a more optimized way of injecting dependencies. It works the exact same way as the previous method, except that the kodein instance will be fetched only once.
+This is a more optimized way of injecting dependencies. It works the exact same way as the previous method, except that the Kodein instance will be fetched only once.
 
 ```kotlin
 class MyActivity : Activity() {
@@ -454,7 +452,7 @@ class MyActivity : Activity() {
 
 #### Using an injector
 
-Using an injector allows you to resolve all dependencies in `onCreate`, reducing the cost of dependency first-access (but making more work happening in `onCreate`). As with the previous method, the Kodein instance will only be fetched once.
+Using an injector allows you to resolve all dependencies in `onCreate`, reducing the cost of dependency first-access (but more processing happening in `onCreate`). As with the previous method, the Kodein instance will only be fetched once.
 
 ```kotlin
 class MyActivity : Activity() {
@@ -537,11 +535,11 @@ Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys
 
 #### Bind the same type to different factories
 
-Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are binded with different tags", I lied. Beacause each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are binded as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be binded to it's own factory, which in turns means that you can bind the same type without tag to different factories. Please be cautious when using this knowledge, other less thorough readers may get confused with it.
+Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are binded with different tags", I lied. Because each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are binded as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be binded to it's own factory, which in turns means that you can bind the same type without tagging to different factories. Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
 
 
 Let's talk!
 -----------
 
 You've read so far ?! You're awsome!
-Why don't you drop by the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/) on kotlin's slack?
+Why don't you drop by the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/) on Kotlin's Slack group?
