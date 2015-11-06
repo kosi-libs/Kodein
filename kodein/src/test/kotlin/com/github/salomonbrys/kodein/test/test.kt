@@ -396,7 +396,7 @@ class KodeinTests : TestCase() {
         assertEquals("Laila", lazied.factory("Laila").name)
     }
 
-    public @Test fun test12_0_Module() {
+    public @Test fun test12_0_ModuleImport() {
 
         val personModule = Kodein.Module {
             bind<Person>() with provider { Person() }
@@ -414,6 +414,30 @@ class KodeinTests : TestCase() {
         assertSame(lazied.salomon, lazied.salomon)
         assertNotSame(lazied.factory("Laila"), lazied.factory("Laila"))
         assertEquals("Laila", lazied.factory("Laila").name)
+
+        val kodein2 = Kodein {
+            import(personModule)
+        }
+
+        assertSame(kodein.instance<Person>("named"), kodein.instance<Person>("named"))
+        assertSame(kodein2.instance<Person>("named"), kodein2.instance<Person>("named"))
+        assertNotSame(kodein.instance<Person>("named"), kodein2.instance<Person>("named"))
+    }
+
+    public @Test fun test12_1_KodeinExtend() {
+
+        val parent = Kodein {
+            bind<Person>("named") with singleton { Person("Salomon") }
+        }
+
+        val child = Kodein {
+            extend(parent)
+            bind<Person>() with provider { Person() }
+        }
+
+        assertSame(parent.instance<Person>("named"), child.instance<Person>("named"))
+        assertNull(parent.instanceOrNull<Person>())
+        assertNotNull(child.instanceOrNull<Person>())
     }
 
     class Recurs0(public val a: RecursA)

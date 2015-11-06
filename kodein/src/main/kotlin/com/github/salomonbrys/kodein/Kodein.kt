@@ -69,6 +69,8 @@ public class Kodein internal constructor(public val _container: Container) {
         public fun constant(tag: Any): ConstantBinder = ConstantBinder(tag)
 
         public fun import(module: Module) = module.init()
+
+        public fun extend(kodein: Kodein) = _builder.extend(kodein._container)
     }
 
     public constructor(init: Kodein.Builder.() -> Unit) : this(Container(Builder(init)._builder))

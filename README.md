@@ -61,20 +61,20 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>2.3.0</version>
+    <version>2.3.1</version>
 </dependency>
 ```
 
 Gradle:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein:2.3.0'
+compile 'com.github.salomonbrys.kodein:kodein:2.3.1'
 ```
 
 Android:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein-android:2.3.0'
+compile 'com.github.salomonbrys.kodein:kodein-android:2.3.1'
 ```
 
  - Version 1.1 is compatible with Kotlin M11
@@ -82,7 +82,7 @@ compile 'com.github.salomonbrys.kodein:kodein-android:2.3.0'
  - Version 1.4.0 is compatible with Kotlin M13
  - Version 2.1.1 is compatible with Kotlin M14
  - Version 2.2.0 is compatible with Kotlin 1.0.0-Beta-1038
- - Version 2.3.0 is compatible with Kotlin 1.0.0-Beta-1103
+ - Version 2.3.1 is compatible with Kotlin 1.0.0-Beta-1103
 
 
 
@@ -252,6 +252,22 @@ val kodein = Kodein {
 }
 ```
 
+Note that modules are *definitions*, they will re-declare their bindings in each kodein instance you use.  
+If you create a module that defines a singleton and import that module into two different kodein instances, then the singleton binded object will exist twice: once in each kodein instance.
+
+
+#### Extension (composition)
+
+Kodein allows you to create a new kodein instance by extending an existing kodein instance:
+
+```kotlin
+val subKodein = Kodein {
+    extend(appKodein)
+    /* other bindings */
+}
+```
+
+Note that this preserves scopes, meaning that a singleton-binded in `appKodein` will continue to exist only once. Both `appKodein` and `subKodein` will give the same instance.
 
 
 Injection: Dependency retrieval

@@ -51,6 +51,8 @@ public class Container private constructor(
         internal val _map: MutableMap<Kodein.Key, Factory<*, Any>> = HashMap()
 
         public fun bind(key: Kodein.Key, factory: Factory<*, Any>) { _map[key] = factory }
+
+        public fun extend(container: Container) { _map.putAll(container._map) }
     }
 
     public constructor(builder: Container.Builder) : this(builder._map)
