@@ -9,7 +9,7 @@
 Kodein: Kotlin Dependency Injection
 ===================================
 
-Kodein is a very simple and yet very useful dependency retrieval container. It's feature set is very small, making it very easy to use and configure.
+Kodein is a very simple and yet very useful dependency retrieval container. Its feature set is very small, making it very easy to use and configure.
 
 Kodein allows you to:
 
@@ -45,7 +45,7 @@ val kodein = Kodein {
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 }
 
-public class Controller(private val kodein: Kodein) {
+class Controller(private val kodein: Kodein) {
     private val ds: DataSource by kodein.injectInstance()
 }
 ```
@@ -329,7 +329,7 @@ private val sixSideDiceProvider: () -> Dice = kodein.factory().toProvider(6)
 Lazy properties allow you to resolve the dependency upon first access:
 
 ```kotlin
-public class Controller(private val kodein: Kodein) {
+class Controller(private val kodein: Kodein) {
     private val diceFactory: (Int) -> Dice by kodein.lazyFactory()
     private val dataSource: DataSource by kodein.lazyInstance()
     private val randomProvider: () -> Random by kodein.lazyProvider()
@@ -355,7 +355,7 @@ This allows your object to:
  - Declare its dependencies without a Kodein instance.
 
 ```kotlin
-public class Controller() {
+class Controller() {
     private val injector = KodeinInjector()
 
     private val diceFactory: (Int) -> Dice by injector.factory()
@@ -363,7 +363,7 @@ public class Controller() {
     private val randomProvider: () -> Random by injector.provider()
     private val answerConstant: String by injector.instance("answer")
     
-    public fun whenReady(kodein: Kodein) {
+    fun whenReady(kodein: Kodein) {
         injector.inject(kodein)
     }
 }
@@ -436,7 +436,7 @@ There are different ways to access a Kodein instance and your dependencies:
 
 ```kotlin
 class MyActivity : Activity() {
-    public val diceProvider: () -> Dice by appKodein.lazyProvider()  // appKodein without parenthesis
+    val diceProvider: () -> Dice by appKodein.lazyProvider()  // appKodein without parenthesis
     
     override onCreate(savedInstanceState: Bundle?) {
         val random: Random = appKodein().instance()   // appKodein with parenthesis
@@ -458,7 +458,7 @@ This is a more optimized way of injecting dependencies. It works the exact same 
 ```kotlin
 class MyActivity : Activity() {
     private val kodein = lazyKodeinFromApp() // Note the use of = and not by
-    public val diceProvider: () -> Dice = kodein.lazyProvider()  // kodein without parenthesis
+    val diceProvider: () -> Dice = kodein.lazyProvider()  // kodein without parenthesis
     
     override onCreate(savedInstanceState: Bundle?) {
         val random: Random = kodein().instance()   // kodein with parenthesis
@@ -475,8 +475,8 @@ Using an injector allows you to resolve all dependencies in `onCreate`, reducing
 class MyActivity : Activity() {
     private val injector = KodeinInjector()
 
-    public val diceProvider: () -> Dice by injector.provider()
-    public val random: Random by injector.instance()
+    val diceProvider: () -> Dice by injector.provider()
+    val random: Random by injector.instance()
     
     override onCreate(savedInstanceState: Bundle?) {
         injector.inject(appKodein())
