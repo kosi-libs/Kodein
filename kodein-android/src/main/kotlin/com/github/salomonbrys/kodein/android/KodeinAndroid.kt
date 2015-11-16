@@ -2,7 +2,6 @@ package com.github.salomonbrys.kodein.android
 
 import android.app.Dialog
 import android.app.Fragment
-import android.app.Service
 import android.content.AbstractThreadedSyncAdapter
 import android.content.Context
 import com.github.salomonbrys.kodein.Kodein
