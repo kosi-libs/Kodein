@@ -2,6 +2,7 @@ package com.github.salomonbrys.kodein.android
 
 import android.app.Dialog
 import android.app.Fragment
+import android.content.AbstractThreadedSyncAdapter
 import android.content.Context
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.LazyKodein
@@ -26,4 +27,6 @@ public val Fragment.appKodein: () -> Kodein get() = { (activity.applicationConte
 public val android.support.v4.app.Fragment.appKodein: () -> Kodein get() = { (activity.applicationContext as KodeinApplication).kodein }
 
 public val Dialog.appKodein: () -> Kodein get() = { (context.applicationContext as KodeinApplication).kodein }
+
+public val AbstractThreadedSyncAdapter.appKodein: () -> Kodein get() = { (context.applicationContext as KodeinApplication).kodein }
 
