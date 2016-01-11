@@ -61,20 +61,20 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>2.4.0</version>
+    <version>2.4.1</version>
 </dependency>
 ```
 
 Gradle:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein:2.4.0'
+compile 'com.github.salomonbrys.kodein:kodein:2.4.1'
 ```
 
 Android:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein-android:2.4.0'
+compile 'com.github.salomonbrys.kodein:kodein-android:2.4.1'
 ```
 
  - Version 1.1 is compatible with Kotlin M11
@@ -83,7 +83,7 @@ compile 'com.github.salomonbrys.kodein:kodein-android:2.4.0'
  - Version 2.1.1 is compatible with Kotlin M14
  - Version 2.2.0 is compatible with Kotlin 1.0.0-Beta-1038
  - Version 2.3.1 is compatible with Kotlin 1.0.0-Beta-1103
- - Version 2.4.0 is compatible with Kotlin 1.0.0-Beta-4584
+ - Version 2.4.1 is compatible with Kotlin 1.0.0-Beta-4584
 
 
 

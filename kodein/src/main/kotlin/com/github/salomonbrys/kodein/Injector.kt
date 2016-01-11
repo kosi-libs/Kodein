@@ -62,7 +62,11 @@ public class KodeinInjector() {
 
     private val _list = LinkedList<Injected<*>>()
 
-    var onInjected: () -> Unit = {}
+    private var _kodein: Kodein? = null
+
+    private var _onInjected: (Kodein) -> Unit = {}
+
+    public fun onInjected(cb: (Kodein) -> Unit) { _onInjected = cb }
 
     public fun <T : Any> _register(injected: Injected<T>) = injected.apply { _list.add(this) }
 
@@ -72,9 +76,12 @@ public class KodeinInjector() {
 
     public inline fun <reified T : Any> instance(tag: Any? = null): Injected<T> = _register(InjectedInstance(Kodein.Bind(typeToken<T>(), tag)))
 
+    public fun kodein(): Lazy<Kodein> = lazy { _kodein ?: throw KodeinInjector.UninjectedException() }
+
     public fun inject(kodein: Kodein) {
         _list.forEach { it._inject(kodein._container) }
-        onInjected()
+        _kodein = kodein
+        _onInjected(kodein)
     }
 }
 
