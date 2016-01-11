@@ -1,4 +1,4 @@
-[![Kotlin M14](https://img.shields.io/badge/Kotlin-1.0.0--beta--1103-blue.svg)](http://kotlinlang.org)
+[![Kotlin M14](https://img.shields.io/badge/Kotlin-1.0.0--beta--4584-blue.svg)](http://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22)
 [![Travis](https://img.shields.io/travis/SalomonBrys/Kodein.svg)](https://travis-ci.org/SalomonBrys/Kodein/builds)
 [![MIT License](https://img.shields.io/github/license/salomonbrys/kodein.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
@@ -61,20 +61,20 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>2.3.1</version>
+    <version>2.4.0</version>
 </dependency>
 ```
 
 Gradle:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein:2.3.1'
+compile 'com.github.salomonbrys.kodein:kodein:2.4.0'
 ```
 
 Android:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein-android:2.3.1'
+compile 'com.github.salomonbrys.kodein:kodein-android:2.4.0'
 ```
 
  - Version 1.1 is compatible with Kotlin M11
@@ -83,6 +83,7 @@ compile 'com.github.salomonbrys.kodein:kodein-android:2.3.1'
  - Version 2.1.1 is compatible with Kotlin M14
  - Version 2.2.0 is compatible with Kotlin 1.0.0-Beta-1038
  - Version 2.3.1 is compatible with Kotlin 1.0.0-Beta-1103
+ - Version 2.4.0 is compatible with Kotlin 1.0.0-Beta-4584
 
 
 
@@ -363,9 +364,7 @@ class Controller() {
     private val randomProvider: () -> Random by injector.provider()
     private val answerConstant: String by injector.instance("answer")
     
-    fun whenReady(kodein: Kodein) {
-        injector.inject(kodein)
-    }
+    fun whenReady(kodein: Kodein) = injector.inject(kodein)
 }
 ```
 
@@ -546,7 +545,7 @@ Advanced use
 
 A scope is an extension function to `Kodein.Builder` that returns a `Factory<A, T>`.  
 You can use the `CFactory<A, T>` class for ease of use.  
-If your scope is provider scope (such as singleton), you can use the `CProvider<T>` class for ease of use.  
+If your scope is a provider scope (such as singleton), you can use the `CProvider<T>` class for ease of use.  
 Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/scopes.kt) file. The `singleton` scope is very easy to understand and is a good starting point.
 
 

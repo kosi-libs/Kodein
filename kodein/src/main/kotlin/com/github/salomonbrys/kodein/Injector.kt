@@ -62,6 +62,8 @@ public class KodeinInjector() {
 
     private val _list = LinkedList<Injected<*>>()
 
+    var onInjected: () -> Unit = {}
+
     public fun <T : Any> _register(injected: Injected<T>) = injected.apply { _list.add(this) }
 
     public inline fun <reified A, reified T : Any> factory(tag: Any? = null): Injected<(A) -> T> = _register(InjectedFactory(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>())))
@@ -70,7 +72,10 @@ public class KodeinInjector() {
 
     public inline fun <reified T : Any> instance(tag: Any? = null): Injected<T> = _register(InjectedInstance(Kodein.Bind(typeToken<T>(), tag)))
 
-    public fun inject(kodein: Kodein) = _list.forEach { it._inject(kodein._container) }
+    public fun inject(kodein: Kodein) {
+        _list.forEach { it._inject(kodein._container) }
+        onInjected()
+    }
 }
 
 public fun <A, T : Any> Injected<(A) -> T>.toProvider(arg: A): Lazy<() -> T> = lazy { { this.value(arg) } }
