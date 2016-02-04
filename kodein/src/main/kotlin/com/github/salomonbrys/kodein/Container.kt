@@ -10,7 +10,7 @@ import java.util.*
  * In kodein, every binding is stored as a factory (that's why a scope is a function creating a factory).
  * Providers are special classes of factories that take Unit as parameter.
  */
-public class Container private constructor(
+class Container private constructor(
         private val _map: Map<Kodein.Key, Factory<*, Any>>,
         private val _node: Container.Node? = null
 ) {
@@ -46,46 +46,45 @@ public class Container private constructor(
     /**
      * Allows for the building of a Kodein object by defining bindings
      */
-    public class Builder() {
+    class Builder() {
 
         internal val _map: MutableMap<Kodein.Key, Factory<*, Any>> = HashMap()
 
-        public fun bind(key: Kodein.Key, factory: Factory<*, Any>) { _map[key] = factory }
+        fun bind(key: Kodein.Key, factory: Factory<*, Any>) { _map[key] = factory }
 
-        public fun extend(container: Container) { _map.putAll(container._map) }
+        fun extend(container: Container) { _map.putAll(container._map) }
     }
 
-    public constructor(builder: Container.Builder) : this(builder._map)
+    constructor(builder: Container.Builder) : this(builder._map)
 
     /**
      * This is for debug. It allows to print all binded keys.
      */
-    public val registeredBindings: Map<Kodein.Bind, String> get() = _map.mapKeys { it.key.bind } .mapValues { it.value.scopeName() }
+    val registeredBindings: Map<Kodein.Bind, String> get() = _map.mapKeys { it.key.bind } .mapValues { it.value.scopeName() }
 
-    public val bindingsDescription: String get() = registeredBindings.map { "        ${it.key.toString()} with ${it.value}" }.joinToString("\n")
+    val bindingsDescription: String get() = registeredBindings.map { "        ${it.key.toString()} with ${it.value}" }.joinToString("\n")
 
-    public fun notFoundException(reason: String): Kodein.NotFoundException
+    fun notFoundException(reason: String): Kodein.NotFoundException
             = Kodein.NotFoundException("$reason\nRegistered in Kodein:\n" + bindingsDescription)
 
     /**
      * All Kodein getter methods, whether it's instance(), provider() or factory() eventually ends up calling this
      * function.
      */
-    @kotlin.Suppress("UNCHECKED_CAST")
-    public fun <A, T : Any> factoryOrNull(key: Kodein.Key): ((A) -> T)? {
+    @kotlin.Suppress("UNCHECKED_CAST") fun <A, T : Any> factoryOrNull(key: Kodein.Key): ((A) -> T)? {
         val factory = _map[key] ?: return null
         _node?.check(key)
         return { arg -> (factory as Factory<A, T>).getInstance(Kodein(Container(_map, Node(key, _node))), arg) }
     }
 
-    public fun <A, T : Any> nonNullFactory(key: Kodein.Key): ((A) -> T)
+    fun <A, T : Any> nonNullFactory(key: Kodein.Key): ((A) -> T)
             = factoryOrNull<A, T>(key) ?: throw notFoundException("No factory found for $key")
 
-    public fun <T : Any> providerOrNull(bind: Kodein.Bind): (() -> T)? {
+    fun <T : Any> providerOrNull(bind: Kodein.Bind): (() -> T)? {
         val factory = factoryOrNull<Unit, T>(Kodein.Key(bind, Unit.javaClass)) ?: return null
         return { factory(Unit) }
     }
 
-    public fun <T : Any> nonNullProvider(bind: Kodein.Bind): (() -> T)
+    fun <T : Any> nonNullProvider(bind: Kodein.Bind): (() -> T)
             = providerOrNull<T>(bind) ?: throw notFoundException("No provider found for $bind")
 }

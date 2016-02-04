@@ -9,7 +9,7 @@ private var _needPTWrapperCache: Boolean? = null;
 /**
  * Detectes whether KodeinParameterizedType is needed.
  */
-public fun _needPTWrapper(): Boolean {
+fun _needPTWrapper(): Boolean {
     if (_needPTWrapperCache == null)
         _needPTWrapperCache = (object : TypeToken<List<String>>() {}).type != (object : TypeToken<List<String>>() {}).type
     return _needPTWrapperCache!!
@@ -18,8 +18,9 @@ public fun _needPTWrapper(): Boolean {
 /**
  * Class used to get a generic type at runtime
  */
-public abstract class TypeToken<T> {
-    public val type: Type
+@Suppress("unused")
+abstract class TypeToken<T> {
+    val type: Type
 
     protected constructor() {
         this.type = extractType()
@@ -41,7 +42,7 @@ public abstract class TypeToken<T> {
 /**
  * Function used to get a generic type at runtime
  */
-public inline fun <reified T> typeToken(): Type {
+inline fun <reified T> typeToken(): Type {
     val type = (object : TypeToken<T>() {}).type
 
     if (type is ParameterizedType && _needPTWrapper())
@@ -58,7 +59,7 @@ public inline fun <reified T> typeToken(): Type {
  * This is because some JVM implementation (such as Android 4.4 and earlier) does NOT implement hashcode / equals for
  * ParameterizedType (I know...).
  */
-public class KodeinParameterizedType(public val type: ParameterizedType) : Type {
+class KodeinParameterizedType(val type: ParameterizedType) : Type {
 
     private var _hashCode: Int = 0;
 
@@ -158,7 +159,7 @@ public val Type.dispName: String get() {
 
 private var hasTypeName = true
 
-public val Type.dispName: String get() {
+val Type.dispName: String get() {
     if (hasTypeName)
         try {
             return typeName
