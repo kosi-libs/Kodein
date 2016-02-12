@@ -203,7 +203,7 @@ Then it is really easy to bind RandomDice with it's transitive dependencies, by 
 ```kotlin
 bind<Random>() with provider { SecureRandom() }
 constant("max") with 5
-bind<Dice>() with { Dice(instance(), instance("max")) }
+bind<Dice>() with singleton { Dice(instance(), instance("max")) }
 ```
 
 You can, of course, also use the functions `provider()`, `provider(tag)`, `factory()` and `factory(tag)`, 
