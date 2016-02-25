@@ -7,18 +7,19 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import java.lang.reflect.ParameterizedType
+import java.util.*
 import kotlin.concurrent.thread
 
-public data class Person( public val name: String? = null )
+data class Person( val name: String? = null )
 
-public data class A(val b: B?)
-public data class B(val c: C?)
-public data class C(val a: A?)
+data class A(val b: B?)
+data class B(val c: C?)
+data class C(val a: A?)
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KodeinTests : TestCase() {
 
-    public @Test fun test00_0_ProviderBindingGetInstance() {
+    @Test fun test00_0_ProviderBindingGetInstance() {
 
         val kodein = Kodein { bind<Person>() with provider { Person() } }
 
@@ -28,7 +29,7 @@ class KodeinTests : TestCase() {
         assertNotSame(p1, p2)
     }
 
-    public @Test fun test00_1_ProviderBindingGetProvider() {
+    @Test fun test00_1_ProviderBindingGetProvider() {
 
         val kodein = Kodein { bind<Person>() with provider { Person() } }
 
@@ -38,7 +39,7 @@ class KodeinTests : TestCase() {
         assertNotSame(p1(), p2())
     }
 
-    public @Test fun test00_2_FactoryBindingGetFactory() {
+    @Test fun test00_2_FactoryBindingGetFactory() {
 
         val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
 
@@ -48,7 +49,7 @@ class KodeinTests : TestCase() {
         assertNotSame(p1("Salomon"), p2("Salomon"))
     }
 
-    public @Test fun test00_3_FactoryBindingGetProvider() {
+    @Test fun test00_3_FactoryBindingGetProvider() {
 
         val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
 
@@ -57,7 +58,7 @@ class KodeinTests : TestCase() {
         assertEquals("Salomon", p().name)
     }
 
-    public @Test fun test01_0_SingletonBindingGetInstance() {
+    @Test fun test01_0_SingletonBindingGetInstance() {
 
         val kodein = Kodein { bind<Person>() with singleton { Person() } }
 
@@ -67,7 +68,7 @@ class KodeinTests : TestCase() {
         assertSame(p1, p2)
     }
 
-    public @Test fun test01_1_SingletonBindingGetProvider() {
+    @Test fun test01_1_SingletonBindingGetProvider() {
 
         val kodein = Kodein { bind<Person>() with singleton { Person() } }
 
@@ -77,7 +78,7 @@ class KodeinTests : TestCase() {
         assertSame(p1(), p2())
     }
 
-    public @Test fun test02_0_ThreadSingletonBindingGetInstance() {
+    @Test fun test02_0_ThreadSingletonBindingGetInstance() {
         val kodein = Kodein { bind<Person>() with threadSingleton { Person() } }
 
         var tp1: Person? = null;
@@ -99,7 +100,7 @@ class KodeinTests : TestCase() {
         assertNotSame(p1, tp1)
     }
 
-    public @Test fun test02_1_ThreadSingletonBindingGetProvider() {
+    @Test fun test02_1_ThreadSingletonBindingGetProvider() {
         val kodein = Kodein { bind<Person>() with threadSingleton { Person() } }
 
         var tp1: Person? = null;
@@ -121,7 +122,7 @@ class KodeinTests : TestCase() {
         assertNotSame(p1, tp1)
     }
 
-    public @Test fun test03_0_InstanceBindingGetInstance() {
+    @Test fun test03_0_InstanceBindingGetInstance() {
 
         val p = Person()
 
@@ -134,7 +135,7 @@ class KodeinTests : TestCase() {
         assertSame(p2, p)
     }
 
-    public @Test fun test03_1_InstanceBindingGetProvider() {
+    @Test fun test03_1_InstanceBindingGetProvider() {
 
         val p = Person()
 
@@ -147,7 +148,7 @@ class KodeinTests : TestCase() {
         assertSame(p2(), p)
     }
 
-    public @Test fun test04_0_NullBindingGetInstance() {
+    @Test fun test04_0_NullBindingGetInstance() {
 
         val kodein = Kodein {}
 
@@ -156,7 +157,7 @@ class KodeinTests : TestCase() {
         assertNull(p)
     }
 
-    public @Test fun test04_1_NullBindingGetProvider() {
+    @Test fun test04_1_NullBindingGetProvider() {
 
         val kodein = Kodein {}
 
@@ -165,7 +166,7 @@ class KodeinTests : TestCase() {
         assertNull(p)
     }
 
-    public @Test fun test04_2_NullBindingGetFactory() {
+    @Test fun test04_2_NullBindingGetFactory() {
 
         val kodein = Kodein {}
 
@@ -174,7 +175,7 @@ class KodeinTests : TestCase() {
         assertNull(p)
     }
 
-    public @Test fun test05_0_NamedProviderBindingGetInstance() {
+    @Test fun test05_0_NamedProviderBindingGetInstance() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("named") with provider { Person("Salomon") }
@@ -187,7 +188,7 @@ class KodeinTests : TestCase() {
         assertEquals("Salomon", p2.name)
     }
 
-    public @Test fun test05_1_NamedProviderBindingGetProvider() {
+    @Test fun test05_1_NamedProviderBindingGetProvider() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("named") with provider { Person("Salomon") }
@@ -200,7 +201,7 @@ class KodeinTests : TestCase() {
         assertEquals("Salomon", p2().name)
     }
 
-    public @Test fun test06_0_NamedSingletonBindingGetInstance() {
+    @Test fun test06_0_NamedSingletonBindingGetInstance() {
         val kodein = Kodein {
             bind<Person>() with singleton { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -213,7 +214,7 @@ class KodeinTests : TestCase() {
         assertSame(p1, p2)
     }
 
-    public @Test fun test06_1_NamedSingletonBindingGetProvider() {
+    @Test fun test06_1_NamedSingletonBindingGetProvider() {
         val kodein = Kodein {
             bind<Person>() with singleton { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -226,7 +227,7 @@ class KodeinTests : TestCase() {
         assertSame(p1(), p2())
     }
 
-    public @Test fun test07_0_NamedInstanceBindingGetInstance() {
+    @Test fun test07_0_NamedInstanceBindingGetInstance() {
 
         val kodein = Kodein {
             bind<Person>() with instance(Person())
@@ -243,7 +244,7 @@ class KodeinTests : TestCase() {
         assertSame(p2, p3)
     }
 
-    public @Test fun test07_1_NamedInstanceBindingGetProvider() {
+    @Test fun test07_1_NamedInstanceBindingGetProvider() {
 
         val kodein = Kodein {
             bind<Person>() with instance(Person())
@@ -260,7 +261,7 @@ class KodeinTests : TestCase() {
         assertSame(p2(), p3())
     }
 
-    public @Test fun test08_0_ConstantBindingGetInstance() {
+    @Test fun test08_0_ConstantBindingGetInstance() {
 
         val kodein = Kodein {
             constant("answer") with 42
@@ -271,7 +272,7 @@ class KodeinTests : TestCase() {
         assertEquals(42, c)
     }
 
-    public @Test fun test08_1_ConstantBindingGetProvider() {
+    @Test fun test08_1_ConstantBindingGetProvider() {
 
         val kodein = Kodein {
             constant("answer") with 42
@@ -283,7 +284,7 @@ class KodeinTests : TestCase() {
     }
 
 
-    public @Test fun test09_0_DependencyLoop() {
+    @Test fun test09_0_DependencyLoop() {
 
         val kodein = Kodein {
             bind<A>() with singleton { A(instance()) }
@@ -296,7 +297,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    public @Test fun test09_1_NoDependencyLoop() {
+    @Test fun test09_1_NoDependencyLoop() {
 
         val kodein = Kodein {
             bind<A>() with singleton { A(instance()) }
@@ -309,7 +310,7 @@ class KodeinTests : TestCase() {
         assertNotNull(a.b?.c?.a)
     }
 
-    public @Test fun test09_2_TypeNotFound() {
+    @Test fun test09_2_TypeNotFound() {
 
         val kodein = Kodein {}
 
@@ -318,7 +319,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    public @Test fun test09_3_NameNotFound() {
+    @Test fun test09_3_NameNotFound() {
 
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
@@ -330,7 +331,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    public @Test fun test09_4_FactoryIsNotProvider() {
+    @Test fun test09_4_FactoryIsNotProvider() {
 
         val kodein = Kodein {
             bind<Person>() with factory { name: String -> Person(name) }
@@ -341,7 +342,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    public @Test fun test09_5_ProviderIsNotFactory() {
+    @Test fun test09_5_ProviderIsNotFactory() {
 
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
@@ -352,7 +353,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    public @Test fun test10_0_TypeErasure() {
+    @Test fun test10_0_TypeErasure() {
 
         val la = listOf(A(null))
         val lb = listOf(B(null))
@@ -366,7 +367,7 @@ class KodeinTests : TestCase() {
         assertSame(kodein.instance<List<B>>(), lb)
     }
 
-    public @Test fun test10_1_ParameterizedTypeWrap() {
+    @Test fun test10_1_ParameterizedTypeWrap() {
         val typeLS1 = KodeinParameterizedType((object : TypeToken<List<String>>() {}).type as ParameterizedType)
         val typeLS2 = KodeinParameterizedType((object : TypeToken<List<String>>() {}).type as ParameterizedType)
         val typeLI = KodeinParameterizedType((object : TypeToken<List<Int>>() {}).type as ParameterizedType)
@@ -375,13 +376,13 @@ class KodeinTests : TestCase() {
         assertNotEquals(typeLS1, typeLI)
     }
 
-    public class PersonLazy(val kodein: Kodein) {
+    class PersonLazy(val kodein: Kodein) {
         val newPerson: () -> Person by kodein.lazyProvider()
         val salomon: Person by kodein.lazyInstance("named")
         val factory: (String) -> Person by kodein.lazyFactory("factory")
     }
 
-    public @Test fun test11_0_Class() {
+    @Test fun test11_0_Class() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -396,7 +397,7 @@ class KodeinTests : TestCase() {
         assertEquals("Laila", lazied.factory("Laila").name)
     }
 
-    public @Test fun test12_0_ModuleImport() {
+    @Test fun test12_0_ModuleImport() {
 
         val personModule = Kodein.Module {
             bind<Person>() with provider { Person() }
@@ -424,7 +425,7 @@ class KodeinTests : TestCase() {
         assertNotSame(kodein.instance<Person>("named"), kodein2.instance<Person>("named"))
     }
 
-    public @Test fun test12_1_KodeinExtend() {
+    @Test fun test12_1_KodeinExtend() {
 
         val parent = Kodein {
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -440,12 +441,16 @@ class KodeinTests : TestCase() {
         assertNotNull(child.instanceOrNull<Person>())
     }
 
-    class Recurs0(public val a: RecursA)
-    class RecursA(public val b: RecursB)
-    class RecursB(public val c: RecursC)
-    class RecursC(public val a: RecursA)
+    @Suppress("unused")
+    class Recurs0(val a: RecursA)
+    @Suppress("unused")
+    class RecursA(val b: RecursB)
+    @Suppress("unused")
+    class RecursB(val c: RecursC)
+    @Suppress("unused")
+    class RecursC(val a: RecursA)
 
-    public @Test fun test13_0_Recursivedependencies() {
+    @Test fun test13_0_Recursivedependencies() {
 
         val kodein = Kodein {
             bind<Recurs0>() with provider { Recurs0(instance()) }
@@ -460,7 +465,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    public class PersonInject() {
+    class PersonInject() {
         val injector = KodeinInjector()
         val newPerson: () -> Person by injector.provider()
         val salomon: Person by injector.instance("named")
@@ -469,7 +474,7 @@ class KodeinTests : TestCase() {
         val instance: Person by injector.factory<String, Person>("factory").toInstance("reified")
     }
 
-    public @Test fun test14_0_InjectorInjected() {
+    @Test fun test14_0_InjectorInjected() {
         val injected = PersonInject()
 
         val kodein = Kodein {
@@ -490,7 +495,7 @@ class KodeinTests : TestCase() {
         assertSame(injected.instance, injected.instance)
     }
 
-    public @Test fun test14_1_InjectorNotInjected() {
+    @Test fun test14_1_InjectorNotInjected() {
         val injected = PersonInject()
 
         assertThrown<KodeinInjector.UninjectedException> {
@@ -498,7 +503,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    public @Test fun test15_0_BindingsDescription() {
+    @Test fun test15_0_BindingsDescription() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("thread-singleton") with threadSingleton { Person("ts") }
@@ -518,7 +523,7 @@ class KodeinTests : TestCase() {
         assertTrue("bind<java.lang.Integer>(\"answer\") with instance" in lines)
     }
 
-    public @Test fun test15_1_RegisteredBindings() {
+    @Test fun test15_1_RegisteredBindings() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("thread-singleton") with threadSingleton { Person("ts") }
@@ -536,5 +541,38 @@ class KodeinTests : TestCase() {
         assertEquals("instance", kodein.registeredBindings[Kodein.Bind(Person::class.java, "instance")])
         @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
         assertEquals("instance", kodein.registeredBindings[Kodein.Bind(Integer::class.java, "answer")])
+    }
+
+    @Test fun test16_1_ScopedSingleton() {
+        val globalCache = HashMap<String, HashMap<Any, Any>>()
+        val kodein = Kodein {
+            bind<Person>() with scopedSingleton({ key: String -> globalCache.getOrPut(key) { HashMap() } }) { Person() }
+        }
+
+        val factory = kodein.factory<String, Person>()
+        val one = factory("one")
+        val two = factory("two")
+        assertSame(one, factory("one"))
+        assertNotSame(one, factory("two"))
+        assertSame(two, factory("two"))
+
+        globalCache.remove("one")
+
+        assertNotSame(one, factory("one"))
+        assertSame(two, factory("two"))
+    }
+
+    @Test fun test16_2_AutoScopedSingleton() {
+        val globalCache = HashMap<Any, Any>()
+        val kodein = Kodein {
+            bind<Person>() with autoScopedSingleton({ globalCache }) { Person() }
+        }
+
+        val p = kodein.instance<Person>()
+        assertSame(p, kodein.instance<Person>())
+
+        globalCache.clear()
+
+        assertNotSame(p, kodein.instance<Person>())
     }
 }

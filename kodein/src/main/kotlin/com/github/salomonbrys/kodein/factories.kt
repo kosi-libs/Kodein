@@ -19,7 +19,7 @@ interface Factory<in A, out T : Any> {
      * The name of the scope this factory represents.
      * For debug only.
      */
-    fun scopeName(): String;
+    val scopeName: String;
 
     /**
      * The type of the argument this factory will function for.
@@ -30,17 +30,15 @@ interface Factory<in A, out T : Any> {
 /**
  * Concrete implementation of factory that delegates `getInstance` to a factory method.
  */
-class CFactory<A, out T : Any>(private val _scopeName: () -> String, private val _provider: Kodein.(A) -> T, override val argType: Type) : Factory<A, T> {
+class CFactory<A, out T : Any>(override val scopeName: String, override val argType: Type, private val _provider: Kodein.(A) -> T) : Factory<A, T> {
     override fun getInstance(kodein: Kodein, arg: A) = kodein._provider(arg)
-    override fun scopeName(): String = _scopeName()
 }
 
 /**
  * Concrete implementation of factory that delegates `getInstance` to a provider method.
  * A provider is a factory that takes no argument (Unit as it's argument type).
  */
-class CProvider<out T : Any>(private val _scopeName: () -> String, private val _provider: Kodein.() -> T) : Factory<Unit, T> {
+class CProvider<out T : Any>(override val scopeName: String, private val _provider: Kodein.() -> T) : Factory<Unit, T> {
     override fun getInstance(kodein: Kodein, arg: Unit) = kodein._provider()
-    override fun scopeName(): String = _scopeName()
     override val argType: Type = Unit.javaClass
 }
