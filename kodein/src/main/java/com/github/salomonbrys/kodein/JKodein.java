@@ -1,5 +1,6 @@
 package com.github.salomonbrys.kodein;
 
+import com.github.salomonbrys.kodein.internal.KodeinContainer;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 
@@ -13,9 +14,9 @@ import java.lang.reflect.Type;
  */
 public class JKodein {
 
-    private final Container _container;
+    private final KodeinContainer _container;
 
-    public JKodein(Container container) {
+    public JKodein(KodeinContainer container) {
         _container = container;
     }
 

@@ -3,7 +3,7 @@ package com.github.salomonbrys.kodein
 class LazyKodein(private val _lazy: Lazy<Kodein>) : () -> Kodein {
     override fun invoke() = _lazy.value
 
-    constructor(init: Kodein.Builder.() -> Unit) : this(lazy { Kodein(init) })
+    constructor(silentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(lazy { Kodein(silentOverride, init) })
 }
 
 inline fun <reified A, reified T : Any> _lazyFactory(tag: Any? = null, noinline kodein: () -> Kodein) : Lazy<(A) -> T> = lazy { kodein().factory<A, T>(tag) }

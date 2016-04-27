@@ -1,5 +1,7 @@
-package com.github.salomonbrys.kodein
+package com.github.salomonbrys.kodein.internal
 
+import com.github.salomonbrys.kodein.Factory
+import com.github.salomonbrys.kodein.Kodein
 import java.util.*
 
 /**
@@ -10,9 +12,9 @@ import java.util.*
  * In kodein, every binding is stored as a factory (that's why a scope is a function creating a factory).
  * Providers are special classes of factories that take Unit as parameter.
  */
-class Container private constructor(
+class KodeinContainer private constructor(
         private val _map: Map<Kodein.Key, Factory<*, Any>>,
-        private val _node: Container.Node? = null
+        private val _node: Node? = null
 ) {
 
     /**
@@ -46,16 +48,29 @@ class Container private constructor(
     /**
      * Allows for the building of a Kodein object by defining bindings
      */
-    class Builder() {
+    internal class Builder internal constructor() {
 
         internal val _map: MutableMap<Kodein.Key, Factory<*, Any>> = HashMap()
 
-        fun bind(key: Kodein.Key, factory: Factory<*, Any>) { _map[key] = factory }
+        internal fun bind(key: Kodein.Key, factory: Factory<*, Any>, mustOverride: Boolean?) {
+            if (mustOverride != null) {
+                if (mustOverride && key !in _map)
+                    throw Kodein.OverridingException("Binding must override an existing binding")
+                if (!mustOverride && key in _map)
+                    throw Kodein.OverridingException("Binding must not override an existing binding")
+            }
+            _map[key] = factory
+        }
 
-        fun extend(container: Container) { _map.putAll(container._map) }
+        internal fun extend(container: KodeinContainer, allowOverride: Boolean) {
+            if (allowOverride)
+                _map.putAll(container._map)
+            else
+                container._map.forEach { bind(it.key, it.value, false) }
+        }
     }
 
-    constructor(builder: Container.Builder) : this(builder._map)
+    internal constructor(builder: Builder) : this(builder._map)
 
     /**
      * This is for debug. It allows to print all binded keys.
@@ -71,17 +86,17 @@ class Container private constructor(
      * All Kodein getter methods, whether it's instance(), provider() or factory() eventually ends up calling this
      * function.
      */
-    @kotlin.Suppress("UNCHECKED_CAST") fun <A, T : Any> factoryOrNull(key: Kodein.Key): ((A) -> T)? {
+    @Suppress("UNCHECKED_CAST") fun <A, T : Any> factoryOrNull(key: Kodein.Key): ((A) -> T)? {
         val factory = _map[key] ?: return null
         _node?.check(key)
-        return { arg -> (factory as Factory<A, T>).getInstance(Kodein(Container(_map, Node(key, _node))), arg) }
+        return { arg -> (factory as Factory<A, T>).getInstance(Kodein(KodeinContainer(_map, Node(key, _node))), arg) }
     }
 
     fun <A, T : Any> nonNullFactory(key: Kodein.Key): ((A) -> T)
             = factoryOrNull<A, T>(key) ?: throw notFoundException("No factory found for $key")
 
     fun <T : Any> providerOrNull(bind: Kodein.Bind): (() -> T)? {
-        val factory = factoryOrNull<Unit, T>(Kodein.Key(bind, Unit.javaClass)) ?: return null
+        val factory = factoryOrNull<Unit, T>(Kodein.Key(bind, Unit::class.java)) ?: return null
         return { factory(Unit) }
     }
 

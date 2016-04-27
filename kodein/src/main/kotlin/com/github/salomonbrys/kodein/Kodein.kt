@@ -1,5 +1,6 @@
 package com.github.salomonbrys.kodein
 
+import com.github.salomonbrys.kodein.internal.KodeinContainer
 import java.lang.reflect.Type
 
 /**
@@ -16,7 +17,7 @@ import java.lang.reflect.Type
  *
  * See the file scopes.kt for other scopes.
  */
-class Kodein internal constructor(val _container: Container) {
+class Kodein internal constructor(val _container: KodeinContainer) {
 
     data class Bind(
             val type: Type,
@@ -45,35 +46,71 @@ class Kodein internal constructor(val _container: Container) {
      * }
      * ```
      */
-    class Module(val init: Builder.() -> Unit)
+    class Module(val allowSilentOverride: Boolean = false, val init: Builder.() -> Unit)
+
+    internal enum class OverrideMode {
+        ALLOW_SILENT {
+            override val allow: Boolean get() = true
+            override fun must(overrides: Boolean?) = overrides
+            override fun allow(allowOverride: Boolean) = allowOverride
+        },
+        ALLOW_EXPLICIT {
+            override val allow: Boolean get() = true
+            override fun must(overrides: Boolean?) = overrides ?: false
+            override fun allow(allowOverride: Boolean) = allowOverride
+        },
+        FORBID {
+            override val allow: Boolean get() = false
+            override fun must(overrides: Boolean?) = if (overrides != null && overrides) throw OverridingException("Overriding has been forbidden") else false
+            override fun allow(allowOverride: Boolean) = if (allowOverride) throw OverridingException("Overriding has been forbidden") else false
+        };
+
+        abstract val allow: Boolean
+        abstract fun must(overrides: Boolean?): Boolean?
+        abstract fun allow(allowOverride: Boolean): Boolean
+
+        companion object {
+            fun get(allow: Boolean, silent: Boolean): OverrideMode {
+                if (!allow)
+                    return FORBID
+                if (silent)
+                    return ALLOW_SILENT
+                return ALLOW_EXPLICIT
+            }
+        }
+    }
 
     /**
      * Allows for the DSL inside the block argument of the constructor of `Kodein` and `Kodein.Module`
      */
-    class Builder(init: Builder.() -> Unit) {
+    class Builder internal constructor(private val _overrideMode: OverrideMode, internal val _builder: KodeinContainer.Builder, init: Builder.() -> Unit) {
 
-        internal val _builder = Container.Builder()
+        init { init() }
 
-        init { this.init() }
-
-        inner class TypeBinder<T : Any>(private val bind: Bind) {
-            infix fun <R : T, A> with(factory: Factory<A, R>) = _builder.bind(Key(bind, factory.argType), factory)
+        inner class TypeBinder<T : Any>(private val _bind: Bind, overrides: Boolean?) {
+            private val _mustOverride = _overrideMode.must(overrides)
+            infix fun <R : T, A> with(factory: Factory<A, R>) = _builder.bind(Key(_bind, factory.argType), factory, _mustOverride)
         }
 
-        inner class ConstantBinder(private val tag: Any) {
-            infix fun with(value: Any) = _builder.bind(Key(Bind(value.javaClass, tag), Unit.javaClass), instance(value))
+        inner class ConstantBinder(private val _tag: Any, overrides: Boolean?) {
+            private val _mustOverride = _overrideMode.must(overrides)
+            infix fun with(value: Any) = _builder.bind(Key(Bind(value.javaClass, _tag), Unit.javaClass), instance(value), _mustOverride)
         }
 
-        inline fun <reified T : Any> bind(tag: Any? = null): TypeBinder<T> = TypeBinder(Bind(typeToken<T>(), tag))
+        inline fun <reified T : Any> bind(tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Bind(typeToken<T>(), tag), overrides)
 
-        fun constant(tag: Any): ConstantBinder = ConstantBinder(tag)
+        fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder = ConstantBinder(tag, overrides)
 
-        fun import(module: Module) = module.init.invoke(this)
+        fun import(module: Module, allowOverride: Boolean = false) {
+            Builder(OverrideMode.get(_overrideMode.allow(allowOverride), module.allowSilentOverride), _builder, module.init)
+        }
 
-        fun extend(kodein: Kodein) = _builder.extend(kodein._container)
+        fun extend(kodein: Kodein, allowOverride: Boolean = false) {
+            _builder.extend(kodein._container, _overrideMode.allow(allowOverride))
+        }
     }
 
-    constructor(init: Kodein.Builder.() -> Unit) : this(Container(Builder(init)._builder))
+    constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(KodeinContainer(Builder(OverrideMode.get(true, allowSilentOverride), KodeinContainer.Builder(), init)._builder))
 
     /**
      * This is for debug. It allows to print all binded keys.
@@ -91,6 +128,11 @@ class Kodein internal constructor(val _container: Container) {
      * Exception thrown when asked for a dependency that cannot be found
      */
     class NotFoundException(message: String) : RuntimeException(message)
+
+    /**
+     * Exception thrown when there is an overriding error
+     */
+    class OverridingException(message: String) : RuntimeException(message)
 
     /**
      * Gets a factory for the given argument type, return type and tag.

@@ -455,7 +455,6 @@ class KodeinTests : TestCase() {
         val kodein = Kodein {
             bind<Recurs0>() with provider { Recurs0(instance()) }
             bind<RecursA>() with provider { RecursA(instance()) }
-            bind<RecursA>() with provider { RecursA(instance()) }
             bind<RecursB>() with provider { RecursB(instance("yay")) }
             bind<RecursC>("yay") with provider { RecursC(instance()) }
         }
@@ -574,5 +573,86 @@ class KodeinTests : TestCase() {
         globalCache.clear()
 
         assertNotSame(p, kodein.instance<Person>())
+    }
+
+    @Test fun test17_0_ExplicitOverride() {
+        val kodein = Kodein {
+            bind<String>("name") with instance("Benjamin")
+            bind<String>("name", overrides = true) with instance("Salomon")
+        }
+
+        assertEquals("Salomon", kodein.instance<String>("name"))
+    }
+
+    @Test fun test17_1_SilentOverride() {
+        val kodein = Kodein(allowSilentOverride = true) {
+            bind<String>("name") with instance("Benjamin")
+            bind<String>("name") with instance("Salomon")
+        }
+
+        assertEquals("Salomon", kodein.instance<String>("name"))
+    }
+
+    @Test fun test17_2_SilentOverrideNotAllowed() {
+        Kodein() {
+            bind<String>("name") with instance("Benjamin")
+
+            assertThrown<Kodein.OverridingException> {
+                bind<String>("name") with instance("Salomon")
+            }
+        }
+    }
+
+    @Test fun test17_3_MustNotOverride() {
+        Kodein(allowSilentOverride = true) {
+            bind<String>("name") with instance("Benjamin")
+
+            assertThrown<Kodein.OverridingException> {
+                bind<String>("name", overrides = false) with instance("Salomon")
+            }
+        }
+    }
+
+    @Test fun test18_0_ModuleOverride() {
+        val module = Kodein.Module {
+            bind<String>("name", overrides = true) with instance("Salomon")
+        }
+
+        val kodein = Kodein {
+            bind<String>("name") with instance("Benjamin")
+            import(module, allowOverride = true)
+        }
+
+        assertEquals("Salomon", kodein.instance<String>("name"))
+    }
+
+    @Test fun test18_1_ModuleForbiddenOverride() {
+        val module = Kodein.Module {
+            bind<String>("name", overrides = true) with instance("Salomon")
+        }
+
+        Kodein {
+            bind<String>("name") with instance("Benjamin")
+
+            assertThrown<Kodein.OverridingException> {
+                import(module)
+            }
+        }
+    }
+
+    @Test fun test18_2_ModuleImportsForbiddenOverride() {
+        val subModule = Kodein.Module {
+            bind<String>("name", overrides = true) with instance("Salomon")
+        }
+
+        val module = Kodein.Module { import(subModule, allowOverride = true) }
+
+        Kodein {
+            bind<String>("name") with instance("Benjamin")
+
+            assertThrown<Kodein.OverridingException> {
+                import(module)
+            }
+        }
     }
 }

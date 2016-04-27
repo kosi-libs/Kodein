@@ -1,5 +1,6 @@
 package com.github.salomonbrys.kodein
 
+import com.github.salomonbrys.kodein.internal.KodeinContainer
 import java.io.Serializable
 import java.util.*
 import kotlin.reflect.KProperty
@@ -31,28 +32,28 @@ abstract class Injected<out T : Any> internal constructor(val bind: Kodein.Bind)
 
     override fun toString(): String = if (isInjected()) value.toString() else "Uninjected $_type: $bind."
 
-    internal fun _inject(container: Container) {
+    internal fun _inject(container: KodeinContainer) {
         _value = _getInjection(container)
     }
 
-    protected abstract fun _getInjection(container: Container): T
+    protected abstract fun _getInjection(container: KodeinContainer): T
     protected abstract val _type: String
 }
 
 //public fun <T : Any> Injected<T>.get(thisRef: Any?, property: PropertyMetadata): T = value
 
 class InjectedFactory<in A, out T : Any>(private val _key: Kodein.Key) : Injected<(A) -> T>(_key.bind) {
-    override fun _getInjection(container: Container) = container.nonNullFactory<A, T>(_key)
+    override fun _getInjection(container: KodeinContainer) = container.nonNullFactory<A, T>(_key)
     override val _type = "factory"
 }
 
 class InjectedProvider<out T : Any>(bind: Kodein.Bind) : Injected<() -> T>(bind) {
-    override fun _getInjection(container: Container) = container.nonNullProvider<T>(bind);
+    override fun _getInjection(container: KodeinContainer) = container.nonNullProvider<T>(bind);
     override val _type = "provider"
 }
 
 class InjectedInstance<out T : Any>(bind: Kodein.Bind) : Injected<T>(bind) {
-    override fun _getInjection(container: Container) = container.nonNullProvider<T>(bind).invoke();
+    override fun _getInjection(container: KodeinContainer) = container.nonNullProvider<T>(bind).invoke();
     override val _type = "instance"
 }
 
