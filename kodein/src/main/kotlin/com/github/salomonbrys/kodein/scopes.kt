@@ -59,25 +59,25 @@ fun <T : Any> Kodein.Builder.threadSingleton(creator: Kodein.() -> T): CProvider
 fun <T : Any> Kodein.Builder.instance(instance: T) = CProvider("instance") { instance }
 
 
-class CScoped<in S : Any, out T : Any>(override val argType: Type, override val scopeName: String, private val _getCache: (S) -> HashMap<Any, Any>, private val _creator: Kodein.(S) -> T) : Factory<S, T> {
+class CScoped<in S : Any, C : Any, out T : Any>(override val argType: Type, override val scopeName: String, private val _getCache: (S) -> Pair<C, HashMap<Any, Any>>, private val _creator: Kodein.(C) -> T) : Factory<S, T> {
 
     val key = Any()
 
     @Suppress("UNCHECKED_CAST")
     override fun getInstance(kodein: Kodein, arg: S): T {
-        val cache = _getCache(arg)
+        val (fArg, cache) = _getCache(arg)
         return cache[key] as T? ?: synchronized(cache) {
-            cache.getOrPut(key) { _creator(kodein, arg) } as T
+            cache.getOrPut(key) { _creator(kodein, fArg) } as T
         }
 
     }
 }
 
-inline fun <reified S : Any, reified T : Any> Kodein.Builder.scopedSingleton(noinline getCache: (S) -> HashMap<Any, Any>, noinline creator: Kodein.(S) -> T): CScoped<S, T> {
+inline fun <reified S : Any, reified T : Any> Kodein.Builder.scopedSingleton(noinline getCache: (S) -> HashMap<Any, Any>, noinline creator: Kodein.(S) -> T): CScoped<S, S, T> {
     val argType = typeToken<S>()
-    return CScoped(argType, "scopedSingleton<${argType.dispName}>", getCache, creator)
+    return CScoped(argType, "scopedSingleton<${argType.dispName}>", { it to getCache(it) }, creator)
 }
 
-inline fun <reified T : Any> Kodein.Builder.autoScopedSingleton(noinline getCache: () -> HashMap<Any, Any>, noinline creator: Kodein.() -> T)
-        = CScoped<Unit, T>(Unit.javaClass, "autoScopedSingleton", { getCache() }, { creator() })
+inline fun <C : Any, reified T : Any> Kodein.Builder.autoScopedSingleton(noinline getCache: () -> Pair<C, HashMap<Any, Any>>, noinline creator: Kodein.(C) -> T)
+        = CScoped<Unit, C, T>(Unit.javaClass, "autoScopedSingleton", { getCache() }, creator)
 

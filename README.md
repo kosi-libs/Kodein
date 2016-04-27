@@ -6,6 +6,7 @@
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg)](https://kotlinlang.slack.com/messages/kodein/)
 
 
+
 Kodein: Kotlin Dependency Injection
 ===================================
 
@@ -78,6 +79,53 @@ compile 'com.github.salomonbrys.kodein:kodein-android:2.6.0'
 ```
 
 
+
+Table Of Contents
+-----------------
+
+  * [Kodein: Kotlin Dependency Injection](#kodein-kotlin-dependency-injection)
+    * [Example](#example)
+    * [Install](#install)
+    * [Table Of Contents](#table-of-contents)
+    * [Bindings: Declaring dependencies](#bindings-declaring-dependencies)
+      * [Factory binding](#factory-binding)
+      * [Provider binding](#provider-binding)
+      * [Singleton binding](#singleton-binding)
+      * [Thread singleton binding](#thread-singleton-binding)
+      * [Instance binding](#instance-binding)
+      * [Tagged bindings](#tagged-bindings)
+      * [Constant binding](#constant-binding)
+      * [Transitive dependency](#transitive-dependency)
+      * [Scoped transitive dependency](#scoped-transitive-dependency)
+      * [Modules](#modules)
+      * [Extension (composition)](#extension-composition)
+      * [Overriding](#overriding)
+    * [Injection: Dependency retrieval](#injection-dependency-retrieval)
+      * [Retrieval rules](#retrieval-rules)
+      * [Via Kodein methods](#via-kodein-methods)
+      * [Via lazy property](#via-lazy-property)
+      * [Via injector](#via-injector)
+      * [In Java](#in-java)
+    * [Android](#android)
+      * [Injecting objects in Android...](#injecting-objects-in-android)
+        * [...Using appKodein](#using-appkodein)
+        * [...Using lazyKodeinFromApp](#using-lazykodeinfromapp)
+        * [...Using an injector](#using-an-injector)
+      * [Android Activity Scopes](#android-activity-scopes)
+      * [Android example project](#android-example-project)
+    * [Debuging](#debuging)
+        * [Print bindings](#print-bindings)
+        * [Recursive dependency loop](#recursive-dependency-loop)
+    * [Advanced use](#advanced-use)
+      * [Create your own scopes](#create-your-own-scopes)
+        * [Builder](#builder)
+        * [Scoped singleton](#scoped-singleton)
+        * [Auto Scoped singleton](#auto-scoped-singleton)
+      * [Bind the same type to different factories](#bind-the-same-type-to-different-factories)
+    * [Let's talk!](#lets-talk)
+
+
+
 Bindings: Declaring dependencies
 --------------------------------
 
@@ -94,7 +142,7 @@ Bindings are declared inside a Kodein initialization block, and they are not sub
 There are different ways to declare bindings:
 
 
-#### Factory binding
+### Factory binding
 
 This binds a type to a factory function, which is a function that takes an argument of a defined type and that returns an object of the binded type.  
 Each time you need an instance of the binded type, the function will be called.
@@ -108,7 +156,7 @@ val kodein = Kodein {
 ```
 
 
-#### Provider binding
+### Provider binding
 
 This binds a type to a provider function, which is a function that takes no arguments and returns an object of the binded type.
 Each time you need an instance of the binded type, the function will be called.  
@@ -121,7 +169,7 @@ val kodein = Kodein {
 ```
 
 
-#### Singleton binding
+### Singleton binding
 
 This binds a type to an instance of this type that will lazily be created at first use. Therefore, the provided function will only be called once: the first time an instance is needed.
 
@@ -132,7 +180,7 @@ val kodein = Kodein {
 ```
 
 
-#### Thread singleton binding
+### Thread singleton binding
 
 This is the same as the singleton binding, except that each thread gets a different instance. Therefore, the provided function is called once per thread that needs the instance.
 
@@ -143,7 +191,7 @@ val kodein = Kodein {
 ```
 
 
-#### Instance binding
+### Instance binding
 
 This binds a type to an instance *already created*.
 
@@ -156,7 +204,7 @@ val kodein = Kodein {
 Note that instance is used with parenthesis. It is not given a function, but an instance.
 
 
-#### Tagged bindings
+### Tagged bindings
 
 All bindings can be tagged to allow you to bind different instances of the same type:
 
@@ -171,7 +219,7 @@ val kodein = Kodein {
 Note that you can have multiple bindings of the same type, as long as they are binded with different tags. You can have only one binding of a certain type with no tag.
 
 
-#### Constant binding
+### Constant binding
 
 It is often useful to bind "configuration" constants. These contants are always tagged:
 
@@ -187,7 +235,7 @@ Note the absence of curly braces. It is not given a function, but an instance.
 You should only use constant bindings for very simple types without inheritance or interface (e.g. primitive types and data classes).
 
 
-#### Transitive dependency
+### Transitive dependency
 
 With those lazily instantiated dependencies, a dependency (very) often needs another dependency. Such object should have their dependencies passed to their constructor. Thanks to Kotlin's killer type inference engine, Kodein makes retrieval of transitive dependencies really easy.  
 Say you have the following class:
@@ -215,7 +263,7 @@ val kodein = Kodein {
 You can, of course, also use the functions `provider()`, `provider(tag)`, `factory()` and `factory(tag)`, 
 
 
-#### Scoped transitive dependency
+### Scoped transitive dependency
 
 Sometimes, you may arrive to a situation where a singleton binded type depends on a provider binded type.  
 Something like this :
@@ -239,7 +287,7 @@ class GameEngine(private val rnd: () -> Random) { /*...*/ }
 I encourage you to follow this rule: *In a singleton, if you're not 100% sure that the transitive dependencies are themselves singletons, then use providers*.
 
 
-#### Modules
+### Modules
 
 Kodein allows you to export your bindings in modules. It is very useful to have separate modules defining their own bindings instead of having only one central binding definition.  
 A module is an object that you can construct the exact same way as you construct a Kodein instance:
@@ -264,7 +312,7 @@ Note that modules are *definitions*, they will re-declare their bindings in each
 If you create a module that defines a singleton and import that module into two different kodein instances, then the singleton binded object will exist twice: once in each kodein instance.
 
 
-#### Extension (composition)
+### Extension (composition)
 
 Kodein allows you to create a new kodein instance by extending an existing kodein instance:
 
@@ -278,7 +326,7 @@ val subKodein = Kodein {
 Note that this preserves scopes, meaning that a singleton-binded in `appKodein` will continue to exist only once. Both `appKodein` and `subKodein` will give the same instance.
 
 
-#### Overriding
+### Overriding
 
 By default, overriding a binding is not allowed in Kodein. That is because accidentally binding twice the same (class,tag) to different instances/providers/factories can cause real headaches to debug.  
 However, when intended, it can be really interesting to override a binding, especially when creating a testing environment.  
@@ -313,6 +361,8 @@ val testModule = Kodein.Module(allowSilentOverride = true) {
 }
 ```
 
+
+
 Injection: Dependency retrieval
 -------------------------------
 
@@ -328,7 +378,7 @@ val kodein = Kodein {
 ```
 
 
-#### Retrieval rules
+### Retrieval rules
 
 When retrieving a dependency, the following rule applies:
 
@@ -338,7 +388,7 @@ When retrieving a dependency, the following rule applies:
     * as an instance: `T`
 
 
-#### Via Kodein methods
+### Via Kodein methods
 
 You can retrieve a dependency via a Kodein instance:
 
@@ -369,7 +419,7 @@ private val sixSideDiceProvider: () -> Dice = kodein.factory().toProvider(6)
 ```
 
 
-#### Via lazy property
+### Via lazy property
 
 Lazy properties allow you to resolve the dependency upon first access:
 
@@ -390,7 +440,7 @@ private val tenSideDiceProvider: Dice by kodein.lazyFactory().toLazyInstance(10)
 ```
 
 
-#### Via injector
+### Via injector
 
 An injector is an object that you can use to inject all injected values in an object.
 
@@ -422,7 +472,7 @@ private val tenSideDiceProvider: Dice by injector.factory().toInstance(10)
 ```
 
 
-#### In Java
+### In Java
 
 While Kodein does not allow you to declare modules or dependencies in Java, it does allow you to retrieve dependencies using a Java API.  
 Simply give `kodein.java` to your Java classes, and you can use Kodein in Java:
@@ -479,7 +529,10 @@ Then, in your Activities, Fragments, and other context aware android classes, yo
 There are different ways to access a Kodein instance and your dependencies:
 
 
-#### Using appKodein
+### Injecting objects in Android...
+
+
+#### ...Using appKodein
 
 `appKodein` is a function that will work in your context aware Android classes provided that your Application implements `KodeinApplication`:
 
@@ -500,7 +553,7 @@ This method is really easy but it is not really optimized because the Kodein ins
 However, this method is very easy and readable. I recommend it if you have only a few dependencies to inject.
 
 
-#### Using lazyKodeinFromApp
+#### ...Using lazyKodeinFromApp
 
 This is a more optimized way of injecting dependencies. It works the exact same way as the previous method, except that the Kodein instance will be fetched only once.
 
@@ -516,7 +569,7 @@ class MyActivity : Activity() {
 ```
 
 
-#### Using an injector
+#### ...Using an injector
 
 Using an injector allows you to resolve all dependencies in `onCreate`, reducing the cost of dependency first-access (but more processing happening in `onCreate`). As with the previous method, the Kodein instance will only be fetched once.
 
@@ -537,7 +590,51 @@ Using this approach has an important advantage: as all dependencies are retrieve
 You can have this certitude with the two previous methods only once you have accessed all dependencies at least once.
 
 
-#### Android example project
+### Android Activity Scopes
+
+Sometimes, you need to define "activity singletons": objects that will be singleton inside an activity, but two different activities will receive different objects.
+For this, you can use the activity scope:
+
+```kotlin
+val kodein = Kodein {
+    bind<Logger>() with activitySingleton { LogManager.getNamedLogger(it.localClassName) } // `it` is the activity the object is being created for.
+}
+```
+
+To retrieve the objects thusly binded, you need to inject a factory which takes the activity as parameter:
+
+```kotlin
+val logger = kodein.factory<Activity, Logger>().invoke(getActivity())
+```
+
+If you don't want to being required an activity to inject your objects, you can use the "auto activity scope":
+
+```kotlin
+val kodein = Kodein {
+    bind<Logger>() with autoActivitySingleton { LogManager.getNamedLogger(it.localClassName) }
+}
+```
+
+and then:
+
+```kotlin
+val logger = kodein.instance<Logger>()
+```
+
+This comes with two important caveats:
+
+ * Objects that are binded with `autoActivitySingleton` will always be injected according to **the last displayed activity**.
+ * In your `Application` class, in the `onCreate` method, you must add this line:
+    ```kotlin
+    class MyActivity : Activity {
+        override fun onCreate() {
+            registerActivityLifecycleCallbacks(ActivityScopeLifecycleManager) // <-- THIS LINE
+        }
+    }
+    ```
+
+
+### Android example project
 
 Have a look at the [Android demo project](https://github.com/SalomonBrys/Kodein/tree/master/AndroidDemo)!
 
@@ -591,17 +688,71 @@ Advanced use
 ------------
 
 
-#### Create your own scopes
+### Create your own scopes
 
-A scope is an extension function to `Kodein.Builder` that returns a `Factory<A, T>`.  
-You can use the `CFactory<A, T>` class for ease of use.  
+There are three ways to create your scopes. By creating a builder function, a scoped singleton cache function or an auto scoped singleton cache function.
+
+
+#### Builder
+
+A builder function scope is an extension function to `Kodein.Builder` that returns a `Factory<A, T>`. You can use the `CFactory<A, T>` class for ease of use.
 If your scope is a provider scope (such as singleton), you can use the `CProvider<T>` class for ease of use.  
 Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/scopes.kt) file. The `singleton` scope is very easy to understand and is a good starting point.
 
 
-#### Bind the same type to different factories
+#### Scoped singleton
+
+Scoped singleton are singletons that are binded to a context and live while this context exists.
+
+To define a scoped singleton, you must define a function that satisfies this contract: `(S) -> HashMap<Any, Any>` where `S` is the context type.
+This function must *always* return the same `HashMap` when given the same `S` object.
+Standard ways of doing so is to use the `userData` property of the context, if the `S` type has one, or else to use a `WeakHashMap<S, HashMap<Any, Any>>`.
+
+To declare bindings in your scope, you use `scopedSingleton`:
+
+```kotlin
+fun myScope(context: Context): HashMap<Any, Any> { /*...*/ }
+
+val kodein = Kodein {
+    bind<Logger>() with scopedSingleton(::myScope) { LogManager.getNamedLogger(it.name) } // `it` is the context.
+}
+```
+
+Then, to retrieve a binded type, you must retrive  a **factory** and then provide it the context:
+
+```kotlin
+val logger = kodein.factory<Context, Logger>().invoke(getContext())
+```
+
+
+#### Auto Scoped singleton
+
+Scoped singletons are not always ideal since you need the context to retrieve any object. Sometimes, the context is static.
+For those times, you can use an "auto scoped singleton". An auto scoped singleton function is not given a context: it is responsible for fetching both the cache `HashMap` and the context.
+
+To define an auto scoped singleton, you must define a function that satisfies this contract: `() -> Pair<S, HashMap<Any, Any>>` where `S` is the context type.
+
+To declare bindings in your scope, you use `autoScopedSingleton`:
+
+```kotlin
+fun myScope(): Pair<Context, HashMap<Any, Any>> { /*...*/ }
+
+val kodein = Kodein {
+    bind<Logger>() with autoScopedSingleton(::myScope) { LogManager.getNamedLogger(it.name) } // `it` is the context.
+}
+```
+
+Then, to retrieve a binded type, you can use the classics:
+
+```kotlin
+val logger: Logger = kodein.instance()
+```
+
+
+### Bind the same type to different factories
 
 Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are binded with different tags", I lied. Because each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are binded as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be binded to it's own factory, which in turns means that you can bind the same type without tagging to different factories. Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
+
 
 
 Let's talk!

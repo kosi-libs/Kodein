@@ -564,7 +564,7 @@ class KodeinTests : TestCase() {
     @Test fun test16_2_AutoScopedSingleton() {
         val globalCache = HashMap<Any, Any>()
         val kodein = Kodein {
-            bind<Person>() with autoScopedSingleton({ globalCache }) { Person() }
+            bind<Person>() with autoScopedSingleton({ Unit to globalCache }) { Person() }
         }
 
         val p = kodein.instance<Person>()
