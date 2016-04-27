@@ -412,10 +412,10 @@ val randomProvider: (() -> Random)? = kodein.providerOrNull()
 val answerConstant: String? = kodein.instanceOrNull("answer")
 ```
 
-You can retrive a provider from a factory binded type by using `toProvider`:
+You can retrive a provider or an instance from a factory binded type by using `with`:
 
 ```kotlin
-private val sixSideDiceProvider: () -> Dice = kodein.factory().toProvider(6)
+private val sixSideDiceProvider: () -> Dice = kodein.with(6).provider()
 ```
 
 
@@ -464,11 +464,11 @@ class Controller() {
 
 If you try to access a property injected by an injector *before* calling `injector.inject(kodein)`, `KodeinInjector.UninjectedException` will be thrown.
 
-You can inject a provider or an instance from a factory binded type by using `toProvider` and `toInstance`:
+You can inject a provider or an instance from a factory binded type by using `with`:
 
 ```kotlin
-private val sixSideDiceProvider: () -> Dice by injector.factory().toProvider(6)
-private val tenSideDiceProvider: Dice by injector.factory().toInstance(10)
+private val sixSideDiceProvider: () -> Dice by injector.with(6).provider()
+private val tenSideDiceProvider: Dice by injector.with(10).instance()
 ```
 
 

@@ -58,6 +58,24 @@ class KodeinTests : TestCase() {
         assertEquals("Salomon", p().name)
     }
 
+    @Test fun test00_4_WithFactoryGetProvider() {
+
+        val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
+
+        val p: () -> Person = kodein.with("Salomon").provider()
+
+        assertEquals("Salomon", p().name)
+    }
+
+    @Test fun test00_5_WithFactoryGetInstance() {
+
+        val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
+
+        val p: Person = kodein.with("Salomon").instance()
+
+        assertEquals("Salomon", p.name)
+    }
+
     @Test fun test01_0_SingletonBindingGetInstance() {
 
         val kodein = Kodein { bind<Person>() with singleton { Person() } }
@@ -469,8 +487,8 @@ class KodeinTests : TestCase() {
         val newPerson: () -> Person by injector.provider()
         val salomon: Person by injector.instance("named")
         val factory: (String) -> Person by injector.factory("factory")
-        val provider: () -> Person by injector.factory<String, Person>("factory").toProvider("provided")
-        val instance: Person by injector.factory<String, Person>("factory").toInstance("reified")
+        val provider: () -> Person by injector.with("provided").provider("factory")
+        val instance: Person by injector.with("reified").instance("factory")
     }
 
     @Test fun test14_0_InjectorInjected() {

@@ -172,6 +172,21 @@ class Kodein internal constructor(val _container: KodeinContainer) {
      */
     inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = _container.providerOrNull<T>(Kodein.Bind(typeToken<T>(), tag))?.invoke()
 
+    inner class CurriedFactory<A : Any>(val arg: A, val argType: Type) {
+
+        val _container: KodeinContainer get() = this@Kodein._container
+
+        inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = _container.nonNullFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType)).toProvider(arg)
+
+        inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = _container.factoryOrNull<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))?.toProvider(arg)
+
+        inline fun <reified T : Any> instance(tag: Any? = null): T = _container.nonNullFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType)).invoke(arg)
+
+        inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = _container.factoryOrNull<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))?.invoke(arg)
+    }
+
+    inline fun <reified A : Any> with(arg: A) = CurriedFactory(arg, typeToken<A>())
+
     val java = JKodein(_container)
 }
 
