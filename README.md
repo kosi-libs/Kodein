@@ -102,7 +102,9 @@ Each time you need an instance of the binded type, the function will be called.
 For example, here is a binding that creates a new `Dice` entry each time the you need a `Dice` instance, according to a given `Int` representing the number of sides:
 
 ```kotlin
-bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
+val kodein = Kodein {
+    bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
+}
 ```
 
 
@@ -113,7 +115,9 @@ Each time you need an instance of the binded type, the function will be called.
 For example, here is a binding that creates a new 6 sided `Dice` entry each time you need a `Dice` instance:
 
 ```kotlin
-bind<Dice>() with provider { RandomDice(6) }
+val kodein = Kodein {
+    bind<Dice>() with provider { RandomDice(6) }
+}
 ```
 
 
@@ -122,7 +126,9 @@ bind<Dice>() with provider { RandomDice(6) }
 This binds a type to an instance of this type that will lazily be created at first use. Therefore, the provided function will only be called once: the first time an instance is needed.
 
 ```kotlin
-bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+val kodein = Kodein {
+    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+}
 ```
 
 
@@ -131,7 +137,9 @@ bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 This is the same as the singleton binding, except that each thread gets a different instance. Therefore, the provided function is called once per thread that needs the instance.
 
 ```kotlin
-bind<Cache>() with threadSingleton { LRUCache(16 * 1024) }
+val kodein = Kodein {
+    bind<Cache>() with threadSingleton { LRUCache(16 * 1024) }
+}
 ```
 
 
@@ -140,7 +148,9 @@ bind<Cache>() with threadSingleton { LRUCache(16 * 1024) }
 This binds a type to an instance *already created*.
 
 ```kotlin
-bind<DataSource>() with instance(SqliteDataSource.open("path/to/file"))
+val kodein = Kodein {
+    bind<DataSource>() with instance(SqliteDataSource.open("path/to/file"))
+}
 ```
 
 Note that instance is used with parenthesis. It is not given a function, but an instance.
@@ -151,9 +161,11 @@ Note that instance is used with parenthesis. It is not given a function, but an 
 All bindings can be tagged to allow you to bind different instances of the same type:
 
 ```kotlin
-bind<Dice>() with provider { RandomDice(6) }
-bind<Dice>("DnD10") with provider { RandomDice(10) }
-bind<Dice>("DnD20") with provider { RandomDice(20) }
+val kodein = Kodein {
+    bind<Dice>() with provider { RandomDice(6) }
+    bind<Dice>("DnD10") with provider { RandomDice(10) }
+    bind<Dice>("DnD20") with provider { RandomDice(20) }
+}
 ```
 
 Note that you can have multiple bindings of the same type, as long as they are binded with different tags. You can have only one binding of a certain type with no tag.
@@ -164,8 +176,10 @@ Note that you can have multiple bindings of the same type, as long as they are b
 It is often useful to bind "configuration" constants. These contants are always tagged:
 
 ```kotlin
-constant("maxThread") with 8
-constant("serverURL") with "https://my.server.url"
+val kodein = Kodein {
+    constant("maxThread") with 8
+    constant("serverURL") with "https://my.server.url"
+}
 ```
 
 Note the absence of curly braces. It is not given a function, but an instance.
@@ -183,7 +197,7 @@ Say you have the following class:
      - A Random implementation.
      - The number of side of the dice.
 */
-public class Dice(private val random: Random, private val sides: Int) {
+class Dice(private val random: Random, private val sides: Int) {
 /*...*/
 }
 ```
@@ -191,9 +205,11 @@ public class Dice(private val random: Random, private val sides: Int) {
 Then it is really easy to bind RandomDice with it's transitive dependencies, by simply using `instance()` or `instance(tag)`:
 
 ```kotlin
-bind<Random>() with provider { SecureRandom() }
-constant("max") with 5
-bind<Dice>() with singleton { Dice(instance(), instance("max")) }
+val kodein = Kodein {
+    bind<Random>() with provider { SecureRandom() }
+    constant("max") with 5
+    bind<Dice>() with singleton { Dice(instance(), instance("max")) }
+}
 ```
 
 You can, of course, also use the functions `provider()`, `provider(tag)`, `factory()` and `factory(tag)`, 
@@ -262,16 +278,53 @@ val subKodein = Kodein {
 Note that this preserves scopes, meaning that a singleton-binded in `appKodein` will continue to exist only once. Both `appKodein` and `subKodein` will give the same instance.
 
 
+#### Overriding
+
+By default, overriding a binding is not allowed in Kodein. That is because accidentally binding twice the same (class,tag) to different instances/providers/factories can cause real headaches to debug.  
+However, when intended, it can be really interesting to override a binding, especially when creating a testing environment.  
+You can override an existing binding by specifying explicitely that it is an override:
+
+```kotlin
+val kodein = Kodein {
+    bind<API>() with singleton { APIImpl() }
+    /* ... */
+    bind<API>(overrides = true) with singleton { APIImpl() } // Will not fail because the override is explicit.
+}
+```
+
+By default, modules are not allowed to override, **even explicitely**.  
+You can allow a module to override some of your bindings when you import it (the same goes for extension):
+
+```kotlin
+val kodein = Kodein {
+    /* ... */
+    import(testEnvModule, allowOverride = true) // The module is allowed to override the previous bindings.
+}
+```
+
+Note that the bindings in the module still need to specify explicitly the overrides.
+
+Some times, you just want to define bindings without knowing if you are actually overriding a previous binding or defining a new.  
+Those cases should be rare and you should know what you are doing:
+
+```kodein
+val testModule = Kodein.Module(allowSilentOverride = true) {
+    bind<EmailClient>() with singleton { MockEmailClient() } // Maybe adding a new binding, maybe overriding an existing, who knows ?
+}
+```
+
 Injection: Dependency retrieval
 -------------------------------
 
 In this chapter, these example bindings are used:
 
 ```kotlin
-bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
-bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
-bind<Random>() with provider { SecureRandom() }
-constant("answer") with "fourty-two"
+val kodein = Kodein {
+    bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
+    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+    bind<Random>() with provider { SecureRandom() }
+    constant("answer") with "fourty-two"
+}
 ```
 
 
@@ -376,10 +429,10 @@ Simply give `kodein.java` to your Java classes, and you can use Kodein in Java:
 
 ```java
 public class JavaClass {
-    private Function1<Integer, Dice> diceFactory;
-    private Datasource dataSource;
-    private Function0<Random> randomProvider;
-    private String answerConstant;
+    private final Function1<Integer, Dice> diceFactory;
+    private final Datasource dataSource;
+    private final Function0<Random> randomProvider;
+    private final String answerConstant;
     
     public JavaClass(JKodein kodein) {
         diceFactory = kodein.factory(Integer.class, Dice.class);
@@ -393,7 +446,13 @@ public class JavaClass {
 Remember that Java is subject to type erasure. Therefore, if you registered a generic Class binding such as `bind<List<String>>()`, in order to retrieve it you have to use `TypeToken` to circumvent Java's type erasure:
 
 ```java
-List<String> list = kodein.instance(new TypeToken<List<String>>(){});
+class JavaClass {
+    private final List<String> list;
+
+    public JavaClass(JKodein kodein) {
+        list = kodein.instance(new TypeToken<List<String>>(){}); // Note the usage of the TypeToken class
+    }
+}
 ```
 
 
@@ -428,7 +487,7 @@ There are different ways to access a Kodein instance and your dependencies:
 class MyActivity : Activity() {
     val diceProvider: () -> Dice by appKodein.lazyProvider()  // appKodein without parenthesis
     
-    override onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         val random: Random = appKodein().instance()   // appKodein with parenthesis
     }
 }
@@ -450,7 +509,7 @@ class MyActivity : Activity() {
     private val kodein = lazyKodeinFromApp() // Note the use of = and not by
     val diceProvider: () -> Dice = kodein.lazyProvider()  // kodein without parenthesis
     
-    override onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         val random: Random = kodein().instance()   // kodein with parenthesis
     }
 }
@@ -468,7 +527,7 @@ class MyActivity : Activity() {
     val diceProvider: () -> Dice by injector.provider()
     val random: Random by injector.instance()
     
-    override onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         injector.inject(appKodein())
     }
 }
