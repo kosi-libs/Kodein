@@ -87,7 +87,7 @@ Table Of Contents
     * [Example](#example)
     * [Install](#install)
     * [Table Of Contents](#table-of-contents)
-    * [Bindings: Declaring dependencies](#bindings-declaring-dependencies)
+  * [Bindings: Declaring dependencies](#bindings-declaring-dependencies)
       * [Factory binding](#factory-binding)
       * [Provider binding](#provider-binding)
       * [Singleton binding](#singleton-binding)
@@ -100,34 +100,34 @@ Table Of Contents
       * [Modules](#modules)
       * [Extension (composition)](#extension-composition)
       * [Overriding](#overriding)
-    * [Injection: Dependency retrieval](#injection-dependency-retrieval)
+  * [Injection: Dependency retrieval](#injection-dependency-retrieval)
       * [Retrieval rules](#retrieval-rules)
       * [Via Kodein methods](#via-kodein-methods)
       * [Via lazy property](#via-lazy-property)
       * [Via injector](#via-injector)
       * [In Java](#in-java)
-    * [Android](#android)
-      * [Injecting objects in Android...](#injecting-objects-in-android)
-        * [...Using appKodein](#using-appkodein)
-        * [...Using lazyKodeinFromApp](#using-lazykodeinfromapp)
-        * [...Using an injector](#using-an-injector)
-      * [Android Activity Scopes](#android-activity-scopes)
-      * [Android example project](#android-example-project)
-    * [Debuging](#debuging)
-        * [Print bindings](#print-bindings)
-        * [Recursive dependency loop](#recursive-dependency-loop)
-    * [Advanced use](#advanced-use)
-      * [Create your own scopes](#create-your-own-scopes)
-        * [Builder](#builder)
-        * [Scoped singleton](#scoped-singleton)
-        * [Auto Scoped singleton](#auto-scoped-singleton)
-      * [Bind the same type to different factories](#bind-the-same-type-to-different-factories)
-    * [Let's talk!](#lets-talk)
+  * [Android](#android)
+    * [Injecting objects in Android...](#injecting-objects-in-android)
+      * [...Using appKodein](#using-appkodein)
+      * [...Using lazyKodeinFromApp](#using-lazykodeinfromapp)
+      * [...Using an injector](#using-an-injector)
+    * [Android Activity Scopes](#android-activity-scopes)
+    * [Android example project](#android-example-project)
+  * [Debuging](#debuging)
+      * [Print bindings](#print-bindings)
+      * [Recursive dependency loop](#recursive-dependency-loop)
+  * [Advanced use](#advanced-use)
+    * [Create your own scopes](#create-your-own-scopes)
+      * [Builders](#builders)
+      * [Scoped singletons](#scoped-singletons)
+      * [Auto Scoped singletons](#auto-scoped-singletons)
+    * [Bind the same type to different factories](#bind-the-same-type-to-different-factories)
+  * [Let's talk!](#lets-talk)
 
 
 
 Bindings: Declaring dependencies
---------------------------------
+================================
 
 You can initialize Kodein in a variable:
 
@@ -364,7 +364,7 @@ val testModule = Kodein.Module(allowSilentOverride = true) {
 
 
 Injection: Dependency retrieval
--------------------------------
+===============================
 
 In this chapter, these example bindings are used:
 
@@ -508,7 +508,7 @@ class JavaClass {
 
 
 Android
--------
+=======
 
 Kodein does work on Android (in fact, it was developed for an Android project). You can use Kodein as-is in your Android project or use the very small util library `kodein-android`.  
 
@@ -529,10 +529,10 @@ Then, in your Activities, Fragments, and other context aware android classes, yo
 There are different ways to access a Kodein instance and your dependencies:
 
 
-### Injecting objects in Android...
+## Injecting objects in Android...
+----------------------------------
 
-
-#### ...Using appKodein
+### ...Using appKodein
 
 `appKodein` is a function that will work in your context aware Android classes provided that your Application implements `KodeinApplication`:
 
@@ -553,7 +553,7 @@ This method is really easy but it is not really optimized because the Kodein ins
 However, this method is very easy and readable. I recommend it if you have only a few dependencies to inject.
 
 
-#### ...Using lazyKodeinFromApp
+### ...Using lazyKodeinFromApp
 
 This is a more optimized way of injecting dependencies. It works the exact same way as the previous method, except that the Kodein instance will be fetched only once.
 
@@ -569,7 +569,7 @@ class MyActivity : Activity() {
 ```
 
 
-#### ...Using an injector
+### ...Using an injector
 
 Using an injector allows you to resolve all dependencies in `onCreate`, reducing the cost of dependency first-access (but more processing happening in `onCreate`). As with the previous method, the Kodein instance will only be fetched once.
 
@@ -590,7 +590,8 @@ Using this approach has an important advantage: as all dependencies are retrieve
 You can have this certitude with the two previous methods only once you have accessed all dependencies at least once.
 
 
-### Android Activity Scopes
+Android Activity Scopes
+-----------------------
 
 Sometimes, you need to define "activity singletons": objects that will be singleton inside an activity, but two different activities will receive different objects.
 For this, you can use the activity scope:
@@ -634,17 +635,18 @@ This comes with two important caveats:
     ```
 
 
-### Android example project
+Android example project
+-----------------------
 
 Have a look at the [Android demo project](https://github.com/SalomonBrys/Kodein/tree/master/AndroidDemo)!
 
 
 
 Debuging
---------
+========
 
 
-#### Print bindings
+### Print bindings
 
 You can easily print bindings with `println(kodein.bindingsDescription)`.
 
@@ -660,7 +662,7 @@ Here's an example of what this prints:
 As you can see, it's really easy to understand which type with which tag is binded to which scope.
 
 
-#### Recursive dependency loop
+### Recursive dependency loop
 
 When it detects a recursive dependency, Kodein will throw a `Kodein.DependencyLoopException`. The message of the exception explains how the loop happened.
 
@@ -685,22 +687,23 @@ And we have found the dependency loop.
 
 
 Advanced use
-------------
+============
 
 
-### Create your own scopes
+Create your own scopes
+----------------------
 
 There are three ways to create your scopes. By creating a builder function, a scoped singleton cache function or an auto scoped singleton cache function.
 
 
-#### Builder
+### Builders
 
 A builder function scope is an extension function to `Kodein.Builder` that returns a `Factory<A, T>`. You can use the `CFactory<A, T>` class for ease of use.
 If your scope is a provider scope (such as singleton), you can use the `CProvider<T>` class for ease of use.  
 Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/scopes.kt) file. The `singleton` scope is very easy to understand and is a good starting point.
 
 
-#### Scoped singleton
+### Scoped singletons
 
 Scoped singleton are singletons that are binded to a context and live while this context exists.
 
@@ -725,7 +728,7 @@ val logger = kodein.factory<Context, Logger>().invoke(getContext())
 ```
 
 
-#### Auto Scoped singleton
+### Auto Scoped singletons
 
 Scoped singletons are not always ideal since you need the context to retrieve any object. Sometimes, the context is static.
 For those times, you can use an "auto scoped singleton". An auto scoped singleton function is not given a context: it is responsible for fetching both the cache `HashMap` and the context.
@@ -749,14 +752,15 @@ val logger: Logger = kodein.instance()
 ```
 
 
-### Bind the same type to different factories
+Bind the same type to different factories
+-----------------------------------------
 
 Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are binded with different tags", I lied. Because each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are binded as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be binded to it's own factory, which in turns means that you can bind the same type without tagging to different factories. Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
 
 
 
 Let's talk!
------------
+===========
 
 You've read so far ?! You're awsome!
 Why don't you drop by the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/) on Kotlin's Slack group?

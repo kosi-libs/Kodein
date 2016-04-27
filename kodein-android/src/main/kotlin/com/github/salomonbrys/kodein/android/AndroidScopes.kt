@@ -36,10 +36,3 @@ fun activityScope(): Pair<Activity, HashMap<Any, Any>> {
 inline fun <reified T : Any> Kodein.Builder.activitySingleton(noinline creator: Kodein.(Activity) -> T) = scopedSingleton(::activityScope, creator)
 
 inline fun <reified T : Any> Kodein.Builder.autoActivitySingleton(noinline creator: Kodein.(Activity) -> T) = autoScopedSingleton(::activityScope, creator)
-
-
-val k = Kodein {
-    bind<String>("localClassName") with activitySingleton { it.localClassName }
-
-    bind<String>("localClassName") with autoActivitySingleton { it.localClassName }
-}
