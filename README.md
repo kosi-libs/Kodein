@@ -721,10 +721,10 @@ val kodein = Kodein {
 }
 ```
 
-Then, to retrieve a binded type, you must retrive  a **factory** and then provide it the context:
+Then, to retrieve a binded type, you must retrive a **factory** and then provide it the context:
 
 ```kotlin
-val logger = kodein.factory<Context, Logger>().invoke(getContext())
+val logger = kodein.with(getContext()).instance()
 ```
 
 
