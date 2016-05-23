@@ -87,7 +87,7 @@ class Kodein internal constructor(val _container: KodeinContainer) {
 
         init { init() }
 
-        inner class TypeBinder<T : Any>(private val _bind: Bind, overrides: Boolean?) {
+        inner class TypeBinder<in T : Any>(private val _bind: Bind, overrides: Boolean?) {
             private val _mustOverride = _overrideMode.must(overrides)
             infix fun <R : T, A> with(factory: Factory<A, R>) = _builder.bind(Key(_bind, factory.argType), factory, _mustOverride)
         }
@@ -172,8 +172,8 @@ class Kodein internal constructor(val _container: KodeinContainer) {
      */
     inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = _container.providerOrNull<T>(Kodein.Bind(typeToken<T>(), tag))?.invoke()
 
-    inner class CurriedFactory<A : Any>(val arg: A, val argType: Type) {
-
+    inner class CurriedFactory<A>(val arg: A, val argType: Type) {
+        // https://youtrack.jetbrains.com/issue/KT-12126
         val _container: KodeinContainer get() = this@Kodein._container
 
         inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = _container.nonNullFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType)).toProvider(arg)
@@ -185,7 +185,16 @@ class Kodein internal constructor(val _container: KodeinContainer) {
         inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = _container.factoryOrNull<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))?.invoke(arg)
     }
 
-    inline fun <reified A : Any> with(arg: A) = CurriedFactory(arg, typeToken<A>())
+    inline fun <reified A> with(arg: A) = CurriedFactory(arg, typeToken<A>())
+
+    inline fun <reified A, reified T : Any> providerFromFactory(arg: A, tag: Any? = null): () -> T = factory<A, T>(tag).toProvider(arg)
+
+    inline fun <reified A, reified T : Any> providerFromFactoryOrNull(arg: A, tag: Any? = null): (() -> T)? = factoryOrNull<A, T>(tag)?.toProvider(arg)
+
+    inline fun <reified A, reified T : Any> instanceFromFactory(arg: A, tag: Any? = null): T = factory<A, T>(tag).invoke(arg)
+
+    inline fun <reified A, reified T : Any> instanceFromFactoryOrNull(arg: A, tag: Any? = null): T? = factoryOrNull<A, T>(tag)?.invoke(arg)
+
 
     val java = JKodein(_container)
 }

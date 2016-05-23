@@ -86,8 +86,8 @@ class KodeinInjector() {
 
     fun <T> _register(injected: Injected<T>) = injected.apply { _list.add(this) }
 
-    inline fun <reified A : Any, reified T : Any> factory(tag: Any? = null): Injected<(A) -> T> = _register(InjectedFactory(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>())))
-    inline fun <reified A : Any, reified T : Any> factoryOrNull(tag: Any? = null): Injected<((A) -> T)?> = _register(InjectedNullableFactory(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>())))
+    inline fun <reified A, reified T : Any> factory(tag: Any? = null): Injected<(A) -> T> = _register(InjectedFactory(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>())))
+    inline fun <reified A, reified T : Any> factoryOrNull(tag: Any? = null): Injected<((A) -> T)?> = _register(InjectedNullableFactory(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>())))
 
     inline fun <reified T : Any> provider(tag: Any? = null): Injected<() -> T> = _register(InjectedProvider(Kodein.Bind(typeToken<T>(), tag)))
     inline fun <reified T : Any> providerOrNull(tag: Any? = null): Injected<(() -> T)?> = _register(InjectedNullableProvider(Kodein.Bind(typeToken<T>(), tag)))
@@ -95,7 +95,8 @@ class KodeinInjector() {
     inline fun <reified T : Any> instance(tag: Any? = null): Injected<T> = _register(InjectedInstance(Kodein.Bind(typeToken<T>(), tag)))
     inline fun <reified T : Any> instanceOrNull(tag: Any? = null): Injected<T?> = _register(InjectedNullableInstance(Kodein.Bind(typeToken<T>(), tag)))
 
-    inner class CurriedFactory<A : Any>(val arg: A, val argType: Type) {
+    inner class CurriedFactory<A>(val arg: A, val argType: Type) {
+        // https://youtrack.jetbrains.com/issue/KT-12126
         fun <T> _register(injected: Injected<T>) = this@KodeinInjector._register(injected)
 
         inline fun <reified T : Any> provider(tag: Any? = null): Lazy<() -> T> = _register(InjectedFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))).toProvider(arg)
@@ -105,7 +106,14 @@ class KodeinInjector() {
         inline fun <reified T : Any> instanceOrNull(tag: Any? = null): Lazy<T?> = _register(InjectedNullableFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))).toNullableInstance(arg)
     }
 
-    inline fun <reified A : Any> with(arg: A) = CurriedFactory(arg, typeToken<A>())
+    inline fun <reified A> with(arg: A) = CurriedFactory(arg, typeToken<A>())
+
+    inline fun <reified A, reified T : Any> providerFromFactory(arg: A, tag: Any? = null): Lazy<() -> T> = factory<A, T>(tag).toProvider(arg)
+    inline fun <reified A, reified T : Any> providerFromFactoryOrNull(arg: A, tag: Any? = null): Lazy<(() -> T)?> = factoryOrNull<A, T>(tag).toNullableProvider(arg)
+
+    inline fun <reified A, reified T : Any> instanceFromFactory(arg: A, tag: Any? = null): Lazy<T> = factory<A, T>(tag).toInstance(arg)
+    inline fun <reified A, reified T : Any> instanceFromFactoryOrNull(arg: A, tag: Any? = null): Lazy<T?> = factoryOrNull<A, T>(tag).toNullableInstance(arg)
+
 
     fun kodein(): Lazy<Kodein> = lazy { _kodein ?: throw KodeinInjector.UninjectedException() }
 

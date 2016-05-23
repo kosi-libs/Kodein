@@ -487,8 +487,8 @@ class KodeinTests : TestCase() {
         val newPerson: () -> Person by injector.provider()
         val salomon: Person by injector.instance("named")
         val factory: (String) -> Person by injector.factory("factory")
-        val provider: () -> Person by injector.with("provided").provider("factory")
-        val instance: Person by injector.with("reified").instance("factory")
+        val provider: () -> Person by injector.providerFromFactory("provided", "factory")
+        val instance: Person by injector.instanceFromFactory("reified", "factory")
     }
 
     @Test fun test14_0_InjectorInjected() {

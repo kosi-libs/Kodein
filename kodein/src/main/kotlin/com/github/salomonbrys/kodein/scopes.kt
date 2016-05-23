@@ -59,7 +59,7 @@ fun <T : Any> Kodein.Builder.threadSingleton(creator: Kodein.() -> T): CProvider
 fun <T : Any> Kodein.Builder.instance(instance: T) = CProvider("instance") { instance }
 
 
-class CScoped<in S : Any, C : Any, out T : Any>(override val argType: Type, override val scopeName: String, private val _getCache: (S) -> Pair<C, HashMap<Any, Any>>, private val _creator: Kodein.(C) -> T) : Factory<S, T> {
+class CScoped<in S, C, out T : Any>(override val argType: Type, override val scopeName: String, private val _getCache: (S) -> Pair<C, HashMap<Any, Any>>, private val _creator: Kodein.(C) -> T) : Factory<S, T> {
 
     val key = Any()
 
@@ -73,11 +73,11 @@ class CScoped<in S : Any, C : Any, out T : Any>(override val argType: Type, over
     }
 }
 
-inline fun <reified S : Any, reified T : Any> Kodein.Builder.scopedSingleton(noinline getCache: (S) -> HashMap<Any, Any>, noinline creator: Kodein.(S) -> T): CScoped<S, S, T> {
+inline fun <reified S, reified T : Any> Kodein.Builder.scopedSingleton(noinline getCache: (S) -> HashMap<Any, Any>, noinline creator: Kodein.(S) -> T): CScoped<S, S, T> {
     val argType = typeToken<S>()
     return CScoped(argType, "scopedSingleton<${argType.dispName}>", { it to getCache(it) }, creator)
 }
 
-inline fun <C : Any, reified T : Any> Kodein.Builder.autoScopedSingleton(noinline getCache: () -> Pair<C, HashMap<Any, Any>>, noinline creator: Kodein.(C) -> T)
+inline fun <C, reified T : Any> Kodein.Builder.autoScopedSingleton(noinline getCache: () -> Pair<C, HashMap<Any, Any>>, noinline creator: Kodein.(C) -> T)
         = CScoped<Unit, C, T>(Unit.javaClass, "autoScopedSingleton", { getCache() }, creator)
 
