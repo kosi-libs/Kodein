@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
 
-    ext.kotlin_version = '1.0.1-2'
+    ext.kotlin_version = '1.0.2'
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -27,5 +27,5 @@ allprojects {
     targetCompatibility = 1.6
 
     group = 'com.github.salomonbrys.kodein'
-    version = '2.7.0-beta2'
+    version = '2.7.0'
 }

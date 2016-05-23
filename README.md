@@ -1,4 +1,4 @@
-[![Kotlin 1.0](https://img.shields.io/badge/Kotlin-1.0.0-blue.svg)](http://kotlinlang.org)
+[![Kotlin 1.0](https://img.shields.io/badge/Kotlin-1.0.2-blue.svg)](http://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22)
 [![Travis](https://img.shields.io/travis/SalomonBrys/Kodein.svg)](https://travis-ci.org/SalomonBrys/Kodein/builds)
 [![MIT License](https://img.shields.io/github/license/salomonbrys/kodein.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
@@ -62,20 +62,20 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>2.6.0</version>
+    <version>2.7.0</version>
 </dependency>
 ```
 
 Gradle:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein:2.6.0'
+compile 'com.github.salomonbrys.kodein:kodein:2.7.0'
 ```
 
 Android:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein-android:2.6.0'
+compile 'com.github.salomonbrys.kodein:kodein-android:2.7.0'
 ```
 
 
