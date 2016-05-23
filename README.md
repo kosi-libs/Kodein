@@ -4,6 +4,7 @@
 [![MIT License](https://img.shields.io/github/license/salomonbrys/kodein.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
 [![GitHub issues](https://img.shields.io/github/issues/SalomonBrys/Kodein.svg)](https://github.com/SalomonBrys/Kodein/issues)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg)](https://kotlinlang.slack.com/messages/kodein/)
+[![Donate](https://img.shields.io/badge/Backing-Donate-orange.svg)](https://donorbox.org/donation-salomonbrys/)
 
 
 
@@ -123,6 +124,7 @@ Table Of Contents
       * [Auto Scoped singletons](#auto-scoped-singletons)
     * [Bind the same type to different factories](#bind-the-same-type-to-different-factories)
   * [Let's talk!](#lets-talk)
+  * [Donate](#donate)
 
 
 
@@ -764,3 +766,13 @@ Let's talk!
 
 You've read so far ?! You're awsome!
 Why don't you drop by the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/) on Kotlin's Slack group?
+
+
+Donate
+======
+
+Kodein is free to use for both non-profit and commercial use and always will be.
+
+If you wish to show some support or appreciation to my work, you are free to **[donate](https://donorbox.org/donation-salomonbrys)**!
+
+This would be (of course) greatly appreciated but is by no means necessary to receive help or support, which I'll be happy to provide for free :)
