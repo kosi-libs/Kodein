@@ -11,13 +11,13 @@
 Kodein: Kotlin Dependency Injection
 ===================================
 
-Kodein is a very simple and yet very useful dependency retrieval container. Its feature set is very small, making it very easy to use and configure.
+Kodein is a very simple and yet very useful dependency retrieval container. it is very easy to use and configure.
 
 Kodein allows you to:
 
 - Lazily instantiate your dependencies when needed
 - Stop caring about dependency initialization order
-- Easily bind classes or interfaces to their instances or provider
+- Easily bind classes or interfaces to their instance or provider
 - Easily debug your dependency bindings and recursions
 
 Kodein does *not* allow you to:
@@ -63,20 +63,20 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>2.7.0</version>
+    <version>2.7.1</version>
 </dependency>
 ```
 
 Gradle:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein:2.7.0'
+compile 'com.github.salomonbrys.kodein:kodein:2.7.1'
 ```
 
 Android:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein-android:2.7.0'
+compile 'com.github.salomonbrys.kodein:kodein-android:2.7.1'
 ```
 
 
@@ -247,7 +247,7 @@ For this use case, you can transform any `bind<Type>() with scope` to `bind() fr
 ```kotlin
 val kodein = Kodein {
     bind() from singleton { RandomDice(6) }
-    bind("DnD20") with provider { RandomDice(20) }
+    bind("DnD20") from provider { RandomDice(20) }
     bind() from instance(SqliteDataSource.open("path/to/file"))
 }
 ```

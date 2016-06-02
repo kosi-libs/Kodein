@@ -1,4 +1,9 @@
 
+#### 2.7.1 (02-06-2016)
+
+ * Overriding exceptions now print the affected key
+ * New syntax for binding without specifying the type: `bind() from scope`
+
 #### 2.7.0 (23-05-2016)
 
  * Kotlin `1.0.2`.
