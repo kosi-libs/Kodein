@@ -55,9 +55,9 @@ class KodeinContainer private constructor(
         internal fun bind(key: Kodein.Key, factory: Factory<*, Any>, mustOverride: Boolean?) {
             if (mustOverride != null) {
                 if (mustOverride && key !in _map)
-                    throw Kodein.OverridingException("Binding must override an existing binding")
+                    throw Kodein.OverridingException("Binding must override an existing binding. Key: $key")
                 if (!mustOverride && key in _map)
-                    throw Kodein.OverridingException("Binding must not override an existing binding")
+                    throw Kodein.OverridingException("Binding must not override an existing binding. Key: $key")
             }
             _map[key] = factory
         }
