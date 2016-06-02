@@ -41,7 +41,7 @@ class KodeinTests : TestCase() {
 
     @Test fun test00_2_FactoryBindingGetFactory() {
 
-        val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
+        val kodein = Kodein { bind() from factory { name: String -> Person(name) } }
 
         val p1 = kodein.factory<String, Person>()
         val p2 = kodein.factory<String, Person>()
@@ -51,7 +51,7 @@ class KodeinTests : TestCase() {
 
     @Test fun test00_3_FactoryBindingGetProvider() {
 
-        val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
+        val kodein = Kodein { bind() from factory { name: String -> Person(name) } }
 
         val p = kodein.factory<String, Person>().toProvider("Salomon")
 
@@ -144,7 +144,7 @@ class KodeinTests : TestCase() {
 
         val p = Person()
 
-        val kodein = Kodein { bind<Person>() with instance(p) }
+        val kodein = Kodein { bind() from instance(p) }
 
         val p1: Person = kodein.instance()
         val p2: Person = kodein.instance()
@@ -471,10 +471,10 @@ class KodeinTests : TestCase() {
     @Test fun test13_0_Recursivedependencies() {
 
         val kodein = Kodein {
-            bind<Recurs0>() with provider { Recurs0(instance()) }
-            bind<RecursA>() with provider { RecursA(instance()) }
-            bind<RecursB>() with provider { RecursB(instance("yay")) }
-            bind<RecursC>("yay") with provider { RecursC(instance()) }
+            bind() from provider { Recurs0(instance()) }
+            bind() from provider { RecursA(instance()) }
+            bind() from provider { RecursB(instance("yay")) }
+            bind("yay") from provider { RecursC(instance()) }
         }
 
         assertThrown<Kodein.DependencyLoopException> {

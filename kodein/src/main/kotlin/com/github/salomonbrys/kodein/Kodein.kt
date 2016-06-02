@@ -92,12 +92,20 @@ class Kodein internal constructor(val _container: KodeinContainer) {
             infix fun <R : T, A> with(factory: Factory<A, R>) = _builder.bind(Key(_bind, factory.argType), factory, _mustOverride)
         }
 
+        inner class DirectBinder(private val _tag: Any?, overrides: Boolean?) {
+            private val _mustOverride = _overrideMode.must(overrides)
+            infix inline fun <A, reified T : Any> from(factory: Factory<A, T>) = _with(typeToken<T>(), factory)
+            fun <A> _with(type: Type, factory: Factory<A, *>) = _builder.bind(Key(Bind(type, _tag), factory.argType), factory, _mustOverride)
+        }
+
         inner class ConstantBinder(private val _tag: Any, overrides: Boolean?) {
             private val _mustOverride = _overrideMode.must(overrides)
             infix fun with(value: Any) = _builder.bind(Key(Bind(value.javaClass, _tag), Unit.javaClass), instance(value), _mustOverride)
         }
 
-        inline fun <reified T : Any> bind(tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Bind(typeToken<T>(), tag), overrides)
+        inline fun <reified T : Any> bind(tag: Any? = null, overrides: Boolean? = null) = TypeBinder<T>(Bind(typeToken<T>(), tag), overrides)
+
+        fun bind(tag: Any? = null, overrides: Boolean? = null) = DirectBinder(tag, overrides)
 
         fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder = ConstantBinder(tag, overrides)
 

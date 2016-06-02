@@ -96,6 +96,7 @@ Table Of Contents
       * [Instance binding](#instance-binding)
       * [Tagged bindings](#tagged-bindings)
       * [Constant binding](#constant-binding)
+      * [Direct binding](#direct-binding)
       * [Transitive dependency](#transitive-dependency)
       * [Scoped transitive dependency](#scoped-transitive-dependency)
       * [Modules](#modules)
@@ -235,6 +236,26 @@ val kodein = Kodein {
 Note the absence of curly braces. It is not given a function, but an instance.
 
 You should only use constant bindings for very simple types without inheritance or interface (e.g. primitive types and data classes).
+
+
+### Direct binding
+
+Sometime, it may seems overkill to specify the type to `bind` if you are binding the same type as you are creating.
+
+For this use case, you can transform any `bind<Type>() with scope` to `bind() from scope`. Here are some examples:
+
+```kotlin
+val kodein = Kodein {
+    bind() from singleton { RandomDice(6) }
+    bind("DnD20") with provider { RandomDice(20) }
+    bind() from instance(SqliteDataSource.open("path/to/file"))
+}
+```
+
+**This should be used with care** as binding a concrete class and, therefore, having concrete dependencies is an *anti-pattern* that later prevents modularisation and mocking / testing.
+
+Please note that, in the case of generic type, the binded type will be the specilised type, e.g.
+`bind() from singleton { listOf(1, 2, 3, 4) }` register the binding to `List<Int>`
 
 
 ### Transitive dependency
