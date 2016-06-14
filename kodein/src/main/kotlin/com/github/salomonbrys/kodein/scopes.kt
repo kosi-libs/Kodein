@@ -37,6 +37,12 @@ fun <T : Any> Kodein.Builder.singleton(creator: Kodein.() -> T): CProvider<T> {
     }
 }
 
+fun <T : Any> Kodein.Builder.eagerSingleton(creator: Kodein.() -> T): CProvider<T> {
+    val s = singleton(creator)
+    onReady { s.getInstance(this, Unit) }
+    return s
+}
+
 /**
  * Binds a type to a lazily instanciated thread local singleton.
  */

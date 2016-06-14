@@ -1,3 +1,6 @@
+#### 2.7.2 (14-06-2016)
+
+ * Eager singletons: ask kodein to instanciate the singleton object as soon as kodein is ready.
 
 #### 2.7.1 (02-06-2016)
 

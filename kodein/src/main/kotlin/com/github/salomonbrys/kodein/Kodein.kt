@@ -2,6 +2,7 @@ package com.github.salomonbrys.kodein
 
 import com.github.salomonbrys.kodein.internal.KodeinContainer
 import java.lang.reflect.Type
+import java.util.*
 
 /**
  * KOtlin DEpendency INjection.
@@ -83,7 +84,7 @@ class Kodein internal constructor(val _container: KodeinContainer) {
     /**
      * Allows for the DSL inside the block argument of the constructor of `Kodein` and `Kodein.Module`
      */
-    class Builder internal constructor(private val _overrideMode: OverrideMode, internal val _builder: KodeinContainer.Builder, init: Builder.() -> Unit) {
+    class Builder internal constructor(private val _overrideMode: OverrideMode, internal val _builder: KodeinContainer.Builder, internal val _callbacks: MutableList<Kodein.() -> Unit>, init: Builder.() -> Unit) {
 
         init { init() }
 
@@ -110,15 +111,23 @@ class Kodein internal constructor(val _container: KodeinContainer) {
         fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder = ConstantBinder(tag, overrides)
 
         fun import(module: Module, allowOverride: Boolean = false) {
-            Builder(OverrideMode.get(_overrideMode.allow(allowOverride), module.allowSilentOverride), _builder, module.init)
+            Builder(OverrideMode.get(_overrideMode.allow(allowOverride), module.allowSilentOverride), _builder, _callbacks, module.init)
         }
 
         fun extend(kodein: Kodein, allowOverride: Boolean = false) {
             _builder.extend(kodein._container, _overrideMode.allow(allowOverride))
         }
+
+        fun onReady(f: Kodein.() -> Unit) {
+            _callbacks += f
+        }
     }
 
-    constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(KodeinContainer(Builder(OverrideMode.get(true, allowSilentOverride), KodeinContainer.Builder(), init)._builder))
+    private constructor(builder: Builder) : this(KodeinContainer(builder._builder)) {
+        builder._callbacks.forEach { it() }
+    }
+
+    constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(Builder(OverrideMode.get(true, allowSilentOverride), KodeinContainer.Builder(), ArrayList(), init))
 
     /**
      * This is for debug. It allows to print all binded keys.
