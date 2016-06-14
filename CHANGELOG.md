@@ -3,6 +3,7 @@
  * Eager singletons: ask kodein to instanciate the singleton object as soon as kodein is ready.
  * `KodeinInjector` is now thread safe.
  * The `KodeinInjector.onInjected` callback is directly called if the injector has already been injected.
+ * Gradle `2.13`
 
 #### 2.7.1 (02-06-2016)
 

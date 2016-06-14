@@ -673,4 +673,17 @@ class KodeinTests : TestCase() {
             }
         }
     }
+
+    @Test fun test19_0_onReadyCallback() {
+        var passed = false
+        val kodein = Kodein {
+            constant("name") with "Salomon"
+            bind<Person>() with singleton { Person(instance("name")) }
+            onReady {
+                assertEquals("Salomon", instance<Person>().name)
+                passed = true
+            }
+        }
+        assertTrue(passed)
+    }
 }

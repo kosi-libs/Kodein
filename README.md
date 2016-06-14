@@ -63,20 +63,20 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>2.7.1</version>
+    <version>2.8</version>
 </dependency>
 ```
 
 Gradle:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein:2.7.1'
+compile 'com.github.salomonbrys.kodein:kodein:2.8'
 ```
 
 Android:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein-android:2.7.1'
+compile 'com.github.salomonbrys.kodein:kodein-android:2.8'
 ```
 
 
@@ -92,6 +92,7 @@ Table Of Contents
       * [Factory binding](#factory-binding)
       * [Provider binding](#provider-binding)
       * [Singleton binding](#singleton-binding)
+      * [Eager singleton binding](#eager-singleton-binding)
       * [Thread singleton binding](#thread-singleton-binding)
       * [Instance binding](#instance-binding)
       * [Tagged bindings](#tagged-bindings)
@@ -119,6 +120,7 @@ Table Of Contents
       * [Print bindings](#print-bindings)
       * [Recursive dependency loop](#recursive-dependency-loop)
   * [Advanced use](#advanced-use)
+    * [OnReady callbacks](#onready-callbacks)
     * [Create your own scopes](#create-your-own-scopes)
       * [Builders](#builders)
       * [Scoped singletons](#scoped-singletons)
@@ -179,6 +181,18 @@ This binds a type to an instance of this type that will lazily be created at fir
 ```kotlin
 val kodein = Kodein {
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+}
+```
+
+
+### Eager singleton binding
+
+This is the same as a regular singleton, except that the provider method will be called as soon as the kodein instance is created and all bindings are defined.
+
+```kotlin
+val kodein = Kodein {
+    // The SQLite connection will be opened as soon as the kodein instance is ready
+    bind<DataSource>() with eagerSingleton { SqliteDS.open("path/to/file") }
 }
 ```
 
@@ -711,6 +725,23 @@ And we have found the dependency loop.
 
 Advanced use
 ============
+
+
+OnReady callbacks
+-----------------
+
+You can define callbacks to be called once the kodein instance is ready and all bindings are defined. This can be usefull to do some "starting" jobs.
+
+```kotlin
+val appModule = Kodein.Module {
+    import(engineModule)
+    onReady {
+        val engine = instance<Engine>()
+        instance<Logger>().info("Starting engine version ${engine.version}")
+        engine.start()
+    }
+}
+```
 
 
 Create your own scopes

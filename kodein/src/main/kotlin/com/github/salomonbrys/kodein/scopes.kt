@@ -37,10 +37,8 @@ fun <T : Any> Kodein.Builder.singleton(creator: Kodein.() -> T): CProvider<T> {
     }
 }
 
-fun <T : Any> Kodein.Builder.eagerSingleton(creator: Kodein.() -> T): CProvider<T> {
-    val s = singleton(creator)
-    onReady { s.getInstance(this, Unit) }
-    return s
+fun <T : Any> Kodein.Builder.eagerSingleton(creator: Kodein.() -> T): CProvider<T> = singleton(creator).apply {
+    onReady { getInstance(this, Unit) }
 }
 
 /**
