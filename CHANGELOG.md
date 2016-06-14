@@ -1,6 +1,8 @@
-#### 2.7.2 (14-06-2016)
+#### 2.8.0 (14-06-2016)
 
  * Eager singletons: ask kodein to instanciate the singleton object as soon as kodein is ready.
+ * `KodeinInjector` is now thread safe.
+ * The `KodeinInjector.onInjected` callback is directly called if the injector has already been injected.
 
 #### 2.7.1 (02-06-2016)
 

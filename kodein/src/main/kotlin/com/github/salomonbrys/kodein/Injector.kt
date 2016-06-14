@@ -80,11 +80,37 @@ class KodeinInjector() {
 
     private var _kodein: Kodein? = null
 
-    private var _onInjected: (Kodein) -> Unit = {}
+    private var _onInjecteds = ArrayList<(Kodein) -> Unit>()
 
-    fun onInjected(cb: (Kodein) -> Unit) { _onInjected = cb }
+    fun onInjected(cb: (Kodein) -> Unit) {
+        val k1 = _kodein
+        if (k1 != null)
+            cb(k1)
+        else
+            synchronized(this@KodeinInjector) {
+                val k2 = _kodein
+                if (k2 != null)
+                    cb(k2)
+                else
+                    _onInjecteds.add(cb)
+            }
+    }
 
-    fun <T> _register(injected: Injected<T>) = injected.apply { _list.add(this) }
+    fun <T> _register(injected: Injected<T>): Injected<T> {
+        val k1 = _kodein
+        if (k1 != null)
+            injected._inject(k1._container)
+        else
+            synchronized(this@KodeinInjector) {
+                val k2 = _kodein
+                if (k2 != null)
+                    injected._inject(k2._container)
+                else
+                    _list.add(injected)
+            }
+
+        return injected
+    }
 
     inline fun <reified A, reified T : Any> factory(tag: Any? = null): Injected<(A) -> T> = _register(InjectedFactory(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>())))
     inline fun <reified A, reified T : Any> factoryOrNull(tag: Any? = null): Injected<((A) -> T)?> = _register(InjectedNullableFactory(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>())))
@@ -118,9 +144,21 @@ class KodeinInjector() {
     fun kodein(): Lazy<Kodein> = lazy { _kodein ?: throw KodeinInjector.UninjectedException() }
 
     fun inject(kodein: Kodein) {
+        if (_kodein != null)
+            return
+
+        synchronized(this@KodeinInjector) {
+            if (_kodein != null)
+                return
+
+            _kodein = kodein
+        }
+
         _list.forEach { it._inject(kodein._container) }
-        _kodein = kodein
-        _onInjected(kodein)
+        _list.clear()
+
+        _onInjecteds.forEach { it(kodein) }
+        _onInjecteds.clear()
     }
 }
 
