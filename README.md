@@ -164,7 +164,7 @@ val kodein = Kodein {
 ### Provider binding
 
 This binds a type to a provider function, which is a function that takes no arguments and returns an object of the binded type.
-Each time you need an instance of the binded type, the function will be called.  
+Each time you need an instance of the bound type, the function will be called.  
 For example, here is a binding that creates a new 6 sided `Dice` entry each time you need a `Dice` instance:
 
 ```kotlin
