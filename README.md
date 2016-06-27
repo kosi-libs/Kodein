@@ -1,3 +1,5 @@
+<img alt="KODEIN" src="https://raw.githubusercontent.com/SalomonBrys/Kodein/master/Kodein-logo.png" width="700">
+
 [![Kotlin 1.0](https://img.shields.io/badge/Kotlin-1.0.2-blue.svg)](http://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22)
 [![Travis](https://img.shields.io/travis/SalomonBrys/Kodein.svg)](https://travis-ci.org/SalomonBrys/Kodein/builds)
@@ -6,10 +8,8 @@
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg)](https://kotlinlang.slack.com/messages/kodein/)
 [![Donate](https://img.shields.io/badge/Backing-Donate-orange.svg)](https://donorbox.org/donation-salomonbrys/)
 
-
-
-Kodein: Kotlin Dependency Injection
-===================================
+KOtlin DEpendency INjection
+===========================
 
 Kodein is a very simple and yet very useful dependency retrieval container. it is very easy to use and configure.
 
@@ -84,7 +84,7 @@ compile 'com.github.salomonbrys.kodein:kodein-android:2.8'
 Table Of Contents
 -----------------
 
-  * [Kodein: Kotlin Dependency Injection](#kodein-kotlin-dependency-injection)
+  * [KOtlin DEpendency INjection](#kotlin-dependency-injection)
     * [Example](#example)
     * [Install](#install)
     * [Table Of Contents](#table-of-contents)
