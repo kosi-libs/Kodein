@@ -18,7 +18,7 @@ import java.util.*
  *
  * See the file scopes.kt for other scopes.
  */
-class Kodein internal constructor(val _container: KodeinContainer) {
+class Kodein internal constructor(internal val _container: KodeinContainer) {
 
     data class Bind(
             val type: Type,
@@ -88,23 +88,29 @@ class Kodein internal constructor(val _container: KodeinContainer) {
 
         init { init() }
 
-        inner class TypeBinder<in T : Any>(private val _bind: Bind, overrides: Boolean?) {
+        inner class TypeBinder<in T : Any> internal constructor(private val _bind: Bind, overrides: Boolean?) {
             private val _mustOverride = _overrideMode.must(overrides)
             infix fun <R : T, A> with(factory: Factory<A, R>) = _builder.bind(Key(_bind, factory.argType), factory, _mustOverride)
         }
 
-        inner class DirectBinder(private val _tag: Any?, overrides: Boolean?) {
+        inner class DirectBinder internal constructor(private val _tag: Any?, overrides: Boolean?) {
             private val _mustOverride = _overrideMode.must(overrides)
-            infix inline fun <A, reified T : Any> from(factory: Factory<A, T>) = _with(typeToken<T>(), factory)
+            infix inline fun <A, reified T : Any> from(factory: Factory<A, T>) = _with(typeToken<T>().type, factory)
             fun <A> _with(type: Type, factory: Factory<A, *>) = _builder.bind(Key(Bind(type, _tag), factory.argType), factory, _mustOverride)
         }
 
-        inner class ConstantBinder(private val _tag: Any, overrides: Boolean?) {
+        inner class ConstantBinder internal constructor(private val _tag: Any, overrides: Boolean?) {
             private val _mustOverride = _overrideMode.must(overrides)
             infix fun with(value: Any) = _builder.bind(Key(Bind(value.javaClass, _tag), Unit.javaClass), instance(value), _mustOverride)
         }
 
-        inline fun <reified T : Any> bind(tag: Any? = null, overrides: Boolean? = null) = TypeBinder<T>(Bind(typeToken<T>(), tag), overrides)
+        fun bind(type: Type, tag: Any? = null, overrides: Boolean? = null): TypeBinder<Any> = TypeBinder(Bind(type, tag), overrides)
+
+        fun <T : Any> bind(type: TypeToken<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Bind(type.type, tag), overrides)
+
+        fun <T : Any> bind(type: Class<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Bind(type, tag), overrides)
+
+        inline fun <reified T : Any> bind(tag: Any? = null, overrides: Boolean? = null) = bind(typeToken<T>(), tag, overrides)
 
         fun bind(tag: Any? = null, overrides: Boolean? = null) = DirectBinder(tag, overrides)
 
@@ -154,52 +160,54 @@ class Kodein internal constructor(val _container: KodeinContainer) {
     /**
      * Gets a factory for the given argument type, return type and tag.
      */
-    inline fun <reified A, reified T : Any> factory(tag: Any? = null): ((A) -> T) = _container.nonNullFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>()))
+    inline fun <reified A, reified T : Any> factory(tag: Any? = null): (A) -> T = typed.factory(typeToken<A>(), typeToken<T>(), tag)
 
     /**
      * Gets a factory for the given argument type, return type and tag, or null if non is found.
      */
-    inline fun <reified A, reified T : Any> factoryOrNull(tag: Any? = null): ((A) -> T)? = _container.factoryOrNull<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>()))
+    inline fun <reified A, reified T : Any> factoryOrNull(tag: Any? = null): ((A) -> T)? = typed.factoryOrNull(typeToken<A>(), typeToken<T>(), tag)
 
     /**
      * Gets a provider for the given type and tag.
      *
      * Whether a provider will re-create a new instance at each call or not depends on the binding scope.
      */
-    inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = _container.nonNullProvider(Kodein.Bind(typeToken<T>(), tag))
+    inline fun <reified T : Any> provider(tag: Any? = null): () -> T = typed.provider(typeToken<T>(), tag)
 
     /**
      * Gets a provider for the given type and tag, or null if none is found.
      *
      * Whether a provider will re-create a new instance at each call or not depends on the binding scope.
      */
-    inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = _container.providerOrNull(Kodein.Bind(typeToken<T>(), tag))
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = typed.providerOrNull(typeToken<T>(), tag)
 
     /**
      * Gets an instance for the given type and tag.
      *
      * Whether the returned object is a new instance at each call or not depends on the binding scope.
      */
-    inline fun <reified T : Any> instance(tag: Any? = null): T = _container.nonNullProvider<T>(Kodein.Bind(typeToken<T>(), tag)).invoke()
+    inline fun <reified T : Any> instance(tag: Any? = null): T = typed.instance(typeToken<T>(), tag)
 
     /**
      * Gets an instance for the given type and tag, or null if none is found.
      *
      * Whether the returned object is a new instance at each call or not depends on the binding scope.
      */
-    inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = _container.providerOrNull<T>(Kodein.Bind(typeToken<T>(), tag))?.invoke()
+    inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = typed.instanceOrNull(typeToken<T>(), tag)
 
-    inner class CurriedFactory<A>(val arg: A, val argType: Type) {
+    inner class CurriedFactory<A>(val arg: A, val argType: TypeToken<A>) {
         // https://youtrack.jetbrains.com/issue/KT-12126
-        val _container: KodeinContainer get() = this@Kodein._container
+//        val _container: KodeinContainer get() = this@Kodein._container
+        val typed: TKodein get() = this@Kodein.typed
 
-        inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = _container.nonNullFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType)).toProvider(arg)
+        inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
 
-        inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = _container.factoryOrNull<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))?.toProvider(arg)
+        inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = typed.factoryOrNull(argType, typeToken<T>(), tag)?.toProvider(arg)
 
-        inline fun <reified T : Any> instance(tag: Any? = null): T = _container.nonNullFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType)).invoke(arg)
+        inline fun <reified T : Any> instance(tag: Any? = null): T = typed.factory(argType, typeToken<T>(), tag).invoke(arg)
 
-        inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = _container.factoryOrNull<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))?.invoke(arg)
+        inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = typed.factoryOrNull(argType, typeToken<T>(), tag)?.invoke(arg)
     }
 
     inline fun <reified A> with(arg: A) = CurriedFactory(arg, typeToken<A>())
@@ -213,7 +221,11 @@ class Kodein internal constructor(val _container: KodeinContainer) {
     inline fun <reified A, reified T : Any> instanceFromFactoryOrNull(arg: A, tag: Any? = null): T? = factoryOrNull<A, T>(tag)?.invoke(arg)
 
 
-    val java = JKodein(_container)
+    val typed = TKodein(_container)
+
+    companion object {
+        // The companion object is empty but it exists to allow external libraries to extend it.
+    }
 }
 
 fun <A, T : Any> ((A) -> T).toProvider(arg: A): () -> T = { invoke(arg) }

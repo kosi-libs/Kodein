@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
 
-    ext.kotlin_version = '1.0.2'
+    ext.kotlin_version = '1.0.2-1'
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

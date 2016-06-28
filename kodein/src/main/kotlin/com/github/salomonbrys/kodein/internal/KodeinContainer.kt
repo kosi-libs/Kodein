@@ -86,20 +86,21 @@ class KodeinContainer private constructor(
      * All Kodein getter methods, whether it's instance(), provider() or factory() eventually ends up calling this
      * function.
      */
-    @Suppress("UNCHECKED_CAST") fun <A, T : Any> factoryOrNull(key: Kodein.Key): ((A) -> T)? {
+    fun factoryOrNull(key: Kodein.Key): ((Any?) -> Any)? {
         val factory = _map[key] ?: return null
         _node?.check(key)
-        return { arg -> (factory as Factory<A, T>).getInstance(Kodein(KodeinContainer(_map, Node(key, _node))), arg) }
+        @Suppress("UNCHECKED_CAST")
+        return { arg -> (factory as Factory<Any?, Any>).getInstance(Kodein(KodeinContainer(_map, Node(key, _node))), arg) }
     }
 
-    fun <A, T : Any> nonNullFactory(key: Kodein.Key): ((A) -> T)
-            = factoryOrNull<A, T>(key) ?: throw notFoundException("No factory found for $key")
+    fun nonNullFactory(key: Kodein.Key): ((Any?) -> Any)
+            = factoryOrNull(key) ?: throw notFoundException("No factory found for $key")
 
-    fun <T : Any> providerOrNull(bind: Kodein.Bind): (() -> T)? {
-        val factory = factoryOrNull<Unit, T>(Kodein.Key(bind, Unit::class.java)) ?: return null
+    fun providerOrNull(bind: Kodein.Bind): (() -> Any)? {
+        val factory = factoryOrNull(Kodein.Key(bind, Unit::class.java)) ?: return null
         return { factory(Unit) }
     }
 
-    fun <T : Any> nonNullProvider(bind: Kodein.Bind): (() -> T)
-            = providerOrNull<T>(bind) ?: throw notFoundException("No provider found for $bind")
+    fun nonNullProvider(bind: Kodein.Bind): (() -> Any)
+            = providerOrNull(bind) ?: throw notFoundException("No provider found for $bind")
 }

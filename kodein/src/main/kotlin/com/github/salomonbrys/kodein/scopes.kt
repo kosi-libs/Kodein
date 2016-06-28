@@ -9,7 +9,7 @@ import java.util.*
  * Binds a type to a factory.
  */
 inline fun <reified A, T : Any> Kodein.Builder.factory(noinline factory: Kodein.(A) -> T): CFactory<A, T> {
-    val type = typeToken<A>()
+    val type = typeToken<A>().type
     return CFactory("factory<${type.dispName}>", type, factory)
 }
 
@@ -78,7 +78,7 @@ class CScoped<in S, C, out T : Any>(override val argType: Type, override val sco
 }
 
 inline fun <reified S, reified T : Any> Kodein.Builder.scopedSingleton(noinline getCache: (S) -> HashMap<Any, Any>, noinline creator: Kodein.(S) -> T): CScoped<S, S, T> {
-    val argType = typeToken<S>()
+    val argType = typeToken<S>().type
     return CScoped(argType, "scopedSingleton<${argType.dispName}>", { it to getCache(it) }, creator)
 }
 

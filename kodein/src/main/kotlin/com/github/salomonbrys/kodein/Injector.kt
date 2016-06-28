@@ -1,77 +1,9 @@
 package com.github.salomonbrys.kodein
 
-import com.github.salomonbrys.kodein.internal.KodeinContainer
-import java.io.Serializable
 import java.lang.reflect.Type
 import java.util.*
-import kotlin.reflect.KProperty
 
-private object UNINITIALIZED_VALUE
-
-abstract class Injected<out T> internal constructor(val bind: Kodein.Bind) : Serializable {
-    @Volatile private var _value: Any? = UNINITIALIZED_VALUE
-
-    val value: T
-        @Suppress("UNCHECKED_CAST")
-        get() {
-            val _v1 = _value
-            if (_v1 !== UNINITIALIZED_VALUE)
-                return _v1 as T
-
-            return synchronized(this) {
-                val _v2 = _value
-                if (_v2 !== UNINITIALIZED_VALUE)
-                    _v2 as T
-                else
-                    throw KodeinInjector.UninjectedException()
-            }
-        }
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): T = value
-
-    fun isInjected(): Boolean = _value !== UNINITIALIZED_VALUE
-
-    override fun toString(): String = if (isInjected()) value.toString() else "Uninjected $_type: $bind."
-
-    internal fun _inject(container: KodeinContainer) {
-        _value = _getInjection(container)
-    }
-
-    protected abstract fun _getInjection(container: KodeinContainer): T
-    protected abstract val _type: String
-}
-
-class InjectedFactory<in A, out T : Any>(private val _key: Kodein.Key) : Injected<(A) -> T>(_key.bind) {
-    override fun _getInjection(container: KodeinContainer) = container.nonNullFactory<A, T>(_key)
-    override val _type = "factory"
-}
-
-class InjectedNullableFactory<in A, out T : Any>(private val _key: Kodein.Key) : Injected<((A) -> T)?>(_key.bind) {
-    override fun _getInjection(container: KodeinContainer) = container.factoryOrNull<A, T>(_key)
-    override val _type = "factory"
-}
-
-class InjectedProvider<out T : Any>(bind: Kodein.Bind) : Injected<() -> T>(bind) {
-    override fun _getInjection(container: KodeinContainer) = container.nonNullProvider<T>(bind)
-    override val _type = "provider"
-}
-
-class InjectedNullableProvider<out T : Any>(bind: Kodein.Bind) : Injected<(() -> T)?>(bind) {
-    override fun _getInjection(container: KodeinContainer) = container.providerOrNull<T>(bind)
-    override val _type = "provider"
-}
-
-class InjectedInstance<out T : Any>(bind: Kodein.Bind) : Injected<T>(bind) {
-    override fun _getInjection(container: KodeinContainer) = container.nonNullProvider<T>(bind).invoke()
-    override val _type = "instance"
-}
-
-class InjectedNullableInstance<out T : Any>(bind: Kodein.Bind) : Injected<T?>(bind) {
-    override fun _getInjection(container: KodeinContainer) = container.providerOrNull<T>(bind)?.invoke()
-    override val _type = "instance"
-}
-
-
+@Suppress("unused")
 class KodeinInjector() {
 
     class UninjectedException : RuntimeException("Value has not been injected")
@@ -96,7 +28,7 @@ class KodeinInjector() {
             }
     }
 
-    fun <T> _register(injected: Injected<T>): Injected<T> {
+    private fun <T> _register(injected: Injected<T>): Injected<T> {
         val k1 = _kodein
         if (k1 != null)
             injected._inject(k1._container)
@@ -112,24 +44,131 @@ class KodeinInjector() {
         return injected
     }
 
-    inline fun <reified A, reified T : Any> factory(tag: Any? = null): Injected<(A) -> T> = _register(InjectedFactory(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>())))
-    inline fun <reified A, reified T : Any> factoryOrNull(tag: Any? = null): Injected<((A) -> T)?> = _register(InjectedNullableFactory(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), typeToken<A>())))
+    @Suppress("UNCHECKED_CAST", "CAST_NEVER_SUCCEEDS")
+    inner class TInjector {
 
-    inline fun <reified T : Any> provider(tag: Any? = null): Injected<() -> T> = _register(InjectedProvider(Kodein.Bind(typeToken<T>(), tag)))
-    inline fun <reified T : Any> providerOrNull(tag: Any? = null): Injected<(() -> T)?> = _register(InjectedNullableProvider(Kodein.Bind(typeToken<T>(), tag)))
+        @JvmOverloads
+        fun factory(argType: Type, type: Type, tag: Any? = null): Injected<(Any?) -> Any> = _register(InjectedFactory(Kodein.Key(Kodein.Bind(type, tag), argType)))
 
-    inline fun <reified T : Any> instance(tag: Any? = null): Injected<T> = _register(InjectedInstance(Kodein.Bind(typeToken<T>(), tag)))
-    inline fun <reified T : Any> instanceOrNull(tag: Any? = null): Injected<T?> = _register(InjectedNullableInstance(Kodein.Bind(typeToken<T>(), tag)))
+        @JvmOverloads
+        fun <T : Any> factory(argType: Type, type: Class<T>, tag: Any? = null): Injected<(Any?) -> T> = factory(argType, type as Type, tag) as Injected<(Any?) -> T>
 
-    inner class CurriedFactory<A>(val arg: A, val argType: Type) {
+        @JvmOverloads
+        fun <T : Any> factory(argType: Type, type: TypeToken<T>, tag: Any? = null): Injected<(Any?) -> T> = factory(argType, type.type, tag) as Injected<(Any?) -> T>
+
+        @JvmOverloads
+        fun <A> factory(argType: Class<A>, type: Type, tag: Any? = null): Injected<(A) -> Any> = factory(argType as Type, type, tag)
+
+        @JvmOverloads
+        fun <A, T : Any> factory(argType: Class<A>, type: Class<T>, tag: Any? = null): Injected<(A) -> T> = factory(argType as Type, type as Type, tag) as Injected<(A) -> T>
+
+        @JvmOverloads
+        fun <A, T : Any> factory(argType: Class<A>, type: TypeToken<T>, tag: Any? = null): Injected<(A) -> T> = factory(argType as Type, type.type, tag) as Injected<(A) -> T>
+
+        @JvmOverloads
+        fun <A> factory(argType: TypeToken<A>, type: Type, tag: Any? = null): Injected<(A) -> Any> = factory(argType.type, type, tag)
+
+        @JvmOverloads
+        fun <A, T : Any> factory(argType: TypeToken<A>, type: Class<T>, tag: Any? = null): Injected<(A) -> T> = factory(argType.type, type as Type, tag) as Injected<(A) -> T>
+
+        @JvmOverloads
+        fun <A, T : Any> factory(argType: TypeToken<A>, type: TypeToken<T>, tag: Any? = null): Injected<(A) -> T> = factory(argType.type, type.type, tag) as Injected<(A) -> T>
+
+
+
+        @JvmOverloads
+        fun factoryOrNull(argType: Type, type: Type, tag: Any? = null): Injected<((Any?) -> Any)?> = _register(InjectedNullableFactory(Kodein.Key(Kodein.Bind(type, tag), argType)))
+
+        @JvmOverloads
+        fun <T : Any> factoryOrNull(argType: Type, type: Class<T>, tag: Any? = null): Injected<((Any?) -> T)?> = factoryOrNull(argType, type as Type, tag) as Injected<((Any?) -> T)?>
+
+        @JvmOverloads
+        fun <T : Any> factoryOrNull(argType: Type, type: TypeToken<T>, tag: Any? = null): Injected<((Any?) -> T)?> = factoryOrNull(argType, type.type, tag) as Injected<((Any?) -> T)?>
+
+        @JvmOverloads
+        fun <A> factoryOrNull(argType: Class<A>, type: Type, tag: Any? = null): Injected<((A) -> Any)?> = factoryOrNull(argType as Type, type, tag)
+
+        @JvmOverloads
+        fun <A, T : Any> factoryOrNull(argType: Class<A>, type: Class<T>, tag: Any? = null): Injected<((A) -> T)?> = factoryOrNull(argType as Type, type as Type, tag) as Injected<((A) -> T)?>
+
+        @JvmOverloads
+        fun <A, T : Any> factoryOrNull(argType: Class<A>, type: TypeToken<T>, tag: Any? = null): Injected<((A) -> T)?> = factoryOrNull(argType as Type, type.type, tag) as Injected<((A) -> T)?>
+
+        @JvmOverloads
+        fun <A> factoryOrNull(argType: TypeToken<A>, type: Type, tag: Any? = null): Injected<((A) -> Any)?> = factoryOrNull(argType.type, type, tag)
+
+        @JvmOverloads
+        fun <A, T : Any> factoryOrNull(argType: TypeToken<A>, type: Class<T>, tag: Any? = null): Injected<((A) -> T)?> = factoryOrNull(argType.type, type as Type, tag) as Injected<((A) -> T)?>
+
+        @JvmOverloads
+        fun <A, T : Any> factoryOrNull(argType: TypeToken<A>, type: TypeToken<T>, tag: Any? = null): Injected<((A) -> T)?> = factoryOrNull(argType.type, type.type, tag) as Injected<((A) -> T)?>
+
+
+
+        @JvmOverloads
+        fun provider(type: Type, tag: Any? = null): Injected<() -> Any> = _register(InjectedProvider(Kodein.Bind(type, tag)))
+
+        @JvmOverloads
+        fun <T : Any> provider(type: Class<T>, tag: Any? = null): Injected<() -> T> = provider(type as Type, tag) as Injected<() -> T>
+
+        @JvmOverloads
+        fun <T : Any> provider(type: TypeToken<T>, tag: Any? = null): Injected<() -> T> = provider(type.type, tag) as Injected<() -> T>
+
+
+
+        @JvmOverloads
+        fun providerOrNull(type: Type, tag: Any? = null): Injected<(() -> Any)?> = _register(InjectedNullableProvider(Kodein.Bind(type, tag)))
+
+        @JvmOverloads
+        fun <T : Any> providerOrNull(type: Class<T>, tag: Any? = null): Injected<(() -> T)?> = providerOrNull(type as Type, tag) as Injected<(() -> T)?>
+
+        @JvmOverloads
+        fun <T : Any> providerOrNull(type: TypeToken<T>, tag: Any? = null): Injected<(() -> T)?> = providerOrNull(type.type, tag) as Injected<(() -> T)?>
+
+
+
+        @JvmOverloads
+        fun instance(type: Type, tag: Any? = null): Injected<Any> = _register(InjectedInstance(Kodein.Bind(type, tag)))
+
+        @JvmOverloads
+        fun <T : Any> instance(type: Class<T>, tag: Any? = null): Injected<T> = instance(type as Type, tag) as Injected<T>
+
+        @JvmOverloads
+        fun <T : Any> instance(type: TypeToken<T>, tag: Any? = null): Injected<T> = instance(type.type, tag) as Injected<T>
+
+
+
+        fun instanceOrNull(type: Type, tag: Any? = null): Injected<Any?> = _register(InjectedNullableInstance(Kodein.Bind(type, tag)))
+
+        @JvmOverloads
+        fun <T : Any> instanceOrNull(type: Class<T>, tag: Any? = null): Injected<T?> = instanceOrNull(type as Type, tag) as Injected<T?>
+
+        @JvmOverloads
+        fun <T : Any> instanceOrNull(type: TypeToken<T>, tag: Any? = null): Injected<T?> = instanceOrNull(type.type, tag) as Injected<T?>
+
+    }
+
+    val typed = TInjector()
+
+
+    inline fun <reified A, reified T : Any> factory(tag: Any? = null): Injected<(A) -> T> = typed.factory(typeToken<A>(), typeToken<T>(), tag)
+    inline fun <reified A, reified T : Any> factoryOrNull(tag: Any? = null): Injected<((A) -> T)?> = typed.factoryOrNull(typeToken<A>(), typeToken<T>(), tag)
+
+    inline fun <reified T : Any> provider(tag: Any? = null): Injected<() -> T> = typed.provider(typeToken<T>(), tag)
+    inline fun <reified T : Any> providerOrNull(tag: Any? = null): Injected<(() -> T)?> = typed.providerOrNull(typeToken<T>(), tag)
+
+    inline fun <reified T : Any> instance(tag: Any? = null): Injected<T> = typed.instance(typeToken<T>(), tag)
+    inline fun <reified T : Any> instanceOrNull(tag: Any? = null): Injected<T?> = typed.instanceOrNull(typeToken<T>(), tag)
+
+    inner class CurriedFactory<A>(val arg: A, val argType: TypeToken<A>) {
         // https://youtrack.jetbrains.com/issue/KT-12126
         fun <T> _register(injected: Injected<T>) = this@KodeinInjector._register(injected)
 
-        inline fun <reified T : Any> provider(tag: Any? = null): Lazy<() -> T> = _register(InjectedFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))).toProvider(arg)
-        inline fun <reified T : Any> providerOrNull(tag: Any? = null): Lazy<(() -> T)?> = _register(InjectedNullableFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))).toNullableProvider(arg)
+        inline fun <reified T : Any> provider(tag: Any? = null): Lazy<() -> T> = typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
+        inline fun <reified T : Any> providerOrNull(tag: Any? = null): Lazy<(() -> T)?> = typed.factoryOrNull(argType, typeToken<T>(), tag).toNullableProvider(arg)
 
-        inline fun <reified T : Any> instance(tag: Any? = null): Lazy<T> = _register(InjectedFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))).toInstance(arg)
-        inline fun <reified T : Any> instanceOrNull(tag: Any? = null): Lazy<T?> = _register(InjectedNullableFactory<A, T>(Kodein.Key(Kodein.Bind(typeToken<T>(), tag), argType))).toNullableInstance(arg)
+        inline fun <reified T : Any> instance(tag: Any? = null): Lazy<T> = typed.factory(argType, typeToken<T>(), tag).toInstance(arg)
+        inline fun <reified T : Any> instanceOrNull(tag: Any? = null): Lazy<T?> = typed.factoryOrNull(argType, typeToken<T>(), tag).toNullableInstance(arg)
     }
 
     inline fun <reified A> with(arg: A) = CurriedFactory(arg, typeToken<A>())

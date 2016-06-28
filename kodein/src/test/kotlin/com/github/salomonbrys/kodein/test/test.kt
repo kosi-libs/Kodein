@@ -386,9 +386,9 @@ class KodeinTests : TestCase() {
     }
 
     @Test fun test10_1_ParameterizedTypeWrap() {
-        val typeLS1 = KodeinParameterizedType((object : TypeToken<List<String>>() {}).type as ParameterizedType)
-        val typeLS2 = KodeinParameterizedType((object : TypeToken<List<String>>() {}).type as ParameterizedType)
-        val typeLI = KodeinParameterizedType((object : TypeToken<List<Int>>() {}).type as ParameterizedType)
+        val typeLS1 = KodeinParameterizedType((object : TypeReference<List<String>>() {}).type as ParameterizedType)
+        val typeLS2 = KodeinParameterizedType((object : TypeReference<List<String>>() {}).type as ParameterizedType)
+        val typeLI = KodeinParameterizedType((object : TypeReference<List<Int>>() {}).type as ParameterizedType)
 
         assertEquals(typeLS1, typeLS2)
         assertNotEquals(typeLS1, typeLI)
@@ -676,7 +676,7 @@ class KodeinTests : TestCase() {
 
     @Test fun test19_0_onReadyCallback() {
         var passed = false
-        val kodein = Kodein {
+        Kodein {
             constant("name") with "Salomon"
             bind<Person>() with singleton { Person(instance("name")) }
             onReady {

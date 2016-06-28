@@ -11,19 +11,38 @@ private var _needPTWrapperCache: Boolean? = null;
  */
 fun _needPTWrapper(): Boolean {
     if (_needPTWrapperCache == null)
-        _needPTWrapperCache = (object : TypeToken<List<String>>() {}).type != (object : TypeToken<List<String>>() {}).type
+        _needPTWrapperCache = (object : TypeReference<List<String>>() {}).trueType != (object : TypeReference<List<String>>() {}).trueType
     return _needPTWrapperCache!!
+}
+
+interface TypeToken<T> {
+    val type: Type
 }
 
 /**
  * Class used to get a generic type at runtime
  */
 @Suppress("unused")
-abstract class TypeToken<T> {
-    val type: Type
+abstract class TypeReference<T> : TypeToken<T> {
+    val trueType: Type
+
+    private var _type: Type? = null
+
+    override val type: Type get() {
+        if (_type == null) {
+            if (trueType is ParameterizedType && _needPTWrapper())
+                _type = KodeinParameterizedType(trueType)
+            else if (trueType !is ParameterizedType && trueType !is Class<*>)
+                throw RuntimeException("Invalid TypeToken; must specify type parameters")
+            else
+                _type = trueType
+        }
+
+        return _type!!
+    }
 
     protected constructor() {
-        this.type = extractType()
+        trueType = extractType()
     }
 
     private fun extractType(): Type {
@@ -32,8 +51,8 @@ abstract class TypeToken<T> {
         if (t !is ParameterizedType)
             throw RuntimeException("Invalid TypeToken; must specify type parameters")
 
-        if (t.rawType != TypeToken::class.java)
-            throw RuntimeException("Invalid TypeToken; must directly extend TypeToken")
+        if (t.rawType != TypeReference::class.java)
+            throw RuntimeException("Invalid TypeToken; must directly extend TypeReference")
 
         return t.actualTypeArguments[0]
     }
@@ -42,17 +61,7 @@ abstract class TypeToken<T> {
 /**
  * Function used to get a generic type at runtime
  */
-inline fun <reified T> typeToken(): Type {
-    val type = (object : TypeToken<T>() {}).type
-
-    if (type is ParameterizedType && _needPTWrapper())
-        return KodeinParameterizedType(type)
-
-    if (type !is ParameterizedType && type !is Class<*>)
-        throw RuntimeException("Invalid TypeToken; must specify type parameters")
-
-    return type
-}
+inline fun <reified T> typeToken(): TypeToken<T> = (object : TypeReference<T>() {})
 
 /**
  * Wraps a ParameterizedType and implements hashCode / equals.
@@ -128,34 +137,6 @@ class KodeinParameterizedType(val type: ParameterizedType) : Type {
         }
     }
 }
-
-/* JAVA 6 / 7
-
-private var _typeNameInitialized = false
-private var _typeNameMethod: Method? = null
-
-public val Type.dispName: String get() {
-    if (!_typeNameInitialized) {
-        _typeNameInitialized = true
-        try {
-            _typeNameMethod = Type::class.java.getMethod("getTypeName");
-        }
-        catch (ignored: Throwable) {}
-    }
-
-    val method = _typeNameMethod
-    if (method != null)
-        try {
-            return method.invoke(this) as String
-        }
-        catch (ignored: Throwable) {}
-
-    if (this is Class<*>)
-        return this.name
-
-    return toString()
-}
-*/
 
 private var hasTypeName = true
 
