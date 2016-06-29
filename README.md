@@ -63,20 +63,20 @@ Maven:
 <dependency>
     <groupId>com.github.salomonbrys.kodein</groupId>
     <artifactId>kodein</artifactId>
-    <version>2.8</version>
+    <version>2.8.0</version>
 </dependency>
 ```
 
 Gradle:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein:2.8'
+compile 'com.github.salomonbrys.kodein:kodein:2.8.0'
 ```
 
 Android:
 
 ```
-compile 'com.github.salomonbrys.kodein:kodein-android:2.8'
+compile 'com.github.salomonbrys.kodein:kodein-android:2.8.0'
 ```
 
 
