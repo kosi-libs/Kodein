@@ -9,6 +9,7 @@ import org.junit.runners.MethodSorters
 import java.lang.reflect.ParameterizedType
 import java.util.*
 import kotlin.concurrent.thread
+import kotlin.reflect.KClass
 
 interface IPerson { val name: String? }
 
@@ -687,5 +688,23 @@ class KodeinTests : TestCase() {
             }
         }
         assertTrue(passed)
+    }
+
+    interface FakeLogger { val cls: KClass<*> }
+
+    class FakeLoggerImpl(override val cls: KClass<*>) : FakeLogger
+
+    class AwareTest(override val kodein: Kodein) : KodeinAware {
+        val logger: FakeLogger = instanceForClass()
+    }
+
+    @Test fun test20_0_injectForClass() {
+        val kodein = Kodein {
+            bind<FakeLogger>() with factory { cls: KClass<*> -> FakeLoggerImpl(cls) }
+        }
+
+        val test = AwareTest(kodein)
+
+        assertEquals(AwareTest::class, test.logger.cls)
     }
 }

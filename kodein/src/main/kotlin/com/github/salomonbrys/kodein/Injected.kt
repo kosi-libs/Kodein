@@ -1,76 +1,46 @@
 package com.github.salomonbrys.kodein
 
-import com.github.salomonbrys.kodein.internal.KodeinContainer
-import java.io.Serializable
-import kotlin.reflect.KProperty
+import kotlin.reflect.KClass
 
-private object UNINITIALIZED_VALUE
-
-abstract class Injected<out T> internal constructor(val bind: Kodein.Bind) : Serializable {
-    @Volatile private var _value: Any? = UNINITIALIZED_VALUE
-
-    val value: T
-        @Suppress("UNCHECKED_CAST")
-        get() {
-            val _v1 = _value
-            if (_v1 !== UNINITIALIZED_VALUE)
-                return _v1 as T
-
-            return synchronized(this) {
-                val _v2 = _value
-                if (_v2 !== UNINITIALIZED_VALUE)
-                    _v2 as T
-                else
-                    throw KodeinInjector.UninjectedException()
-            }
-        }
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): T = value
-
-    fun isInjected(): Boolean = _value !== UNINITIALIZED_VALUE
-
-    override fun toString(): String = if (isInjected()) value.toString() else "Uninjected $_type: $bind."
-
-    internal fun _inject(container: KodeinContainer) {
-        _value = _getInjection(container)
-    }
-
-    protected abstract fun _getInjection(container: KodeinContainer): T
-    protected abstract val _type: String
+interface KodeinInjectedBase {
+    val injector: KodeinInjector
 }
 
-class InjectedFactory<in A, out T : Any>(private val _key: Kodein.Key) : Injected<(A) -> T>(_key.bind) {
-    @Suppress("UNCHECKED_CAST")
-    override fun _getInjection(container: KodeinContainer) = container.nonNullFactory(_key) as (A) -> T
-    override val _type = "factory"
+inline fun <reified A, reified T : Any> KodeinInjectedBase.factory(tag: Any? = null): InjectedProperty<(A) -> T> = injector.typed.factory(typeToken<A>(), typeToken<T>(), tag)
+inline fun <reified A, reified T : Any> KodeinInjectedBase.factoryOrNull(tag: Any? = null): InjectedProperty<((A) -> T)?> = injector.typed.factoryOrNull(typeToken<A>(), typeToken<T>(), tag)
+
+inline fun <reified T : Any> KodeinInjectedBase.provider(tag: Any? = null): InjectedProperty<() -> T> = injector.typed.provider(typeToken<T>(), tag)
+inline fun <reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null): InjectedProperty<(() -> T)?> = injector.typed.providerOrNull(typeToken<T>(), tag)
+
+inline fun <reified T : Any> KodeinInjectedBase.instance(tag: Any? = null): InjectedProperty<T> = injector.typed.instance(typeToken<T>(), tag)
+inline fun <reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null): InjectedProperty<T?> = injector.typed.instanceOrNull(typeToken<T>(), tag)
+
+class CurriedInjectorFactory<A>(val injector: KodeinInjector, val arg: A, val argType: TypeToken<A>) {
+
+    inline fun <reified T : Any> provider(tag: Any? = null): Lazy<() -> T> = injector.typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
+    inline fun <reified T : Any> providerOrNull(tag: Any? = null): Lazy<(() -> T)?> = injector.typed.factoryOrNull(argType, typeToken<T>(), tag).toNullableProvider(arg)
+
+    inline fun <reified T : Any> instance(tag: Any? = null): Lazy<T> = injector.typed.factory(argType, typeToken<T>(), tag).toInstance(arg)
+    inline fun <reified T : Any> instanceOrNull(tag: Any? = null): Lazy<T?> = injector.typed.factoryOrNull(argType, typeToken<T>(), tag).toNullableInstance(arg)
 }
 
-class InjectedNullableFactory<in A, out T : Any>(private val _key: Kodein.Key) : Injected<((A) -> T)?>(_key.bind) {
-    @Suppress("UNCHECKED_CAST")
-    override fun _getInjection(container: KodeinContainer) = container.factoryOrNull(_key) as ((A) -> T)?
-    override val _type = "factory"
+inline fun <reified A> KodeinInjectedBase.with(arg: A) = CurriedInjectorFactory(injector, arg, typeToken<A>())
+
+inline fun <reified A, reified T : Any> KodeinInjectedBase.providerFromFactory(arg: A, tag: Any? = null): Lazy<() -> T> = factory<A, T>(tag).toProvider(arg)
+inline fun <reified A, reified T : Any> KodeinInjectedBase.providerFromFactoryOrNull(arg: A, tag: Any? = null): Lazy<(() -> T)?> = factoryOrNull<A, T>(tag).toNullableProvider(arg)
+
+inline fun <reified A, reified T : Any> KodeinInjectedBase.instanceFromFactory(arg: A, tag: Any? = null): Lazy<T> = factory<A, T>(tag).toInstance(arg)
+inline fun <reified A, reified T : Any> KodeinInjectedBase.instanceFromFactoryOrNull(arg: A, tag: Any? = null): Lazy<T?> = factoryOrNull<A, T>(tag).toNullableInstance(arg)
+
+
+interface KodeinInjected : KodeinInjectedBase {
+
+    fun inject(kodein: Kodein) = injector.inject(kodein)
+
+    fun onInjected(cb: (Kodein) -> Unit) = injector.onInjected(cb)
+
 }
 
-class InjectedProvider<out T : Any>(bind: Kodein.Bind) : Injected<() -> T>(bind) {
-    @Suppress("UNCHECKED_CAST")
-    override fun _getInjection(container: KodeinContainer) = container.nonNullProvider(bind) as () -> T
-    override val _type = "provider"
-}
+inline fun <reified T : KodeinInjected, reified R : Any> T.instanceForClass(tag: Any? = null): Lazy<R> = with(T::class as KClass<*>).instance<R>(tag)
 
-class InjectedNullableProvider<out T : Any>(bind: Kodein.Bind) : Injected<(() -> T)?>(bind) {
-    @Suppress("UNCHECKED_CAST")
-    override fun _getInjection(container: KodeinContainer) = container.providerOrNull(bind) as (() -> T)?
-    override val _type = "provider"
-}
-
-class InjectedInstance<out T : Any>(bind: Kodein.Bind) : Injected<T>(bind) {
-    @Suppress("UNCHECKED_CAST")
-    override fun _getInjection(container: KodeinContainer) = container.nonNullProvider(bind).invoke() as T
-    override val _type = "instance"
-}
-
-class InjectedNullableInstance<out T : Any>(bind: Kodein.Bind) : Injected<T?>(bind) {
-    @Suppress("UNCHECKED_CAST")
-    override fun _getInjection(container: KodeinContainer) = container.providerOrNull(bind)?.invoke() as T?
-    override val _type = "instance"
-}
+inline fun <reified T : KodeinInjected, reified R : Any> T.providerForClass(tag: Any? = null): Lazy<() -> R> = with(T::class as KClass<*>).provider<R>(tag)
