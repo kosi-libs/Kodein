@@ -1,3 +1,46 @@
+
+#### 3.0.0-beta1 (29-06-2016)
+
+ - BREAKING CHANGES:
+   * `JKodein` is replaced by `TKodein` which is meant to use by both Kotlin & Java. `TKodein` allows you
+     to access a type consistent API without `inline` methods. Each method can be used with `Type`, `TypeToken`, or
+     `Class`. To access a `TKodein`, simply use `kodein.typed`.
+   * The `typeToken` function now returns a `TypeToken` interface. This allows to keep type consistency &
+   checking while `Type` objects. If you were using `val t = typeToken<T>()` in Kodein 2, the replacement is simply
+   `val t = typeToken<T>().type`.
+   * `kodein.bindingsDescription` becomes `kodein.container.bindings.description`.
+   * `kodein.registeredBindings` becomes `kodein.container.bindings`.
+   * All `inline` functions that use `reified` to get the type are now **extension functions**, which means that they
+      need to be imported! Your code will be all red until you resolve those import. Don't panic! The API itself has
+      not changed, just its imports.
+
+ - FEATURES:
+   * Introducing `kodein.container` which enables you to query the Kodein container directly with `Kodein.Key` or
+     `Kodein.Bind` objects.
+   * `kodein.container.bindings` now gives a `Map<Kodein.Key, Factory<*, *>>`. Which means that you can do all sorts of
+     introspection and debug (like know which types are bounds to which factories, etc.). To help you with those tasks,
+     several extension functions are proposed to this `Map` (in the file `bindings.kt`).
+   * Better bindings description: now displays the bound type and the created (real) type.
+   * Introducing the `KodeinAware` and `KodeinInjected` interfaces. If a class implements one of those interfaces, the
+     injection feels "native": `instance()` instead of `kodein.instance()`.
+   * Introducing `instanceForClass()` and `providerForClass()`: those methods can be passed a `Kodein` or
+     `KodeinInjector` object to inject an instance by using a factory that takes a `KClass<*>` as parameter. Those
+     functions can be used without parameter on a `KodeinAware` or `KodeinInjected` class (which is where they reach
+     their full potential!).
+   * Introducing `Kodein.global` which is a global Kodein instance for all. It is on its module and is not proposed by
+     default. To use it, you must declare the dependency `com.github.salomonbrys.kodein:kodein-global:3.0.+`. You can
+     add modules to it with `Kodein.global.addImport(module)`. After that, you can use `Kodein.global` as a regular
+     Kodein object. Be aware that once you have injected / retrieved the first value with `Kodein.global`, then adding
+     modules to it will throw an exception.
+   * When using `Kodein.global`, you can use the `KodeinGlobalAware` interface, which enables you all the goodness of
+     `KodeinAware`, but using `Kodein.global`, and without any config.
+   * Kotlin 1.0.2-1
+
+ - INTERNAL
+   * All providers & factories are represented by their classes.
+   * `Kodein`, `TKodein` and `KodeinContainer` are now very simple interfaces, which enables easy wrapping.
+
+
 #### 2.8.0 (14-06-2016)
 
  * Eager singletons: ask kodein to instanciate the singleton object as soon as kodein is ready.
@@ -5,10 +48,12 @@
  * The `KodeinInjector.onInjected` callback is directly called if the injector has already been injected.
  * Gradle `2.13`
 
+
 #### 2.7.1 (02-06-2016)
 
  * Overriding exceptions now print the affected key
  * New syntax for binding without specifying the type: `bind() from scope`
+
 
 #### 2.7.0 (23-05-2016)
 

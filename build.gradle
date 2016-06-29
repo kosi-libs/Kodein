@@ -28,5 +28,5 @@ allprojects {
     targetCompatibility = 1.6
 
     group = 'com.github.salomonbrys.kodein'
-    version = '2.8.0'
+    version = '3.0.0-beta1'
 }

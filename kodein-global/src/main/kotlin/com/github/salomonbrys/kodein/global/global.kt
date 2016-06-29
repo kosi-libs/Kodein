@@ -1,6 +1,7 @@
 package com.github.salomonbrys.kodein.global
 
 import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.KodeinAware
 import com.github.salomonbrys.kodein.KodeinContainer
 import com.github.salomonbrys.kodein.TKodein
 import java.util.*
@@ -50,3 +51,9 @@ class GlobalKodein : Kodein {
 private var _global = GlobalKodein()
 
 val Kodein.Companion.global: GlobalKodein get() = _global
+
+interface KodeinGlobalAware : KodeinAware {
+
+    override val kodein: Kodein get() = Kodein.global
+
+}
