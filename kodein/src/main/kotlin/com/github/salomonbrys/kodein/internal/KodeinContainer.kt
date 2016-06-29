@@ -2,6 +2,7 @@ package com.github.salomonbrys.kodein.internal
 
 import com.github.salomonbrys.kodein.Factory
 import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.description
 import java.util.*
 
 /**
@@ -75,12 +76,10 @@ class KodeinContainer private constructor(
     /**
      * This is for debug. It allows to print all binded keys.
      */
-    val registeredBindings: Map<Kodein.Bind, String> get() = _map.mapKeys { it.key.bind } .mapValues { it.value.scopeName }
-
-    val bindingsDescription: String get() = registeredBindings.map { "        ${it.key.toString()} with ${it.value}" }.joinToString("\n")
+    val bindings: Map<Kodein.Key, Factory<*, *>> get() = HashMap(_map)
 
     fun notFoundException(reason: String): Kodein.NotFoundException
-            = Kodein.NotFoundException("$reason\nRegistered in Kodein:\n" + bindingsDescription)
+            = Kodein.NotFoundException("$reason\nRegistered in Kodein:\n" + bindings.description)
 
     /**
      * All Kodein getter methods, whether it's instance(), provider() or factory() eventually ends up calling this

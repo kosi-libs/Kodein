@@ -95,13 +95,13 @@ class Kodein internal constructor(internal val _container: KodeinContainer) {
 
         inner class DirectBinder internal constructor(private val _tag: Any?, overrides: Boolean?) {
             private val _mustOverride = _overrideMode.must(overrides)
-            infix inline fun <A, reified T : Any> from(factory: Factory<A, T>) = _with(typeToken<T>().type, factory)
-            fun <A> _with(type: Type, factory: Factory<A, *>) = _builder.bind(Key(Bind(type, _tag), factory.argType), factory, _mustOverride)
+            infix fun <A> from(factory: Factory<A, *>) = _builder.bind(Key(Bind(factory.createdType, _tag), factory.argType), factory, _mustOverride)
         }
 
         inner class ConstantBinder internal constructor(private val _tag: Any, overrides: Boolean?) {
             private val _mustOverride = _overrideMode.must(overrides)
-            infix fun with(value: Any) = _builder.bind(Key(Bind(value.javaClass, _tag), Unit.javaClass), instance(value), _mustOverride)
+            infix inline fun <reified T : Any> with(value: T) = with(value, typeToken<T>().type)
+            fun with(value: Any, debugType: Type) = _builder.bind(Key(Bind(value.javaClass, _tag), Unit.javaClass), CInstance(debugType, value), _mustOverride)
         }
 
         fun bind(type: Type, tag: Any? = null, overrides: Boolean? = null): TypeBinder<Any> = TypeBinder(Bind(type, tag), overrides)
@@ -138,9 +138,7 @@ class Kodein internal constructor(internal val _container: KodeinContainer) {
     /**
      * This is for debug. It allows to print all binded keys.
      */
-    val registeredBindings: Map<Kodein.Bind, String> get() = _container.registeredBindings
-
-    val bindingsDescription: String get() = _container.bindingsDescription
+    val bindings: Map<Kodein.Key, Factory<*, *>> get() = _container.bindings
 
     /**
      * Exception thrown when there is a dependency loop.
@@ -222,6 +220,7 @@ class Kodein internal constructor(internal val _container: KodeinContainer) {
 
 
     val typed = TKodein(_container)
+
 
     companion object {
         // The companion object is empty but it exists to allow external libraries to extend it.

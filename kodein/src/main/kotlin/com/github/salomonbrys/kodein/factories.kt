@@ -25,20 +25,34 @@ interface Factory<in A, out T : Any> {
      * The type of the argument this factory will function for.
      */
     val argType: Type
+
+    /**
+     * The type of object that is created by this factory.
+     */
+    val createdType: Type
+
+    val description: String
 }
 
 /**
  * Concrete implementation of factory that delegates `getInstance` to a factory method.
  */
-class CFactory<A, out T : Any>(override val scopeName: String, override val argType: Type, private val _provider: Kodein.(A) -> T) : Factory<A, T> {
-    override fun getInstance(kodein: Kodein, arg: A) = kodein._provider(arg)
+abstract class AFactory<in A, out T : Any>(override val scopeName: String, override val argType: Type, override val createdType: Type) : Factory<A, T> {
+
+    override val description: String get() = "$scopeName { ${argType.typeName} -> ${createdType.typeName} } "
 }
 
 /**
  * Concrete implementation of factory that delegates `getInstance` to a provider method.
  * A provider is a factory that takes no argument (Unit as it's argument type).
  */
-class CProvider<out T : Any>(override val scopeName: String, private val _provider: Kodein.() -> T) : Factory<Unit, T> {
-    override fun getInstance(kodein: Kodein, arg: Unit) = kodein._provider()
+abstract class AProvider<out T : Any>(override val scopeName: String, override val createdType: Type) : Factory<Unit, T> {
+
+    override fun getInstance(kodein: Kodein, arg: Unit) = getInstance(kodein)
+
+    abstract fun getInstance(kodein: Kodein): T
+
     override val argType: Type = Unit.javaClass
+
+    override val description: String get() = "$scopeName { ${createdType.typeName} } "
 }
