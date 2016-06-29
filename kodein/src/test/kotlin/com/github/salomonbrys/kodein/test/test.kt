@@ -533,7 +533,7 @@ class KodeinTests : TestCase() {
             constant("answer") with 42
         }
 
-        val lines = kodein.bindings.description.lineSequence().map { it.trim() }.toList()
+        val lines = kodein.container.bindings.description.lineSequence().map { it.trim() }.toList()
         assertEquals(6, lines.size)
         assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>() with provider { com.github.salomonbrys.kodein.test.Person }" in lines)
         assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"thread-singleton\") with threadSingleton { com.github.salomonbrys.kodein.test.Person }" in lines)
@@ -553,14 +553,14 @@ class KodeinTests : TestCase() {
             constant("answer") with 42
         }
 
-        assertEquals(6, kodein.bindings.size)
-        assertEquals("provider", kodein.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, null), Unit::class.java)]?.scopeName)
-        assertEquals("threadSingleton", kodein.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "thread-singleton"), Unit::class.java)]?.scopeName)
-        assertEquals("singleton", kodein.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "singleton"), Unit::class.java)]?.scopeName)
-        assertEquals("factory", kodein.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "factory"), String::class.java)]?.scopeName)
-        assertEquals("instance", kodein.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "instance"), Unit::class.java)]?.scopeName)
+        assertEquals(6, kodein.container.bindings.size)
+        assertEquals("provider", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, null), Unit::class.java)]?.scopeName)
+        assertEquals("threadSingleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "thread-singleton"), Unit::class.java)]?.scopeName)
+        assertEquals("singleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "singleton"), Unit::class.java)]?.scopeName)
+        assertEquals("factory", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "factory"), String::class.java)]?.scopeName)
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "instance"), Unit::class.java)]?.scopeName)
         @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-        assertEquals("instance", kodein.bindings[Kodein.Key(Kodein.Bind(Integer::class.java, "answer"), Unit::class.java)]?.scopeName)
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(Integer::class.java, "answer"), Unit::class.java)]?.scopeName)
     }
 
     @Test fun test16_1_ScopedSingleton() {

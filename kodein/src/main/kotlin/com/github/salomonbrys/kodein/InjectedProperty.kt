@@ -1,6 +1,5 @@
 package com.github.salomonbrys.kodein
 
-import com.github.salomonbrys.kodein.internal.KodeinContainer
 import java.io.Serializable
 import kotlin.reflect.KProperty
 

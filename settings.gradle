@@ -1,2 +1,2 @@
-include ':kodein', ':kodein-android'
+include ':kodein', ':kodein-global', ':kodein-android'
 
