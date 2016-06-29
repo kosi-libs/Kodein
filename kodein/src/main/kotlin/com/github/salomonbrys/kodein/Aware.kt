@@ -69,6 +69,10 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.instanceFromFactoryOrNul
 
 interface KodeinAware : KodeinAwareBase
 
-inline fun <reified T : KodeinAware, reified R : Any> T.instanceForClass(tag: Any? = null): R = with(T::class as KClass<*>).instance<R>(tag)
+inline fun <reified T : KodeinAware, reified R : Any> T.instanceForClass(tag: Any? = null): R = with(T::class.java as Class<*>).instance<R>(tag)
 
-inline fun <reified T : KodeinAware, reified R : Any> T.providerForClass(tag: Any? = null): () -> R = with(T::class as KClass<*>).provider<R>(tag)
+inline fun <reified T : KodeinAware, reified R : Any> T.providerForClass(tag: Any? = null): () -> R = with(T::class.java as Class<*>).provider<R>(tag)
+
+inline fun <reified T : KodeinAware, reified R : Any> T.instanceForKClass(tag: Any? = null): R = with(T::class as KClass<*>).instance<R>(tag)
+
+inline fun <reified T : KodeinAware, reified R : Any> T.providerForKClass(tag: Any? = null): () -> R = with(T::class as KClass<*>).provider<R>(tag)

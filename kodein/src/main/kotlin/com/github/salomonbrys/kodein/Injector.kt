@@ -2,6 +2,7 @@ package com.github.salomonbrys.kodein
 
 import java.lang.reflect.Type
 import java.util.*
+import kotlin.reflect.KClass
 
 @Suppress("unused")
 class KodeinInjector() : KodeinInjectedBase {
@@ -173,6 +174,10 @@ class KodeinInjector() : KodeinInjectedBase {
     }
 }
 
-inline fun <reified T : Any, reified R : Any> T.instanceForClass(injector: KodeinInjector, tag: Any? = null): Lazy<R> = injector.with(T::class).instance<R>(tag)
+inline fun <reified T : Any, reified R : Any> T.instanceForClass(injector: KodeinInjector, tag: Any? = null): Lazy<R> = injector.with(T::class.java as Class<*>).instance<R>(tag)
 
-inline fun <reified T : Any, reified R : Any> T.providerForClass(injector: KodeinInjector, tag: Any? = null): Lazy<() -> R> = injector.with(T::class).provider<R>(tag)
+inline fun <reified T : Any, reified R : Any> T.providerForClass(injector: KodeinInjector, tag: Any? = null): Lazy<() -> R> = injector.with(T::class.java as Class<*>).provider<R>(tag)
+
+inline fun <reified T : Any, reified R : Any> T.instanceForKClass(injector: KodeinInjector, tag: Any? = null): Lazy<R> = injector.with(T::class as KClass<*>).instance<R>(tag)
+
+inline fun <reified T : Any, reified R : Any> T.providerForKClass(injector: KodeinInjector, tag: Any? = null): Lazy<() -> R> = injector.with(T::class as KClass<*>).provider<R>(tag)

@@ -1,9 +1,7 @@
 package com.github.salomonbrys.kodein
 
-import com.github.salomonbrys.kodein.internal.KodeinContainerImpl
 import com.github.salomonbrys.kodein.internal.KodeinImpl
 import java.lang.reflect.Type
-import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -162,6 +160,10 @@ interface Kodein : KodeinAwareBase {
 
 fun <A, T : Any> ((A) -> T).toProvider(arg: A): () -> T = { invoke(arg) }
 
-inline fun <reified T : Any, reified R : Any> T.instanceForClass(kodein: Kodein, tag: Any? = null): R = kodein.with(T::class as KClass<*>).instance<R>(tag)
+inline fun <reified T : Any, reified R : Any> T.instanceForClass(kodein: Kodein, tag: Any? = null): R = kodein.with(T::class.java as Class<*>).instance<R>(tag)
 
-inline fun <reified T : Any, reified R : Any> T.providerForClass(kodein: Kodein, tag: Any? = null): () -> R = kodein.with(T::class as KClass<*>).provider<R>(tag)
+inline fun <reified T : Any, reified R : Any> T.providerForClass(kodein: Kodein, tag: Any? = null): () -> R = kodein.with(T::class.java as Class<*>).provider<R>(tag)
+
+inline fun <reified T : Any, reified R : Any> T.instanceForKClass(kodein: Kodein, tag: Any? = null): R = kodein.with(T::class as KClass<*>).instance<R>(tag)
+
+inline fun <reified T : Any, reified R : Any> T.providerForKClass(kodein: Kodein, tag: Any? = null): () -> R = kodein.with(T::class as KClass<*>).provider<R>(tag)
