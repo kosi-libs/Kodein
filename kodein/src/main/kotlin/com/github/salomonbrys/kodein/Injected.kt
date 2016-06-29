@@ -15,6 +15,8 @@ inline fun <reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null)
 inline fun <reified T : Any> KodeinInjectedBase.instance(tag: Any? = null): InjectedProperty<T> = injector.typed.instance(typeToken<T>(), tag)
 inline fun <reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null): InjectedProperty<T?> = injector.typed.instanceOrNull(typeToken<T>(), tag)
 
+fun KodeinInjectedBase.kodein(): Lazy<Kodein> = injector.kodein()
+
 class CurriedInjectorFactory<A>(val injector: KodeinInjector, val arg: A, val argType: TypeToken<A>) {
 
     inline fun <reified T : Any> provider(tag: Any? = null): Lazy<() -> T> = injector.typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
