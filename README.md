@@ -35,6 +35,8 @@ Kodein is a good choice because:
 - It can be used in plain Java
 
 
+***Kodein Version 3.0.0 is currently being tested. If you want to prepare the migration for the upcomming release, or better yet, test it. You can read all about it [in the changelog](https://github.com/SalomonBrys/Kodein/blob/master/CHANGELOG.md).***
+
 
 Example
 -------
@@ -725,16 +727,16 @@ Create your own scopes
 There are three ways to create your scopes. By creating a builder function, a scoped singleton cache function or an auto scoped singleton cache function.
 
 
-### Builders
+### Factories
 
-A builder function scope is an extension function to `Kodein.Builder` that returns a `Factory<A, T>`. You can use the `CFactory<A, T>` class for ease of use.
+A factory function is an extension function to `Kodein.Builder` that returns a `Factory<A, T>`. You can use the `CFactory<A, T>` class for ease of use.
 If your scope is a provider scope (such as singleton), you can use the `CProvider<T>` class for ease of use.  
 Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/scopes.kt) file. The `singleton` scope is very easy to understand and is a good starting point.
 
 
 ### Scoped singletons
 
-Scoped singleton are singletons that are binded to a context and live while this context exists.
+Scoped singleton are singletons that are binded to a context and live while that context exists.
 
 To define a scoped singleton, you must define a function that satisfies this contract: `(S) -> HashMap<Any, Any>` where `S` is the context type.
 This function must *always* return the same `HashMap` when given the same `S` object.

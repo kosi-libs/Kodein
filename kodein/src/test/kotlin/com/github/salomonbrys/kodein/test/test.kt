@@ -553,19 +553,23 @@ class KodeinTests : TestCase() {
         }
 
         assertEquals(6, kodein.container.bindings.size)
-        assertEquals("provider", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, null), Unit::class.java)]?.scopeName)
-        assertEquals("threadSingleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "thread-singleton"), Unit::class.java)]?.scopeName)
-        assertEquals("singleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "singleton"), Unit::class.java)]?.scopeName)
-        assertEquals("factory", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "factory"), String::class.java)]?.scopeName)
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "instance"), Unit::class.java)]?.scopeName)
+        assertEquals("provider", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, null), Unit::class.java)]?.factoryName)
+        assertEquals("threadSingleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "thread-singleton"), Unit::class.java)]?.factoryName)
+        assertEquals("singleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "singleton"), Unit::class.java)]?.factoryName)
+        assertEquals("factory", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "factory"), String::class.java)]?.factoryName)
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "instance"), Unit::class.java)]?.factoryName)
         @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(Integer::class.java, "answer"), Unit::class.java)]?.scopeName)
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(Integer::class.java, "answer"), Unit::class.java)]?.factoryName)
     }
 
     @Test fun test16_1_ScopedSingleton() {
-        val globalCache = HashMap<String, HashMap<Any, Any>>()
+
+        val myScope = object : Scope<String> {
+            val cache = HashMap<String, ScopeRegistry>()
+            override fun getRegistry(key: Kodein.Key, context: String): ScopeRegistry = cache.getOrPut(context) { ScopeRegistry() }
+        }
         val kodein = Kodein {
-            bind<Person>() with scopedSingleton({ key: String -> globalCache.getOrPut(key) { HashMap() } }) { Person() }
+            bind<Person>() with scopedSingleton(myScope) { Person() }
         }
 
         val factory = kodein.factory<String, Person>()
@@ -575,22 +579,27 @@ class KodeinTests : TestCase() {
         assertNotSame(one, factory("two"))
         assertSame(two, factory("two"))
 
-        globalCache.remove("one")
+        myScope.cache.remove("one")
 
         assertNotSame(one, factory("one"))
         assertSame(two, factory("two"))
     }
 
     @Test fun test16_2_AutoScopedSingleton() {
-        val globalCache = HashMap<Any, Any>()
+        val myScope = object : AutoScope<Unit> {
+            val registry = ScopeRegistry()
+            override fun getRegistry(key: Kodein.Key, context: Unit) = registry
+            override fun getContext(key: Kodein.Key) = Unit
+        }
+
         val kodein = Kodein {
-            bind<Person>() with autoScopedSingleton({ Unit to globalCache }) { Person() }
+            bind<Person>() with autoScopedSingleton(myScope) { Person() }
         }
 
         val p = kodein.instance<Person>()
         assertSame(p, kodein.instance<Person>())
 
-        globalCache.clear()
+        myScope.registry.clear()
 
         assertNotSame(p, kodein.instance<Person>())
     }

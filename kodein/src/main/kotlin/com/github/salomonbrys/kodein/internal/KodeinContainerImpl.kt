@@ -1,6 +1,9 @@
 package com.github.salomonbrys.kodein.internal
 
-import com.github.salomonbrys.kodein.*
+import com.github.salomonbrys.kodein.Factory
+import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.KodeinContainer
+import com.github.salomonbrys.kodein.description
 import java.util.*
 
 /**
@@ -59,6 +62,6 @@ class KodeinContainerImpl private constructor(private val _map: Map<Kodein.Key, 
         val factory = _map[key] ?: return null
         _node?.check(key)
         @Suppress("UNCHECKED_CAST")
-        return { arg -> (factory as Factory<Any?, Any>).getInstance(KodeinImpl(KodeinContainerImpl(_map, Node(key, _node))), arg) }
+        return { arg -> (factory as Factory<Any?, Any>).getInstance(KodeinImpl(KodeinContainerImpl(_map, Node(key, _node))), key, arg) }
     }
 }

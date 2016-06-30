@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
  * }
  * ```
  *
- * See the file scopes.kt for other scopes.
+ * See the file factories.kt for other scopes.
  */
 interface Kodein : KodeinAwareBase {
 
