@@ -99,7 +99,6 @@ Table Of Contents
       * [Constant binding](#constant-binding)
       * [Direct binding](#direct-binding)
       * [Transitive dependency](#transitive-dependency)
-      * [Scoped transitive dependency](#scoped-transitive-dependency)
       * [Modules](#modules)
       * [Extension (composition)](#extension-composition)
       * [Overriding](#overriding)
@@ -298,30 +297,6 @@ val kodein = Kodein {
 ```
 
 You can, of course, also use the functions `provider()`, `provider(tag)`, `factory()` and `factory(tag)`, 
-
-
-### Scoped transitive dependency
-
-Sometimes, you may arrive to a situation where a singleton binded type depends on a provider binded type.  
-Something like this :
-
-```kotlin
-class GameEngine(private val rnd: Random) { /*...*/ }
-val kodein = Kodein {
-    bind<Random>() with provider { MySuperSecureRandom() } // A MySuperSecureRandom instance can only give one random result!
-    bind<GameEngine>() with singleton { GreatGameEngine(instance()) }
-}
-```
-
-Do you see the problem? In this case, `GreatGameEngine` will receive a `MySuperSecureRandom` instance, always re-using the same instance, making `MySuperSecureRandom` essentially a singleton inside `GreatGameEngine`.
-
-The correction is very easy:
-
-```kotlin
-class GameEngine(private val rnd: () -> Random) { /*...*/ }
-```
-
-I encourage you to follow this rule: *In a singleton, if you're not 100% sure that the transitive dependencies are themselves singletons, then use providers*.
 
 
 ### Modules
