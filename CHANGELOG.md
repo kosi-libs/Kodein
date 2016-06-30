@@ -1,7 +1,23 @@
 
+#### 3.0.0-beta2 (30-06-2016)
+
+ - FEATURES
+   * `KodeinInjected` can use `kodein()` instead of `injector.kodein()`.
+   * Android `instanceForContext` that works exactly like `instanceForClass`, but for a `Context`.
+   * Android module, wisely named `androidModule` that provides a lot of factories with a `Context` arguments (see
+     `AndroidModule.kt`).
+
+ - BREAKING CHANGES
+   * `typeToken` (and therefore `TypeReference`) will throw an exception when build with a `TypeVariable` type argument.
+     This is to prevent "accidental" binding of a type with TypeVariable which will be later impossible to retrieve.
+
+ - BETA FEATURE CHANGES
+   * `instanceForClass` uses Java `Class<*>` and `instanceForKClass` uses Kotlin `KClass<*>`.
+
+
 #### 3.0.0-beta1 (29-06-2016)
 
- - BREAKING CHANGES:
+ - BREAKING CHANGES
    * `JKodein` is replaced by `TKodein` which is meant to use by both Kotlin & Java. `TKodein` allows you
      to access a type consistent API without `inline` methods. Each method can be used with `Type`, `TypeToken`, or
      `Class`. To access a `TKodein`, simply use `kodein.typed`.
@@ -14,7 +30,7 @@
       need to be imported! Your code will be all red until you resolve those import. Don't panic! The API itself has
       not changed, just its imports.
 
- - FEATURES:
+ - FEATURES
    * Introducing `kodein.container` which enables you to query the Kodein container directly with `Kodein.Key` or
      `Kodein.Bind` objects.
    * `kodein.container.bindings` now gives a `Map<Kodein.Key, Factory<*, *>>`. Which means that you can do all sorts of
