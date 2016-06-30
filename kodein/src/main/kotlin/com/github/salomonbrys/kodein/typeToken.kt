@@ -1,8 +1,6 @@
 package com.github.salomonbrys.kodein
 
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
-import java.lang.reflect.WildcardType
+import java.lang.reflect.*
 
 private var _needPTWrapperCache: Boolean? = null;
 
@@ -41,8 +39,20 @@ abstract class TypeReference<T> : TypeToken<T> {
         return _type!!
     }
 
+    private fun _check(type: Type) {
+        if (type is TypeVariable<*>)
+            throw IllegalArgumentException("${type.name} is not a real type")
+        else if (type is ParameterizedType) {
+            for (arg in type.actualTypeArguments)
+                _check(arg)
+        }
+        else if (type is GenericArrayType)
+            _check(type.genericComponentType)
+    }
+
     protected constructor() {
         trueType = extractType()
+        _check(trueType)
     }
 
     private fun extractType(): Type {
