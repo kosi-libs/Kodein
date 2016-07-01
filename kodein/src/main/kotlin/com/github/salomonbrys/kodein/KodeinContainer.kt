@@ -1,5 +1,6 @@
 package com.github.salomonbrys.kodein
 
+import java.lang.reflect.*
 import java.util.*
 
 /**
@@ -43,13 +44,31 @@ interface KodeinContainer {
 
         internal val _map: MutableMap<Kodein.Key, Factory<*, Any>> = HashMap()
 
+        private fun _checkIsReified(key: Kodein.Key, type: Type) {
+            when (type) {
+                is TypeVariable<*> -> throw IllegalArgumentException("Binding $key uses a type variable named ${type.name}, therefore, the binded value can never be retrieved.")
+                is ParameterizedType -> for (arg in type.actualTypeArguments) _checkIsReified(key, arg)
+                is GenericArrayType -> _checkIsReified(key, type.genericComponentType)
+                is WildcardType -> {
+                    for (arg in type.lowerBounds)
+                        _checkIsReified(key, arg)
+                    for (arg in type.upperBounds)
+                        _checkIsReified(key, arg)
+                }
+                is KodeinParameterizedType -> _checkIsReified(key, type.type)
+                is Class<*> -> {}
+                else -> throw IllegalArgumentException("Unknown type ${type.javaClass} $type")
+            }
+        }
+
         internal fun bind(key: Kodein.Key, factory: Factory<*, Any>, mustOverride: Boolean?) {
             if (mustOverride != null) {
                 if (mustOverride && key !in _map)
-                    throw Kodein.OverridingException("Binding must override an existing binding. Key: $key")
+                    throw Kodein.OverridingException("Binding $key must override an existing binding.")
                 if (!mustOverride && key in _map)
-                    throw Kodein.OverridingException("Binding must not override an existing binding. Key: $key")
+                    throw Kodein.OverridingException("Binding $key must not override an existing binding.")
             }
+            _checkIsReified(key, key.bind.type)
             _map[key] = factory
         }
 

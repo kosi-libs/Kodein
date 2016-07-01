@@ -1,6 +1,8 @@
 package com.github.salomonbrys.kodein
 
-import java.lang.reflect.*
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
+import java.lang.reflect.WildcardType
 
 private var _needPTWrapperCache: Boolean? = null
 
@@ -37,31 +39,7 @@ abstract class TypeReference<T> : TypeToken<T> {
         return _type!!
     }
 
-    private fun _check(type: Type) {
-        if (type is TypeVariable<*>)
-            throw IllegalArgumentException("${type.name} is a type variable, not a real type")
-        else if (type is ParameterizedType) {
-            for (arg in type.actualTypeArguments)
-                _check(arg)
-        }
-        else if (type is GenericArrayType)
-            _check(type.genericComponentType)
-        else if (type is WildcardType) {
-            for (arg in type.lowerBounds)
-                _check(arg)
-            for (arg in type.upperBounds)
-                _check(arg)
-        }
-        else if (type !is Class<*>)
-            throw IllegalArgumentException("Unknown type ${type.javaClass} $type")
-    }
-
     protected constructor() {
-        trueType = extractType()
-        _check(trueType)
-    }
-
-    private fun extractType(): Type {
         val t = javaClass.genericSuperclass
 
         if (t !is ParameterizedType)
@@ -70,7 +48,7 @@ abstract class TypeReference<T> : TypeToken<T> {
         if (t.rawType != TypeReference::class.java)
             throw RuntimeException("Invalid TypeToken; must directly extend TypeReference")
 
-        return t.actualTypeArguments[0]
+        trueType = t.actualTypeArguments[0]
     }
 }
 

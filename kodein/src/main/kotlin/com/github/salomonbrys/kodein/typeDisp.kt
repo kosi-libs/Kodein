@@ -7,6 +7,7 @@ private abstract class TypeStringer {
     fun dispString(type: Type): String = when (type) {
         is Class<*> -> dispName(type)
         is ParameterizedType -> dispString(type.rawType) + "<" + type.actualTypeArguments.joinToString(", ") { dispString(it) } + ">"
+        is KodeinParameterizedType -> dispString(type.type)
         is WildcardType -> when {
             type.lowerBounds.isNotEmpty() -> "in " + dispString(type.lowerBounds[0])
             type.upperBounds.isNotEmpty() -> when {
