@@ -59,7 +59,8 @@ class CScopedSingleton<C, out T : Any>(argType: Type, createdType: Type, private
 {
     override fun _getCache(key: Kodein.Key, arg: C) = arg to _scope.getRegistry(key, arg)
 
-    override val description: String get() = "$factoryName(${_scope.javaClass.dispName}) { ${argType.dispName} -> ${createdType.dispName} } "
+    override val description: String get() = "$factoryName(${_scope.javaClass.simpleDispString}) { ${argType.simpleDispString} -> ${createdType.simpleDispString} } "
+    override val fullDescription: String get() = "$factoryName(${_scope.javaClass.fullDispString}) { ${argType.fullDispString} -> ${createdType.fullDispString} } "
 }
 
 inline fun <reified C, reified T : Any> Kodein.Builder.scopedSingleton(scope: Scope<C>, noinline creator: Kodein.(C) -> T)
@@ -75,7 +76,8 @@ class CAutoScopedSingleton<C, out T : Any>(createdType: Type, private val _scope
 {
     override fun _getCache(key: Kodein.Key, arg: Unit): Pair<C, ScopeRegistry> = _scope.getContext(key).let { it to _scope.getRegistry(key, it) }
 
-    override val description: String get() = "$factoryName(${_scope.javaClass.dispName}) { ${createdType.dispName} } "
+    override val description: String get() = "$factoryName(${_scope.javaClass.simpleDispString}) { ${createdType.simpleDispString} } "
+    override val fullDescription: String get() = "$factoryName(${_scope.javaClass.fullDispString}) { ${createdType.fullDispString} } "
 }
 
 inline fun <C, reified T : Any> Kodein.Builder.autoScopedSingleton(scope: AutoScope<C>, noinline creator: Kodein.(C) -> T)

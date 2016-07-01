@@ -2,7 +2,7 @@ package com.github.salomonbrys.kodein
 
 import java.lang.reflect.*
 
-private var _needPTWrapperCache: Boolean? = null;
+private var _needPTWrapperCache: Boolean? = null
 
 /**
  * Detectes whether KodeinParameterizedType is needed.
@@ -30,8 +30,6 @@ abstract class TypeReference<T> : TypeToken<T> {
         if (_type == null) {
             if (trueType is ParameterizedType && _needPTWrapper())
                 _type = KodeinParameterizedType(trueType)
-            else if (trueType !is ParameterizedType && trueType !is Class<*>)
-                throw RuntimeException("Invalid TypeToken; must specify type parameters")
             else
                 _type = trueType
         }
@@ -41,13 +39,21 @@ abstract class TypeReference<T> : TypeToken<T> {
 
     private fun _check(type: Type) {
         if (type is TypeVariable<*>)
-            throw IllegalArgumentException("${type.name} is not a real type")
+            throw IllegalArgumentException("${type.name} is a type variable, not a real type")
         else if (type is ParameterizedType) {
             for (arg in type.actualTypeArguments)
                 _check(arg)
         }
         else if (type is GenericArrayType)
             _check(type.genericComponentType)
+        else if (type is WildcardType) {
+            for (arg in type.lowerBounds)
+                _check(arg)
+            for (arg in type.upperBounds)
+                _check(arg)
+        }
+        else if (type !is Class<*>)
+            throw IllegalArgumentException("Unknown type ${type.javaClass} $type")
     }
 
     protected constructor() {
@@ -80,7 +86,7 @@ inline fun <reified T> typeToken(): TypeToken<T> = (object : TypeReference<T>() 
  */
 class KodeinParameterizedType(val type: ParameterizedType) : Type {
 
-    private var _hashCode: Int = 0;
+    private var _hashCode: Int = 0
 
     override fun hashCode(): Int {
         if (_hashCode == 0)
@@ -113,7 +119,7 @@ class KodeinParameterizedType(val type: ParameterizedType) : Type {
             if (type !is ParameterizedType)
                 throw RuntimeException("Invalid TypeToken; must specify type parameters")
 
-            var hashCode = HashCode(type.rawType);
+            var hashCode = HashCode(type.rawType)
             for (arg in type.actualTypeArguments)
                 hashCode *= 31 + HashCode(if (arg is WildcardType) arg.upperBounds[0] else arg)
             return hashCode
@@ -132,12 +138,12 @@ class KodeinParameterizedType(val type: ParameterizedType) : Type {
                 return false
 
             if (!Equals(left.rawType, right.rawType))
-                return false;
+                return false
 
             val leftArgs = left.actualTypeArguments
             val rightArgs = right.actualTypeArguments
             if (leftArgs.size != rightArgs.size)
-                return false;
+                return false
 
             for (i in leftArgs.indices)
                 if (!Equals(leftArgs[i], rightArgs[i]))
@@ -146,22 +152,4 @@ class KodeinParameterizedType(val type: ParameterizedType) : Type {
             return true
         }
     }
-}
-
-private var hasTypeName = true
-
-val Type.dispName: String get() {
-    if (hasTypeName)
-        try {
-            return typeName
-        }
-        catch (ignored: NoSuchMethodError) {
-            hasTypeName = false
-        }
-        catch (ignored: Throwable) {}
-
-    if (this is Class<*>)
-        return this.name
-
-    return toString()
 }

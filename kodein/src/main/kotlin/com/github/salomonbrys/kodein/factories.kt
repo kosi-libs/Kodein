@@ -99,7 +99,8 @@ inline fun <reified T : Any> Kodein.Builder.threadSingleton(noinline creator: Ko
 class CInstance<out T : Any>(createdType: Type, val instance: T) : AProvider<T>("instance", createdType) {
     override fun getInstance(kodein: Kodein): T = this.instance
 
-    override val description: String get() = "$factoryName ( ${createdType.dispName} ) "
+    override val description: String get() = "$factoryName ( ${createdType.simpleDispString} ) "
+    override val fullDescription: String get() = "$factoryName ( ${createdType.fullDispString} ) "
 }
 
 inline fun <reified T : Any> Kodein.Builder.instance(instance: T) = CInstance(typeToken<T>().type, instance)

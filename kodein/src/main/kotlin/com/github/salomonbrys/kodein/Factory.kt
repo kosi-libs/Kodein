@@ -17,7 +17,7 @@ interface Factory<in A, out T : Any> {
      * The name of this factory.
      * For debug only.
      */
-    val factoryName: String;
+    val factoryName: String
 
     /**
      * The type of the argument this factory will function for.
@@ -30,6 +30,7 @@ interface Factory<in A, out T : Any> {
     val createdType: Type
 
     val description: String
+    val fullDescription: String
 }
 
 /**
@@ -37,7 +38,8 @@ interface Factory<in A, out T : Any> {
  */
 abstract class AFactory<in A, out T : Any>(override val factoryName: String, override val argType: Type, override val createdType: Type) : Factory<A, T> {
 
-    override val description: String get() = "$factoryName { ${argType.dispName} -> ${createdType.dispName} } "
+    override val description: String get() = "$factoryName { ${argType.simpleDispString} -> ${createdType.simpleDispString} } "
+    override val fullDescription: String get() = "$factoryName { ${argType.fullDispString} -> ${createdType.fullDispString} } "
 }
 
 /**
@@ -52,5 +54,6 @@ abstract class AProvider<out T : Any>(override val factoryName: String, override
 
     override val argType: Type = Unit.javaClass
 
-    override val description: String get() = "$factoryName { ${createdType.dispName} } "
+    override val description: String get() = "$factoryName { ${createdType.simpleDispString} } "
+    override val fullDescription: String get() = "$factoryName { ${createdType.fullDispString} } "
 }

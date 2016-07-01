@@ -41,7 +41,7 @@ interface Kodein : KodeinAwareBase {
             val type: Type,
             val tag: Any?
     ) {
-        override fun toString() = "bind<${type.dispName}>(${ if (tag != null) "\"$tag\"" else "" })"
+        override fun toString() = "bind<${type.simpleDispString}>(${ if (tag != null) "\"$tag\"" else "" })"
     }
 
     data class Key(
@@ -50,8 +50,8 @@ interface Kodein : KodeinAwareBase {
     ) {
         override fun toString() = buildString {
             if (bind.tag != null) append("\"${bind.tag}\": ")
-            if (argType != Unit.javaClass) append("(${argType.dispName})") else append("()")
-            append("-> ${bind.type.dispName}")
+            if (argType != Unit.javaClass) append("(${argType.simpleDispString})") else append("()")
+            append("-> ${bind.type.simpleDispString}")
         }
     }
 

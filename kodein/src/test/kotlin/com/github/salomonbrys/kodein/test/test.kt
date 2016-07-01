@@ -101,7 +101,7 @@ class KodeinTests : TestCase() {
     @Test fun test02_0_ThreadSingletonBindingGetInstance() {
         val kodein = Kodein { bind<Person>() with threadSingleton { Person() } }
 
-        var tp1: Person? = null;
+        var tp1: Person? = null
 
         val t = thread {
             tp1 = kodein.instance()
@@ -123,7 +123,7 @@ class KodeinTests : TestCase() {
     @Test fun test02_1_ThreadSingletonBindingGetProvider() {
         val kodein = Kodein { bind<Person>() with threadSingleton { Person() } }
 
-        var tp1: Person? = null;
+        var tp1: Person? = null
 
         val t = thread {
             tp1 = kodein.provider<Person>().invoke()
@@ -396,7 +396,7 @@ class KodeinTests : TestCase() {
         assertNotEquals(typeLS1, typeLI)
     }
 
-    class PersonLazy(val kodein: Kodein) {
+    class PersonLazy(kodein: Kodein) {
         val newPerson: () -> Person by kodein.lazyProvider()
         val salomon: Person by kodein.lazyInstance("named")
         val factory: (String) -> Person by kodein.lazyFactory("factory")
@@ -502,7 +502,7 @@ class KodeinTests : TestCase() {
             bind<Person>("factory") with factory { name: String -> Person(name) }
         }
 
-        injected.injector.inject(kodein);
+        injected.injector.inject(kodein)
         assertNotSame(injected.newPerson(), injected.newPerson())
         assertEquals("Salomon", injected.salomon.name)
         assertSame(injected.salomon, injected.salomon)
@@ -522,24 +522,36 @@ class KodeinTests : TestCase() {
         }
     }
 
+    object test15Scope : AutoScope<Unit> {
+        val registry = ScopeRegistry()
+        override fun getRegistry(key: Kodein.Key, context: Unit) = registry
+        override fun getContext(key: Kodein.Key) = Unit
+    }
+
     @Test fun test15_0_BindingsDescription() {
+
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
             bind<IPerson>("thread-singleton") with threadSingleton { Person("ts") }
             bind<IPerson>("singleton") with singleton { Person("s") }
             bind<IPerson>("factory") with factory { name: String -> Person(name) }
             bind<IPerson>("instance") with instance(Person("i"))
+            bind<String>("scoped") with scopedSingleton(test15Scope) { "" }
+            bind<String>("auto-scoped") with autoScopedSingleton(test15Scope) { "" }
             constant("answer") with 42
         }
 
         val lines = kodein.container.bindings.description.lineSequence().map { it.trim() }.toList()
-        assertEquals(6, lines.size)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>() with provider { com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"thread-singleton\") with threadSingleton { com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"singleton\") with singleton { com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"factory\") with factory { java.lang.String -> com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"instance\") with instance ( com.github.salomonbrys.kodein.test.Person )" in lines)
-        assertTrue("bind<java.lang.Integer>(\"answer\") with instance ( java.lang.Integer )" in lines)
+        assertEquals(8, lines.size)
+        assertTrue("bind<IPerson>() with provider { Person }" in lines)
+        assertTrue("bind<IPerson>(\"thread-singleton\") with threadSingleton { Person }" in lines)
+        assertTrue("bind<IPerson>(\"singleton\") with singleton { Person }" in lines)
+        assertTrue("bind<IPerson>(\"factory\") with factory { String -> Person }" in lines)
+        assertTrue("bind<IPerson>(\"instance\") with instance ( Person )" in lines)
+        assertTrue("bind<Int>(\"answer\") with instance ( Int )" in lines)
+        assertTrue("bind<String>(\"scoped\") with scopedSingleton(KodeinTests.test15Scope) { Unit -> String }" in lines)
+        assertTrue("bind<String>(\"auto-scoped\") with autoScopedSingleton(KodeinTests.test15Scope) { String }" in lines)
+        println(lines.joinToString("\n"))
     }
 
     @Test fun test15_1_RegisteredBindings() {
