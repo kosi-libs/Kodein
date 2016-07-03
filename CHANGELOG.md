@@ -1,4 +1,27 @@
 
+#### 3.0.0-beta3
+
+ - FEATURES
+   * Scopes are no more (weird) functions but object implementing the `Scope` or `AutoScope` interfaces.
+   * `kodein.bindings.description` now uses simple type names, which makes it easier to read. You can use
+     `kodein.bindings.fullDescription` to show full type names.
+   * Both descriptions now print type names in a "kotlin-esque" way. Because Kodein does not depends on
+     `kotlin-reflect`, it uses java `Type` objects that do not contains nullability informations. As such, the type
+     display does not include nullability. Still, it's easier to read.
+   * Kotlin `1.0.3`
+
+ - BREAKING CHANGES
+   * Android's `ActivityScopeLifecycleManager` is now `activityScope.lifecycleManager`.
+
+ - BETA FEATURE CHANGES
+   * `typeToken` won't throw an exception when used with a `TypeVariable` type argument, however, the same exception
+     will still be thrown at binding, whether or not using the inline function, `typeToken` or a simple type. In other
+     words, if you try to bind any type that contains a `TypeVariable` type argument, `Kodein` will throw an exception.
+
+ - INTERNAL
+   * Android's `activityScope` is now an object.
+
+
 #### 3.0.0-beta2 (30-06-2016)
 
  - FEATURES
@@ -50,7 +73,7 @@
      modules to it will throw an exception.
    * When using `Kodein.global`, you can use the `KodeinGlobalAware` interface, which enables you all the goodness of
      `KodeinAware`, but using `Kodein.global`, and without any config.
-   * Kotlin 1.0.2-1
+   * Kotlin `1.0.2-1`
 
  - INTERNAL
    * All providers & factories are represented by their classes.
