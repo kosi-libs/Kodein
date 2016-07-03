@@ -6,7 +6,7 @@ import java.util.*
 
 class KodeinImpl internal constructor(override val container: KodeinContainer) : Kodein {
 
-
+    @Suppress("unused")
     private constructor(builder: Kodein.Builder) : this(KodeinContainerImpl(builder.container)) {
         builder._callbacks.forEach { it() }
     }

@@ -14,7 +14,7 @@ object activityScope : AutoScope<Activity> {
     private var _currentActivity: Activity? = null
 
 
-    override fun getRegistry(key: Kodein.Key, context: Activity)
+    override fun getRegistry(key: Kodein.Key, context: Activity): ScopeRegistry
             = synchronized(_activityScopes) { _activityScopes.getOrPut(context) { ScopeRegistry() } }
 
     override fun getContext(key: Kodein.Key)

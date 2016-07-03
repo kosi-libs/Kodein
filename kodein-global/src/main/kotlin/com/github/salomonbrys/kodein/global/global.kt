@@ -50,6 +50,7 @@ class GlobalKodein : Kodein {
 
 private var _global = GlobalKodein()
 
+@Suppress("unused")
 val Kodein.Companion.global: GlobalKodein get() = _global
 
 interface KodeinGlobalAware : KodeinAware {

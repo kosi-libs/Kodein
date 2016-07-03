@@ -21,7 +21,7 @@ class ScopeRegistry {
     fun remove(bind: Kodein.Bind): Unit = synchronized(_cache) { _cache.remove(bind) }
 }
 
-interface Scope<C> {
+interface Scope<in C> {
     fun getRegistry(key: Kodein.Key, context: C): ScopeRegistry
 }
 
@@ -32,7 +32,7 @@ interface AutoScope<C> : Scope<C> {
 /**
  * Base class for CScopedSingleton & CAutoScopedSingleton
  */
-abstract class AScoped<in A, C, out T : Any>(
+abstract class AScoped<in A, out C, out T : Any>(
         override val argType: Type,
         override val createdType: Type,
         override val factoryName: String,
@@ -63,6 +63,7 @@ class CScopedSingleton<C, out T : Any>(argType: Type, createdType: Type, private
     override val fullDescription: String get() = "$factoryName(${_scope.javaClass.fullDispString}) { ${argType.fullDispString} -> ${createdType.fullDispString} } "
 }
 
+@Suppress("unused")
 inline fun <reified C, reified T : Any> Kodein.Builder.scopedSingleton(scope: Scope<C>, noinline creator: Kodein.(C) -> T)
         = CScopedSingleton(typeToken<C>().type, typeToken<T>().type, scope, creator)
 
@@ -71,7 +72,7 @@ inline fun <reified C, reified T : Any> Kodein.Builder.scopedSingleton(scope: Sc
 /**
  * Binds a type to an auto scoped singleton, effectively creating a provider of Type (since the scope is automagically provided)
  */
-class CAutoScopedSingleton<C, out T : Any>(createdType: Type, private val _scope: AutoScope<C>, creator: Kodein.(C) -> T)
+class CAutoScopedSingleton<out C, out T : Any>(createdType: Type, private val _scope: AutoScope<C>, creator: Kodein.(C) -> T)
 : AScoped<Unit, C, T>(Unit::class.java, createdType, "autoScopedSingleton", creator)
 {
     override fun _getCache(key: Kodein.Key, arg: Unit): Pair<C, ScopeRegistry> = _scope.getContext(key).let { it to _scope.getRegistry(key, it) }
@@ -80,6 +81,7 @@ class CAutoScopedSingleton<C, out T : Any>(createdType: Type, private val _scope
     override val fullDescription: String get() = "$factoryName(${_scope.javaClass.fullDispString}) { ${createdType.fullDispString} } "
 }
 
+@Suppress("unused")
 inline fun <C, reified T : Any> Kodein.Builder.autoScopedSingleton(scope: AutoScope<C>, noinline creator: Kodein.(C) -> T)
         = CAutoScopedSingleton(typeToken<T>().type, scope, creator)
 

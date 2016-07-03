@@ -75,7 +75,7 @@ inline fun <reified T : Any> Kodein.Builder.eagerSingleton(noinline creator: Kod
 /**
  * Binds a type to a lazily instanciated thread local singleton.
  */
-class CThreadSingleton<T : Any>(createdType: Type, val creator: Kodein.() -> T) : AProvider<T>("threadSingleton", createdType) {
+class CThreadSingleton<out T : Any>(createdType: Type, val creator: Kodein.() -> T) : AProvider<T>("threadSingleton", createdType) {
 
     private val _storage = ThreadLocal<T>()
 
