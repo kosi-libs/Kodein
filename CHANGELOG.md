@@ -1,10 +1,22 @@
 
-#### 3.0.0-beta3
+#### 3.0.0-beta4 (03-07-2016)
+ - FEATURES
+   * `*OrNull` functions everywhere
+
+ - BREAKING CHANGES
+   * Android's `KodeinApplication` is removed in favor of `KodeinAware`.
+
+ - BETA FEATURE CHANGES
+   * In `Kodein.Builder`, separation of typed & container API Inside `Kodein.Builder`. `bind(type) with ...` is move to
+     `typed.bind(type) with ...`.
+
+
+#### 3.0.0-beta3 (03-07-2016)
 
  - FEATURES
    * Scopes are no more (weird) functions but object implementing the `Scope` or `AutoScope` interfaces.
-   * `kodein.bindings.description` now uses simple type names, which makes it easier to read. You can use
-     `kodein.bindings.fullDescription` to show full type names.
+   * `kodein.container.bindings.description` now uses simple type names, which makes it easier to read. You can use
+     `kodein.container.bindings.fullDescription` to show full type names.
    * Both descriptions now print type names in a "kotlin-esque" way. Because Kodein does not depends on
      `kotlin-reflect`, it uses java `Type` objects that do not contains nullability informations. As such, the type
      display does not include nullability. Still, it's easier to read.
