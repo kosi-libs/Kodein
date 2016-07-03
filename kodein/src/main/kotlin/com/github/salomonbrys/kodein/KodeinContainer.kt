@@ -114,6 +114,8 @@ interface KodeinContainer {
 
         fun bind(key: Kodein.Key, overrides: Boolean? = false): Binder = Binder(key, overrides)
 
+        fun bind(bind: Kodein.Bind, overrides: Boolean? = false): Binder = bind(Kodein.Key(bind, Unit::class.java), overrides)
+
         fun extend(container: KodeinContainer, allowOverride: Boolean = false) {
             _overrideMode.checkMatch(allowOverride)
             if (allowOverride)
