@@ -1,7 +1,5 @@
 package com.github.salomonbrys.kodein
 
-import kotlin.reflect.KClass
-
 interface KodeinInjectedBase {
     val injector: KodeinInjector
 }
@@ -42,11 +40,3 @@ interface KodeinInjected : KodeinInjectedBase {
     fun onInjected(cb: (Kodein) -> Unit) = injector.onInjected(cb)
 
 }
-
-inline fun <reified T : KodeinInjected, reified R : Any> T.instanceForClass(tag: Any? = null): Lazy<R> = with(T::class.java as Class<*>).instance<R>(tag)
-
-inline fun <reified T : KodeinInjected, reified R : Any> T.providerForClass(tag: Any? = null): Lazy<() -> R> = with(T::class.java as Class<*>).provider<R>(tag)
-
-inline fun <reified T : KodeinInjected, reified R : Any> T.instanceForKClass(tag: Any? = null): Lazy<R> = with(T::class as KClass<*>).instance<R>(tag)
-
-inline fun <reified T : KodeinInjected, reified R : Any> T.providerForKClass(tag: Any? = null): Lazy<() -> R> = with(T::class as KClass<*>).provider<R>(tag)
