@@ -57,77 +57,53 @@ interface Kodein : KodeinAwareBase {
     /**
      * Allows for the DSL inside the block argument of the constructor of `Kodein` and `Kodein.Module`
      */
-    class Builder internal constructor(private val _overrideMode: OverrideMode, internal val _builder: KodeinContainer.Builder, internal val _callbacks: MutableList<Kodein.() -> Unit>, init: Builder.() -> Unit) {
+    class Builder internal constructor(val container: KodeinContainer.Builder, internal val _callbacks: MutableList<Kodein.() -> Unit>, init: Builder.() -> Unit) {
 
-        internal enum class OverrideMode {
-            ALLOW_SILENT {
-                override val allow: Boolean get() = true
-                override fun must(overrides: Boolean?) = overrides
-                override fun allow(allowOverride: Boolean) = allowOverride
-            },
-            ALLOW_EXPLICIT {
-                override val allow: Boolean get() = true
-                override fun must(overrides: Boolean?) = overrides ?: false
-                override fun allow(allowOverride: Boolean) = allowOverride
-            },
-            FORBID {
-                override val allow: Boolean get() = false
-                override fun must(overrides: Boolean?) = if (overrides != null && overrides) throw Kodein.OverridingException("Overriding has been forbidden") else false
-                override fun allow(allowOverride: Boolean) = if (allowOverride) throw Kodein.OverridingException("Overriding has been forbidden") else false
-            };
+        inner class TBuilder {
 
-            abstract val allow: Boolean
-            abstract fun must(overrides: Boolean?): Boolean?
-            abstract fun allow(allowOverride: Boolean): Boolean
-
-            companion object {
-                fun get(allow: Boolean, silent: Boolean): OverrideMode {
-                    if (!allow)
-                        return FORBID
-                    if (silent)
-                        return ALLOW_SILENT
-                    return ALLOW_EXPLICIT
-                }
+            inner class TypeBinder<in T : Any> internal constructor(private val _bind: Bind, private val _overrides: Boolean?) {
+                infix fun <R : T, A> with(factory: Factory<A, R>): Unit = container.bind(Key(_bind, factory.argType), _overrides) with factory
             }
+
+            inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) {
+                infix fun <A> from(factory: Factory<A, *>): Unit = container.bind(Key(Bind(factory.createdType, _tag), factory.argType), _overrides) with factory
+            }
+
+            inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) {
+                fun with(value: Any, debugType: Type) = container.bind(Key(Bind(value.javaClass, _tag), Unit.javaClass), _overrides) with CInstance(debugType, value)
+                fun with(value: Any) = with(value, value.javaClass)
+            }
+
+            fun bind(type: Type, tag: Any? = null, overrides: Boolean? = null): TypeBinder<Any> = TypeBinder(Bind(type, tag), overrides)
+
+            fun <T : Any> bind(type: TypeToken<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Bind(type.type, tag), overrides)
+
+            fun <T : Any> bind(type: Class<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Bind(type, tag), overrides)
+
+            fun bind(tag: Any? = null, overrides: Boolean? = null): DirectBinder = DirectBinder(tag, overrides)
+
+            fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder = ConstantBinder(tag, overrides)
         }
+
+        val typed = TBuilder()
 
         init { init() }
 
-        inner class TypeBinder<in T : Any> internal constructor(private val _bind: Bind, overrides: Boolean?) {
-            private val _mustOverride = _overrideMode.must(overrides)
-            infix fun <R : T, A> with(factory: Factory<A, R>) = _builder.bind(Key(_bind, factory.argType), factory, _mustOverride)
+        inner class ConstantBinder internal constructor(val binder: TBuilder.ConstantBinder) {
+            infix inline fun <reified T : Any> with(value: T) = binder.with(value, typeToken<T>().type)
         }
 
-        inner class DirectBinder internal constructor(private val _tag: Any?, overrides: Boolean?) {
-            private val _mustOverride = _overrideMode.must(overrides)
-            infix fun <A> from(factory: Factory<A, *>) = _builder.bind(Key(Bind(factory.createdType, _tag), factory.argType), factory, _mustOverride)
-        }
+        inline fun <reified T : Any> bind(tag: Any? = null, overrides: Boolean? = null): TBuilder.TypeBinder<T> = typed.bind(typeToken<T>(), tag, overrides)
 
-        inner class ConstantBinder internal constructor(private val _tag: Any, overrides: Boolean?) {
-            private val _mustOverride = _overrideMode.must(overrides)
-            infix inline fun <reified T : Any> with(value: T) = with(value, typeToken<T>().type)
-            fun with(value: Any, debugType: Type) = _builder.bind(Key(Bind(value.javaClass, _tag), Unit.javaClass), CInstance(debugType, value), _mustOverride)
-        }
+        fun bind(tag: Any? = null, overrides: Boolean? = null): TBuilder.DirectBinder = typed.bind(tag, overrides)
 
-        fun bind(type: Type, tag: Any? = null, overrides: Boolean? = null): TypeBinder<Any> = TypeBinder(Bind(type, tag), overrides)
-
-        fun <T : Any> bind(type: TypeToken<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Bind(type.type, tag), overrides)
-
-        fun <T : Any> bind(type: Class<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Bind(type, tag), overrides)
-
-        inline fun <reified T : Any> bind(tag: Any? = null, overrides: Boolean? = null) = bind(typeToken<T>(), tag, overrides)
-
-        fun bind(tag: Any? = null, overrides: Boolean? = null) = DirectBinder(tag, overrides)
-
-        fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder = ConstantBinder(tag, overrides)
+        fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder = ConstantBinder(typed.constant(tag, overrides))
 
         fun import(module: Kodein.Module, allowOverride: Boolean = false) {
-            Builder(OverrideMode.get(_overrideMode.allow(allowOverride), module.allowSilentOverride), _builder, _callbacks, module.init)
+            Builder(container.subBuilder(allowOverride, module.allowSilentOverride), _callbacks, module.init)
         }
 
-        fun extend(kodein: Kodein, allowOverride: Boolean = false) {
-            _builder.extend(kodein.container, _overrideMode.allow(allowOverride))
-        }
+        fun extend(kodein: Kodein, allowOverride: Boolean = false) = container.extend(kodein.container, allowOverride)
 
         fun onReady(f: Kodein.() -> Unit) {
             _callbacks += f

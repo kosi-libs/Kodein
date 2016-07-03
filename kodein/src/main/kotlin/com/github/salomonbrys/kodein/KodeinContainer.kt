@@ -40,9 +40,9 @@ interface KodeinContainer {
     /**
      * Allows for the building of a Kodein object by defining bindings
      */
-    class Builder internal constructor() {
+    class Builder internal constructor(allow: Boolean, silent: Boolean, internal val _map: MutableMap<Kodein.Key, Factory<*, Any>> = HashMap()) {
 
-        internal val _map: MutableMap<Kodein.Key, Factory<*, Any>> = HashMap()
+        private val _overrideMode = OverrideMode.get(allow, silent)
 
         private fun _checkIsReified(key: Kodein.Key, type: Type) {
             when (type) {
@@ -61,22 +61,70 @@ interface KodeinContainer {
             }
         }
 
-        internal fun bind(key: Kodein.Key, factory: Factory<*, Any>, mustOverride: Boolean?) {
-            if (mustOverride != null) {
-                if (mustOverride && key !in _map)
-                    throw Kodein.OverridingException("Binding $key must override an existing binding.")
-                if (!mustOverride && key in _map)
-                    throw Kodein.OverridingException("Binding $key must not override an existing binding.")
+        private enum class OverrideMode {
+            ALLOW_SILENT {
+                override val isAllowed: Boolean get() = true
+                override fun must(overrides: Boolean?) = overrides
+                override fun checkMatch(allowOverride: Boolean) {}
+            },
+            ALLOW_EXPLICIT {
+                override val isAllowed: Boolean get() = true
+                override fun must(overrides: Boolean?) = overrides ?: false
+                override fun checkMatch(allowOverride: Boolean) {}
+            },
+            FORBID {
+                override val isAllowed: Boolean get() = false
+                override fun must(overrides: Boolean?) = if (overrides != null && overrides) throw Kodein.OverridingException("Overriding has been forbidden") else false
+                override fun checkMatch(allowOverride: Boolean) { if (allowOverride) throw Kodein.OverridingException("Overriding has been forbidden") }
+            };
+
+            abstract val isAllowed: Boolean
+            abstract fun must(overrides: Boolean?): Boolean?
+            abstract fun checkMatch(allowOverride: Boolean): Unit
+
+            companion object {
+                fun get(allow: Boolean, silent: Boolean): OverrideMode {
+                    if (!allow)
+                        return FORBID
+                    if (silent)
+                        return ALLOW_SILENT
+                    return ALLOW_EXPLICIT
+                }
             }
-            _checkIsReified(key, key.bind.type)
-            _map[key] = factory
         }
 
-        internal fun extend(container: KodeinContainer, allowOverride: Boolean) {
+        inner class Binder internal constructor(val key: Kodein.Key, overrides: Boolean?) {
+            init {
+                _checkIsReified(key, key.bind.type)
+
+                val mustOverride = _overrideMode.must(overrides)
+
+                if (mustOverride != null) {
+                    if (mustOverride && key !in _map)
+                        throw Kodein.OverridingException("Binding $key must override an existing binding.")
+                    if (!mustOverride && key in _map)
+                        throw Kodein.OverridingException("Binding $key must not override an existing binding.")
+                }
+            }
+
+            infix fun with(factory: Factory<*, Any>) {
+                _map[key] = factory
+            }
+        }
+
+        fun bind(key: Kodein.Key, overrides: Boolean? = false): Binder = Binder(key, overrides)
+
+        fun extend(container: KodeinContainer, allowOverride: Boolean = false) {
+            _overrideMode.checkMatch(allowOverride)
             if (allowOverride)
                 _map.putAll(container.bindings)
             else
-                container.bindings.forEach { bind(it.key, it.value, false) }
+                container.bindings.forEach { bind(it.key) with it.value }
+        }
+
+        fun subBuilder(allowOverride: Boolean = false, allowSilentOverride: Boolean = false): Builder {
+            _overrideMode.checkMatch(allowOverride)
+            return Builder(allowOverride, allowSilentOverride, _map)
         }
     }
 
