@@ -42,25 +42,6 @@ interface KodeinContainer {
      */
     class Builder internal constructor(allow: Boolean, silent: Boolean, internal val _map: MutableMap<Kodein.Key, Factory<*, Any>> = HashMap()) {
 
-        private val _overrideMode = OverrideMode.get(allow, silent)
-
-        private fun _checkIsReified(key: Kodein.Key, type: Type) {
-            when (type) {
-                is TypeVariable<*> -> throw IllegalArgumentException("Binding $key uses a type variable named ${type.name}, therefore, the binded value can never be retrieved.")
-                is ParameterizedType -> for (arg in type.actualTypeArguments) _checkIsReified(key, arg)
-                is GenericArrayType -> _checkIsReified(key, type.genericComponentType)
-                is WildcardType -> {
-                    for (arg in type.lowerBounds)
-                        _checkIsReified(key, arg)
-                    for (arg in type.upperBounds)
-                        _checkIsReified(key, arg)
-                }
-                is KodeinParameterizedType -> _checkIsReified(key, type.type)
-                is Class<*> -> {}
-                else -> throw IllegalArgumentException("Unknown type ${type.javaClass} $type")
-            }
-        }
-
         private enum class OverrideMode {
             ALLOW_SILENT {
                 override val isAllowed: Boolean get() = true
@@ -92,19 +73,42 @@ interface KodeinContainer {
                 }
             }
         }
+        private val _overrideMode = OverrideMode.get(allow, silent)
 
-        inner class Binder internal constructor(val key: Kodein.Key, overrides: Boolean?) {
-            init {
-                _checkIsReified(key, key.bind.type)
-
-                val mustOverride = _overrideMode.must(overrides)
-
-                if (mustOverride != null) {
-                    if (mustOverride && key !in _map)
-                        throw Kodein.OverridingException("Binding $key must override an existing binding.")
-                    if (!mustOverride && key in _map)
-                        throw Kodein.OverridingException("Binding $key must not override an existing binding.")
+        private fun _checkIsReified(disp: Any, type: Type) {
+            when (type) {
+                is TypeVariable<*> -> throw IllegalArgumentException("$disp uses a type variable named ${type.name}, therefore, the binded value can never be retrieved.")
+                is ParameterizedType -> for (arg in type.actualTypeArguments) _checkIsReified(disp, arg)
+                is GenericArrayType -> _checkIsReified(disp, type.genericComponentType)
+                is WildcardType -> {
+                    for (arg in type.lowerBounds)
+                        _checkIsReified(disp, arg)
+                    for (arg in type.upperBounds)
+                        _checkIsReified(disp, arg)
                 }
+                is KodeinParameterizedType -> _checkIsReified(disp, type.type)
+                is Class<*> -> {}
+                else -> throw IllegalArgumentException("Unknown type ${type.javaClass} $type")
+            }
+        }
+
+        private fun _checkOverrides(key: Kodein.Key, overrides: Boolean?) {
+            val mustOverride = _overrideMode.must(overrides)
+
+            if (mustOverride != null) {
+                if (mustOverride && key !in _map)
+                    throw Kodein.OverridingException("Binding $key must override an existing binding.")
+                if (!mustOverride && key in _map)
+                    throw Kodein.OverridingException("Binding $key must not override an existing binding.")
+            }
+        }
+
+
+        inner class KeyBinder internal constructor(val key: Kodein.Key, overrides: Boolean?) {
+            init {
+                _checkIsReified(key.bind, key.bind.type)
+                _checkIsReified(key, key.argType)
+                _checkOverrides(key, overrides)
             }
 
             infix fun with(factory: Factory<*, Any>) {
@@ -112,9 +116,24 @@ interface KodeinContainer {
             }
         }
 
-        fun bind(key: Kodein.Key, overrides: Boolean? = false): Binder = Binder(key, overrides)
+        inner class BindBinder internal constructor(val bind: Kodein.Bind, val overrides: Boolean?) {
+            init {
+                _checkIsReified(bind, bind.type)
+            }
 
-        fun bind(bind: Kodein.Bind, overrides: Boolean? = false): Binder = bind(Kodein.Key(bind, Unit::class.java), overrides)
+            infix fun with(factory: Factory<*, Any>) {
+                _checkIsReified(factory, factory.argType)
+
+                val key = Kodein.Key(bind, factory.argType)
+                _checkOverrides(key, overrides)
+
+                _map[key] = factory
+            }
+        }
+
+        fun bind(key: Kodein.Key, overrides: Boolean? = false): KeyBinder = KeyBinder(key, overrides)
+
+        fun bind(bind: Kodein.Bind, overrides: Boolean? = false): BindBinder = BindBinder(bind, overrides)
 
         fun extend(container: KodeinContainer, allowOverride: Boolean = false) {
             _overrideMode.checkMatch(allowOverride)

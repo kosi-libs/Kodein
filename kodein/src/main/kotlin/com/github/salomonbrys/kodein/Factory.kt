@@ -52,7 +52,7 @@ abstract class AProvider<out T : Any>(override val factoryName: String, override
 
     abstract fun getInstance(kodein: Kodein): T
 
-    override val argType: Type = Unit.javaClass
+    override val argType: Type = Unit::class.java
 
     override val description: String get() = "$factoryName { ${createdType.simpleDispString} } "
     override val fullDescription: String get() = "$factoryName { ${createdType.fullDispString} } "

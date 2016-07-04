@@ -5,6 +5,11 @@ import com.github.salomonbrys.kodein.KodeinContainer
 import com.github.salomonbrys.kodein.TKodein
 import java.lang.reflect.Type
 
+/**
+ * Kodein typed API implementation.
+ *
+ * All methods delegate their business to the [KodeinContainer].
+ */
 @Suppress("UNCHECKED_CAST", "unused")
 class TKodeinImpl(private val _container: KodeinContainer) : TKodein {
 

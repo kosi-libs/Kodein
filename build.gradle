@@ -2,6 +2,7 @@ buildscript {
 
     repositories {
         mavenCentral()
+        jcenter()
     }
 
     ext.kotlin_version = '1.0.3'
@@ -9,6 +10,7 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.8"
     }
 }
 
@@ -16,6 +18,7 @@ allprojects {
 
     apply plugin: 'java'
     apply plugin: 'kotlin'
+    apply plugin: 'org.jetbrains.dokka'
     apply plugin: 'maven'
     apply plugin: 'signing'
     apply plugin: 'idea'

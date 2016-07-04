@@ -49,7 +49,7 @@ interface Kodein : KodeinAwareBase {
     ) {
         override fun toString() = buildString {
             if (bind.tag != null) append("\"${bind.tag}\": ")
-            if (argType != Unit.javaClass) append("(${argType.simpleDispString})") else append("()")
+            if (argType != Unit::class.java) append("(${argType.simpleDispString})") else append("()")
             append("-> ${bind.type.simpleDispString}")
         }
     }
@@ -61,24 +61,24 @@ interface Kodein : KodeinAwareBase {
 
         inner class TBuilder {
 
-            inner class TypeBinder<in T : Any> internal constructor(private val _bind: Bind, private val _overrides: Boolean?) {
-                infix fun <R : T, A> with(factory: Factory<A, R>): Unit = container.bind(Key(_bind, factory.argType), _overrides) with factory
+            inner class TypeBinder<in T : Any> internal constructor(private val _binder: KodeinContainer.Builder.BindBinder) {
+                infix fun <R : T, A> with(factory: Factory<A, R>): Unit = _binder with factory
             }
 
             inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) {
-                infix fun <A> from(factory: Factory<A, *>): Unit = container.bind(Key(Bind(factory.createdType, _tag), factory.argType), _overrides) with factory
+                infix fun <A> from(factory: Factory<A, *>): Unit = container.bind(Bind(factory.createdType, _tag), _overrides) with factory
             }
 
             inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) {
-                fun with(value: Any, debugType: Type) = container.bind(Key(Bind(value.javaClass, _tag), Unit.javaClass), _overrides) with CInstance(debugType, value)
+                fun with(value: Any, debugType: Type) = container.bind(Key(Bind(value.javaClass, _tag), Unit::class.java), _overrides) with CInstance(debugType, value)
                 fun with(value: Any) = with(value, value.javaClass)
             }
 
-            fun bind(type: Type, tag: Any? = null, overrides: Boolean? = null): TypeBinder<Any> = TypeBinder(Bind(type, tag), overrides)
+            fun bind(type: Type, tag: Any? = null, overrides: Boolean? = null): TypeBinder<Any> = TypeBinder(container.bind(Bind(type, tag), overrides))
 
-            fun <T : Any> bind(type: TypeToken<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Bind(type.type, tag), overrides)
+            fun <T : Any> bind(type: TypeToken<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(container.bind(Bind(type.type, tag), overrides))
 
-            fun <T : Any> bind(type: Class<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Bind(type, tag), overrides)
+            fun <T : Any> bind(type: Class<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(container.bind(Bind(type, tag), overrides))
 
             fun bind(tag: Any? = null, overrides: Boolean? = null): DirectBinder = DirectBinder(tag, overrides)
 
