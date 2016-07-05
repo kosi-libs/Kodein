@@ -3,38 +3,60 @@ package com.github.salomonbrys.kodein
 import java.lang.reflect.Type
 
 /**
- * Base class that knows how to construct an instance.
+ * Base class that knows how to get an instance.
+ *
+ * All bindings are bound to a Factory.
+ * Whether this factory creates a new instance at each call or not is left to implementation.
+ *
+ * @param A The type of argument used to create or retrieve an instance.
+ * @param T The type instance this factory creates or retrieves.
  */
 interface Factory<in A, out T : Any> {
+
     /**
-     * Get an instance of type T function argument A.
+     * Get an instance of type [T] function argument [A].
      *
      * Whether it's a new instance or not entirely depends on implementation.
+     *
+     * @param kodein: A Kodein instance to use for transitive dependencies.
+     * @param key: The key of the instance to get.
+     * @param arg: The argument to use to get the instance.
      */
     fun getInstance(kodein: Kodein, key: Kodein.Key, arg: A): T
 
     /**
-     * The name of this factory.
-     * For debug only.
+     * The name of this factory, *used for debug print only*.
      */
     val factoryName: String
 
     /**
-     * The type of the argument this factory will function for.
+     * The type of the argument this factory will function for, *used for debug print only*.
      */
     val argType: Type
 
     /**
-     * The type of object that is created by this factory.
+     * The type of object that is created by this factory, *used for debug print only*.
      */
     val createdType: Type
 
+    /**
+     * The description of this factory (using simple type names), *used for debug print only*.
+     */
     val description: String
+
+    /**
+     * The description of this factory (using full type names), *used for debug print only*.
+     */
     val fullDescription: String
 }
 
 /**
- * Concrete implementation of factory that delegates `getInstance` to a factory method.
+ * Factory base.
+ *
+ * Enables sub-classes to implement only [getInstance].
+ *
+ * @param A The factory argument type.
+ * @param T The created type.
  */
 abstract class AFactory<in A, out T : Any>(override val factoryName: String, override val argType: Type, override val createdType: Type) : Factory<A, T> {
 
@@ -43,14 +65,25 @@ abstract class AFactory<in A, out T : Any>(override val factoryName: String, ove
 }
 
 /**
- * Concrete implementation of factory that delegates `getInstance` to a provider method.
- * A provider is a factory that takes no argument (Unit as it's argument type).
+ * Provider base.
+ *
+ * A provider is like a [AFactory], but without argument (the [Factory] is registered with a [Unit] argument).
+ *
+ * @param T The created type.
  */
 abstract class AProvider<out T : Any>(override val factoryName: String, override val createdType: Type) : Factory<Unit, T> {
 
-    override fun getInstance(kodein: Kodein, key: Kodein.Key, arg: Unit) = getInstance(kodein)
+    override fun getInstance(kodein: Kodein, key: Kodein.Key, arg: Unit) = getInstance(kodein, key)
 
-    abstract fun getInstance(kodein: Kodein): T
+    /**
+     * Get an instance of type [T].
+     *
+     * Whether it's a new instance or not entirely depends on implementation.
+     *
+     * @param kodein: A Kodein instance to use for transitive dependencies.
+     * @param key: The key of the instance to get.
+     */
+    abstract fun getInstance(kodein: Kodein, key: Kodein.Key): T
 
     override val argType: Type = Unit::class.java
 

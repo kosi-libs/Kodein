@@ -40,17 +40,35 @@ interface Kodein : KodeinAwareBase {
             val type: Type,
             val tag: Any?
     ) {
-        override fun toString() = "bind<${type.simpleDispString}>(${ if (tag != null) "\"$tag\"" else "" })"
+        override fun toString() = description
+
+        val description: String get() = "bind<${type.simpleDispString}>(${ if (tag != null) "\"$tag\"" else "" })"
+        val fullDescription: String get() = "bind<${type.fullDispString}>(${ if (tag != null) "\"$tag\"" else "" })"
     }
 
     data class Key(
             val bind: Bind,
             val argType: Type
     ) {
-        override fun toString() = buildString {
-            if (bind.tag != null) append("\"${bind.tag}\": ")
-            if (argType != Unit::class.java) append("(${argType.simpleDispString})") else append("()")
-            append("-> ${bind.type.simpleDispString}")
+        override fun toString() = description
+
+        private fun StringBuilder._appendDescription(dispString: Type.() -> String) {
+            append(" with ? { ")
+            if (argType != Unit::class.java) {
+                append(argType.dispString())
+                append(" -> ")
+            }
+            append("? }")
+        }
+
+        val description: String get() = buildString {
+            append(bind.description)
+            _appendDescription(Type::simpleDispString)
+        }
+
+        val fullDescription: String get() = buildString {
+            append(bind.fullDescription)
+            _appendDescription(Type::fullDispString)
         }
     }
 

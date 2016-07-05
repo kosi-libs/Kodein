@@ -9,11 +9,14 @@ import com.github.salomonbrys.kodein.KodeinContainer
  *
  * In kodein, every binding is stored as a factory.
  * Providers are special classes of factories that take Unit as parameter.
+ *
+ * @property _map The map containing all bindings.
+ * @property _node See [KodeinContainerImpl.Node]
  */
 class KodeinContainerImpl private constructor(private val _map: Map<Kodein.Key, Factory<*, Any>>, private val _node: Node? = null) : KodeinContainer {
 
     /**
-     * Class used to check for recursive dependencies
+     * Class used to check for recursive dependencies, represents a node in the dependency tree.
      *
      * Each factory, in their Factory@getInstance methods receives a Kodein instance to enable transient dependency.
      * However, it is not the same kodein instance as the one used to get the main dependency.
@@ -21,11 +24,14 @@ class KodeinContainerImpl private constructor(private val _map: Map<Kodein.Key, 
      * the current Node as it's parent.
      * This allows, at each step, to walk up the node tree and check if the requested key has not yet been requested.
      * If the same key exists twice in the tree, it means that it has, and that there's a dependency recursion.
+     *
+     * @property _key The key of this node, meaning that this key has been looked for once.
+     * @property _parent The parent node, meaning the parent lookup that needed this key.
      */
     private class Node(private val _key: Kodein.Key, private val _parent: Node?) {
 
         /**
-         * Check that given key does **not** exist in the dependency tree or throws an exception if it does.
+         * Check that given key does **not** exist in the node tree or throws an exception if it does.
          *
          * @throws Kodein.DependencyLoopException if the key exists in the dependency tree.
          */
@@ -35,7 +41,7 @@ class KodeinContainerImpl private constructor(private val _map: Map<Kodein.Key, 
         }
 
         /**
-         * Recursive function that walks up the tree to check if a specific key can be found.
+         * Recursive function that walks up the node tree to check if a specific key can be found.
          *
          * @return whether the given key exists in the tree.
          */
