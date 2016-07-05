@@ -24,6 +24,7 @@ class CFactory<in A, out T : Any>(argType: Type, createdType: Type, val creator:
  * @param A The argument type.
  * @param T The created type.
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
+ * @return A factory ready to be bound.
  */
 inline fun <reified A, reified T : Any> Kodein.Builder.factory(noinline creator: Kodein.(A) -> T): CFactory<A, T>
         = CFactory(typeToken<A>().type, typeToken<T>().type, creator)
@@ -50,6 +51,7 @@ class CProvider<out T : Any>(createdType: Type, val creator: Kodein.() -> T) : A
  *
  * @param T The created type.
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
+ * @return A provider ready to be bound.
  */
 inline fun <reified T : Any> Kodein.Builder.provider(noinline creator: Kodein.() -> T) = CProvider(typeToken<T>().type, creator)
 
@@ -96,6 +98,7 @@ class CSingleton<out T : Any>(createdType: Type, creator: Kodein.() -> T) : ASin
  *
  * @param T The created type.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
+ * @return A singleton ready to be bound.
  */
 inline fun <reified T : Any> Kodein.Builder.singleton(noinline creator: Kodein.() -> T): AProvider<T> = CSingleton(typeToken<T>().type, creator)
 
@@ -119,6 +122,7 @@ class CEagerSingleton<out T : Any>(builder: Kodein.Builder, createdType: Type, c
  *
  * @param T The created type.
  * @param creator The function that will be called as soon as Kodein is ready. Guaranteed to be called only once. Should create a new instance.
+ * @return An eager singleton ready to be bound.
  */
 inline fun <reified T : Any> Kodein.Builder.eagerSingleton(noinline creator: Kodein.() -> T): AProvider<T> = CEagerSingleton(this, typeToken<T>().type, creator)
 
@@ -150,6 +154,7 @@ class CThreadSingleton<out T : Any>(createdType: Type, val creator: Kodein.() ->
  *
  * @param T The created type.
  * @param creator The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance.
+ * @return A thread singleton ready to be bound.
  */
 inline fun <reified T : Any> Kodein.Builder.threadSingleton(noinline creator: Kodein.() -> T): AProvider<T> = CThreadSingleton(typeToken<T>().type, creator)
 
@@ -174,5 +179,6 @@ class CInstance<out T : Any>(instanceType: Type, val instance: T) : AProvider<T>
  *
  * @param T The type of the instance.
  * @param instance The object that will always be returned.
+ * @return An instance provider ready to be bound.
  */
 inline fun <reified T : Any> Kodein.Builder.instance(instance: T) = CInstance(typeToken<T>().type, instance)

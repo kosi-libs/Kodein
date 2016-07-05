@@ -16,8 +16,8 @@ interface KodeinContainer {
      */
     val bindings: Map<Kodein.Key, Factory<*, *>>
 
-    fun _notFoundException(reason: String): Kodein.NotFoundException
-            = Kodein.NotFoundException("$reason\nRegistered in Kodein:\n" + bindings.description)
+    private fun _notFoundException(key: Kodein.Key, reason: String): Kodein.NotFoundException
+            = Kodein.NotFoundException(key, "$reason\nRegistered in Kodein:\n" + bindings.description)
 
     /**
      * All Kodein getter methods, whether it's instance(), provider() or factory() eventually ends up calling this
@@ -26,7 +26,7 @@ interface KodeinContainer {
     fun factoryOrNull(key: Kodein.Key): ((Any?) -> Any)?
 
     fun nonNullFactory(key: Kodein.Key): ((Any?) -> Any)
-            = factoryOrNull(key) ?: throw _notFoundException("No factory found for $key")
+            = factoryOrNull(key) ?: throw _notFoundException(key, "No factory found for $key")
 
     fun providerOrNull(bind: Kodein.Bind): (() -> Any)? {
         val factory = factoryOrNull(Kodein.Key(bind, Unit::class.java)) ?: return null
@@ -34,7 +34,7 @@ interface KodeinContainer {
     }
 
     fun nonNullProvider(bind: Kodein.Bind): (() -> Any)
-            = providerOrNull(bind) ?: throw _notFoundException("No provider found for $bind")
+            = providerOrNull(bind) ?: throw _notFoundException(Kodein.Key(bind, Unit::class.java), "No provider found for $bind")
 
 
     /**

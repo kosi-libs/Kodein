@@ -303,6 +303,16 @@ class KodeinTests : TestCase() {
         assertEquals(42, c())
     }
 
+    @Test fun test08_2_ConstantBindingGetProviderPolymorphic() {
+
+        val kodein = Kodein {
+            constant("salomon") with Person("Salomon") as IPerson
+        }
+
+        val p = kodein.instance<IPerson>("salomon")
+
+        assertEquals(Person("Salomon"), p)
+    }
 
     @Test fun test09_0_DependencyLoop() {
 

@@ -21,6 +21,7 @@ interface Factory<in A, out T : Any> {
      * @param kodein: A Kodein instance to use for transitive dependencies.
      * @param key: The key of the instance to get.
      * @param arg: The argument to use to get the instance.
+     * @return The instance of the requested type.
      */
     fun getInstance(kodein: Kodein, key: Kodein.Key, arg: A): T
 
@@ -30,12 +31,12 @@ interface Factory<in A, out T : Any> {
     val factoryName: String
 
     /**
-     * The type of the argument this factory will function for, *used for debug print only*.
+     * The type of the argument this factory will function for.
      */
     val argType: Type
 
     /**
-     * The type of object that is created by this factory, *used for debug print only*.
+     * The type of object that is created by this factory.
      */
     val createdType: Type
 
@@ -82,6 +83,7 @@ abstract class AProvider<out T : Any>(override val factoryName: String, override
      *
      * @param kodein: A Kodein instance to use for transitive dependencies.
      * @param key: The key of the instance to get.
+     * @return The instance of the requested type.
      */
     abstract fun getInstance(kodein: Kodein, key: Kodein.Key): T
 
