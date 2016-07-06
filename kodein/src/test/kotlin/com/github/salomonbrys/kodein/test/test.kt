@@ -499,8 +499,8 @@ class KodeinTests : TestCase() {
         val newPerson: () -> Person by injector.provider()
         val salomon: Person by injector.instance("named")
         val factory: (String) -> Person by injector.factory("factory")
-        val provider: () -> Person by injector.providerFromFactory("provided", "factory")
-        val instance: Person by injector.instanceFromFactory("reified", "factory")
+        val provider: () -> Person by injector.with("provided").provider("factory")
+        val instance: Person by injector.with("reified").instance("factory")
     }
 
     @Test fun test14_0_InjectorInjected() {
@@ -725,7 +725,7 @@ class KodeinTests : TestCase() {
     class FakeLoggerImpl(override val cls: Class<*>) : FakeLogger
 
     class AwareTest(override val kodein: Kodein) : KodeinAware {
-        val logger: FakeLogger = instanceForClass()
+        val logger: FakeLogger = withClass().instance()
     }
 
     @Test fun test20_0_injectForClass() {
