@@ -4,18 +4,21 @@ package com.github.salomonbrys.kodein
  * Base [KodeinAware] interface.
  *
  * It is separate from [KodeinAware] because [Kodein] implements itself [KodeinAwareBase] but not [KodeinAware].<br />
- * This is because there are some extension functions to [KodeinAware] that would not make sense applied to the
- * Kodein object.<br />
+ * This is because there are some extension functions to [KodeinAware] that would not make sense applied to the [Kodein] object.<br />
  * For example, [KodeinAware.instanceForClass], if applied to [Kodein], would create a very un-expected result.
  */
 interface KodeinAwareBase {
+
+    /**
+     * A Kodein Aware class must be within reach of a Kodein object.
+     */
     val kodein: Kodein
 }
 
 /**
  * Gets a factory for the given argument type, return type and tag.
  *
- * @return The found factory.
+ * @return The factory.
  * @throws Kodein.NotFoundException if no factory could be found for this type and tag.
  */
 inline fun <reified A, reified T : Any> KodeinAwareBase.factory(tag: Any? = null): (A) -> T = kodein.typed.factory(typeToken<A>(), typeToken<T>(), tag)
@@ -32,7 +35,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? 
  *
  * Whether a provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * @return The found provider.
+ * @return The provider.
  * @throws Kodein.NotFoundException if no provider could be found for this type and tag.
  */
 inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null): () -> T = kodein.typed.provider(typeToken<T>(), tag)

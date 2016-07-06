@@ -16,7 +16,7 @@ class KodeinInjector() : KodeinInjectedBase {
 
     private var _onInjecteds = ArrayList<(Kodein) -> Unit>()
 
-    fun onInjected(cb: (Kodein) -> Unit) {
+    override fun onInjected(cb: (Kodein) -> Unit) {
         val k1 = _kodein
         if (k1 != null)
             cb(k1)
@@ -154,7 +154,7 @@ class KodeinInjector() : KodeinInjectedBase {
 
     fun kodein(): Lazy<Kodein> = lazy { _kodein ?: throw KodeinInjector.UninjectedException() }
 
-    fun inject(kodein: Kodein) {
+    override fun inject(kodein: Kodein) {
         if (_kodein != null)
             return
 
