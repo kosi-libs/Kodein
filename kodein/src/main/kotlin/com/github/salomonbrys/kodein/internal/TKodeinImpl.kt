@@ -9,6 +9,8 @@ import java.lang.reflect.Type
  * Kodein typed API implementation.
  *
  * All methods delegate their business to the [KodeinContainer].
+ *
+ * @param _container The container to proxy to.
  */
 @Suppress("UNCHECKED_CAST", "unused")
 class TKodeinImpl(private val _container: KodeinContainer) : TKodein {

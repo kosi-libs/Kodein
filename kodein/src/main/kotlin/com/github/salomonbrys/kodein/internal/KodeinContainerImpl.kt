@@ -70,17 +70,8 @@ class KodeinContainerImpl private constructor(private val _map: Map<Kodein.Key, 
      */
     private class ImmutableMapWrapper<K : Any, out V : Any>(private val _base: Map<K, V>) : Map<K, V> by _base
 
-    /**
-     * An immutable view of the bindings map. For inspection & debug.
-     */
-    override val bindings: Map<Kodein.Key, Factory<*, *>> get() = ImmutableMapWrapper(_map)
+    override val bindings: Map<Kodein.Key, Factory<*, *>> = ImmutableMapWrapper(_map)
 
-    /**
-     * All Kodein retrieval methods, whether it's instance(), provider() or factory() eventually ends up calling this
-     * function.
-     *
-     * @return Either the bound factory or null if the given key is not bound.
-     */
     override fun factoryOrNull(key: Kodein.Key): ((Any?) -> Any)? {
         val factory = _map[key] ?: return null
         _node?.check(key)

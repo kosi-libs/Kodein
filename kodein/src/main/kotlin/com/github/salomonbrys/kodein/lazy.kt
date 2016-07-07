@@ -120,10 +120,10 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.lazyInstanceOrNull(tag: 
 
 fun <A, T : Any> Lazy<(A) -> T>.toLazyProvider(arg: A): Lazy<() -> T> = lazy { { value(arg) } }
 
-@JvmName("toLazyProviderOrNull")
+@JvmName("toLazyNullableProvider")
 fun <A, T : Any> Lazy<((A) -> T)?>.toLazyProvider(arg: A): Lazy<(() -> T)?> = lazy { val factory = value ; if (factory != null) return@lazy { factory(arg) } else return@lazy null }
 
 fun <A, T : Any> Lazy<(A) -> T>.toLazyInstance(arg: A): Lazy<T> = lazy { value(arg) }
 
-@JvmName("toLazyInstanceOrNull")
+@JvmName("toLazyNullableInstance")
 fun <A, T : Any> Lazy<((A) -> T)?>.toLazyInstance(arg: A): Lazy<T?> = lazy { val factory = value ; if (factory != null) factory(arg) else null }

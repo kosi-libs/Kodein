@@ -12,7 +12,7 @@ import java.util.*
 interface KodeinContainer {
 
     /**
-     * This is for debug. It allows to print all binded keys.
+     * An immutable view of the bindings map. For inspection & debug.
      */
     val bindings: Map<Kodein.Key, Factory<*, *>>
 
@@ -20,8 +20,10 @@ interface KodeinContainer {
             = Kodein.NotFoundException(key, "$reason\nRegistered in Kodein:\n" + bindings.description)
 
     /**
-     * All Kodein getter methods, whether it's instance(), provider() or factory() eventually ends up calling this
+     * All Kodein retrieval methods, whether it's instance(), provider() or factory() eventually ends up calling this
      * function.
+     *
+     * @return Either the bound factory or null if the given key is not bound.
      */
     fun factoryOrNull(key: Kodein.Key): ((Any?) -> Any)?
 

@@ -17,6 +17,8 @@ class KodeinImpl internal constructor(override val container: KodeinContainer) :
      *
      * - Uses the [KodeinContainer.Builder] to create the [container].
      * - Calls all callbacks registered in [Kodein.Builder._callbacks].
+     *
+     * @param builder The builder to use.
      */
     @Suppress("unused")
     private constructor(builder: Kodein.Builder) : this(KodeinContainerImpl(builder.container)) {
