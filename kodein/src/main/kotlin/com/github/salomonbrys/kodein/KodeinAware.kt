@@ -120,7 +120,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: A, val argType: TypeT
      * @throws Kodein.NotFoundException if no factory was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    inline fun <reified T : Any> provider(tag: Any? = null): (() -> T) = kodein.typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
+    inline fun <reified T : Any> provider(tag: Any? = null): () -> T = kodein.typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
 
     /**
      * Gets a provider of [T] for the given tag from a curried factory with an [A] argument, or null if none is found.

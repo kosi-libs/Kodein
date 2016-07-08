@@ -12,60 +12,124 @@ import java.util.*
 interface KodeinContainer {
 
     /**
-     * An immutable view of the bindings map. For inspection & debug.
+     * An immutable view of the bindings map. *For inspection & debug*.
      */
     val bindings: Map<Kodein.Key, Factory<*, *>>
 
-    private fun _notFoundException(key: Kodein.Key, reason: String): Kodein.NotFoundException
-            = Kodein.NotFoundException(key, "$reason\nRegistered in Kodein:\n" + bindings.description)
+    /**
+     * Utility function to create a NotFoundException.
+     *
+     * @param key The key that was not found.
+     * @param scope Type of scope: "factory" or "provider".
+     * @return The exception, redy to be thrown away!
+     */
+    private fun _notFoundException(key: Kodein.Key, scope: String): Kodein.NotFoundException
+            = Kodein.NotFoundException(key, "No $scope found for $key\nRegistered in Kodein:\n" + bindings.description)
 
     /**
-     * All Kodein retrieval methods, whether it's instance(), provider() or factory() eventually ends up calling this
-     * function.
+     * Retrieve a factory for the given key, or null if none is found.
      *
-     * @return Either the bound factory or null if the given key is not bound.
+     * @param key The key to look for.
+     * @return The found factory, or null if no factory was found.
+     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
     fun factoryOrNull(key: Kodein.Key): ((Any?) -> Any)?
 
+    /**
+     * Retrieve a factory for the given key.
+     *
+     * @param key The key to look for.
+     * @return The found factory.
+     * @throws Kodein.NotFoundException if no factory was found.
+     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     */
     fun nonNullFactory(key: Kodein.Key): ((Any?) -> Any)
-            = factoryOrNull(key) ?: throw _notFoundException(key, "No factory found for $key")
+            = factoryOrNull(key) ?: throw _notFoundException(key, "factory")
 
+    /**
+     * Retrieve a provider for the given bind, or null if none is found.
+     *
+     * @param bind The bind (type and tag) to look for.
+     * @return The found provider, or null if no provider was found.
+     * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     */
     fun providerOrNull(bind: Kodein.Bind): (() -> Any)? {
         val factory = factoryOrNull(Kodein.Key(bind, Unit::class.java)) ?: return null
         return { factory(Unit) }
     }
 
+    /**
+     * Retrieve a provider for the given bind.
+     *
+     * @param bind The bind (type and tag) to look for.
+     * @return The found provider.
+     * @throws Kodein.NotFoundException if no provider was found.
+     * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     */
     fun nonNullProvider(bind: Kodein.Bind): (() -> Any)
-            = providerOrNull(bind) ?: throw _notFoundException(Kodein.Key(bind, Unit::class.java), "No provider found for $bind")
+            = providerOrNull(bind) ?: throw _notFoundException(Kodein.Key(bind, Unit::class.java), "provider")
 
 
     /**
-     * Allows for the building of a Kodein object by defining bindings
+     * This is where you configure the bindings.
+     *
+     * @param allowOverride Whether or not the bindings defined by this builder or its imports are allowed to **explicitly** override existing bindings.
+     * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
+     * @property _map The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
      */
-    class Builder internal constructor(allow: Boolean, silent: Boolean, internal val _map: MutableMap<Kodein.Key, Factory<*, Any>> = HashMap()) {
+    class Builder internal constructor(allowOverride: Boolean, silentOverride: Boolean, internal val _map: MutableMap<Kodein.Key, Factory<*, Any>> = HashMap()) {
 
+        /**
+         * The override permission for a builder.
+         */
         private enum class OverrideMode {
+
+            /**
+             * Bindings are allowed to **non-explicit** overrides.
+             */
             ALLOW_SILENT {
                 override val isAllowed: Boolean get() = true
                 override fun must(overrides: Boolean?) = overrides
-                override fun checkMatch(allowOverride: Boolean) {}
             },
+
+            /**
+             * Bindings are allowed to overrides, but only **explicit**.
+             */
             ALLOW_EXPLICIT {
                 override val isAllowed: Boolean get() = true
                 override fun must(overrides: Boolean?) = overrides ?: false
-                override fun checkMatch(allowOverride: Boolean) {}
             },
+
+            /**
+             * Bindings are forbidden to override.
+             */
             FORBID {
                 override val isAllowed: Boolean get() = false
                 override fun must(overrides: Boolean?) = if (overrides != null && overrides) throw Kodein.OverridingException("Overriding has been forbidden") else false
-                override fun checkMatch(allowOverride: Boolean) { if (allowOverride) throw Kodein.OverridingException("Overriding has been forbidden") }
             };
 
+            /**
+             * Whether or not this mode allows overrides.
+             */
             abstract val isAllowed: Boolean
+
+            /**
+             * Given a binding overriding declaration (true=yes, false=no, null=maybe), returns whether or not the binding **must** override an existing binding.
+             *
+             * @return `true` if it must override, `false` if it must not, `null` if it can but is not required to.
+             * @throws Kodein.OverridingException If it asks to override, if the binding overriding declaration is not permitted.
+             */
             abstract fun must(overrides: Boolean?): Boolean?
-            abstract fun checkMatch(allowOverride: Boolean): Unit
 
             companion object {
+
+                /**
+                 * Get the mode according to the given permissions.
+                 *
+                 * @param allow The permission to override explicitly.
+                 * @param silent The permission to override silently.
+                 * @return The mode corresponding to the permissions.
+                 */
                 fun get(allow: Boolean, silent: Boolean): OverrideMode {
                     if (!allow)
                         return FORBID
@@ -75,8 +139,19 @@ interface KodeinContainer {
                 }
             }
         }
-        private val _overrideMode = OverrideMode.get(allow, silent)
 
+        /**
+         * The mode that defines the overriding permissions for this builder.
+         */
+        private val _overrideMode = OverrideMode.get(allowOverride, silentOverride)
+
+        /**
+         * Checks that a type is reified. Meaning that it is not or does not reference a [TypeVariable].
+         *
+         * @param disp An object to print if the check fails. *For debug print only*.
+         * @param type The type to check.
+         * @throws IllegalArgumentException If the type does contain a [TypeVariable].
+         */
         private fun _checkIsReified(disp: Any, type: Type) {
             when (type) {
                 is TypeVariable<*> -> throw IllegalArgumentException("$disp uses a type variable named ${type.name}, therefore, the binded value can never be retrieved.")
@@ -94,6 +169,16 @@ interface KodeinContainer {
             }
         }
 
+        /**
+         * Checks that the bindings conforms to it's overriding declaration.
+         *
+         * If [overrides] is null, only checks if the binding is allowed to override, else checks if it conforms.
+         *
+         * @param key The key that the binding must, may or must not override.
+         * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
+         * @throws Kodein.OverridingException If overrides is `null` or `true` but the permission to override is not granted,
+         *                                    or if the binding is allowed to override, but does not conforms to it's overriding declaration.
+         */
         private fun _checkOverrides(key: Kodein.Key, overrides: Boolean?) {
             val mustOverride = _overrideMode.must(overrides)
 
@@ -105,7 +190,13 @@ interface KodeinContainer {
             }
         }
 
-
+        /**
+         * Left part of the key-binding syntax (`bind(Kodein.Key(Kodein.Bind(type, tag), argType))`).
+         *
+         * @property key The key to bind.
+         * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
+         * @throws Kodein.OverridingException If this bindings overrides an existing binding and is not allowed to.
+         */
         inner class KeyBinder internal constructor(val key: Kodein.Key, overrides: Boolean?) {
             init {
                 _checkIsReified(key.bind, key.bind.type)
@@ -113,16 +204,35 @@ interface KodeinContainer {
                 _checkOverrides(key, overrides)
             }
 
+            /**
+             * Binds the previously given key to the given factory.
+             *
+             * @param factory The factory to bind.
+             */
             infix fun with(factory: Factory<*, Any>) {
                 _map[key] = factory
             }
         }
 
+        /**
+         * Left part of the bind-binding syntax (`bind(Kodein.Bind(type, tag))`).
+         *
+         * @property bind The type and tag object that will compose the key to bind.
+         * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
+         */
         inner class BindBinder internal constructor(val bind: Kodein.Bind, val overrides: Boolean?) {
             init {
                 _checkIsReified(bind, bind.type)
             }
 
+            /**
+             * Binds the previously given type & tag to the given factory.
+             *
+             * The bound type will be the [Factory.createdType].
+             *
+             * @param factory The factory to bind.
+             * @throws Kodein.OverridingException If this bindings overrides an existing binding and is not allowed to.
+             */
             infix fun with(factory: Factory<*, Any>) {
                 _checkIsReified(factory, factory.argType)
 
@@ -133,21 +243,64 @@ interface KodeinContainer {
             }
         }
 
-        fun bind(key: Kodein.Key, overrides: Boolean? = false): KeyBinder = KeyBinder(key, overrides)
+        /**
+         * Starts the binding of a given key.
+         *
+         * @param key The key to bind.
+         * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
+         * @return The binder: call [KeyBinder.with]) on it to finish the binding syntax and register the binding.
+         */
+        fun bind(key: Kodein.Key, overrides: Boolean? = null): KeyBinder = KeyBinder(key, overrides)
 
-        fun bind(bind: Kodein.Bind, overrides: Boolean? = false): BindBinder = BindBinder(bind, overrides)
+        /**
+         * Starts the binding of a given type and tag.
+         *
+         * @param bind The type and tag to bind.
+         * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
+         * @return The binder: call [BindBinder.with]) on it to finish the binding syntax and register the binding.
+         */
+        fun bind(bind: Kodein.Bind, overrides: Boolean? = null): BindBinder = BindBinder(bind, overrides)
 
+        /**
+         * Checks whether the given overriding declaration is allowed.
+         *
+         * @param allowOverride The overriding declaration.
+         * @throws Kodein.OverridingException If it is not allowed to bind.
+         */
+        private fun _checkMatch(allowOverride: Boolean) {
+            if (!_overrideMode.isAllowed && allowOverride)
+                throw Kodein.OverridingException("Overriding has been forbidden")
+        }
+
+        /**
+         * Imports all bindings defined in the given [KodeinContainer] into this builder.
+         *
+         * Note that this preserves scopes, meaning that a singleton-binded in the container argument will continue to exist only once.
+         * Both containers will share the same instance.
+         *
+         * @param container The container object to import.
+         * @param allowOverride Whether this module is allowed to override existing bindings.
+         *                      If it is not, overrides (even explicit) will throw an [Kodein.OverridingException].
+         * @throws Kodein.OverridingException If this kodein overrides an existing binding and is not allowed to
+         *                                    OR [allowOverride] is true while YOU don't have the permission to override.
+         */
         fun extend(container: KodeinContainer, allowOverride: Boolean = false) {
-            _overrideMode.checkMatch(allowOverride)
+            _checkMatch(allowOverride)
             if (allowOverride)
                 _map.putAll(container.bindings)
             else
                 container.bindings.forEach { bind(it.key) with it.value }
         }
 
-        fun subBuilder(allowOverride: Boolean = false, allowSilentOverride: Boolean = false): Builder {
-            _overrideMode.checkMatch(allowOverride)
-            return Builder(allowOverride, allowSilentOverride, _map)
+        /**
+         * Creates a sub builder that will register its bindings to the same [map][_map].
+         *
+         * @param allowOverride Whether or not the bindings defined by this builder or its imports are allowed to **explicitly** override existing bindings.
+         * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
+         */
+        fun subBuilder(allowOverride: Boolean = false, silentOverride: Boolean = false): Builder {
+            _checkMatch(allowOverride)
+            return Builder(allowOverride, silentOverride, _map)
         }
     }
 

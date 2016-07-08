@@ -1,5 +1,6 @@
 package com.github.salomonbrys.kodein.android
 
+import android.app.Activity
 import android.app.Dialog
 import android.app.Fragment
 import android.content.AbstractThreadedSyncAdapter
@@ -9,21 +10,20 @@ import android.view.View
 import com.github.salomonbrys.kodein.*
 
 
-fun Context.lazyKodeinFromApp() = LazyKodein(lazy { (applicationContext as KodeinAware).kodein })
 
-fun Fragment.lazyKodeinFromApp() = LazyKodein(lazy { (activity.applicationContext as KodeinAware).kodein })
+//class TestActivity : Activity(), KodeinAware {
+//
+//    override val kodein by kotlin.lazy { appKodein() }
+//
+//    val test: String by lazy.instance()
+//}
 
-fun android.support.v4.app.Fragment.lazyKodeinFromApp() = LazyKodein(lazy { (activity.applicationContext as KodeinAware).kodein })
+class TestActivity : Activity() {
 
-fun Dialog.lazyKodeinFromApp() = LazyKodein(lazy { (context.applicationContext as KodeinAware).kodein })
+    val kodein = lazyKodein { appKodein() }
 
-fun View.lazyKodeinFromApp() = LazyKodein(lazy { (context.applicationContext as KodeinAware).kodein })
-
-fun AbstractThreadedSyncAdapter.lazyKodeinFromApp() = LazyKodein(lazy { (context.applicationContext as KodeinAware).kodein })
-
-fun Loader<*>.lazyKodeinFromApp() = LazyKodein(lazy { (context.applicationContext as KodeinAware).kodein })
-
-fun android.support.v4.content.Loader<*>.lazyKodeinFromApp() = LazyKodein(lazy { (context.applicationContext as KodeinAware).kodein })
+    val test: String by kodein.instance()
+}
 
 
 
@@ -45,26 +45,34 @@ val android.support.v4.content.Loader<*>.appKodein: () -> Kodein get() = { (cont
 
 
 
-inline fun <reified T, reified R : Any> T.instanceForContext(tag: Any? = null): Lazy<R> where T : KodeinInjected, T : Context = with(this as Context).instance<R>(tag)
-inline fun <reified T, reified R : Any> T.providerForContext(tag: Any? = null): Lazy<() -> R> where T : KodeinInjected, T : Context = with(this as Context).provider<R>(tag)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedKodeinFactory<Context> where T : KodeinAware, T : Context = with(this as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedInjectorFactory<Context> where T : KodeinInjected, T : Context = with(this as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedLazyKodeinFactory<Context> where T : LazyKodeinAware, T : Context = with(this as Context)
 
-inline fun <reified T, reified R : Any> T.instanceForContext(tag: Any? = null): Lazy<R> where T : KodeinInjected, T : Fragment = with(activity as Context).instance<R>(tag)
-inline fun <reified T, reified R : Any> T.providerForContext(tag: Any? = null): Lazy<() -> R> where T : KodeinInjected, T : Fragment = with(activity as Context).provider<R>(tag)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedKodeinFactory<Context> where T : KodeinAware, T : Fragment = with(activity as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedInjectorFactory<Context> where T : KodeinInjected, T : Fragment = with(activity as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedLazyKodeinFactory<Context> where T : LazyKodeinAware, T : Fragment = with(activity as Context)
 
-inline fun <reified T, reified R : Any> T.instanceForContext(tag: Any? = null): Lazy<R> where T : KodeinInjected, T : android.support.v4.app.Fragment = with(activity as Context).instance<R>(tag)
-inline fun <reified T, reified R : Any> T.providerForContext(tag: Any? = null): Lazy<() -> R> where T : KodeinInjected, T : android.support.v4.app.Fragment = with(activity as Context).provider<R>(tag)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedKodeinFactory<Context> where T : KodeinAware, T : android.support.v4.app.Fragment = with(activity as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedInjectorFactory<Context> where T : KodeinInjected, T : android.support.v4.app.Fragment = with(activity as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedLazyKodeinFactory<Context> where T : LazyKodeinAware, T : android.support.v4.app.Fragment = with(activity as Context)
 
-inline fun <reified T, reified R : Any> T.instanceForContext(tag: Any? = null): Lazy<R> where T : KodeinInjected, T : Dialog = with(context as Context).instance<R>(tag)
-inline fun <reified T, reified R : Any> T.providerForContext(tag: Any? = null): Lazy<() -> R> where T : KodeinInjected, T : Dialog = with(context as Context).provider<R>(tag)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedKodeinFactory<Context> where T : KodeinAware, T : Dialog = with(context as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedInjectorFactory<Context> where T : KodeinInjected, T : Dialog = with(context as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedLazyKodeinFactory<Context> where T : LazyKodeinAware, T : Dialog = with(context as Context)
 
-inline fun <reified T, reified R : Any> T.instanceForContext(tag: Any? = null): Lazy<R> where T : KodeinInjected, T : View = with(context as Context).instance<R>(tag)
-inline fun <reified T, reified R : Any> T.providerForContext(tag: Any? = null): Lazy<() -> R> where T : KodeinInjected, T : View = with(context as Context).provider<R>(tag)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedKodeinFactory<Context> where T : KodeinAware, T : View = with(context as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedInjectorFactory<Context> where T : KodeinInjected, T : View = with(context as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedLazyKodeinFactory<Context> where T : LazyKodeinAware, T : View = with(context as Context)
 
-inline fun <reified T, reified R : Any> T.instanceForContext(tag: Any? = null): Lazy<R> where T : KodeinInjected, T : AbstractThreadedSyncAdapter = with(context as Context).instance<R>(tag)
-inline fun <reified T, reified R : Any> T.providerForContext(tag: Any? = null): Lazy<() -> R> where T : KodeinInjected, T : AbstractThreadedSyncAdapter = with(context as Context).provider<R>(tag)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedKodeinFactory<Context> where T : KodeinAware, T : AbstractThreadedSyncAdapter = with(context as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedInjectorFactory<Context> where T : KodeinInjected, T : AbstractThreadedSyncAdapter = with(context as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedLazyKodeinFactory<Context> where T : LazyKodeinAware, T : AbstractThreadedSyncAdapter = with(context as Context)
 
-inline fun <reified T, reified R : Any> T.instanceForContext(tag: Any? = null): Lazy<R> where T : KodeinInjected, T : Loader<*> = with(context as Context).instance<R>(tag)
-inline fun <reified T, reified R : Any> T.providerForContext(tag: Any? = null): Lazy<() -> R> where T : KodeinInjected, T : Loader<*> = with(context as Context).provider<R>(tag)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedKodeinFactory<Context> where T : KodeinAware, T : Loader<*> = with(context as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedInjectorFactory<Context> where T : KodeinInjected, T : Loader<*> = with(context as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedLazyKodeinFactory<Context> where T : LazyKodeinAware, T : Loader<*> = with(context as Context)
 
-inline fun <reified T, reified R : Any> T.instanceForContext(tag: Any? = null): Lazy<R> where T : KodeinInjected, T : android.support.v4.content.Loader<*> = with(context as Context).instance<R>(tag)
-inline fun <reified T, reified R : Any> T.providerForContext(tag: Any? = null): Lazy<() -> R> where T : KodeinInjected, T : android.support.v4.content.Loader<*> = with(context as Context).provider<R>(tag)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedKodeinFactory<Context> where T : KodeinAware, T : android.support.v4.content.Loader<*> = with(context as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedInjectorFactory<Context> where T : KodeinInjected, T : android.support.v4.content.Loader<*> = with(context as Context)
+inline fun <reified T, reified R : Any> T.withContext(): CurriedLazyKodeinFactory<Context> where T : LazyKodeinAware, T : android.support.v4.content.Loader<*> = with(context as Context)

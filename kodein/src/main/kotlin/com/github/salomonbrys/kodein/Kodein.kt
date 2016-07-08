@@ -23,17 +23,24 @@ interface Kodein : KodeinAwareBase {
 
     /**
      * Exception thrown when there is a dependency loop.
+     *
+     * @param message The message of the exception.
      */
     class DependencyLoopException internal constructor(message: String) : RuntimeException(message)
 
     /**
      * Exception thrown when asked for a dependency that cannot be found.
+     *
+     * @property key The key that was not found.
+     * @param message The message of the exception.
      */
     class NotFoundException(val key: Kodein.Key, message: String)
             : RuntimeException(message)
 
     /**
      * Exception thrown when there is an overriding error
+     *
+     * @param message The message of the exception.
      */
     class OverridingException(message: String) : RuntimeException(message)
 
@@ -157,7 +164,7 @@ interface Kodein : KodeinAwareBase {
              * Left part of the type-binding syntax (`bind(type, tag)`).
              *
              * @param T The type to bind.
-             * @param _binder The container binder to use to complete the binding.
+             * @property _binder The container binder to use to complete the binding.
              */
             inner class TypeBinder<in T : Any> internal constructor(private val _binder: KodeinContainer.Builder.BindBinder) {
                 /**
@@ -173,8 +180,8 @@ interface Kodein : KodeinAwareBase {
             /**
              * Left part of the direct-binding syntax (`bind(tag)`).
              *
-             * @param _tag The tag that is being bound.
-             * @param _overrides Whether this bind **must** or **must not** override an existing binding.
+             * @property _tag The tag that is being bound.
+             * @property _overrides Whether this bind **must**, **may** or **must not** override an existing binding.
              */
             inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) {
                 /**
@@ -191,8 +198,8 @@ interface Kodein : KodeinAwareBase {
             /**
              * Left part of the constant-binding syntax (`constant(tag)`).
              *
-             * @param _tag The tag that is being bound.
-             * @param _overrides Whether this bind **must** or **must not** override an existing binding.
+             * @property _tag The tag that is being bound.
+             * @property _overrides Whether this bind **must**, **may** or **must not** override an existing binding.
              */
             inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) {
                 /**
@@ -299,7 +306,7 @@ interface Kodein : KodeinAwareBase {
          *
          * @param T The type to bind.
          * @param tag The tag to bind.
-         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
          * @return The binder: call [TBuilder.TypeBinder.with]) on it to finish the binding syntax and register the binding.
          */
         inline fun <reified T : Any> bind(tag: Any? = null, overrides: Boolean? = null): TBuilder.TypeBinder<T> = typed.bind(typeToken<T>(), tag, overrides)
@@ -308,13 +315,15 @@ interface Kodein : KodeinAwareBase {
          * Starts a direct binding with a given tag. A direct bind does not define the type to be binded, the type will be defined according to the bound factory.
          *
          * @param tag The tag to bind.
-         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
          * @return The binder: call [TBuilder.DirectBinder.from]) on it to finish the binding syntax and register the binding.
          */
         fun bind(tag: Any? = null, overrides: Boolean? = null): TBuilder.DirectBinder = typed.bind(tag, overrides)
 
         /**
          * Left part of the constant-binding syntax (`constant(tag)`).
+         *
+         * @property binder The typed binder to use to actually bind.
          */
         inner class ConstantBinder internal constructor(val binder: TBuilder.ConstantBinder) {
 
@@ -331,7 +340,7 @@ interface Kodein : KodeinAwareBase {
          * Starts a constant binding.
          *
          * @param tag The tag to bind.
-         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
          * @return The binder: call [ConstantBinder.with]) on it to finish the binding syntax and register the binding.
          */
         fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder = ConstantBinder(typed.constant(tag, overrides))
@@ -404,8 +413,8 @@ interface Kodein : KodeinAwareBase {
         /**
          * Creates a [Kodein] instance.
          *
-         * @property allowSilentOverride Whether the configuration block is allowed to non-explicit overrides.
-         * @property init The block of configuration.
+         * @param allowSilentOverride Whether the configuration block is allowed to non-explicit overrides.
+         * @param init The block of configuration.
          * @return The new Kodein object, freshly created, and ready for hard work!
          */
         operator fun invoke(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit): Kodein = KodeinImpl(allowSilentOverride, init)

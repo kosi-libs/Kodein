@@ -1,129 +1,68 @@
 package com.github.salomonbrys.kodein
 
-class LazyKodein(private val _lazy: Lazy<Kodein>) : () -> Kodein {
-    override fun invoke() = _lazy.value
 
-    constructor(silentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(lazy { Kodein(silentOverride, init) })
+interface LazyKodeinAwareBase {
+    val kodein: LazyKodein
 }
 
-inline fun <reified A, reified T : Any> _lazyFactory(tag: Any? = null, noinline kodein: () -> Kodein) : Lazy<(A) -> T>          = lazy { kodein().factory<A, T>(tag) }
-inline fun <reified A, reified T : Any> _lazyFactoryOrNull(tag: Any? = null, noinline kodein: () -> Kodein) : Lazy<((A) -> T)?> = lazy { kodein().factoryOrNull<A, T>(tag) }
-inline fun <reified T : Any>            _lazyProvider(tag: Any? = null, noinline kodein: () -> Kodein) : Lazy<() -> T>          = lazy { kodein().provider<T>(tag) }
-inline fun <reified T : Any>            _lazyProviderOrNull(tag: Any? = null, noinline kodein: () -> Kodein) : Lazy<(() -> T)?> = lazy { kodein().providerOrNull<T>(tag) }
-inline fun <reified T : Any>            _lazyInstance(tag: Any? = null, noinline kodein: () -> Kodein) : Lazy<T>                = lazy { kodein().instance<T>(tag) }
-inline fun <reified T : Any>            _lazyInstanceOrNull(tag: Any? = null, noinline kodein: () -> Kodein) : Lazy<T?>         = lazy { kodein().instanceOrNull<T>(tag) }
+/**
+ * An object that wraps a Kodein [Lazy] object and acts both as a [Lazy] property delegate & a function.
+ *
+ * @param k The property delegate to wrap.
+ */
+class LazyKodein(k: Lazy<Kodein>) : Lazy<Kodein> by k, () -> Kodein, LazyKodeinAwareBase {
+    override val kodein: LazyKodein get() = this
 
-
+    override fun invoke(): Kodein = value
+}
 
 /**
- * To be used as a property delegate to inject a factory
+ * You can use the result of this function as a property delegate *or* as a function.
+ *
+ * @param f The function to get a Kodein, guaranteed to be called only once.
  */
-inline fun <reified A, reified T : Any> Kodein.lazyFactory(tag: Any? = null) : Lazy<(A) -> T> = _lazyFactory(tag) { this }
+fun lazyKodein(f: () -> Kodein) = LazyKodein(lazy(f))
 
-inline fun <reified A, reified T : Any> Kodein.lazyFactoryOrNull(tag: Any? = null) : Lazy<((A) -> T)?> = _lazyFactoryOrNull(tag) { this }
 
-/**
- * To be used as a property delegate to inject a provider
- */
-inline fun <reified T : Any> Kodein.lazyProvider(tag: Any? = null) : Lazy<() -> T> = _lazyProvider(tag) { this }
+class CurriedLazyKodeinFactory<A>(val kodein: () -> Kodein, val arg: A, val argType: TypeToken<A>) {
 
-inline fun <reified T : Any> Kodein.lazyProviderOrNull(tag: Any? = null) : Lazy<(() -> T)?> = _lazyProviderOrNull(tag) { this }
+    inline fun <reified T : Any> provider(tag: Any? = null): Lazy<() -> T> = lazy { kodein().typed.factory(argType, typeToken<T>(), tag) } .toProvider(arg)
 
-/**
- * To be used as a property delegate to inject an instance
- */
-inline fun <reified T : Any> Kodein.lazyInstance(tag: Any? = null) : Lazy<T> = _lazyInstance(tag) { this }
+    inline fun <reified T : Any> providerOrNull(tag: Any? = null): Lazy<(() -> T)?> = lazy { kodein().typed.factoryOrNull(argType, typeToken<T>(), tag) } .toProvider(arg)
 
-inline fun <reified T : Any> Kodein.lazyInstanceOrNull(tag: Any? = null) : Lazy<T?> = _lazyInstanceOrNull(tag) { this }
+    inline fun <reified T : Any> instance(tag: Any? = null): Lazy<T> = lazy { kodein().typed.factory(argType, typeToken<T>(), tag) } .toInstance(arg)
 
-inline fun <reified A, reified T : Any> Kodein.lazyProviderFromFactory(arg: A, tag: Any? = null) : Lazy<() -> T> = lazyFactory<A, T>(tag).toLazyProvider(arg)
-
-inline fun <reified A, reified T : Any> Kodein.lazyProviderFromFactoryOrNull(arg: A, tag: Any? = null) : Lazy<(() -> T)?> = lazyFactoryOrNull<A, T>(tag).toLazyProvider(arg)
-
-inline fun <reified A, reified T : Any> Kodein.lazyInstanceFromFactory(arg: A, tag: Any? = null) : Lazy<T> = lazyFactory<A, T>(tag).toLazyInstance(arg)
-
-inline fun <reified A, reified T : Any> Kodein.lazyInstanceFromFactoryOrNull(arg: A, tag: Any? = null) : Lazy<T?> = lazyFactoryOrNull<A, T>(tag).toLazyInstance(arg)
+    inline fun <reified T : Any> instanceOrNull(tag: Any? = null): Lazy<T?> = lazy { kodein().typed.factoryOrNull(argType, typeToken<T>(), tag) } .toInstance(arg)
+}
 
 
 
-/**
- * To be used as a property delegate to inject a factory
- */
-inline fun <reified A, reified T : Any> Lazy<Kodein>.lazyFactory(tag: Any? = null) : Lazy<(A) -> T> = _lazyFactory(tag) { this.value }
+inline fun <reified A, reified T : Any> LazyKodeinAwareBase.factory(tag: Any? = null) : Lazy<(A) -> T> = lazy { kodein().factory<A, T>(tag) }
 
-inline fun <reified A, reified T : Any> Lazy<Kodein>.lazyFactoryOrNull(tag: Any? = null) : Lazy<((A) -> T)?> = _lazyFactoryOrNull(tag) { this.value }
+inline fun <reified A, reified T : Any> LazyKodeinAwareBase.factoryOrNull(tag: Any? = null) : Lazy<((A) -> T)?> = lazy { kodein().factoryOrNull<A, T>(tag) }
 
-/**
- * To be used as a property delegate to inject a provider
- */
-inline fun <reified T : Any> Lazy<Kodein>.lazyProvider(tag: Any? = null) : Lazy<() -> T> = _lazyProvider(tag) { this.value }
+inline fun <reified T : Any> LazyKodeinAwareBase.provider(tag: Any? = null) : Lazy<() -> T> = lazy { kodein().provider<T>(tag) }
 
-inline fun <reified T : Any> Lazy<Kodein>.lazyProviderOrNull(tag: Any? = null) : Lazy<(() -> T)?> = _lazyProviderOrNull(tag) { this.value }
+inline fun <reified T : Any> LazyKodeinAwareBase.providerOrNull(tag: Any? = null) : Lazy<(() -> T)?> = lazy { kodein().providerOrNull<T>(tag) }
 
-/**
- * To be used as a property delegate to inject an instance
- */
-inline fun <reified T : Any> Lazy<Kodein>.lazyInstance(tag: Any? = null) : Lazy<T> = _lazyInstance(tag) { this.value }
+inline fun <reified T : Any> LazyKodeinAwareBase.instance(tag: Any? = null) : Lazy<T> = lazy { kodein().instance<T>(tag) }
 
-inline fun <reified T : Any> Lazy<Kodein>.lazyInstanceOrNull(tag: Any? = null) : Lazy<T?> = _lazyInstanceOrNull(tag) { this.value }
+inline fun <reified T : Any> LazyKodeinAwareBase.instanceOrNull(tag: Any? = null) : Lazy<T?> = lazy { kodein().instanceOrNull<T>(tag) }
 
-inline fun <reified A, reified T : Any> Lazy<Kodein>.lazyProviderFromFactory(arg: A, tag: Any? = null) : Lazy<() -> T> = lazyFactory<A, T>(tag).toLazyProvider(arg)
-
-inline fun <reified A, reified T : Any> Lazy<Kodein>.lazyProviderFromFactoryOrNull(arg: A, tag: Any? = null) : Lazy<(() -> T)?> = lazyFactoryOrNull<A, T>(tag).toLazyProvider(arg)
-
-inline fun <reified A, reified T : Any> Lazy<Kodein>.lazyInstanceFromFactory(arg: A, tag: Any? = null) : Lazy<T> = lazyFactory<A, T>(tag).toLazyInstance(arg)
-
-inline fun <reified A, reified T : Any> Lazy<Kodein>.lazyInstanceFromFactoryOrNull(arg: A, tag: Any? = null) : Lazy<T?> = lazyFactoryOrNull<A, T>(tag).toLazyInstance(arg)
+inline fun <reified A> LazyKodeinAwareBase.with(arg: A): CurriedLazyKodeinFactory<A> = CurriedLazyKodeinFactory(kodein, arg, typeToken())
 
 
 
-/**
- * To be used as a property delegate to inject a factory
- */
-inline fun <reified A, reified T : Any> (() -> Kodein).lazyFactory(tag: Any? = null) : Lazy<(A) -> T> = _lazyFactory(tag) { this() }
-
-inline fun <reified A, reified T : Any> (() -> Kodein).lazyFactoryOrNull(tag: Any? = null) : Lazy<((A) -> T)?> = _lazyFactoryOrNull(tag) { this() }
-
-/**
- * To be used as a property delegate to inject a provider
- */
-inline fun <reified T : Any> (() -> Kodein).lazyProvider(tag: Any? = null) : Lazy<() -> T> = _lazyProvider(tag) { this() }
-
-inline fun <reified T : Any> (() -> Kodein).lazyProviderOrNull(tag: Any? = null) : Lazy<(() -> T)?> = _lazyProviderOrNull(tag) { this() }
-
-/**
- * To be used as a property delegate to inject an instance
- */
-inline fun <reified T : Any> (() -> Kodein).lazyInstance(tag: Any? = null) : Lazy<T> = _lazyInstance(tag) { this() }
-
-inline fun <reified T : Any> (() -> Kodein).lazyInstanceOrNull(tag: Any? = null) : Lazy<T?> = _lazyInstanceOrNull(tag) { this() }
-
-inline fun <reified A, reified T : Any> (() -> Kodein).lazyProviderFromFactory(arg: A, tag: Any? = null) : Lazy<() -> T> = lazyFactory<A, T>(tag).toLazyProvider(arg)
-
-inline fun <reified A, reified T : Any> (() -> Kodein).lazyProviderFromFactoryOrNull(arg: A, tag: Any? = null) : Lazy<(() -> T)?> = lazyFactoryOrNull<A, T>(tag).toLazyProvider(arg)
-
-inline fun <reified A, reified T : Any> (() -> Kodein).lazyInstanceFromFactory(arg: A, tag: Any? = null) : Lazy<T> = lazyFactory<A, T>(tag).toLazyInstance(arg)
-
-inline fun <reified A, reified T : Any> (() -> Kodein).lazyInstanceFromFactoryOrNull(arg: A, tag: Any? = null) : Lazy<T?> = lazyFactoryOrNull<A, T>(tag).toLazyInstance(arg)
+interface LazyKodeinAware : LazyKodeinAwareBase
 
 
 
-inline fun <A, reified T : Any> CurriedKodeinFactory<A>.lazyProvider(tag: Any? = null): Lazy<() -> T> = lazy { provider<T>(tag) }
+fun <A, T : Any> Lazy<(A) -> T>.toProvider(arg: A): Lazy<() -> T> = lazy { { value(arg) } }
 
-inline fun <A, reified T : Any> CurriedKodeinFactory<A>.lazyProviderOrNull(tag: Any? = null): Lazy<(() -> T)?> = lazy { providerOrNull<T>(tag) }
+@JvmName("toNullableProvider")
+fun <A, T : Any> Lazy<((A) -> T)?>.toProvider(arg: A): Lazy<(() -> T)?> = lazy { val factory = value ; if (factory != null) return@lazy { factory(arg) } else return@lazy null }
 
-inline fun <A, reified T : Any> CurriedKodeinFactory<A>.lazyInstance(tag: Any? = null): Lazy<T> = lazy { instance<T>(tag) }
+fun <A, T : Any> Lazy<(A) -> T>.toInstance(arg: A): Lazy<T> = lazy { value(arg) }
 
-inline fun <A, reified T : Any> CurriedKodeinFactory<A>.lazyInstanceOrNull(tag: Any? = null): Lazy<T?> = lazy { instanceOrNull<T>(tag) }
-
-
-
-fun <A, T : Any> Lazy<(A) -> T>.toLazyProvider(arg: A): Lazy<() -> T> = lazy { { value(arg) } }
-
-@JvmName("toLazyNullableProvider")
-fun <A, T : Any> Lazy<((A) -> T)?>.toLazyProvider(arg: A): Lazy<(() -> T)?> = lazy { val factory = value ; if (factory != null) return@lazy { factory(arg) } else return@lazy null }
-
-fun <A, T : Any> Lazy<(A) -> T>.toLazyInstance(arg: A): Lazy<T> = lazy { value(arg) }
-
-@JvmName("toLazyNullableInstance")
-fun <A, T : Any> Lazy<((A) -> T)?>.toLazyInstance(arg: A): Lazy<T?> = lazy { val factory = value ; if (factory != null) factory(arg) else null }
+@JvmName("toNullableInstance")
+fun <A, T : Any> Lazy<((A) -> T)?>.toInstance(arg: A): Lazy<T?> = lazy { val factory = value ; if (factory != null) factory(arg) else null }
