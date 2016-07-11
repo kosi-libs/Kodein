@@ -1,6 +1,5 @@
 package com.github.salomonbrys.kodein.android
 
-import android.app.Activity
 import android.app.Dialog
 import android.app.Fragment
 import android.content.AbstractThreadedSyncAdapter
@@ -8,23 +7,6 @@ import android.content.Context
 import android.content.Loader
 import android.view.View
 import com.github.salomonbrys.kodein.*
-
-
-
-//class TestActivity : Activity(), KodeinAware {
-//
-//    override val kodein by kotlin.lazy { appKodein() }
-//
-//    val test: String by lazy.instance()
-//}
-
-class TestActivity : Activity() {
-
-    val kodein = lazyKodein { appKodein() }
-
-    val test: String by kodein.instance()
-}
-
 
 
 val Context.appKodein: () -> Kodein get() = { (applicationContext as KodeinAware).kodein }

@@ -40,7 +40,7 @@ interface KodeinInjectedBase {
 /**
  * Gets a lazy factory for the given type, tag and argument type.
  *
- * The returned  should not be accessed before calling [KodeinInjectedBase.inject].
+ * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
@@ -53,7 +53,7 @@ interface KodeinInjectedBase {
 inline fun <reified A, reified T : Any> KodeinInjectedBase.factory(tag: Any? = null): InjectedProperty<(A) -> T> = injector.typed.factory(typeToken<A>(), typeToken<T>(), tag)
 
 /**
- * Gets a lazy factory for the given type, tag and argument type, or null if none was found
+ * Gets a lazy factory for the given type, tag and argument type, or null if none is found
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
@@ -84,7 +84,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.factoryOrNull(tag: An
 inline fun <reified T : Any> KodeinInjectedBase.provider(tag: Any? = null): InjectedProperty<() -> T> = injector.typed.provider(typeToken<T>(), tag)
 
 /**
- * Gets a lazy provider for the given type and tag, or null if none was found.
+ * Gets a lazy provider for the given type and tag, or null if none is found.
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
@@ -164,7 +164,7 @@ class CurriedInjectorFactory<A>(val injector: KodeinInjector, val arg: A, val ar
     inline fun <reified T : Any> provider(tag: Any? = null): Lazy<() -> T> = injector.typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
 
     /**
-     * Gets a lazy curried provider of [T] for the given tag from a factory with an [A] argument, or null if none was found.
+     * Gets a lazy curried provider of [T] for the given tag from a factory with an [A] argument, or null if none is found.
      *
      * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
      *
@@ -189,7 +189,7 @@ class CurriedInjectorFactory<A>(val injector: KodeinInjector, val arg: A, val ar
     inline fun <reified T : Any> instance(tag: Any? = null): Lazy<T> = injector.typed.factory(argType, typeToken<T>(), tag).toInstance(arg)
 
     /**
-     * Gets a lazy instance of [T] for the given tag from a factory with an [A] argument, or null if none was found.
+     * Gets a lazy instance of [T] for the given tag from a factory with an [A] argument, or null if none is found.
      *
      * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
      *
