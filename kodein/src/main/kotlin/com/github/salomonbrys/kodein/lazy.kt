@@ -104,7 +104,7 @@ inline fun <reified T : Any> LazyKodeinAwareBase.instanceOrNull(tag: Any? = null
  * @property arg The argument to provide to the factory when retrieving values.
  * @property argType The type of argument that the factory takes.
  */
-class CurriedLazyKodeinFactory<A>(val kodein: () -> Kodein, val arg: A, val argType: TypeToken<A>) {
+class CurriedLazyKodeinFactory<A>(val kodein: () -> Kodein, val arg: () -> A, val argType: TypeToken<A>) {
 
     /**
      * Gets a lazy provider of [T] for the given tag from a curried factory with an [A] argument.
@@ -154,10 +154,20 @@ class CurriedLazyKodeinFactory<A>(val kodein: () -> Kodein, val arg: A, val argT
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
+ * @param arg A function that provides the argument that will be passed to the factory.
+ * @return An object from which you can get an instance or a provider.
+ */
+inline fun <reified A> LazyKodeinAwareBase.with(noinline arg: () -> A): CurriedLazyKodeinFactory<A> = CurriedLazyKodeinFactory(kodein, arg, typeToken())
+
+/**
+ * Allows to get a lazy provider or instance from a curried factory with an [A] argument.
+ *
+ * @param A The type of argument the factory takes.
+ * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
  * @param arg The argument that will be passed to the factory.
  * @return An object from which you can get an instance or a provider.
  */
-inline fun <reified A> LazyKodeinAwareBase.with(arg: A): CurriedLazyKodeinFactory<A> = CurriedLazyKodeinFactory(kodein, arg, typeToken())
+inline fun <reified A> LazyKodeinAwareBase.with(arg: A): CurriedLazyKodeinFactory<A> = with { arg }
 
 
 
@@ -174,10 +184,10 @@ interface LazyKodeinAware : LazyKodeinAwareBase
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver The factory to curry.
- * @param arg The argument that will be passed to the factory.
+ * @param arg A function that provides the argument that will be passed to the factory.
  * @return A property that yields a provider of [T].
  */
-fun <A, T : Any> Lazy<(A) -> T>.toProvider(arg: A): Lazy<() -> T> = lazy { { value(arg) } }
+fun <A, T : Any> Lazy<(A) -> T>.toProvider(arg: () -> A): Lazy<() -> T> = lazy { { value(arg()) } }
 
 /**
  * Transforms a lazy nullable factory property into a lazy nullable provider property by currying the factory argument.
@@ -185,11 +195,11 @@ fun <A, T : Any> Lazy<(A) -> T>.toProvider(arg: A): Lazy<() -> T> = lazy { { val
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver The factory to curry.
- * @param arg The argument that will be passed to the factory.
+ * @param arg A function that provides the argument that will be passed to the factory.
  * @return A property that yields a provider of [T], or null if no factory was found.
  */
 @JvmName("toNullableProvider")
-fun <A, T : Any> Lazy<((A) -> T)?>.toProvider(arg: A): Lazy<(() -> T)?> = lazy { val factory = value ; if (factory != null) return@lazy { factory(arg) } else return@lazy null }
+fun <A, T : Any> Lazy<((A) -> T)?>.toProvider(arg: () -> A): Lazy<(() -> T)?> = lazy { val factory = value ; if (factory != null) return@lazy { factory(arg()) } else return@lazy null }
 
 /**
  * Transforms a lazy factory property into a lazy instance property by currying the factory argument.
@@ -197,10 +207,10 @@ fun <A, T : Any> Lazy<((A) -> T)?>.toProvider(arg: A): Lazy<(() -> T)?> = lazy {
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver The factory to curry.
- * @param arg The argument that will be passed to the factory.
+ * @param arg A function that provides the argument that will be passed to the factory.
  * @return A property that yields an instance of [T].
  */
-fun <A, T : Any> Lazy<(A) -> T>.toInstance(arg: A): Lazy<T> = lazy { value(arg) }
+fun <A, T : Any> Lazy<(A) -> T>.toInstance(arg: () -> A): Lazy<T> = lazy { value(arg()) }
 
 /**
  * Transforms a lazy nullable factory property into a lazy nullable instance property by currying the factory argument.
@@ -208,8 +218,8 @@ fun <A, T : Any> Lazy<(A) -> T>.toInstance(arg: A): Lazy<T> = lazy { value(arg) 
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver The factory to curry.
- * @param arg The argument that will be passed to the factory.
+ * @param arg A function that provides the argument that will be passed to the factory.
  * @return A property that yields an instance of [T], or null if no factory was found.
  */
 @JvmName("toNullableInstance")
-fun <A, T : Any> Lazy<((A) -> T)?>.toInstance(arg: A): Lazy<T?> = lazy { val factory = value ; if (factory != null) factory(arg) else null }
+fun <A, T : Any> Lazy<((A) -> T)?>.toInstance(arg: () -> A): Lazy<T?> = lazy { val factory = value ; if (factory != null) factory(arg()) else null }

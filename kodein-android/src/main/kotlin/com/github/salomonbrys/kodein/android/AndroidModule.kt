@@ -33,6 +33,19 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.factory
 import java.io.File
 
+/**
+ * A module that binds a lot of services for Android.
+ *
+ * With that, you can easily retrieve Android's services:
+ *
+ * ```kotlin
+ * class MyActivity : Activity(), KodeinInjected {
+ *   override val injector = KodeinInjector()
+ *
+ *   override
+ * }
+ * ```
+ */
 val androidModule = Kodein.Module {
 
     bind<Application>() with factory { ctx: Context -> ctx.applicationContext as Application }

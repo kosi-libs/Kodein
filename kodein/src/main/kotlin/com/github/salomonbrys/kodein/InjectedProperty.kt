@@ -153,10 +153,10 @@ class InjectedNullableInstanceProperty<out T : Any>(bind: Kodein.Bind) : Injecte
  * @param A The type of argument the factory takes.
  * @param T The type of object to retrieve.
  * @receiver The injected factory to curry.
- * @param arg The argument to call the factory with when the resulting property will be injected.
+ * @param arg A function that provides the argument that will be passed to the factory.
  * @return An injected provider property that, when called, will call the receiver factory with the given argument.
  */
-fun <A, T : Any> InjectedProperty<(A) -> T>.toProvider(arg: A): Lazy<() -> T> = lazy { { value(arg) } }
+fun <A, T : Any> InjectedProperty<(A) -> T>.toProvider(arg: () -> A): Lazy<() -> T> = lazy { { value(arg()) } }
 
 /**
  * Transforms an injected nullable factory property into an injected nullable provider property by currying the factory with the given argument.
@@ -164,13 +164,13 @@ fun <A, T : Any> InjectedProperty<(A) -> T>.toProvider(arg: A): Lazy<() -> T> = 
  * @param A The type of argument the factory takes.
  * @param T The type of object to retrieve.
  * @receiver The injected factory to curry.
- * @param arg The argument to call the factory with when the resulting property will be injected.
+ * @param arg A function that provides the argument that will be passed to the factory.
  * @return An injected provider property that, when called, will call the receiver factory (if not null) with the given argument.
  */
 @JvmName("toNullableProvider")
-fun <A, T : Any> InjectedProperty<((A) -> T)?>.toProvider(arg: A): Lazy<(() -> T)?> = lazy {
+fun <A, T : Any> InjectedProperty<((A) -> T)?>.toProvider(arg: () -> A): Lazy<(() -> T)?> = lazy {
     val v = value ?: return@lazy null
-    return@lazy { v(arg) }
+    return@lazy { v(arg()) }
 }
 
 /**
@@ -179,10 +179,10 @@ fun <A, T : Any> InjectedProperty<((A) -> T)?>.toProvider(arg: A): Lazy<(() -> T
  * @param A The type of argument the factory takes.
  * @param T The type of object to retrieve.
  * @receiver The injected factory to curry.
- * @param arg The argument to call the factory with when the resulting property will be injected.
+ * @param arg A function that provides the argument that will be passed to the factory.
  * @return An injected instance property that, when injected, will call the receiver factory with the given argument.
  */
-fun <A, T : Any> InjectedProperty<(A) -> T>.toInstance(arg: A): Lazy<T> = lazy { value(arg) }
+fun <A, T : Any> InjectedProperty<(A) -> T>.toInstance(arg: () -> A): Lazy<T> = lazy { value(arg()) }
 
 /**
  * Transforms an injected factory property into an injected instance property by currying the factory with the given argument.
@@ -190,11 +190,11 @@ fun <A, T : Any> InjectedProperty<(A) -> T>.toInstance(arg: A): Lazy<T> = lazy {
  * @param A The type of argument the factory takes.
  * @param T The type of object to retrieve.
  * @receiver The injected factory to curry.
- * @param arg The argument to call the factory with when the resulting property will be injected.
+ * @param arg A function that provides the argument that will be passed to the factory.
  * @return An injected instance property that, when injected, will call the receiver factory with the given argument.
  */
 @JvmName("toNullableInstance")
-fun <A, T : Any> InjectedProperty<((A) -> T)?>.toInstance(arg: A): Lazy<T?> = lazy {
+fun <A, T : Any> InjectedProperty<((A) -> T)?>.toInstance(arg: () -> A): Lazy<T?> = lazy {
     val v = value ?: return@lazy null
-    return@lazy v(arg)
+    return@lazy v(arg())
 }

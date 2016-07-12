@@ -129,7 +129,7 @@ abstract class AScoped<in A, out C, out T : Any>(
 
 
 /**
- * Concrete scoped singleton factory, effectively a `factory { Scope -> Type }`.
+ * Concrete scoped singleton factory, effectively a `factory { Scope -> T }`.
  *
  * @param C The scope context type.
  * @param T The singleton type.
@@ -148,7 +148,7 @@ class CScopedSingleton<C, out T : Any>(contextType: Type, createdType: Type, pri
 }
 
 /**
- * Creates a scoped singleton factory, effectively a `factory { Scope -> Type }`.
+ * Creates a scoped singleton factory, effectively a `factory { Scope -> T }`.
  *
  * @param C The scope context type.
  * @param T The singleton type.
@@ -162,7 +162,7 @@ inline fun <reified C, reified T : Any> Kodein.Builder.scopedSingleton(scope: Sc
 
 
 /**
- * Concrete auto-scoped singleton provider, effectively a `provider { -> Type }`.
+ * Concrete auto-scoped singleton provider, effectively a `provider { -> T }`.
  *
  * @param C The scope context type.
  * @param T The singleton type.
@@ -180,7 +180,7 @@ class CAutoScopedSingleton<out C, out T : Any>(createdType: Type, private val _s
 }
 
 /**
- * Creates an auto-scoped singleton provider, effectively a `provider { -> Type }`.
+ * Creates an auto-scoped singleton provider, effectively a `provider { -> T }`.
  *
  * @param C The scope context type.
  * @param T The singleton type.

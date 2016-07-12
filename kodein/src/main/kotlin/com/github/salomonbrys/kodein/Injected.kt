@@ -145,10 +145,10 @@ fun KodeinInjectedBase.kodein(): Lazy<Kodein> = injector.kodein()
  *
  * @param A The type of argument that the factory takes.
  * @property injector The injector to use for injections.
- * @property arg The argument to provide to the factory when retrieving values.
+ * @property arg A function that provides the argument that will be passed to the factory.
  * @property argType The type of argument that the factory takes.
  */
-class CurriedInjectorFactory<A>(val injector: KodeinInjector, val arg: A, val argType: TypeToken<A>) {
+class CurriedInjectorFactory<A>(val injector: KodeinInjector, val arg: () -> A, val argType: TypeToken<A>) {
 
     /**
      * Gets a lazy curried provider of [T] for the given tag from a factory with an [A] argument.
@@ -207,10 +207,20 @@ class CurriedInjectorFactory<A>(val injector: KodeinInjector, val arg: A, val ar
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
+ * @param arg A function that provides the argument that will be passed to the factory.
+ * @return An object from which you can inject an instance or a provider.
+ */
+inline fun <reified A> KodeinInjectedBase.with(noinline arg: () -> A) = CurriedInjectorFactory(injector, arg, typeToken<A>())
+
+/**
+ * Allows to inject a provider or an instance from a curried factory with an [A] argument.
+ *
+ * @param A The type of argument the factory takes.
+ * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
  * @param arg The argument that will be passed to the factory.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified A> KodeinInjectedBase.with(arg: A) = CurriedInjectorFactory(injector, arg, typeToken<A>())
+inline fun <reified A> KodeinInjectedBase.with(arg: A) = with { arg }
 
 
 

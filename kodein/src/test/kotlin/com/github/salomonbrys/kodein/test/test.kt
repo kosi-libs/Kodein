@@ -55,7 +55,7 @@ class KodeinTests : TestCase() {
 
         val kodein = Kodein { bind() from factory { name: String -> Person(name) } }
 
-        val p = kodein.factory<String, Person>().toProvider("Salomon")
+        val p = kodein.factory<String, Person>().toProvider { "Salomon" }
 
         assertEquals("Salomon", p().name)
     }

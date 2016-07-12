@@ -428,7 +428,7 @@ interface Kodein : KodeinAwareBase {
  * @param A The type of argument the factory takes.
  * @param T The type of object to retrieve.
  * @receiver The factory to curry.
- * @param arg The argument to call the factory with when the resulting function will be called.
+ * @param arg A function that provides the argument that will be passed to the factory.
  * @return A provider function that, when called, will call the receiver factory with the given argument.
  */
-fun <A, T : Any> ((A) -> T).toProvider(arg: A): () -> T = { invoke(arg) }
+fun <A, T : Any> ((A) -> T).toProvider(arg: () -> A): () -> T = { invoke(arg()) }
