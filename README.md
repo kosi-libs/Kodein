@@ -59,7 +59,7 @@ class Controller(private val kodein: Kodein) {
 Install
 -------
 
-Maven:
+### With Maven
 
 ```
 <dependency>
@@ -69,18 +69,25 @@ Maven:
 </dependency>
 ```
 
-Gradle:
+### With Gradle
 
 ```
 compile 'com.github.salomonbrys.kodein:kodein:2.8.0'
 ```
 
-Android:
+### For Android
 
 ```
 compile 'com.github.salomonbrys.kodein:kodein-android:2.8.0'
 ```
 
+### Using Proguard
+
+If you are using Proguard, you need to add the following line to your proguard configuration file:
+
+```
+-keepattributes Signature
+```
 
 
 Table Of Contents
@@ -89,6 +96,10 @@ Table Of Contents
   * [KOtlin DEpendency INjection](#kotlin-dependency-injection)
     * [Example](#example)
     * [Install](#install)
+      * [With Maven](#with-maven)
+      * [With Gradle](#wit-gradle)
+      * [For Android](#for-android)
+      * [Using Proguard](#using-proguard)
     * [Table Of Contents](#table-of-contents)
   * [Bindings: Declaring dependencies](#bindings-declaring-dependencies)
       * [Factory binding](#factory-binding)
