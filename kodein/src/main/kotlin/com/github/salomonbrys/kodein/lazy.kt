@@ -35,7 +35,7 @@ class LazyKodein(k: Lazy<Kodein>) : Lazy<Kodein> by k, () -> Kodein, LazyKodeinA
  *
  * @param f The function to get a Kodein, guaranteed to be called only once.
  */
-fun lazyKodein(f: () -> Kodein) = LazyKodein(lazy(f))
+fun lazyKodein(f: Kodein.Builder.() -> Unit) = LazyKodein(lazy { Kodein(init = f) })
 
 
 

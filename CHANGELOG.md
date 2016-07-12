@@ -1,4 +1,34 @@
 
+#### 3.0.0-beta5 (12-07-2016)
+ - FEATURES
+   * Kodein's source code & API is now [fully documented](https://salomonbrys.github.io/Kodein/kodein-dokka/kodein/com.github.salomonbrys.kodein/index.html)!
+   * You can noew bind a `Kodein.Bind` directly with `container.bind(bind)`.
+   * `lazyKodein {...}` now returns a `LazyKodein` object, which can be used either as a lazy property or to inject lazy
+     properties.
+   * You can use `with(() -> A)` instead of `with(A)` for currying if you don't have access yet to the argument.
+
+ - BREAKING CHANGES
+   * `instanceForFactory` and friends, which were not documented, are removed.
+   * `.toProvider(A)` is replaced by `.toProvider(() -> A)`. You can easily call it `.toProvider { arg }`. This is
+     because, sometimes, you don't have access to the parameter when you are declaring the injection (for example, in
+     Android, a Fragment don't have access to a context Activity before being attached).
+   * Every factory currying should only use `with`.
+   * Constant bindings are now resolved using compile time type. To use the real type of the object (not really
+     recommended), use `typed.constant("tag").with(value, value.javaClass)`.
+
+ - BETA FEATURE CHANGES
+   * `instanceForClass` and friends are replaced by `withClass` and friends.
+   * `T.withClass(Kodein)` is replaced by `Kodein.withClassOf(T)`.
+   * Scopes do not get the key to retrieve the registry.
+   * Android's `T.withContext` is replaced by `withContext(T)`. This is because of [a Kotlin's bug](https://youtrack.jetbrains.com/issue/KT-9630).
+
+ - INTERNAL
+   * `KodeinParameterizedType` is renamed `KodeinWrappedType`.
+   * GenericArrayTypes are now also protected by `KodeinWrappedType`.
+   * Better `hashCode` and `equals` in KodeinWrappedType.
+   * `TKodein` is now a class (not an interface), which allows the use of `@JvmOverloads`.
+
+
 #### 3.0.0-beta4 (03-07-2016)
  - FEATURES
    * `*OrNull` functions everywhere

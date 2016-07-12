@@ -419,7 +419,7 @@ class KodeinTests : TestCase() {
             bind<Person>("factory") with factory { name: String -> Person(name) }
         }
 
-        val lazied = PersonLazy(lazyKodein { kodein })
+        val lazied = PersonLazy(LazyKodein(lazy { kodein }))
         assertNotSame(lazied.newPerson(), lazied.newPerson())
         assertEquals("Salomon", lazied.salomon.name)
         assertSame(lazied.salomon, lazied.salomon)
@@ -439,7 +439,7 @@ class KodeinTests : TestCase() {
             import(personModule)
         }
 
-        val lazied = PersonLazy(lazyKodein { kodein })
+        val lazied = PersonLazy(LazyKodein(lazy { kodein }))
         assertNotSame(lazied.newPerson(), lazied.newPerson())
         assertEquals("Salomon", lazied.salomon.name)
         assertSame(lazied.salomon, lazied.salomon)

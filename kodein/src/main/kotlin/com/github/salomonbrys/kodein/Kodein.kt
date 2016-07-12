@@ -1,6 +1,5 @@
 package com.github.salomonbrys.kodein
 
-import com.github.salomonbrys.kodein.Kodein.Builder.ConstantBinder
 import com.github.salomonbrys.kodein.Kodein.Builder.TBuilder
 import com.github.salomonbrys.kodein.internal.KodeinImpl
 import java.lang.reflect.Type
@@ -246,16 +245,6 @@ interface Kodein : KodeinAwareBase {
                  * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
                  */
                 fun <T> with(value: T, valueType: TypeToken<T>): Unit = with(value as Any, valueType.type)
-
-                /**
-                 * Binds the previously given tag to the given instance.
-                 *
-                 * The type bound will be the value's javaClass.
-                 *
-                 * @param value The instance to bind.
-                 * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
-                 */
-                fun with(value: Any): Unit = with(value, value.javaClass)
             }
 
             /**
