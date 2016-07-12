@@ -1,9 +1,11 @@
 
+apply plugin: 'org.jetbrains.dokka'
+
 archivesBaseName = "kodein"
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
-    from javadoc
+    from dokka
 }
 
 task sourcesJar(type: Jar) {
@@ -25,6 +27,18 @@ dependencies {
 
     testCompile "junit:junit:$junit_version"
 }
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+
+    linkMapping {
+        dir = "src/main/kotlin"
+        url = "https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin"
+        suffix = "#L"
+    }
+}
+
 
 if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {
     uploadArchives {

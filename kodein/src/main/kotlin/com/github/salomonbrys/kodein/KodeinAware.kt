@@ -16,7 +16,7 @@ interface KodeinAwareBase {
 }
 
 /**
- * Gets a factory of [T] for the given argument type, return type and tag.
+ * Gets a factory of `T` for the given argument type, return type and tag.
  *
  * Whether this factory will re-create a new instance at each call or not depends on the binding scope.
  *
@@ -31,7 +31,7 @@ interface KodeinAwareBase {
 inline fun <reified A, reified T : Any> KodeinAwareBase.factory(tag: Any? = null): (A) -> T = kodein.typed.factory(typeToken<A>(), typeToken<T>(), tag)
 
 /**
- * Gets a factory of [T] for the given argument type, return type and tag, or nul if none is found.
+ * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
  *
  * Whether this factory will re-create a new instance at each call or not depends on the binding scope.
  *
@@ -45,7 +45,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factory(tag: Any? = null
 inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? = null): ((A) -> T)? = kodein.typed.factoryOrNull(typeToken<A>(), typeToken<T>(), tag)
 
 /**
- * Gets a provider of [T] for the given type and tag.
+ * Gets a provider of `T` for the given type and tag.
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
@@ -59,7 +59,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? 
 inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null): () -> T = kodein.typed.provider(typeToken<T>(), tag)
 
 /**
- * Gets a provider of [T] for the given type and tag, or null if none is found.
+ * Gets a provider of `T` for the given type and tag, or null if none is found.
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
@@ -73,7 +73,7 @@ inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null): () -> T
 inline fun <reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null): (() -> T)? = kodein.typed.providerOrNull(typeToken<T>(), tag)
 
 /**
- * Gets an instance of [T] for the given type and tag.
+ * Gets an instance of `T` for the given type and tag.
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
@@ -87,7 +87,7 @@ inline fun <reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null): (
 inline fun <reified T : Any> KodeinAwareBase.instance(tag: Any? = null): T = kodein.typed.instance(typeToken<T>(), tag)
 
 /**
- * Gets an instance of [T] for the given type and tag, or null if none is found.
+ * Gets an instance of `T` for the given type and tag, or null if none is found.
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
@@ -110,7 +110,7 @@ inline fun <reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null): T
 class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType: TypeToken<A>) {
 
     /**
-     * Gets a provider of [T] for the given tag from a curried factory with an [A] argument.
+     * Gets a provider of `T` for the given tag from a curried factory with an `A` argument.
      *
      * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
      *
@@ -123,7 +123,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType:
     inline fun <reified T : Any> provider(tag: Any? = null): () -> T = kodein.typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
 
     /**
-     * Gets a provider of [T] for the given tag from a curried factory with an [A] argument, or null if none is found.
+     * Gets a provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
      *
      * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
      *
@@ -135,7 +135,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType:
     inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = kodein.typed.factoryOrNull(argType, typeToken<T>(), tag)?.toProvider(arg)
 
     /**
-     * Gets an instance of [T] for the given tag from a curried factory with an [A] argument.
+     * Gets an instance of `T` for the given tag from a curried factory with an `A` argument.
      *
      * Whether the returned object is a new instance at each call or not depends on the binding scope.
      *
@@ -148,7 +148,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType:
     inline fun <reified T : Any> instance(tag: Any? = null): T = kodein.typed.factory(argType, typeToken<T>(), tag).invoke(arg())
 
     /**
-     * Gets an instance of [T] for the given tag from a curried factory with an [A] argument, or null if none is found.
+     * Gets an instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
      *
      * Whether the returned object is a new instance at each call or not depends on the binding scope.
      *
@@ -161,7 +161,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType:
 }
 
 /**
- * Allows to get a provider or an instance from a curried factory with an [A] argument.
+ * Allows to get a provider or an instance from a curried factory with an `A` argument.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -171,7 +171,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType:
 inline fun <reified A> KodeinAwareBase.with(noinline arg: () -> A): CurriedKodeinFactory<A> = CurriedKodeinFactory(kodein, arg, typeToken())
 
 /**
- * Allows to get a provider or an instance from a curried factory with an [A] argument.
+ * Allows to get a provider or an instance from a curried factory with an `A` argument.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.

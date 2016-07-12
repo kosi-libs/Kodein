@@ -11,7 +11,7 @@ import java.util.*
  * Contains almost nothing because the Kodein object itself contains very few logic.
  * Everything is delegated wither to [typed] or to [container].
  */
-class KodeinImpl internal constructor(override val container: KodeinContainer) : Kodein {
+internal class KodeinImpl internal constructor(override val container: KodeinContainer) : Kodein {
 
     /**
      * Creates a Kodein object with a [Kodein.Builder]'s internal.

@@ -68,7 +68,7 @@ class ScopeRegistry {
 }
 
 /**
- * An object capable of providing a [ScopeRegistry] for a given [C] context.
+ * An object capable of providing a [ScopeRegistry] for a given `C` context.
  *
  * @param C The type of the context that will be used to retrieve the registry.
  */
@@ -92,7 +92,7 @@ interface AutoScope<C> : Scope<C> {
     /**
      * Get the context according to the static environment.
      *
-     * @return The context to use to retrieve a registry with [getRegistry].
+     * @return The context to use to retrieve a registry with [Scope.getRegistry].
      */
     fun getContext() : C
 }
@@ -100,7 +100,7 @@ interface AutoScope<C> : Scope<C> {
 /**
  * A factory to bind a type and tag into a [Scope] or an [AutoScope].
  *
- * @param A The type of argument that is needed to get a [C] context.
+ * @param A The type of argument that is needed to get a `C` context.
  * @param C The type of context that will be used to get a [ScopeRegistry].
  * @param T The singleton type.
  * @param _creator A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
@@ -141,7 +141,7 @@ abstract class AScoped<in A, out C, out T : Any>(
 class CScopedSingleton<C, out T : Any>(contextType: Type, createdType: Type, private val _scope: Scope<C>, creator: Kodein.(C) -> T)
 : AScoped<C, C, T>(contextType, createdType, "scopedSingleton", creator)
 {
-    override fun _getContextAndRegistry(arg: C) = arg to _scope.getRegistry(arg)
+    override fun _getContextAndRegistry(arg: C): Pair<C, ScopeRegistry> = arg to _scope.getRegistry(arg)
 
     override val description: String get() = "$factoryName(${_scope.javaClass.simpleDispString}) { ${argType.simpleDispString} -> ${createdType.simpleDispString} } "
     override val fullDescription: String get() = "$factoryName(${_scope.javaClass.fullDispString}) { ${argType.fullDispString} -> ${createdType.fullDispString} } "

@@ -218,7 +218,7 @@ interface KodeinContainer {
          * Left part of the bind-binding syntax (`bind(Kodein.Bind(type, tag))`).
          *
          * @property bind The type and tag object that will compose the key to bind.
-         * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
+         * @property overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          */
         inner class BindBinder internal constructor(val bind: Kodein.Bind, val overrides: Boolean?) {
             init {
@@ -293,7 +293,7 @@ interface KodeinContainer {
         }
 
         /**
-         * Creates a sub builder that will register its bindings to the same [map][_map].
+         * Creates a sub builder that will register its bindings to the same map.
          *
          * @param allowOverride Whether or not the bindings defined by this builder or its imports are allowed to **explicitly** override existing bindings.
          * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.

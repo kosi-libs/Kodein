@@ -34,7 +34,7 @@ private val _needGATWrapper: Boolean by lazy {
  */
 interface TypeToken<T> {
     /**
-     * This type **should** reflect the type [T].
+     * This type **should** reflect the type `T`.
      */
     val type: Type
 }
@@ -80,7 +80,7 @@ abstract class TypeReference<T> protected constructor() : TypeToken<T> {
  * Function used to get a generic type at runtime.
  *
  * @param T The type to get.
- * @return The type object representing [T].
+ * @return The type object representing `T`.
  */
 inline fun <reified T> typeToken(): TypeToken<T> = (object : TypeReference<T>() {})
 
@@ -89,7 +89,7 @@ inline fun <reified T> typeToken(): TypeToken<T> = (object : TypeReference<T>() 
  * This is because some JVM implementation (such as Android 4.4 and earlier) does NOT implement hashcode / equals for
  * ParameterizedType (I know...).
  *
- * @param type The type object to wrap.
+ * @property type The type object to wrap.
  */
 class KodeinWrappedType(val type: Type) : Type {
 
@@ -98,12 +98,20 @@ class KodeinWrappedType(val type: Type) : Type {
      */
     private var _hashCode: Int = 0
 
+    /**
+     * Computes the hash code.
+     *
+     * Will be computed only once.
+     */
     override fun hashCode(): Int {
         if (_hashCode == 0)
             _hashCode = Func.HashCode(type)
         return _hashCode
     }
 
+    /**
+     * Check recursively that two types are equal.
+     */
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Type)
             return false
@@ -114,8 +122,11 @@ class KodeinWrappedType(val type: Type) : Type {
         return Func.Equals(type, other)
     }
 
+    /**
+     * Stringify.
+     */
     override fun toString(): String {
-        return "ParameterizedType $type"
+        return "KodeinWrappedType{$type}"
     }
 
     /**

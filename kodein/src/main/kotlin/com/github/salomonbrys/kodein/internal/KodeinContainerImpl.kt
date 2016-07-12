@@ -13,7 +13,7 @@ import com.github.salomonbrys.kodein.KodeinContainer
  * @property _map The map containing all bindings.
  * @property _node See [KodeinContainerImpl.Node]
  */
-class KodeinContainerImpl private constructor(private val _map: Map<Kodein.Key, Factory<*, Any>>, private val _node: Node? = null) : KodeinContainer {
+internal class KodeinContainerImpl private constructor(private val _map: Map<Kodein.Key, Factory<*, Any>>, private val _node: Node? = null) : KodeinContainer {
 
     /**
      * Class used to check for recursive dependencies, represents a node in the dependency tree.

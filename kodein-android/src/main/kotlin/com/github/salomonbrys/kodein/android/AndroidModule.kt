@@ -42,7 +42,7 @@ import java.io.File
  * class MyActivity : Activity(), KodeinInjected {
  *   override val injector = KodeinInjector()
  *
- *   override
+ *   override val inflator: LayoutInflator by withContext(this).instance()
  * }
  * ```
  */

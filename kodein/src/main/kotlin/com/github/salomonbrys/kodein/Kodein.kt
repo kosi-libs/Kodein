@@ -66,6 +66,11 @@ interface Kodein : KodeinAwareBase {
          */
         private var _hashCode: Int = 0
 
+        /**
+         * Computes the hash code.
+         *
+         * Will be computed only once.
+         */
         override fun hashCode(): Int {
             if (_hashCode == 0) {
                 _hashCode = type.hashCode()
@@ -74,6 +79,9 @@ interface Kodein : KodeinAwareBase {
             return _hashCode
         }
 
+        /**
+         * @return The [description]
+         */
         override fun toString() = description
 
         /**
@@ -91,7 +99,7 @@ interface Kodein : KodeinAwareBase {
      * In Kodein, each [Factory] is bound to a Key. A Key holds all informations necessary to retrieve a factory (and therefore an instance).
      *
      * @property bind The left part of the bind declaration.
-     * @property argType The argument type of the associated factory (Will be [Unit] for a provider).
+     * @property argType The argument type of the associated factory (Will be `Unit` for a provider).
      */
     @Suppress("EqualsOrHashCode")
     data class Key(
@@ -104,6 +112,11 @@ interface Kodein : KodeinAwareBase {
          */
         private var _hashCode: Int = 0
 
+        /**
+         * Computes the hash code.
+         *
+         * Will be computed only once.
+         */
         override fun hashCode(): Int {
             if (_hashCode == 0) {
                 _hashCode = bind.hashCode()
@@ -112,6 +125,9 @@ interface Kodein : KodeinAwareBase {
             return _hashCode
         }
 
+        /**
+         * @return The [description]
+         */
         override fun toString() = description
 
         /**
@@ -156,7 +172,7 @@ interface Kodein : KodeinAwareBase {
     class Builder internal constructor(val container: KodeinContainer.Builder, internal val _callbacks: MutableList<Kodein.() -> Unit>, init: Builder.() -> Unit) {
 
         /**
-         * Class holding all typed API (meaning the API where you provide [Type], [TypeToken] or [Class] objects).
+         * Class holding all typed API (meaning the API where you provide [Type], [TypeToken] or `Class` objects).
          */
         inner class TBuilder {
 
@@ -283,19 +299,18 @@ interface Kodein : KodeinAwareBase {
              */
             fun bind(tag: Any? = null, overrides: Boolean? = null): DirectBinder = DirectBinder(tag, overrides)
 
-            @Suppress("KDocUnresolvedReference")
             /**
              * Starts a constant binding.
              *
              * @param tag The tag to bind.
              * @param overrides Whether this bind **must** or **must not** override an existing binding.
-             * @return The binder: call [ConstantBinder.with]) on it to finish the binding syntax and register the binding.
+             * @return The binder: call `with` on it to finish the binding syntax and register the binding.
              */
             fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder = ConstantBinder(tag, overrides)
         }
 
         /**
-         * Allows to access all typed API (meaning the API where you provide [Type], [TypeToken] or [Class] objects).
+         * Allows to access all typed API (meaning the API where you provide [Type], [TypeToken] or `Class` objects).
          */
         val typed = TBuilder()
 
@@ -399,7 +414,7 @@ interface Kodein : KodeinAwareBase {
     class Module(val allowSilentOverride: Boolean = false, val init: Kodein.Builder.() -> Unit)
 
     /**
-     * Allows to access all typed API (meaning the API where you provide [Type], [TypeToken] or [Class] objects).
+     * Allows to access all typed API (meaning the API where you provide `Type`, `TypeToken` or `Class` objects).
      */
     val typed: TKodein
 

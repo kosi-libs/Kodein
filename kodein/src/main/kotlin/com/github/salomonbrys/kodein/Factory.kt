@@ -14,7 +14,7 @@ import java.lang.reflect.Type
 interface Factory<in A, out T : Any> {
 
     /**
-     * Get an instance of type [T] function argument [A].
+     * Get an instance of type `T` function argument `A`.
      *
      * Whether it's a new instance or not entirely depends on implementation.
      *
@@ -54,7 +54,7 @@ interface Factory<in A, out T : Any> {
 /**
  * Factory base.
  *
- * Enables sub-classes to implement only [getInstance].
+ * Enables sub-classes to implement only [Factory.getInstance].
  *
  * @param A The factory argument type.
  * @param T The created type.
@@ -68,22 +68,32 @@ abstract class AFactory<in A, out T : Any>(override val factoryName: String, ove
 /**
  * Provider base.
  *
- * A provider is like a [AFactory], but without argument (the [Factory] is registered with a [Unit] argument).
+ * A provider is like a [AFactory], but without argument (the [Factory] is registered with a `Unit` argument).
  *
  * @param T The created type.
  */
 abstract class AProvider<out T : Any>(override val factoryName: String, override val createdType: Type) : Factory<Unit, T> {
 
-    override fun getInstance(kodein: Kodein, key: Kodein.Key, arg: Unit) = getInstance(kodein, key)
-
     /**
-     * Get an instance of type [T].
+     * Get an instance of type `T`.
      *
      * Whether it's a new instance or not entirely depends on implementation.
      *
      * @param kodein: A Kodein instance to use for transitive dependencies.
      * @param key: The key of the instance to get.
-     * @return The instance of the requested type.
+     * @param arg: A Unit argument that is ignored (a provider does not take arguments).
+     * @return an instance of `T`.
+     */
+    override fun getInstance(kodein: Kodein, key: Kodein.Key, arg: Unit): T = getInstance(kodein, key)
+
+    /**
+     * Get an instance of type `T`.
+     *
+     * Whether it's a new instance or not entirely depends on implementation.
+     *
+     * @param kodein: A Kodein instance to use for transitive dependencies.
+     * @param key: The key of the instance to get.
+     * @return an instance of `T`.
      */
     abstract fun getInstance(kodein: Kodein, key: Kodein.Key): T
 

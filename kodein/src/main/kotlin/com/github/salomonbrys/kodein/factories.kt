@@ -133,7 +133,7 @@ inline fun <reified T : Any> Kodein.Builder.eagerSingleton(noinline creator: Kod
  *
  * @param T The created type.
  * @param createdType The type of the created objects, *used for debug print only*.
- * @param creator The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance.
+ * @property creator The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance.
  */
 class CThreadSingleton<out T : Any>(createdType: Type, val creator: Kodein.() -> T) : AProvider<T>("threadSingleton", createdType) {
 

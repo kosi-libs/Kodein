@@ -1,18 +1,32 @@
 package com.github.salomonbrys.kodein
 
-
+/**
+ * Base [LazyKodeinAware] interface.
+ *
+ * It is separate from [LazyKodeinAware] because [LazyKodein] implements itself [LazyKodeinAwareBase] but not [LazyKodeinAware].<br />
+ * This is because there are some extension functions to [LazyKodeinAware] that would not make sense applied to the [LazyKodein] object.<br />
+ * For example, [LazyKodeinAware.withClass], if applied to [LazyKodein], would create a very un-expected result.
+ */
 interface LazyKodeinAwareBase {
+    /**
+     * A Lazy Kodein Aware class must be within reach of a LazyKodein object.
+     */
     val kodein: LazyKodein
 }
 
 /**
- * An object that wraps a Kodein [Lazy] object and acts both as a [Lazy] property delegate & a function.
+ * An object that wraps a Kodein `Lazy` object and acts both as a `Lazy` property delegate & a function.
  *
  * @param k The lazy property delegate to wrap.
  */
 class LazyKodein(k: Lazy<Kodein>) : Lazy<Kodein> by k, () -> Kodein, LazyKodeinAwareBase {
     override val kodein: LazyKodein get() = this
 
+    /**
+     * @return The kodein object to use.
+     *
+     * Calling this for the first time will effectively construct the kodein object.
+     */
     override fun invoke(): Kodein = value
 }
 
@@ -32,7 +46,7 @@ fun lazyKodein(f: () -> Kodein) = LazyKodein(lazy(f))
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields a factory of [T].
+ * @return A lazy property that yields a factory of `T`.
  * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
@@ -45,7 +59,7 @@ inline fun <reified A, reified T : Any> LazyKodeinAwareBase.factory(tag: Any? = 
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields a factory of [T], or null if no factory was found.
+ * @return A lazy property that yields a factory of `T`, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> LazyKodeinAwareBase.factoryOrNull(tag: Any? = null) : Lazy<((A) -> T)?> = lazy { kodein().factoryOrNull<A, T>(tag) }
@@ -56,7 +70,7 @@ inline fun <reified A, reified T : Any> LazyKodeinAwareBase.factoryOrNull(tag: A
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields a provider of [T].
+ * @return A lazy property that yields a provider of `T`.
  * @throws Kodein.NotFoundException When accessing the property, if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
@@ -68,7 +82,7 @@ inline fun <reified T : Any> LazyKodeinAwareBase.provider(tag: Any? = null) : La
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields a provider of [T], or null if no provider was found.
+ * @return A lazy property that yields a provider of `T`, or null if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 inline fun <reified T : Any> LazyKodeinAwareBase.providerOrNull(tag: Any? = null) : Lazy<(() -> T)?> = lazy { kodein().providerOrNull<T>(tag) }
@@ -79,7 +93,7 @@ inline fun <reified T : Any> LazyKodeinAwareBase.providerOrNull(tag: Any? = null
  * @param T The type of object to retrieve.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields an instance of [T].
+ * @return A lazy property that yields an instance of `T`.
  * @throws Kodein.NotFoundException When accessing the property, if no provider was found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
@@ -91,7 +105,7 @@ inline fun <reified T : Any> LazyKodeinAwareBase.instance(tag: Any? = null) : La
  * @param T The type of object to retrieve.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields an instance of [T], or null if no provider is found.
+ * @return A lazy property that yields an instance of `T`, or null if no provider is found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
 inline fun <reified T : Any> LazyKodeinAwareBase.instanceOrNull(tag: Any? = null) : Lazy<T?> = lazy { kodein().instanceOrNull<T>(tag) }
@@ -107,50 +121,50 @@ inline fun <reified T : Any> LazyKodeinAwareBase.instanceOrNull(tag: Any? = null
 class CurriedLazyKodeinFactory<A>(val kodein: () -> Kodein, val arg: () -> A, val argType: TypeToken<A>) {
 
     /**
-     * Gets a lazy provider of [T] for the given tag from a curried factory with an [A] argument.
+     * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument.
      *
      * @param T The type of object to retrieve with the provider held by this property.
      * @param tag The bound tag, if any.
-     * @return A lazy property that yields a provider of [T].
+     * @return A lazy property that yields a provider of `T`.
      * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
     inline fun <reified T : Any> provider(tag: Any? = null): Lazy<() -> T> = lazy { kodein().typed.factory(argType, typeToken<T>(), tag) } .toProvider(arg)
 
     /**
-     * Gets a lazy provider of [T] for the given tag from a curried factory with an [A] argument, or null if none is found.
+     * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
      *
      * @param T The type of object to retrieve with the provider held by this property.
      * @param tag The bound tag, if any.
-     * @return A lazy property that yields a provider of [T], or null if no factory is found.
+     * @return A lazy property that yields a provider of `T`, or null if no factory is found.
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
     inline fun <reified T : Any> providerOrNull(tag: Any? = null): Lazy<(() -> T)?> = lazy { kodein().typed.factoryOrNull(argType, typeToken<T>(), tag) } .toProvider(arg)
 
     /**
-     * Gets a lazy instance of [T] for the given tag from a curried factory with an [A] argument.
+     * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument.
      *
      * @param T The type of object to retrieve.
      * @param tag The bound tag, if any.
-     * @return A lazy instance of [T].
+     * @return A lazy instance of `T`.
      * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
      * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
      */
     inline fun <reified T : Any> instance(tag: Any? = null): Lazy<T> = lazy { kodein().typed.factory(argType, typeToken<T>(), tag) } .toInstance(arg)
 
     /**
-     * Gets a lazy instance of [T] for the given tag from a curried factory with an [A] argument, or null if none is found.
+     * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
      *
      * @param T The type of object to retrieve.
      * @param tag The bound tag, if any.
-     * @return A lazy instance of [T], or null if no factory was found.
+     * @return A lazy instance of `T`, or null if no factory was found.
      * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
      */
     inline fun <reified T : Any> instanceOrNull(tag: Any? = null): Lazy<T?> = lazy { kodein().typed.factoryOrNull(argType, typeToken<T>(), tag) } .toInstance(arg)
 }
 
 /**
- * Allows to get a lazy provider or instance from a curried factory with an [A] argument.
+ * Allows to get a lazy provider or instance from a curried factory with an `A` argument.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
@@ -160,7 +174,7 @@ class CurriedLazyKodeinFactory<A>(val kodein: () -> Kodein, val arg: () -> A, va
 inline fun <reified A> LazyKodeinAwareBase.with(noinline arg: () -> A): CurriedLazyKodeinFactory<A> = CurriedLazyKodeinFactory(kodein, arg, typeToken())
 
 /**
- * Allows to get a lazy provider or instance from a curried factory with an [A] argument.
+ * Allows to get a lazy provider or instance from a curried factory with an `A` argument.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
@@ -185,7 +199,7 @@ interface LazyKodeinAware : LazyKodeinAwareBase
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver The factory to curry.
  * @param arg A function that provides the argument that will be passed to the factory.
- * @return A property that yields a provider of [T].
+ * @return A property that yields a provider of `T`.
  */
 fun <A, T : Any> Lazy<(A) -> T>.toProvider(arg: () -> A): Lazy<() -> T> = lazy { { value(arg()) } }
 
@@ -196,7 +210,7 @@ fun <A, T : Any> Lazy<(A) -> T>.toProvider(arg: () -> A): Lazy<() -> T> = lazy {
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver The factory to curry.
  * @param arg A function that provides the argument that will be passed to the factory.
- * @return A property that yields a provider of [T], or null if no factory was found.
+ * @return A property that yields a provider of `T`, or null if no factory was found.
  */
 @JvmName("toNullableProvider")
 fun <A, T : Any> Lazy<((A) -> T)?>.toProvider(arg: () -> A): Lazy<(() -> T)?> = lazy { val factory = value ; if (factory != null) return@lazy { factory(arg()) } else return@lazy null }
@@ -208,7 +222,7 @@ fun <A, T : Any> Lazy<((A) -> T)?>.toProvider(arg: () -> A): Lazy<(() -> T)?> = 
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver The factory to curry.
  * @param arg A function that provides the argument that will be passed to the factory.
- * @return A property that yields an instance of [T].
+ * @return A property that yields an instance of `T`.
  */
 fun <A, T : Any> Lazy<(A) -> T>.toInstance(arg: () -> A): Lazy<T> = lazy { value(arg()) }
 
@@ -219,7 +233,7 @@ fun <A, T : Any> Lazy<(A) -> T>.toInstance(arg: () -> A): Lazy<T> = lazy { value
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver The factory to curry.
  * @param arg A function that provides the argument that will be passed to the factory.
- * @return A property that yields an instance of [T], or null if no factory was found.
+ * @return A property that yields an instance of `T`, or null if no factory was found.
  */
 @JvmName("toNullableInstance")
 fun <A, T : Any> Lazy<((A) -> T)?>.toInstance(arg: () -> A): Lazy<T?> = lazy { val factory = value ; if (factory != null) factory(arg()) else null }

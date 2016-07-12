@@ -55,6 +55,9 @@ abstract class InjectedProperty<out T> internal constructor(val key: Kodein.Key)
      */
     fun isInjected(): Boolean = _value !== UNINITIALIZED_VALUE
 
+    /**
+     * Stringify the injected value *if it has been injected*.
+     */
     override fun toString(): String = if (isInjected()) value.toString() else "Uninjected $_type: $key."
 
     /**

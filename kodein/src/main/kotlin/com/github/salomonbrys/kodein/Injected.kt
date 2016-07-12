@@ -46,7 +46,7 @@ interface KodeinInjectedBase {
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields a factory of [T].
+ * @return A lazy property that yields a factory of `T`.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
@@ -61,7 +61,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.factory(tag: Any? = n
  * @param T The type of object to retrieve with the factory held by this property.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields either a factory of [T] or null if no factory was found.
+ * @return A lazy property that yields either a factory of `T` or null if no factory was found.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
@@ -77,7 +77,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.factoryOrNull(tag: An
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields a provider of [T].
+ * @return A lazy property that yields a provider of `T`.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
@@ -91,7 +91,7 @@ inline fun <reified T : Any> KodeinInjectedBase.provider(tag: Any? = null): Inje
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields a provider of [T] or null if no provider was found.
+ * @return A lazy property that yields a provider of `T` or null if no provider was found.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
@@ -107,7 +107,7 @@ inline fun <reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null)
  * @param T The type of object to retrieve.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields a [T].
+ * @return A lazy property that yields a `T`.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
 inline fun <reified T : Any> KodeinInjectedBase.instance(tag: Any? = null): InjectedProperty<T> = injector.typed.instance(typeToken<T>(), tag)
@@ -120,7 +120,7 @@ inline fun <reified T : Any> KodeinInjectedBase.instance(tag: Any? = null): Inje
  * @param T The type of object to retrieve.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
  * @param tag The bound tag, if any.
- * @return A lazy property that yields a [T].
+ * @return A lazy property that yields a `T`.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
 inline fun <reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null): InjectedProperty<T?> = injector.typed.instanceOrNull(typeToken<T>(), tag)
@@ -151,51 +151,51 @@ fun KodeinInjectedBase.kodein(): Lazy<Kodein> = injector.kodein()
 class CurriedInjectorFactory<A>(val injector: KodeinInjector, val arg: () -> A, val argType: TypeToken<A>) {
 
     /**
-     * Gets a lazy curried provider of [T] for the given tag from a factory with an [A] argument.
+     * Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument.
      *
      * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
      *
      * @param T The type of object to retrieve with the provider.
      * @param tag The bound tag, if any.
-     * @return A lazy property that yields a provider of [T].
+     * @return A lazy property that yields a provider of `T`.
      * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
     inline fun <reified T : Any> provider(tag: Any? = null): Lazy<() -> T> = injector.typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
 
     /**
-     * Gets a lazy curried provider of [T] for the given tag from a factory with an [A] argument, or null if none is found.
+     * Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument, or null if none is found.
      *
      * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
      *
      * @param T The type of object to retrieve with the provider.
      * @param tag The bound tag, if any.
-     * @return A lazy property that yields a provider of [T] or null if no factory was found.
+     * @return A lazy property that yields a provider of `T` or null if no factory was found.
      * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
     inline fun <reified T : Any> providerOrNull(tag: Any? = null): Lazy<(() -> T)?> = injector.typed.factoryOrNull(argType, typeToken<T>(), tag).toProvider(arg)
 
     /**
-     * Gets a lazy instance of [T] for the given tag from a factory with an [A] argument.
+     * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument.
      *
      * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
      *
      * @param T The type of object to retrieve.
      * @param tag The bound tag, if any.
-     * @return A lazy property that yields a [T].
+     * @return A lazy property that yields a `T`.
      * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      */
     inline fun <reified T : Any> instance(tag: Any? = null): Lazy<T> = injector.typed.factory(argType, typeToken<T>(), tag).toInstance(arg)
 
     /**
-     * Gets a lazy instance of [T] for the given tag from a factory with an [A] argument, or null if none is found.
+     * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument, or null if none is found.
      *
      * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
      *
      * @param T The type of object to retrieve.
      * @param tag The bound tag, if any.
-     * @return A lazy property that yields a [T] or null if no factory was found.
+     * @return A lazy property that yields a `T` or null if no factory was found.
      * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      */
     inline fun <reified T : Any> instanceOrNull(tag: Any? = null): Lazy<T?> = injector.typed.factoryOrNull(argType, typeToken<T>(), tag).toInstance(arg)
@@ -203,7 +203,7 @@ class CurriedInjectorFactory<A>(val injector: KodeinInjector, val arg: () -> A, 
 
 
 /**
- * Allows to inject a provider or an instance from a curried factory with an [A] argument.
+ * Allows to inject a provider or an instance from a curried factory with an `A` argument.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -213,7 +213,7 @@ class CurriedInjectorFactory<A>(val injector: KodeinInjector, val arg: () -> A, 
 inline fun <reified A> KodeinInjectedBase.with(noinline arg: () -> A) = CurriedInjectorFactory(injector, arg, typeToken<A>())
 
 /**
- * Allows to inject a provider or an instance from a curried factory with an [A] argument.
+ * Allows to inject a provider or an instance from a curried factory with an `A` argument.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
