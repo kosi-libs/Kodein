@@ -2,6 +2,7 @@ package com.github.salomonbrys.kodein.internal
 
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinContainer
+import com.github.salomonbrys.kodein.TKodein
 import java.util.*
 
 /**
@@ -30,5 +31,5 @@ class KodeinImpl internal constructor(override val container: KodeinContainer) :
      */
     constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(Kodein.Builder(KodeinContainer.Builder(true, allowSilentOverride),ArrayList(), init))
 
-    override val typed = TKodeinImpl(container)
+    override val typed = TKodein(container)
 }

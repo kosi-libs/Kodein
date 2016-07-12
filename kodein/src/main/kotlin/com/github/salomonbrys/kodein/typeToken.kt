@@ -1,45 +1,59 @@
 package com.github.salomonbrys.kodein
 
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
-import java.lang.reflect.WildcardType
-
-private var _needPTWrapperCache: Boolean? = null
+import java.lang.reflect.*
 
 /**
- * Detectes whether KodeinParameterizedType is needed.
+ * Whether or not the running JVM needs [ParameterizedType] to be wrapped.
+ *
+ * @see KodeinWrappedType
  */
-fun _needPTWrapper(): Boolean {
-    if (_needPTWrapperCache == null)
-        _needPTWrapperCache = (object : TypeReference<List<String>>() {}).trueType != (object : TypeReference<List<String>>() {}).trueType
-    return _needPTWrapperCache!!
+private val _needPTWrapper: Boolean by lazy {
+    val t1 = (object : TypeReference<List<String>>() {}).trueType as ParameterizedType
+    val t2 = (object : TypeReference<List<String>>() {}).trueType as ParameterizedType
+    t1 != t2
 }
+//private val _needPTWrapper = true // For Tests
 
+/**
+ * Whether or not the running JVM needs [GenericArrayType] to be wrapped.
+ *
+ * @see KodeinWrappedType
+ */
+@Suppress("REDUNDANT_PROJECTION")
+private val _needGATWrapper: Boolean by lazy {
+    val t1 = (object : TypeReference<Array<List<String>>>() {}).trueType as GenericArrayType
+    val t2 = (object : TypeReference<Array<List<String>>>() {}).trueType as GenericArrayType
+    t1 != t2
+}
+//private val _needGATWrapper = true // For Tests
+
+/**
+ * An interface that contains a simple [Type] but is parameterized to enable type safety.
+ *
+ * @param T The type represented by the [type] object.
+ */
 interface TypeToken<T> {
+    /**
+     * This type **should** reflect the type [T].
+     */
     val type: Type
 }
 
 /**
- * Class used to get a generic type at runtime
+ * Class used to get a generic type at runtime.
+ *
+ * @param T The type to extract.
+ * @see typeToken
  */
 @Suppress("unused")
-abstract class TypeReference<T> : TypeToken<T> {
+abstract class TypeReference<T> protected constructor() : TypeToken<T> {
+
+    /**
+     * Generic type, unwrapped.
+     */
     val trueType: Type
 
-    private var _type: Type? = null
-
-    override val type: Type get() {
-        if (_type == null) {
-            if (trueType is ParameterizedType && _needPTWrapper())
-                _type = KodeinParameterizedType(trueType)
-            else
-                _type = trueType
-        }
-
-        return _type!!
-    }
-
-    protected constructor() {
+    init {
         val t = javaClass.genericSuperclass
 
         if (t !is ParameterizedType)
@@ -50,10 +64,23 @@ abstract class TypeReference<T> : TypeToken<T> {
 
         trueType = t.actualTypeArguments[0]
     }
+
+    override val type: Type by lazy {
+        //  TypeReference cannot create WildcardTypes nor TypeVariables
+        when {
+            trueType is Class<*> -> trueType
+            trueType is ParameterizedType && _needPTWrapper -> KodeinWrappedType(trueType)
+            trueType is GenericArrayType && _needGATWrapper -> KodeinWrappedType(trueType)
+            else -> trueType
+        }
+    }
 }
 
 /**
- * Function used to get a generic type at runtime
+ * Function used to get a generic type at runtime.
+ *
+ * @param T The type to get.
+ * @return The type object representing [T].
  */
 inline fun <reified T> typeToken(): TypeToken<T> = (object : TypeReference<T>() {})
 
@@ -61,9 +88,14 @@ inline fun <reified T> typeToken(): TypeToken<T> = (object : TypeReference<T>() 
  * Wraps a ParameterizedType and implements hashCode / equals.
  * This is because some JVM implementation (such as Android 4.4 and earlier) does NOT implement hashcode / equals for
  * ParameterizedType (I know...).
+ *
+ * @param type The type object to wrap.
  */
-class KodeinParameterizedType(val type: ParameterizedType) : Type {
+class KodeinWrappedType(val type: Type) : Type {
 
+    /**
+     * Hash code cash, so that it is computed only once.
+     */
     private var _hashCode: Int = 0
 
     override fun hashCode(): Int {
@@ -73,60 +105,101 @@ class KodeinParameterizedType(val type: ParameterizedType) : Type {
     }
 
     override fun equals(other: Any?): Boolean {
-
-        val otherType =
-                if (other is KodeinParameterizedType) other
-                else if (other is ParameterizedType) KodeinParameterizedType(other)
-                else return false
-
-        if (hashCode() != otherType.hashCode())
+        if (other == null || other !is Type)
             return false
 
-        return Func.Equals(this.type, otherType.type)
+        if (hashCode() != other.hashCode())
+            return false
+
+        return Func.Equals(type, other)
     }
 
     override fun toString(): String {
         return "ParameterizedType $type"
     }
 
+    /**
+     * Static private functions
+     */
     private object Func {
-        fun HashCode(type: Type): Int {
-            if (type is Class<*>)
-                return type.hashCode()
 
-            if (type !is ParameterizedType)
-                throw RuntimeException("Invalid TypeToken; must specify type parameters")
-
-            var hashCode = HashCode(type.rawType)
-            for (arg in type.actualTypeArguments)
-                hashCode *= 31 + HashCode(if (arg is WildcardType) arg.upperBounds[0] else arg)
-            return hashCode
+        /**
+         * Computes the hash code of a type object.
+         *
+         * @param type The type whose hash needs to be computed.
+         * @return The computed hash code.
+         */
+        fun HashCode(type: Type): Int = when(type) {
+            is Class<*> -> type.hashCode()
+            is ParameterizedType -> {
+                var hashCode = HashCode(type.rawType)
+                for (arg in type.actualTypeArguments)
+                    hashCode = hashCode * 31 + HashCode(arg)
+                hashCode
+            }
+            is KodeinWrappedType -> type.hashCode()
+            is WildcardType -> {
+                var hashCode = 0
+                for (arg in type.upperBounds)
+                    hashCode = hashCode * 19 + HashCode(arg)
+                for (arg in type.lowerBounds)
+                    hashCode = hashCode * 17 + HashCode(arg)
+                hashCode
+            }
+            is GenericArrayType -> 53 + HashCode(type.genericComponentType)
+            is TypeVariable<*> -> {
+                var hashCode = 0
+                for (arg in type.bounds)
+                    hashCode = hashCode * 29 + HashCode(arg)
+                hashCode
+            }
+            else -> type.hashCode()
         }
 
+        /**
+         * @return Whether the two given types are equal.
+         */
         fun Equals(left: Type, right: Type): Boolean {
-            if (left is Class<*> && right is Class<*>)
-                return left == right
+            if (left is KodeinWrappedType)
+                return Equals(left.type, right)
 
-            if (left is WildcardType)
-                return Equals(left.upperBounds[0], right)
-            if (right is WildcardType)
-                return Equals(left, right.upperBounds[0])
+            if (right is KodeinWrappedType)
+                return Equals(left, right.type)
 
-            if (left !is ParameterizedType || right !is ParameterizedType)
+            if (left.javaClass != right.javaClass)
                 return false
 
-            if (!Equals(left.rawType, right.rawType))
-                return false
+            return when (left) {
+                is Class<*> -> left == right
+                is ParameterizedType -> {
+                    right as ParameterizedType
+                    Equals(left.rawType, right.rawType) && Equals(left.actualTypeArguments, right.actualTypeArguments)
+                }
+                is WildcardType -> {
+                    right as WildcardType
+                    Equals(left.lowerBounds, right.lowerBounds) && Equals(left.upperBounds, right.upperBounds)
+                }
+                is GenericArrayType -> {
+                    right as GenericArrayType
+                    Equals(left.genericComponentType, right.genericComponentType)
+                }
+                is TypeVariable<*> -> {
+                    right as TypeVariable<*>
+                    Equals(left.bounds, right.bounds)
+                }
+                else -> left == right
+            }
+        }
 
-            val leftArgs = left.actualTypeArguments
-            val rightArgs = right.actualTypeArguments
-            if (leftArgs.size != rightArgs.size)
+        /**
+         * @return Whether the two given arrays of types are equals.
+         */
+        fun Equals(left: Array<Type>, right: Array<Type>): Boolean {
+            if (left.size != right.size)
                 return false
-
-            for (i in leftArgs.indices)
-                if (!Equals(leftArgs[i], rightArgs[i]))
+            for (i in left.indices)
+                if (!Equals(left[i], right[i]))
                     return false
-
             return true
         }
     }

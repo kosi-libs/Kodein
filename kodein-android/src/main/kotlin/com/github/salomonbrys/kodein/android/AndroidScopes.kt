@@ -14,10 +14,10 @@ object activityScope : AutoScope<Activity> {
     private var _currentActivity: Activity? = null
 
 
-    override fun getRegistry(key: Kodein.Key, context: Activity): ScopeRegistry
+    override fun getRegistry(context: Activity): ScopeRegistry
             = synchronized(_activityScopes) { _activityScopes.getOrPut(context) { ScopeRegistry() } }
 
-    override fun getContext(key: Kodein.Key)
+    override fun getContext()
             = _currentActivity ?: throw IllegalStateException("There are no current activity. This can either mean that you forgot to register the activityScope.lifecycleManager in your application or that there is currently no activity in the foreground.")
 
 

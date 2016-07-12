@@ -163,7 +163,7 @@ interface KodeinContainer {
                     for (arg in type.upperBounds)
                         _checkIsReified(disp, arg)
                 }
-                is KodeinParameterizedType -> _checkIsReified(disp, type.type)
+                is KodeinWrappedType -> _checkIsReified(disp, type.type)
                 is Class<*> -> {}
                 else -> throw IllegalArgumentException("Unknown type ${type.javaClass} $type")
             }

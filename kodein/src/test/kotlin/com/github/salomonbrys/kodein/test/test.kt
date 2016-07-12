@@ -398,18 +398,18 @@ class KodeinTests : TestCase() {
     }
 
     @Test fun test10_1_ParameterizedTypeWrap() {
-        val typeLS1 = KodeinParameterizedType((object : TypeReference<List<String>>() {}).type as ParameterizedType)
-        val typeLS2 = KodeinParameterizedType((object : TypeReference<List<String>>() {}).type as ParameterizedType)
-        val typeLI = KodeinParameterizedType((object : TypeReference<List<Int>>() {}).type as ParameterizedType)
+        val typeLS1 = KodeinWrappedType((object : TypeReference<List<String>>() {}).trueType as ParameterizedType)
+        val typeLS2 = KodeinWrappedType((object : TypeReference<List<String>>() {}).trueType as ParameterizedType)
+        val typeLI = KodeinWrappedType((object : TypeReference<List<Int>>() {}).trueType as ParameterizedType)
 
         assertEquals(typeLS1, typeLS2)
         assertNotEquals(typeLS1, typeLI)
     }
 
-    class PersonLazy(kodein: Kodein) {
-        val newPerson: () -> Person by kodein.lazyProvider()
-        val salomon: Person by kodein.lazyInstance("named")
-        val factory: (String) -> Person by kodein.lazyFactory("factory")
+    class PersonLazy(kodein: LazyKodein) {
+        val newPerson: () -> Person by kodein.provider()
+        val salomon: Person by kodein.instance("named")
+        val factory: (String) -> Person by kodein.factory("factory")
     }
 
     @Test fun test11_0_Class() {
@@ -419,7 +419,7 @@ class KodeinTests : TestCase() {
             bind<Person>("factory") with factory { name: String -> Person(name) }
         }
 
-        val lazied = PersonLazy(kodein)
+        val lazied = PersonLazy(lazyKodein { kodein })
         assertNotSame(lazied.newPerson(), lazied.newPerson())
         assertEquals("Salomon", lazied.salomon.name)
         assertSame(lazied.salomon, lazied.salomon)
@@ -439,7 +439,7 @@ class KodeinTests : TestCase() {
             import(personModule)
         }
 
-        val lazied = PersonLazy(kodein)
+        val lazied = PersonLazy(lazyKodein { kodein })
         assertNotSame(lazied.newPerson(), lazied.newPerson())
         assertEquals("Salomon", lazied.salomon.name)
         assertSame(lazied.salomon, lazied.salomon)
@@ -534,8 +534,8 @@ class KodeinTests : TestCase() {
 
     object test15Scope : AutoScope<Unit> {
         val registry = ScopeRegistry()
-        override fun getRegistry(key: Kodein.Key, context: Unit) = registry
-        override fun getContext(key: Kodein.Key) = Unit
+        override fun getRegistry(context: Unit) = registry
+        override fun getContext() = Unit
     }
 
     @Test fun test15_0_BindingsDescription() {
@@ -588,7 +588,7 @@ class KodeinTests : TestCase() {
 
         val myScope = object : Scope<String> {
             val cache = HashMap<String, ScopeRegistry>()
-            override fun getRegistry(key: Kodein.Key, context: String): ScopeRegistry = cache.getOrPut(context) { ScopeRegistry() }
+            override fun getRegistry(context: String): ScopeRegistry = cache.getOrPut(context) { ScopeRegistry() }
         }
         val kodein = Kodein {
             bind<Person>() with scopedSingleton(myScope) { Person() }
@@ -610,8 +610,8 @@ class KodeinTests : TestCase() {
     @Test fun test16_2_AutoScopedSingleton() {
         val myScope = object : AutoScope<Unit> {
             val registry = ScopeRegistry()
-            override fun getRegistry(key: Kodein.Key, context: Unit) = registry
-            override fun getContext(key: Kodein.Key) = Unit
+            override fun getRegistry(context: Unit) = registry
+            override fun getContext() = Unit
         }
 
         val kodein = Kodein {

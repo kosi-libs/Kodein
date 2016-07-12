@@ -109,7 +109,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory.
+         * @return A property delegate that will lazily provide a factory of [T].
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -123,7 +123,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory.
+         * @return A property delegate that will lazily provide a factory of [T].
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -152,7 +152,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory.
+         * @return A property delegate that will lazily provide a factory of [T].
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -167,7 +167,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory.
+         * @return A property delegate that will lazily provide a factory of [T].
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -196,7 +196,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory.
+         * @return A property delegate that will lazily provide a factory of [T].
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -211,7 +211,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory.
+         * @return A property delegate that will lazily provide a factory of [T].
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -240,7 +240,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory, or null if no factory was found.
+         * @return A property delegate that will lazily provide a factory of [T], or null if no factory was found.
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -254,7 +254,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory, or null if no factory was found.
+         * @return A property delegate that will lazily provide a factory of [T], or null if no factory was found.
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -283,7 +283,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory, or null if no factory was found.
+         * @return A property delegate that will lazily provide a factory of [T], or null if no factory was found.
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -298,7 +298,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory, or null if no factory was found.
+         * @return A property delegate that will lazily provide a factory of [T], or null if no factory was found.
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -327,7 +327,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory, or null if no factory was found.
+         * @return A property delegate that will lazily provide a factory of [T], or null if no factory was found.
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -342,7 +342,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param argType The type of argument the factory held by this property takes.
          * @param type The type of object to retrieve with the factory held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a factory, or null if no factory was found.
+         * @return A property delegate that will lazily provide a factory of [T], or null if no factory was found.
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
          */
@@ -369,7 +369,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param T The type of object to retrieve with the provider held by this property.
          * @param type The type of object to retrieve with the provider held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a provider.
+         * @return A property delegate that will lazily provide a provider of [T].
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
          */
@@ -382,7 +382,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param T The type of object to retrieve with the provider held by this property.
          * @param type The type of object to retrieve with the provider held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a provider.
+         * @return A property delegate that will lazily provide a provider of [T].
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
          */
@@ -409,7 +409,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param T The type of object to retrieve with the provider held by this property.
          * @param type The type of object to retrieve with the provider held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a provider, or null if no provider was found.
+         * @return A property delegate that will lazily provide a provider of [T], or null if no provider was found.
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
          */
@@ -422,7 +422,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param T The type of object to retrieve with the provider held by this property.
          * @param type The type of object to retrieve with the provider held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide a provider, or null if no provider was found.
+         * @return A property delegate that will lazily provide a provider of [T], or null if no provider was found.
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
          */
@@ -448,7 +448,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param T The type of object that will held by this property.
          * @param type The type of object that will held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide an instance.
+         * @return A property delegate that will lazily provide an instance of [T].
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          */
         @JvmOverloads
@@ -460,7 +460,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param T The type of object that will held by this property.
          * @param type The type of object that will held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide an instance.
+         * @return A property delegate that will lazily provide an instance of [T].
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          */
         @JvmOverloads
@@ -484,7 +484,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param T The type of object that will held by this property.
          * @param type The type of object that will held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide an instance, or null if no provider was found.
+         * @return A property delegate that will lazily provide an instance of [T], or null if no provider was found.
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          */
         @JvmOverloads
@@ -496,7 +496,7 @@ class KodeinInjector() : KodeinInjectedBase {
          * @param T The type of object that will held by this property.
          * @param type The type of object that will held by this property.
          * @param tag The bound tag, if any.
-         * @return A property delegate that will lazily provide an instance, or null if no provider was found.
+         * @return A property delegate that will lazily provide an instance of [T], or null if no provider was found.
          * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
          */
         @JvmOverloads

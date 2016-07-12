@@ -2,12 +2,20 @@ package com.github.salomonbrys.kodein
 
 import java.lang.reflect.*
 
+/**
+ * Base class whose role is to get a string representing a type in a Kotlin-esque fashion.
+ */
 private abstract class TypeStringer {
 
+    /**
+     * get a string representing a type in a Kotlin-esque fashion.
+     *
+     * @param type The type to stringify.
+     */
     fun dispString(type: Type): String = when (type) {
         is Class<*> -> dispName(type)
         is ParameterizedType -> dispString(type.rawType) + "<" + type.actualTypeArguments.joinToString(", ") { dispString(it) } + ">"
-        is KodeinParameterizedType -> dispString(type.type)
+        is KodeinWrappedType -> dispString(type.type)
         is WildcardType -> when {
             type.lowerBounds.isNotEmpty() -> "in " + dispString(type.lowerBounds[0])
             type.upperBounds.isNotEmpty() -> when {
@@ -21,9 +29,17 @@ private abstract class TypeStringer {
         else -> throw IllegalStateException("Unknown type $javaClass")
     }
 
+    /**
+     * Returns a type name, either its simple name, or its full name.
+     *
+     * @param cls The class whose name to get.
+     */
     abstract fun dispName(cls: Class<*>): String
 }
 
+/**
+ * Type stringer that displays simple type names.
+ */
 private object SimpleTypeStringer : TypeStringer() {
     @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
     override fun dispName(cls: Class<*>): String = when {
@@ -35,6 +51,9 @@ private object SimpleTypeStringer : TypeStringer() {
     }
 }
 
+/**
+ * Type stringer that displays full type names.
+ */
 private object FullTypeStringer : TypeStringer() {
     @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
     override fun dispName(cls: Class<*>) = when {
@@ -52,5 +71,12 @@ private object FullTypeStringer : TypeStringer() {
     }
 }
 
+/**
+ * A string representing this type in a Kotlin-esque fashion using simple type names.
+ */
 val Type.simpleDispString: String get() = SimpleTypeStringer.dispString(this)
+
+/**
+ * A string representing this type in a Kotlin-esque fashion using full type names.
+ */
 val Type.fullDispString: String get() = FullTypeStringer.dispString(this)
