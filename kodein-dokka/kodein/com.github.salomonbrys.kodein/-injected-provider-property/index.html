@@ -1,0 +1,98 @@
+<HTML>
+<HEAD>
+<title>InjectedProviderProperty - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">InjectedProviderProperty</a><br/>
+<br/>
+<h1>InjectedProviderProperty</h1>
+<code><span class="keyword">class </span><span class="identifier">InjectedProviderProperty</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-injected-property/index.html"><span class="identifier">InjectedProperty</span></a><span class="symbol">&lt;</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/InjectedProperty.kt#L112">(source)</a><br/>
+<p>A read-only property delegate that injects a provider.</p>
+<h3>Parameters</h3>
+<a name="bind"></a>
+<code>bind</code> - The bind (type &amp; tag) of the provider that will be injected.<br/>
+<br/>
+<br/>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-init-.html">&lt;init&gt;</a></td>
+<td>
+<code><span class="identifier">InjectedProviderProperty</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.InjectedProviderProperty$<init>(com.github.salomonbrys.kodein.Kodein.Bind)/bind">bind</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/-bind/index.html"><span class="identifier">Bind</span></a><span class="symbol">)</span></code><p>A read-only property delegate that injects a provider.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="_type.html">_type</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">_type</span><span class="symbol">: </span><span class="identifier">String</span></code><p>The type of the object to inject, <emph>used for debug print only</emph>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../-injected-property/key.html">key</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">key</span><span class="symbol">: </span><a href="../-kodein/-key/index.html"><span class="identifier">Key</span></a></code><p>The key of the value that will be injected.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../-injected-property/value.html">value</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">value</span><span class="symbol">: </span><span class="identifier">T</span></code><p>The injected value.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="_get-injection.html">_getInjection</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">_getInjection</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.InjectedProviderProperty$_getInjection(com.github.salomonbrys.kodein.KodeinContainer)/container">container</span><span class="symbol">:</span>&nbsp;<a href="../-kodein-container/index.html"><span class="identifier">KodeinContainer</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span></code><p>Gets the injected value from the container.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../-injected-property/get-value.html">getValue</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">getValue</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.InjectedProperty$getValue(kotlin.Any, kotlin.reflect.KProperty((kotlin.Any)))/thisRef">thisRef</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.InjectedProperty$getValue(kotlin.Any, kotlin.reflect.KProperty((kotlin.Any)))/property">property</span><span class="symbol">:</span>&nbsp;<span class="identifier">KProperty</span><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code><p>Get the injected value.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../-injected-property/is-injected.html">isInjected</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isInjected</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Boolean</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="../-injected-property/to-string.html">toString</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">toString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">String</span></code><p>Stringify the injected value <emph>if it has been injected</emph>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

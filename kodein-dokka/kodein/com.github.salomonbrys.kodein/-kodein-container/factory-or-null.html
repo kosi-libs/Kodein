@@ -1,0 +1,24 @@
+<HTML>
+<HEAD>
+<title>KodeinContainer.factoryOrNull - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href="index.html">KodeinContainer</a>&nbsp;/&nbsp;<a href=".">factoryOrNull</a><br/>
+<br/>
+<h1>factoryOrNull</h1>
+<a name="com.github.salomonbrys.kodein.KodeinContainer$factoryOrNull(com.github.salomonbrys.kodein.Kodein.Key)"></a>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">factoryOrNull</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.KodeinContainer$factoryOrNull(com.github.salomonbrys.kodein.Kodein.Key)/key">key</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/-key/index.html"><span class="identifier">Key</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="symbol">(</span><span class="identifier">Any</span><span class="symbol">?</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">Any</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/KodeinContainer.kt#L36">(source)</a><br/>
+<p>Retrieve a factory for the given key, or null if none is found.</p>
+<h3>Parameters</h3>
+<a name="key"></a>
+<code>key</code> - The key to look for.<br/>
+<h3>Exceptions</h3>
+<a name="Kodein.DependencyLoopException"></a>
+<code>Kodein.DependencyLoopException</code> - When calling the factory function, if the instance construction triggered a dependency loop.<br/>
+<p><strong>Return</strong><br/>
+The found factory, or null if no factory was found.</p>
+<br/>
+<br/>
+</BODY>
+</HTML>

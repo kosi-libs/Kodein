@@ -1,0 +1,189 @@
+<HTML>
+<HEAD>
+<title>Kodein - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">Kodein</a><br/>
+<br/>
+<h1>Kodein</h1>
+<code><span class="keyword">interface </span><span class="identifier">Kodein</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-kodein-aware-base/index.html"><span class="identifier">KodeinAwareBase</span></a></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/Kodein.kt#L22">(source)</a><br/>
+<p>KOtlin DEpendency INjection.</p>
+<p>To construct a Kodein instance, simply use <a href="invoke.html">its block constructor</a> and define your bindings in it :</p>
+<pre><code>val kodein = Kodein {
+    bind&lt;Dice&gt;() with factory { sides: Int -&gt; RandomDice(sides) }
+    bind&lt;DataSource&gt;() with singleton { SqliteDS.open("path/to/file") }
+    bind&lt;Random&gt;() with provider { SecureRandom() }
+    constant("answer") with "fourty-two"
+}</code></pre><br/>
+<br/>
+<br/>
+<br/>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-bind/index.html">Bind</a></td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Bind</span></code><p>Part of a <a href="-key/index.html">Key</a> that represents the left part of a bind declaration.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-builder/index.html">Builder</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Builder</span></code><p>Allows for the DSL inside the block argument of the constructor of <code>Kodein</code> and <code>Kodein.Module</code>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-key/index.html">Key</a></td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Key</span></code><p>In Kodein, each <a href="../-factory/index.html">Factory</a> is bound to a Key. A Key holds all informations necessary to retrieve a factory (and therefore an instance).</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-module/index.html">Module</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Module</span></code><p>A module is constructed the same way as in Kodein is:</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Exceptions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-dependency-loop-exception.html">DependencyLoopException</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">DependencyLoopException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/RuntimeException.html"><span class="identifier">RuntimeException</span></a></code><p>Exception thrown when there is a dependency loop.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-not-found-exception/index.html">NotFoundException</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">NotFoundException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/RuntimeException.html"><span class="identifier">RuntimeException</span></a></code><p>Exception thrown when asked for a dependency that cannot be found.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-overriding-exception/index.html">OverridingException</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">OverridingException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/RuntimeException.html"><span class="identifier">RuntimeException</span></a></code><p>Exception thrown when there is an overriding error</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="container.html">container</a></td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">container</span><span class="symbol">: </span><a href="../-kodein-container/index.html"><span class="identifier">KodeinContainer</span></a></code><p>Every methods, either in this or in <a href="../-t-kodein/index.html">TKodein</a> eventually ends up to a call to this container.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="kodein.html">kodein</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">kodein</span><span class="symbol">: </span><span class="identifier">Kodein</span></code><p>Defined only to conform to <a href="../-kodein-aware-base/index.html">KodeinAwareBase</a></p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="typed.html">typed</a></td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">typed</span><span class="symbol">: </span><a href="../-t-kodein/index.html"><span class="identifier">TKodein</span></a></code><p>Allows to access all typed API (meaning the API where you provide <code>Type</code>, <code>TypeToken</code> or <code>Class</code> objects).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="invoke.html">invoke</a></td>
+<td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">invoke</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Companion$invoke(kotlin.Boolean, kotlin.Function1((com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Unit)))/allowSilentOverride">allowSilentOverride</span><span class="symbol">:</span>&nbsp;<span class="identifier">Boolean</span>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Companion$invoke(kotlin.Boolean, kotlin.Function1((com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Unit)))/init">init</span><span class="symbol">:</span>&nbsp;<a href="-builder/index.html"><span class="identifier">Builder</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">Unit</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Kodein</span></code><p>Creates a Kodein instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Extension Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../factory.html">factory</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="../-kodein-aware-base/index.html"><span class="identifier">KodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">factory</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$factory(com.github.salomonbrys.kodein.KodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="symbol">(</span><span class="identifier">A</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span></code><p>Gets a factory of <code>T</code> for the given argument type, return type and tag.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../factory-or-null.html">factoryOrNull</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="../-kodein-aware-base/index.html"><span class="identifier">KodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">factoryOrNull</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$factoryOrNull(com.github.salomonbrys.kodein.KodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="symbol">(</span><span class="identifier">A</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span></code><p>Gets a factory of <code>T</code> for the given argument type, return type and tag, or nul if none is found.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../instance.html">instance</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="../-kodein-aware-base/index.html"><span class="identifier">KodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">instance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$instance(com.github.salomonbrys.kodein.KodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code><p>Gets an instance of <code>T</code> for the given type and tag.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../instance-or-null.html">instanceOrNull</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="../-kodein-aware-base/index.html"><span class="identifier">KodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">instanceOrNull</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$instanceOrNull(com.github.salomonbrys.kodein.KodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span><span class="symbol">?</span></code><p>Gets an instance of <code>T</code> for the given type and tag, or null if none is found.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../provider.html">provider</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="../-kodein-aware-base/index.html"><span class="identifier">KodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">provider</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$provider(com.github.salomonbrys.kodein.KodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span></code><p>Gets a provider of <code>T</code> for the given type and tag.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../provider-or-null.html">providerOrNull</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="../-kodein-aware-base/index.html"><span class="identifier">KodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">providerOrNull</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$providerOrNull(com.github.salomonbrys.kodein.KodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span></code><p>Gets a provider of <code>T</code> for the given type and tag, or null if none is found.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../with.html">with</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <a href="../-kodein-aware-base/index.html"><span class="identifier">KodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">with</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$with(com.github.salomonbrys.kodein.KodeinAwareBase, kotlin.Function0((com.github.salomonbrys.kodein.with.A)))/arg">arg</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">A</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-curried-kodein-factory/index.html"><span class="identifier">CurriedKodeinFactory</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <a href="../-kodein-aware-base/index.html"><span class="identifier">KodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">with</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$with(com.github.salomonbrys.kodein.KodeinAwareBase, com.github.salomonbrys.kodein.with.A)/arg">arg</span><span class="symbol">:</span>&nbsp;<span class="identifier">A</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-curried-kodein-factory/index.html"><span class="identifier">CurriedKodeinFactory</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code><p>Allows to get a provider or an instance from a curried factory with an <code>A</code> argument.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../with-class-of.html">withClassOf</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Kodein</span><span class="symbol">.</span><span class="identifier">withClassOf</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$withClassOf(com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.withClassOf.T)/of">of</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-curried-kodein-factory/index.html"><span class="identifier">CurriedKodeinFactory</span></a><span class="symbol">&lt;</span><a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html"><span class="identifier">Class</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code><p>Allows to get a provider or an instance from a curried factory with a <code>Class</code> argument.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../with-k-class-of.html">withKClassOf</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Kodein</span><span class="symbol">.</span><span class="identifier">withKClassOf</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$withKClassOf(com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.withKClassOf.T)/of">of</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-curried-kodein-factory/index.html"><span class="identifier">CurriedKodeinFactory</span></a><span class="symbol">&lt;</span><span class="identifier">KClass</span><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code><p>Allows to get a provider or an instance from a curried factory with a <code>Class</code> argument.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

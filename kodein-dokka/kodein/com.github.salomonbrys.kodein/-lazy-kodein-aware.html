@@ -1,0 +1,96 @@
+<HTML>
+<HEAD>
+<title>LazyKodeinAware - kodein</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">kodein</a>&nbsp;/&nbsp;<a href="index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">LazyKodeinAware</a><br/>
+<br/>
+<h1>LazyKodeinAware</h1>
+<code><span class="keyword">interface </span><span class="identifier">LazyKodeinAware</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-lazy-kodein-aware-base/index.html"><span class="identifier">LazyKodeinAwareBase</span></a></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/lazy.kt#L191">(source)</a><br/>
+<p>Any class that extends this interface can use Kodein to "seemlessly" get lazy properties.</p>
+<br/>
+<br/>
+<h3>Inherited Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-lazy-kodein-aware-base/kodein.html">kodein</a></td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">kodein</span><span class="symbol">: </span><a href="-lazy-kodein/index.html"><span class="identifier">LazyKodein</span></a></code><p>A Lazy Kodein Aware class must be within reach of a LazyKodein object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Extension Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="factory.html">factory</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="-lazy-kodein-aware-base/index.html"><span class="identifier">LazyKodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">factory</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$factory(com.github.salomonbrys.kodein.LazyKodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="symbol">(</span><span class="identifier">A</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Gets a lazy factory for the given type, tag and argument type.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="factory-or-null.html">factoryOrNull</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="-lazy-kodein-aware-base/index.html"><span class="identifier">LazyKodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">factoryOrNull</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$factoryOrNull(com.github.salomonbrys.kodein.LazyKodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="symbol">(</span><span class="identifier">A</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Gets a lazy factory for the given type, tag and argument type, or null if none is found.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="instance.html">instance</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="-lazy-kodein-aware-base/index.html"><span class="identifier">LazyKodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">instance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$instance(com.github.salomonbrys.kodein.LazyKodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Gets a lazy instance for the given type and tag.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="instance-or-null.html">instanceOrNull</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="-lazy-kodein-aware-base/index.html"><span class="identifier">LazyKodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">instanceOrNull</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$instanceOrNull(com.github.salomonbrys.kodein.LazyKodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">?</span><span class="symbol">&gt;</span></code><p>Gets a lazy instance for the given type and tag, or null is none is found.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="provider.html">provider</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="-lazy-kodein-aware-base/index.html"><span class="identifier">LazyKodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">provider</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$provider(com.github.salomonbrys.kodein.LazyKodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Gets a lazy provider for the given type and tag.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="provider-or-null.html">providerOrNull</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="-lazy-kodein-aware-base/index.html"><span class="identifier">LazyKodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">providerOrNull</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$providerOrNull(com.github.salomonbrys.kodein.LazyKodeinAwareBase, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Gets a lazy provider for the given type and tag, or null if none is found.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="with.html">with</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <a href="-lazy-kodein-aware-base/index.html"><span class="identifier">LazyKodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">with</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$with(com.github.salomonbrys.kodein.LazyKodeinAwareBase, kotlin.Function0((com.github.salomonbrys.kodein.with.A)))/arg">arg</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">A</span><span class="symbol">)</span><span class="symbol">: </span><a href="-curried-lazy-kodein-factory/index.html"><span class="identifier">CurriedLazyKodeinFactory</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <a href="-lazy-kodein-aware-base/index.html"><span class="identifier">LazyKodeinAwareBase</span></a><span class="symbol">.</span><span class="identifier">with</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$with(com.github.salomonbrys.kodein.LazyKodeinAwareBase, com.github.salomonbrys.kodein.with.A)/arg">arg</span><span class="symbol">:</span>&nbsp;<span class="identifier">A</span><span class="symbol">)</span><span class="symbol">: </span><a href="-curried-lazy-kodein-factory/index.html"><span class="identifier">CurriedLazyKodeinFactory</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code><p>Allows to get a lazy provider or instance from a curried factory with an <code>A</code> argument.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="with-class.html">withClass</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">LazyKodeinAware</span><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">withClass</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-curried-lazy-kodein-factory/index.html"><span class="identifier">CurriedLazyKodeinFactory</span></a><span class="symbol">&lt;</span><a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html"><span class="identifier">Class</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code><p>Allows to lazily retrive a provider or an instance from a curried factory with a <code>Class</code> argument.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="with-k-class.html">withKClass</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">LazyKodeinAware</span><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">withKClass</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-curried-lazy-kodein-factory/index.html"><span class="identifier">CurriedLazyKodeinFactory</span></a><span class="symbol">&lt;</span><span class="identifier">KClass</span><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code><p>Allows to lazily retrive a provider or an instance from a curried factory with a <code>KClass</code> argument.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

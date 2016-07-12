@@ -1,0 +1,47 @@
+<HTML>
+<HEAD>
+<title>toProvider - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href="index.html">kotlin.Lazy</a>&nbsp;/&nbsp;<a href=".">toProvider</a><br/>
+<br/>
+<h1>toProvider</h1>
+<a name="com.github.salomonbrys.kodein$toProvider(kotlin.Lazy((kotlin.Function1((com.github.salomonbrys.kodein.toProvider.A, com.github.salomonbrys.kodein.toProvider.T)))), kotlin.Function0((com.github.salomonbrys.kodein.toProvider.A)))"></a>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="symbol">(</span><span class="identifier">A</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">toProvider</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$toProvider(kotlin.Lazy((kotlin.Function1((com.github.salomonbrys.kodein.toProvider.A, com.github.salomonbrys.kodein.toProvider.T)))), kotlin.Function0((com.github.salomonbrys.kodein.toProvider.A)))/arg">arg</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">A</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/lazy.kt#L204">(source)</a><br/>
+<p>Transforms a lazy factory property into a lazy provider property by currying the factory argument.</p>
+<h3>Parameters</h3>
+<a name="A"></a>
+<code>A</code> - The type of argument the factory held by this property takes.<br/>
+<br/>
+<a name="T"></a>
+<code>T</code> - The type of object to retrieve with the factory held by this property.<br/>
+<br/>
+<a name="arg"></a>
+<code>arg</code> - A function that provides the argument that will be passed to the factory.<br/>
+<p><strong>Receiver</strong><br/>
+The factory to curry.</p>
+<p><strong>Return</strong><br/>
+A property that yields a provider of <code>T</code>.</p>
+<br/>
+<br/>
+<a name="com.github.salomonbrys.kodein$toProvider(kotlin.Lazy((kotlin.Function1((com.github.salomonbrys.kodein.toProvider.A, com.github.salomonbrys.kodein.toProvider.T)))), kotlin.Function0((com.github.salomonbrys.kodein.toProvider.A)))"></a>
+<code><span class="identifier">@JvmName</span><span class="symbol">(</span>"toNullableProvider"<span class="symbol">)</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="symbol">(</span><span class="identifier">A</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">toProvider</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$toProvider(kotlin.Lazy((kotlin.Function1((com.github.salomonbrys.kodein.toProvider.A, com.github.salomonbrys.kodein.toProvider.T)))), kotlin.Function0((com.github.salomonbrys.kodein.toProvider.A)))/arg">arg</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">A</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/lazy.kt#L216">(source)</a><br/>
+<p>Transforms a lazy nullable factory property into a lazy nullable provider property by currying the factory argument.</p>
+<h3>Parameters</h3>
+<a name="A"></a>
+<code>A</code> - The type of argument the factory held by this property takes.<br/>
+<br/>
+<a name="T"></a>
+<code>T</code> - The type of object to retrieve with the factory held by this property.<br/>
+<br/>
+<a name="arg"></a>
+<code>arg</code> - A function that provides the argument that will be passed to the factory.<br/>
+<p><strong>Receiver</strong><br/>
+The factory to curry.</p>
+<p><strong>Return</strong><br/>
+A property that yields a provider of <code>T</code>, or null if no factory was found.</p>
+<br/>
+<br/>
+</BODY>
+</HTML>

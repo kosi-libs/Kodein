@@ -1,0 +1,28 @@
+<HTML>
+<HEAD>
+<title>scopedSingleton - kodein</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">kodein</a>&nbsp;/&nbsp;<a href="index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">scopedSingleton</a><br/>
+<br/>
+<h1>scopedSingleton</h1>
+<a name="com.github.salomonbrys.kodein$scopedSingleton(com.github.salomonbrys.kodein.Kodein.Builder, com.github.salomonbrys.kodein.Scope((com.github.salomonbrys.kodein.scopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.scopedSingleton.C, com.github.salomonbrys.kodein.scopedSingleton.T)))"></a>
+<code><span class="keyword">inline</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="keyword">reified</span>&nbsp;<span class="identifier">C</span><span class="symbol">, </span><span class="keyword">reified</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="-kodein/-builder/index.html"><span class="identifier">Builder</span></a><span class="symbol">.</span><span class="identifier">scopedSingleton</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$scopedSingleton(com.github.salomonbrys.kodein.Kodein.Builder, com.github.salomonbrys.kodein.Scope((com.github.salomonbrys.kodein.scopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.scopedSingleton.C, com.github.salomonbrys.kodein.scopedSingleton.T)))/scope">scope</span><span class="symbol">:</span>&nbsp;<a href="-scope/index.html"><span class="identifier">Scope</span></a><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="keyword">noinline</span> <span class="identifier" id="com.github.salomonbrys.kodein$scopedSingleton(com.github.salomonbrys.kodein.Kodein.Builder, com.github.salomonbrys.kodein.Scope((com.github.salomonbrys.kodein.scopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.scopedSingleton.C, com.github.salomonbrys.kodein.scopedSingleton.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="identifier">C</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="-c-scoped-singleton/index.html"><span class="identifier">CScopedSingleton</span></a><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/userScopes.kt#L159">(source)</a><br/>
+<p>Creates a scoped singleton factory, effectively a <code>factory{Scope-&gt;T}</code>.</p>
+<h3>Parameters</h3>
+<a name="C"></a>
+<code>C</code> - The scope context type.<br/>
+<br/>
+<a name="T"></a>
+<code>T</code> - The singleton type.<br/>
+<br/>
+<a name="scope"></a>
+<code>scope</code> - The scope object in which thie singleton will be stored.<br/>
+<br/>
+<a name="creator"></a>
+<code>creator</code> - A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.<br/>
+<br/>
+<br/>
+</BODY>
+</HTML>

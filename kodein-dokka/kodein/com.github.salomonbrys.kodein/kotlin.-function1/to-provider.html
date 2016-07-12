@@ -1,0 +1,29 @@
+<HTML>
+<HEAD>
+<title>toProvider - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href="index.html">kotlin.Function1</a>&nbsp;/&nbsp;<a href=".">toProvider</a><br/>
+<br/>
+<h1>toProvider</h1>
+<a name="com.github.salomonbrys.kodein$toProvider(kotlin.Function1((com.github.salomonbrys.kodein.toProvider.A, com.github.salomonbrys.kodein.toProvider.T)), kotlin.Function0((com.github.salomonbrys.kodein.toProvider.A)))"></a>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="symbol">(</span><span class="identifier">A</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">.</span><span class="identifier">toProvider</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$toProvider(kotlin.Function1((com.github.salomonbrys.kodein.toProvider.A, com.github.salomonbrys.kodein.toProvider.T)), kotlin.Function0((com.github.salomonbrys.kodein.toProvider.A)))/arg">arg</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">A</span><span class="symbol">)</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/Kodein.kt#L449">(source)</a><br/>
+<p>Transforms a factory function into a provider function by currying the factory with the given argument.</p>
+<h3>Parameters</h3>
+<a name="A"></a>
+<code>A</code> - The type of argument the factory takes.<br/>
+<br/>
+<a name="T"></a>
+<code>T</code> - The type of object to retrieve.<br/>
+<br/>
+<a name="arg"></a>
+<code>arg</code> - A function that provides the argument that will be passed to the factory.<br/>
+<p><strong>Receiver</strong><br/>
+The factory to curry.</p>
+<p><strong>Return</strong><br/>
+A provider function that, when called, will call the receiver factory with the given argument.</p>
+<br/>
+<br/>
+</BODY>
+</HTML>

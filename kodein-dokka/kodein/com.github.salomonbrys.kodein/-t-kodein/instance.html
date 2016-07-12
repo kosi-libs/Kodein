@@ -1,0 +1,54 @@
+<HTML>
+<HEAD>
+<title>TKodein.instance - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href="index.html">TKodein</a>&nbsp;/&nbsp;<a href=".">instance</a><br/>
+<br/>
+<h1>instance</h1>
+<a name="com.github.salomonbrys.kodein.TKodein$instance(java.lang.reflect.Type, kotlin.Any)"></a>
+<code><span class="identifier">@JvmOverloads</span> <span class="keyword">fun </span><span class="identifier">instance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.TKodein$instance(java.lang.reflect.Type, kotlin.Any)/type">type</span><span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.TKodein$instance(java.lang.reflect.Type, kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Any</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/TKodein.kt#L360">(source)</a><br/>
+<p>Gets an instance for the given type and tag.</p>
+<h3>Parameters</h3>
+<a name="type"></a>
+<code>type</code> - The type of object to retrieve.<br/>
+<br/>
+<a name="tag"></a>
+<code>tag</code> - The bound tag, if any.<br/>
+<h3>Exceptions</h3>
+<a name="Kodein.NotFoundException"></a>
+<code>Kodein.NotFoundException</code> - If no provider was found.<br/>
+<br/>
+<a name="Kodein.DependencyLoopException"></a>
+<code>Kodein.DependencyLoopException</code> - If the value construction triggered a dependency loop.<br/>
+<p><strong>Return</strong><br/>
+An instance.</p>
+<br/>
+<br/>
+<a name="com.github.salomonbrys.kodein.TKodein$instance(java.lang.Class((com.github.salomonbrys.kodein.TKodein.instance.T)), kotlin.Any)"></a>
+<code><span class="identifier">@JvmOverloads</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">instance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.TKodein$instance(java.lang.Class((com.github.salomonbrys.kodein.TKodein.instance.T)), kotlin.Any)/type">type</span><span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html"><span class="identifier">Class</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.TKodein$instance(java.lang.Class((com.github.salomonbrys.kodein.TKodein.instance.T)), kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/TKodein.kt#L373">(source)</a><br/>
+<a name="com.github.salomonbrys.kodein.TKodein$instance(com.github.salomonbrys.kodein.TypeToken((com.github.salomonbrys.kodein.TKodein.instance.T)), kotlin.Any)"></a>
+<code><span class="identifier">@JvmOverloads</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">instance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.TKodein$instance(com.github.salomonbrys.kodein.TypeToken((com.github.salomonbrys.kodein.TKodein.instance.T)), kotlin.Any)/type">type</span><span class="symbol">:</span>&nbsp;<a href="../-type-token/index.html"><span class="identifier">TypeToken</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.TKodein$instance(com.github.salomonbrys.kodein.TypeToken((com.github.salomonbrys.kodein.TKodein.instance.T)), kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/TKodein.kt#L386">(source)</a><br/>
+<p>Gets an instance of <code>T</code> for the given type and tag.</p>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The type of object to retrieve.<br/>
+<br/>
+<a name="type"></a>
+<code>type</code> - The type of object to retrieve.<br/>
+<br/>
+<a name="tag"></a>
+<code>tag</code> - The bound tag, if any.<br/>
+<h3>Exceptions</h3>
+<a name="Kodein.NotFoundException"></a>
+<code>Kodein.NotFoundException</code> - If no provider was found.<br/>
+<br/>
+<a name="Kodein.DependencyLoopException"></a>
+<code>Kodein.DependencyLoopException</code> - If the value construction triggered a dependency loop.<br/>
+<p><strong>Return</strong><br/>
+An instance of <code>T</code>.</p>
+<br/>
+<br/>
+</BODY>
+</HTML>

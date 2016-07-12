@@ -1,0 +1,27 @@
+<HTML>
+<HEAD>
+<title>CurriedLazyKodeinFactory.instanceOrNull - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href="index.html">CurriedLazyKodeinFactory</a>&nbsp;/&nbsp;<a href=".">instanceOrNull</a><br/>
+<br/>
+<h1>instanceOrNull</h1>
+<a name="com.github.salomonbrys.kodein.CurriedLazyKodeinFactory$instanceOrNull(kotlin.Any)"></a>
+<code><span class="keyword">inline</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="keyword">reified</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">instanceOrNull</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CurriedLazyKodeinFactory$instanceOrNull(kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">?</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/lazy.kt#L163">(source)</a><br/>
+<p>Gets a lazy instance of <code>T</code> for the given tag from a curried factory with an <code>A</code> argument, or null if none is found.</p>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The type of object to retrieve.<br/>
+<br/>
+<a name="tag"></a>
+<code>tag</code> - The bound tag, if any.<br/>
+<h3>Exceptions</h3>
+<a name="Kodein.DependencyLoopException"></a>
+<code>Kodein.DependencyLoopException</code> - When accessing the property, if the value construction triggered a dependency loop.<br/>
+<p><strong>Return</strong><br/>
+A lazy instance of <code>T</code>, or null if no factory was found.</p>
+<br/>
+<br/>
+</BODY>
+</HTML>

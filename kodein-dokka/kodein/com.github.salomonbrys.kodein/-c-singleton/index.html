@@ -1,0 +1,60 @@
+<HTML>
+<HEAD>
+<title>CSingleton - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">CSingleton</a><br/>
+<br/>
+<h1>CSingleton</h1>
+<code><span class="keyword">class </span><span class="identifier">CSingleton</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-a-singleton/index.html"><span class="identifier">ASingleton</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/factories.kt#L94">(source)</a><br/>
+<p>Concrete singleton: will create an instance on first request and will subsequently always return the same instance.</p>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The created type.<br/>
+<br/>
+<a name="createdType"></a>
+<code>createdType</code> - The type of the created object, <emph>used for debug print only</emph>.<br/>
+<br/>
+<a name="creator"></a>
+<code>creator</code> - The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.<br/>
+<br/>
+<br/>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-init-.html">&lt;init&gt;</a></td>
+<td>
+<code><span class="identifier">CSingleton</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CSingleton$<init>(java.lang.reflect.Type, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CSingleton.T)))/createdType">createdType</span><span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.CSingleton$<init>(java.lang.reflect.Type, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CSingleton.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span></code><p>Concrete singleton: will create an instance on first request and will subsequently always return the same instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../-a-singleton/creator.html">creator</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">creator</span><span class="symbol">: </span><a href="../-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span></code><p>The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../-a-singleton/get-instance.html">getInstance</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getInstance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.ASingleton$getInstance(com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.Kodein.Key)/kodein">kodein</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.ASingleton$getInstance(com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.Kodein.Key)/key">key</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/-key/index.html"><span class="identifier">Key</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code><p>Get an instance of type <code>T</code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

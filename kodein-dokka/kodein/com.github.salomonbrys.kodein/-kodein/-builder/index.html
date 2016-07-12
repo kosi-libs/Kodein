@@ -1,0 +1,158 @@
+<HTML>
+<HEAD>
+<title>Kodein.Builder - kodein</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href="../index.html">Kodein</a>&nbsp;/&nbsp;<a href=".">Builder</a><br/>
+<br/>
+<h1>Builder</h1>
+<code><span class="keyword">class </span><span class="identifier">Builder</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/Kodein.kt#L172">(source)</a><br/>
+<p>Allows for the DSL inside the block argument of the constructor of <code>Kodein</code> and <code>Kodein.Module</code>.</p>
+<p>Methods of this classes are really just proxies to the <a href="-t-builder/index.html">TBuilder</a> or <a href="../../-kodein-container/-builder/index.html">KodeinContainer.Builder</a> methods.</p>
+<br/>
+<br/>
+<br/>
+<br/>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-constant-binder/index.html">ConstantBinder</a></td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">ConstantBinder</span></code><p>Left part of the constant-binding syntax (<code>constant(tag)</code>).</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-t-builder/index.html">TBuilder</a></td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">TBuilder</span></code><p>Class holding all typed API (meaning the API where you provide <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html">Type</a>, <a href="../../-type-token/index.html">TypeToken</a> or <code>Class</code> objects).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="container.html">container</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">container</span><span class="symbol">: </span><a href="../../-kodein-container/-builder/index.html"><span class="identifier">Builder</span></a></code><p>Every methods, either in this or in <a href="-t-builder/index.html">TBuilder</a> eventually ends up to a call to this builder.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="typed.html">typed</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">typed</span><span class="symbol">: </span><a href="-t-builder/index.html"><span class="identifier">TBuilder</span></a></code><p>Allows to access all typed API (meaning the API where you provide <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html">Type</a>, <a href="../../-type-token/index.html">TypeToken</a> or <code>Class</code> objects).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="bind.html">bind</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$bind(kotlin.Any, kotlin.Boolean)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$bind(kotlin.Any, kotlin.Boolean)/overrides">overrides</span><span class="symbol">:</span>&nbsp;<span class="identifier">Boolean</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="-t-builder/-type-binder/index.html"><span class="identifier">TypeBinder</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Starts the binding of a given type with a given tag.</p>
+<code><span class="keyword">fun </span><span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$bind(kotlin.Any, kotlin.Boolean)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$bind(kotlin.Any, kotlin.Boolean)/overrides">overrides</span><span class="symbol">:</span>&nbsp;<span class="identifier">Boolean</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="-t-builder/-direct-binder/index.html"><span class="identifier">DirectBinder</span></a></code><p>Starts a direct binding with a given tag. A direct bind does not define the type to be binded, the type will be defined according to the bound factory.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="constant.html">constant</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">constant</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$constant(kotlin.Any, kotlin.Boolean)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$constant(kotlin.Any, kotlin.Boolean)/overrides">overrides</span><span class="symbol">:</span>&nbsp;<span class="identifier">Boolean</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="-constant-binder/index.html"><span class="identifier">ConstantBinder</span></a></code><p>Starts a constant binding.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="extend.html">extend</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">extend</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$extend(com.github.salomonbrys.kodein.Kodein, kotlin.Boolean)/kodein">kodein</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Kodein</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$extend(com.github.salomonbrys.kodein.Kodein, kotlin.Boolean)/allowOverride">allowOverride</span><span class="symbol">:</span>&nbsp;<span class="identifier">Boolean</span>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code><p>Imports all bindings defined in the given <a href="../index.html">Kodein</a> into this builder.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="import.html">import</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">import</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$import(com.github.salomonbrys.kodein.Kodein.Module, kotlin.Boolean)/module">module</span><span class="symbol">:</span>&nbsp;<a href="../-module/index.html"><span class="identifier">Module</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$import(com.github.salomonbrys.kodein.Kodein.Module, kotlin.Boolean)/allowOverride">allowOverride</span><span class="symbol">:</span>&nbsp;<span class="identifier">Boolean</span>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code><p>Imports all bindings defined in the given <a href="../-module/index.html">Kodein.Module</a> into this builders definition.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="on-ready.html">onReady</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onReady</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder$onReady(kotlin.Function1((com.github.salomonbrys.kodein.Kodein, kotlin.Unit)))/cb">cb</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">Unit</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code><p>Adds a callback that will be called once the Kodein object is configured and instanciated.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Extension Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../../auto-scoped-singleton.html">autoScopedSingleton</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Builder</span><span class="symbol">.</span><span class="identifier">autoScopedSingleton</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$autoScopedSingleton(com.github.salomonbrys.kodein.Kodein.Builder, com.github.salomonbrys.kodein.AutoScope((com.github.salomonbrys.kodein.autoScopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.autoScopedSingleton.C, com.github.salomonbrys.kodein.autoScopedSingleton.T)))/scope">scope</span><span class="symbol">:</span>&nbsp;<a href="../../-auto-scope/index.html"><span class="identifier">AutoScope</span></a><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein$autoScopedSingleton(com.github.salomonbrys.kodein.Kodein.Builder, com.github.salomonbrys.kodein.AutoScope((com.github.salomonbrys.kodein.autoScopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.autoScopedSingleton.C, com.github.salomonbrys.kodein.autoScopedSingleton.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="identifier">C</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../-c-auto-scoped-singleton/index.html"><span class="identifier">CAutoScopedSingleton</span></a><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Creates an auto-scoped singleton provider, effectively a <code>provider{-&gt;T}</code>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../eager-singleton.html">eagerSingleton</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Builder</span><span class="symbol">.</span><span class="identifier">eagerSingleton</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$eagerSingleton(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.eagerSingleton.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../-a-provider/index.html"><span class="identifier">AProvider</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../factory.html">factory</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Builder</span><span class="symbol">.</span><span class="identifier">factory</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$factory(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.factory.A, com.github.salomonbrys.kodein.factory.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="identifier">A</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../-c-factory/index.html"><span class="identifier">CFactory</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Creates a factory: each time an instance is needed, the function <a href="../../factory.html#com.github.salomonbrys.kodein$factory(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.factory.A, com.github.salomonbrys.kodein.factory.T)))/creator">creator</a> function will be called.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../instance.html">instance</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Builder</span><span class="symbol">.</span><span class="identifier">instance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$instance(com.github.salomonbrys.kodein.Kodein.Builder, com.github.salomonbrys.kodein.instance.T)/instance">instance</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../-c-instance/index.html"><span class="identifier">CInstance</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Creates an instance provider: will always return the given instance.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../provider.html">provider</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Builder</span><span class="symbol">.</span><span class="identifier">provider</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$provider(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.provider.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../-c-provider/index.html"><span class="identifier">CProvider</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Creates a factory: each time an instance is needed, the function <a href="../../provider.html#com.github.salomonbrys.kodein$provider(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.provider.T)))/creator">creator</a> function will be called.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../scoped-singleton.html">scopedSingleton</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Builder</span><span class="symbol">.</span><span class="identifier">scopedSingleton</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$scopedSingleton(com.github.salomonbrys.kodein.Kodein.Builder, com.github.salomonbrys.kodein.Scope((com.github.salomonbrys.kodein.scopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.scopedSingleton.C, com.github.salomonbrys.kodein.scopedSingleton.T)))/scope">scope</span><span class="symbol">:</span>&nbsp;<a href="../../-scope/index.html"><span class="identifier">Scope</span></a><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein$scopedSingleton(com.github.salomonbrys.kodein.Kodein.Builder, com.github.salomonbrys.kodein.Scope((com.github.salomonbrys.kodein.scopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.scopedSingleton.C, com.github.salomonbrys.kodein.scopedSingleton.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="identifier">C</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../-c-scoped-singleton/index.html"><span class="identifier">CScopedSingleton</span></a><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Creates a scoped singleton factory, effectively a <code>factory{Scope-&gt;T}</code>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../singleton.html">singleton</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Builder</span><span class="symbol">.</span><span class="identifier">singleton</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$singleton(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.singleton.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../-a-provider/index.html"><span class="identifier">AProvider</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Creates a singleton: will create an instance on first request and will subsequently always return the same instance.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../thread-singleton.html">threadSingleton</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">Builder</span><span class="symbol">.</span><span class="identifier">threadSingleton</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$threadSingleton(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.threadSingleton.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../-a-provider/index.html"><span class="identifier">AProvider</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Creates a thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

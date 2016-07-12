@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<title>CInstance - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">CInstance</a><br/>
+<br/>
+<h1>CInstance</h1>
+<code><span class="keyword">class </span><span class="identifier">CInstance</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-a-provider/index.html"><span class="identifier">AProvider</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/factories.kt#L170">(source)</a><br/>
+<p>Concrete instance provider: will always return the given instance.</p>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The type of the instance.<br/>
+<br/>
+<a name="instanceType"></a>
+<code>instanceType</code> - The type of the object, <emph>used for debug print only</emph>.<br/>
+<br/>
+<br/>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-init-.html">&lt;init&gt;</a></td>
+<td>
+<code><span class="identifier">CInstance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CInstance$<init>(java.lang.reflect.Type, com.github.salomonbrys.kodein.CInstance.T)/instanceType">instanceType</span><span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.CInstance$<init>(java.lang.reflect.Type, com.github.salomonbrys.kodein.CInstance.T)/instance">instance</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span></code><p>Concrete instance provider: will always return the given instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="description.html">description</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">description</span><span class="symbol">: </span><span class="identifier">String</span></code><p>The description of this factory (using simple type names), <emph>used for debug print only</emph>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="full-description.html">fullDescription</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">fullDescription</span><span class="symbol">: </span><span class="identifier">String</span></code><p>The description of this factory (using full type names), <emph>used for debug print only</emph>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="instance.html">instance</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">instance</span><span class="symbol">: </span><span class="identifier">T</span></code><p>The object that will always be returned.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../-a-provider/arg-type.html">argType</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">argType</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a></code><p>The type of the argument this factory will function for.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../-a-provider/created-type.html">createdType</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">createdType</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a></code><p>The type of object that is created by this factory.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../-a-provider/factory-name.html">factoryName</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">factoryName</span><span class="symbol">: </span><span class="identifier">String</span></code><p>The name of this factory, <emph>used for debug print only</emph>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="get-instance.html">getInstance</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getInstance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CInstance$getInstance(com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.Kodein.Key)/kodein">kodein</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.CInstance$getInstance(com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.Kodein.Key)/key">key</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/-key/index.html"><span class="identifier">Key</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code><p>Get an instance of type <code>T</code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../-a-provider/get-instance.html">getInstance</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getInstance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.AProvider$getInstance(com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.Kodein.Key, kotlin.Unit)/kodein">kodein</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.AProvider$getInstance(com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.Kodein.Key, kotlin.Unit)/key">key</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/-key/index.html"><span class="identifier">Key</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.AProvider$getInstance(com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.Kodein.Key, kotlin.Unit)/arg">arg</span><span class="symbol">:</span>&nbsp;<span class="identifier">Unit</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code><p>Get an instance of type <code>T</code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

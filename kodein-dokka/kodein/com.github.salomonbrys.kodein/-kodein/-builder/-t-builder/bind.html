@@ -1,0 +1,61 @@
+<HTML>
+<HEAD>
+<title>Kodein.Builder.TBuilder.bind - kodein</title>
+<link rel="stylesheet" href="../../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../../../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href="../../index.html">Kodein</a>&nbsp;/&nbsp;<a href="../index.html">Builder</a>&nbsp;/&nbsp;<a href="index.html">TBuilder</a>&nbsp;/&nbsp;<a href=".">bind</a><br/>
+<br/>
+<h1>bind</h1>
+<a name="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(java.lang.reflect.Type, kotlin.Any, kotlin.Boolean)"></a>
+<code><span class="keyword">fun </span><span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(java.lang.reflect.Type, kotlin.Any, kotlin.Boolean)/type">type</span><span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(java.lang.reflect.Type, kotlin.Any, kotlin.Boolean)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(java.lang.reflect.Type, kotlin.Any, kotlin.Boolean)/overrides">overrides</span><span class="symbol">:</span>&nbsp;<span class="identifier">Boolean</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="-type-binder/index.html"><span class="identifier">TypeBinder</span></a><span class="symbol">&lt;</span><span class="identifier">Any</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/Kodein.kt#L269">(source)</a><br/>
+<p>Starts the binding of a given type with a given tag.</p>
+<h3>Parameters</h3>
+<a name="type"></a>
+<code>type</code> - The type to bind.<br/>
+<br/>
+<a name="tag"></a>
+<code>tag</code> - The tag to bind.<br/>
+<br/>
+<a name="overrides"></a>
+<code>overrides</code> - Whether this bind <strong>must</strong> or <strong>must not</strong> override an existing binding.<br/>
+<p><strong>Return</strong><br/>
+The binder: call <a href="-type-binder/with.html">TypeBinder.with</a>) on it to finish the binding syntax and register the binding.</p>
+<br/>
+<br/>
+<a name="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(com.github.salomonbrys.kodein.TypeToken((com.github.salomonbrys.kodein.Kodein.Builder.TBuilder.bind.T)), kotlin.Any, kotlin.Boolean)"></a>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(com.github.salomonbrys.kodein.TypeToken((com.github.salomonbrys.kodein.Kodein.Builder.TBuilder.bind.T)), kotlin.Any, kotlin.Boolean)/type">type</span><span class="symbol">:</span>&nbsp;<a href="../../../-type-token/index.html"><span class="identifier">TypeToken</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(com.github.salomonbrys.kodein.TypeToken((com.github.salomonbrys.kodein.Kodein.Builder.TBuilder.bind.T)), kotlin.Any, kotlin.Boolean)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(com.github.salomonbrys.kodein.TypeToken((com.github.salomonbrys.kodein.Kodein.Builder.TBuilder.bind.T)), kotlin.Any, kotlin.Boolean)/overrides">overrides</span><span class="symbol">:</span>&nbsp;<span class="identifier">Boolean</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="-type-binder/index.html"><span class="identifier">TypeBinder</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/Kodein.kt#L280">(source)</a><br/>
+<a name="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(java.lang.Class((com.github.salomonbrys.kodein.Kodein.Builder.TBuilder.bind.T)), kotlin.Any, kotlin.Boolean)"></a>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(java.lang.Class((com.github.salomonbrys.kodein.Kodein.Builder.TBuilder.bind.T)), kotlin.Any, kotlin.Boolean)/type">type</span><span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html"><span class="identifier">Class</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(java.lang.Class((com.github.salomonbrys.kodein.Kodein.Builder.TBuilder.bind.T)), kotlin.Any, kotlin.Boolean)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(java.lang.Class((com.github.salomonbrys.kodein.Kodein.Builder.TBuilder.bind.T)), kotlin.Any, kotlin.Boolean)/overrides">overrides</span><span class="symbol">:</span>&nbsp;<span class="identifier">Boolean</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="-type-binder/index.html"><span class="identifier">TypeBinder</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/Kodein.kt#L291">(source)</a><br/>
+<p>Starts the binding of a given type with a given tag.</p>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The type of value to bind.<br/>
+<br/>
+<a name="type"></a>
+<code>type</code> - The type to bind.<br/>
+<br/>
+<a name="tag"></a>
+<code>tag</code> - The tag to bind.<br/>
+<br/>
+<a name="overrides"></a>
+<code>overrides</code> - Whether this bind <strong>must</strong> or <strong>must not</strong> override an existing binding.<br/>
+<p><strong>Return</strong><br/>
+The binder: call <a href="-type-binder/with.html">TypeBinder.with</a>) on it to finish the binding syntax and register the binding.</p>
+<br/>
+<br/>
+<a name="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(kotlin.Any, kotlin.Boolean)"></a>
+<code><span class="keyword">fun </span><span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(kotlin.Any, kotlin.Boolean)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.Kodein.Builder.TBuilder$bind(kotlin.Any, kotlin.Boolean)/overrides">overrides</span><span class="symbol">:</span>&nbsp;<span class="identifier">Boolean</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="-direct-binder/index.html"><span class="identifier">DirectBinder</span></a></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/Kodein.kt#L300">(source)</a><br/>
+<p>Starts a direct binding with a given tag. A direct bind does not define the type to be binded, the type will be defined according to the bound factory.</p>
+<h3>Parameters</h3>
+<a name="tag"></a>
+<code>tag</code> - The tag to bind.<br/>
+<br/>
+<a name="overrides"></a>
+<code>overrides</code> - Whether this bind <strong>must</strong> or <strong>must not</strong> override an existing binding.<br/>
+<p><strong>Return</strong><br/>
+The binder: call <a href="-direct-binder/from.html">DirectBinder.from</a>) on it to finish the binding syntax and register the binding.</p>
+<br/>
+<br/>
+</BODY>
+</HTML>

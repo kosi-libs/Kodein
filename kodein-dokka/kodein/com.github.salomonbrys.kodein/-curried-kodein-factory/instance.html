@@ -1,0 +1,33 @@
+<HTML>
+<HEAD>
+<title>CurriedKodeinFactory.instance - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href="index.html">CurriedKodeinFactory</a>&nbsp;/&nbsp;<a href=".">instance</a><br/>
+<br/>
+<h1>instance</h1>
+<a name="com.github.salomonbrys.kodein.CurriedKodeinFactory$instance(kotlin.Any)"></a>
+<code><span class="keyword">inline</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="keyword">reified</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">instance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CurriedKodeinFactory$instance(kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/KodeinAware.kt#L148">(source)</a><br/>
+<p>Gets an instance of <code>T</code> for the given tag from a curried factory with an <code>A</code> argument.</p>
+<p>Whether the returned object is a new instance at each call or not depends on the binding scope.</p>
+<br/>
+<br/>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The type of object to retrieve.<br/>
+<br/>
+<a name="tag"></a>
+<code>tag</code> - The bound tag, if any.<br/>
+<h3>Exceptions</h3>
+<a name="Kodein.NotFoundException"></a>
+<code>Kodein.NotFoundException</code> - if no factory was found.<br/>
+<br/>
+<a name="Kodein.DependencyLoopException"></a>
+<code>Kodein.DependencyLoopException</code> - If the instance construction triggered a dependency loop.<br/>
+<p><strong>Return</strong><br/>
+An instance.</p>
+<br/>
+<br/>
+</BODY>
+</HTML>

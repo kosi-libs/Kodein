@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<title>ScopeRegistry - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">ScopeRegistry</a><br/>
+<br/>
+<h1>ScopeRegistry</h1>
+<code><span class="keyword">class </span><span class="identifier">ScopeRegistry</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/userScopes.kt#L10">(source)</a><br/>
+<p>Represents a scope: used to store and retrieve scoped singleton objects.</p>
+<br/>
+<br/>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-init-.html">&lt;init&gt;</a></td>
+<td>
+<code><span class="identifier">ScopeRegistry</span><span class="symbol">(</span><span class="symbol">)</span></code><p>Represents a scope: used to store and retrieve scoped singleton objects.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="size.html">size</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">size</span><span class="symbol">: </span><span class="identifier">Int</span></code><p>The number of singleton objects currently created in this scope.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="clear.html">clear</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">clear</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code><p>Remove all objects from the scope.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="contains.html">contains</a></td>
+<td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">contains</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.ScopeRegistry$contains(com.github.salomonbrys.kodein.Kodein.Bind)/bind">bind</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/-bind/index.html"><span class="identifier">Bind</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Boolean</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="get.html">get</a></td>
+<td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">get</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.ScopeRegistry$get(com.github.salomonbrys.kodein.Kodein.Bind)/bind">bind</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/-bind/index.html"><span class="identifier">Bind</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Any</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="get-or-create.html">getOrCreate</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">getOrCreate</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.ScopeRegistry$getOrCreate(com.github.salomonbrys.kodein.Kodein.Bind, kotlin.Function0((com.github.salomonbrys.kodein.ScopeRegistry.getOrCreate.T)))/bind">bind</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/-bind/index.html"><span class="identifier">Bind</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.ScopeRegistry$getOrCreate(com.github.salomonbrys.kodein.Kodein.Bind, kotlin.Function0((com.github.salomonbrys.kodein.ScopeRegistry.getOrCreate.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code><p>Either get a singleton object if it exists in this scope, or create it if it does not.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="is-empty.html">isEmpty</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isEmpty</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Boolean</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="objects.html">objects</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">objects</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html"><span class="identifier">HashMap</span></a><span class="symbol">&lt;</span><a href="../-kodein/-bind/index.html"><span class="identifier">Bind</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="remove.html">remove</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">remove</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.ScopeRegistry$remove(com.github.salomonbrys.kodein.Kodein.Bind)/bind">bind</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/-bind/index.html"><span class="identifier">Bind</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Any</span><span class="symbol">?</span></code><p>Remove a singleton object from this scope, if it exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

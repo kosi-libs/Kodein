@@ -1,0 +1,28 @@
+<HTML>
+<HEAD>
+<title>KodeinInjectedBase.inject - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href="index.html">KodeinInjectedBase</a>&nbsp;/&nbsp;<a href=".">inject</a><br/>
+<br/>
+<h1>inject</h1>
+<a name="com.github.salomonbrys.kodein.KodeinInjectedBase$inject(com.github.salomonbrys.kodein.Kodein)"></a>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">inject</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.KodeinInjectedBase$inject(com.github.salomonbrys.kodein.Kodein)/kodein">kodein</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/Injected.kt#L26">(source)</a><br/>
+<p>Will inject all properties that were created with the <a href="injector.html">injector</a> with the values found in the provided Kodein object.</p>
+<p>Will also call all callbacks that were registered with <a href="on-injected.html">onInjected</a>.</p>
+<br/>
+<br/>
+<h3>Parameters</h3>
+<a name="kodein"></a>
+<code>kodein</code> - The kodein object to use to inject all properties.<br/>
+<h3>Exceptions</h3>
+<a name="Kodein.NotFoundException"></a>
+<code>Kodein.NotFoundException</code> - if one the properties is requesting a value that is not bound.<br/>
+<br/>
+<a name="Kodein.DependencyLoopException"></a>
+<code>Kodein.DependencyLoopException</code> - if one the instance properties is requesting a value whose construction triggered a dependency loop.<br/>
+<br/>
+<br/>
+</BODY>
+</HTML>

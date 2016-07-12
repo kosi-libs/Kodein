@@ -1,0 +1,102 @@
+<HTML>
+<HEAD>
+<title>CScopedSingleton - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">CScopedSingleton</a><br/>
+<br/>
+<h1>CScopedSingleton</h1>
+<code><span class="keyword">class </span><span class="identifier">CScopedSingleton</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-a-scoped/index.html"><span class="identifier">AScoped</span></a><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/userScopes.kt#L141">(source)</a><br/>
+<p>Concrete scoped singleton factory, effectively a <code>factory{Scope-&gt;T}</code>.</p>
+<h3>Parameters</h3>
+<a name="C"></a>
+<code>C</code> - The scope context type.<br/>
+<br/>
+<a name="T"></a>
+<code>T</code> - The singleton type.<br/>
+<br/>
+<a name="contextType"></a>
+<code>contextType</code> - The scope context type.<br/>
+<br/>
+<a name="createdType"></a>
+<code>createdType</code> - The singleton type.<br/>
+<br/>
+<a name="_scope"></a>
+<code>_scope</code> - The scope object in which the singleton will be stored.<br/>
+<br/>
+<a name="creator"></a>
+<code>creator</code> - A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.<br/>
+<br/>
+<br/>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-init-.html">&lt;init&gt;</a></td>
+<td>
+<code><span class="identifier">CScopedSingleton</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CScopedSingleton$<init>(java.lang.reflect.Type, java.lang.reflect.Type, com.github.salomonbrys.kodein.Scope((com.github.salomonbrys.kodein.CScopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CScopedSingleton.C, com.github.salomonbrys.kodein.CScopedSingleton.T)))/contextType">contextType</span><span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.CScopedSingleton$<init>(java.lang.reflect.Type, java.lang.reflect.Type, com.github.salomonbrys.kodein.Scope((com.github.salomonbrys.kodein.CScopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CScopedSingleton.C, com.github.salomonbrys.kodein.CScopedSingleton.T)))/createdType">createdType</span><span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.CScopedSingleton$<init>(java.lang.reflect.Type, java.lang.reflect.Type, com.github.salomonbrys.kodein.Scope((com.github.salomonbrys.kodein.CScopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CScopedSingleton.C, com.github.salomonbrys.kodein.CScopedSingleton.T)))/_scope">_scope</span><span class="symbol">:</span>&nbsp;<a href="../-scope/index.html"><span class="identifier">Scope</span></a><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.CScopedSingleton$<init>(java.lang.reflect.Type, java.lang.reflect.Type, com.github.salomonbrys.kodein.Scope((com.github.salomonbrys.kodein.CScopedSingleton.C)), kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CScopedSingleton.C, com.github.salomonbrys.kodein.CScopedSingleton.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="identifier">C</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span></code><p>Concrete scoped singleton factory, effectively a <code>factory{Scope-&gt;T}</code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="description.html">description</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">description</span><span class="symbol">: </span><span class="identifier">String</span></code><p>The description of this factory (using simple type names), <emph>used for debug print only</emph>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="full-description.html">fullDescription</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">fullDescription</span><span class="symbol">: </span><span class="identifier">String</span></code><p>The description of this factory (using full type names), <emph>used for debug print only</emph>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../-a-scoped/arg-type.html">argType</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">argType</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a></code><p>The type of the argument this factory will function for.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../-a-scoped/created-type.html">createdType</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">createdType</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a></code><p>The type of object that is created by this factory.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../-a-scoped/factory-name.html">factoryName</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">factoryName</span><span class="symbol">: </span><span class="identifier">String</span></code><p>The name of this factory, <emph>used for debug print only</emph>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="_get-context-and-registry.html">_getContextAndRegistry</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">_getContextAndRegistry</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CScopedSingleton$_getContextAndRegistry(com.github.salomonbrys.kodein.CScopedSingleton.C)/arg">arg</span><span class="symbol">:</span>&nbsp;<span class="identifier">C</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Pair</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<a href="../-scope-registry/index.html"><span class="identifier">ScopeRegistry</span></a><span class="symbol">&gt;</span></code><p>Retrieve the scope context and registry associated with the given argument.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

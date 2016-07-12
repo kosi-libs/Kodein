@@ -1,0 +1,74 @@
+<HTML>
+<HEAD>
+<title>withClass - kodein</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">kodein</a>&nbsp;/&nbsp;<a href="index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">withClass</a><br/>
+<br/>
+<h1>withClass</h1>
+<a name="com.github.salomonbrys.kodein$withClass(com.github.salomonbrys.kodein.withClass.T)"></a>
+<code><span class="keyword">inline</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="keyword">reified</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-kodein-aware.html"><span class="identifier">KodeinAware</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">withClass</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-curried-kodein-factory/index.html"><span class="identifier">CurriedKodeinFactory</span></a><span class="symbol">&lt;</span><a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html"><span class="identifier">Class</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/forClass.kt#L40">(source)</a><br/>
+<p>Allows to get a provider or an instance from a curried factory with a <code>Class</code> argument.</p>
+<p>The provider will give the factory the <code>Class</code> of the receiver as argument.</p>
+<br/>
+<br/>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The type of the receiver, will be the class provided to the factory.<br/>
+<p><strong>Receiver</strong><br/>
+The object whose class is used.</p>
+<p><strong>Return</strong><br/>
+An object from which you can get an instance or a provider.</p>
+<br/>
+<br/>
+<a name="com.github.salomonbrys.kodein$withClass(com.github.salomonbrys.kodein.withClass.T)"></a>
+<code><span class="keyword">inline</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="keyword">reified</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-kodein-injected.html"><span class="identifier">KodeinInjected</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">withClass</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-curried-injector-factory/index.html"><span class="identifier">CurriedInjectorFactory</span></a><span class="symbol">&lt;</span><a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html"><span class="identifier">Class</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/forClass.kt#L88">(source)</a><br/>
+<p>Allows to inject a provider or an instance from a curried factory with a <code>Class</code> argument.</p>
+<p>The provider will give the factory the <code>Class</code> of the receiver as argument.</p>
+<br/>
+<br/>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The type of the receiver, will be the class provided to the factory.<br/>
+<p><strong>Receiver</strong><br/>
+The object whose class is used.</p>
+<p><strong>Return</strong><br/>
+An object from which you can inject an instance or a provider.</p>
+<br/>
+<br/>
+<a name="com.github.salomonbrys.kodein$withClass(com.github.salomonbrys.kodein.LazyKodein, com.github.salomonbrys.kodein.withClass.T)"></a>
+<code><span class="keyword">inline</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="keyword">reified</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="-lazy-kodein/index.html"><span class="identifier">LazyKodein</span></a><span class="symbol">.</span><span class="identifier">withClass</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein$withClass(com.github.salomonbrys.kodein.LazyKodein, com.github.salomonbrys.kodein.withClass.T)/of">of</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="-curried-lazy-kodein-factory/index.html"><span class="identifier">CurriedLazyKodeinFactory</span></a><span class="symbol">&lt;</span><a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html"><span class="identifier">Class</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/forClass.kt#L113">(source)</a><br/>
+<p>Allows to lazily retrive a provider or an instance from a curried factory with a <code>Class</code> argument.</p>
+<p>The provider will give the factory the <code>Class</code> of the parameter as argument.</p>
+<br/>
+<br/>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The type of the parameter, will be the class provided to the factory.<br/>
+<br/>
+<a name="of"></a>
+<code>of</code> - The object whose class is used.<br/>
+<p><strong>Receiver</strong><br/>
+The lazy Kodein object to use for injection.</p>
+<p><strong>Return</strong><br/>
+An object from which you can inject an instance or a provider.</p>
+<br/>
+<br/>
+<a name="com.github.salomonbrys.kodein$withClass(com.github.salomonbrys.kodein.withClass.T)"></a>
+<code><span class="keyword">inline</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="keyword">reified</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-lazy-kodein-aware.html"><span class="identifier">LazyKodeinAware</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">withClass</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-curried-lazy-kodein-factory/index.html"><span class="identifier">CurriedLazyKodeinFactory</span></a><span class="symbol">&lt;</span><a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Class.html"><span class="identifier">Class</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/forClass.kt#L136">(source)</a><br/>
+<p>Allows to lazily retrive a provider or an instance from a curried factory with a <code>Class</code> argument.</p>
+<p>The provider will give the factory the <code>Class</code> of the receiver as argument.</p>
+<br/>
+<br/>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The type of the receiver, will be the class provided to the factory.<br/>
+<p><strong>Receiver</strong><br/>
+The object whose class is used.</p>
+<p><strong>Return</strong><br/>
+An object from which you can inject an instance or a provider.</p>
+<br/>
+<br/>
+</BODY>
+</HTML>

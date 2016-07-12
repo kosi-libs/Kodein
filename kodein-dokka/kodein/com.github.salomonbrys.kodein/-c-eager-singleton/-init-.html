@@ -1,0 +1,24 @@
+<HTML>
+<HEAD>
+<title>CEagerSingleton.<init> - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href="index.html">CEagerSingleton</a>&nbsp;/&nbsp;<a href=".">&lt;init&gt;</a><br/>
+<br/>
+<h1>&lt;init&gt;</h1>
+<code><span class="identifier">CEagerSingleton</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CEagerSingleton$<init>(com.github.salomonbrys.kodein.Kodein.Builder, java.lang.reflect.Type, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CEagerSingleton.T)))/builder">builder</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/-builder/index.html"><span class="identifier">Builder</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.CEagerSingleton$<init>(com.github.salomonbrys.kodein.Kodein.Builder, java.lang.reflect.Type, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CEagerSingleton.T)))/createdType">createdType</span><span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html"><span class="identifier">Type</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.CEagerSingleton$<init>(com.github.salomonbrys.kodein.Kodein.Builder, java.lang.reflect.Type, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CEagerSingleton.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="../-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span></code><br/>
+<p>Concrete eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.</p>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The created type.<br/>
+<br/>
+<a name="createdType"></a>
+<code>createdType</code> - The type of the created object.<br/>
+<br/>
+<a name="creator"></a>
+<code>creator</code> - The function that will be called as soon as Kodein is ready. Guaranteed to be called only once. Should create a new instance.<br/>
+<br/>
+<br/>
+</BODY>
+</HTML>

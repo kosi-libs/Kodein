@@ -1,0 +1,24 @@
+<HTML>
+<HEAD>
+<title>threadSingleton - kodein</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">kodein</a>&nbsp;/&nbsp;<a href="index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">threadSingleton</a><br/>
+<br/>
+<h1>threadSingleton</h1>
+<a name="com.github.salomonbrys.kodein$threadSingleton(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.threadSingleton.T)))"></a>
+<code><span class="keyword">inline</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="keyword">reified</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="-kodein/-builder/index.html"><span class="identifier">Builder</span></a><span class="symbol">.</span><span class="identifier">threadSingleton</span><span class="symbol">(</span><span class="keyword">noinline</span> <span class="identifier" id="com.github.salomonbrys.kodein$threadSingleton(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.threadSingleton.T)))/creator">creator</span><span class="symbol">:</span>&nbsp;<a href="-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="-a-provider/index.html"><span class="identifier">AProvider</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/factories.kt#L159">(source)</a><br/>
+<p>Creates a thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread.</p>
+<h3>Parameters</h3>
+<a name="T"></a>
+<code>T</code> - The created type.<br/>
+<br/>
+<a name="creator"></a>
+<code>creator</code> - The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance.<br/>
+<p><strong>Return</strong><br/>
+A thread singleton ready to be bound.</p>
+<br/>
+<br/>
+</BODY>
+</HTML>

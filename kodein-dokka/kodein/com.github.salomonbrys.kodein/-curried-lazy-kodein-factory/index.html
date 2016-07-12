@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<title>CurriedLazyKodeinFactory - kodein</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kodein</a>&nbsp;/&nbsp;<a href="../index.html">com.github.salomonbrys.kodein</a>&nbsp;/&nbsp;<a href=".">CurriedLazyKodeinFactory</a><br/>
+<br/>
+<h1>CurriedLazyKodeinFactory</h1>
+<code><span class="keyword">class </span><span class="identifier">CurriedLazyKodeinFactory</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code> <a href="https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/lazy.kt#L121">(source)</a><br/>
+<p>Allows to get a lazy provider or instance from a lazy factory with a curried argument.</p>
+<h3>Parameters</h3>
+<a name="A"></a>
+<code>A</code> - The type of argument that the factory takes.<br/>
+<br/>
+<br/>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-init-.html">&lt;init&gt;</a></td>
+<td>
+<code><span class="identifier">CurriedLazyKodeinFactory</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CurriedLazyKodeinFactory$<init>(kotlin.Function0((com.github.salomonbrys.kodein.Kodein)), kotlin.Function0((com.github.salomonbrys.kodein.CurriedLazyKodeinFactory.A)), com.github.salomonbrys.kodein.TypeToken((com.github.salomonbrys.kodein.CurriedLazyKodeinFactory.A)))/kodein">kodein</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="../-kodein/index.html"><span class="identifier">Kodein</span></a><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.CurriedLazyKodeinFactory$<init>(kotlin.Function0((com.github.salomonbrys.kodein.Kodein)), kotlin.Function0((com.github.salomonbrys.kodein.CurriedLazyKodeinFactory.A)), com.github.salomonbrys.kodein.TypeToken((com.github.salomonbrys.kodein.CurriedLazyKodeinFactory.A)))/arg">arg</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">A</span><span class="symbol">, </span><span class="identifier" id="com.github.salomonbrys.kodein.CurriedLazyKodeinFactory$<init>(kotlin.Function0((com.github.salomonbrys.kodein.Kodein)), kotlin.Function0((com.github.salomonbrys.kodein.CurriedLazyKodeinFactory.A)), com.github.salomonbrys.kodein.TypeToken((com.github.salomonbrys.kodein.CurriedLazyKodeinFactory.A)))/argType">argType</span><span class="symbol">:</span>&nbsp;<a href="../-type-token/index.html"><span class="identifier">TypeToken</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">)</span></code><p>Allows to get a lazy provider or instance from a lazy factory with a curried argument.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="arg.html">arg</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">arg</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">A</span></code><p>The argument to provide to the factory when retrieving values.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="arg-type.html">argType</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">argType</span><span class="symbol">: </span><a href="../-type-token/index.html"><span class="identifier">TypeToken</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code><p>The type of argument that the factory takes.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="kodein.html">kodein</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">kodein</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="../-kodein/index.html"><span class="identifier">Kodein</span></a></code><p>The Kodein provider to use for retrieval.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="instance.html">instance</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">instance</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CurriedLazyKodeinFactory$instance(kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Gets a lazy instance of <code>T</code> for the given tag from a curried factory with an <code>A</code> argument.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="instance-or-null.html">instanceOrNull</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">instanceOrNull</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CurriedLazyKodeinFactory$instanceOrNull(kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">?</span><span class="symbol">&gt;</span></code><p>Gets a lazy instance of <code>T</code> for the given tag from a curried factory with an <code>A</code> argument, or null if none is found.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="provider.html">provider</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">provider</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CurriedLazyKodeinFactory$provider(kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Gets a lazy provider of <code>T</code> for the given tag from a curried factory with an <code>A</code> argument.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="provider-or-null.html">providerOrNull</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">providerOrNull</span><span class="symbol">(</span><span class="identifier" id="com.github.salomonbrys.kodein.CurriedLazyKodeinFactory$providerOrNull(kotlin.Any)/tag">tag</span><span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Lazy</span><span class="symbol">&lt;</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code><p>Gets a lazy provider of <code>T</code> for the given tag from a curried factory with an <code>A</code> argument, or null if none is found.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
