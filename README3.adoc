@@ -143,7 +143,7 @@ This binds a type to an instance of this type that will lazily be created at fir
 Therefore, the provided function will only be called once: the first time an instance is needed.
 
 [source,kotlin]
-.Example: creates a `DataSource` singleton that will be initialized on first access.
+.Example: creates a `DataSource` singleton that will be initialized on first access
 ----
 val kodein = Kodein {
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
@@ -156,7 +156,7 @@ val kodein = Kodein {
 This is the same as a regular singleton, except that the provider method will be called as soon as the kodein instance is created and all bindings are defined.
 
 [source,kotlin]
-.Example: creates a `DataSource` singleton that will be initialized as soon as the binding block ends.
+.Example: creates a `DataSource` singleton that will be initialized as soon as the binding block ends
 ----
 val kodein = Kodein {
     // The SQLite connection will be opened as soon as the kodein instance is ready
@@ -171,7 +171,7 @@ This is the same as the singleton binding, except that each thread gets a differ
 Therefore, the provided function is called once per thread that needs the instance.
 
 [source,kotlin]
-.Example: creates a `Cache` object that will exist once per thread.
+.Example: creates a `Cache` object that will exist once per thread
 ----
 val kodein = Kodein {
     bind<Cache>() with threadSingleton { LRUCache(16 * 1024) }
@@ -198,7 +198,7 @@ val kodein = Kodein {
 All bindings can be tagged to allow you to bind different instances of the same type.
 
 [source,kotlin]
-.Example: different `Dice` bindings.
+.Example: different `Dice` bindings
 ----
 val kodein = Kodein {
     bind<Dice>() with provider { RandomDice(6) } // <1>
@@ -1216,6 +1216,10 @@ From this `Map<Kodein.Key, Factory<*, *>>`, you can explore all bindings, their 
 
 TIP: The https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/bindings.kt[bindings.kt] file exposes several extension functions to this map that can be useful for exploring it.
 
+
+== API documentation
+
+The API documentation can be found https://salomonbrys.github.io/Kodein/kodein-dokka/kodein/com.github.salomonbrys.kodein/index.html[here]!
 
 == Let's talk!
 
