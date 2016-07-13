@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>Kodein</title>
+    <link rel="stylesheet" type="text/css" href="css/asciidoctor.css" />
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/asciidoctor-all.min.js"></script>
+  </head>
+  <body>
+  
+  <div id="content">Loading...</div>
+  
+  <script type="text/javascript">
+    $.get("https://raw.githubusercontent.com/SalomonBrys/Kodein/master/README3.adoc", function(data) {
+    
+      var options = Opal.hash({
+	backend: 'html5',
+	safe: 'secure',
+	attributes: ['showtitle', 'icons=font@', 'platform=opal', 'platform-opal', 'env=browser', 'env-browser', 'chart-engine=chartist', 'data-uri!']
+      });
+      var adocHtml = Opal.Asciidoctor.$convert(data, options);
+    
+      $("#content").html(adocHtml);
+    })
+  </script>
+  
+  </body>
+  
+</html>
