@@ -2,6 +2,7 @@
 Author <salomon.brys@gmail.com>
 Revision 1.0, 2016-07-13
 :toc: macro
+:toclevels: 4
 
 :version: 3.0.0
 
@@ -44,7 +45,6 @@ Kodein is a very simple and yet very useful dependency retrieval container, it i
 
 [source,kotlin]
 .An example is always better than a thousand words
-.An example is always better than a thousand words
 ----
 val kodein = Kodein {
     bind<Dice>() with provider { RandomDice(0, 5) }
@@ -76,14 +76,6 @@ class Controller(private val kodein: Kodein) {
 [subs="attributes"]
 ----
 compile 'com.github.salomonbrys.kodein:kodein:{version}'
-----
-
-
-=== For Android
-
-[subs="attributes"]
-----
-compile 'com.github.salomonbrys.kodein:kodein-android:{version}'
 ----
 
 
@@ -277,7 +269,7 @@ class Dice(private val random: Random, private val sides: Int) {
 }
 ----
 
-It is really easy to bind `RandomDice` with it's transitive dependencies, by simply using `instance()` or `instance(tag)`:
+It is really easy to bind `RandomDice` with it's transitive dependencies, by simply using `instance()` or `instance(tag)`.
 
 [source, kotlin]
 .Bindings of `Dice` and of its transitive dependencies
@@ -393,7 +385,7 @@ val testModule = Kodein.Module(allowSilentOverride = true) {
 <1> Maybe adding a new binding, maybe overriding an existing, who knows?
 
 
-== Injection: Dependency retrieval
+== Dependency retrieval
 
 [source, kotlin]
 .Example bindings that are used trhoughout the chapter.
@@ -417,6 +409,8 @@ val kodein = Kodein {
 
 
 === Via Kodein methods
+
+==== On a Kodein object
 
 You can retrieve a dependency via a Kodein instance.
 
@@ -454,6 +448,23 @@ private val twentySideDice: Dice = kodein.with(6).instance()
 ----
 
 
+[[kodein-aware]]
+==== In a Kodein aware class
+
+You can have classes that implement the interface `KodeinAware`.
+Doing so has the benefit of having a simpler syntax for retrieval.
+
+[source, kotlin]
+.A kodeinAware class
+----
+class MyManager(override val kodein: Kodein) : KodeinAware {
+    val ds: DataSource = instance()
+}
+----
+
+All methods that are available to `Kodein` are available to a `KodeinAware` class.
+
+
 === Via lazy properties
 
 Lazy properties allow you to resolve the dependency upon first access.
@@ -469,6 +480,9 @@ class Controller(private val kodein: Kodein) {
 }
 ----
 
+`kodein.lazy.factoryOrNull`, `kodein.lazy.providerOrNull` and `kodein.lazy.instanceOrNull` are also available.
+
+
 You can curry factories and retrieve a lazy property with the same `lazy` access.
 
 [source, kotlin]
@@ -478,9 +492,22 @@ private val sixSideDiceProvider: () -> Dice by kodein.with(6).lazy.provider()
 private val twentySideDice: Dice by kodein.with(6).lazy.instance()
 ----
 
+If you don't know yet the parameter to curry the factory with, you can pass a lambda.
+That way, the parameter will be fetched only when needed.
+
+[source, kotlin]
+.Retrieving lazy curried factory properties with lazy parameters
+----
+private val randomSideDiceProvider: () -> Dice
+        by kodein.with { random.nextInt(20) + 1 }.lazy.provider()
+----
+
+
 
 [[injector]]
 === Via an injector
+
+==== On an injector object
 
 An injector is an object that you can use to inject all dependency properties in an object.
 
@@ -499,14 +526,19 @@ class Controller() {
     private val randomProvider: () -> Random by injector.provider() // <2>
     private val answerConstant: String by injector.instance("answer") // <2>
 
-    fun whenReady(kodein: Kodein) = injector.inject(kodein) // <3>
+    private val kodein by injector.kodein() // <3>
+
+    fun whenReady(kodein: Kodein) = injector.inject(kodein) // <4>
 }
 ----
 <1> Creating an injector
-<2> Injecting properties at construction.
-<3> Injecting all properties created by the injector.
+<2> Creating lazy properties.
+<3> Creating a lazy Kodein that will be available after injection.
+<4> Injecting all properties created by the injector.
 
 WARNING: If you try to access a property created by an injector *before* calling `injector.inject(kodein)`, a `KodeinInjector.UninjectedException` will be thrown.
+
+`injector.factoryOrNull`, `injector.providerOrNull` and `injector.instanceOrNull` are also available.
 
 As usual, you can curry factories by using `with`.
 
@@ -518,7 +550,28 @@ private val tenSideDiceProvider: Dice by injector.with(10).instance()
 ----
 
 
-=== via a lazy Kodein
+[[kodein-injected]]
+==== In a Kodein injected class
+
+You can have classes that implement the interface `KodeinInjected`.
+Doing so has the benefit of having a simpler syntax for injection.
+
+[source, kotlin]
+.A kodeinInjected class
+----
+class MyManager() : KodeinInjected {
+    override val injector = KodeinInjector()
+
+    val ds: DataSource by instance()
+}
+----
+
+All methods that are available to `KodeinInjector` are available to a `KodeinInjected` class.
+
+
+=== Via a lazy Kodein
+
+==== On a LazyKodein object
 
 Sometimes, you don't directly have access to a Kodein instance.
 In these cases, if you don't want to use an <<injector,injector>>, you can use `LazyKodein`.
@@ -564,6 +617,62 @@ class Controller() {
 <2> Only there will "doing bindings" will be printed.
 
 
+[[lazy-kodein-aware]]
+==== In a lazy Kodein aware class
+
+You can have classes that implement the interface `LazyKodeinAware`.
+Doing so has the benefit of having a simpler syntax for lazy property creation.
+
+[source, kotlin]
+.A LazykodeinAware class
+----
+class MyManager() : LazyKodeinAware {
+    override val kodein = LazyKodein { /* code to access a Kodein instance */ }
+
+    val ds: DataSource by instance()
+}
+----
+
+All methods that are available to `LazyKodein` are available to a `LazyKodeinAware` class.
+
+
+=== Class factories (such as loggers)
+
+Sometimes you need to retrieve objects that are dependent to the class of the object whose retrieval is for. +
+The most obvious example is loggers: you need loggers that will print the name of the class name of _the class they are in_.
+
+First, you need to declare a binding to a factory that takes a `Class` as argument.
+
+[source, kotlin]
+.Binding a logger
+----
+val kodein = Kodein {
+    bind<Logger>() with factory { cls: Class<*> -> LogManager.getLogger(cls) }
+}
+----
+
+Then, you can retrieve such bound types by using `withClassOf`.
+
+[source, kotlin]
+.Retrieving a logger
+----
+class MyManager(val kodein: Kodein) {
+    val logger = kodein.withClassOf(this).instance()
+}
+----
+
+If you are using a <<kodein-aware,Kodein aware class>>, a <<kodein-injected,Kodein injected class>> or a <<lazy-kodein-aware,lazy Kodein aware class>>, then it's even easier: simply use `withClass`.
+
+[source, kotlin]
+.Retrieving a logger in a KodeinAware class
+----
+class MyManager(override val kodein: Kodein): KodeinAware {
+    val logger = withClass().instance()
+}
+----
+
+NOTE: You can use `withClass` for factories that take a `Class<*>` as parameter, and `withKClass` for factories that take a `KClass<*>` as parameter.
+
 === In Java
 
 While Kodein does not allow you to declare modules or dependencies in Java, it does allow you to retrieve dependencies using a Java friendly API.
@@ -606,35 +715,125 @@ class JavaClass {
 ====
 
 
+== The god complex: One True Kodein
+
+Sometimes, you want one static Kodein for your entire application.
+E.g. you don't want to have to hold & pass a Kodein instance throughout your application.
+
+Kodein does not supports having a static instance _by default_, but proposes this paradigm in a separate module.
+
+=== Install
+
+==== With Maven
+
+[subs="attributes"]
+----
+&lt;dependency&gt;
+    &lt;groupId&gt;com.github.salomonbrys.kodein&lt;/groupId&gt;
+    &lt;artifactId&gt;kodein-global&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;
+&lt;/dependency&gt;
+----
+
+
+==== With Gradle
+
+[subs="attributes"]
+----
+compile 'com.github.salomonbrys.kodein:kodein-global:{version}'
+----
+
+
+=== Configuring
+
+You can import modules or extend kodein objects inside this global kodein using `Kodein.global.addImport` and `Kodein.global.addExtend`.
+
+[source, kotlin]
+.Adding a module inside the global Kodein
+----
+val apiModule = Kodein.Module { /* bindings... */ }
+
+fun installGlobal() {
+    Kodein.global.addImport(apiModule)
+}
+----
+
+CAUTION: The global Kodein object will effectively be constructed on first retrieval.
+         Once it is constructed, trying to configure it will throw an `IllegalStateException`.
+
+
+=== Using
+
+You can use the `Kodein.global` object like any `Kodein` object.
+
+[source, kotlin]
+.Using the global Kodein
+----
+val ds: DataSource = Kodein.global.instance()
+----
+
+CAUTION: Once you have retrieved the first value with `Kodein.global`, trying to configure it will throw an `IllegalStateException`.
+
+
+=== Being globally aware
+
+You can use the `GlobalKodeinAware` interface that needs no implementation to be aware of the global kodein.
+
+[source, kotlin]
+.A KodeinGlobalAware class
+----
+class MyManager() : KodeinGlobalAware {
+    val ds: DataSource = instance()
+}
+----
+
+Easy :)
+
+
 == Android
 
 [.lead]
 Kodein does work on Android!
 
-
-=== Bindings & retrieval
-
 You can use Kodein as-is in your Android project or use the very small util library `kodein-android`.
 
+
+=== Install
+
 .How to use `kodein-android`:
-1. Declare the dependency bindings in the Android `Application`, having it implements `KodeinAware`.
+. Add this line in your `dependencies` block in your application `build.gradle` file:
++
+[subs="attributes"]
+----
+compile 'com.github.salomonbrys.kodein:kodein-android:{version}'
+----
+
+. If you are using Proguard, you need to add the following line to your proguard configuration file:
++
+----
+-keepattributes Signature
+----
+
+. Declare the dependency bindings in the Android `Application`, having it implements `KodeinAware`.
 +
 [source, kotlin]
 .An Android `Application` class that implements `KodeinAware`
 ----
 class MyApp : Application(), KodeinAware {
 	override val kodein = Kodein {
-	/* bindings... */
+	/* bindings */
 	}
 }
 ----
 +
 TIP: Don't forget to declare the Application in the `AndroidManifest.xml` file!
 
-2. In your Activities, Fragments, and other context aware android classes, retrieve dependencies!
+. In your Activities, Fragments, and other context aware android classes, retrieve dependencies!
 
 There are different ways to access a Kodein instance and your dependencies.
 
+
+=== Bindings & retrieval
 
 ==== Using a LazyKodein
 
@@ -642,12 +841,12 @@ There are different ways to access a Kodein instance and your dependencies.
 From it, you can construct a `LazyKodein`.
 
 [source, kotlin]
-.Retrieving dependencies with `appKodein`
+.Retrieving dependencies with `LazyKodein` in Android
 ----
 class MyActivity : Activity() {
     val kodein = LazyKodein(appKodein)
 
-    val diceProvider: () -> Dice by kodein.lazyProvider() // <1>
+    val diceProvider: () -> Dice by kodein.provider() // <1>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val random: Random = kodein().instance()   // <2>
@@ -665,7 +864,7 @@ WARNING: You cannot use `kodein` with parenthesis and access the Kodein instance
 Using an injector allows you to resolve all dependencies in `onCreate`, reducing the cost of dependency first-access (but more processing happening in `onCreate`).
 
 [source, kotlin]
-.Retrieving dependencies with an injector
+.Retrieving dependencies with an injector in Android
 ----
 class MyActivity : Activity() {
     private val injector = KodeinInjector()
@@ -682,7 +881,68 @@ NOTE: Using this approach has an important advantage: as all dependencies are re
       If you only use `instance` (not `provider` nor `factory`), you can also be sure that there were no dependency loop.
 
 
-=== Android Scopes
+==== Being aware in Android
+
+`appKodein` cannot be accessed before an application has been created, before a fragment has been attached, and so on.
+Because of this, it is not recommended to use `KodeinAware` in Android. Prefer using `LazyKodeinAware` or `KodeinInjected`.
+
+[source, kotlin]
+.Retrieving dependencies with `LazyKodeinAware` in Android
+----
+class MyActivity : Activity(), LazyKodeinAware {
+    override val kodein = LazyKodein(appKodein)
+
+    val diceProvider: () -> Dice by provider()
+}
+----
+
+[source, kotlin]
+.Retrieving dependencies with `KodeinInjected` in Android
+----
+class MyActivity : Activity(), KodeinInjected {
+    override val injector = KodeinInjector()
+
+    val random: Random by instance()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        inject(appKodein())
+    }
+}
+----
+
+
+
+=== Android module
+
+Kodein-Android proposes a module that enables easy retrieval, with a context, of a lot of standard android services.
+
+This module is absolutely *optional*, you are free to use it or leave it ;).
+
+[source, kotlin]
+.Importing the android module
+----
+val kodein = Kodein {
+    import(androidModule)
+    /* other bindings */
+}
+----
+
+You can see everything that this module proposes in the https://github.com/SalomonBrys/Kodein/blob/master/kodein-android/src/main/kotlin/com/github/salomonbrys/kodein/android/AndroidModule.kt[AndroidModule.kt] file.
+
+To retrieve instances of bindings defined in this module, you can use `withContext`.
+
+[source, kotlin]
+.Using kodein to retrieve a `LayoutInflater`
+----
+class MyActivity : Activity(), LazyKodeinAware {
+    override val kodein = LazyKodein(appKodein)
+
+    val inflater: LayoutInflater by withContext(this).instance()
+}
+----
+
+
+=== Android scopes
 
 ==== The activity scope
 
@@ -766,6 +1026,10 @@ Here's an example of what this prints:
 ----
 
 As you can see, it's really easy to understand which type with which tag is binded to which implentation inside which scope.
+
+NOTE: Descriptions prints type names in a "kotlin-esque" way.
+      Because Kodein does not depends on `kotlin-reflect`, it uses java `Type` objects that do not contains nullability informations.
+      As such, the type display does not include nullability. Still, it's easier to read `List<*>` than `List<? extends Object>`.
 
 
 === Recursive dependency loop
@@ -897,7 +1161,32 @@ object myScope: AutoScope<Unit> {
 
 A factory function is an extension function to `Kodein.Builder` that returns a `Factory<A, T>`. You can use the `CFactory<A, T>` class for ease of use.
 If your scope is a provider scope (such as singleton), you can use the `CProvider<T>` class for ease of use.
-Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/scopes.kt) file. The `singleton` scope is very easy to understand and is a good starting point.
+Have a look at existing scopes in the https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/factories.kt[factories.kt] file. The `singleton` scope is very easy to understand and is a good starting point.
+
+
+=== Use the typed API
+
+Accessing and using `kodein.typed` is not reserved to Java.
+You can use it in Kotlin to access an API that directly uses `Type`, `TypeToken` or `Class` objects.
+
+In fact, most `Kodein` extension functions such as `kodein.instance<Type>()` are inline methods that proxy to this typed API.
+
+When defining bindings, in the `Kodein.Builder`, you can access the `typed` property to bind factories to a `Type`, a `TypeToken` or a `Class`.
+
+A `KodeinInjector` also provides a typed API, simply use `injector.typed`.
+
+
+=== Use TypeToken
+
+Kodein almost never uses java classes, because they are subject to type erasure.
+To get a real type, Kodein uses the `typeToken` function.
+
+The `typeToken` function produces a `TypeToken` object, which only contains a type.
+
+* `typeToken<String>().type` is the String's java `Class`.
+* `typeToken<List<String>>.type` is a `ParameterizedType` describing exactly a `List<String>`.
+
+`TypeToken` is a generic interface, that way, even if it's `type` is a weird type, functions that use a `TypeToken` (such as the typed API) can preserve type safety.
 
 
 === Bind the same type to different factories
@@ -907,6 +1196,25 @@ Because each binding is actually a _factory_, the bindings are not `([BindType],
 This means that any combination of these three information can be binded to it's own factory, which in turns means that you can bind the same type without tagging to different factories.
 
 CAUTION: Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
+
+
+=== Use the container API
+
+The KodeinContainer is the sacred Kodein object that contains all bindings and is responsible for retrieval.
+You can access it with `kodein.container`.
+In it, each `Factory` is bound to a `Kodein.Key`.
+
+In fact, all `Kodein.typed` functions are proxies to this container API.
+
+When defining bindings, in the `Kodein.Builder`, you can access the `container` property to bind factories to a `Kodein.Key` or a `Kodein.Bind`.
+
+
+=== Explore bindings
+
+You can access a *copy* of the bindings map with `kodein.container.bindings`. +
+From this `Map<Kodein.Key, Factory<*, *>>`, you can explore all bindings, their keys and factories.
+
+TIP: The https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/bindings.kt[bindings.kt] file exposes several extension functions to this map that can be useful for exploring it.
 
 
 == Let's talk!
