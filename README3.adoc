@@ -44,7 +44,7 @@ Kodein is a very simple and yet very useful dependency retrieval container, it i
 == Example
 
 [source,kotlin]
-.An example is always better than a thousand words
+.An example is always better than a thousand words:
 ----
 val kodein = Kodein {
     bind<Dice>() with provider { RandomDice(0, 5) }
@@ -97,7 +97,7 @@ toc::[]
 == Bindings: Declaring dependencies
 
 [source,kotlin]
-.Initialization of a Kodein variable
+.Example: initialization of a Kodein variable
 ----
 val kodein = Kodein {
 	/* Bindings */
@@ -115,7 +115,7 @@ This binds a type to a factory function, which is a function that takes an argum
 Each time you need an instance of the bound type, the function will be called.
 
 [source,kotlin]
-.Creates a new `Dice` each time the you need one, according to an `Int` representing the number of sides
+.Example: creates a new `Dice` each time the you need one, according to an `Int` representing the number of sides
 ----
 val kodein = Kodein {
     bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
@@ -129,7 +129,7 @@ This binds a type to a provider function, which is a function that takes no argu
 Each time you need an instance of the bound type, the function will be called.
 
 [source,kotlin]
-.Creates a new 6 sided `Dice` entry each time you need one
+.Example: creates a new 6 sided `Dice` entry each time you need one
 ----
 val kodein = Kodein {
     bind<Dice>() with provider { RandomDice(6) }
@@ -143,7 +143,7 @@ This binds a type to an instance of this type that will lazily be created at fir
 Therefore, the provided function will only be called once: the first time an instance is needed.
 
 [source,kotlin]
-.Creates a `DataSource` singleton that will be initialized on first access.
+.Example: creates a `DataSource` singleton that will be initialized on first access.
 ----
 val kodein = Kodein {
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
@@ -156,7 +156,7 @@ val kodein = Kodein {
 This is the same as a regular singleton, except that the provider method will be called as soon as the kodein instance is created and all bindings are defined.
 
 [source,kotlin]
-.Creates a `DataSource` singleton that will be initialized as soon as the binding block ends.
+.Example: creates a `DataSource` singleton that will be initialized as soon as the binding block ends.
 ----
 val kodein = Kodein {
     // The SQLite connection will be opened as soon as the kodein instance is ready
@@ -171,7 +171,7 @@ This is the same as the singleton binding, except that each thread gets a differ
 Therefore, the provided function is called once per thread that needs the instance.
 
 [source,kotlin]
-.Creates a `Cache` object that will exist once per thread.
+.Example: creates a `Cache` object that will exist once per thread.
 ----
 val kodein = Kodein {
     bind<Cache>() with threadSingleton { LRUCache(16 * 1024) }
@@ -184,7 +184,7 @@ val kodein = Kodein {
 This binds a type to an instance *already created*.
 
 [source,kotlin]
-.A `DataSource` binding to an already existing instance.
+.Example: a `DataSource` binding to an already existing instance.
 ----
 val kodein = Kodein {
     bind<DataSource>() with instance(SqliteDataSource.open("path/to/file")) // <1>
@@ -198,7 +198,7 @@ val kodein = Kodein {
 All bindings can be tagged to allow you to bind different instances of the same type.
 
 [source,kotlin]
-.Different `Dice` bindings.
+.Example: different `Dice` bindings.
 ----
 val kodein = Kodein {
     bind<Dice>() with provider { RandomDice(6) } // <1>
@@ -221,7 +221,7 @@ It is often useful to bind "configuration" constants.
 Contants are always tagged.
 
 [source,kotlin]
-.Two constants
+.Example: two constants
 ----
 val kodein = Kodein {
     constant("maxThread") with 8 // <1>
@@ -240,7 +240,7 @@ Sometimes, it may seem overkill to specify the type to `bind` if you are binding
 For this use case, you can transform any `bind<Type>() with scope` to `bind() from scope`.
 
 [source,kotlin]
-.Direct bindings
+.Example: direct bindings
 ----
 val kodein = Kodein {
     bind() from singleton { RandomDice(6) }
@@ -262,7 +262,7 @@ Such object can have their dependencies passed to their constructor.
 Thanks to Kotlin's killer type inference engine, Kodein makes retrieval of transitive dependencies really easy.
 
 [source, kotlin]
-.A class that needs transitive dependencies
+.Example: a class that needs transitive dependencies
 ----
 class Dice(private val random: Random, private val sides: Int) {
 /*...*/
@@ -272,7 +272,7 @@ class Dice(private val random: Random, private val sides: Int) {
 It is really easy to bind `RandomDice` with it's transitive dependencies, by simply using `instance()` or `instance(tag)`.
 
 [source, kotlin]
-.Bindings of `Dice` and of its transitive dependencies
+.Example: bindings of `Dice` and of its transitive dependencies
 ----
 val kodein = Kodein {
     bind<Dice>() with singleton { Dice(instance(), instance("max")) } // <1>
@@ -299,7 +299,7 @@ A module is an object that you can construct the exact same way as you construct
 
 
 [source, kotlin]
-.A simple module
+.Example: a simple module
 ----
 val apiModule = Kodein.Module {
     bind<API>() with singleton { APIImpl() }
@@ -310,7 +310,7 @@ val apiModule = Kodein.Module {
 Then, in your Kodein binding block:
 
 [source, kotlin]
-.Imports the module
+.Example: imports the module
 ----
 val kodein = Kodein {
     import(apiModule)
@@ -327,7 +327,7 @@ NOTE: Modules are *definitions*, they will re-declare their bindings in each kod
 Kodein allows you to create a new kodein instance by extending an existing one.
 
 [source, kotlin]
-.Extends an already existing Kodein instance
+.Example: extends an already existing Kodein instance
 ----
 val subKodein = Kodein {
     extend(appKodein)
@@ -348,7 +348,7 @@ However, when intended, it can be really interesting to override a binding, espe
 You can override an existing binding by specifying explicitly that it is an override.
 
 [source, kotlin]
-.Binds twice the same type, the second time explitly specifying an override
+.Example: binds twice the same type, the second time explitly specifying an override
 ----
 val kodein = Kodein {
     bind<API>() with singleton { APIImpl() }
@@ -361,7 +361,7 @@ By default, modules are not allowed to override, **even explicitely**.
 You can allow a module to override some of your bindings when you import it (the same goes for extension):
 
 [source, kotlin]
-.Imports a module and giving it the right to override existing bindings.
+.Example: imports a module and giving it the right to override existing bindings.
 ----
 val kodein = Kodein {
     /* ... */
@@ -376,7 +376,7 @@ Those cases should be rare and you should know what you are doing.
 
 
 [source, kotlin]
-.Declaring a module in which each binding may or may not override existing bindings.
+.Example: declaring a module in which each binding may or may not override existing bindings.
 ----
 val testModule = Kodein.Module(allowSilentOverride = true) {
     bind<EmailClient>() with singleton { MockEmailClient() } <1>
@@ -388,7 +388,7 @@ val testModule = Kodein.Module(allowSilentOverride = true) {
 == Dependency retrieval
 
 [source, kotlin]
-.Example bindings that are used trhoughout the chapter.
+.Example bindings that are used trhoughout the chapter:
 ----
 val kodein = Kodein {
     bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
@@ -415,7 +415,7 @@ val kodein = Kodein {
 You can retrieve a dependency via a Kodein instance.
 
 [source, kotlin]
-.Retrieving bindings
+.Example: retrieving bindings
 ----
 val diceFactory: (Int) -> Dice = kodein.factory()
 val dataSource: DataSource = kodein.instance()
@@ -430,7 +430,7 @@ WARNING: When asking for a type that was not bound, a `Kodein.NotFoundException`
 If you're not sure (or simply don't know) if the type has been bound, you can use `*OrNull` methods.
 
 [source, kotlin]
-.Retrieving bindings that may not have been bound
+.Example: retrieving bindings that may not have been bound
 ----
 val diceFactory: ((Int) -> Dice)? = kodein.factoryOrNull()
 val dataSource: DataSource? = kodein.instanceOrNull()
@@ -441,7 +441,7 @@ val answerConstant: String? = kodein.instanceOrNull("answer")
 You can retrieve a provider or an instance from a factory bound type by using `with` (this is called _currying_).
 
 [source, kotlin]
-.Currying factories
+.Example: currying factories
 ----
 private val sixSideDiceProvider: () -> Dice = kodein.with(6).provider()
 private val twentySideDice: Dice = kodein.with(6).instance()
@@ -455,7 +455,7 @@ You can have classes that implement the interface `KodeinAware`.
 Doing so has the benefit of having a simpler syntax for retrieval.
 
 [source, kotlin]
-.A kodeinAware class
+.Example: a kodeinAware class
 ----
 class MyManager(override val kodein: Kodein) : KodeinAware {
     val ds: DataSource = instance()
@@ -470,7 +470,7 @@ All methods that are available to `Kodein` are available to a `KodeinAware` clas
 Lazy properties allow you to resolve the dependency upon first access.
 
 [source, kotlin]
-.Retrieving lazy properties
+.Example: retrieving lazy properties
 ----
 class Controller(private val kodein: Kodein) {
     private val diceFactory: (Int) -> Dice by kodein.lazy.factory()
@@ -486,7 +486,7 @@ class Controller(private val kodein: Kodein) {
 You can curry factories and retrieve a lazy property with the same `lazy` access.
 
 [source, kotlin]
-.Retrieving lazy curried factory properties
+.Example: retrieving lazy curried factory properties
 ----
 private val sixSideDiceProvider: () -> Dice by kodein.with(6).lazy.provider()
 private val twentySideDice: Dice by kodein.with(6).lazy.instance()
@@ -496,7 +496,7 @@ If you don't know yet the parameter to curry the factory with, you can pass a la
 That way, the parameter will be fetched only when needed.
 
 [source, kotlin]
-.Retrieving lazy curried factory properties with lazy parameters
+.Example: retrieving lazy curried factory properties with lazy parameters
 ----
 private val randomSideDiceProvider: () -> Dice
         by kodein.with { random.nextInt(20) + 1 }.lazy.provider()
@@ -516,7 +516,7 @@ An injector is an object that you can use to inject all dependency properties in
 * Declare its dependencies without a Kodein instance.
 
 [source, kotlin]
-.Retrieving properties via an injector
+.Example: retrieving properties via an injector
 ----
 class Controller() {
     private val injector = KodeinInjector() // <1>
@@ -543,7 +543,7 @@ WARNING: If you try to access a property created by an injector *before* calling
 As usual, you can curry factories by using `with`.
 
 [source, kotlin]
-.Creating curried factory properties
+.Example: creating curried factory properties
 ----
 private val sixSideDiceProvider: () -> Dice by injector.with(6).provider()
 private val tenSideDiceProvider: Dice by injector.with(10).instance()
@@ -557,7 +557,7 @@ You can have classes that implement the interface `KodeinInjected`.
 Doing so has the benefit of having a simpler syntax for injection.
 
 [source, kotlin]
-.A kodeinInjected class
+.Example: a kodeinInjected class
 ----
 class MyManager() : KodeinInjected {
     override val injector = KodeinInjector()
@@ -577,7 +577,7 @@ Sometimes, you don't directly have access to a Kodein instance.
 In these cases, if you don't want to use an <<injector,injector>>, you can use `LazyKodein`.
 
 [source, kotlin]
-.Retrieving properties via an injector
+.Example: retrieving properties via an injector
 ----
 class Controller() {
     private val kodein = LazyKodein { /* code to access a Kodein instance */ } // <1>
@@ -598,7 +598,7 @@ You can create a LazyKodein with `Kodein.lazy`.
 When doing so, even the bindings will be declared only when the first retrieval happens.
 
 [source, kotlin]
-.Using `Kodein.lazy`
+.Example: using `Kodein.lazy`
 ----
 val kodein = Kodein.lazy { // <1>
     println("doing bindings")
@@ -624,7 +624,7 @@ You can have classes that implement the interface `LazyKodeinAware`.
 Doing so has the benefit of having a simpler syntax for lazy property creation.
 
 [source, kotlin]
-.A LazykodeinAware class
+.Example: a LazykodeinAware class
 ----
 class MyManager() : LazyKodeinAware {
     override val kodein = LazyKodein { /* code to access a Kodein instance */ }
@@ -644,7 +644,7 @@ The most obvious example is loggers: you need loggers that will print the name o
 First, you need to declare a binding to a factory that takes a `Class` as argument.
 
 [source, kotlin]
-.Binding a logger
+.Example: binding a logger
 ----
 val kodein = Kodein {
     bind<Logger>() with factory { cls: Class<*> -> LogManager.getLogger(cls) }
@@ -654,7 +654,7 @@ val kodein = Kodein {
 Then, you can retrieve such bound types by using `withClassOf`.
 
 [source, kotlin]
-.Retrieving a logger
+.Example: retrieving a logger
 ----
 class MyManager(val kodein: Kodein) {
     val logger = kodein.withClassOf(this).instance()
@@ -664,7 +664,7 @@ class MyManager(val kodein: Kodein) {
 If you are using a <<kodein-aware,Kodein aware class>>, a <<kodein-injected,Kodein injected class>> or a <<lazy-kodein-aware,lazy Kodein aware class>>, then it's even easier: simply use `withClass`.
 
 [source, kotlin]
-.Retrieving a logger in a KodeinAware class
+.Example: retrieving a logger in a KodeinAware class
 ----
 class MyManager(override val kodein: Kodein): KodeinAware {
     val logger = withClass().instance()
@@ -679,7 +679,7 @@ While Kodein does not allow you to declare modules or dependencies in Java, it d
 Simply give `kodein.typed` to your Java classes, and you can use Kodein in Java:
 
 [source, java]
-.Using Kodein in Java
+.Example: using Kodein in Java
 ----
 public class JavaClass {
     private final Function1<Integer, Dice> diceFactory;
@@ -702,7 +702,7 @@ Remember that Java is subject to type erasure.
 Therefore, if you registered a generic Class binding such as `bind<List<String>>()`, in order to retrieve it you have to use `TypeReference` to circumvent Java's type erasure.
 
 [source, java]
-.Using `TypeReference` in Java
+.Example: using `TypeReference` in Java
 ----
 class JavaClass {
     private final List<String> list;
@@ -749,7 +749,7 @@ compile 'com.github.salomonbrys.kodein:kodein-global:{version}'
 You can import modules or extend kodein objects inside this global kodein using `Kodein.global.addImport` and `Kodein.global.addExtend`.
 
 [source, kotlin]
-.Adding a module inside the global Kodein
+.Example: adding a module inside the global Kodein
 ----
 val apiModule = Kodein.Module { /* bindings... */ }
 
@@ -767,7 +767,7 @@ CAUTION: The global Kodein object will effectively be constructed on first retri
 You can use the `Kodein.global` object like any `Kodein` object.
 
 [source, kotlin]
-.Using the global Kodein
+.Example: using the global Kodein
 ----
 val ds: DataSource = Kodein.global.instance()
 ----
@@ -780,7 +780,7 @@ CAUTION: Once you have retrieved the first value with `Kodein.global`, trying to
 You can use the `GlobalKodeinAware` interface that needs no implementation to be aware of the global kodein.
 
 [source, kotlin]
-.A KodeinGlobalAware class
+.Example: a KodeinGlobalAware class
 ----
 class MyManager() : KodeinGlobalAware {
     val ds: DataSource = instance()
@@ -817,7 +817,7 @@ compile 'com.github.salomonbrys.kodein:kodein-android:{version}'
 . Declare the dependency bindings in the Android `Application`, having it implements `KodeinAware`.
 +
 [source, kotlin]
-.An Android `Application` class that implements `KodeinAware`
+.Example: an Android `Application` class that implements `KodeinAware`
 ----
 class MyApp : Application(), KodeinAware {
 	override val kodein = Kodein {
@@ -841,7 +841,7 @@ There are different ways to access a Kodein instance and your dependencies.
 From it, you can construct a `LazyKodein`.
 
 [source, kotlin]
-.Retrieving dependencies with `LazyKodein` in Android
+.Example: retrieving dependencies with `LazyKodein` in Android
 ----
 class MyActivity : Activity() {
     val kodein = LazyKodein(appKodein)
@@ -864,7 +864,7 @@ WARNING: You cannot use `kodein` with parenthesis and access the Kodein instance
 Using an injector allows you to resolve all dependencies in `onCreate`, reducing the cost of dependency first-access (but more processing happening in `onCreate`).
 
 [source, kotlin]
-.Retrieving dependencies with an injector in Android
+.Example: retrieving dependencies with an injector in Android
 ----
 class MyActivity : Activity() {
     private val injector = KodeinInjector()
@@ -887,7 +887,7 @@ NOTE: Using this approach has an important advantage: as all dependencies are re
 Because of this, it is not recommended to use `KodeinAware` in Android. Prefer using `LazyKodeinAware` or `KodeinInjected`.
 
 [source, kotlin]
-.Retrieving dependencies with `LazyKodeinAware` in Android
+.Example: retrieving dependencies with `LazyKodeinAware` in Android
 ----
 class MyActivity : Activity(), LazyKodeinAware {
     override val kodein = LazyKodein(appKodein)
@@ -897,7 +897,7 @@ class MyActivity : Activity(), LazyKodeinAware {
 ----
 
 [source, kotlin]
-.Retrieving dependencies with `KodeinInjected` in Android
+.Example: retrieving dependencies with `KodeinInjected` in Android
 ----
 class MyActivity : Activity(), KodeinInjected {
     override val injector = KodeinInjector()
@@ -919,7 +919,7 @@ Kodein-Android proposes a module that enables easy retrieval, with a context, of
 This module is absolutely *optional*, you are free to use it or leave it ;).
 
 [source, kotlin]
-.Importing the android module
+.Example: importing the android module
 ----
 val kodein = Kodein {
     import(androidModule)
@@ -932,7 +932,7 @@ You can see everything that this module proposes in the https://github.com/Salom
 To retrieve instances of bindings defined in this module, you can use `withContext`.
 
 [source, kotlin]
-.Using kodein to retrieve a `LayoutInflater`
+.Example: using kodein to retrieve a `LayoutInflater`
 ----
 class MyActivity : Activity(), LazyKodeinAware {
     override val kodein = LazyKodein(appKodein)
@@ -950,7 +950,7 @@ Sometimes, you need to define "activity singletons": objects that will be single
 For this, you can use the activity scope.
 
 [source, kotlin]
-.Using the activity scope
+.Example: using the activity scope
 ----
 val kodein = Kodein {
     bind<Logger>() with activitySingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
@@ -961,7 +961,7 @@ val kodein = Kodein {
 To retrieve the objects thusly bound, you need to inject a factory which takes the activity as parameter.
 
 [source, kotlin]
-.Retrieving an activity scoped singleton
+.Example: retrieving an activity scoped singleton
 ----
 val logger = kodein.with(getActivity()).instance()
 ----
@@ -972,7 +972,7 @@ val logger = kodein.with(getActivity()).instance()
 If you don't want to being required an activity to inject your objects, you can use the "auto activity scope".
 
 [source, kotlin]
-.Using the auto activity scope
+.Example: using the auto activity scope
 ----
 val kodein = Kodein {
     bind<Logger>() with autoActivitySingleton { LogManager.getNamedLogger(it.localClassName) }
@@ -980,7 +980,7 @@ val kodein = Kodein {
 ----
 
 [source, kotlin]
-.Retrieving an auto activity scoped singleton
+.Example: retrieving an auto activity scoped singleton
 ----
 val logger = kodein.instance<Logger>()
 ----
@@ -990,7 +990,7 @@ val logger = kodein.instance<Logger>()
 In your `Application` class, in the `onCreate` method, you must add this line:
 
 [source, kotlin]
-.Registering kodein's lifecycle manager to enable the auto activity scope to work.
+.Example: registering kodein's lifecycle manager to enable the auto activity scope to work
 ----
 class MyActivity : Activity {
     override fun onCreate() {
@@ -1017,7 +1017,7 @@ You can easily print bindings with `println(kodein.container.bindings.descriptio
 
 Here's an example of what this prints:
 
-.kodein.container.bindings.description
+.An example of kodein.container.bindings.description:
 ----
         bind<Dice>() with factory { Int -> RandomDice }
         bind<DataSource>() with singleton { SQLiteDataSource }
@@ -1037,7 +1037,7 @@ NOTE: Descriptions prints type names in a "kotlin-esque" way.
 When it detects a recursive dependency, Kodein will throw a `Kodein.DependencyLoopException`.
 The message of the exception explains how the loop happened.
 
-.An example of recursive dependency loop
+.An example of recursive dependency loop:
 ----
 com.github.salomonbrys.kodein.Kodein$DependencyLoopException: Dependency recursion:
        ╔═> bind<com.test.A>()
@@ -1058,7 +1058,7 @@ You can define callbacks to be called once the kodein instance is ready and all 
 This can be usefull to do some "starting" jobs.
 
 [source, kotlin]
-.Registering a callback at binding time
+.Example: registering a callback at binding time
 ----
 val appModule = Kodein.Module {
     import(engineModule)
@@ -1085,7 +1085,7 @@ Standard ways of doing so is to use the `userData` property of the context, if i
 To declare bindings in your scope, use `scopedSingleton`.
 
 [source, kotlin]
-.Defining a scope and binding a singleton inside it
+.Example: defining a scope and binding a singleton inside it
 ----
 object myScope: Scope<Request> { // <1>
     override fun getRegistry(context: Request): ScopeRegistry
@@ -1103,7 +1103,7 @@ val kodein = Kodein {
 To retrieve a scoped singleton bound type, you must retrive *a factory* and then provide it the context.
 
 [source, kotlin]
-.Using a scope
+.Example: using a scope
 ----
 val logger = kodein.with(getRequest()).instance()
 ----
@@ -1121,7 +1121,7 @@ To define an auto scope that can contain auto scoped singleton, you must define 
 To declare bindings in your scope, use `autoScopedSingleton`.
 
 [source, kotlin]
-.Defining an scope and binding a singleton inside it
+.Example: defining an scope and binding a singleton inside it
 ----
 object myScope: AutoScope<Request> { // <1>
     override fun getRegistry(context: Request): ScopeRegistry
@@ -1138,7 +1138,7 @@ val kodein = Kodein {
 To retrieve an auto scoped singleton bound type, you can retrive *a provider* or *an instance*.
 
 [source, kotlin]
-.Using an auto scope, without knowing it
+.Example: using an auto scope, without knowing it
 ----
 val logger: Logger = kodein.instance()
 ----
@@ -1147,7 +1147,7 @@ val logger: Logger = kodein.instance()
 ====
 If your auto scope does not depends on a context, and always yields the same `ScopeRegistry`, then it's very simple:
 
-.Defining a static auto scope
+.Example: defining a static auto scope
 ----
 object myScope: AutoScope<Unit> {
     private val _registry = ScopeRegistry()
