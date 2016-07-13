@@ -107,7 +107,7 @@ inline fun <reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null): T
  * @property arg A function that provides the argument that will be passed to the factory.
  * @property argType The type of argument that the factory takes.
  */
-class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType: TypeToken<A>) {
+class CurriedKodeinFactory<A>(val kodein: () -> Kodein, val arg: () -> A, val argType: TypeToken<A>) {
 
     /**
      * Gets a provider of `T` for the given tag from a curried factory with an `A` argument.
@@ -120,7 +120,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType:
      * @throws Kodein.NotFoundException if no factory was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    inline fun <reified T : Any> provider(tag: Any? = null): () -> T = kodein.typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
+    inline fun <reified T : Any> provider(tag: Any? = null): () -> T = kodein().typed.factory(argType, typeToken<T>(), tag).toProvider(arg)
 
     /**
      * Gets a provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -132,7 +132,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType:
      * @return A provider, or null if no factory was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = kodein.typed.factoryOrNull(argType, typeToken<T>(), tag)?.toProvider(arg)
+    inline fun <reified T : Any> providerOrNull(tag: Any? = null): (() -> T)? = kodein().typed.factoryOrNull(argType, typeToken<T>(), tag)?.toProvider(arg)
 
     /**
      * Gets an instance of `T` for the given tag from a curried factory with an `A` argument.
@@ -145,7 +145,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType:
      * @throws Kodein.NotFoundException if no factory was found.
      * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
      */
-    inline fun <reified T : Any> instance(tag: Any? = null): T = kodein.typed.factory(argType, typeToken<T>(), tag).invoke(arg())
+    inline fun <reified T : Any> instance(tag: Any? = null): T = kodein().typed.factory(argType, typeToken<T>(), tag).invoke(arg())
 
     /**
      * Gets an instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -157,7 +157,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType:
      * @return An instance, or null if no factory was found.
      * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
      */
-    inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = kodein.typed.factoryOrNull(argType, typeToken<T>(), tag)?.invoke(arg())
+    inline fun <reified T : Any> instanceOrNull(tag: Any? = null): T? = kodein().typed.factoryOrNull(argType, typeToken<T>(), tag)?.invoke(arg())
 }
 
 /**
@@ -168,7 +168,7 @@ class CurriedKodeinFactory<A>(val kodein: Kodein, val arg: () -> A, val argType:
  * @property arg A function that provides the argument that will be passed to the factory.
  * @return An object from which you can get an instance or a provider.
  */
-inline fun <reified A> KodeinAwareBase.with(noinline arg: () -> A): CurriedKodeinFactory<A> = CurriedKodeinFactory(kodein, arg, typeToken())
+inline fun <reified A> KodeinAwareBase.with(noinline arg: () -> A): CurriedKodeinFactory<A> = CurriedKodeinFactory({ kodein }, arg, typeToken())
 
 /**
  * Allows to get a provider or an instance from a curried factory with an `A` argument.

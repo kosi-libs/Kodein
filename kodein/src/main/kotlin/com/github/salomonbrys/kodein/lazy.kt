@@ -15,6 +15,11 @@ interface LazyKodeinAwareBase {
 }
 
 /**
+ * Allows lazy retrieval from a [Kodein] or [KodeinAware] object.
+ */
+val KodeinAwareBase.lazy: LazyKodein get() = LazyKodein(lazy { kodein })
+
+/**
  * An object that wraps a Kodein `Lazy` object and acts both as a `Lazy` property delegate & a function.
  *
  * @param k The lazy property delegate to wrap.
@@ -182,6 +187,15 @@ inline fun <reified A> LazyKodeinAwareBase.with(noinline arg: () -> A): CurriedL
  * @return An object from which you can get an instance or a provider.
  */
 inline fun <reified A> LazyKodeinAwareBase.with(arg: A): CurriedLazyKodeinFactory<A> = with { arg }
+
+/**
+ * Allows lazy retrieval.
+ *
+ * Example: `val manager: Manager by withClass().lazy.instance()`
+ *
+ * @param A The type of argument to pass to the curried factory.
+ */
+val <A> CurriedKodeinFactory<A>.lazy: CurriedLazyKodeinFactory<A> get() = CurriedLazyKodeinFactory(kodein, arg, argType)
 
 
 
