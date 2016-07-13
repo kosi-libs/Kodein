@@ -33,6 +33,8 @@ class LazyKodein(k: Lazy<Kodein>) : Lazy<Kodein> by k, () -> Kodein, LazyKodeinA
      * Calling this for the first time will effectively construct the kodein object.
      */
     override fun invoke(): Kodein = value
+
+    constructor(f: () -> Kodein) : this(lazy(f))
 }
 
 /**
@@ -40,7 +42,7 @@ class LazyKodein(k: Lazy<Kodein>) : Lazy<Kodein> by k, () -> Kodein, LazyKodeinA
  *
  * @param f The function to get a Kodein, guaranteed to be called only once.
  */
-fun lazyKodein(f: Kodein.Builder.() -> Unit) = LazyKodein(lazy { Kodein(init = f) })
+fun Kodein.Companion.lazy(f: Kodein.Builder.() -> Unit) = LazyKodein(kotlin.lazy { invoke(init = f) })
 
 
 

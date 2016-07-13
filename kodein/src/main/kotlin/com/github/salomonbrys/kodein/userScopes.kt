@@ -75,7 +75,7 @@ class ScopeRegistry {
 interface Scope<in C> {
 
     /**
-     * Get a registry for a given context.
+     * Get a registry for a given context. Should always return the same registry for the same context.
      *
      * @param context The context associated with the returned registry.
      * @return The registry associated with the given context.
