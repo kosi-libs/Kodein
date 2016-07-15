@@ -98,20 +98,14 @@ class KodeinWrappedType(val type: Type) : Type {
      */
     private var _hashCode: Int = 0
 
-    /**
-     * Computes the hash code.
-     *
-     * Will be computed only once.
-     */
+    /** @suppress */
     override fun hashCode(): Int {
         if (_hashCode == 0)
             _hashCode = Func.HashCode(type)
         return _hashCode
     }
 
-    /**
-     * Check recursively that two types are equal.
-     */
+    /** @suppress */
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Type)
             return false

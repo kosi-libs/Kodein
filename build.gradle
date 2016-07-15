@@ -21,6 +21,7 @@ allprojects {
     apply plugin: 'maven'
     apply plugin: 'signing'
     apply plugin: 'idea'
+    apply plugin: 'org.jetbrains.dokka'
 
     repositories {
         mavenCentral()

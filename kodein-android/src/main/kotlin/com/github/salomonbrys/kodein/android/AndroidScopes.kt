@@ -30,9 +30,18 @@ object activityScope : AutoScope<Activity> {
     private var _currentActivity: Activity? = null
 
 
+    /**
+     * Get a registry for a given activity. Will always return the same registry for the same activity.
+     *
+     * @param context The activity associated with the returned registry.
+     * @return The registry associated with the given activity.
+     */
     override fun getRegistry(context: Activity): ScopeRegistry
             = synchronized(_activityScopes) { _activityScopes.getOrPut(context) { ScopeRegistry() } }
 
+    /**
+     * @return The last activity that was displayed to the screen..
+     */
     override fun getContext()
             = _currentActivity ?: throw IllegalStateException("There are no current activity. This can either mean that you forgot to register the activityScope.lifecycleManager in your application or that there is currently no activity in the foreground.")
 
@@ -49,13 +58,20 @@ object activityScope : AutoScope<Activity> {
      * ```
      */
     object lifecycleManager : Application.ActivityLifecycleCallbacks {
+        /** @suppress */
         override fun onActivityCreated(act: Activity?, b: Bundle?) { _currentActivity = act }
+        /** @suppress */
         override fun onActivityStarted(act: Activity)              { _currentActivity = act }
+        /** @suppress */
         override fun onActivityResumed(act: Activity)              { _currentActivity = act }
 
+        /** @suppress */
         override fun onActivityPaused(act: Activity) {}
+        /** @suppress */
         override fun onActivityStopped(act: Activity) {}
+        /** @suppress */
         override fun onActivityDestroyed(act: Activity) { if (act == _currentActivity) _currentActivity = null }
+        /** @suppress */
         override fun onActivitySaveInstanceState(act: Activity, b: Bundle?) {}
     }
 
@@ -67,8 +83,9 @@ object activityScope : AutoScope<Activity> {
  *
  * @param T The singleton type.
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the activity argument.
+ * @return The factory to bind.
  */
-inline fun <reified T : Any> Kodein.Builder.activitySingleton(noinline creator: Kodein.(Activity) -> T) = scopedSingleton(activityScope, creator)
+inline fun <reified T : Any> Kodein.Builder.activitySingleton(noinline creator: Kodein.(Activity) -> T): Factory<Activity, T> = scopedSingleton(activityScope, creator)
 
 /**
  * Creates an activity auto-scoped singleton factory, effectively a `provider { -> T }`.
@@ -77,5 +94,6 @@ inline fun <reified T : Any> Kodein.Builder.activitySingleton(noinline creator: 
  *
  * @param T The singleton type.
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the activity argument.
+ * @return The provider to bind.
  */
-inline fun <reified T : Any> Kodein.Builder.autoActivitySingleton(noinline creator: Kodein.(Activity) -> T) = autoScopedSingleton(activityScope, creator)
+inline fun <reified T : Any> Kodein.Builder.autoActivitySingleton(noinline creator: Kodein.(Activity) -> T): Factory<Unit, T> = autoScopedSingleton(activityScope, creator)

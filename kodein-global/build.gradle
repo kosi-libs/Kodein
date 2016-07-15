@@ -1,9 +1,7 @@
 
-archivesBaseName = "kodein-global"
-
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
-    from javadoc
+    from dokka
 }
 
 task sourcesJar(type: Jar) {
@@ -18,6 +16,18 @@ artifacts {
 signing {
     required { gradle.taskGraph.hasTask(tasks.uploadArchives) }
     sign configurations.archives
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+    includes = ['dokka-module.md']
+
+    linkMapping {
+        dir = "src/main/kotlin"
+        url = "https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin"
+        suffix = "#L"
+    }
 }
 
 dependencies {

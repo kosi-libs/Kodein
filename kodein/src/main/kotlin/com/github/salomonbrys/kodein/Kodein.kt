@@ -37,14 +37,14 @@ interface Kodein : KodeinAwareBase {
             : RuntimeException(message)
 
     /**
-     * Exception thrown when there is an overriding error
+     * Exception thrown when there is an overriding error.
      *
      * @param message The message of the exception.
      */
     class OverridingException(message: String) : RuntimeException(message)
 
     /**
-     * Defined only to conform to [KodeinAwareBase]
+     * Defined only to conform to [KodeinAwareBase].
      */
     override val kodein: Kodein get() = this
 
@@ -65,11 +65,7 @@ interface Kodein : KodeinAwareBase {
          */
         private var _hashCode: Int = 0
 
-        /**
-         * Computes the hash code.
-         *
-         * Will be computed only once.
-         */
+        /** @suppress */
         override fun hashCode(): Int {
             if (_hashCode == 0) {
                 _hashCode = type.hashCode()
@@ -111,11 +107,7 @@ interface Kodein : KodeinAwareBase {
          */
         private var _hashCode: Int = 0
 
-        /**
-         * Computes the hash code.
-         *
-         * Will be computed only once.
-         */
+        /** @suppress */
         override fun hashCode(): Int {
             if (_hashCode == 0) {
                 _hashCode = bind.hashCode()

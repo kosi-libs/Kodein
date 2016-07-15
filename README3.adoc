@@ -94,6 +94,11 @@ If you are using Proguard, you need to add the following line to your proguard c
 toc::[]
 
 
+== Migrating
+
+If you are migrating from Kodein 2.8, you can read the https://github.com/SalomonBrys/Kodein/blob/master/MIGRATION-2-3.md[migration document].
+
+
 == Bindings: Declaring dependencies
 
 [source,kotlin]
@@ -722,6 +727,8 @@ E.g. you don't want to have to hold & pass a Kodein instance throughout your app
 
 Kodein does not supports having a static instance _by default_, but proposes this paradigm in a separate module.
 
+NOTE: Using or not using this is a matter of taste and is not recommended nor discouraged.
+
 === Install
 
 ==== With Maven
@@ -820,11 +827,12 @@ compile 'com.github.salomonbrys.kodein:kodein-android:{version}'
 .Example: an Android `Application` class that implements `KodeinAware`
 ----
 class MyApp : Application(), KodeinAware {
-	override val kodein = Kodein {
-	/* bindings */
+	override val kodein by Kodein.lazy { <1>
+	    /* bindings */
 	}
 }
 ----
+<1> Using Kodein.lazy allows you to access the `Context` at binding time.
 +
 TIP: Don't forget to declare the Application in the `AndroidManifest.xml` file!
 

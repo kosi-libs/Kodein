@@ -1,9 +1,7 @@
 
-archivesBaseName = "kodein-android"
-
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
-    from javadoc
+    from dokka
 }
 
 task sourcesJar(type: Jar) {
@@ -20,8 +18,21 @@ signing {
     sign configurations.archives
 }
 
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+    processConfigurations = ['compile', 'provided']
+    includes = ['dokka-module.md']
+
+    linkMapping {
+        dir = "src/main/kotlin"
+        url = "https://github.com/SalomonBrys/Kodein/blob/master/kodein-android/src/main/kotlin"
+        suffix = "#L"
+    }
+}
+
 configurations {
-  provided
+    provided
 }
 
 sourceSets.main.compileClasspath += configurations.provided

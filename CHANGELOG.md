@@ -1,8 +1,8 @@
 
-#### 3.0.0-beta5 (12-07-2016)
+### 3.0.0-beta5 (12-07-2016)
  - FEATURES
    * Kodein's source code & API is now [fully documented](https://salomonbrys.github.io/Kodein/kodein-dokka/kodein/com.github.salomonbrys.kodein/index.html)!
-   * You can noew bind a `Kodein.Bind` directly with `container.bind(bind)`.
+   * You can now bind a `Kodein.Bind` directly with `container.bind(bind)`.
    * `lazyKodein {...}` now returns a `LazyKodein` object, which can be used either as a lazy property or to inject lazy
      properties.
    * You can use `with(() -> A)` instead of `with(A)` for currying if you don't have access yet to the argument.
@@ -29,7 +29,7 @@
    * `TKodein` is now a class (not an interface), which allows the use of `@JvmOverloads`.
 
 
-#### 3.0.0-beta4 (03-07-2016)
+### 3.0.0-beta4 (03-07-2016)
  - FEATURES
    * `*OrNull` functions everywhere
 
@@ -41,10 +41,9 @@
      `typed.bind(type) with ...`.
 
 
-#### 3.0.0-beta3 (03-07-2016)
+### 3.0.0-beta3 (03-07-2016)
 
  - FEATURES
-   * Scopes are no more (weird) functions but object implementing the `Scope` or `AutoScope` interfaces.
    * `kodein.container.bindings.description` now uses simple type names, which makes it easier to read. You can use
      `kodein.container.bindings.fullDescription` to show full type names.
    * Both descriptions now print type names in a "kotlin-esque" way. Because Kodein does not depends on
@@ -53,6 +52,7 @@
    * Kotlin `1.0.3`
 
  - BREAKING CHANGES
+   * Scopes are no more (weird) functions but object implementing the `Scope` or `AutoScope` interfaces.
    * Android's `ActivityScopeLifecycleManager` is now `activityScope.lifecycleManager`.
 
  - BETA FEATURE CHANGES
@@ -64,7 +64,7 @@
    * Android's `activityScope` is now an object.
 
 
-#### 3.0.0-beta2 (30-06-2016)
+### 3.0.0-beta2 (30-06-2016)
 
  - FEATURES
    * `KodeinInjected` can use `kodein()` instead of `injector.kodein()`.
@@ -80,7 +80,7 @@
    * `instanceForClass` uses Java `Class<*>` and `instanceForKClass` uses Kotlin `KClass<*>`.
 
 
-#### 3.0.0-beta1 (29-06-2016)
+### 3.0.0-beta1 (29-06-2016)
 
  - BREAKING CHANGES
    * `JKodein` is replaced by `TKodein` which is meant to use by both Kotlin & Java. `TKodein` allows you
@@ -122,7 +122,7 @@
    * `Kodein`, `TKodein` and `KodeinContainer` are now very simple interfaces, which enables easy wrapping.
 
 
-#### 2.8.0 (14-06-2016)
+### 2.8.0 (14-06-2016)
 
  * Eager singletons: ask kodein to instanciate the singleton object as soon as kodein is ready.
  * `KodeinInjector` is now thread safe.
@@ -130,13 +130,13 @@
  * Gradle `2.13`
 
 
-#### 2.7.1 (02-06-2016)
+### 2.7.1 (02-06-2016)
 
  * Overriding exceptions now print the affected key
  * New syntax for binding without specifying the type: `bind() from scope`
 
 
-#### 2.7.0 (23-05-2016)
+### 2.7.0 (23-05-2016)
 
  * Kotlin `1.0.2`.
  * Overriding restrictions and policies (overrides must now be explicit).
