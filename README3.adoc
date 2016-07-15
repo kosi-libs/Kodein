@@ -1,6 +1,6 @@
 = KOtlin DEpendency INjection
 Author <salomon.brys@gmail.com>
-Revision 1.0, 2016-07-13
+Revision 1.0.1, 2016-07-15
 :toc: macro
 :toclevels: 4
 
@@ -1227,7 +1227,7 @@ TIP: The https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotli
 
 == API documentation
 
-The API documentation can be found https://salomonbrys.github.io/Kodein/kodein-dokka/kodein/com.github.salomonbrys.kodein/index.html[here]!
+The API documentation can be found https://github.com/SalomonBrys/Kodein/blob/master/dokka/out/doc/index.md[here]!
 
 == Let's talk!
 

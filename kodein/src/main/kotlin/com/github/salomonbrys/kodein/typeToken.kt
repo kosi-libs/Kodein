@@ -86,6 +86,7 @@ inline fun <reified T> typeToken(): TypeToken<T> = (object : TypeReference<T>() 
 
 /**
  * Wraps a ParameterizedType and implements hashCode / equals.
+ *
  * This is because some JVM implementation (such as Android 4.4 and earlier) does NOT implement hashcode / equals for
  * ParameterizedType (I know...).
  *

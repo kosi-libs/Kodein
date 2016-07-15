@@ -1,0 +1,8 @@
+[com.github.salomonbrys.kodein](../../../index.md) / [Kodein](../../index.md) / [Builder](../index.md) / [TBuilder](index.md) / [&lt;init&gt;](.)
+
+# &lt;init&gt;
+
+`TBuilder()`
+
+Class holding all typed API (meaning the API where you provide [Type](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html), [TypeToken](../../../-type-token/index.md) or `Class` objects).
+

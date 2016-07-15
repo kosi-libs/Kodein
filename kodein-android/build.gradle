@@ -22,7 +22,7 @@ dokka {
     outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
     processConfigurations = ['compile', 'provided']
-    includes = ['dokka-module.md']
+    includes = ['dokka-module.md', 'dokka-package.md']
 
     linkMapping {
         dir = "src/main/kotlin"
