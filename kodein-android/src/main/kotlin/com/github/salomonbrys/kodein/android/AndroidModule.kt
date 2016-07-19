@@ -67,8 +67,6 @@ val androidModule = Kodein.Module {
     bind<String>("packageName") with factory { ctx: Context -> ctx.packageName }
     bind<String>("packageResourcePath") with factory { ctx: Context -> ctx.packageResourcePath }
 
-    bind<AccountManager>() with factory { ctx: Context -> AccountManager.get(ctx) }
-
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.ACCOUNT_SERVICE) as AccountManager }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
