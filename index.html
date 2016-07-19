@@ -1,30 +1,79 @@
 <html>
-  <head>
-    <title>Kodein</title>
-    <link rel="stylesheet" type="text/css" href="css/asciidoctor.css" />
-    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
-    
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/asciidoctor-all.min.js"></script>
-  </head>
-  <body>
-  
-  <div id="content">Loading...</div>
-  
-  <script type="text/javascript">
-    $.get("https://raw.githubusercontent.com/SalomonBrys/Kodein/master/README3.adoc", function(data) {
-    
-      var options = Opal.hash({
-	backend: 'html5',
-	safe: 'secure',
-	attributes: ['showtitle', 'icons=font@', 'platform=opal', 'platform-opal', 'env=browser', 'env-browser', 'chart-engine=chartist', 'data-uri!']
-      });
-      var adocHtml = Opal.Asciidoctor.$convert(data, options);
-    
-      $("#content").html(adocHtml);
-    })
-  </script>
-  
-  </body>
-  
+    <head>
+        <title>Kodein</title>
+        <link rel="stylesheet" type="text/css" href="asciidoctor.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/idea.min.css">
+
+        <script type="text/javascript" src="asciidoctor-all.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/xml.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/groovy.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/kotlin.min.js"></script>
+
+        <style type="text/css">
+            .hljs { background: transparent; }
+        </style>
+    </head>
+    <body style="overflow-y: scroll">
+
+        <div id="content">
+            <h1>KOtlin DEpendency INjection</h1>
+            <div id="preamble">
+                <div class="sectionbody">
+                    <div class="imageblock">
+                        <div class="content">
+                            <img src="https://raw.githubusercontent.com/SalomonBrys/Kodein/master/Kodein-logo.png" alt="KODEIN" width="700" height="233" />
+                        </div>
+                    </div>
+                    <div class="paragraph">
+                        <p>
+                            <h2><i>Loading...</i></h2>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            function asciidocify() {
+                $.get("https://raw.githubusercontent.com/SalomonBrys/Kodein/master/README3.adoc", function(data) {
+                    var options = Opal.hash({
+                        backend: 'html5',
+                        safe: 'secure',
+                        attributes: [
+                            'showtitle',
+                            'icons=font@',
+                            'platform=opal',
+                            'platform-opal',
+                            'env=browser',
+                            'env-browser',
+                            'chart-engine=chartist',
+                            'data-uri!'
+                        ]
+                    });
+                    var adocHtml = Opal.Asciidoctor.$convert(data, options);
+
+                    $("#content").html(adocHtml);
+
+                    $('pre code').each(function(i, block) {
+                        hljs.highlightBlock(block);
+                    });
+
+                    if (location.hash != "") {
+                        var hash = location.hash;
+                        location.hash = "";
+                        setTimeout(function() { location.hash = hash; }, 0);
+                    }
+
+                });
+//                alert(location.hash)
+            }
+
+            asciidocify();
+//            setTimeout(asciidocify, 2000)
+        </script>
+
+    </body>
 </html>
