@@ -1,5 +1,18 @@
 
+### 3.0.0-beta6 (19-07-2016)
+
+ - FEATURES
+   * Lazy retrieval with `kodein.lazy.*`.
+   * Currying with lazy properties: `with().lazy.*`.
+   * You can add config other then imports or extend on global Kodein with `Kodein.global.addConfig`.
+   * `Kodein.Lazy` accepts a `allowSilentOverride` parameter.
+
+ - BREAKING CHANGES
+   * `lazyKodein` is renamed `Kodein.Lazy`.
+   
+
 ### 3.0.0-beta5 (12-07-2016)
+
  - FEATURES
    * Kodein's source code & API is now [fully documented](https://salomonbrys.github.io/Kodein/kodein-dokka/kodein/com.github.salomonbrys.kodein/index.html)!
    * You can now bind a `Kodein.Bind` directly with `container.bind(bind)`.
@@ -30,6 +43,7 @@
 
 
 ### 3.0.0-beta4 (03-07-2016)
+
  - FEATURES
    * `*OrNull` functions everywhere
 
