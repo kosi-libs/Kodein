@@ -47,7 +47,7 @@ class LazyKodein(k: Lazy<Kodein>) : Lazy<Kodein> by k, () -> Kodein, LazyKodeinA
  *
  * @param f The function to get a Kodein, guaranteed to be called only once.
  */
-fun Kodein.Companion.lazy(f: Kodein.Builder.() -> Unit): LazyKodein = LazyKodein(kotlin.lazy { invoke(init = f) })
+fun Kodein.Companion.lazy(allowSilentOverride: Boolean = false, f: Kodein.Builder.() -> Unit): LazyKodein = LazyKodein(kotlin.lazy { invoke(allowSilentOverride, f) })
 
 
 
