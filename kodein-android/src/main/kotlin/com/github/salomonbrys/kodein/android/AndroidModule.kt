@@ -6,6 +6,7 @@ import android.app.admin.DevicePolicyManager
 import android.content.ClipboardManager
 import android.content.ContentResolver
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.res.AssetManager
@@ -23,6 +24,7 @@ import android.os.Looper
 import android.os.PowerManager
 import android.os.Vibrator
 import android.os.storage.StorageManager
+import android.preference.PreferenceManager
 import android.telephony.TelephonyManager
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -57,6 +59,8 @@ val androidModule = Kodein.Module {
     bind<PackageManager>() with factory { ctx: Context -> ctx.packageManager }
     bind<Resources>() with factory { ctx: Context -> ctx.resources }
     bind<Resources.Theme>() with factory { ctx: Context -> ctx.theme }
+
+    bind<SharedPreferences>() with factory { ctx: Context -> PreferenceManager.getDefaultSharedPreferences(ctx) }
 
     bind<File>("cache") with factory { ctx: Context -> ctx.cacheDir }
     bind<File>("externalCache") with factory { ctx: Context -> ctx.externalCacheDir }
