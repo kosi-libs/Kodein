@@ -293,6 +293,17 @@ NOTE: The order in which the bindings are declared has *no importance whatsoever
 
 NOTE: You can, of course, also use the functions `provider()`, `provider(tag)`, `factory()` and `factory(tag)`,
 
+Finally, you can also pass the `kodein` object to the class so it can itself use the Kodein object to retrieve its own dependencies.
+
+[source, kotlin]
+.Example: bindings of `Manager` that is responsible for retrieving its own dependencies
+----
+val kodein = Kodein {
+    bind<Manager>() with singleton { ManagerImpl(kodein) } // <1>
+}
+----
+<1> ManagerImpl is given a Kodein instance.
+
 
 == Bindings separation
 
