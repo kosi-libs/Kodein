@@ -61,21 +61,21 @@ class Controller(private val kodein: Kodein) {
 
 === With Maven
 
-[subs="attributes"]
+[source,xml,subs="attributes"]
 ----
 &lt;dependency&gt;
     &lt;groupId&gt;com.github.salomonbrys.kodein&lt;/groupId&gt;
     &lt;artifactId&gt;kodein&lt;/artifactId&gt;
-    &lt;version&gt;{version}&lt;/version&gt;
+    &lt;version&gt;{kodein_version}&lt;/version&gt;
 &lt;/dependency&gt;
 ----
 
 
 === With Gradle
 
-[subs="attributes"]
+[source,groovy,subs="attributes"]
 ----
-compile 'com.github.salomonbrys.kodein:kodein:{version}'
+compile 'com.github.salomonbrys.kodein:kodein:$kodein_version'
 ----
 
 
@@ -764,7 +764,7 @@ compile 'com.github.salomonbrys.kodein:kodein-global:{version}'
 
 === Configuring
 
-You can import modules or extend kodein objects inside this global kodein using `Kodein.global.addImport` and `Kodein.global.addExtend`.
+You can import modules or extend kodein objects inside this global kodein using `Kodein.global.addImport`, `Kodein.global.addExtend` and `Kodein.global.addConfig`.
 
 [source, kotlin]
 .Example: adding a module inside the global Kodein
