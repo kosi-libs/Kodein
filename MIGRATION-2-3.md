@@ -31,8 +31,8 @@ the others are mainly about changes in advanced features.
 
 First, replace the gradle dependency line with:
 
-```
-compile "com.github.salomonbrys.kodein:kodein:$kodein_version"
+```groovy
+compile "com.github.salomonbrys.kodein:kodein:3.0.+"
 ```
 
 If you are using intelliJ, don't forget to update the project's gradle dependencies ;)
@@ -52,13 +52,13 @@ Simply update the imports in the source files where you are using those function
 
 For example:
 
-```
+```kotlin
 val ds: DataSource = kodein.instanceForFactory("user-db")
 ```
 
 can be replaced by
 
-```
+```kotlin
 val ds: DataSource = kodein.with("user-db").instance()
 ```
 
@@ -78,7 +78,7 @@ and `kodein.bindingsDescription` by `kodein.container.bindings.description`.
 #### ...Scopes
 
 User defined scopes for scoped and auto-scoped singletons are now objects that implement the `Scope` and `AutoScope`
-interfaces. The update is straightforward, read the "Create your own scopes" section in the documentation to learn more.
+interfaces. The update is straightforward, read the "[Create your own scopes](https://salomonbrys.github.io/Kodein/#_create_your_own_scopes)" section in the documentation to learn more.
 
 
 #### ...Android's auto activity lifecycle manager
@@ -115,7 +115,7 @@ The `KodeinAware`, `KodeinInjected` and `LazyKodeinAware` interfaces allow you t
 - Have retrieval easier to read.
 - Retrieve `Class` dependent types, such as loggers.
 
-Read the "Dependency retrieval" section of the documentation to learn more.
+Read the "[Dependency retrieval](https://salomonbrys.github.io/Kodein/#_dependency_retrieval)" section of the documentation to learn more.
 
 
 #### Think global
@@ -125,11 +125,11 @@ or not using this is a matter of taste and is not recommended nor discouraged.
 
 When using `Kodein.global`, you can use the `KodeinGlobalAware` interface.
 
-Read the "The god complex: One True Kodein" section of the documentation to learn more.
+Read the "[One True Kodein](https://salomonbrys.github.io/Kodein/#_the_god_complex_one_true_kodein)" section of the documentation to learn more.
 
 
 #### Use the Android module
 
 The `androidModule` for Android provides a lot of standard bindings that can be used with `withContext`.
 
-Read the "Android module" section of the documentation to learn more.
+Read the "[Android module](https://salomonbrys.github.io/Kodein/#_android_module)" section of the documentation to learn more.
