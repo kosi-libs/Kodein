@@ -1,10 +1,10 @@
-[com.github.salomonbrys.kodein.global](../index.md) / [GlobalKodein](index.md) / [addConfig](.)
+[com.github.salomonbrys.kodein.conf](../index.md) / [ConfigurableKodein](index.md) / [addConfig](.)
 
 # addConfig
 
 `fun addConfig(config: `[`Builder`](../../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.() -> Unit): Unit`
 
-Adds a configuration to the Kodein construction that will be applied when it is constructed.
+Adds a configuration to the bindings that will be applied when the Kodein is constructed.
 
 ### Parameters
 

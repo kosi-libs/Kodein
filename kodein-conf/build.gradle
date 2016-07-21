@@ -53,10 +53,10 @@ if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {
                 }
 
                 pom.project {
-                    name 'Kodein-Global'
+                    name 'Kodein-Conf'
                     packaging 'jar'
-                    artifactId 'kodein-global'
-                    description 'Kodein as a static global'
+                    artifactId 'kodein-conf'
+                    description 'Kodein extension that enables a configurable Kodein object and a static global one true Kodein'
                     url 'https://github.com/SalomonBrys/Kodein'
 
                     licenses {

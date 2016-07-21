@@ -1,4 +1,4 @@
-[com.github.salomonbrys.kodein.global](../index.md) / [KodeinGlobalAware](index.md) / [kodein](.)
+[com.github.salomonbrys.kodein.conf](../index.md) / [KodeinGlobalAware](index.md) / [kodein](.)
 
 # kodein
 

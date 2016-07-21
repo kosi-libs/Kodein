@@ -37,4 +37,4 @@ Any class that extends this interface can use Kodein "seemlessly".
 
 | Name | Summary |
 |---|---|
-| [KodeinGlobalAware](../com.github.salomonbrys.kodein.global/-kodein-global-aware/index.md) | `interface KodeinGlobalAware : KodeinAware`<br>A `KodeinAware` class that needs no implementation because the kodein used will be the [global](../com.github.salomonbrys.kodein.global/global.md) One True Kodein. |
+| [KodeinGlobalAware](../com.github.salomonbrys.kodein.conf/-kodein-global-aware/index.md) | `interface KodeinGlobalAware : KodeinAware`<br>A `KodeinAware` class that needs no implementation because the kodein used will be the [global](../com.github.salomonbrys.kodein.conf/global.md) One True Kodein. |

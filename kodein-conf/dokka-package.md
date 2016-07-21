@@ -1,3 +1,3 @@
-# Package com.github.salomonbrys.kodein.global
+# Package com.github.salomonbrys.kodein.conf
 
-Kodein API extensions for a static One True Kodein.
+Kodein API extensions for a on-the-fly configurable Kodein.

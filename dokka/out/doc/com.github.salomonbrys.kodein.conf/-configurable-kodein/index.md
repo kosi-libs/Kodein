@@ -1,27 +1,39 @@
-[com.github.salomonbrys.kodein.global](../index.md) / [GlobalKodein](.)
+[com.github.salomonbrys.kodein.conf](../index.md) / [ConfigurableKodein](.)
 
-# GlobalKodein
+# ConfigurableKodein
 
-`class GlobalKodein : `[`Kodein`](../../com.github.salomonbrys.kodein/-kodein/index.md)
+`class ConfigurableKodein : `[`Kodein`](../../com.github.salomonbrys.kodein/-kodein/index.md)
 
 A class that can be used to configure a kodein object and as a kodein object.
 
-The configuration ([addImport](add-import.md) &amp; [addExtend](add-extend.md)) needs to happen **before** any dependency retrieval.
+If you want it to be mutable, the [mutable](mutable.md) property needs to be set **before** any dependency retrieval.
+The non-mutable configuration methods ([addImport](add-import.md), [addExtend](add-extend.md) &amp; [addConfig](add-config.md)) needs to happen **before** any dependency retrieval.
 
 ### Constructors
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `GlobalKodein()`<br>A class that can be used to configure a kodein object and as a kodein object. |
+| [&lt;init&gt;](-init-.md) | `ConfigurableKodein()`<br>Default constructor.`ConfigurableKodein(mutable: Boolean)`<br>Convenient constructor to directly set the mutability. |
+
+### Properties
+
+| Name | Summary |
+|---|---|
+| [canConfigure](can-configure.md) | `val canConfigure: Boolean`<br>Whether or not this Kodein can be configured (meaning that it has not been used for retrieval yet. |
+| [mutable](mutable.md) | `var mutable: Boolean?`<br>Whether this ConfigurableKodein can be mutated. |
 
 ### Functions
 
 | Name | Summary |
 |---|---|
-| [addConfig](add-config.md) | `fun addConfig(config: `[`Builder`](../../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.() -> Unit): Unit`<br>Adds a configuration to the Kodein construction that will be applied when it is constructed. |
-| [addExtend](add-extend.md) | `fun addExtend(kodein: `[`Kodein`](../../com.github.salomonbrys.kodein/-kodein/index.md)`, allowOverride: Boolean = false): Unit`<br>Adds the bindings of an existing kodein instance to the bindings. |
-| [addImport](add-import.md) | `fun addImport(module: `[`Module`](../../com.github.salomonbrys.kodein/-kodein/-module/index.md)`, allowOverride: Boolean = false): Unit`<br>Adds a module to the bindings. |
+| [addConfig](add-config.md) | `fun addConfig(config: `[`Builder`](../../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.() -> Unit): Unit`<br>Adds a configuration to the bindings that will be applied when the Kodein is constructed. |
+| [addExtend](add-extend.md) | `fun addExtend(kodein: `[`Kodein`](../../com.github.salomonbrys.kodein/-kodein/index.md)`, allowOverride: Boolean = false): Unit`<br>Adds the bindings of an existing kodein instance to the bindings that will be applied when the Kodein is constructed. |
+| [addImport](add-import.md) | `fun addImport(module: `[`Module`](../../com.github.salomonbrys.kodein/-kodein/-module/index.md)`, allowOverride: Boolean = false): Unit`<br>Adds a module to the bindings that will be applied when the Kodein is constructed. |
 | [getOrConstruct](get-or-construct.md) | `fun getOrConstruct(): `[`Kodein`](../../com.github.salomonbrys.kodein/-kodein/index.md)<br>Get the kodein instance if it has already been constructed, or construct it if not. |
+| [mutateAddConfig](mutate-add-config.md) | `fun mutateAddConfig(config: `[`Builder`](../../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.() -> Unit): Unit`<br>Adds a configuration to the bindings that will extend the existing bindings. |
+| [mutateAddExtend](mutate-add-extend.md) | `fun mutateAddExtend(kodein: `[`Kodein`](../../com.github.salomonbrys.kodein/-kodein/index.md)`, allowOverride: Boolean = false): Unit`<br>Adds the bindings of an existing kodein instance that will extend the existing bindings. |
+| [mutateAddImport](mutate-add-import.md) | `fun mutateAddImport(module: `[`Module`](../../com.github.salomonbrys.kodein/-kodein/-module/index.md)`, allowOverride: Boolean = false): Unit`<br>Adds a module to the bindings that will extend the existing bindings. |
+| [mutateReset](mutate-reset.md) | `fun mutateReset(keep: Boolean = false): Unit`<br>Reset the Kodein instance, allowing it to be configured again. Needs [mutable](mutable.md) to be true. |
 
 ### Extension Properties
 

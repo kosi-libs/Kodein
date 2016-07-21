@@ -1,10 +1,10 @@
-[com.github.salomonbrys.kodein.global](../index.md) / [GlobalKodein](index.md) / [addExtend](.)
+[com.github.salomonbrys.kodein.conf](../index.md) / [ConfigurableKodein](index.md) / [addExtend](.)
 
 # addExtend
 
 `fun addExtend(kodein: `[`Kodein`](../../com.github.salomonbrys.kodein/-kodein/index.md)`, allowOverride: Boolean = false): Unit`
 
-Adds the bindings of an existing kodein instance to the bindings.
+Adds the bindings of an existing kodein instance to the bindings that will be applied when the Kodein is constructed.
 
 ### Parameters
 

@@ -1,4 +1,14 @@
 
+### 3.0.0 (21-07-2016)
+
+ - FEATURES
+   * Introducing `ConfigurableKodein` in the `kodein-conf` module that can be configured then used for retrieval.
+   * A `ConfigurableKodein` object can be mutable (if its `mutable` property is true). Please be careful with this!
+   * The Android module contains a factory for default `SharedPreferences`.
+
+ - BETA FEATURE CHANGES
+   * `Kodein.global` is now in the `kodein-conf` module.
+
 ### 3.0.0-beta6 (19-07-2016)
 
  - FEATURES

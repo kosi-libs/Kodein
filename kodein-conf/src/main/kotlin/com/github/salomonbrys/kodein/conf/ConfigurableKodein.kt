@@ -88,7 +88,7 @@ class ConfigurableKodein : Kodein {
      * Reset the Kodein instance, allowing it to be configured again. Needs [mutable] to be true.
      *
      * By default, it will reset it with no configured bindings.
-     * If [extend] is true, all bindings from the old kodein will be transferred into the new kodein.
+     * If [mutable] is true, all bindings from the old kodein will be transferred into the new kodein.
      *
      * @param keep Whether or not to keep the old bindings into the new Kodein instance.
      * @throws IllegalStateException if [mutable] is not `true`.

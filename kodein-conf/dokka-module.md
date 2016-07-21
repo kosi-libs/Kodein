@@ -1,5 +1,5 @@
 # Module Kodein-Global
 
-One True Kodein.
+Configurable Kodein.
 
 Full documentation [here](https://salomonbrys.github.io/Kodein/).

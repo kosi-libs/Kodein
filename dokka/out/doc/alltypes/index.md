@@ -20,6 +20,7 @@ KOtlin DEpendency INjection.
 | [com.github.salomonbrys.kodein.CScopedSingleton](../com.github.salomonbrys.kodein/-c-scoped-singleton/index.md) | Concrete scoped singleton factory, effectively a `factory { Scope -> T }`. |
 | [com.github.salomonbrys.kodein.CSingleton](../com.github.salomonbrys.kodein/-c-singleton/index.md) | Concrete singleton: will create an instance on first request and will subsequently always return the same instance. |
 | [com.github.salomonbrys.kodein.CThreadSingleton](../com.github.salomonbrys.kodein/-c-thread-singleton/index.md) | Concrete thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread. |
+| [com.github.salomonbrys.kodein.conf.ConfigurableKodein](../com.github.salomonbrys.kodein.conf/-configurable-kodein/index.md) | A class that can be used to configure a kodein object and as a kodein object. |
 | [android.content.Context](../com.github.salomonbrys.kodein.android/android.content.-context/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
 | [com.github.salomonbrys.kodein.CurriedInjectorFactory](../com.github.salomonbrys.kodein/-curried-injector-factory/index.md) | Used to inject lazy providers or instances for factory bound types. |
 | [com.github.salomonbrys.kodein.CurriedKodeinFactory](../com.github.salomonbrys.kodein/-curried-kodein-factory/index.md) | Allows to get a provider or an instance from a factory with a curried argument. |
@@ -29,7 +30,6 @@ KOtlin DEpendency INjection.
 | [android.app.Fragment](../com.github.salomonbrys.kodein.android/android.app.-fragment/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
 | [android.support.v4.app.Fragment](../com.github.salomonbrys.kodein.android/android.support.v4.app.-fragment/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
 | [kotlin.Function1](../com.github.salomonbrys.kodein/kotlin.-function1/index.md) (extensions in package com.github.salomonbrys.kodein) |  |
-| [com.github.salomonbrys.kodein.global.GlobalKodein](../com.github.salomonbrys.kodein.global/-global-kodein/index.md) | A class that can be used to configure a kodein object and as a kodein object. |
 | [com.github.salomonbrys.kodein.InjectedFactoryProperty](../com.github.salomonbrys.kodein/-injected-factory-property/index.md) | A read-only property delegate that injects a factory. |
 | [com.github.salomonbrys.kodein.InjectedInstanceProperty](../com.github.salomonbrys.kodein/-injected-instance-property/index.md) | A read-only property delegate that injects an instance. |
 | [com.github.salomonbrys.kodein.InjectedNullableFactoryProperty](../com.github.salomonbrys.kodein/-injected-nullable-factory-property/index.md) | A read-only property delegate that injects a factory, or null if none is found. |
@@ -41,7 +41,7 @@ KOtlin DEpendency INjection.
 | [com.github.salomonbrys.kodein.KodeinAware](../com.github.salomonbrys.kodein/-kodein-aware.md) | Any class that extends this interface can use Kodein "seemlessly". |
 | [com.github.salomonbrys.kodein.KodeinAwareBase](../com.github.salomonbrys.kodein/-kodein-aware-base/index.md) | Base [KodeinAware](../com.github.salomonbrys.kodein/-kodein-aware.md) interface. |
 | [com.github.salomonbrys.kodein.KodeinContainer](../com.github.salomonbrys.kodein/-kodein-container/index.md) | Container class where the bindings and their factories are stored. |
-| [com.github.salomonbrys.kodein.global.KodeinGlobalAware](../com.github.salomonbrys.kodein.global/-kodein-global-aware/index.md) | A `KodeinAware` class that needs no implementation because the kodein used will be the [global](../com.github.salomonbrys.kodein.global/global.md) One True Kodein. |
+| [com.github.salomonbrys.kodein.conf.KodeinGlobalAware](../com.github.salomonbrys.kodein.conf/-kodein-global-aware/index.md) | A `KodeinAware` class that needs no implementation because the kodein used will be the [global](../com.github.salomonbrys.kodein.conf/global.md) One True Kodein. |
 | [com.github.salomonbrys.kodein.KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) | Any class that extends this interface can be injected "seemlessly". |
 | [com.github.salomonbrys.kodein.KodeinInjectedBase](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md) | Base [KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) interface. |
 | [com.github.salomonbrys.kodein.KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) | An injector is an object which creates injected property delegates **before** having access to a Kodein instance. |

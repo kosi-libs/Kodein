@@ -1,4 +1,4 @@
-[com.github.salomonbrys.kodein.global](../index.md) / [GlobalKodein](index.md) / [getOrConstruct](.)
+[com.github.salomonbrys.kodein.conf](../index.md) / [ConfigurableKodein](index.md) / [getOrConstruct](.)
 
 # getOrConstruct
 

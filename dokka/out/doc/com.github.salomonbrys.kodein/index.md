@@ -93,4 +93,4 @@ Kodein API
 
 | Name | Summary |
 |---|---|
-| [lazy](lazy.md) | `fun Kodein.Companion.lazy(f: `[`Builder`](-kodein/-builder/index.md)`.() -> Unit): `[`LazyKodein`](-lazy-kodein/index.md)<br>You can use the result of this function as a property delegate *or* as a function. |
+| [lazy](lazy.md) | `fun Kodein.Companion.lazy(allowSilentOverride: Boolean = false, f: `[`Builder`](-kodein/-builder/index.md)`.() -> Unit): `[`LazyKodein`](-lazy-kodein/index.md)<br>You can use the result of this function as a property delegate *or* as a function. |

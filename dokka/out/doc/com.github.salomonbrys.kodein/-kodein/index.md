@@ -72,16 +72,16 @@ val kodein = Kodein {
 
 | Name | Summary |
 |---|---|
-| [global](../../com.github.salomonbrys.kodein.global/global.md) | `val Kodein.Companion.global: `[`GlobalKodein`](../../com.github.salomonbrys.kodein.global/-global-kodein/index.md)<br>A global One True Kodein. |
+| [global](../../com.github.salomonbrys.kodein.conf/global.md) | `val Kodein.Companion.global: `[`ConfigurableKodein`](../../com.github.salomonbrys.kodein.conf/-configurable-kodein/index.md)<br>A global One True Kodein. |
 
 ### Companion Object Extension Functions
 
 | Name | Summary |
 |---|---|
-| [lazy](../lazy.md) | `fun Kodein.Companion.lazy(f: `[`Builder`](-builder/index.md)`.() -> Unit): `[`LazyKodein`](../-lazy-kodein/index.md)<br>You can use the result of this function as a property delegate *or* as a function. |
+| [lazy](../lazy.md) | `fun Kodein.Companion.lazy(allowSilentOverride: Boolean = false, f: `[`Builder`](-builder/index.md)`.() -> Unit): `[`LazyKodein`](../-lazy-kodein/index.md)<br>You can use the result of this function as a property delegate *or* as a function. |
 
 ### Inheritors
 
 | Name | Summary |
 |---|---|
-| [GlobalKodein](../../com.github.salomonbrys.kodein.global/-global-kodein/index.md) | `class GlobalKodein : Kodein`<br>A class that can be used to configure a kodein object and as a kodein object. |
+| [ConfigurableKodein](../../com.github.salomonbrys.kodein.conf/-configurable-kodein/index.md) | `class ConfigurableKodein : Kodein`<br>A class that can be used to configure a kodein object and as a kodein object. |

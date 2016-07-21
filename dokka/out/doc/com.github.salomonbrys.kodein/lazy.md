@@ -16,7 +16,7 @@ Example: `val manager: Manager by withClass().lazy.instance()`
 
 `A` - The type of argument to pass to the curried factory.
 
-`fun Kodein.Companion.lazy(f: `[`Builder`](-kodein/-builder/index.md)`.() -> Unit): `[`LazyKodein`](-lazy-kodein/index.md)
+`fun Kodein.Companion.lazy(allowSilentOverride: Boolean = false, f: `[`Builder`](-kodein/-builder/index.md)`.() -> Unit): `[`LazyKodein`](-lazy-kodein/index.md)
 
 You can use the result of this function as a property delegate *or* as a function.
 

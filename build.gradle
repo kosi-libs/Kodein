@@ -31,7 +31,7 @@ allprojects {
     targetCompatibility = 1.6
 
     group = 'com.github.salomonbrys.kodein'
-    version = '3.0.0-beta6'
+    version = '3.0.0'
 }
 
 def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }
@@ -40,6 +40,6 @@ task("classpath") << {
     println((
             getClassPath(':kodein')
         +   getClassPath(':kodein-android')
-        +   getClassPath(':kodein-global')
+        +   getClassPath(':kodein-conf')
     ).join(":"))
 }

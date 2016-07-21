@@ -1,10 +1,10 @@
-[com.github.salomonbrys.kodein.global](../index.md) / [GlobalKodein](index.md) / [addImport](.)
+[com.github.salomonbrys.kodein.conf](../index.md) / [ConfigurableKodein](index.md) / [addImport](.)
 
 # addImport
 
 `fun addImport(module: `[`Module`](../../com.github.salomonbrys.kodein/-kodein/-module/index.md)`, allowOverride: Boolean = false): Unit`
 
-Adds a module to the bindings.
+Adds a module to the bindings that will be applied when the Kodein is constructed.
 
 ### Parameters
 
