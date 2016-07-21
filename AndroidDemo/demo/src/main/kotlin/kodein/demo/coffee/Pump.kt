@@ -1,5 +1,5 @@
 package kodein.demo.coffee
 
-public interface Pump {
+interface Pump {
     fun pumpWater()
 }

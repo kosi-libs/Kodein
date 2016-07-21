@@ -5,24 +5,27 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.TextView
+import com.github.salomonbrys.kodein.KodeinInjected
 import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
+import com.github.salomonbrys.kodein.description
+import com.github.salomonbrys.kodein.instance
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 
-public class MainActivity : Activity() {
+class MainActivity : Activity(), KodeinInjected {
 
-    private val injector = KodeinInjector()
+    override val injector = KodeinInjector()
 
-    public val coffeeMaker: Kettle<Coffee> by injector.instance()
-    public val log: Logger by injector.instance()
+    val coffeeMaker: Kettle<Coffee> by instance()
+    val log: Logger by instance()
 
-    public val textView: TextView by lazy { findViewById(R.id.text) as TextView }
+    val textView: TextView by lazy { findViewById(R.id.text) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        injector.inject(appKodein())
+        inject(appKodein())
 
         setContentView(R.layout.activity_main)
 
@@ -39,7 +42,7 @@ public class MainActivity : Activity() {
         }, 6000)
 
         Log.i("Kodein", "=====================-BINDINGS-=====================")
-        Log.i("Kodein", appKodein().bindingsDescription)
+        Log.i("Kodein", appKodein().container.bindings.description)
         Log.i("Kodein", "=====================----------=====================")
     }
 

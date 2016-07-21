@@ -1,6 +1,6 @@
 package kodein.demo.coffee
 
-public interface Heater {
+interface Heater {
     fun on()
     fun off()
     val isHot: Boolean

@@ -1,10 +1,11 @@
 package kodein.demo.coffee
 
 import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
 import kodein.demo.Logger
 
-public class ElectricHeater(private val log: Logger) : Heater {
+class ElectricHeater(private val log: Logger) : Heater {
     private var heating: Boolean = false
 
     init {
@@ -24,6 +25,6 @@ public class ElectricHeater(private val log: Logger) : Heater {
     override val isHot: Boolean get() = heating;
 }
 
-public val electricHeaterModule = Kodein.Module {
+val electricHeaterModule = Kodein.Module {
     bind<Heater>() with singleton { ElectricHeater(instance()) }
 }

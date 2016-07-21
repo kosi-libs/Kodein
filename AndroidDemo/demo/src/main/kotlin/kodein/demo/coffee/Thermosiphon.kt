@@ -1,10 +1,11 @@
 package kodein.demo.coffee
 
 import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
 import kodein.demo.Logger
 
-public class Thermosiphon(private val log: Logger, private val heater: Heater) : Pump {
+class Thermosiphon(private val log: Logger, private val heater: Heater) : Pump {
 
     init {
         log.log("<Creating Thermosiphon>")
@@ -18,6 +19,6 @@ public class Thermosiphon(private val log: Logger, private val heater: Heater) :
     }
 }
 
-public val thermosiphonModule = Kodein.Module {
+val thermosiphonModule = Kodein.Module {
     bind<Pump>() with singleton { Thermosiphon(instance(), instance()) }
 }

@@ -2,12 +2,11 @@ package kodein.demo
 
 import android.app.Application
 import com.github.salomonbrys.kodein.*
-import com.github.salomonbrys.kodein.android.KodeinApplication
 import kodein.demo.coffee.*
 
-public class DemoApplication : Application(), KodeinApplication {
+class DemoApplication : Application(), KodeinAware {
 
-    override val kodein = Kodein {
+    override val kodein by Kodein.lazy {
         bind<Logger>() with instance(Logger())
 
         import(thermosiphonModule)
