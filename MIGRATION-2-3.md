@@ -13,6 +13,7 @@ the others are mainly about changes in advanced features.
         * [...Gradle scripts](#gradle-scripts)
         * [...Source imports](#source-imports)
         * [...Currying (*ForFactory)](#currying-forfactory)
+        * [...Lazy properties](#lazy-properties)
         * [...Java code](#java-code)
         * [...Debug](#debug)
         * [...Scopes](#scopes)
@@ -60,6 +61,24 @@ can be replaced by
 
 ```kotlin
 val ds: DataSource = kodein.with("user-db").instance()
+```
+
+
+#### ...Lazy properties
+
+`.lazyInstance`, `.lazyProvider` and `.lazyFactory` are replaced with `.lazy.instance()`, `.lazy.provider()` and
+`.lazy.factory()`.
+
+For example:
+
+```kotlin
+val ds: DataSource by kodein.lazyInstance()
+```
+
+can be replaced by
+
+```kotlin
+val ds: DataSource = kodein.lazy.instance()
 ```
 
 
