@@ -249,7 +249,7 @@ Note that you can have multiple bindings of the same type, as long as they are b
 
 ### Constant binding
 
-It is often useful to bind "configuration" constants. These contants are always tagged:
+It is often useful to bind "configuration" constants. These constants are always tagged:
 
 ```kotlin
 val kodein = Kodein {
@@ -298,7 +298,7 @@ class Dice(private val random: Random, private val sides: Int) {
 }
 ```
 
-Then it is really easy to bind RandomDice with it's transitive dependencies, by simply using `instance()` or `instance(tag)`:
+Then it is really easy to bind RandomDice with its transitive dependencies, by simply using `instance()` or `instance(tag)`:
 
 ```kotlin
 val kodein = Kodein {
@@ -470,7 +470,7 @@ An injector is an object that you can use to inject all injected values in an ob
 
 This allows your object to:
 
- - Retrieve all it's injected dependencies at once;
+ - Retrieve all its injected dependencies at once;
  - Declare its dependencies without a Kodein instance.
 
 ```kotlin
@@ -796,7 +796,7 @@ val logger: Logger = kodein.instance()
 Bind the same type to different factories
 -----------------------------------------
 
-Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are binded with different tags", I lied. Because each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are binded as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be binded to it's own factory, which in turns means that you can bind the same type without tagging to different factories. Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
+Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are binded with different tags", I lied. Because each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are binded as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be binded to its own factory, which in turns means that you can bind the same type without tagging to different factories. Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
 
 
 

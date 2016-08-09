@@ -222,7 +222,7 @@ TIP: The tag is of type `Any`, it does not have to be a `String`.
 === Constant binding
 
 It is often useful to bind "configuration" constants.
-Contants are always tagged.
+Constants are always tagged.
 
 [source,kotlin]
 .Example: two constants
@@ -273,7 +273,7 @@ class Dice(private val random: Random, private val sides: Int) {
 }
 ----
 
-It is really easy to bind `RandomDice` with it's transitive dependencies, by simply using `instance()` or `instance(tag)`.
+It is really easy to bind `RandomDice` with its transitive dependencies, by simply using `instance()` or `instance(tag)`.
 
 [source, kotlin]
 .Example: bindings of Dice and of its transitive dependencies
@@ -527,7 +527,7 @@ private val randomSideDiceProvider: () -> Dice
 An injector is an object that you can use to inject all dependency properties in an object.
 
 .This allows your object to:
-* Retrieve all it's injected dependencies at once;
+* Retrieve all its injected dependencies at once;
 * Declare its dependencies without a Kodein instance.
 
 [source, kotlin]
@@ -732,7 +732,7 @@ class JavaClass {
 
 == Configurable Kodein
 
-Maybe you want a Kodein instance that you can pass around and have different sections of your code configure it's bindings.
+Maybe you want a Kodein instance that you can pass around and have different sections of your code configure its bindings.
 
 Configurable Kodein is a Kodein extension that is not proposed  _by default_, this paradigm is in a separate module.
 
