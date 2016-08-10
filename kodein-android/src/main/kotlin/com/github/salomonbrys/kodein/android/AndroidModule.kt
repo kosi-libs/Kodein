@@ -50,6 +50,10 @@ import java.io.File
  */
 val androidModule = Kodein.Module {
 
+    data class SharedPreferencesInfo(val ctx: Context, val name: String, val visibility: Int = Context.MODE_PRIVATE) {
+        fun getSharedPreferences() = ctx.getSharedPreferences(name, visibility)
+    }
+
     bind<Application>() with factory { ctx: Context -> ctx.applicationContext as Application }
 
     bind<AssetManager>() with factory { ctx: Context -> ctx.assets }
@@ -61,6 +65,7 @@ val androidModule = Kodein.Module {
     bind<Resources.Theme>() with factory { ctx: Context -> ctx.theme }
 
     bind<SharedPreferences>() with factory { ctx: Context -> PreferenceManager.getDefaultSharedPreferences(ctx) }
+    bind<SharedPreferences>("named") with factory { info: SharedPreferencesInfo -> info.getSharedPreferences() }
 
     bind<File>("cache") with factory { ctx: Context -> ctx.cacheDir }
     bind<File>("externalCache") with factory { ctx: Context -> ctx.externalCacheDir }
