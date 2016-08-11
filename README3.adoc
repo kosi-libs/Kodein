@@ -1100,7 +1100,7 @@ In your `Application` class, in the `onCreate` method, you must add this line:
 [source, kotlin]
 .Example: registering kodein's lifecycle manager to enable the auto activity scope to work
 ----
-class MyActivity : Activity {
+class MyApplication : Application {
     override fun onCreate() {
         registerActivityLifecycleCallbacks(activityScope.lifecycleManager) // <1>
     }
