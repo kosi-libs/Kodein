@@ -82,7 +82,7 @@ val androidModule = Kodein.Module {
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.DROPBOX_SERVICE) as DropBoxManager }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
-    bind("keyguard") from factory { ctx: Context -> ctx.getSystemService(Context.KEYGUARD_SERVICE) as NotificationManager }
+    bind() from factory { ctx: Context -> ctx.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.NFC_SERVICE) as NfcManager }
