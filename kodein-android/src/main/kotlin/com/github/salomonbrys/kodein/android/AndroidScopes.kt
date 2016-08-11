@@ -2,11 +2,38 @@ package com.github.salomonbrys.kodein.android
 
 import android.app.Activity
 import android.app.Application
+import android.app.Fragment
+import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.os.Bundle
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.activityScope.lifecycleManager
 import java.util.*
+import android.support.v4.app.Fragment as SupportFragment
 
+/**
+ * Map that associates a ScopeRegistry to a context.
+ *
+ * Because it's a weak hash map, this prevents the context from being destroyed.
+ */
+private val _contextScopes = WeakHashMap<Context, ScopeRegistry>()
+
+/**
+ * Android's context scope. Allows to register context-specific singletons.
+ */
+object contextScope : Scope<Context> {
+
+    /**
+     * Get a registry for a given context. Will always return the same registry for the same context.
+     *
+     * @param context The context associated with the returned registry.
+     * @return The registry associated with the given context.
+     */
+    override fun getRegistry(context: Context): ScopeRegistry
+        = synchronized(_contextScopes) { _contextScopes.getOrPut(context) { ScopeRegistry() } }
+
+}
 
 /**
  * Android's activity scope. Allows to register activity-specific singletons.
@@ -16,13 +43,6 @@ import java.util.*
  * /!\ If used as an auto-scope, you need to register the [lifecycleManager].
  */
 object activityScope : AutoScope<Activity> {
-
-    /**
-     * Map that associates a ScopeRegistry to an activity.
-     *
-     * Because it's a weak hash map, this does not prevent the activity from being released.
-     */
-    private val _activityScopes = WeakHashMap<Activity, ScopeRegistry>()
 
     /**
      * The last activity that was displayed to the screen. Used when this scope is used as an auto-scope.
@@ -37,7 +57,7 @@ object activityScope : AutoScope<Activity> {
      * @return The registry associated with the given activity.
      */
     override fun getRegistry(context: Activity): ScopeRegistry
-            = synchronized(_activityScopes) { _activityScopes.getOrPut(context) { ScopeRegistry() } }
+        = synchronized(_contextScopes) { _contextScopes.getOrPut(context) { ScopeRegistry() } }
 
     /**
      * @return The last activity that was displayed to the screen..
@@ -77,6 +97,98 @@ object activityScope : AutoScope<Activity> {
 
 }
 
+/**
+ * Android's fragment scope. Allows to register fragment-specific singletons.
+ */
+object fragmentScope : Scope<Fragment> {
+
+    /**
+     * Map that associates a ScopeRegistry to a fragment.
+     *
+     * Because it's a weak hash map, this does not prevent the fragment from being destroyed.
+     */
+    private val _fragmentScopes = WeakHashMap<Fragment, ScopeRegistry>()
+
+    /**
+     * Get a registry for a given fragment. Will always return the same registry for the same fragment.
+     *
+     * @param context The fragment associated with the returned registry.
+     * @return The registry associated with the given fragment.
+     */
+    override fun getRegistry(context: Fragment): ScopeRegistry
+        = synchronized(_fragmentScopes) { _fragmentScopes.getOrPut(context) { ScopeRegistry() } }
+
+}
+
+/**
+ * Android's support fragment scope. Allows to register support fragment-specific singletons.
+ */
+object supportFragmentScope : Scope<SupportFragment> {
+
+    /**
+     * Map that associates a ScopeRegistry to a support fragment.
+     *
+     * Because it's a weak hash map, this does not prevent the support fragment from being destroyed.
+     */
+    private val _fragmentScopes = WeakHashMap<SupportFragment, ScopeRegistry>()
+
+    /**
+     * Get a registry for a given support fragment. Will always return the same registry for the same support fragment.
+     *
+     * @param context The support fragment associated with the returned registry.
+     * @return The registry associated with the given support fragment.
+     */
+    override fun getRegistry(context: SupportFragment): ScopeRegistry
+        = synchronized(_fragmentScopes) { _fragmentScopes.getOrPut(context) { ScopeRegistry() } }
+
+}
+
+/**
+ * Android's service scope. Allows to register service-specific singletons.
+ */
+object serviceScope : Scope<Service> {
+
+    /**
+     * Get a registry for a given service. Will always return the same registry for the same service.
+     *
+     * @param context The service associated with the returned registry.
+     * @return The registry associated with the given service.
+     */
+    override fun getRegistry(context: Service): ScopeRegistry
+        = synchronized(_contextScopes) { _contextScopes.getOrPut(context) { ScopeRegistry() } }
+}
+
+/**
+ * Android's broadcast receiver scope. Allows to register broadcast receiver-specific singletons.
+ */
+object broadcastReceiverScope : Scope<BroadcastReceiver> {
+
+    /**
+     * Map that associates a ScopeRegistry to a broadcast receiver.
+     *
+     * Because it's a weak hash map, this does not prevent the broadcast receiver from being leaked.
+     */
+    private val _broadcastReceiverScopes = WeakHashMap<BroadcastReceiver, ScopeRegistry>()
+
+    /**
+     * Get a registry for a given broadcast receiver. Will always return the same registry for the same broadcast receiver.
+     *
+     * @param context The broadcast receiver associated with the returned registry.
+     * @return The registry associated with the given broadcast receiver.
+     */
+    override fun getRegistry(context: BroadcastReceiver): ScopeRegistry
+        = synchronized(_broadcastReceiverScopes) { _broadcastReceiverScopes.getOrPut(context) { ScopeRegistry() } }
+
+}
+
+/**
+ * Creates a context scoped singleton factory, effectively a `factory { Context -> T }`.
+ *
+ * @param T The singleton type.
+ * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the context argument.
+ * @return The factory to bind.
+ */
+inline fun <reified T : Any> Kodein.Builder.contextSingleton(noinline creator: Kodein.(Context) -> T): Factory<Context, T> = scopedSingleton(contextScope, creator)
 
 /**
  * Creates an activity scoped singleton factory, effectively a `factory { Activity -> T }`.
@@ -97,3 +209,39 @@ inline fun <reified T : Any> Kodein.Builder.activitySingleton(noinline creator: 
  * @return The provider to bind.
  */
 inline fun <reified T : Any> Kodein.Builder.autoActivitySingleton(noinline creator: Kodein.(Activity) -> T): Factory<Unit, T> = autoScopedSingleton(activityScope, creator)
+
+/**
+ * Creates a fragment scoped singleton factory, effectively a `factory { Fragment -> T }`.
+ *
+ * @param T The singleton type.
+ * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the fragment argument.
+ * @return The factory to bind.
+ */
+inline fun <reified T : Any> Kodein.Builder.fragmentSingleton(noinline creator: Kodein.(Fragment) -> T): Factory<Fragment, T> = scopedSingleton(fragmentScope, creator)
+
+/**
+ * Creates a support fragment scoped singleton factory, effectively a `factory { Fragment -> T }`.
+ *
+ * @param T The singleton type.
+ * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the support fragment argument.
+ * @return The factory to bind.
+ */
+inline fun <reified T : Any> Kodein.Builder.supportFragmentSingleton(noinline creator: Kodein.(SupportFragment) -> T): Factory<SupportFragment, T> = scopedSingleton(supportFragmentScope, creator)
+
+/**
+ * Creates a service scoped singleton factory, effectively a `factory { Service -> T }`.
+ *
+ * @param T The singleton type.
+ * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the service argument.
+ * @return The factory to bind.
+ */
+inline fun <reified T : Any> Kodein.Builder.serviceSingleton(noinline creator: Kodein.(Service) -> T): Factory<Service, T> = scopedSingleton(serviceScope, creator)
+
+/**
+ * Creates a broadcast receiver scoped singleton factory, effectively a `factory { BroadcastReceiver -> T }`.
+ *
+ * @param T The singleton type.
+ * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the broadcast receiver argument.
+ * @return The factory to bind.
+ */
+inline fun <reified T : Any> Kodein.Builder.broadcastReceiverSingleton(noinline creator: Kodein.(BroadcastReceiver) -> T): Factory<BroadcastReceiver, T> = scopedSingleton(broadcastReceiverScope, creator)

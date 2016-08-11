@@ -1052,10 +1052,36 @@ class MyActivity : Activity(), LazyKodeinAware {
 
 === Android scopes
 
+==== The context scope
+
+There are times where you need an object to be a singleton, but only during the lifetime of a `Context`. You can use the `contextSingleton` scope to achieve this.
+
+NOTE: The context scope should be used when a binding could apply to either an `Activity` or a `Service`. When a binding is exclusively for an `Activity` or a `Service`, the activity or service scope should be used instead.
+
+[source, kotlin]
+.Example: using the context scope
+----
+val kodein = Kodein {
+    bind<Logger>() with contextSingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+}
+----
+<1> `it` is the context the object is being created for.
+
+To retrieve an object bound in the context scope, you need to inject a factory that takes the context as a parameter.
+
+[source, kotlin]
+.Example: retrieving a context scoped singleton
+----
+val logger = kodein.with(context).instance()
+val sameLogger = kodein.with(context).instance() // this will be the same object as logger
+val otherLogger = kodein.with(otherContext).instance() // this will be a different object than logger
+----
+
+NOTE: The activity and service scope are special cases of the context scope. The bindings returned for an `Activity` or `Service` object from the context scope will be the same one returned for that object from the activity or service scope
+
 ==== The activity scope
 
-Sometimes, you need to define "activity singletons": objects that will be singleton inside an activity, but two different activities will receive different objects.
-For this, you can use the activity scope.
+If you want a singleton that lives only during the lifecycle of a specific `Activity`, and not any `Context`, you can use the activity scope.
 
 [source, kotlin]
 .Example: using the activity scope
@@ -1066,7 +1092,7 @@ val kodein = Kodein {
 ----
 <1> `it` is the activity the object is being created for.
 
-To retrieve the objects thusly bound, you need to inject a factory which takes the activity as parameter.
+As with the context scope, to retrieve objects bound in the activity scope, you need to inject a factory which takes the activity as a parameter.
 
 [source, kotlin]
 .Example: retrieving an activity scoped singleton
@@ -1077,7 +1103,7 @@ val logger = kodein.with(getActivity()).instance()
 
 ==== The auto activity scope
 
-If you don't want to being required an activity to inject your objects, you can use the "auto activity scope".
+If you don't want to be required to explicitly provide an activity instance to inject your objects, you can use the "auto activity scope".
 
 [source, kotlin]
 .Example: using the auto activity scope
@@ -1110,6 +1136,84 @@ class MyApplication : Application {
 ====
 
 CAUTION: Objects that are bound with `autoActivitySingleton` will always be injected according to *the last displayed activity*.
+
+==== The service scope
+
+If you want a singleton that lives only during the lifecycle of a specific `Service`, and not any `Context`, you can use the service scope.
+
+[source, kotlin]
+.Example: using the service scope
+----
+val kodein = Kodein {
+    bind<Logger>() with serviceSingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+}
+----
+<1> `it` is the service the object is being created for.
+
+As with the context scope, to retrieve objects bound in the service scope, you need to inject a factory which takes the service as a parameter.
+
+[source, kotlin]
+.Example: retrieving a service scoped singleton
+----
+val logger = kodein.with(service).instance()
+----
+
+==== The broadcast receiver scope
+
+If you want a singleton that lives only during the lifecycle of a specific `BroadcastReceiver`, you can use the broadcast receiver scope.
+
+[source, kotlin]
+.Example: using the broadcast receiver scope
+----
+val kodein = Kodein {
+    bind<Logger>() with broadcastReceiverSingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+}
+----
+<1> `it` is the broadcast receiver the object is being created for.
+
+To retrieve objects bound in the broadcast receiver scope, you need to inject a factory which takes the broadcast receiver as a parameter.
+
+[source, kotlin]
+.Example: retrieving a broadcast receiver scoped singleton
+----
+val logger = kodein.with(broadcastReceiver).instance()
+----
+
+==== The fragment (and support fragment) scope
+
+If you want a singleton that lives only during the lifecycle of a specific `Fragment`, you can use the fragment scope (or support fragment scope if you are using support lib fragments).
+
+[source, kotlin]
+.Example: using the fragment scope
+----
+val kodein = Kodein {
+    bind<Logger>() with fragmentSingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+}
+----
+<1> `it` is the fragment the object is being created for.
+
+[source, kotlin]
+.Example: using the support fragment scope
+----
+val kodein = Kodein {
+    bind<Logger>() with supportFragmentSingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+}
+----
+<1> `it` is the support fragment the object is being created for.
+
+To retrieve objects bound in the fragment scope (or support fragment scope), you need to inject a factory which takes the fragment as a parameter.
+
+[source, kotlin]
+.Example: retrieving a fragment scoped singleton
+----
+val logger = kodein.with(fragment).instance()
+----
+
+[source, kotlin]
+.Example: retrieving a support fragment scoped singleton
+----
+val logger = kodein.with(supportFragment).instance()
+----
 
 
 === Android example project
