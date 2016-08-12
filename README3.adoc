@@ -1046,6 +1046,33 @@ class MyActivity : Activity(), LazyKodeinAware {
 }
 ----
 
+There is also an "auto" version of the module.
+
+[source, kotlin]
+.Example: importing the android module
+----
+class MyApplication : Application(), KodeinAware {
+  override val kodein by Kodein.lazy {
+    import(autoAndroidModule(this@MyApplication))
+    /* other bindings */
+  }
+}
+----
+
+Retrieving instances of bindings from the autoAndroidModule does not require a `Context`.
+
+[source, kotlin]
+.Example: using kodein to retrieve a LayoutInflater
+----
+class MyActivity : Activity(), LazyKodeinAware {
+    override val kodein = LazyKodein(appKodein)
+
+    val inflater: LayoutInflater by instance()
+}
+----
+
+You can see everything that this module proposes in the https://github.com/SalomonBrys/Kodein/blob/master/kodein-android/src/main/kotlin/com/github/salomonbrys/kodein/android/AndroidModule.kt[AndroidModule.kt] file.
+
 
 === Android scopes
 
