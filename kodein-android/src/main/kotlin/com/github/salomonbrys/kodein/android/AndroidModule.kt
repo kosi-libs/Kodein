@@ -25,6 +25,7 @@ import android.os.PowerManager
 import android.os.Vibrator
 import android.os.storage.StorageManager
 import android.preference.PreferenceManager
+import android.service.wallpaper.WallpaperService
 import android.telephony.TelephonyManager
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -101,7 +102,7 @@ val androidModule = Kodein.Module {
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.USB_SERVICE) as UsbManager }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator }
-    bind() from factory { ctx: Context -> ctx.getSystemService(Context.WALLPAPER_SERVICE) as WallpaperManager }
+    bind() from factory { ctx: Context -> ctx.getSystemService(Context.WALLPAPER_SERVICE) as WallpaperService }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.WIFI_SERVICE) as WifiManager }
     bind() from factory { ctx: Context -> ctx.getSystemService(Context.WINDOW_SERVICE) as WindowManager }
