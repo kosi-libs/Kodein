@@ -41,33 +41,35 @@ private abstract class TypeStringer {
  * Type stringer that displays simple type names.
  */
 private object SimpleTypeStringer : TypeStringer() {
-    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
     override fun dispName(cls: Class<*>): String = when {
         cls.isArray -> "Array<" + dispString(cls.componentType) + ">"
         cls.enclosingClass != null -> dispName(cls.enclosingClass) + "." + cls.simpleName
-        cls == java.lang.Character::class.java -> "Char"
-        cls == java.lang.Integer::class.java -> "Int"
-        else -> cls.simpleName
+        else -> cls.primitiveName ?: cls.simpleName
     }
 }
+
+private val Class<*>.primitiveName: String?
+    get() = when (this) {
+        Boolean::class.javaPrimitiveType, Boolean::class.javaObjectType -> "Boolean"
+        Byte::class.javaPrimitiveType, Byte::class.javaObjectType -> "Byte"
+        Character::class.javaPrimitiveType, Character::class.javaObjectType -> "Char"
+        Short::class.javaPrimitiveType, Short::class.javaObjectType -> "Short"
+        Integer::class.javaPrimitiveType, Integer::class.javaObjectType -> "Int"
+        Long::class.javaPrimitiveType, Long::class.javaObjectType -> "Long"
+        Float::class.javaPrimitiveType, Float::class.javaObjectType -> "Float"
+        Double::class.javaPrimitiveType, Double::class.javaObjectType -> "Double"
+        else -> null
+    }
 
 /**
  * Type stringer that displays full type names.
  */
 private object FullTypeStringer : TypeStringer() {
-    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
     override fun dispName(cls: Class<*>) = when {
         cls.isArray -> "Array<" + dispString(cls.componentType) + ">"
         cls.enclosingClass != null -> dispString(cls.enclosingClass) + "." + cls.simpleName
-        cls == java.lang.Boolean::class.java -> "kotlin.Boolean"
-        cls == java.lang.Byte::class.java -> "kotlin.Byte"
-        cls == java.lang.Character::class.java -> "kotlin.Char"
-        cls == java.lang.Short::class.java -> "kotlin.Short"
-        cls == java.lang.Integer::class.java -> "kotlin.Int"
-        cls == java.lang.Long::class.java -> "kotlin.Long"
-        cls == java.lang.Float::class.java -> "kotlin.Float"
-        cls == java.lang.Double::class.java -> "kotlin.Double"
-        else -> cls.`package`.name + "." + SimpleTypeStringer.dispName(cls)
+        else -> cls.primitiveName?.let { "kotlin.$it" }
+                ?: cls.`package`.name + "." + SimpleTypeStringer.dispName(cls)
     }
 }
 
