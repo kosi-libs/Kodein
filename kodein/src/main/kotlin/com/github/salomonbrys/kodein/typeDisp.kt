@@ -59,14 +59,14 @@ private object FullTypeStringer : TypeStringer() {
     override fun dispName(cls: Class<*>) = when {
         cls.isArray -> "Array<" + dispString(cls.componentType) + ">"
         cls.enclosingClass != null -> dispString(cls.enclosingClass) + "." + cls.simpleName
-        cls == java.lang.Boolean::class.java -> "kotin.Boolean"
-        cls == java.lang.Byte::class.java -> "kotin.Byte"
-        cls == java.lang.Character::class.java -> "kotin.Char"
-        cls == java.lang.Short::class.java -> "kotin.Short"
-        cls == java.lang.Integer::class.java -> "kotin.Int"
-        cls == java.lang.Long::class.java -> "kotin.Long"
-        cls == java.lang.Float::class.java -> "kotin.Float"
-        cls == java.lang.Double::class.java -> "kotin.Double"
+        cls == java.lang.Boolean::class.java -> "kotlin.Boolean"
+        cls == java.lang.Byte::class.java -> "kotlin.Byte"
+        cls == java.lang.Character::class.java -> "kotlin.Char"
+        cls == java.lang.Short::class.java -> "kotlin.Short"
+        cls == java.lang.Integer::class.java -> "kotlin.Int"
+        cls == java.lang.Long::class.java -> "kotlin.Long"
+        cls == java.lang.Float::class.java -> "kotlin.Float"
+        cls == java.lang.Double::class.java -> "kotlin.Double"
         else -> cls.`package`.name + "." + SimpleTypeStringer.dispName(cls)
     }
 }
