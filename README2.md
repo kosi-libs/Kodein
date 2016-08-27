@@ -538,7 +538,7 @@ Kodein does work on Android (in fact, it was developed for an Android project). 
 
 Here's how to use `kodein-android`: declare the dependency bindings in the Android `Application`, having it implements `KodeinApplication`:
 
-```kotin
+```kotlin
 class MyApp : Application(), KodeinApplication {
 	override val kodein = Kodein {
 	/* bindings... */

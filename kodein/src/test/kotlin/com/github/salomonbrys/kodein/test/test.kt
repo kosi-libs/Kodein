@@ -580,8 +580,7 @@ class KodeinTests : TestCase() {
         assertEquals("singleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "singleton"), Unit::class.java)]?.factoryName)
         assertEquals("factory", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "factory"), String::class.java)]?.factoryName)
         assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "instance"), Unit::class.java)]?.factoryName)
-        @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(Integer::class.java, "answer"), Unit::class.java)]?.factoryName)
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(Int::class.javaObjectType, "answer"), Unit::class.java)]?.factoryName)
     }
 
     @Test fun test16_1_ScopedSingleton() {
