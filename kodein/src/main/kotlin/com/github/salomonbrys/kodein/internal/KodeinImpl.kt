@@ -1,5 +1,6 @@
 package com.github.salomonbrys.kodein.internal
 
+import com.github.salomonbrys.kodein.internal.CMap
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinContainer
 import com.github.salomonbrys.kodein.TKodein
@@ -29,7 +30,7 @@ internal class KodeinImpl internal constructor(override val container: KodeinCon
     /**
      * "Main" constructor.
      */
-    constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(Kodein.Builder(KodeinContainer.Builder(true, allowSilentOverride),ArrayList(), init))
+    constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(Kodein.Builder(KodeinContainer.Builder(true, allowSilentOverride, CMap()),ArrayList(), init))
 
     override val typed = TKodein(container)
 }

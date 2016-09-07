@@ -1,5 +1,6 @@
 package com.github.salomonbrys.kodein
 
+import com.github.salomonbrys.kodein.internal.CMap
 import java.lang.reflect.*
 import java.util.*
 
@@ -77,7 +78,7 @@ interface KodeinContainer {
      * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
      * @property _map The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
      */
-    class Builder internal constructor(allowOverride: Boolean, silentOverride: Boolean, internal val _map: MutableMap<Kodein.Key, Factory<*, Any>> = HashMap()) {
+    class Builder internal constructor(allowOverride: Boolean, silentOverride: Boolean, internal val _map: CMap) {
 
         /**
          * The override permission for a builder.
