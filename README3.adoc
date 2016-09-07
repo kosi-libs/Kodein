@@ -817,11 +817,13 @@ val kodein = ConfigurableKodein(mutable = true)
 
 [WARNING]
 ====
-Using a mutable `ConfigurableKodein` can lead to *very bad spaghetti code*.
-Therefore, using a mutable `ConfigurableKodein` *IS discouraged*, unless you truly need it, know what you're doing, and see no other way.
+Using a mutable `ConfigurableKodein` can lead to *very bad code practice* and *very difficult bugs*. +
+Therefore, using a mutable `ConfigurableKodein` *IS discouraged*. +
+Note that every time a `ConfigurableKodein` is mutated, its cache is entirely flushed, meaning that it has a real impact on optimization! +
+Please use the mutating feature only if you truly need it, know what you're doing, and see no other way.
 ====
 
-A mutable `ConfigurableKodein` can be configured even _after first retrieval_ by using the `mutate*` functions.
+A mutable `ConfigurableKodein` can be configured even _after first retrieval_.
 
 [source, kotlin]
 .Example: mutating a mutable ConfigurableKodein
@@ -831,30 +833,14 @@ fun test() {
 
     kodein.addModule(aModule)
 
-    val ds: DataSource = kodein.instance() <1>
-
-    kodein.mutateAddModule(anotherModule)
-}
-----
-<1> Passed this line, you need to use the `mutate*` functions.
-
-You can also use reset to put a mutable `ConfigurableKodein` back into a configurable state.
-
-[source, kotlin]
-.Example: reseting a mutable ConfigurableKodein
-----
-fun test() {
-    val kodein = ConfigurableKodein(mutable = true)
-
-    kodein.addModule(aModule)
-
     val ds: DataSource = kodein.instance()
 
-    kodein.mutateReset(true) <1>
-    kodein.addModule(anotherModule)
+    kodein.addModule(anotherModule) <1>
 }
 ----
-<1> `true` to keep current bindings, false to reset all bindings.
+<1> This would have failed if the ConfigurableKodein was not mutable.
+
+You can also use `clear` to remove all bindings.
 
 
 === The god complex: One True Kodein

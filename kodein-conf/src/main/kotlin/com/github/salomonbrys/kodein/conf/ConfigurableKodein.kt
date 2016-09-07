@@ -28,7 +28,7 @@ class ConfigurableKodein : Kodein {
             if (value == field)
                 return
             if (field != null)
-                throw IllegalStateException("Mutable field has already been set")
+                throw IllegalStateException("Mutable field has already been set. You must set the mutable field before first retrieval.")
             field = value
         }
 
@@ -85,41 +85,37 @@ class ConfigurableKodein : Kodein {
     }
 
     /**
-     * Reset the Kodein instance, allowing it to be configured again. Needs [mutable] to be true.
+     * Clear all the bindings of the Kodein instance. Needs [mutable] to be true.
      *
-     * By default, it will reset it with no configured bindings.
-     * If [mutable] is true, all bindings from the old kodein will be transferred into the new kodein.
-     *
-     * @param keep Whether or not to keep the old bindings into the new Kodein instance.
      * @throws IllegalStateException if [mutable] is not `true`.
      */
-    fun mutateReset(keep: Boolean = false) {
+    fun clear() {
+        if (mutable != true)
+            throw IllegalStateException("ConfigurableKodein is not mutable, you cannot clear bindings.")
+
         synchronized(this) {
-            val previous = _instance
+            val configs = _configs
 
-            if (previous == null) {
-                if (!keep) {
-                    if (mutable != true)
-                        throw IllegalStateException("ConfigurableKodein is not mutable")
-
-                    _configs?.clear()
-                }
+            if (configs != null) {
+                configs.clear()
                 return
             }
-
-            if (mutable != true)
-                throw IllegalStateException("ConfigurableKodein is not mutable")
-
-            _instance = null
-            _configs = LinkedList()
-
-            if (keep)
-                addConfig { extend(previous) }
+            else {
+                _instance = null
+                _configs = LinkedList()
+            }
         }
     }
 
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("mutateReset(false) should be replaced by clear(), mutateReset(true) is not needed anymore.")
+    fun mutateReset(keep: Boolean = false) {
+        if (!keep)
+            clear()
+    }
+
     /**
-     * Whether or not this Kodein can be configured (meaning that it has not been used for retrieval yet.
+     * Whether or not this Kodein can be configured (meaning that it has not been used for retrieval yet).
      */
     val canConfigure: Boolean get() = _instance == null
 
@@ -131,8 +127,17 @@ class ConfigurableKodein : Kodein {
      */
     fun addConfig(config: Kodein.Builder.() -> Unit) {
         synchronized(this) {
-            val configs = _configs ?: throw IllegalStateException("ConfigurableKodein has been accessed and therefore constructed, you cannot add bindings after first retrieval")
-            configs.add(config)
+            val configs = _configs
+            if (configs == null) {
+                if (mutable != true)
+                    throw IllegalStateException("The non-mutable ConfigurableKodein has been accessed and therefore constructed, you cannot add bindings after first retrieval.")
+                val previous = _instance
+                _instance = null
+                _configs = LinkedList()
+                if (previous != null)
+                    addExtend(previous)
+            }
+            _configs!!.add(config)
         }
     }
 
@@ -142,12 +147,9 @@ class ConfigurableKodein : Kodein {
      * @param config The lambda to be applied when the kodein instance is constructed.
      * @throws IllegalStateException if [mutable] is not `true`.
      */
-    fun mutateAddConfig(config: Kodein.Builder.() -> Unit) {
-        synchronized(this) {
-            mutateReset(true)
-            addConfig(config)
-        }
-    }
+    @Deprecated("AddConfig can now be used with mutability.", ReplaceWith("addConfig(config)"))
+    @Suppress("DEPRECATION")
+    fun mutateAddConfig(config: Kodein.Builder.() -> Unit) = addConfig(config)
 
     /**
      * Adds a module to the bindings that will be applied when the Kodein is constructed.
@@ -174,6 +176,8 @@ class ConfigurableKodein : Kodein {
      * @param allowOverride Whether this module is allowed to override existing bindings.
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
      */
+    @Deprecated("AddImport can now be used with mutability.", ReplaceWith("addImport(module, allowOverride)"))
+    @Suppress("DEPRECATION")
     fun mutateAddImport(module: Kodein.Module, allowOverride: Boolean = false) = mutateAddConfig { import(module, allowOverride) }
 
     /**
@@ -183,6 +187,8 @@ class ConfigurableKodein : Kodein {
      * @param allowOverride Whether these bindings are allowed to override existing bindings.
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
      */
+    @Deprecated("AddExtend can now be used with mutability.", ReplaceWith("addExtend(kodein, allowOverride)"))
+    @Suppress("DEPRECATION")
     fun mutateAddExtend(kodein: Kodein, allowOverride: Boolean = false) = mutateAddConfig { extend(kodein, allowOverride) }
 
     /** @suppress */

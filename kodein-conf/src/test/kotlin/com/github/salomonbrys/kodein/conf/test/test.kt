@@ -4,6 +4,7 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.conf.ConfigurableKodein
 import com.github.salomonbrys.kodein.conf.global
 import com.github.salomonbrys.kodein.instance
+import com.github.salomonbrys.kodein.test.assertThrown
 import junit.framework.TestCase
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -24,7 +25,7 @@ class KodeinGlobalTests : TestCase() {
         assertEquals(42, answer)
     }
 
-    @Test fun test01_0_Reset() {
+    @Test fun test01_0_Clear() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
@@ -33,7 +34,8 @@ class KodeinGlobalTests : TestCase() {
 
         assertEquals(21, kodein.instance<Int>("answer"))
 
-        kodein.mutateReset()
+        kodein.clear()
+
         kodein.addConfig {
             constant("answer") with 42
         }
@@ -41,7 +43,7 @@ class KodeinGlobalTests : TestCase() {
         assertEquals(42, kodein.instance<Int>("answer"))
     }
 
-    @Test fun test01_1_ResetExtend() {
+    @Test fun test01_1_Mutate() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
@@ -50,13 +52,40 @@ class KodeinGlobalTests : TestCase() {
 
         assertEquals(21, kodein.instance<Int>("half"))
 
-        kodein.mutateReset(true)
         kodein.addConfig {
             constant("full") with 42
         }
 
         assertEquals(21, kodein.instance<Int>("half"))
         assertEquals(42, kodein.instance<Int>("full"))
+    }
+
+    @Test fun test01_2_NonMutableClear() {
+        val kodein = ConfigurableKodein()
+
+        kodein.addConfig {
+            constant("answer") with 21
+        }
+
+        assertEquals(21, kodein.instance<Int>("answer"))
+
+        assertThrown<IllegalStateException> {
+            kodein.clear()
+        }
+    }
+
+    @Test fun test01_3_NonMutableMutate() {
+        val kodein = ConfigurableKodein()
+
+        kodein.addConfig {
+            constant("answer") with 21
+        }
+
+        assertEquals(21, kodein.instance<Int>("answer"))
+
+        assertThrown<IllegalStateException> {
+            kodein.addConfig {}
+        }
     }
 
     @Test fun test02_0_mutateConfig() {
@@ -68,12 +97,26 @@ class KodeinGlobalTests : TestCase() {
 
         assertEquals(21, kodein.instance<Int>("half"))
 
-        kodein.mutateAddConfig {
+        kodein.addConfig {
             constant("full") with 42
         }
 
         assertEquals(21, kodein.instance<Int>("half"))
         assertEquals(42, kodein.instance<Int>("full"))
+    }
+
+    @Test fun test02_1_nonMutableMutateConfig() {
+        val kodein = ConfigurableKodein()
+
+        kodein.addConfig {
+            constant("half") with 21
+        }
+
+        assertEquals(21, kodein.instance<Int>("half"))
+
+        assertThrown<IllegalStateException> {
+            kodein.addConfig {}
+        }
     }
 
     @Test fun test03_0_global() {
@@ -85,7 +128,7 @@ class KodeinGlobalTests : TestCase() {
 
         assertEquals(21, Kodein.global.instance<Int>("half"))
 
-        Kodein.global.mutateAddConfig {
+        Kodein.global.addConfig {
             constant("full") with 42
         }
 
