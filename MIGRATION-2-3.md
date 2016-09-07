@@ -1,6 +1,6 @@
 # Migration
 
-This document describes the steps needed to migrate from Kodein `2.8` to `3.0`.
+This document describes the steps needed to migrate from Kodein `2.8` to `3.+`.
 
 Of course, each step is only needed if you use the described feature. Most users will only need the two first steps as
 the others are mainly about changes in advanced features.

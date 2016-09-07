@@ -35,7 +35,7 @@ Kodein is a good choice because:
 - It can be used in plain Java
 
 
-***Kodein Version 3.0.0 is currently being tested. You can see what's new in the [changelog](https://github.com/SalomonBrys/Kodein/blob/master/CHANGELOG.md), you can learn about it (or better yet, test it) by reading the [new documentation](https://salomonbrys.github.io/Kodein/), and you can prepare the migration by reading the [migration document](https://github.com/SalomonBrys/Kodein/blob/master/CHANGELOG.md)***
+***Kodein Version 3 is the current major version. You can see what's new in the [changelog](https://github.com/SalomonBrys/Kodein/blob/master/CHANGELOG.md), you can learn about it by reading the [new documentation](https://salomonbrys.github.io/Kodein/), and you can migrate by reading the [migration document](https://github.com/SalomonBrys/Kodein/blob/master/CHANGELOG.md)***
 
 
 Example
