@@ -792,4 +792,23 @@ class KodeinTests : TestCase() {
 
         assertEquals(AwareTest::class.java, test.logger.cls)
     }
+
+    open class Test21_A
+    class Test21_B : Test21_A()
+    class Test21_G<out T : Test21_A>
+
+    @Test fun test21_0_simpleDispString() {
+
+        assertEquals("Int", typeToken<Int>().type.simpleDispString)
+
+        assertEquals("Array<Char>", typeToken<Array<Char>>().type.simpleDispString)
+
+        assertEquals("List<*>", typeToken<List<*>>().type.simpleDispString)
+
+        assertEquals("Map<String, *>", typeToken<Map<String, *>>().type.simpleDispString)
+
+        assertEquals("KodeinTests.Test21_G<*>", typeToken<Test21_G<*>>().type.simpleDispString)
+        assertEquals("KodeinTests.Test21_G<*>", typeToken<Test21_G<Test21_A>>().type.simpleDispString)
+        assertEquals("KodeinTests.Test21_G<out KodeinTests.Test21_B>", typeToken<Test21_G<Test21_B>>().type.simpleDispString)
+    }
 }

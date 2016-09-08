@@ -36,6 +36,8 @@ dependencies {
     compile project(':kodein')
 
     testCompile "junit:junit:$junit_version"
+
+    testCompile project(':kodein').sourceSets.test.output
 }
 
 if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {

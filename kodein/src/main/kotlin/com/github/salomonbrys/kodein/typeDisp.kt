@@ -14,7 +14,17 @@ private abstract class TypeStringer {
      */
     fun dispString(type: Type): String = when (type) {
         is Class<*> -> dispName(type)
-        is ParameterizedType -> dispString(type.rawType) + "<" + type.actualTypeArguments.joinToString(", ") { dispString(it) } + ">"
+        is ParameterizedType -> {
+            val cls = type.rawType as Class<*>
+            val arguments = cls.typeParameters.mapIndexed { i, variable ->
+                val argument = type.actualTypeArguments[i]
+                if (argument is WildcardType && variable.bounds.any { it in argument.upperBounds })
+                    "*"
+                else
+                    dispString(argument)
+            }
+            dispString(type.rawType) + "<" + arguments.joinToString(", ") + ">"
+        }
         is KodeinWrappedType -> dispString(type.type)
         is WildcardType -> when {
             type.lowerBounds.isNotEmpty() -> "in " + dispString(type.lowerBounds[0])
@@ -52,9 +62,9 @@ private val Class<*>.primitiveName: String?
     get() = when (this) {
         Boolean::class.javaPrimitiveType, Boolean::class.javaObjectType -> "Boolean"
         Byte::class.javaPrimitiveType, Byte::class.javaObjectType -> "Byte"
-        Character::class.javaPrimitiveType, Character::class.javaObjectType -> "Char"
+        Char::class.javaPrimitiveType, Char::class.javaObjectType -> "Char"
         Short::class.javaPrimitiveType, Short::class.javaObjectType -> "Short"
-        Integer::class.javaPrimitiveType, Integer::class.javaObjectType -> "Int"
+        Int::class.javaPrimitiveType, Int::class.javaObjectType -> "Int"
         Long::class.javaPrimitiveType, Long::class.javaObjectType -> "Long"
         Float::class.javaPrimitiveType, Float::class.javaObjectType -> "Float"
         Double::class.javaPrimitiveType, Double::class.javaObjectType -> "Double"
