@@ -1,4 +1,23 @@
 
+### 3.1.0 (22-09-2016)
+
+ - FEATURES
+   * Android: Added more scopes for `Fragment`, `Service` and `BoradcastReceiver` (Thanks to Eliezer Graber).
+   * `ConfigurableKodein` objects that are declared `mutable` can now be mutated with `addConfig`, `addImport` and
+     `addExtend`.
+   * Factories that take a class as parameter now work with their child classes without upcast (eg: you can retrieve
+     with `with(obj).instance()` instead of `with(obj as Type).instance()`)
+ 
+ - FIX
+   * Android module: The `KeyguardManager` and `WallpaperService` are now properly injected. (Thanks to Eliezer Graber).
+ 
+ - DEPRECATION
+   * In `ConfigurableKodein`, all `mutate*` methods are deprecated (in favour of their regular counterparts).
+   
+ - INTERNAL
+   * Better type display (Thanks to Alexander Udalov).
+   * The Android demo project is now a module (Thanks to Eliezer Graber).
+
 ### 3.0.0 (21-07-2016)
 
  - FEATURES
