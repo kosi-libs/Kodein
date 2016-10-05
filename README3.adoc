@@ -119,7 +119,7 @@ This binds a type to a factory function, which is a function that takes an argum
 Each time you need an instance of the bound type, the function will be called.
 
 [source,kotlin]
-.Example: creates a new Dice each time the you need one, according to an Int representing the number of sides
+.Example: creates a new Dice each time you need one, according to an Int representing the number of sides
 ----
 val kodein = Kodein {
     bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
@@ -403,7 +403,7 @@ val testModule = Kodein.Module(allowSilentOverride = true) {
 == Dependency retrieval
 
 [source, kotlin]
-.Example bindings that are used trhoughout the chapter:
+.Example bindings that are used throughout the chapter:
 ----
 val kodein = Kodein {
     bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
@@ -1436,7 +1436,7 @@ If you feel like enhancing this document, you can propose a pull request that mo
 
 == Let's talk!
 
-You've read so far ?! *You're awsome!* +
+You've read so far?! *You're awesome!* +
 Why don't you drop by the https://kotlinlang.slack.com/messages/kodein/[Kodein Slack channel] on Kotlin's Slack group?
 
 
