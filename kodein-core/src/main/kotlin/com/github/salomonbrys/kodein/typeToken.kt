@@ -1,6 +1,7 @@
 package com.github.salomonbrys.kodein
 
 import java.lang.reflect.*
+import kotlin.reflect.KClass
 
 /**
  * Whether or not the running JVM needs [ParameterizedType] to be wrapped.
@@ -43,7 +44,7 @@ interface TypeToken<T> {
  * Class used to get a generic type at runtime.
  *
  * @param T The type to extract.
- * @see typeToken
+ * @see genericToken
  */
 @Suppress("unused")
 abstract class TypeReference<T> protected constructor() : TypeToken<T> {
@@ -54,10 +55,7 @@ abstract class TypeReference<T> protected constructor() : TypeToken<T> {
     val trueType: Type
 
     init {
-        val t = javaClass.genericSuperclass
-
-        if (t !is ParameterizedType)
-            throw RuntimeException("Invalid TypeToken; must specify type parameters")
+        val t = javaClass.genericSuperclass as? ParameterizedType ?: throw RuntimeException("Invalid TypeToken; must specify type parameters")
 
         if (t.rawType != TypeReference::class.java)
             throw RuntimeException("Invalid TypeToken; must directly extend TypeReference")
@@ -82,7 +80,23 @@ abstract class TypeReference<T> protected constructor() : TypeToken<T> {
  * @param T The type to get.
  * @return The type object representing `T`.
  */
-inline fun <reified T> typeToken(): TypeToken<T> = (object : TypeReference<T>() {})
+inline fun <reified T> genericToken(): TypeToken<T> = (object : TypeReference<T>() {})
+
+@Deprecated(message = "Use genericToken instead.", replaceWith = ReplaceWith("genericToken<T>()"))
+inline fun <reified T> typeToken() = genericToken<T>()
+
+
+/**
+ * Function used to get a Class object. Same as [T]::class but with [T] being possibly nullable.
+ *
+ * This should be used only when T is (possibly) nullable. When possible, T::class.java is faster.
+ *
+ * @param T The type to get.
+ * @return The type object representing `T`.
+ */
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T> typeClass(): Class<T> = (T::class as KClass<*>).java as Class<T>
+
 
 /**
  * Wraps a ParameterizedType and implements hashCode / equals.
@@ -203,10 +217,7 @@ class KodeinWrappedType(val type: Type) : Type {
         fun Equals(left: Array<Type>, right: Array<Type>): Boolean {
             if (left.size != right.size)
                 return false
-            for (i in left.indices)
-                if (!Equals(left[i], right[i]))
-                    return false
-            return true
+            return left.indices.none { !Equals(left[it], right[it]) }
         }
     }
 }

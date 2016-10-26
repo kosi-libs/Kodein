@@ -8,7 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.os.Bundle
 import com.github.salomonbrys.kodein.*
-import com.github.salomonbrys.kodein.android.activityScope.lifecycleManager
+import com.github.salomonbrys.kodein.android.androidActivityScope.lifecycleManager
 import java.util.*
 import android.support.v4.app.Fragment as SupportFragment
 
@@ -22,7 +22,7 @@ private val _contextScopes = WeakHashMap<Context, ScopeRegistry>()
 /**
  * Android's context scope. Allows to register context-specific singletons.
  */
-object contextScope : Scope<Context> {
+object androidContextScope : Scope<Context> {
 
     /**
      * Get a registry for a given context. Will always return the same registry for the same context.
@@ -42,7 +42,7 @@ object contextScope : Scope<Context> {
  *
  * /!\ If used as an auto-scope, you need to register the [lifecycleManager].
  */
-object activityScope : AutoScope<Activity> {
+object androidActivityScope : AutoScope<Activity> {
 
     /**
      * The last activity that was displayed to the screen. Used when this scope is used as an auto-scope.
@@ -63,7 +63,7 @@ object activityScope : AutoScope<Activity> {
      * @return The last activity that was displayed to the screen..
      */
     override fun getContext()
-            = _currentActivity ?: throw IllegalStateException("There are no current activity. This can either mean that you forgot to register the activityScope.lifecycleManager in your application or that there is currently no activity in the foreground.")
+            = _currentActivity ?: throw IllegalStateException("There are no current activity. This can either mean that you forgot to register the androidActivityScope.lifecycleManager in your application or that there is currently no activity in the foreground.")
 
 
     /**
@@ -72,7 +72,7 @@ object activityScope : AutoScope<Activity> {
      * ```kotlin
      * class MyActivity : Activity {
      *     override fun onCreate() {
-     *         registerActivityLifecycleCallbacks(activityScope.lifecycleManager)
+     *         registerActivityLifecycleCallbacks(androidActivityScope.lifecycleManager)
      *     }
      * }
      * ```
@@ -100,7 +100,7 @@ object activityScope : AutoScope<Activity> {
 /**
  * Android's fragment scope. Allows to register fragment-specific singletons.
  */
-object fragmentScope : Scope<Fragment> {
+object androidFragmentScope : Scope<Fragment> {
 
     /**
      * Map that associates a ScopeRegistry to a fragment.
@@ -123,7 +123,7 @@ object fragmentScope : Scope<Fragment> {
 /**
  * Android's support fragment scope. Allows to register support fragment-specific singletons.
  */
-object supportFragmentScope : Scope<SupportFragment> {
+object androidSupportFragmentScope : Scope<SupportFragment> {
 
     /**
      * Map that associates a ScopeRegistry to a support fragment.
@@ -146,7 +146,7 @@ object supportFragmentScope : Scope<SupportFragment> {
 /**
  * Android's service scope. Allows to register service-specific singletons.
  */
-object serviceScope : Scope<Service> {
+object androidServiceScope : Scope<Service> {
 
     /**
      * Get a registry for a given service. Will always return the same registry for the same service.
@@ -161,7 +161,7 @@ object serviceScope : Scope<Service> {
 /**
  * Android's broadcast receiver scope. Allows to register broadcast receiver-specific singletons.
  */
-object broadcastReceiverScope : Scope<BroadcastReceiver> {
+object androidBroadcastReceiverScope : Scope<BroadcastReceiver> {
 
     /**
      * Map that associates a ScopeRegistry to a broadcast receiver.
@@ -188,7 +188,8 @@ object broadcastReceiverScope : Scope<BroadcastReceiver> {
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the context argument.
  * @return The factory to bind.
  */
-inline fun <reified T : Any> Kodein.Builder.contextSingleton(noinline creator: Kodein.(Context) -> T): Factory<Context, T> = scopedSingleton(contextScope, creator)
+@Deprecated("Use scopedSingleton instead.", ReplaceWith("scopedSingleton(androidContextScope, creator)", "com.github.salomonbrys.kodein.scopedSingleton"))
+inline fun <reified T : Any> Kodein.Builder.contextSingleton(noinline creator: Kodein.(Context) -> T): Factory<Context, T> = genericScopedSingleton(androidContextScope, creator)
 
 /**
  * Creates an activity scoped singleton factory, effectively a `factory { Activity -> T }`.
@@ -197,18 +198,20 @@ inline fun <reified T : Any> Kodein.Builder.contextSingleton(noinline creator: K
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the activity argument.
  * @return The factory to bind.
  */
-inline fun <reified T : Any> Kodein.Builder.activitySingleton(noinline creator: Kodein.(Activity) -> T): Factory<Activity, T> = scopedSingleton(activityScope, creator)
+@Deprecated("Use scopedSingleton instead.", ReplaceWith("scopedSingleton(androidActivityScope, creator)", "com.github.salomonbrys.kodein.scopedSingleton"))
+inline fun <reified T : Any> Kodein.Builder.activitySingleton(noinline creator: Kodein.(Activity) -> T): Factory<Activity, T> = genericScopedSingleton(androidActivityScope, creator)
 
 /**
  * Creates an activity auto-scoped singleton factory, effectively a `provider { -> T }`.
  *
- * Note that, to use this, you **must** register the [activityScope.lifecycleManager].
+ * Note that, to use this, you **must** register the [androidActivityScope.lifecycleManager].
  *
  * @param T The singleton type.
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the activity argument.
  * @return The provider to bind.
  */
-inline fun <reified T : Any> Kodein.Builder.autoActivitySingleton(noinline creator: Kodein.(Activity) -> T): Factory<Unit, T> = autoScopedSingleton(activityScope, creator)
+@Deprecated("Use autoScopedSingleton instead.", ReplaceWith("autoScopedSingleton(androidActivityScope, creator)", "com.github.salomonbrys.kodein.autoScopedSingleton"))
+inline fun <reified T : Any> Kodein.Builder.autoActivitySingleton(noinline creator: Kodein.(Activity) -> T): Factory<Unit, T> = genericAutoScopedSingleton(androidActivityScope, creator)
 
 /**
  * Creates a fragment scoped singleton factory, effectively a `factory { Fragment -> T }`.
@@ -217,7 +220,8 @@ inline fun <reified T : Any> Kodein.Builder.autoActivitySingleton(noinline creat
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the fragment argument.
  * @return The factory to bind.
  */
-inline fun <reified T : Any> Kodein.Builder.fragmentSingleton(noinline creator: Kodein.(Fragment) -> T): Factory<Fragment, T> = scopedSingleton(fragmentScope, creator)
+@Deprecated("Use scopedSingleton instead.", ReplaceWith("scopedSingleton(androidFragmentScope, creator)", "com.github.salomonbrys.kodein.scopedSingleton"))
+inline fun <reified T : Any> Kodein.Builder.fragmentSingleton(noinline creator: Kodein.(Fragment) -> T): Factory<Fragment, T> = genericScopedSingleton(androidFragmentScope, creator)
 
 /**
  * Creates a support fragment scoped singleton factory, effectively a `factory { Fragment -> T }`.
@@ -226,7 +230,8 @@ inline fun <reified T : Any> Kodein.Builder.fragmentSingleton(noinline creator: 
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the support fragment argument.
  * @return The factory to bind.
  */
-inline fun <reified T : Any> Kodein.Builder.supportFragmentSingleton(noinline creator: Kodein.(SupportFragment) -> T): Factory<SupportFragment, T> = scopedSingleton(supportFragmentScope, creator)
+@Deprecated("Use scopedSingleton instead.", ReplaceWith("scopedSingleton(androidSupportFragmentScope, creator)", "com.github.salomonbrys.kodein.scopedSingleton"))
+inline fun <reified T : Any> Kodein.Builder.supportFragmentSingleton(noinline creator: Kodein.(SupportFragment) -> T): Factory<SupportFragment, T> = genericScopedSingleton(androidSupportFragmentScope, creator)
 
 /**
  * Creates a service scoped singleton factory, effectively a `factory { Service -> T }`.
@@ -235,7 +240,8 @@ inline fun <reified T : Any> Kodein.Builder.supportFragmentSingleton(noinline cr
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the service argument.
  * @return The factory to bind.
  */
-inline fun <reified T : Any> Kodein.Builder.serviceSingleton(noinline creator: Kodein.(Service) -> T): Factory<Service, T> = scopedSingleton(serviceScope, creator)
+@Deprecated("Use scopedSingleton instead.", ReplaceWith("scopedSingleton(androidServiceScope, creator)", "com.github.salomonbrys.kodein.scopedSingleton"))
+inline fun <reified T : Any> Kodein.Builder.serviceSingleton(noinline creator: Kodein.(Service) -> T): Factory<Service, T> = genericScopedSingleton(androidServiceScope, creator)
 
 /**
  * Creates a broadcast receiver scoped singleton factory, effectively a `factory { BroadcastReceiver -> T }`.
@@ -244,4 +250,5 @@ inline fun <reified T : Any> Kodein.Builder.serviceSingleton(noinline creator: K
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist for the broadcast receiver argument.
  * @return The factory to bind.
  */
-inline fun <reified T : Any> Kodein.Builder.broadcastReceiverSingleton(noinline creator: Kodein.(BroadcastReceiver) -> T): Factory<BroadcastReceiver, T> = scopedSingleton(broadcastReceiverScope, creator)
+@Deprecated("Use scopedSingleton instead.", ReplaceWith("scopedSingleton(androidBroadcastReceiverScope, creator)", "com.github.salomonbrys.kodein.scopedSingleton"))
+inline fun <reified T : Any> Kodein.Builder.broadcastReceiverSingleton(noinline creator: Kodein.(BroadcastReceiver) -> T): Factory<BroadcastReceiver, T> = genericScopedSingleton(androidBroadcastReceiverScope, creator)

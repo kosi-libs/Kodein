@@ -8,9 +8,9 @@ import java.lang.reflect.Type
  * Each method works either with a [TypeToken], a `Class` or a [Type].
  *
  * In Java, to create a [TypeToken], you should use the following syntax: `new TypeReference<Type<SubType>>(){}`.
- * In Kotlin, simply use the [typeToken] function.
+ * In Kotlin, simply use the [genericToken] function.
  *
- * This class contains utility functions that will all evebtually use the associated [KodeinContainer]
+ * This class contains utility functions that will all eventually use the associated [KodeinContainer]
  *
  * @property _container The container to forward call to.
  */
@@ -28,7 +28,7 @@ class TKodein(private val _container: KodeinContainer) {
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     @JvmOverloads
-    fun factory(argType: Type, type: Type, tag: Any? = null): (Any) -> Any = _container.nonNullFactory(Kodein.Key(Kodein.Bind(type, tag), argType))
+    fun factory(argType: Type, type: Type, tag: Any? = null): (Any?) -> Any = _container.nonNullFactory(Kodein.Key(Kodein.Bind(type, tag), argType))
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag.
@@ -42,7 +42,7 @@ class TKodein(private val _container: KodeinContainer) {
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     @JvmOverloads
-    fun <T : Any> factory(argType: Type, type: Class<T>, tag: Any? = null): (Any) -> T = factory(argType, type as Type, tag) as (Any) -> T
+    fun <T : Any> factory(argType: Type, type: Class<T>, tag: Any? = null): (Any?) -> T = factory(argType, type as Type, tag) as (Any?) -> T
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag.
@@ -56,7 +56,7 @@ class TKodein(private val _container: KodeinContainer) {
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     @JvmOverloads
-    fun <T : Any> factory(argType: Type, type: TypeToken<T>, tag: Any? = null): (Any) -> T = factory(argType, type.type, tag) as (Any) -> T
+    fun <T : Any> factory(argType: Type, type: TypeToken<T>, tag: Any? = null): (Any?) -> T = factory(argType, type.type, tag) as (Any?) -> T
 
     /**
      * Gets a factory for the given argument type, return type and tag.
@@ -70,7 +70,7 @@ class TKodein(private val _container: KodeinContainer) {
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     @JvmOverloads
-    fun <A> factory(argType: Class<A>, type: Type, tag: Any? = null): (A) -> Any = factory(argType as Type, type, tag) as (A) -> Any
+    fun <A> factory(argType: Class<A>, type: Type, tag: Any? = null): (A) -> Any = factory(argType as Type, type, tag)
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag.
@@ -114,7 +114,7 @@ class TKodein(private val _container: KodeinContainer) {
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     @JvmOverloads
-    fun <A> factory(argType: TypeToken<A>, type: Type, tag: Any? = null): (A) -> Any = factory(argType.type, type, tag) as (A) -> Any
+    fun <A> factory(argType: TypeToken<A>, type: Type, tag: Any? = null): (A) -> Any = factory(argType.type, type, tag)
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag.
@@ -158,7 +158,7 @@ class TKodein(private val _container: KodeinContainer) {
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     @JvmOverloads
-    fun factoryOrNull(argType: Type, type: Type, tag: Any? = null): ((Any) -> Any)? = _container.factoryOrNull(Kodein.Key(Kodein.Bind(type, tag), argType))
+    fun factoryOrNull(argType: Type, type: Type, tag: Any? = null): ((Any?) -> Any)? = _container.factoryOrNull(Kodein.Key(Kodein.Bind(type, tag), argType))
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag, or null if none is found.
@@ -171,7 +171,7 @@ class TKodein(private val _container: KodeinContainer) {
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     @JvmOverloads
-    fun <T : Any> factoryOrNull(argType: Type, type: Class<T>, tag: Any? = null): ((Any) -> T)? = factoryOrNull(argType, type as Type, tag) as ((Any) -> T)?
+    fun <T : Any> factoryOrNull(argType: Type, type: Class<T>, tag: Any? = null): ((Any?) -> T)? = factoryOrNull(argType, type as Type, tag) as ((Any?) -> T)?
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag, or null if none is found.
@@ -184,7 +184,7 @@ class TKodein(private val _container: KodeinContainer) {
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     @JvmOverloads
-    fun <T : Any> factoryOrNull(argType: Type, type: TypeToken<T>, tag: Any? = null): ((Any) -> T)? = factoryOrNull(argType, type.type, tag) as ((Any) -> T)?
+    fun <T : Any> factoryOrNull(argType: Type, type: TypeToken<T>, tag: Any? = null): ((Any?) -> T)? = factoryOrNull(argType, type.type, tag) as ((Any?) -> T)?
 
     /**
      * Gets a factory for the given argument type, return type and tag, or null if none is found.
@@ -197,7 +197,7 @@ class TKodein(private val _container: KodeinContainer) {
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     @JvmOverloads
-    fun <A> factoryOrNull(argType: Class<A>, type: Type, tag: Any? = null): ((A) -> Any)? = factoryOrNull(argType as Type, type, tag) as ((A) -> Any)?
+    fun <A> factoryOrNull(argType: Class<A>, type: Type, tag: Any? = null): ((A) -> Any)? = factoryOrNull(argType as Type, type, tag)
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag, or null if none is found.
@@ -238,7 +238,7 @@ class TKodein(private val _container: KodeinContainer) {
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     @JvmOverloads
-    fun <A> factoryOrNull(argType: TypeToken<A>, type: Type, tag: Any? = null): ((A) -> Any)? = factoryOrNull(argType.type, type, tag) as ((A) -> Any)?
+    fun <A> factoryOrNull(argType: TypeToken<A>, type: Type, tag: Any? = null): ((A) -> Any)? = factoryOrNull(argType.type, type, tag)
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag, or null if none is found.

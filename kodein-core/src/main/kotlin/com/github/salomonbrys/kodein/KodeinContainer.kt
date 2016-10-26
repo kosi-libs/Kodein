@@ -2,7 +2,6 @@ package com.github.salomonbrys.kodein
 
 import com.github.salomonbrys.kodein.internal.CMap
 import java.lang.reflect.*
-import java.util.*
 
 /**
  * Container class where the bindings and their factories are stored.
@@ -22,7 +21,7 @@ interface KodeinContainer {
      *
      * @param key The key that was not found.
      * @param scope Type of scope: "factory" or "provider".
-     * @return The exception, redy to be thrown away!
+     * @return The exception, ready to be thrown away!
      */
     private fun _notFoundException(key: Kodein.Key, scope: String): Kodein.NotFoundException
             = Kodein.NotFoundException(key, "No $scope found for $key\nRegistered in Kodein:\n" + bindings.description)
@@ -155,7 +154,7 @@ interface KodeinContainer {
          */
         private fun _checkIsReified(disp: Any, type: Type) {
             when (type) {
-                is TypeVariable<*> -> throw IllegalArgumentException("$disp uses a type variable named ${type.name}, therefore, the binded value can never be retrieved.")
+                is TypeVariable<*> -> throw IllegalArgumentException("$disp uses a type variable named ${type.name}, therefore, the bound value can never be retrieved.")
                 is ParameterizedType -> for (arg in type.actualTypeArguments) _checkIsReified(disp, arg)
                 is GenericArrayType -> _checkIsReified(disp, type.genericComponentType)
                 is WildcardType -> {
@@ -276,7 +275,7 @@ interface KodeinContainer {
         /**
          * Imports all bindings defined in the given [KodeinContainer] into this builder.
          *
-         * Note that this preserves scopes, meaning that a singleton-binded in the container argument will continue to exist only once.
+         * Note that this preserves scopes, meaning that a singleton-bound in the container argument will continue to exist only once.
          * Both containers will share the same instance.
          *
          * @param container The container object to import.

@@ -159,7 +159,7 @@ class InjectedNullableInstanceProperty<out T : Any>(bind: Kodein.Bind) : Injecte
  * @param arg A function that provides the argument that will be passed to the factory.
  * @return An injected provider property that, when called, will call the receiver factory with the given argument.
  */
-fun <A, T : Any> InjectedProperty<(A) -> T>.toProvider(arg: () -> A): Lazy<() -> T> = lazy { { value(arg()) } }
+inline fun <A, T : Any> InjectedProperty<(A) -> T>.toProvider(crossinline arg: () -> A): Lazy<() -> T> = lazy { { value(arg()) } }
 
 /**
  * Transforms an injected nullable factory property into an injected nullable provider property by currying the factory with the given argument.
@@ -171,7 +171,7 @@ fun <A, T : Any> InjectedProperty<(A) -> T>.toProvider(arg: () -> A): Lazy<() ->
  * @return An injected provider property that, when called, will call the receiver factory (if not null) with the given argument.
  */
 @JvmName("toNullableProvider")
-fun <A, T : Any> InjectedProperty<((A) -> T)?>.toProvider(arg: () -> A): Lazy<(() -> T)?> = lazy {
+inline fun <A, T : Any> InjectedProperty<((A) -> T)?>.toProvider(crossinline arg: () -> A): Lazy<(() -> T)?> = lazy {
     val v = value ?: return@lazy null
     return@lazy { v(arg()) }
 }
@@ -185,7 +185,7 @@ fun <A, T : Any> InjectedProperty<((A) -> T)?>.toProvider(arg: () -> A): Lazy<((
  * @param arg A function that provides the argument that will be passed to the factory.
  * @return An injected instance property that, when injected, will call the receiver factory with the given argument.
  */
-fun <A, T : Any> InjectedProperty<(A) -> T>.toInstance(arg: () -> A): Lazy<T> = lazy { value(arg()) }
+inline fun <A, T : Any> InjectedProperty<(A) -> T>.toInstance(crossinline arg: () -> A): Lazy<T> = lazy { value(arg()) }
 
 /**
  * Transforms an injected factory property into an injected instance property by currying the factory with the given argument.
@@ -197,7 +197,7 @@ fun <A, T : Any> InjectedProperty<(A) -> T>.toInstance(arg: () -> A): Lazy<T> = 
  * @return An injected instance property that, when injected, will call the receiver factory with the given argument.
  */
 @JvmName("toNullableInstance")
-fun <A, T : Any> InjectedProperty<((A) -> T)?>.toInstance(arg: () -> A): Lazy<T?> = lazy {
+inline fun <A, T : Any> InjectedProperty<((A) -> T)?>.toInstance(crossinline arg: () -> A): Lazy<T?> = lazy {
     val v = value ?: return@lazy null
     return@lazy v(arg())
 }

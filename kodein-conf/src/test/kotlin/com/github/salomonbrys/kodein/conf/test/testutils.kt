@@ -1,4 +1,4 @@
-package com.github.salomonbrys.kodein.test
+package com.github.salomonbrys.kodein.conf.test
 inline fun <reified T : Throwable> assertThrown(body: () -> Unit) {
     try {
         body()

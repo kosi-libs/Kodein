@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
 
-    ext.kotlin_version = '1.0.3'
+    ext.kotlin_version = '1.0.4'
     ext.junit_version = '4.12'
 
     dependencies {
@@ -31,7 +31,7 @@ allprojects {
     targetCompatibility = 1.6
 
     group = 'com.github.salomonbrys.kodein'
-    version = '3.1.0'
+    version = '3.2.0-beta1'
 }
 
 def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }
@@ -39,6 +39,7 @@ def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.
 task("classpath") << {
     println((
             getClassPath(':kodein')
+        +   getClassPath(':kodein-core')
         +   getClassPath(':kodein-android')
         +   getClassPath(':kodein-conf')
     ).join(":"))

@@ -255,7 +255,7 @@ val kodein = Kodein {
 
 CAUTION: *This should be used with care* as binding a concrete class and, therefore, having concrete dependencies is an _anti-pattern_ that later prevents modularisation and mocking / testing.
 
-WARNING: In the case of generic types, the bound type will be the specilized type, +
+WARNING: In the case of generic types, the bound type will be the specialized type, +
 e.g. `bind() from singleton { listOf(1, 2, 3, 4) }` registers the binding to `List<Int>`.
 
 
@@ -372,7 +372,7 @@ val kodein = Kodein {
 }
 ----
 
-By default, modules are not allowed to override, *even explicitely*.
+By default, modules are not allowed to override, *even explicitly*.
 You can allow a module to override some of your bindings when you import it (the same goes for extension):
 
 [source, kotlin]
@@ -1207,7 +1207,7 @@ val logger = kodein.with(supportFragment).instance()
 Have a look at the https://github.com/SalomonBrys/Kodein/tree/master/AndroidDemo[Android demo project]!
 
 
-== Debuging
+== Debugging
 
 === Print bindings
 
@@ -1223,10 +1223,10 @@ Here's an example of what this prints:
         bind<String>("answer") with instance ( Int )
 ----
 
-As you can see, it's really easy to understand which type with which tag is binded to which implentation inside which scope.
+As you can see, it's really easy to understand which type with which tag is bound to which implementation inside which scope.
 
 NOTE: Descriptions prints type names in a "kotlin-esque" way.
-      Because Kodein does not depends on `kotlin-reflect`, it uses java `Type` objects that do not contains nullability informations.
+      Because Kodein does not depends on `kotlin-reflect`, it uses java `Type` objects that do not contains nullability information.
       As such, the type display does not include nullability. Still, it's easier to read `List<*>` than `List<? extends Object>`.
 
 
@@ -1253,7 +1253,7 @@ com.github.salomonbrys.kodein.Kodein$DependencyLoopException: Dependency recursi
 === OnReady callbacks
 
 You can define callbacks to be called once the kodein instance is ready and all bindings are defined.
-This can be usefull to do some "starting" jobs.
+This can be useful to do some "starting" jobs.
 
 [source, kotlin]
 .Example: registering a callback at binding time
@@ -1298,7 +1298,7 @@ val kodein = Kodein {
 <2> Creates a `ScopeRegistry` in the context `Request` if there is none.
 <3> `it` is the context. There will be at most one `Logger` per `Request` object.
 
-To retrieve a scoped singleton bound type, you must retrive *a factory* and then provide it the context.
+To retrieve a scoped singleton bound type, you must retrieve *a factory* and then provide it the context.
 
 [source, kotlin]
 .Example: using a scope
@@ -1336,7 +1336,7 @@ val kodein = Kodein {
 <2> Same as `Scope.getRegistry`.
 <3> Get the context from a static environment.
 
-To retrieve an auto scoped singleton bound type, you can retrive *a provider* or *an instance*.
+To retrieve an auto scoped singleton bound type, you can retrieve *a provider* or *an instance*.
 
 [source, kotlin]
 .Example: using an auto scope, without knowing it
@@ -1380,12 +1380,12 @@ A `KodeinInjector` also provides a typed API, simply use `injector.typed`.
 === Use TypeToken
 
 Kodein almost never uses java classes, because they are subject to type erasure.
-To get a real type, Kodein uses the `typeToken` function.
+To get a real type, Kodein uses the `genericToken` function.
 
-The `typeToken` function produces a `TypeToken` object, which only contains a type.
+The `genericToken` function produces a `TypeToken` object, which only contains a type.
 
-* `typeToken<String>().type` is the String's java `Class`.
-* `typeToken<List<String>>.type` is a `ParameterizedType` describing exactly a `List<String>`.
+* `genericToken<String>().type` is the String's java `Class`.
+* `genericToken<List<String>>.type` is a `ParameterizedType` describing exactly a `List<String>`.
 
 `TypeToken` is a generic interface, that way, even if it's `type` is a weird type, functions that use a `TypeToken` (such as the typed API) can preserve type safety.
 
@@ -1394,7 +1394,7 @@ The `typeToken` function produces a `TypeToken` object, which only contains a ty
 
 Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are bound with different tags", I lied.
 Because each binding is actually a _factory_, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are bound as `([BindType], Unit, [Tag])`).
-This means that any combination of these three information can be binded to it's own factory, which in turns means that you can bind the same type without tagging to different factories.
+This means that any combination of these three information can be bound to it's own factory, which in turns means that you can bind the same type without tagging to different factories.
 
 CAUTION: Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
 

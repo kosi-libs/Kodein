@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
  * @param of The object whose class is used.
  * @return An object from which you can get an instance or a provider.
  */
-inline fun <reified T : Any> Kodein.withClassOf(@Suppress("UNUSED_PARAMETER") of: T): CurriedKodeinFactory<Class<*>> = with(T::class.java)
+inline fun <reified T : Any> Kodein.withGenericClassOf(@Suppress("UNUSED_PARAMETER") of: T): CurriedKodeinFactory<Class<*>> = withErased(T::class.java)
 
 /**
  * Allows to get a provider or an instance from a curried factory with a `Class` argument.
@@ -26,7 +26,7 @@ inline fun <reified T : Any> Kodein.withClassOf(@Suppress("UNUSED_PARAMETER") of
  * @param of The object whose class is used.
  * @return An object from which you can get an instance or a provider.
  */
-inline fun <reified T : Any> Kodein.withKClassOf(@Suppress("UNUSED_PARAMETER") of: T): CurriedKodeinFactory<KClass<*>> = with(T::class)
+inline fun <reified T : Any> Kodein.withKClassOf(@Suppress("UNUSED_PARAMETER") of: T): CurriedKodeinFactory<KClass<*>> = withErased(T::class)
 
 /**
  * Allows to get a provider or an instance from a curried factory with a `Class` argument.
@@ -37,7 +37,7 @@ inline fun <reified T : Any> Kodein.withKClassOf(@Suppress("UNUSED_PARAMETER") o
  * @receiver The object whose class is used.
  * @return An object from which you can get an instance or a provider.
  */
-inline fun <reified T : KodeinAware> T.withClass(): CurriedKodeinFactory<Class<*>> = with(T::class.java)
+inline fun <reified T : KodeinAware> T.withClass(): CurriedKodeinFactory<Class<*>> = withErased(T::class.java)
 
 /**
  * Allows to get a provider or an instance from a curried factory with a `KClass` argument.
@@ -48,7 +48,7 @@ inline fun <reified T : KodeinAware> T.withClass(): CurriedKodeinFactory<Class<*
  * @receiver The object whose class is used.
  * @return An object from which you can get an instance or a provider.
  */
-inline fun <reified T : KodeinAware> T.withKClass(): CurriedKodeinFactory<KClass<*>> = with(T::class)
+inline fun <reified T : KodeinAware> T.withKClass(): CurriedKodeinFactory<KClass<*>> = withErased(T::class)
 
 
 
@@ -62,7 +62,7 @@ inline fun <reified T : KodeinAware> T.withKClass(): CurriedKodeinFactory<KClass
  * @param of The object whose class is used.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified T : Any> KodeinInjector.withClassOf(@Suppress("UNUSED_PARAMETER") of: T): CurriedInjectorFactory<Class<*>> = with(T::class.java)
+inline fun <reified T : Any> KodeinInjector.withClassOf(@Suppress("UNUSED_PARAMETER") of: T): CurriedInjectorFactory<Class<*>> = withErased(T::class.java)
 
 /**
  * Allows to inject a provider or an instance from a curried factory with a `KClass` argument.
@@ -74,7 +74,7 @@ inline fun <reified T : Any> KodeinInjector.withClassOf(@Suppress("UNUSED_PARAME
  * @param of The object whose class is used.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified T : Any> KodeinInjector.withKClassOf(@Suppress("UNUSED_PARAMETER") of: T): CurriedInjectorFactory<KClass<*>> = with(T::class)
+inline fun <reified T : Any> KodeinInjector.withKClassOf(@Suppress("UNUSED_PARAMETER") of: T): CurriedInjectorFactory<KClass<*>> = withErased(T::class)
 
 /**
  * Allows to inject a provider or an instance from a curried factory with a `Class` argument.
@@ -85,7 +85,7 @@ inline fun <reified T : Any> KodeinInjector.withKClassOf(@Suppress("UNUSED_PARAM
  * @receiver The object whose class is used.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified T : KodeinInjected> T.withClass(): CurriedInjectorFactory<Class<*>> = with(T::class.java)
+inline fun <reified T : KodeinInjected> T.withClass(): CurriedInjectorFactory<Class<*>> = withErased(T::class.java)
 
 /**
  * Allows to inject a provider or an instance from a curried factory with a `KClass` argument.
@@ -96,12 +96,12 @@ inline fun <reified T : KodeinInjected> T.withClass(): CurriedInjectorFactory<Cl
  * @receiver The object whose class is used.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified T : KodeinInjected> T.withKClass(): CurriedInjectorFactory<KClass<*>> = with(T::class)
+inline fun <reified T : KodeinInjected> T.withKClass(): CurriedInjectorFactory<KClass<*>> = withErased(T::class)
 
 
 
 /**
- * Allows to lazily retrive a provider or an instance from a curried factory with a `Class` argument.
+ * Allows to lazily retrieve a provider or an instance from a curried factory with a `Class` argument.
  *
  * The provider will give the factory the `Class` of the parameter as argument.
  *
@@ -110,10 +110,10 @@ inline fun <reified T : KodeinInjected> T.withKClass(): CurriedInjectorFactory<K
  * @param of The object whose class is used.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified T : Any> LazyKodein.withClass(@Suppress("UNUSED_PARAMETER") of: T): CurriedLazyKodeinFactory<Class<*>> = with(T::class.java)
+inline fun <reified T : Any> LazyKodein.withClass(@Suppress("UNUSED_PARAMETER") of: T): CurriedLazyKodeinFactory<Class<*>> = withErased(T::class.java)
 
 /**
- * Allows to lazily retrive a provider or an instance from a curried factory with a `KClass` argument.
+ * Allows to lazily retrieve a provider or an instance from a curried factory with a `KClass` argument.
  *
  * The provider will give the factory the `KClass` of the parameter as argument.
  *
@@ -122,10 +122,10 @@ inline fun <reified T : Any> LazyKodein.withClass(@Suppress("UNUSED_PARAMETER") 
  * @param of The object whose class is used.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified T : Any> LazyKodein.withKClass(@Suppress("UNUSED_PARAMETER") of: T): CurriedLazyKodeinFactory<KClass<*>> = with(T::class)
+inline fun <reified T : Any> LazyKodein.withKClass(@Suppress("UNUSED_PARAMETER") of: T): CurriedLazyKodeinFactory<KClass<*>> = withErased(T::class)
 
 /**
- * Allows to lazily retrive a provider or an instance from a curried factory with a `Class` argument.
+ * Allows to lazily retrieve a provider or an instance from a curried factory with a `Class` argument.
  *
  * The provider will give the factory the `Class` of the receiver as argument.
  *
@@ -133,10 +133,10 @@ inline fun <reified T : Any> LazyKodein.withKClass(@Suppress("UNUSED_PARAMETER")
  * @receiver The object whose class is used.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified T : LazyKodeinAware> T.withClass(): CurriedLazyKodeinFactory<Class<*>> = with(T::class.java)
+inline fun <reified T : LazyKodeinAware> T.withClass(): CurriedLazyKodeinFactory<Class<*>> = withErased(T::class.java)
 
 /**
- * Allows to lazily retrive a provider or an instance from a curried factory with a `KClass` argument.
+ * Allows to lazily retrieve a provider or an instance from a curried factory with a `KClass` argument.
  *
  * The provider will give the factory the `KClass` of the receiver as argument.
  *
@@ -144,4 +144,4 @@ inline fun <reified T : LazyKodeinAware> T.withClass(): CurriedLazyKodeinFactory
  * @receiver The object whose class is used.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified T : LazyKodeinAware> T.withKClass(): CurriedLazyKodeinFactory<KClass<*>> = with(T::class)
+inline fun <reified T : LazyKodeinAware> T.withKClass(): CurriedLazyKodeinFactory<KClass<*>> = withErased(T::class)

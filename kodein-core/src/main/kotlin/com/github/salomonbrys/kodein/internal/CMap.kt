@@ -41,7 +41,7 @@ internal class CMap {
     /**
      * Returns whether a key can be found in the [_map].
      *
-     * Because [_raws] is implicitely created, it is not looked into.
+     * Because [_raws] is implicitly created, it is not looked into.
      *
      * @param key The key to look for.
      * @return Whether or not the key is in the [_map].

@@ -81,7 +81,8 @@ class KodeinTests : TestCase() {
 
         val kodein = Kodein { bind() from factory { name: String -> Person(name) } }
 
-        val p = kodein.factory<String, Person>().toProvider { "Salomon" }
+        val f: (String) -> Person = kodein.factory<String, Person>()
+        val p: () -> Person = f.toProvider { "Salomon" }
 
         assertEquals("Salomon", p().name)
     }
@@ -536,7 +537,7 @@ class KodeinTests : TestCase() {
     @Suppress("unused")
     class RecursC(val a: RecursA)
 
-    @Test fun test13_0_Recursivedependencies() {
+    @Test fun test13_0_RecursiveDependencies() {
 
         val kodein = Kodein {
             bind() from provider { Recurs0(instance()) }
@@ -607,7 +608,7 @@ class KodeinTests : TestCase() {
             constant("answer") with 42
         }
 
-        val lines = kodein.container.bindings.description.lineSequence().map { it.trim() }.toList()
+        val lines = kodein.container.bindings.description.lineSequence().map(String::trim).toList()
         assertEquals(8, lines.size)
         assertTrue("bind<IPerson>() with provider { Person }" in lines)
         assertTrue("bind<IPerson>(\"thread-singleton\") with threadSingleton { Person }" in lines)
@@ -700,7 +701,7 @@ class KodeinTests : TestCase() {
     }
 
     @Test fun test17_2_SilentOverrideNotAllowed() {
-        Kodein() {
+        Kodein {
             bind<String>("name") with instance("Benjamin")
 
             assertThrown<Kodein.OverridingException> {
@@ -799,16 +800,16 @@ class KodeinTests : TestCase() {
 
     @Test fun test21_0_simpleDispString() {
 
-        assertEquals("Int", typeToken<Int>().type.simpleDispString)
+        assertEquals("Int", genericToken<Int>().type.simpleDispString)
 
-        assertEquals("Array<Char>", typeToken<Array<Char>>().type.simpleDispString)
+        assertEquals("Array<Char>", genericToken<Array<Char>>().type.simpleDispString)
 
-        assertEquals("List<*>", typeToken<List<*>>().type.simpleDispString)
+        assertEquals("List<*>", genericToken<List<*>>().type.simpleDispString)
 
-        assertEquals("Map<String, *>", typeToken<Map<String, *>>().type.simpleDispString)
+        assertEquals("Map<String, *>", genericToken<Map<String, *>>().type.simpleDispString)
 
-        assertEquals("KodeinTests.Test21_G<*>", typeToken<Test21_G<*>>().type.simpleDispString)
-        assertEquals("KodeinTests.Test21_G<*>", typeToken<Test21_G<Test21_A>>().type.simpleDispString)
-        assertEquals("KodeinTests.Test21_G<out KodeinTests.Test21_B>", typeToken<Test21_G<Test21_B>>().type.simpleDispString)
+        assertEquals("KodeinTests.Test21_G<*>", genericToken<Test21_G<*>>().type.simpleDispString)
+        assertEquals("KodeinTests.Test21_G<*>", genericToken<Test21_G<Test21_A>>().type.simpleDispString)
+        assertEquals("KodeinTests.Test21_G<out KodeinTests.Test21_B>", genericToken<Test21_G<Test21_B>>().type.simpleDispString)
     }
 }

@@ -1,6 +1,5 @@
 package com.github.salomonbrys.kodein.internal
 
-import com.github.salomonbrys.kodein.internal.CMap
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinContainer
 import com.github.salomonbrys.kodein.TKodein

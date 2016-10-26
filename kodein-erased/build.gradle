@@ -57,8 +57,8 @@ if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {
                 pom.project {
                     name 'Kodein'
                     packaging 'jar'
-                    artifactId 'kodein'
-                    description 'Kotlin Dependency Injection'
+                    artifactId 'kodein-erased'
+                    description 'Kotlin Dependency Injection - using erased functions by default'
                     url 'https://github.com/SalomonBrys/Kodein'
 
                     licenses {

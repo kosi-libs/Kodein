@@ -46,7 +46,7 @@ idea {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile project(':kodein')
+    compile project(':kodein-core')
 
     provided 'com.google.android:android:4.0.1.2'
 

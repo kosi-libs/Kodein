@@ -21,6 +21,7 @@ operator fun Map<Kodein.Key, Factory<*, *>>.contains(type: Type): Boolean = any 
  * @param type The type to look for.
  * @return Whether or not this type is bound in the binding map, whatever the tag or the factory argument type.
  */
+@Deprecated("Use contains(Type) instead.", ReplaceWith("contains(type.type)"))
 operator fun Map<Kodein.Key, Factory<*, *>>.contains(type: TypeToken<*>): Boolean = contains(type.type)
 
 /**
@@ -44,7 +45,8 @@ fun Map<Kodein.Key, Factory<*, *>>.tags(type: Type): List<Any?> = filter { it.ke
  * @return The list of tags that are bound with this type. Each entry represents a different [Kodein.Bind],
  *         but there may be multiple [Kodein.Key] for the same [Kodein.Bind].
  */
-fun Map<Kodein.Key, Factory<*, *>>.tags(type: TypeToken<*>): List<Any?> = filter { it.key.bind.type == type.type } .map { it.key.bind.tag } .distinct()
+@Deprecated("Use contains(Type) instead.", ReplaceWith("contains(type.type)"))
+fun Map<Kodein.Key, Factory<*, *>>.tags(type: TypeToken<*>): List<Any?> = tags(type.type)
 
 /**
  * @receiver The bindings map, obtained with [KodeinContainer.bindings].

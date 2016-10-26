@@ -1,1 +1,1 @@
-include ':kodein', ':kodein-conf', ':kodein-android'
+include ':kodein-core', ':kodein', ':kodein-erased', ':kodein-conf', ':kodein-android'

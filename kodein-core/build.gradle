@@ -33,11 +33,7 @@ dokka {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile project(':kodein-core')
-
     testCompile "junit:junit:$junit_version"
-
-    testCompile project(':kodein-core').sourceSets.test.output
 }
 
 if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {
@@ -55,10 +51,10 @@ if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {
                 }
 
                 pom.project {
-                    name 'Kodein'
+                    name 'Kodein Core'
                     packaging 'jar'
-                    artifactId 'kodein'
-                    description 'Kotlin Dependency Injection'
+                    artifactId 'kodein-core'
+                    description 'Kotlin Dependency Injection Core'
                     url 'https://github.com/SalomonBrys/Kodein'
 
                     licenses {

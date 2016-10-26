@@ -1,7 +1,7 @@
 <img alt="KODEIN" src="https://raw.githubusercontent.com/SalomonBrys/Kodein/master/Kodein-logo.png" width="700">
 
 [![Kotlin 1.0](https://img.shields.io/badge/Kotlin-1.0.2-blue.svg)](http://kotlinlang.org)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22)
+[![Maven Central](https://img.shieldfortyaven-central/v/com.github.salomonbrys.kodein/kodein.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22)
 [![Travis](https://img.shields.io/travis/SalomonBrys/Kodein.svg)](https://travis-ci.org/SalomonBrys/Kodein/builds)
 [![MIT License](https://img.shields.io/github/license/salomonbrys/kodein.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
 [![GitHub issues](https://img.shields.io/github/issues/SalomonBrys/Kodein.svg)](https://github.com/SalomonBrys/Kodein/issues)
@@ -49,7 +49,7 @@ val kodein = Kodein {
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 }
 
-class Controller(private val kodein: Kodein) {
+class Controller(private kodein: Kodein) {
     private val ds: DataSource = kodein.instance()
 }
 ```
@@ -127,7 +127,7 @@ Table Of Contents
       * [...Using an injector](#using-an-injector)
     * [Android Activity Scopes](#android-activity-scopes)
     * [Android example project](#android-example-project)
-  * [Debuging](#debuging)
+  * [Debugging](#debugging)
       * [Print bindings](#print-bindings)
       * [Recursive dependency loop](#recursive-dependency-loop)
   * [Advanced use](#advanced-use)
@@ -160,8 +160,8 @@ There are different ways to declare bindings:
 
 ### Factory binding
 
-This binds a type to a factory function, which is a function that takes an argument of a defined type and that returns an object of the binded type.  
-Each time you need an instance of the binded type, the function will be called.
+This binds a type to a factory function, which is a function that takes an argument of a defined type and that returns an object of the bound type.  
+Each time you need an instance of the bound type, the function will be called.
 
 For example, here is a binding that creates a new `Dice` entry each time the you need a `Dice` instance, according to a given `Int` representing the number of sides:
 
@@ -174,7 +174,7 @@ val kodein = Kodein {
 
 ### Provider binding
 
-This binds a type to a provider function, which is a function that takes no arguments and returns an object of the binded type.
+This binds a type to a provider function, which is a function that takes no arguments and returns an object of the bound type.
 Each time you need an instance of the bound type, the function will be called.  
 For example, here is a binding that creates a new 6 sided `Dice` entry each time you need a `Dice` instance:
 
@@ -244,7 +244,7 @@ val kodein = Kodein {
 }
 ```
 
-Note that you can have multiple bindings of the same type, as long as they are binded with different tags. You can have only one binding of a certain type with no tag.
+Note that you can have multiple bindings of the same type, as long as they are bound with different tags. You can have only one binding of a certain type with no tag.
 
 
 ### Constant binding
@@ -279,7 +279,7 @@ val kodein = Kodein {
 
 **This should be used with care** as binding a concrete class and, therefore, having concrete dependencies is an *anti-pattern* that later prevents modularisation and mocking / testing.
 
-Please note that, in the case of generic type, the binded type will be the specilised type, e.g.
+Please note that, in the case of generic type, the bound type will be the specilised type, e.g.
 `bind() from singleton { listOf(1, 2, 3, 4) }` register the binding to `List<Int>`
 
 
@@ -333,7 +333,7 @@ val kodein = Kodein {
 ```
 
 Note that modules are *definitions*, they will re-declare their bindings in each kodein instance you use.  
-If you create a module that defines a singleton and import that module into two different kodein instances, then the singleton binded object will exist twice: once in each kodein instance.
+If you create a module that defines a singleton and import that module into two different kodein instances, then the singleton bound object will exist twice: once in each kodein instance.
 
 
 ### Extension (composition)
@@ -347,14 +347,14 @@ val subKodein = Kodein {
 }
 ```
 
-Note that this preserves scopes, meaning that a singleton-binded in `appKodein` will continue to exist only once. Both `appKodein` and `subKodein` will give the same instance.
+Note that this preserves scopes, meaning that a singleton-bound in `appKodein` will continue to exist only once. Both `appKodein` and `subKodein` will give the same instance.
 
 
 ### Overriding
 
 By default, overriding a binding is not allowed in Kodein. That is because accidentally binding twice the same (class,tag) to different instances/providers/factories can cause real headaches to debug.  
 However, when intended, it can be really interesting to override a binding, especially when creating a testing environment.  
-You can override an existing binding by specifying explicitely that it is an override:
+You can override an existing binding by specifying explicitly that it is an override:
 
 ```kotlin
 val kodein = Kodein {
@@ -364,7 +364,7 @@ val kodein = Kodein {
 }
 ```
 
-By default, modules are not allowed to override, **even explicitely**.  
+By default, modules are not allowed to override, **even explicitly**.  
 You can allow a module to override some of your bindings when you import it (the same goes for extension):
 
 ```kotlin
@@ -406,8 +406,8 @@ val kodein = Kodein {
 
 When retrieving a dependency, the following rule applies:
 
-- A dependency binded with a `factory` can only be retrived as a factory method: `(A) -> T`.
-- A dependency binded with a `provider`, an `instance`, a `singleton` or a `constant` can be retrived:
+- A dependency bound with a `factory` can only be retrived as a factory method: `(A) -> T`.
+- A dependency bound with a `provider`, an `instance`, a `singleton` or a `constant` can be retrived:
     * as a provider method: `() -> T`
     * as an instance: `T`
 
@@ -425,9 +425,9 @@ val answerConstant: String = kodein.instance("answer")
 
 When using a provider, whether the provider will give each time a new instance or the same depends on the binding scope.
 
-When asking for a type that was not binded, `Kodein.NotFoundException` will be thrown.
+When asking for a type that was not bound, `Kodein.NotFoundException` will be thrown.
 
-If you're not sure (or simply don't know) if the type has been binded, you can use:
+If you're not sure (or simply don't know) if the type has been bound, you can use:
 
 ```kotlin
 val diceFactory: ((Int) -> Dice)? = kodein.factoryOrNull()
@@ -436,7 +436,7 @@ val randomProvider: (() -> Random)? = kodein.providerOrNull()
 val answerConstant: String? = kodein.instanceOrNull("answer")
 ```
 
-You can retrive a provider or an instance from a factory binded type by using `with`:
+You can retrive a provider or an instance from a factory bound type by using `with`:
 
 ```kotlin
 private val sixSideDiceProvider: () -> Dice = kodein.with(6).provider()
@@ -448,7 +448,7 @@ private val sixSideDiceProvider: () -> Dice = kodein.with(6).provider()
 Lazy properties allow you to resolve the dependency upon first access:
 
 ```kotlin
-class Controller(private val kodein: Kodein) {
+class Controller(private kodein: Kodein) {
     private val diceFactory: (Int) -> Dice by kodein.lazyFactory()
     private val dataSource: DataSource by kodein.lazyInstance()
     private val randomProvider: () -> Random by kodein.lazyProvider()
@@ -456,7 +456,7 @@ class Controller(private val kodein: Kodein) {
 }
 ```
 
-You can retrive a provider or an instance from a factory binded type by using `toLazyProvider` and `toLazyInstance`:
+You can retrive a provider or an instance from a factory bound type by using `toLazyProvider` and `toLazyInstance`:
 
 ```kotlin
 private val sixSideDiceProvider: () -> Dice by kodein.lazyFactory().toLazyProvider(6)
@@ -488,7 +488,7 @@ class Controller() {
 
 If you try to access a property injected by an injector *before* calling `injector.inject(kodein)`, `KodeinInjector.UninjectedException` will be thrown.
 
-You can inject a provider or an instance from a factory binded type by using `with`:
+You can inject a provider or an instance from a factory bound type by using `with`:
 
 ```kotlin
 private val sixSideDiceProvider: () -> Dice by injector.with(6).provider()
@@ -626,7 +626,7 @@ val kodein = Kodein {
 }
 ```
 
-To retrieve the objects thusly binded, you need to inject a factory which takes the activity as parameter:
+To retrieve the objects thusly bound, you need to inject a factory which takes the activity as parameter:
 
 ```kotlin
 val logger = kodein.factory<Activity, Logger>().invoke(getActivity())
@@ -648,7 +648,7 @@ val logger = kodein.instance<Logger>()
 
 This comes with two important caveats:
 
- * Objects that are binded with `autoActivitySingleton` will always be injected according to **the last displayed activity**.
+ * Objects that are bound with `autoActivitySingleton` will always be injected according to **the last displayed activity**.
  * In your `Application` class, in the `onCreate` method, you must add this line:
     ```kotlin
     class MyActivity : Activity {
@@ -666,8 +666,8 @@ Have a look at the [Android demo project](https://github.com/SalomonBrys/Kodein/
 
 
 
-Debuging
-========
+Debugging
+=========
 
 
 ### Print bindings
@@ -683,7 +683,7 @@ Here's an example of what this prints:
         bind<java.lang.String>("answer") with instance
 ```
 
-As you can see, it's really easy to understand which type with which tag is binded to which scope.
+As you can see, it's really easy to understand which type with which tag is bound to which scope.
 
 
 ### Recursive dependency loop
@@ -717,7 +717,7 @@ Advanced use
 OnReady callbacks
 -----------------
 
-You can define callbacks to be called once the kodein instance is ready and all bindings are defined. This can be usefull to do some "starting" jobs.
+You can define callbacks to be called once the kodein instance is ready and all bindings are defined. This can be useful to do some "starting" jobs.
 
 ```kotlin
 val appModule = Kodein.Module {
@@ -746,7 +746,7 @@ Have a look at existing scopes in the [scopes.kt](https://github.com/SalomonBrys
 
 ### Scoped singletons
 
-Scoped singleton are singletons that are binded to a context and live while that context exists.
+Scoped singleton are singletons that are bound to a context and live while that context exists.
 
 To define a scoped singleton, you must define a function that satisfies this contract: `(S) -> HashMap<Any, Any>` where `S` is the context type.
 This function must *always* return the same `HashMap` when given the same `S` object.
@@ -762,7 +762,7 @@ val kodein = Kodein {
 }
 ```
 
-Then, to retrieve a binded type, you must retrive a **factory** and then provide it the context:
+Then, to retrieve a bound type, you must retrive a **factory** and then provide it the context:
 
 ```kotlin
 val logger = kodein.with(getContext()).instance()
@@ -786,7 +786,7 @@ val kodein = Kodein {
 }
 ```
 
-Then, to retrieve a binded type, you can use the classics:
+Then, to retrieve a bound type, you can use the classics:
 
 ```kotlin
 val logger: Logger = kodein.instance()
@@ -796,14 +796,14 @@ val logger: Logger = kodein.instance()
 Bind the same type to different factories
 -----------------------------------------
 
-Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are binded with different tags", I lied. Because each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are binded as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be binded to its own factory, which in turns means that you can bind the same type without tagging to different factories. Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
+Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are bound with different tags", I lied. Because each binding is actually a factory, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are bound as `([BindType], Unit, [Tag])`). This means that any combination of these three information can be bound to its own factory, which in turns means that you can bind the same type without tagging to different factories. Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
 
 
 
 Let's talk!
 ===========
 
-You've read so far ?! You're awsome!
+You've read so far ?! You're awesome!
 Why don't you drop by the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/) on Kotlin's Slack group?
 
 
