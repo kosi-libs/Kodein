@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`CurriedInjectorFactory(injector: `[`KodeinInjector`](../-kodein-injector/index.md)`, arg: () -> A, argType: `[`TypeToken`](../-type-token/index.md)`<A>)`
+`CurriedInjectorFactory(injector: `[`KodeinInjector`](../-kodein-injector/index.md)`, arg: () -> A, argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`)`
 
 Used to inject lazy providers or instances for factory bound types.
 

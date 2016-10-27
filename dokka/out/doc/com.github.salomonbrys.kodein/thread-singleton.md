@@ -6,6 +6,8 @@
 
 Creates a thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread.
 
+T generics will be kept.
+
 ### Parameters
 
 `T` - The created type.

@@ -2,7 +2,7 @@
 
 # toInstance
 
-`fun <A, T : Any> Lazy<(A) -> T>.toInstance(arg: () -> A): Lazy<T>`
+`inline fun <A, T : Any> Lazy<(A) -> T>.toInstance(crossinline arg: () -> A): Lazy<T>`
 
 Transforms a lazy factory property into a lazy instance property by currying the factory argument.
 
@@ -20,7 +20,7 @@ The factory to curry.
 **Return**
 A property that yields an instance of `T`.
 
-`@JvmName("toNullableInstance") fun <A, T : Any> Lazy<(A) -> T>.toInstance(arg: () -> A): Lazy<T?>`
+`@JvmName("toNullableInstance") inline fun <A, T : Any> Lazy<(A) -> T>.toInstance(crossinline arg: () -> A): Lazy<T?>`
 
 Transforms a lazy nullable factory property into a lazy nullable instance property by currying the factory argument.
 

@@ -2,7 +2,7 @@
 
 # toProvider
 
-`fun <A, T : Any> Lazy<(A) -> T>.toProvider(arg: () -> A): Lazy<() -> T>`
+`inline fun <A, T : Any> Lazy<(A) -> T>.toProvider(crossinline arg: () -> A): Lazy<() -> T>`
 
 Transforms a lazy factory property into a lazy provider property by currying the factory argument.
 
@@ -20,7 +20,7 @@ The factory to curry.
 **Return**
 A property that yields a provider of `T`.
 
-`@JvmName("toNullableProvider") fun <A, T : Any> Lazy<(A) -> T>.toProvider(arg: () -> A): Lazy<() -> T>`
+`@JvmName("toNullableProvider") inline fun <A, T : Any> Lazy<(A) -> T>.toProvider(crossinline arg: () -> A): Lazy<() -> T>`
 
 Transforms a lazy nullable factory property into a lazy nullable provider property by currying the factory argument.
 

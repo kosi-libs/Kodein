@@ -4,7 +4,7 @@ package com.github.salomonbrys.kodein
 /**
  * Creates a scoped singleton factory, effectively a `factory { Scope -> T }`.
  *
- * [C] & [T] generics will be kept.
+ * C & T generics will be kept.
  *
  * @param C The scope context type.
  * @param T The singleton type.
@@ -18,7 +18,7 @@ inline fun <reified C, reified T : Any> Kodein.Builder.scopedSingleton(scope: Sc
 /**
  * Creates an auto-scoped singleton provider, effectively a `provider { -> T }`.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param C The scope context type.
  * @param T The singleton type.

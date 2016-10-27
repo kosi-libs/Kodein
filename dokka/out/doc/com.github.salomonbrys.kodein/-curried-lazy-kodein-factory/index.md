@@ -2,7 +2,7 @@
 
 # CurriedLazyKodeinFactory
 
-`class CurriedLazyKodeinFactory<A>`
+`class CurriedLazyKodeinFactory<out A>`
 
 Allows to get a lazy provider or instance from a lazy factory with a curried argument.
 
@@ -14,21 +14,33 @@ Allows to get a lazy provider or instance from a lazy factory with a curried arg
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `CurriedLazyKodeinFactory(kodein: () -> `[`Kodein`](../-kodein/index.md)`, arg: () -> A, argType: `[`TypeToken`](../-type-token/index.md)`<A>)`<br>Allows to get a lazy provider or instance from a lazy factory with a curried argument. |
+| [&lt;init&gt;](-init-.md) | `CurriedLazyKodeinFactory(kodein: () -> `[`Kodein`](../-kodein/index.md)`, arg: () -> A, argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`)`<br>Allows to get a lazy provider or instance from a lazy factory with a curried argument. |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
 | [arg](arg.md) | `val arg: () -> A`<br>The argument to provide to the factory when retrieving values. |
-| [argType](arg-type.md) | `val argType: `[`TypeToken`](../-type-token/index.md)`<A>`<br>The type of argument that the factory takes. |
+| [argType](arg-type.md) | `val argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type of argument that the factory takes. |
 | [kodein](kodein.md) | `val kodein: () -> `[`Kodein`](../-kodein/index.md)<br>The Kodein provider to use for retrieval. |
 
-### Functions
+### Extension Functions
 
 | Name | Summary |
 |---|---|
-| [instance](instance.md) | `fun <T : Any> instance(tag: Any? = null): Lazy<T>`<br>Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument. |
-| [instanceOrNull](instance-or-null.md) | `fun <T : Any> instanceOrNull(tag: Any? = null): Lazy<T?>`<br>Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found. |
-| [provider](provider.md) | `fun <T : Any> provider(tag: Any? = null): Lazy<() -> T>`<br>Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument. |
-| [providerOrNull](provider-or-null.md) | `fun <T : Any> providerOrNull(tag: Any? = null): Lazy<() -> T>`<br>Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found. |
+| [erasedInstance](../erased-instance.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.erasedInstance(tag: Any? = null): Lazy<T>`<br>Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument. |
+| [erasedInstanceOrNull](../erased-instance-or-null.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.erasedInstanceOrNull(tag: Any? = null): Lazy<T?>`<br>Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found. |
+| [erasedProvider](../erased-provider.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.erasedProvider(tag: Any? = null): Lazy<() -> T>`<br>Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument. |
+| [erasedProviderOrNull](../erased-provider-or-null.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.erasedProviderOrNull(tag: Any? = null): Lazy<() -> T>`<br>Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found. |
+| [genericInstance](../generic-instance.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.genericInstance(tag: Any? = null): Lazy<T>`<br>Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument. |
+| [genericInstanceOrNull](../generic-instance-or-null.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.genericInstanceOrNull(tag: Any? = null): Lazy<T?>`<br>Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found. |
+| [genericProvider](../generic-provider.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.genericProvider(tag: Any? = null): Lazy<() -> T>`<br>Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument. |
+| [genericProviderOrNull](../generic-provider-or-null.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.genericProviderOrNull(tag: Any? = null): Lazy<() -> T>`<br>Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found. |
+| [instance](../instance.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.instance(tag: Any? = null): Lazy<T>`<br>Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument. |
+| [instance](../../com.github.salomonbrys.kodein.erased/instance.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.instance(tag: Any? = null): Lazy<T>`<br>Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument. |
+| [instanceOrNull](../instance-or-null.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.instanceOrNull(tag: Any? = null): Lazy<T?>`<br>Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found. |
+| [instanceOrNull](../../com.github.salomonbrys.kodein.erased/instance-or-null.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.instanceOrNull(tag: Any? = null): Lazy<T?>`<br>Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found. |
+| [provider](../provider.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.provider(tag: Any? = null): Lazy<() -> T>`<br>Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument. |
+| [provider](../../com.github.salomonbrys.kodein.erased/provider.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.provider(tag: Any? = null): Lazy<() -> T>`<br>Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument. |
+| [providerOrNull](../provider-or-null.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.providerOrNull(tag: Any? = null): Lazy<() -> T>`<br>Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found. |
+| [providerOrNull](../../com.github.salomonbrys.kodein.erased/provider-or-null.md) | `fun <A, T : Any> CurriedLazyKodeinFactory<A>.providerOrNull(tag: Any? = null): Lazy<() -> T>`<br>Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found. |

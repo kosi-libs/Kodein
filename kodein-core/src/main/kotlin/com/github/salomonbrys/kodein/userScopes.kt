@@ -150,7 +150,7 @@ class CScopedSingleton<C, out T : Any>(contextType: Type, createdType: Type, pri
 /**
  * Creates a scoped singleton factory, effectively a `factory { Scope -> T }`.
  *
- * [C] & [T] generics will be kept.
+ * C & T generics will be kept.
  *
  * @param C The scope context type.
  * @param T The singleton type.
@@ -164,7 +164,7 @@ inline fun <reified C, reified T : Any> Kodein.Builder.genericScopedSingleton(sc
 /**
  * Creates a scoped singleton factory, effectively a `factory { Scope -> T }`.
  *
- * [C] & [T] generics will be erased!
+ * C & T generics will be erased!
  *
  * @param C The scope context type.
  * @param T The singleton type.
@@ -198,7 +198,7 @@ class CAutoScopedSingleton<out C, out T : Any>(createdType: Type, private val _s
 /**
  * Creates an auto-scoped singleton provider, effectively a `provider { -> T }`.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param C The scope context type.
  * @param T The singleton type.
@@ -212,7 +212,7 @@ inline fun <C, reified T : Any> Kodein.Builder.genericAutoScopedSingleton(scope:
 /**
  * Creates an auto-scoped singleton provider, effectively a `provider { -> T }`.
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param C The scope context type.
  * @param T The singleton type.

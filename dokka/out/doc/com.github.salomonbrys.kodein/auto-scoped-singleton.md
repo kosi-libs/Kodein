@@ -6,6 +6,8 @@
 
 Creates an auto-scoped singleton provider, effectively a `provider { -> T }`.
 
+T generics will be kept.
+
 ### Parameters
 
 `C` - The scope context type.

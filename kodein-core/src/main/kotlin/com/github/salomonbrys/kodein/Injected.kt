@@ -44,7 +44,7 @@ interface KodeinInjectedBase {
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [A] & [T] generics will be kept.
+ * A & T generics will be kept.
  *
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
@@ -61,7 +61,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.genericFactory(tag: A
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [A] & [T] generics will be erased!
+ * A & T generics will be erased!
  *
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
@@ -78,7 +78,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.erasedFactory(tag: An
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [A] & [T] generics will be kept.
+ * A & T generics will be kept.
  *
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
@@ -95,7 +95,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.genericFactoryOrNull(
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [A] & [T] generics will be erased!
+ * A & T generics will be erased!
  *
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
@@ -114,7 +114,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.erasedFactoryOrNull(t
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -130,7 +130,7 @@ inline fun <reified T : Any> KodeinInjectedBase.genericProvider(tag: Any? = null
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -146,7 +146,7 @@ inline fun <reified T : Any> KodeinInjectedBase.erasedProvider(tag: Any? = null)
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -162,7 +162,7 @@ inline fun <reified T : Any> KodeinInjectedBase.genericProviderOrNull(tag: Any? 
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -180,7 +180,7 @@ inline fun <reified T : Any> KodeinInjectedBase.erasedProviderOrNull(tag: Any? =
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -195,7 +195,7 @@ inline fun <reified T : Any> KodeinInjectedBase.genericInstance(tag: Any? = null
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -210,7 +210,7 @@ inline fun <reified T : Any> KodeinInjectedBase.erasedInstance(tag: Any? = null)
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -225,7 +225,7 @@ inline fun <reified T : Any> KodeinInjectedBase.genericInstanceOrNull(tag: Any? 
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -265,7 +265,7 @@ class CurriedInjectorFactory<out A>(val injector: KodeinInjector, val arg: () ->
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider.
  * @param tag The bound tag, if any.
@@ -280,7 +280,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericProvider(tag: A
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object to retrieve with the provider.
  * @param tag The bound tag, if any.
@@ -295,7 +295,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedProvider(tag: An
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider.
  * @param tag The bound tag, if any.
@@ -310,7 +310,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericProviderOrNull(
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider.
  * @param tag The bound tag, if any.
@@ -325,7 +325,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedProviderOrNull(t
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -339,7 +339,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericInstance(tag: A
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -353,7 +353,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedInstance(tag: An
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -367,7 +367,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericInstanceOrNull(
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -379,7 +379,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedInstanceOrNull(t
 /**
  * Allows to inject a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -391,7 +391,7 @@ inline fun <reified A> KodeinInjectedBase.withGeneric(noinline arg: () -> A) = C
 /**
  * Allows to inject a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be erased!
+ * A generics will be erased!
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -403,7 +403,7 @@ inline fun <reified A> KodeinInjectedBase.withErased(noinline arg: () -> A) = Cu
 /**
  * Allows to inject a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -415,7 +415,7 @@ inline fun <reified A> KodeinInjectedBase.withGeneric(arg: A) = withGeneric { ar
 /**
  * Allows to inject a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.

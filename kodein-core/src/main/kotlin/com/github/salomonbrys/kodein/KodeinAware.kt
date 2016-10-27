@@ -22,7 +22,7 @@ interface KodeinAwareBase {
  *
  * Whether this factory will re-create a new instance at each call or not depends on the binding scope.
  *
- * [A] & [T] generics will be kept.
+ * A & T generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @param T The type of object the factory returns.
@@ -39,7 +39,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.genericFactory(tag: Any?
  *
  * Whether this factory will re-create a new instance at each call or not depends on the binding scope.
  *
- * [A] & [T] generics will be erased!
+ * A & T generics will be erased!
  *
  * @param A The type of argument the factory takes.
  * @param T The type of object the factory returns.
@@ -56,7 +56,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.erasedFactory(tag: Any? 
  *
  * Whether this factory will re-create a new instance at each call or not depends on the binding scope.
  *
- * [A] & [T] generics will be kept.
+ * A & T generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @param T The type of object the factory returns.
@@ -72,7 +72,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.genericFactoryOrNull(tag
  *
  * Whether this factory will re-create a new instance at each call or not depends on the binding scope.
  *
- * [A] & [T] generics will be erased!
+ * A & T generics will be erased!
  *
  * @param A The type of argument the factory takes.
  * @param T The type of object the factory returns.
@@ -88,7 +88,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.erasedFactoryOrNull(tag:
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object the provider returns.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -104,7 +104,7 @@ inline fun <reified T : Any> KodeinAwareBase.genericProvider(tag: Any? = null): 
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object the provider returns.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -120,7 +120,7 @@ inline fun <reified T : Any> KodeinAwareBase.erasedProvider(tag: Any? = null): (
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object the provider returns.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -136,7 +136,7 @@ inline fun <reified T : Any> KodeinAwareBase.genericProviderOrNull(tag: Any? = n
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object the provider returns.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -152,7 +152,7 @@ inline fun <reified T : Any> KodeinAwareBase.erasedProviderOrNull(tag: Any? = nu
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -168,7 +168,7 @@ inline fun <reified T : Any> KodeinAwareBase.genericInstance(tag: Any? = null): 
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -184,7 +184,7 @@ inline fun <reified T : Any> KodeinAwareBase.erasedInstance(tag: Any? = null): T
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -199,7 +199,7 @@ inline fun <reified T : Any> KodeinAwareBase.genericInstanceOrNull(tag: Any? = n
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -212,7 +212,7 @@ inline fun <reified T : Any> KodeinAwareBase.erasedInstanceOrNull(tag: Any? = nu
 /**
  * Allows to get a provider or an instance from a factory with a curried argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument that the factory takes.
  * @property kodein The Kodein instance to use for retrieval.
@@ -226,7 +226,7 @@ class CurriedKodeinFactory<out A>(val kodein: () -> Kodein, val arg: () -> A, va
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object the factory returns.
  * @param tag The bound tag, if any.
@@ -241,7 +241,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.genericProvider(tag: Any
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object the factory returns.
  * @param tag The bound tag, if any.
@@ -256,7 +256,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.erasedProvider(tag: Any?
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object the factory returns.
  * @param tag The bound tag, if any.
@@ -270,7 +270,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.genericProviderOrNull(ta
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object the factory returns.
  * @param tag The bound tag, if any.
@@ -284,7 +284,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.erasedProviderOrNull(tag
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -299,7 +299,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.genericInstance(tag: Any
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -314,7 +314,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.erasedInstance(tag: Any?
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -328,7 +328,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.genericInstanceOrNull(ta
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be erased!
+ * T generics will be erased!
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -340,7 +340,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.erasedInstanceOrNull(tag
 /**
  * Allows to get a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -352,7 +352,7 @@ inline fun <reified A> KodeinAwareBase.withGeneric(noinline arg: () -> A): Curri
 /**
  * Allows to get a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be erased!
+ * A generics will be erased!
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -364,7 +364,7 @@ inline fun <reified A> KodeinAwareBase.withErased(noinline arg: () -> A): Currie
 /**
  * Allows to get a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -376,7 +376,7 @@ inline fun <reified A> KodeinAwareBase.withGeneric(arg: A): CurriedKodeinFactory
 /**
  * Allows to get a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be NOT kept.
+ * A generics will be erased!
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.

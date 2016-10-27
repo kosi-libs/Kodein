@@ -12,9 +12,9 @@ Concrete factory: each time an instance is needed, the function [creator](creato
 
 `T` - The created type.
 
-`argType` - The type object of the argument used by this factory, *used for debug print only*.
+`argType` - The type object of the argument used by this factory.
 
-`createdType` - The type of objects created by this factory, *used for debug print only*.
+`createdType` - The type of objects created by this factory.
 
 ### Constructors
 

@@ -6,6 +6,8 @@
 
 Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.
 
+T generics will be kept.
+
 ### Parameters
 
 `T` - The created type.

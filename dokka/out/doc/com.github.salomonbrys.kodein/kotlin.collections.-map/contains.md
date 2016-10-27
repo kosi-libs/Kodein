@@ -15,7 +15,8 @@ The bindings map, obtained with [KodeinContainer.bindings](../-kodein-container/
 Whether or not this binding can be found in the binding map, whatever the factory argument type.
 
 `operator fun Map<`[`Key`](../-kodein/-key/index.md)`, `[`Factory`](../-factory/index.md)`<*, *>>.contains(type: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`): Boolean`
-`operator fun Map<`[`Key`](../-kodein/-key/index.md)`, `[`Factory`](../-factory/index.md)`<*, *>>.contains(type: `[`TypeToken`](../-type-token/index.md)`<*>): Boolean`
+`operator fun Map<`[`Key`](../-kodein/-key/index.md)`, `[`Factory`](../-factory/index.md)`<*, *>>.~~contains~~(type: `[`TypeToken`](../-type-token/index.md)`<*>): Boolean`
+**Deprecated:** Use contains(Type) instead.
 
 ### Parameters
 

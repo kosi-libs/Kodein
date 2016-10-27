@@ -1,4 +1,4 @@
-# Module Kodein
+# Module Kodein-Core
 
 KOtlin DEpendency INjection.
 

@@ -3,7 +3,7 @@ package com.github.salomonbrys.kodein
 /**
  * Gets a lazy factory for the given type, tag and argument type.
  *
- * [A] & [T] generics will be kept.
+ * A & T generics will be kept.
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
@@ -22,7 +22,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.factory(tag: Any? = n
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [A] & [T] generics will be kept.
+ * A & T generics will be kept.
  *
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
@@ -39,7 +39,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.factoryOrNull(tag: An
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -69,7 +69,7 @@ inline fun <reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null)
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -84,7 +84,7 @@ inline fun <reified T : Any> KodeinInjectedBase.instance(tag: Any? = null) = gen
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -101,7 +101,7 @@ inline fun <reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null)
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider.
  * @param tag The bound tag, if any.
@@ -116,7 +116,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.provider(tag: Any? = n
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider.
  * @param tag The bound tag, if any.
@@ -131,7 +131,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.providerOrNull(tag: An
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -145,7 +145,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.instance(tag: Any? = n
  *
  * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -157,7 +157,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.instanceOrNull(tag: An
 /**
  * Allows to inject a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
@@ -169,7 +169,7 @@ inline fun <reified A> KodeinInjectedBase.with(noinline arg: () -> A) = withGene
 /**
  * Allows to inject a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.

@@ -3,14 +3,15 @@ Author <salomon.brys@gmail.com>
 :toc: macro
 :toclevels: 4
 
-:version: 3.1.0
+:version: 3.2.0-beta1
+:branch: v3.2.0-beta
 
-image::https://raw.githubusercontent.com/SalomonBrys/Kodein/master/Kodein-logo.png[KODEIN, 700, 233]
+image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]
 
 image:https://img.shields.io/badge/Kotlin-1.0.3-blue.svg[alt="Kotlin 1.0.3", link="http://kotlinlang.org"]
 image:https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg[alt="Maven Central", link="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22"]
 image:https://img.shields.io/travis/SalomonBrys/Kodein.svg[alt="Travis", link="https://travis-ci.org/SalomonBrys/Kodein/builds"]
-image:https://img.shields.io/github/license/salomonbrys/kodein.svg[alt="MIT License", link="https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt"]
+image:https://img.shields.io/github/license/salomonbrys/kodein.svg[alt="MIT License", link="https://github.com/SalomonBrys/Kodein/blob/{branch}/LICENSE.txt"]
 image:https://img.shields.io/github/issues/SalomonBrys/Kodein.svg[alt="GitHub issues", link="https://github.com/SalomonBrys/Kodein/issues"]
 image:https://img.shields.io/badge/Chat-Slack-green.svg[alt="Slack channel", link="https://kotlinlang.slack.com/messages/kodein/"]
 image:https://img.shields.io/badge/Backing-Donate-orange.svg[alt="Donate", link="#_donate"]
@@ -95,7 +96,7 @@ toc::[]
 
 == Migrating
 
-If you are migrating from Kodein 2.8, you can read the https://github.com/SalomonBrys/Kodein/blob/master/MIGRATION-2-3.md[migration document].
+If you are migrating from Kodein 2.8, you can read the https://github.com/SalomonBrys/Kodein/blob/{branch}/MIGRATION-2-3.md[migration document].
 
 
 == Bindings: Declaring dependencies
@@ -672,7 +673,7 @@ Then, you can retrieve such bound types by using `withClassOf`.
 .Example: retrieving a logger
 ----
 class MyManager(val kodein: Kodein) {
-    val logger = kodein.withClassOf(this).instance()
+    val logger: Logger = kodein.withClassOf(this).instance()
 }
 ----
 
@@ -682,7 +683,7 @@ If you are using a <<kodein-aware,Kodein aware class>>, a <<kodein-injected,Kode
 .Example: retrieving a logger in a KodeinAware class
 ----
 class MyManager(override val kodein: Kodein): KodeinAware {
-    val logger = withClass().instance()
+    val logger: Logger = withClass().instance()
 }
 ----
 
@@ -765,6 +766,8 @@ fun test() {
 &lt;/dependency&gt;
 ----
 
+NOTE: Do not remove the "kodein" (or "kodein-erased") dependency.
+      Both dependencies must be declared.
 
 ==== With Gradle
 
@@ -772,6 +775,9 @@ fun test() {
 ----
 compile 'com.github.salomonbrys.kodein:kodein-conf:{version}'
 ----
+
+NOTE: Do not remove the "kodein" (or "kodein-erased") dependency.
+      Both dependencies must be declared.
 
 
 === Configuring
@@ -898,8 +904,13 @@ You can use Kodein as-is in your Android project or use the very small util libr
 +
 [subs="attributes"]
 ----
+compile 'com.github.salomonbrys.kodein:kodein:{version}'
 compile 'com.github.salomonbrys.kodein:kodein-android:{version}'
 ----
++
+NOTE: Both `kodein` and `kodein-android` dependencies must be declared. +
++
+WARNING: If you are using `kodein-erased`, then you must declare both dependencies : `kodein-erased` and `kodein-android` (but not `kodein`).
 
 . If you are using Proguard, you need to add the following line to your proguard configuration file:
 +
@@ -1021,7 +1032,7 @@ val kodein = Kodein {
 }
 ----
 
-You can see everything that this module proposes in the https://github.com/SalomonBrys/Kodein/blob/master/kodein-android/src/main/kotlin/com/github/salomonbrys/kodein/android/AndroidModule.kt[AndroidModule.kt] file.
+You can see everything that this module proposes in the https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein-android/src/main/kotlin/com/github/salomonbrys/kodein/android/AndroidModule.kt[AndroidModule.kt] file.
 
 To retrieve instances of bindings defined in this module, you can use `withContext`.
 
@@ -1048,7 +1059,7 @@ NOTE: The context scope should be used when a binding could apply to either an `
 .Example: using the context scope
 ----
 val kodein = Kodein {
-    bind<Logger>() with contextSingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+    bind<Logger>() with scopedSingleton(androidContextScope) { LogManager.getNamedLogger(it.localClassName) } // <1>
 }
 ----
 <1> `it` is the context the object is being created for.
@@ -1058,9 +1069,9 @@ To retrieve an object bound in the context scope, you need to inject a factory t
 [source, kotlin]
 .Example: retrieving a context scoped singleton
 ----
-val logger = kodein.with(context).instance()
-val sameLogger = kodein.with(context).instance() // this will be the same object as logger
-val otherLogger = kodein.with(otherContext).instance() // this will be a different object than logger
+val logger: Logger = kodein.with(context).instance()
+val sameLogger: Logger = kodein.with(context).instance() // this will be the same object as logger
+val otherLogger: Logger = kodein.with(otherContext).instance() // this will be a different object than logger
 ----
 
 NOTE: The activity and service scope are special cases of the context scope. The bindings returned for an `Activity` or `Service` object from the context scope will be the same one returned for that object from the activity or service scope
@@ -1073,7 +1084,7 @@ If you want a singleton that lives only during the lifecycle of a specific `Acti
 .Example: using the activity scope
 ----
 val kodein = Kodein {
-    bind<Logger>() with activitySingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+    bind<Logger>() with scopedSingleton(androidActivityScope) { LogManager.getNamedLogger(it.localClassName) } // <1>
 }
 ----
 <1> `it` is the activity the object is being created for.
@@ -1083,7 +1094,7 @@ As with the context scope, to retrieve objects bound in the activity scope, you 
 [source, kotlin]
 .Example: retrieving an activity scoped singleton
 ----
-val logger = kodein.with(getActivity()).instance()
+val logger: Logger = kodein.with(getActivity()).instance()
 ----
 
 
@@ -1095,33 +1106,33 @@ If you don't want to be required to explicitly provide an activity instance to i
 .Example: using the auto activity scope
 ----
 val kodein = Kodein {
-    bind<Logger>() with autoActivitySingleton { LogManager.getNamedLogger(it.localClassName) }
+    bind<Logger>() with autoScopedSingleton(androidActivityScope) { LogManager.getNamedLogger(it.localClassName) }
 }
 ----
 
 [source, kotlin]
 .Example: retrieving an auto activity scoped singleton
 ----
-val logger = kodein.instance<Logger>()
+val logger: Logger = kodein.instance()
 ----
 
 [WARNING]
 ====
-In your `Application` class, in the `onCreate` method, you must add this line:
+In your `Application` class, in the `onCreate` method, you *must* add this line:
 
 [source, kotlin]
 .Example: registering kodein's lifecycle manager to enable the auto activity scope to work
 ----
 class MyApplication : Application {
     override fun onCreate() {
-        registerActivityLifecycleCallbacks(activityScope.lifecycleManager) // <1>
+        registerActivityLifecycleCallbacks(androidActivityScope.lifecycleManager) // <1>
     }
 }
 ----
-<1> `activityScope.lifecycleManager` is what enables the auto scope to work.
+<1> `androidActivityScope.lifecycleManager` is what enables the auto scope to work.
 ====
 
-CAUTION: Objects that are bound with `autoActivitySingleton` will always be injected according to *the last displayed activity*.
+CAUTION: Objects that are bound in the auto `androidActivityScope` will always be injected according to *the last displayed activity*.
 
 ==== The service scope
 
@@ -1131,7 +1142,7 @@ If you want a singleton that lives only during the lifecycle of a specific `Serv
 .Example: using the service scope
 ----
 val kodein = Kodein {
-    bind<Logger>() with serviceSingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+    bind<Logger>() with scopedSingleton(androidServiceScope) { LogManager.getNamedLogger(it.localClassName) } // <1>
 }
 ----
 <1> `it` is the service the object is being created for.
@@ -1141,7 +1152,7 @@ As with the context scope, to retrieve objects bound in the service scope, you n
 [source, kotlin]
 .Example: retrieving a service scoped singleton
 ----
-val logger = kodein.with(service).instance()
+val logger: Logger = kodein.with(service).instance()
 ----
 
 ==== The broadcast receiver scope
@@ -1152,7 +1163,7 @@ If you want a singleton that lives only during the lifecycle of a specific `Broa
 .Example: using the broadcast receiver scope
 ----
 val kodein = Kodein {
-    bind<Logger>() with broadcastReceiverSingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+    bind<Logger>() with scopedSingleton(androidBroadcastReceiverScope) { LogManager.getNamedLogger(it.localClassName) } // <1>
 }
 ----
 <1> `it` is the broadcast receiver the object is being created for.
@@ -1162,7 +1173,7 @@ To retrieve objects bound in the broadcast receiver scope, you need to inject a 
 [source, kotlin]
 .Example: retrieving a broadcast receiver scoped singleton
 ----
-val logger = kodein.with(broadcastReceiver).instance()
+val logger: Logger = kodein.with(broadcastReceiver).instance()
 ----
 
 ==== The fragment (and support fragment) scope
@@ -1173,7 +1184,7 @@ If you want a singleton that lives only during the lifecycle of a specific `Frag
 .Example: using the fragment scope
 ----
 val kodein = Kodein {
-    bind<Logger>() with fragmentSingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+    bind<Logger>() with scopedSingleton(androidFragmentScope) { LogManager.getNamedLogger(it.localClassName) } // <1>
 }
 ----
 <1> `it` is the fragment the object is being created for.
@@ -1182,7 +1193,7 @@ val kodein = Kodein {
 .Example: using the support fragment scope
 ----
 val kodein = Kodein {
-    bind<Logger>() with supportFragmentSingleton { LogManager.getNamedLogger(it.localClassName) } // <1>
+    bind<Logger>() with scopedSingleton(androidSupportFragmentScope) { LogManager.getNamedLogger(it.localClassName) } // <1>
 }
 ----
 <1> `it` is the support fragment the object is being created for.
@@ -1192,19 +1203,19 @@ To retrieve objects bound in the fragment scope (or support fragment scope), you
 [source, kotlin]
 .Example: retrieving a fragment scoped singleton
 ----
-val logger = kodein.with(fragment).instance()
+val logger: Logger = kodein.with(fragment).instance()
 ----
 
 [source, kotlin]
 .Example: retrieving a support fragment scoped singleton
 ----
-val logger = kodein.with(supportFragment).instance()
+val logger: Logger = kodein.with(supportFragment).instance()
 ----
 
 
 === Android example project
 
-Have a look at the https://github.com/SalomonBrys/Kodein/tree/master/AndroidDemo[Android demo project]!
+Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/AndroidDemo[Android demo project]!
 
 
 == Debugging
@@ -1246,6 +1257,55 @@ com.github.salomonbrys.kodein.Kodein$DependencyLoopException: Dependency recursi
 <1> `com.test.A` depends on `com.test.B`
 <2> `com.test.B` depends on `com.test.C` with the tag "Yay"
 <3> `com.test.C` with the tag "Yay" depends on `com.test.A`, *we have found the dependency loop!*.
+
+
+== Performance
+
+=== The type erasure problem
+
+By default, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
+Similarly, `kodein.instance<List<String>>()` and `kodein.instance<List<Int>>()` will yield two different list.
+
+To be erasure immune, kodein relies heavily on the `genericToken` function, which is real a performance pitfall.
+
+To improve performance, you can use the "erased*" set of kodein functions, which are faster, but do suffer from type erasure!
+
+[WARNING]
+====
+Yes, #perfmatters. However, the humble opinion of the author is that:
+
+- There is a balance to be found between performance, readability, security and debuggability.
+- Optimisation is important in critical path, not _everywhere_.
+
+Therefore, please make sure that, using the "erased*" function set is right for your use case, before blindly using it ;).
+====
+
+=== Using generic and erased function forms
+
+Each kodein function that handles a type exists in two form: `generic` and `erased`. +
+For example, the `kodein.instance` function exists as `kodein.genericInstance` and `kodein.erasedInstance`.
+
+By default, all type functions are aliases to their "generic*" counterpart. +
+For example, the `kodein.instance` function is an alias to `kodein.genericInstance`
+
+So, when you know that you inject a type that is *not generic*, you can use `kodein.erasedInstance`:
+
+[source, kotlin]
+.Example: injecting a non generic object using the optimized method
+----
+val session: HttpSession = kodein.erasedInstance()
+----
+
+=== Using erased by default
+
+If you know what you are doing, and _why_ you are doing it, you can change the default methods to alias the "erased*" function set.
+
+For this, you *must not* depend on the `kodein` module, and instead, depend on the `kodein-erased` module.
+
+CAUTION: This means that, by default, `kodein.instance<List<String>>()` will look for an erased `List` binding. +
+         Therefore, to bind a `List<String>` you *must* use `bindGeneric<List<String>>()`, and to retrieve it, you *must* use `kodein.genericInstance()`.
+
+NOTE: The "erased*" function set is located in a different package than the regular one: `com.github.salomonbrys.kodein.erased`.
 
 
 == Advanced use
@@ -1303,7 +1363,7 @@ To retrieve a scoped singleton bound type, you must retrieve *a factory* and the
 [source, kotlin]
 .Example: using a scope
 ----
-val logger = kodein.with(getRequest()).instance()
+val logger: Logger = kodein.with(getRequest()).instance()
 ----
 
 
@@ -1362,7 +1422,7 @@ object myScope: AutoScope<Unit> {
 
 A factory function is an extension function to `Kodein.Builder` that returns a `Factory<A, T>`. You can use the `CFactory<A, T>` class for ease of use.
 If your scope is a provider scope (such as singleton), you can use the `CProvider<T>` class for ease of use.
-Have a look at existing scopes in the https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/factories.kt[factories.kt] file. The `singleton` scope is very easy to understand and is a good starting point.
+Have a look at existing scopes in the https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein/src/main/kotlin/com/github/salomonbrys/kodein/factories.kt[factories.kt] file. The `singleton` scope is very easy to understand and is a good starting point.
 
 
 === Use the typed API
@@ -1415,12 +1475,12 @@ When defining bindings, in the `Kodein.Builder`, you can access the `container` 
 You can access a *copy* of the bindings map with `kodein.container.bindings`. +
 From this `Map<Kodein.Key, Factory<*, *>>`, you can explore all bindings, their keys and factories.
 
-TIP: The https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin/com/github/salomonbrys/kodein/bindings.kt[bindings.kt] file exposes several extension functions to this map that can be useful for exploring it.
+TIP: The https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein/src/main/kotlin/com/github/salomonbrys/kodein/bindings.kt[bindings.kt] file exposes several extension functions to this map that can be useful for exploring it.
 
 
 == API reference
 
-The API reference can be found https://github.com/SalomonBrys/Kodein/blob/master/dokka/out/doc/index.md[here]!
+The API reference can be found https://github.com/SalomonBrys/Kodein/blob/{branch}/dokka/out/doc/index.md[here]!
 
 
 == Contributing
@@ -1430,7 +1490,7 @@ Contributions are very welcome and greatly appreciated! The great majority of pu
 To contribute, simply fork https://github.com/SalomonBrys/Kodein[the project on Github], fix whatever is iching you, and submit a pull request!
 
 I am sure that this documentation contains typos, inaccuracies and languages error (English is not my mother tongue).
-If you feel like enhancing this document, you can propose a pull request that modifies https://github.com/SalomonBrys/Kodein/blob/master/README3.adoc[README3.adoc].
+If you feel like enhancing this document, you can propose a pull request that modifies https://github.com/SalomonBrys/Kodein/blob/{branch}/README3.adoc[README3.adoc].
 (The documentation page is auto-generated from it).
 
 

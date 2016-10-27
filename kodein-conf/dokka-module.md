@@ -1,4 +1,4 @@
-# Module Kodein-Global
+# Module Kodein-Conf
 
 Configurable Kodein.
 

@@ -5,7 +5,7 @@ package com.github.salomonbrys.kodein
  *
  * Whether this factory will re-create a new instance at each call or not depends on the binding scope.
  *
- * [A] & [T] generics will be kept.
+ * A & T generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @param T The type of object the factory returns.
@@ -22,7 +22,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factory(tag: Any? = null
  *
  * Whether this factory will re-create a new instance at each call or not depends on the binding scope.
  *
- * [A] & [T] generics will be kept.
+ * A & T generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @param T The type of object the factory returns.
@@ -38,7 +38,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? 
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object the provider returns.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -54,7 +54,7 @@ inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null) = generi
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object the provider returns.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -70,7 +70,7 @@ inline fun <reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null) = 
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -86,7 +86,7 @@ inline fun <reified T : Any> KodeinAwareBase.instance(tag: Any? = null) = generi
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -101,7 +101,7 @@ inline fun <reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null) = 
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object the factory returns.
  * @param tag The bound tag, if any.
@@ -116,7 +116,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.provider(tag: Any? = nul
  *
  * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object the factory returns.
  * @param tag The bound tag, if any.
@@ -130,7 +130,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.providerOrNull(tag: Any?
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -145,7 +145,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.instance(tag: Any? = nul
  *
  * Whether the returned object is a new instance at each call or not depends on the binding scope.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -157,7 +157,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.instanceOrNull(tag: Any?
 /**
  * Allows to get a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.
@@ -169,7 +169,7 @@ inline fun <reified A> KodeinAwareBase.with(noinline arg: () -> A) = withGeneric
 /**
  * Allows to get a provider or an instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [Kodein] instance or a [KodeinAware] class.

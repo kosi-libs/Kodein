@@ -36,7 +36,7 @@ An object from which you can inject an instance or a provider.
 
 `inline fun <reified T : Any> `[`LazyKodein`](-lazy-kodein/index.md)`.withKClass(of: T): `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<KClass<*>>`
 
-Allows to lazily retrive a provider or an instance from a curried factory with a `KClass` argument.
+Allows to lazily retrieve a provider or an instance from a curried factory with a `KClass` argument.
 
 The provider will give the factory the `KClass` of the parameter as argument.
 
@@ -54,7 +54,7 @@ An object from which you can inject an instance or a provider.
 
 `inline fun <reified T : `[`LazyKodeinAware`](-lazy-kodein-aware.md)`> T.withKClass(): `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<KClass<*>>`
 
-Allows to lazily retrive a provider or an instance from a curried factory with a `KClass` argument.
+Allows to lazily retrieve a provider or an instance from a curried factory with a `KClass` argument.
 
 The provider will give the factory the `KClass` of the receiver as argument.
 

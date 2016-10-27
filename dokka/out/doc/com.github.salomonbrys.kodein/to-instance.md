@@ -2,8 +2,8 @@
 
 # toInstance
 
-`fun <A, T : Any> `[`InjectedProperty`](-injected-property/index.md)`<(A) -> T>.toInstance(arg: () -> A): Lazy<T>`
-`@JvmName("toNullableInstance") fun <A, T : Any> `[`InjectedProperty`](-injected-property/index.md)`<(A) -> T>.toInstance(arg: () -> A): Lazy<T?>`
+`inline fun <A, T : Any> `[`InjectedProperty`](-injected-property/index.md)`<(A) -> T>.toInstance(crossinline arg: () -> A): Lazy<T>`
+`@JvmName("toNullableInstance") inline fun <A, T : Any> `[`InjectedProperty`](-injected-property/index.md)`<(A) -> T>.toInstance(crossinline arg: () -> A): Lazy<T?>`
 
 Transforms an injected factory property into an injected instance property by currying the factory with the given argument.
 

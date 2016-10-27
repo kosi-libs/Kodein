@@ -300,7 +300,7 @@ interface Kodein : KodeinAwareBase {
         /**
          * Starts the binding of a given type with a given tag.
          *
-         * [T] generics will be kept.
+         * T generics will be kept.
          *
          * @param T The type to bind.
          * @param tag The tag to bind.
@@ -312,7 +312,7 @@ interface Kodein : KodeinAwareBase {
         /**
          * Starts the binding of a given type with a given tag.
          *
-         * [T] generics will be erased!
+         * T generics will be erased!
          *
          * @param T The type to bind.
          * @param tag The tag to bind.
@@ -340,7 +340,7 @@ interface Kodein : KodeinAwareBase {
             /**
              * Binds the previously given tag to the given instance.
              *
-             * [T] generics will be kept.
+             * T generics will be kept.
              *
              * @param T The type of value to bind.
              * @param value The instance to bind.
@@ -350,7 +350,7 @@ interface Kodein : KodeinAwareBase {
             /**
              * Binds the previously given tag to the given instance.
              *
-             * [T] generics will be erased!
+             * T generics will be erased!
              *
              * @param T The type of value to bind.
              * @param value The instance to bind.

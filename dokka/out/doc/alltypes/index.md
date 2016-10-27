@@ -38,17 +38,17 @@ KOtlin DEpendency INjection.
 | [com.github.salomonbrys.kodein.InjectedProperty](../com.github.salomonbrys.kodein/-injected-property/index.md) | Read only property delegate for an injected value. |
 | [com.github.salomonbrys.kodein.InjectedProviderProperty](../com.github.salomonbrys.kodein/-injected-provider-property/index.md) | A read-only property delegate that injects a provider. |
 | [com.github.salomonbrys.kodein.Kodein](../com.github.salomonbrys.kodein/-kodein/index.md) | KOtlin DEpendency INjection. |
-| [com.github.salomonbrys.kodein.KodeinAware](../com.github.salomonbrys.kodein/-kodein-aware.md) | Any class that extends this interface can use Kodein "seemlessly". |
+| [com.github.salomonbrys.kodein.KodeinAware](../com.github.salomonbrys.kodein/-kodein-aware.md) | Any class that extends this interface can use Kodein "seamlessly". |
 | [com.github.salomonbrys.kodein.KodeinAwareBase](../com.github.salomonbrys.kodein/-kodein-aware-base/index.md) | Base [KodeinAware](../com.github.salomonbrys.kodein/-kodein-aware.md) interface. |
 | [com.github.salomonbrys.kodein.KodeinContainer](../com.github.salomonbrys.kodein/-kodein-container/index.md) | Container class where the bindings and their factories are stored. |
 | [com.github.salomonbrys.kodein.conf.KodeinGlobalAware](../com.github.salomonbrys.kodein.conf/-kodein-global-aware/index.md) | A `KodeinAware` class that needs no implementation because the kodein used will be the [global](../com.github.salomonbrys.kodein.conf/global.md) One True Kodein. |
-| [com.github.salomonbrys.kodein.KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) | Any class that extends this interface can be injected "seemlessly". |
+| [com.github.salomonbrys.kodein.KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) | Any class that extends this interface can be injected "seamlessly". |
 | [com.github.salomonbrys.kodein.KodeinInjectedBase](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md) | Base [KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) interface. |
 | [com.github.salomonbrys.kodein.KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) | An injector is an object which creates injected property delegates **before** having access to a Kodein instance. |
 | [com.github.salomonbrys.kodein.KodeinWrappedType](../com.github.salomonbrys.kodein/-kodein-wrapped-type/index.md) | Wraps a ParameterizedType and implements hashCode / equals. |
 | [kotlin.Lazy](../com.github.salomonbrys.kodein/kotlin.-lazy/index.md) (extensions in package com.github.salomonbrys.kodein) |  |
 | [com.github.salomonbrys.kodein.LazyKodein](../com.github.salomonbrys.kodein/-lazy-kodein/index.md) | An object that wraps a Kodein `Lazy` object and acts both as a `Lazy` property delegate &amp; a function. |
-| [com.github.salomonbrys.kodein.LazyKodeinAware](../com.github.salomonbrys.kodein/-lazy-kodein-aware.md) | Any class that extends this interface can use Kodein to "seemlessly" get lazy properties. |
+| [com.github.salomonbrys.kodein.LazyKodeinAware](../com.github.salomonbrys.kodein/-lazy-kodein-aware.md) | Any class that extends this interface can use Kodein to "seamlessly" get lazy properties. |
 | [com.github.salomonbrys.kodein.LazyKodeinAwareBase](../com.github.salomonbrys.kodein/-lazy-kodein-aware-base/index.md) | Base [LazyKodeinAware](../com.github.salomonbrys.kodein/-lazy-kodein-aware.md) interface. |
 | [android.content.Loader](../com.github.salomonbrys.kodein.android/android.content.-loader/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
 | [android.support.v4.content.Loader](../com.github.salomonbrys.kodein.android/android.support.v4.content.-loader/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
@@ -60,4 +60,9 @@ KOtlin DEpendency INjection.
 | [com.github.salomonbrys.kodein.TypeReference](../com.github.salomonbrys.kodein/-type-reference/index.md) | Class used to get a generic type at runtime. |
 | [com.github.salomonbrys.kodein.TypeToken](../com.github.salomonbrys.kodein/-type-token/index.md) | An interface that contains a simple [Type](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html) but is parameterized to enable type safety. |
 | [android.view.View](../com.github.salomonbrys.kodein.android/android.view.-view/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
-| [com.github.salomonbrys.kodein.android.activityScope](../com.github.salomonbrys.kodein.android/activity-scope/index.md) | Androids activity scope. Allows to register activity-specific singletons. |
+| [com.github.salomonbrys.kodein.android.androidActivityScope](../com.github.salomonbrys.kodein.android/android-activity-scope/index.md) | Androids activity scope. Allows to register activity-specific singletons. |
+| [com.github.salomonbrys.kodein.android.androidBroadcastReceiverScope](../com.github.salomonbrys.kodein.android/android-broadcast-receiver-scope/index.md) | Androids broadcast receiver scope. Allows to register broadcast receiver-specific singletons. |
+| [com.github.salomonbrys.kodein.android.androidContextScope](../com.github.salomonbrys.kodein.android/android-context-scope/index.md) | Androids context scope. Allows to register context-specific singletons. |
+| [com.github.salomonbrys.kodein.android.androidFragmentScope](../com.github.salomonbrys.kodein.android/android-fragment-scope/index.md) | Androids fragment scope. Allows to register fragment-specific singletons. |
+| [com.github.salomonbrys.kodein.android.androidServiceScope](../com.github.salomonbrys.kodein.android/android-service-scope/index.md) | Androids service scope. Allows to register service-specific singletons. |
+| [com.github.salomonbrys.kodein.android.androidSupportFragmentScope](../com.github.salomonbrys.kodein.android/android-support-fragment-scope/index.md) | Androids support fragment scope. Allows to register support fragment-specific singletons. |

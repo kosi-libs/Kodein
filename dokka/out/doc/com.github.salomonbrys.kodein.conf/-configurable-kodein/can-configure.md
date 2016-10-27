@@ -4,5 +4,5 @@
 
 `val canConfigure: Boolean`
 
-Whether or not this Kodein can be configured (meaning that it has not been used for retrieval yet.
+Whether or not this Kodein can be configured (meaning that it has not been used for retrieval yet).
 

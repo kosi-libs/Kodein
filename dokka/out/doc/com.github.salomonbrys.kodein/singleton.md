@@ -6,6 +6,8 @@
 
 Creates a singleton: will create an instance on first request and will subsequently always return the same instance.
 
+T generics will be kept.
+
 ### Parameters
 
 `T` - The created type.

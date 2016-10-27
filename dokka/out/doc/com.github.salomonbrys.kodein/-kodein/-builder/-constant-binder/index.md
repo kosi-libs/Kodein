@@ -16,4 +16,12 @@ Left part of the constant-binding syntax (`constant(tag)`).
 
 | Name | Summary |
 |---|---|
-| [with](with.md) | `infix fun <T : Any> with(value: T): Unit`<br>Binds the previously given tag to the given instance. |
+| [withErased](with-erased.md) | `infix fun <T : Any> withErased(value: T): Unit`<br>Binds the previously given tag to the given instance. |
+| [withGeneric](with-generic.md) | `infix fun <T : Any> withGeneric(value: T): Unit`<br>Binds the previously given tag to the given instance. |
+
+### Extension Functions
+
+| Name | Summary |
+|---|---|
+| [with](../../../with.md) | `infix fun <T : Any> ConstantBinder.with(value: T): Unit`<br>Binds the previously given tag to the given instance. |
+| [with](../../../../com.github.salomonbrys.kodein.erased/with.md) | `infix fun <T : Any> ConstantBinder.with(value: T): Unit`<br>Binds the previously given tag to the given instance. |

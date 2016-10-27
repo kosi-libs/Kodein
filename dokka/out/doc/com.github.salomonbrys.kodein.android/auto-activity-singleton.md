@@ -2,11 +2,12 @@
 
 # autoActivitySingleton
 
-`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.autoActivitySingleton(noinline creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(Activity) -> T): `[`Factory`](../com.github.salomonbrys.kodein/-factory/index.md)`<Unit, T>`
+`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.~~autoActivitySingleton~~(noinline creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(Activity) -> T): `[`Factory`](../com.github.salomonbrys.kodein/-factory/index.md)`<Unit, T>`
+**Deprecated:** Use autoScopedSingleton instead.
 
 Creates an activity auto-scoped singleton factory, effectively a `provider { -> T }`.
 
-Note that, to use this, you **must** register the [activityScope.lifecycleManager](activity-scope/lifecycle-manager.md).
+Note that, to use this, you **must** register the [androidActivityScope.lifecycleManager](android-activity-scope/lifecycle-manager.md).
 
 ### Parameters
 

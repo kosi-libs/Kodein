@@ -4,8 +4,8 @@
 
 `val tag: Any?`
 
-The optionnal tag.
+The optional tag.
 
 ### Property
 
-`tag` - The optionnal tag.
+`tag` - The optional tag.

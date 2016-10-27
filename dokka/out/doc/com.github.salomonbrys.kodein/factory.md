@@ -6,6 +6,8 @@
 
 Creates a factory: each time an instance is needed, the function [creator](factory.md#com.github.salomonbrys.kodein$factory(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.factory.A, com.github.salomonbrys.kodein.factory.T)))/creator) function will be called.
 
+A &amp; T generics will be kept.
+
 ### Parameters
 
 `A` - The argument type.
@@ -20,6 +22,8 @@ A factory ready to be bound.
 `inline fun <reified A, reified T : Any> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.factory(tag: Any? = null): `[`InjectedProperty`](-injected-property/index.md)`<(A) -> T>`
 
 Gets a lazy factory for the given type, tag and argument type.
+
+A &amp; T generics will be kept.
 
 The returned property should not be accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
 
@@ -47,6 +51,8 @@ A lazy property that yields a factory of `T`.
 
 Gets a lazy factory for the given type, tag and argument type.
 
+A &amp; T generics will be kept.
+
 ### Parameters
 
 `A` - The type of argument the factory held by this property takes.
@@ -72,6 +78,8 @@ A lazy property that yields a factory of `T`.
 Gets a factory of `T` for the given argument type, return type and tag.
 
 Whether this factory will re-create a new instance at each call or not depends on the binding scope.
+
+A &amp; T generics will be kept.
 
 ### Parameters
 

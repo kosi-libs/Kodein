@@ -87,7 +87,7 @@ inline fun <reified T> typeToken() = genericToken<T>()
 
 
 /**
- * Function used to get a Class object. Same as [T]::class but with [T] being possibly nullable.
+ * Function used to get a Class object. Same as T::class but with T being possibly nullable.
  *
  * This should be used only when T is (possibly) nullable. When possible, T::class.java is faster.
  *

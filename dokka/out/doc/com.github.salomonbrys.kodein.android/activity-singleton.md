@@ -2,7 +2,8 @@
 
 # activitySingleton
 
-`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.activitySingleton(noinline creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(Activity) -> T): `[`Factory`](../com.github.salomonbrys.kodein/-factory/index.md)`<Activity, T>`
+`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.~~activitySingleton~~(noinline creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(Activity) -> T): `[`Factory`](../com.github.salomonbrys.kodein/-factory/index.md)`<Activity, T>`
+**Deprecated:** Use scopedSingleton instead.
 
 Creates an activity scoped singleton factory, effectively a `factory { Activity -> T }`.
 

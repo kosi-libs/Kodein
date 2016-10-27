@@ -6,6 +6,8 @@
 
 Allows to inject a provider or an instance from a curried factory with an `A` argument.
 
+A generics will be kept.
+
 ### Parameters
 
 `A` - The type of argument the factory takes.
@@ -21,6 +23,8 @@ An object from which you can inject an instance or a provider.
 `inline fun <reified A> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.with(arg: A): `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<A>`
 
 Allows to inject a provider or an instance from a curried factory with an `A` argument.
+
+A generics will be kept.
 
 ### Parameters
 
@@ -38,6 +42,8 @@ An object from which you can inject an instance or a provider.
 
 Allows to get a lazy provider or instance from a curried factory with an `A` argument.
 
+A generics will be kept.
+
 ### Parameters
 
 `A` - The type of argument the factory takes.
@@ -53,6 +59,8 @@ An object from which you can get an instance or a provider.
 `inline fun <reified A> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.with(arg: A): `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<A>`
 
 Allows to get a lazy provider or instance from a curried factory with an `A` argument.
+
+A generics will be kept.
 
 ### Parameters
 
@@ -71,6 +79,8 @@ An object from which you can get an instance or a provider.
 
 Allows to get a provider or an instance from a curried factory with an `A` argument.
 
+A generics will be kept.
+
 ### Parameters
 
 `A` - The type of argument the factory takes.
@@ -78,3 +88,14 @@ Allows to get a provider or an instance from a curried factory with an `A` argum
 **Receiver**
 Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
 
+`inline infix fun <reified T : Any> `[`ConstantBinder`](-kodein/-builder/-constant-binder/index.md)`.with(value: T): Unit`
+
+Binds the previously given tag to the given instance.
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of value to bind.
+
+`value` - The instance to bind.

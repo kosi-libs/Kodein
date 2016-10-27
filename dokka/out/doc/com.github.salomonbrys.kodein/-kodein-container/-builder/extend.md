@@ -6,7 +6,7 @@
 
 Imports all bindings defined in the given [KodeinContainer](../index.md) into this builder.
 
-Note that this preserves scopes, meaning that a singleton-binded in the container argument will continue to exist only once.
+Note that this preserves scopes, meaning that a singleton-bound in the container argument will continue to exist only once.
 Both containers will share the same instance.
 
 ### Parameters

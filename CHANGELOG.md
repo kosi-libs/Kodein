@@ -1,4 +1,19 @@
 
+### 3.2.0-beta1 (28-10-2016)
+
+ - FEATURES
+   * Every function that do generic type reflexivity is renamed `generic*` and has an `erased*` counterpart.
+   * All functions are now inside the `kodein-core` module. The `kodein` module defines extension functions that alias
+     to the  "generic*" functions by default.
+   * The `kodein-erased` module is the same as the `kodein` module, but with functions that alias to the `erased*`
+     functions.
+
+ - DEPRECATION
+   * Removed methods that were deprecated in 3.1.0
+   * For Android, \[scope\]ScopedSingleton methods are deprecated (for example, `contextScopedSingleton {}` is
+     deprecated in favour of `scopedSingleton(androidContextScope) {}`)
+   * `typeToken` has been renamed to `genericToken`. The `typeToken` function still exists but is deprecated.
+
 ### 3.1.0 (22-09-2016)
 
  - FEATURES

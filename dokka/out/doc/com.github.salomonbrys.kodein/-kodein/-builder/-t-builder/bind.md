@@ -37,7 +37,7 @@ The binder: call [TypeBinder.with](-type-binder/with.md)) on it to finish the bi
 
 `fun bind(tag: Any? = null, overrides: Boolean? = null): `[`DirectBinder`](-direct-binder/index.md)
 
-Starts a direct binding with a given tag. A direct bind does not define the type to be binded, the type will be defined according to the bound factory.
+Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
 
 ### Parameters
 

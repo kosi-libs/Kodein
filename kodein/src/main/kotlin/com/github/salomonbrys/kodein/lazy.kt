@@ -3,7 +3,7 @@ package com.github.salomonbrys.kodein
 /**
  * Gets a lazy factory for the given type, tag and argument type.
  *
- * [A] & [T] generics will be kept.
+ * A & T generics will be kept.
  *
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
@@ -18,7 +18,7 @@ inline fun <reified A, reified T : Any> LazyKodeinAwareBase.factory(tag: Any? = 
 /**
  * Gets a lazy factory for the given type, tag and argument type, or null if none is found.
  *
- * [A] & [T] generics will be kept.
+ * A & T generics will be kept.
  *
  * @param A The type of argument the factory held by this property takes.
  * @param T The type of object to retrieve with the factory held by this property.
@@ -32,7 +32,7 @@ inline fun <reified A, reified T : Any> LazyKodeinAwareBase.factoryOrNull(tag: A
 /**
  * Gets a lazy provider for the given type and tag.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
@@ -46,7 +46,7 @@ inline fun <reified T : Any> LazyKodeinAwareBase.provider(tag: Any? = null) = ge
 /**
  * Gets a lazy provider for the given type and tag, or null if none is found.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider held by this property.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
@@ -59,7 +59,7 @@ inline fun <reified T : Any> LazyKodeinAwareBase.providerOrNull(tag: Any? = null
 /**
  * Gets a lazy instance for the given type and tag.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
@@ -73,7 +73,7 @@ inline fun <reified T : Any> LazyKodeinAwareBase.instance(tag: Any? = null) = ge
 /**
  * Gets a lazy instance for the given type and tag, or null is none is found.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
@@ -86,7 +86,7 @@ inline fun <reified T : Any> LazyKodeinAwareBase.instanceOrNull(tag: Any? = null
 /**
  * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider held by this property.
  * @param tag The bound tag, if any.
@@ -99,7 +99,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.provider(tag: Any? =
 /**
  * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve with the provider held by this property.
  * @param tag The bound tag, if any.
@@ -111,7 +111,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.providerOrNull(tag: 
 /**
  * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -124,7 +124,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.instance(tag: Any? =
 /**
  * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
  *
- * [T] generics will be kept.
+ * T generics will be kept.
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -137,7 +137,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.instanceOrNull(tag: 
 /**
  * Allows to get a lazy provider or instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
@@ -149,7 +149,7 @@ inline fun <reified A> LazyKodeinAwareBase.with(noinline arg: () -> A) = withGen
 /**
  * Allows to get a lazy provider or instance from a curried factory with an `A` argument.
  *
- * [A] generics will be kept.
+ * A generics will be kept.
  *
  * @param A The type of argument the factory takes.
  * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.

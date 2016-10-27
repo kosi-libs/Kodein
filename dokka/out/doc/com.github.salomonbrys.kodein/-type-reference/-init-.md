@@ -12,5 +12,5 @@ Class used to get a generic type at runtime.
 
 **See Also**
 
-[typeToken](../type-token.md)
+[genericToken](../generic-token.md)
 

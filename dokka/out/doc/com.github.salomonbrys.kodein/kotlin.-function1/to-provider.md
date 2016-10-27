@@ -2,7 +2,7 @@
 
 # toProvider
 
-`fun <A, T : Any> (A) -> T.toProvider(arg: () -> A): () -> T`
+`inline fun <A, T : Any> (A) -> T.toProvider(crossinline arg: () -> A): () -> T`
 
 Transforms a factory function into a provider function by currying the factory with the given argument.
 

@@ -18,7 +18,7 @@ Part of a [Key](../-key/index.md) that represents the left part of a bind declar
 |---|---|
 | [description](description.md) | `val description: String`<br>Description using simple type names. The description is as close as possible to the code used to create this bind. |
 | [fullDescription](full-description.md) | `val fullDescription: String`<br>Description using full type names. The description is as close as possible to the code used to create this bind. |
-| [tag](tag.md) | `val tag: Any?`<br>The optionnal tag. |
+| [tag](tag.md) | `val tag: Any?`<br>The optional tag. |
 | [type](type.md) | `val type: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type that is bound. |
 
 ### Functions
