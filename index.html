@@ -57,7 +57,7 @@
                     </div>
                     <div class="paragraph">
                         <p>
-                            <h2><i>Loading...</i></h2>
+                            <h2><i id="loadingText">Loading...</i></h2>
                         </p>
                     </div>
                 </div>
@@ -66,7 +66,10 @@
 
         <script type="text/javascript">
             function asciidocify() {
-                $.get("https://raw.githubusercontent.com/SalomonBrys/Kodein/master/README3.adoc", function(data) {
+                var branch = "master";
+                if (location.search != "")
+                    branch = location.search.substr(1);
+                $.get("https://raw.githubusercontent.com/SalomonBrys/Kodein/" + branch + "/README3.adoc", function(data) {
                     var options = Opal.hash({
                         backend: 'html5',
                         safe: 'secure',
@@ -95,7 +98,11 @@
                         setTimeout(function() { location.hash = hash; }, 0);
                     }
 
-                });
+                })
+                    .fail(function() {
+                        $('#loadingText').html("No doc for branch <b>" + branch + "</b>.");
+                    })
+                ;
 //                alert(location.hash)
             }
 
