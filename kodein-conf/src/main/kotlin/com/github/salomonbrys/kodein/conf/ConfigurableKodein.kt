@@ -107,13 +107,6 @@ class ConfigurableKodein : Kodein {
         }
     }
 
-    @Suppress("DeprecatedCallableAddReplaceWith")
-    @Deprecated("mutateReset(false) should be replaced by clear(), mutateReset(true) is not needed anymore.")
-    fun mutateReset(keep: Boolean = false) {
-        if (!keep)
-            clear()
-    }
-
     /**
      * Whether or not this Kodein can be configured (meaning that it has not been used for retrieval yet).
      */
@@ -142,16 +135,6 @@ class ConfigurableKodein : Kodein {
     }
 
     /**
-     * Adds a configuration to the bindings that will extend the existing bindings.
-     *
-     * @param config The lambda to be applied when the kodein instance is constructed.
-     * @throws IllegalStateException if [mutable] is not `true`.
-     */
-    @Deprecated("AddConfig can now be used with mutability.", ReplaceWith("addConfig(config)"))
-    @Suppress("DEPRECATION")
-    fun mutateAddConfig(config: Kodein.Builder.() -> Unit) = addConfig(config)
-
-    /**
      * Adds a module to the bindings that will be applied when the Kodein is constructed.
      *
      * @param module The module to apply when the kodein instance is constructed.
@@ -168,28 +151,6 @@ class ConfigurableKodein : Kodein {
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
      */
     fun addExtend(kodein: Kodein, allowOverride: Boolean = false) = addConfig { extend(kodein, allowOverride) }
-
-    /**
-     * Adds a module to the bindings that will extend the existing bindings.
-     *
-     * @param module The module to apply when the kodein instance is constructed.
-     * @param allowOverride Whether this module is allowed to override existing bindings.
-     * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
-     */
-    @Deprecated("AddImport can now be used with mutability.", ReplaceWith("addImport(module, allowOverride)"))
-    @Suppress("DEPRECATION")
-    fun mutateAddImport(module: Kodein.Module, allowOverride: Boolean = false) = mutateAddConfig { import(module, allowOverride) }
-
-    /**
-     * Adds the bindings of an existing kodein instance that will extend the existing bindings.
-     *
-     * @param kodein The existing kodein instance whose bindings to be apply when the kodein instance is constructed.
-     * @param allowOverride Whether these bindings are allowed to override existing bindings.
-     * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
-     */
-    @Deprecated("AddExtend can now be used with mutability.", ReplaceWith("addExtend(kodein, allowOverride)"))
-    @Suppress("DEPRECATION")
-    fun mutateAddExtend(kodein: Kodein, allowOverride: Boolean = false) = mutateAddConfig { extend(kodein, allowOverride) }
 
     /** @suppress */
     override val typed: TKodein get() = getOrConstruct().typed
