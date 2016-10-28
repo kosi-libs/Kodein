@@ -812,4 +812,19 @@ class KodeinTests : TestCase() {
         assertEquals("KodeinTests.Test21_G<*>", genericToken<Test21_G<Test21_A>>().type.simpleDispString)
         assertEquals("KodeinTests.Test21_G<out KodeinTests.Test21_B>", genericToken<Test21_G<Test21_B>>().type.simpleDispString)
     }
+
+    class Test22(kodein: Kodein) {
+        val name: String by kodein.lazy.instance("name")
+    }
+
+    @Test fun test22_0_lazy() {
+        val kodein = Kodein {
+            constant("name") with "Salomon"
+        }
+        val test = Test22(kodein)
+
+        assertEquals("Salomon", test.name)
+    }
+
+
 }

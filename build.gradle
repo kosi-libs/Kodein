@@ -31,7 +31,7 @@ allprojects {
     targetCompatibility = 1.6
 
     group = 'com.github.salomonbrys.kodein'
-    version = '3.2.0-beta1'
+    version = '3.2.0-beta2'
 }
 
 def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }

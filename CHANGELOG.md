@@ -1,5 +1,5 @@
 
-### 3.2.0-beta1 (28-10-2016)
+### 3.2.0-beta2 (28-10-2016)
 
  - FEATURES
    * Every function that do generic type reflexivity is renamed `generic*` and has an `erased*` counterpart.
@@ -13,6 +13,11 @@
    * For Android, \[scope\]ScopedSingleton methods are deprecated (for example, `contextScopedSingleton {}` is
      deprecated in favour of `scopedSingleton(androidContextScope) {}`)
    * `typeToken` has been renamed to `genericToken`. The `typeToken` function still exists but is deprecated.
+
+ - STRUCTURE CHANGES
+   * The `bind` methods and their `with` associates are now extension functions and need to be imported.
+   * Curried retrieval methods such as the `instance` in `with(whatever).instance()` are now extension functions and
+     need to be imported.
 
 ### 3.1.0 (22-09-2016)
 

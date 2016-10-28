@@ -74,6 +74,18 @@ Either a [LazyKodein](-lazy-kodein/index.md) instance or a [LazyKodeinAware](-la
 **Return**
 An object from which you can get an instance or a provider.
 
+`inline infix fun <reified T : Any> `[`ConstantBinder`](-kodein/-builder/-constant-binder/index.md)`.with(value: T): Unit`
+
+Binds the previously given tag to the given instance.
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of value to bind.
+
+`value` - The instance to bind.
+
 `inline fun <reified A> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.with(noinline arg: () -> A): `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<A>`
 `inline fun <reified A> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.with(arg: A): `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<A>`
 
@@ -88,14 +100,3 @@ A generics will be kept.
 **Receiver**
 Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
 
-`inline infix fun <reified T : Any> `[`ConstantBinder`](-kodein/-builder/-constant-binder/index.md)`.with(value: T): Unit`
-
-Binds the previously given tag to the given instance.
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of value to bind.
-
-`value` - The instance to bind.

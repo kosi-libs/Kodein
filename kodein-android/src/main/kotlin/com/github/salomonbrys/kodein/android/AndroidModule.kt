@@ -72,34 +72,34 @@ val androidModule = Kodein.Module {
     bindErased<String>("packageName") with erasedFactory { ctx: Context -> ctx.packageName }
     bindErased<String>("packageResourcePath") with erasedFactory { ctx: Context -> ctx.packageResourcePath }
 
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.ACCOUNT_SERVICE) as AccountManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.DROPBOX_SERVICE) as DropBoxManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.NFC_SERVICE) as NfcManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.POWER_SERVICE) as PowerManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.SEARCH_SERVICE) as SearchManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.STORAGE_SERVICE) as StorageManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.TEXT_SERVICES_MANAGER_SERVICE) as TextServicesManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.USB_SERVICE) as UsbManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.WALLPAPER_SERVICE) as WallpaperService }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.WIFI_SERVICE) as WifiManager }
-    bind() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.WINDOW_SERVICE) as WindowManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.ACCOUNT_SERVICE) as AccountManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.DROPBOX_SERVICE) as DropBoxManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.NFC_SERVICE) as NfcManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.POWER_SERVICE) as PowerManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.SEARCH_SERVICE) as SearchManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.STORAGE_SERVICE) as StorageManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.TEXT_SERVICES_MANAGER_SERVICE) as TextServicesManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.USB_SERVICE) as UsbManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.WALLPAPER_SERVICE) as WallpaperService }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.WIFI_SERVICE) as WifiManager }
+    bindDirect() from erasedFactory { ctx: Context -> ctx.getSystemService(Context.WINDOW_SERVICE) as WindowManager }
 
 }

@@ -328,7 +328,7 @@ interface Kodein : KodeinAwareBase {
          * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
          * @return The binder: call [TBuilder.DirectBinder.from]) on it to finish the binding syntax and register the binding.
          */
-        fun bind(tag: Any? = null, overrides: Boolean? = null): TBuilder.DirectBinder = typed.bind(tag, overrides)
+        fun bindDirect(tag: Any? = null, overrides: Boolean? = null): TBuilder.DirectBinder = typed.bind(tag, overrides)
 
         /**
          * Left part of the constant-binding syntax (`constant(tag)`).
@@ -443,3 +443,24 @@ interface Kodein : KodeinAwareBase {
     }
 
 }
+
+/**
+ * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
+ *
+ * @param tag The tag to bind.
+ * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
+ * @return The binder: call [Kodein.Builder.TBuilder.DirectBinder.from]) on it to finish the binding syntax and register the binding.
+ */
+@Suppress("NOTHING_TO_INLINE")
+inline fun Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null) = bindDirect(tag, overrides)
+
+/**
+ * Transforms a factory function into a provider function by currying the factory with the given argument.
+ *
+ * @param A The type of argument the factory takes.
+ * @param T The type of object to retrieve.
+ * @receiver The factory to curry.
+ * @param arg A function that provides the argument that will be passed to the factory.
+ * @return A provider function that, when called, will call the receiver factory with the given argument.
+ */
+inline fun <A, T : Any> ((A) -> T).toProvider(crossinline arg: () -> A): () -> T = { invoke(arg()) }

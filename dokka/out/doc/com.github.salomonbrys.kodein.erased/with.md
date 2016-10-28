@@ -74,6 +74,18 @@ Either a [LazyKodein](../com.github.salomonbrys.kodein/-lazy-kodein/index.md) in
 **Return**
 An object from which you can get an instance or a provider.
 
+`inline infix fun <reified T : Any> `[`ConstantBinder`](../com.github.salomonbrys.kodein/-kodein/-builder/-constant-binder/index.md)`.with(value: T): Unit`
+
+Binds the previously given tag to the given instance.
+
+T generics will be erased!
+
+### Parameters
+
+`T` - The type of value to bind.
+
+`value` - The instance to bind.
+
 `inline fun <reified A> `[`KodeinAwareBase`](../com.github.salomonbrys.kodein/-kodein-aware-base/index.md)`.with(noinline arg: () -> A): `[`CurriedKodeinFactory`](../com.github.salomonbrys.kodein/-curried-kodein-factory/index.md)`<A>`
 `inline fun <reified A> `[`KodeinAwareBase`](../com.github.salomonbrys.kodein/-kodein-aware-base/index.md)`.with(arg: A): `[`CurriedKodeinFactory`](../com.github.salomonbrys.kodein/-curried-kodein-factory/index.md)`<A>`
 
@@ -88,14 +100,3 @@ A generics will be erased!
 **Receiver**
 Either a [Kodein](../com.github.salomonbrys.kodein/-kodein/index.md) instance or a [KodeinAware](../com.github.salomonbrys.kodein/-kodein-aware.md) class.
 
-`inline infix fun <reified T : Any> `[`ConstantBinder`](../com.github.salomonbrys.kodein/-kodein/-builder/-constant-binder/index.md)`.with(value: T): Unit`
-
-Binds the previously given tag to the given instance.
-
-T generics will be erased!
-
-### Parameters
-
-`T` - The type of value to bind.
-
-`value` - The instance to bind.

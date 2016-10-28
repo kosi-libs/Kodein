@@ -1,8 +1,8 @@
-[com.github.salomonbrys.kodein](../../index.md) / [Kodein](../index.md) / [Builder](index.md) / [bind](.)
+[com.github.salomonbrys.kodein](../../index.md) / [Kodein](../index.md) / [Builder](index.md) / [bindDirect](.)
 
-# bind
+# bindDirect
 
-`fun bind(tag: Any? = null, overrides: Boolean? = null): `[`DirectBinder`](-t-builder/-direct-binder/index.md)
+`fun bindDirect(tag: Any? = null, overrides: Boolean? = null): `[`DirectBinder`](-t-builder/-direct-binder/index.md)
 
 Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
 

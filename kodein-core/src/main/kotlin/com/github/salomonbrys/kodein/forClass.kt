@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
  * @param of The object whose class is used.
  * @return An object from which you can get an instance or a provider.
  */
-inline fun <reified T : Any> Kodein.withGenericClassOf(@Suppress("UNUSED_PARAMETER") of: T): CurriedKodeinFactory<Class<*>> = withErased(T::class.java)
+inline fun <reified T : Any> Kodein.withClassOf(@Suppress("UNUSED_PARAMETER") of: T): CurriedKodeinFactory<Class<*>> = withErased(T::class.java)
 
 /**
  * Allows to get a provider or an instance from a curried factory with a `Class` argument.
