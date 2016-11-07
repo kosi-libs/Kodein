@@ -12,6 +12,10 @@ import com.github.salomonbrys.kodein.android.androidActivityScope.lifecycleManag
 import java.util.*
 import android.support.v4.app.Fragment as SupportFragment
 
+interface AndroidScope<in T> : Scope<T> {
+    fun removeFromScope(context: T): ScopeRegistry?
+}
+
 /**
  * Map that associates a ScopeRegistry to a context.
  *
@@ -42,7 +46,7 @@ object androidContextScope : Scope<Context> {
  *
  * /!\ If used as an auto-scope, you need to register the [lifecycleManager].
  */
-object androidActivityScope : AutoScope<Activity> {
+object androidActivityScope : AndroidScope<Activity>, AutoScope<Activity> {
 
     /**
      * The last activity that was displayed to the screen. Used when this scope is used as an auto-scope.
@@ -58,6 +62,11 @@ object androidActivityScope : AutoScope<Activity> {
      */
     override fun getRegistry(context: Activity): ScopeRegistry
         = synchronized(_contextScopes) { _contextScopes.getOrPut(context) { ScopeRegistry() } }
+
+    /**
+     * Allows for cleaning up after an activity has been destroyed
+     */
+    override fun removeFromScope(context: Activity) = _contextScopes.remove(context)
 
     /**
      * @return The last activity that was displayed to the screen..
@@ -100,7 +109,7 @@ object androidActivityScope : AutoScope<Activity> {
 /**
  * Android's fragment scope. Allows to register fragment-specific singletons.
  */
-object androidFragmentScope : Scope<Fragment> {
+object androidFragmentScope : AndroidScope<Fragment> {
 
     /**
      * Map that associates a ScopeRegistry to a fragment.
@@ -118,12 +127,17 @@ object androidFragmentScope : Scope<Fragment> {
     override fun getRegistry(context: Fragment): ScopeRegistry
         = synchronized(_fragmentScopes) { _fragmentScopes.getOrPut(context) { ScopeRegistry() } }
 
+    /**
+     * Allows for cleaning up after a fragment has been destroyed
+     */
+    override fun removeFromScope(context: Fragment) = _fragmentScopes.remove(context)
+
 }
 
 /**
  * Android's support fragment scope. Allows to register support fragment-specific singletons.
  */
-object androidSupportFragmentScope : Scope<SupportFragment> {
+object androidSupportFragmentScope : AndroidScope<SupportFragment> {
 
     /**
      * Map that associates a ScopeRegistry to a support fragment.
@@ -141,12 +155,17 @@ object androidSupportFragmentScope : Scope<SupportFragment> {
     override fun getRegistry(context: SupportFragment): ScopeRegistry
         = synchronized(_fragmentScopes) { _fragmentScopes.getOrPut(context) { ScopeRegistry() } }
 
+    /**
+     * Allows for cleaning up after a support fragment has been destroyed
+     */
+    override fun removeFromScope(context: SupportFragment) = _fragmentScopes.remove(context)
+
 }
 
 /**
  * Android's service scope. Allows to register service-specific singletons.
  */
-object androidServiceScope : Scope<Service> {
+object androidServiceScope : AndroidScope<Service> {
 
     /**
      * Get a registry for a given service. Will always return the same registry for the same service.
@@ -156,12 +175,17 @@ object androidServiceScope : Scope<Service> {
      */
     override fun getRegistry(context: Service): ScopeRegistry
         = synchronized(_contextScopes) { _contextScopes.getOrPut(context) { ScopeRegistry() } }
+
+    /**
+     * Allows for cleaning up after a service has been destroyed
+     */
+    override fun removeFromScope(context: Service) = _contextScopes.remove(context)
 }
 
 /**
  * Android's broadcast receiver scope. Allows to register broadcast receiver-specific singletons.
  */
-object androidBroadcastReceiverScope : Scope<BroadcastReceiver> {
+object androidBroadcastReceiverScope : AndroidScope<BroadcastReceiver> {
 
     /**
      * Map that associates a ScopeRegistry to a broadcast receiver.
@@ -178,6 +202,11 @@ object androidBroadcastReceiverScope : Scope<BroadcastReceiver> {
      */
     override fun getRegistry(context: BroadcastReceiver): ScopeRegistry
         = synchronized(_broadcastReceiverScopes) { _broadcastReceiverScopes.getOrPut(context) { ScopeRegistry() } }
+
+    /**
+     * Allows for cleaning up after a broadcast receiver has been destroyed
+     */
+    override fun removeFromScope(context: BroadcastReceiver) = _broadcastReceiverScopes.remove(context)
 
 }
 
