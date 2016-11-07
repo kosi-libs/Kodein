@@ -56,7 +56,7 @@ class ConfigurableKodein : Kodein {
     /**
      * Kodein instance. If it is not null, than it cannot be configured anymore.
      */
-    private var _instance: Kodein? = null
+    @Volatile private var _instance: Kodein? = null
 
     /**
      * Get the kodein instance if it has already been constructed, or construct it if not.
@@ -64,24 +64,22 @@ class ConfigurableKodein : Kodein {
      * The first time this function is called is the end of the configuration.
      */
     fun getOrConstruct(): Kodein {
-        if (_instance != null)
-            return _instance!!
+        if(_instance == null) {
+            synchronized(this) {
+                if (_instance == null) {
+                    if (mutable == null)
+                        mutable = false
 
-        synchronized(this) {
-            if (_instance != null)
-                return _instance!!
-
-            if (mutable == null)
-                mutable = false
-
-            _instance = Kodein {
-                for (config in _configs!!)
-                    config()
+                    _instance = Kodein {
+                        for (config in _configs!!)
+                            config()
+                    }
+                    _configs = null
+                }
             }
-            _configs = null
-
-            return _instance!!
         }
+
+        return _instance!!
     }
 
     /**
@@ -94,10 +92,8 @@ class ConfigurableKodein : Kodein {
             throw IllegalStateException("ConfigurableKodein is not mutable, you cannot clear bindings.")
 
         synchronized(this) {
-            val configs = _configs
-
-            if (configs != null) {
-                configs.clear()
+            if (_configs != null) {
+                _configs!!.clear()
                 return
             }
             else {

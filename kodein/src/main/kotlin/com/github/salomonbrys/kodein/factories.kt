@@ -67,18 +67,16 @@ inline fun <reified T : Any> Kodein.Builder.provider(noinline creator: Kodein.()
  */
 abstract class ASingleton<out T : Any>(factoryName: String, createdType: Type, val creator: Kodein.() -> T) : AProvider<T>(factoryName, createdType) {
 
-    private var _instance: T? = null
+    @Volatile private var _instance: T? = null
     private val _lock = Any()
 
     override fun getInstance(kodein: Kodein, key: Kodein.Key): T {
-        if (_instance != null)
-            return _instance!!
-        else
+        if(_instance == null) {
             synchronized(_lock) {
-                if (_instance == null)
-                    _instance = kodein.creator()
-                return _instance!!
+                if (_instance == null) _instance = kodein.creator()
             }
+        }
+        return _instance!!
     }
 }
 
