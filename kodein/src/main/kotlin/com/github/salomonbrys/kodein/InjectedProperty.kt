@@ -29,17 +29,15 @@ abstract class InjectedProperty<out T> internal constructor(val key: Kodein.Key)
     val value: T
         @Suppress("UNCHECKED_CAST")
         get() {
-            val _v1 = _value
-            if (_v1 !== UNINITIALIZED_VALUE)
-                return _v1 as T
-
-            return synchronized(this) {
-                val _v2 = _value
-                if (_v2 !== UNINITIALIZED_VALUE)
-                    _v2 as T
-                else
-                    throw KodeinInjector.UninjectedException()
+            if (_value === UNINITIALIZED_VALUE) {
+                synchronized(this) {
+                    if(_value == UNINITIALIZED_VALUE) {
+                        throw KodeinInjector.UninjectedException()
+                    }
+                }
             }
+
+            return _value as T
         }
 
     /**
@@ -53,7 +51,9 @@ abstract class InjectedProperty<out T> internal constructor(val key: Kodein.Key)
      * @return Whether or not the [KodeinInjector] that created this property has been [injected][KodeinInjector.inject]
      *         and if it is therefore safe to access the value.
      */
-    fun isInjected(): Boolean = _value !== UNINITIALIZED_VALUE
+    fun isInjected(): Boolean = synchronized(this) {
+        _value !== UNINITIALIZED_VALUE
+    }
 
     /**
      * Stringify the injected value *if it has been injected*.
@@ -67,7 +67,7 @@ abstract class InjectedProperty<out T> internal constructor(val key: Kodein.Key)
      * @throws Kodein.NotFoundException if requesting a value that is not bound.
      * @throws Kodein.DependencyLoopException if requesting a value whose construction triggered a dependency loop.
      */
-    internal fun _inject(container: KodeinContainer) {
+    internal fun _inject(container: KodeinContainer) = synchronized(this) {
         _value = _getInjection(container)
     }
 

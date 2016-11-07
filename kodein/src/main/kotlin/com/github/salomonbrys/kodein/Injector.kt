@@ -41,7 +41,8 @@ class KodeinInjector() : KodeinInjectedBase {
     /**
      * Kodein instance that was used to inject. Is null before calling [KodeinInjector.inject].
      */
-    private var _kodein: Kodein? = null
+    @Volatile private var _kodein: Kodein? = null
+    private val _kodeinLock = Any()
 
     /**
      * List of callbacks to call when being [injected][KodeinInjector.inject].
@@ -49,17 +50,16 @@ class KodeinInjector() : KodeinInjectedBase {
     private var _onInjecteds = ArrayList<(Kodein) -> Unit>()
 
     override fun onInjected(cb: (Kodein) -> Unit) {
-        val k1 = _kodein
-        if (k1 != null)
-            cb(k1)
-        else
-            synchronized(this@KodeinInjector) {
-                val k2 = _kodein
-                if (k2 != null)
-                    cb(k2)
-                else
+        if (_kodein == null) {
+            synchronized(_kodeinLock) {
+                if (_kodein == null) {
                     _onInjecteds.add(cb)
+                    return
+                }
             }
+        }
+
+        cb(_kodein!!)
     }
 
     /**
@@ -71,18 +71,16 @@ class KodeinInjector() : KodeinInjectedBase {
      * @return The property, for ease of use.
      */
     private fun <T> _register(injected: InjectedProperty<T>): InjectedProperty<T> {
-        val k1 = _kodein
-        if (k1 != null)
-            injected._inject(k1.container)
-        else
-            synchronized(this@KodeinInjector) {
-                val k2 = _kodein
-                if (k2 != null)
-                    injected._inject(k2.container)
-                else
+        if(_kodein == null) {
+            synchronized(_kodeinLock) {
+                if (_kodein == null) {
                     _list.add(injected)
+                    return injected
+                }
             }
+        }
 
+        injected._inject(_kodein!!.container)
         return injected
     }
 
@@ -521,20 +519,19 @@ class KodeinInjector() : KodeinInjectedBase {
     fun kodein(): Lazy<Kodein> = lazy { _kodein ?: throw KodeinInjector.UninjectedException() }
 
     override fun inject(kodein: Kodein) {
-        if (_kodein != null)
-            return
+        if(_kodein == null) {
+            synchronized(_kodeinLock) {
+                if (_kodein != null)
+                    return
 
-        synchronized(this@KodeinInjector) {
-            if (_kodein != null)
-                return
+                _kodein = kodein
 
-            _kodein = kodein
+                _list.forEach { it._inject(kodein.container) }
+                _list.clear()
+
+                _onInjecteds.forEach { it(kodein) }
+                _onInjecteds.clear()
+            }
         }
-
-        _list.forEach { it._inject(kodein.container) }
-        _list.clear()
-
-        _onInjecteds.forEach { it(kodein) }
-        _onInjecteds.clear()
     }
 }
