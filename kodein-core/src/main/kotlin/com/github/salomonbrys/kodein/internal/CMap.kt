@@ -21,6 +21,8 @@ internal class CMap {
      */
     private val _map  = HashMap<Kodein.Key, Factory<*, Any>>()
 
+    private val _overrides  = HashMap<Kodein.Key, LinkedList<Factory<*, Any>>>()
+
     /**
      * A map that contains "raws" version of keys in [_map] whose [Kodein.Key.argType] are `ParameterizedType`.
      */
@@ -35,6 +37,11 @@ internal class CMap {
     operator fun get(key: Kodein.Key) : Factory<*, Any>? {
         _map[key]?.let { return it }
         _raws[key]?.let { return it }
+        return null
+    }
+
+    fun getOverride(key: Kodein.Key, overrideLevel: Int) : Factory<*, Any>? {
+        _overrides[key]?.let { return it.getOrNull(overrideLevel) }
         return null
     }
 
@@ -90,7 +97,9 @@ internal class CMap {
      * @param key The associated factory to add.
      */
     operator fun set(key: Kodein.Key, factory: Factory<*, Any>) {
-        _map[key] = factory
+        val overridden = _map.put(key, factory)
+        if (overridden != null)
+            _overrides.getOrPut(key, { LinkedList() }).addFirst(overridden)
 
         val realArgType = if (key.argType is KodeinWrappedType) key.argType.type else key.argType
         if (realArgType is ParameterizedType && realArgType.isWildcard())
@@ -116,4 +125,6 @@ internal class CMap {
      * An immutable view of the [_map].
      */
     val bindings: Map<Kodein.Key, Factory<*, *>> = ImmutableMapView(_map)
+
+    val overrides: Map<Kodein.Key, List<Factory<*, *>>> = ImmutableMapView(_overrides)
 }

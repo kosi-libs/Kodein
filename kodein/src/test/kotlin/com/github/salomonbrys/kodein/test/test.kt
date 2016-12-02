@@ -720,6 +720,31 @@ class KodeinTests : TestCase() {
         }
     }
 
+    @Test fun test17_4_OverrideWithSuper() {
+        val kodein = Kodein(allowSilentOverride = true) {
+            bind<String>("name") with instance("Salomon")
+            bind<String>("name", overrides = true) with singleton { overriddenInstance<String>() + " BRYS" }
+            bind<String>("name", overrides = true) with singleton { overriddenInstance<String>() + " the great" } // just kidding!
+        }
+
+        assertEquals("Salomon BRYS the great", kodein.instance<String>("name"))
+    }
+
+    @Test fun test17_5_DependencyLoopWithOverrides() {
+
+        val kodein = Kodein {
+            bind<String>("name") with singleton { instance<String>("title") + " Salomon " }
+            bind<String>("name", overrides = true) with singleton { overriddenInstance<String>() + " BRYS " }
+            bind<String>("name", overrides = true) with singleton { overriddenInstance<String>() + " of France" }
+            bind<String>("title") with singleton { instance<String>("name") + " the great" }
+
+        }
+
+        assertThrown<Kodein.DependencyLoopException> {
+            kodein.instance<String>("name")
+        }
+    }
+
     @Test fun test18_0_ModuleOverride() {
         val module = Kodein.Module {
             bind<String>("name", overrides = true) with instance("Salomon")
@@ -825,6 +850,5 @@ class KodeinTests : TestCase() {
 
         assertEquals("Salomon", test.name)
     }
-
 
 }

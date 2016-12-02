@@ -2,6 +2,13 @@ package com.github.salomonbrys.kodein
 
 import java.lang.reflect.Type
 
+interface FactoryKodein : Kodein {
+    fun <A, T : Any> overriddenFactory(): (A) -> T
+    fun <A, T : Any> overriddenFactoryOrNull(): ((A) -> T)?
+    fun <A, T : Any> overriddenInstance(arg: A): T = overriddenFactory<A, T>().invoke(arg)
+    fun <A, T : Any> overriddenInstanceOrNull(arg: A): T? = overriddenFactoryOrNull<A, T>()?.invoke(arg)
+}
+
 /**
  * Base class that knows how to get an instance.
  *
@@ -23,7 +30,7 @@ interface Factory<in A, out T : Any> {
      * @param arg: The argument to use to get the instance.
      * @return The instance of the requested type.
      */
-    fun getInstance(kodein: Kodein, key: Kodein.Key, arg: A): T
+    fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: A): T
 
     /**
      * The name of this factory, *used for debug print only*.
@@ -65,6 +72,13 @@ abstract class AFactory<in A, out T : Any>(override val factoryName: String, ove
     override val fullDescription: String get() = "$factoryName { ${argType.fullDispString} -> ${createdType.fullDispString} } "
 }
 
+class ProviderKodein(private val _kodein: FactoryKodein) : Kodein by _kodein {
+    fun <T : Any> overriddenProvider(): () -> T = _kodein.overriddenFactory<Unit, T>().toProvider { Unit }
+    fun <T : Any> overriddenProviderOrNull(): (() -> T)? = _kodein.overriddenFactoryOrNull<Unit, T>()?.toProvider { Unit }
+    fun <T : Any> overriddenInstance(): T = _kodein.overriddenInstance(Unit)
+    fun <T : Any> overriddenInstanceOrNull(): T? = _kodein.overriddenInstanceOrNull(Unit)
+}
+
 /**
  * Provider base.
  *
@@ -84,7 +98,7 @@ abstract class AProvider<out T : Any>(override val factoryName: String, override
      * @param arg: A Unit argument that is ignored (a provider does not take arguments).
      * @return an instance of `T`.
      */
-    override fun getInstance(kodein: Kodein, key: Kodein.Key, arg: Unit): T = getInstance(kodein, key)
+    override final fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: Unit): T = getInstance(ProviderKodein(kodein), key)
 
     /**
      * Get an instance of type `T`.
@@ -95,7 +109,7 @@ abstract class AProvider<out T : Any>(override val factoryName: String, override
      * @param key: The key of the instance to get.
      * @return an instance of `T`.
      */
-    abstract fun getInstance(kodein: Kodein, key: Kodein.Key): T
+    abstract fun getInstance(kodein: ProviderKodein, key: Kodein.Key): T
 
     override val argType: Type = Unit::class.java
 

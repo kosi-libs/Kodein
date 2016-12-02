@@ -37,16 +37,18 @@ internal class KodeinContainerImpl private constructor(private val _map: CMap, p
      * @property _key The key of this node, meaning that this key has been looked for once.
      * @property _parent The parent node, meaning the parent lookup that needed this key.
      */
-    private class Node(private val _key: Kodein.Key, private val _parent: Node?) {
+    private class Node(private val _key: Kodein.Key, private val _overrideLevel: Int, private val _parent: Node?) {
+
+        private fun displayString(key: Kodein.Key, overrideLevel: Int) = if (overrideLevel != 0) "overridden ${key.bind}" else key.bind.toString()
 
         /**
          * Check that given key does **not** exist in the node tree or throws an exception if it does.
          *
          * @throws Kodein.DependencyLoopException if the key exists in the dependency tree.
          */
-        internal fun check(search: Kodein.Key) {
-            if (!_check(search))
-                throw Kodein.DependencyLoopException("Dependency recursion:\n" + tree(search) + "\n       ╚═> ${search.bind}")
+        internal fun check(searchedKey: Kodein.Key, searchedOverrideLevel: Int) {
+            if (!_check(searchedKey, searchedOverrideLevel))
+                throw Kodein.DependencyLoopException("Dependency recursion:\n" + _tree(searchedKey, searchedOverrideLevel) + "\n       ╚═> ${displayString(searchedKey, _overrideLevel)}")
         }
 
         /**
@@ -54,18 +56,18 @@ internal class KodeinContainerImpl private constructor(private val _map: CMap, p
          *
          * @return whether the given key exists in the tree.
          */
-        private fun _check(search: Kodein.Key): Boolean {
-            return if (_key == search) false else (_parent?._check(search) ?: true)
+        private fun _check(searchedKey: Kodein.Key, searchedOverrideLevel: Int): Boolean {
+            return if (_key == searchedKey && _overrideLevel == searchedOverrideLevel) false else (_parent?._check(searchedKey, searchedOverrideLevel) ?: true)
         }
 
         /**
          * @return The current transitive dependency tree as a string.
          */
-        private fun tree(first: Kodein.Key): String {
-            if (first == _key)
-                return "       ╔═> ${_key.bind}"
+        private fun _tree(firstKey: Kodein.Key, firstOverrideLevel: Int): String {
+            if (firstKey == _key && firstOverrideLevel == _overrideLevel)
+                return "       ╔═> ${displayString(_key, _overrideLevel)}"
             else
-                return "${_parent?.tree(first)}\n       ╠─> ${_key.bind}"
+                return "${_parent?._tree(firstKey, firstOverrideLevel)}\n       ╠─> ${displayString(_key, _overrideLevel)}"
         }
     }
 
@@ -74,7 +76,9 @@ internal class KodeinContainerImpl private constructor(private val _map: CMap, p
      */
     internal constructor(builder: KodeinContainer.Builder) : this(builder._map)
 
-    override val bindings: Map<Kodein.Key, Factory<*, *>> = _map.bindings
+    override val bindings: Map<Kodein.Key, Factory<*, *>> get() = _map.bindings
+
+    override val overriddenBindings: Map<Kodein.Key, List<Factory<*, *>>> get() = _map.overrides
 
     /**
      * The super type of this type.
@@ -149,10 +153,19 @@ internal class KodeinContainerImpl private constructor(private val _map: CMap, p
         return found
     }
 
+    private fun _transformFactory(factory: Factory<*, Any>, key: Kodein.Key, overrideLevel: Int): (Any?) -> Any {
+        _node?.check(key, overrideLevel)
+        @Suppress("UNCHECKED_CAST")
+        return { arg -> (factory as Factory<Any?, Any>).getInstance(FactoryKodeinImpl(KodeinContainerImpl(_map, Node(key, overrideLevel, _node)), key, overrideLevel), key, arg) }
+    }
+
     override fun factoryOrNull(key: Kodein.Key): ((Any?) -> Any)? {
         val factory = _findFactoryOrNull(key, true) ?: return null
-        _node?.check(key)
-        @Suppress("UNCHECKED_CAST")
-        return { arg -> (factory as Factory<Any?, Any>).getInstance(KodeinImpl(KodeinContainerImpl(_map, Node(key, _node))), key, arg) }
+        return _transformFactory(factory, key, 0)
+    }
+
+    override fun overriddenFactoryOrNull(key: Kodein.Key, overrideLevel: Int): ((Any?) -> Any)? {
+        val factory = _map.getOverride(key, overrideLevel) ?: return null
+        return _transformFactory(factory, key, overrideLevel + 1)
     }
 }

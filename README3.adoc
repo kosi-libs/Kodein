@@ -1266,9 +1266,9 @@ com.github.salomonbrys.kodein.Kodein$DependencyLoopException: Dependency recursi
 By default, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `kodein.instance<List<String>>()` and `kodein.instance<List<Int>>()` will yield two different list.
 
-To be erasure immune, kodein relies heavily on the `genericToken` function, which is real a performance pitfall.
+To be erasure immune, kodein relies heavily on the `genericToken` function, *which is real a performance pitfall*.
 
-To improve performance, you can use the "erased*" set of kodein functions, which are faster, but do suffer from type erasure!
+To improve performance, you can use the `erased*` set of kodein functions, which are faster, but do suffer from type erasure!
 
 [WARNING]
 ====
@@ -1277,7 +1277,7 @@ Yes, #perfmatters. However, the humble opinion of the author is that:
 - There is a balance to be found between performance, readability, security and debuggability.
 - Optimisation is important in critical path, not _everywhere_.
 
-Therefore, please make sure that, using the "erased*" function set is right for your use case, before blindly using it ;).
+Therefore, please make sure that, using the `erased*` function set is right for your use case, before blindly using it ;).
 ====
 
 === Using generic and erased function forms
@@ -1298,14 +1298,14 @@ val session: HttpSession = kodein.erasedInstance()
 
 === Using erased by default
 
-If you know what you are doing, and _why_ you are doing it, you can change the default methods to alias the "erased*" function set.
+If you know what you are doing, and *_why_* you are doing it, you can change the default methods to alias the `erased*` function set.
 
 For this, you *must not* depend on the `kodein` module, and instead, depend on the `kodein-erased` module.
 
 CAUTION: This means that, by default, `kodein.instance<List<String>>()` will look for an erased `List` binding. +
          Therefore, to bind a `List<String>` you *must* use `bindGeneric<List<String>>()`, and to retrieve it, you *must* use `kodein.genericInstance()`.
 
-NOTE: The "erased*" function set is located in a different package than the regular one: `com.github.salomonbrys.kodein.erased`.
+NOTE: The `erased*` function set is located in a different package than the regular one: `com.github.salomonbrys.kodein.erased`.
 
 
 == Advanced use

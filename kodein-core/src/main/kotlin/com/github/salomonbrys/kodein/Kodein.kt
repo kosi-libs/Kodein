@@ -160,7 +160,12 @@ interface Kodein : KodeinAwareBase {
      * @property container Every methods, either in this or in [TBuilder] eventually ends up to a call to this builder.
      * @property _callbacks A list of callbacks that will be called once the [Kodein] object is constructed.
      */
-    class Builder internal constructor(val container: KodeinContainer.Builder, internal val _callbacks: MutableList<Kodein.() -> Unit>, init: Builder.() -> Unit) {
+    class Builder internal constructor(
+            val container: KodeinContainer.Builder,
+            internal val _callbacks: MutableList<Kodein.() -> Unit>,
+            internal val _factoryCallbacks: MutableList<Pair<Key, FactoryKodein.() -> Unit>>,
+            init: Builder.() -> Unit
+    ) {
 
         /**
          * Class holding all typed API (meaning the API where you provide [Type], [TypeToken] or `Class` objects).
@@ -379,7 +384,7 @@ interface Kodein : KodeinAwareBase {
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
         fun import(module: Kodein.Module, allowOverride: Boolean = false): Unit {
-            Builder(container.subBuilder(allowOverride, module.allowSilentOverride), _callbacks, module.init)
+            Builder(container.subBuilder(allowOverride, module.allowSilentOverride), _callbacks, _factoryCallbacks, module.init)
         }
 
         /**
@@ -403,6 +408,10 @@ interface Kodein : KodeinAwareBase {
          */
         fun onReady(cb: Kodein.() -> Unit) {
             _callbacks += cb
+        }
+
+        fun onReady(key: Kodein.Key, cb: FactoryKodein.() -> Unit) {
+            _factoryCallbacks += key to cb
         }
     }
 

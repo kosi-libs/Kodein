@@ -109,13 +109,13 @@ abstract class AScoped<in A, out C, out T : Any>(
         override val argType: Type,
         override val createdType: Type,
         override val factoryName: String,
-        private val _creator: Kodein.(C) -> T
+        private val _creator: ProviderKodein.(C) -> T
 ) : Factory<A, T> {
 
     @Suppress("UNCHECKED_CAST")
-    override fun getInstance(kodein: Kodein, key: Kodein.Key, arg: A): T {
+    override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: A): T {
         val (context, registry) = _getContextAndRegistry(arg)
-        return registry.getOrCreate(key.bind) { _creator(kodein, context) }
+        return registry.getOrCreate(key.bind) { _creator(ProviderKodein(kodein), context) }
     }
 
     /**
@@ -138,7 +138,7 @@ abstract class AScoped<in A, out C, out T : Any>(
  * @param _scope The scope object in which the singleton will be stored.
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
  */
-class CScopedSingleton<C, out T : Any>(contextType: Type, createdType: Type, private val _scope: Scope<C>, creator: Kodein.(C) -> T)
+class CScopedSingleton<C, out T : Any>(contextType: Type, createdType: Type, private val _scope: Scope<C>, creator: ProviderKodein.(C) -> T)
 : AScoped<C, C, T>(contextType, createdType, "scopedSingleton", creator)
 {
     override fun _getContextAndRegistry(arg: C): Pair<C, ScopeRegistry> = arg to _scope.getRegistry(arg)
@@ -158,7 +158,7 @@ class CScopedSingleton<C, out T : Any>(contextType: Type, createdType: Type, pri
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
  */
 @Suppress("unused")
-inline fun <reified C, reified T : Any> Kodein.Builder.genericScopedSingleton(scope: Scope<C>, noinline creator: Kodein.(C) -> T)
+inline fun <reified C, reified T : Any> Kodein.Builder.genericScopedSingleton(scope: Scope<C>, noinline creator: ProviderKodein.(C) -> T)
         = CScopedSingleton(genericToken<C>().type, genericToken<T>().type, scope, creator)
 
 /**
@@ -172,7 +172,7 @@ inline fun <reified C, reified T : Any> Kodein.Builder.genericScopedSingleton(sc
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
  */
 @Suppress("unused")
-inline fun <reified C, reified T : Any> Kodein.Builder.erasedScopedSingleton(scope: Scope<C>, noinline creator: Kodein.(C) -> T)
+inline fun <reified C, reified T : Any> Kodein.Builder.erasedScopedSingleton(scope: Scope<C>, noinline creator: ProviderKodein.(C) -> T)
         = CScopedSingleton(typeClass<C>(), T::class.java, scope, creator)
 
 
@@ -186,7 +186,7 @@ inline fun <reified C, reified T : Any> Kodein.Builder.erasedScopedSingleton(sco
  * @param _scope The scope object in which the singleton will be stored.
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
  */
-class CAutoScopedSingleton<out C, out T : Any>(createdType: Type, private val _scope: AutoScope<C>, creator: Kodein.(C) -> T)
+class CAutoScopedSingleton<out C, out T : Any>(createdType: Type, private val _scope: AutoScope<C>, creator: ProviderKodein.(C) -> T)
 : AScoped<Unit, C, T>(Unit::class.java, createdType, "autoScopedSingleton", creator)
 {
     override fun _getContextAndRegistry(arg: Unit): Pair<C, ScopeRegistry> = _scope.getContext().let { it to _scope.getRegistry(it) }
@@ -206,7 +206,7 @@ class CAutoScopedSingleton<out C, out T : Any>(createdType: Type, private val _s
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
  */
 @Suppress("unused")
-inline fun <C, reified T : Any> Kodein.Builder.genericAutoScopedSingleton(scope: AutoScope<C>, noinline creator: Kodein.(C) -> T)
+inline fun <C, reified T : Any> Kodein.Builder.genericAutoScopedSingleton(scope: AutoScope<C>, noinline creator: ProviderKodein.(C) -> T)
         = CAutoScopedSingleton(genericToken<T>().type, scope, creator)
 
 /**
@@ -220,5 +220,5 @@ inline fun <C, reified T : Any> Kodein.Builder.genericAutoScopedSingleton(scope:
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
  */
 @Suppress("unused")
-inline fun <C, reified T : Any> Kodein.Builder.erasedAutoScopedSingleton(scope: AutoScope<C>, noinline creator: Kodein.(C) -> T)
+inline fun <C, reified T : Any> Kodein.Builder.erasedAutoScopedSingleton(scope: AutoScope<C>, noinline creator: ProviderKodein.(C) -> T)
         = CAutoScopedSingleton(T::class.java, scope, creator)

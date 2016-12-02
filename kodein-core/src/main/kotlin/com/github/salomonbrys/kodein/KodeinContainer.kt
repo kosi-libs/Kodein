@@ -2,6 +2,7 @@ package com.github.salomonbrys.kodein
 
 import com.github.salomonbrys.kodein.internal.CMap
 import java.lang.reflect.*
+import java.util.*
 
 /**
  * Container class where the bindings and their factories are stored.
@@ -15,6 +16,8 @@ interface KodeinContainer {
      * An immutable view of the bindings map. *For inspection & debug*.
      */
     val bindings: Map<Kodein.Key, Factory<*, *>>
+
+    val overriddenBindings: Map<Kodein.Key, List<Factory<*, *>>>
 
     /**
      * Utility function to create a NotFoundException.
@@ -68,6 +71,20 @@ interface KodeinContainer {
      */
     fun nonNullProvider(bind: Kodein.Bind): (() -> Any)
             = providerOrNull(bind) ?: throw _notFoundException(Kodein.Key(bind, Unit::class.java), "provider")
+
+
+    fun overriddenFactoryOrNull(key: Kodein.Key, overrideLevel: Int): ((Any?) -> Any)?
+
+    fun overriddenNonNullFactory(key: Kodein.Key, overrideLevel: Int): ((Any?) -> Any)
+            = overriddenFactoryOrNull(key, overrideLevel) ?: throw _notFoundException(key, "overridden factory")
+
+    fun overriddenProviderOrNull(bind: Kodein.Bind, overrideLevel: Int): (() -> Any)? {
+        val factory = overriddenFactoryOrNull(Kodein.Key(bind, Unit::class.java), overrideLevel) ?: return null
+        return { factory(Unit) }
+    }
+
+    fun overriddenNonNullProvider(bind: Kodein.Bind, overrideLevel: Int): (() -> Any)
+            = overriddenProviderOrNull(bind, overrideLevel) ?: throw _notFoundException(Kodein.Key(bind, Unit::class.java), "overridden provider")
 
 
     /**
