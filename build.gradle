@@ -10,28 +10,17 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.4.12'
         classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.9'
     }
 }
 
 allprojects {
-
-    apply plugin: 'java'
-    apply plugin: 'kotlin'
-    apply plugin: 'maven'
-    apply plugin: 'signing'
-    apply plugin: 'idea'
-    apply plugin: 'org.jetbrains.dokka'
-
     repositories {
         jcenter()
     }
-
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
-
-    group = 'com.github.salomonbrys.kodein'
-    version = '3.2.0-beta2'
 }
 
 def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }

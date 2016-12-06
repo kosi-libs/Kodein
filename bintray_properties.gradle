@@ -1,0 +1,5 @@
+if(!project.hasProperty('ARTIFACT_VERSION')) project.ext.ARTIFACT_VERSION = '3.2.0-beta'
+if(!project.hasProperty('ARTIFACT_GROUP')) project.ext.ARTIFACT_GROUP = 'com.staticbloc.kodein'
+if(!project.hasProperty('BINTRAY_USER')) project.ext.BINTRAY_USER = 'eygraber'
+if(!project.hasProperty('BINTRAY_REPO')) project.ext.BINTRAY_REPO = 'kodein'
+if(!project.hasProperty('BINTRAY_ORG')) project.ext.BINTRAY_ORG = 'staticbloc'

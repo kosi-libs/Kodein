@@ -13,3 +13,5 @@ build/
 gradle.properties
 gradle.props
 local.properties
+
+bintray_local_properties.gradle
