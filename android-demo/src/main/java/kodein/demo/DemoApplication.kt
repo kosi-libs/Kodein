@@ -2,7 +2,10 @@ package kodein.demo
 
 import android.app.Application
 import com.github.salomonbrys.kodein.*
-import kodein.demo.coffee.*
+import kodein.demo.coffee.Coffee
+import kodein.demo.coffee.Kettle
+import kodein.demo.coffee.electricHeaterModule
+import kodein.demo.coffee.thermosiphonModule
 
 class DemoApplication : Application(), KodeinAware {
 

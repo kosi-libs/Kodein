@@ -5,4 +5,4 @@ This is a very simple Android project that demonstrates the use of Kodein in And
 
 It is inspired from Dagger's Coffee Maker example
 
-Dive in! Have a look at [the source](https://github.com/SalomonBrys/Kodein/tree/master/AndroidDemo/demo/src/main/kotlin/kodein/demo)!
+Dive in! Have a look at [the source](https://github.com/SalomonBrys/Kodein/tree/master/android-demo/src/main/kotlin/kodein/demo)!

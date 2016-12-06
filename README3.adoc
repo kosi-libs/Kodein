@@ -1215,7 +1215,7 @@ val logger: Logger = kodein.with(supportFragment).instance()
 
 === Android example project
 
-Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/AndroidDemo[Android demo project]!
+Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/android-demo[Android demo project]!
 
 
 == Debugging

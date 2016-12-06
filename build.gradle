@@ -1,7 +1,6 @@
 buildscript {
 
     repositories {
-        mavenCentral()
         jcenter()
     }
 
@@ -9,8 +8,9 @@ buildscript {
     ext.junit_version = '4.12'
 
     dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.8"
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.9'
     }
 }
 
@@ -24,7 +24,7 @@ allprojects {
     apply plugin: 'org.jetbrains.dokka'
 
     repositories {
-        mavenCentral()
+        jcenter()
     }
 
     sourceCompatibility = 1.6
