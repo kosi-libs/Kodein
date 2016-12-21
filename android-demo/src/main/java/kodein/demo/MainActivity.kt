@@ -2,44 +2,43 @@ package kodein.demo
 
 import android.app.Activity
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
-import android.widget.TextView
-import com.github.salomonbrys.kodein.KodeinInjected
-import com.github.salomonbrys.kodein.KodeinInjector
+import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.android.KodeinActivity
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.description
-import com.github.salomonbrys.kodein.instance
+import com.github.salomonbrys.kodein.erased.bind
+import com.github.salomonbrys.kodein.erased.instance
+import com.github.salomonbrys.kodein.genericInstance
+import com.github.salomonbrys.kodein.withGeneric
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 
-class MainActivity : Activity(), KodeinInjected {
-
-    override val injector = KodeinInjector()
-
-    val coffeeMaker: Kettle<Coffee> by instance()
+// since we extend KodeinActivity we have an injector that will automatically inject values when we're in onCreate
+// see MainFragment for an example of how to do this using an interface
+class MainActivity : KodeinActivity() {
+    // will be the same instance as the coffeeMaker in MainFragment
+    val coffeeMaker: Kettle<Coffee> by withGeneric(this as Activity).genericInstance()
     val log: Logger by instance()
+    val logTag: String by instance()
 
-    val textView: TextView by lazy { findViewById(R.id.text) as TextView }
+    override fun provideOverridingBindings(): Kodein.Builder.() -> Unit = {
+        bind<MainActivity>() to instance(this)
+        bind<String>(overrides = true) with instance("MainActivity")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        inject(appKodein())
+        Log.i(logTag, "onCreate")
 
         setContentView(R.layout.activity_main)
 
-        log.callback = {
-            textView.text = log.text
+        if(savedInstanceState == null) {
+            log.log("Going to brew coffee using $coffeeMaker - MainActivity")
+
+            fragmentManager.beginTransaction().add(R.id.fragment, MainFragment()).commit()
         }
-
-        Handler().postDelayed({
-            coffeeMaker.brew()
-        }, 3000)
-
-        Handler().postDelayed({
-            coffeeMaker.brew()
-        }, 6000)
 
         Log.i("Kodein", "=====================-BINDINGS-=====================")
         Log.i("Kodein", appKodein().container.bindings.description)

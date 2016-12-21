@@ -1,8 +1,9 @@
 package kodein.demo.coffee
 
 import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.singleton
+import com.github.salomonbrys.kodein.erased.bind
+import com.github.salomonbrys.kodein.erased.instance
+import com.github.salomonbrys.kodein.erased.singleton
 import kodein.demo.Logger
 
 class ElectricHeater(private val log: Logger) : Heater {
@@ -13,16 +14,16 @@ class ElectricHeater(private val log: Logger) : Heater {
     }
 
     override fun on() {
-        log.log("~ ~ ~ heating ~ ~ ~");
-        this.heating = true;
+        log.log("~ ~ ~ heating ~ ~ ~")
+        this.heating = true
     }
 
     override fun off() {
-        log.log(". . . cooling . . .");
-        this.heating = false;
+        log.log(". . . cooling . . .")
+        this.heating = false
     }
 
-    override val isHot: Boolean get() = heating;
+    override val isHot: Boolean get() = heating
 }
 
 val electricHeaterModule = Kodein.Module {

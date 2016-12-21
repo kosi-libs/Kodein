@@ -33,8 +33,9 @@ dependencies {
 
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-  compile 'com.github.salomonbrys.kodein:kodein:3.0.0'
-  compile 'com.github.salomonbrys.kodein:kodein-android:3.0.0'
+  compile project(':kodein-core')
+  compile project(':kodein-erased')
+  compile project(':kodein-android')
 
   androidTestCompile 'junit:junit:4.12'
 }

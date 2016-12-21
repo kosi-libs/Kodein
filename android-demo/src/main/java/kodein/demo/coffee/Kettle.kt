@@ -28,10 +28,10 @@ class Kettle<T : Ration>(
     }
 
     fun brew() {
-        heater.on();
-        pump.pumpWater();
+        heater.on()
+        pump.pumpWater()
         val ration = ration()
-        log.log("[_]P ${ration.name()} ${System.identityHashCode(ration)} [_]P");
-        heater.off();
+        log.log("[_]P ${ration.name()} ${System.identityHashCode(ration)} [_]P")
+        heater.off()
     }
 }
