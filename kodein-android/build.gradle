@@ -1,16 +1,35 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'signing'
+apply plugin: 'org.jetbrains.dokka'
 
-task javadocJar(type: Jar) {
+android {
+    compileSdkVersion 24
+    buildToolsVersion '24.0.3'
+
+    defaultConfig {
+        minSdkVersion 15
+    }
+
+    dexOptions {
+        // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
+        preDexLibraries = preDexEnabled && !travisBuild
+    }
+}
+
+task androidJavadocJar(type: Jar) {
     classifier = 'javadoc'
     from dokka
 }
 
-task sourcesJar(type: Jar) {
+task androidSourcesJar(type: Jar) {
     classifier = 'sources'
-    from sourceSets.main.allSource
+    from android.sourceSets.main.java.sourceFiles
 }
 
 artifacts {
-    archives javadocJar, sourcesJar
+    archives androidSourcesJar, androidJavadocJar
 }
 
 signing {
@@ -25,21 +44,9 @@ dokka {
     includes = ['dokka-module.md', 'dokka-package.md']
 
     linkMapping {
-        dir = "src/main/kotlin"
+        dir = "src/main/java"
         url = "https://github.com/SalomonBrys/Kodein/blob/master/kodein-android/src/main/kotlin"
         suffix = "#L"
-    }
-}
-
-configurations {
-    provided
-}
-
-sourceSets.main.compileClasspath += configurations.provided
-
-idea {
-    module {
-        scopes.PROVIDED.plus += [configurations.provided]
     }
 }
 
@@ -48,9 +55,7 @@ dependencies {
 
     compile project(':kodein-core')
 
-    provided 'com.google.android:android:4.0.1.2'
-
-    provided 'com.google.android:support-v4:r7'
+    compile 'com.android.support:appcompat-v7:24.2.1'
 
     testCompile "junit:junit:$junit_version"
 }

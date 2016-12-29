@@ -13,3 +13,4 @@ build/
 gradle.properties
 gradle.props
 local.properties
+.gradletasknamecache

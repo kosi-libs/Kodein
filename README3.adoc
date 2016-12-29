@@ -1016,6 +1016,154 @@ class MyActivity : Activity(), KodeinInjected {
 ----
 
 
+=== Bootstrapping Kodein on Android
+
+To easily setup Kodein with your Android app, you can use the Android Injectors. They make it simple to creating activities, fragments, services, and broadcast recivers that work with Kodein out of the box.
+
+There are two ways to use them depending on your needs; inheritance based and interface based.
+
+Both methods provide you with:
+
+* a `KodeinInjector` (through the `injector` property)
+* a binding for `KodeinInjected` (which is the instance of your class)
+* local bindings (bindings for that specific instance)
+** One example is a `KodeinActivity` or `ActivityInjector` will bind `Context` and `Activity` to itself, and `FragmentManager`, `LoaderManager`, and `LayoutInflater` to its instances of those classes.
+* scope management (removing this component from the scope when it is destroyed so there are no memory leaks)
+* the ability to override previously defined bindings
+
+IMPORTANT: Don't forget to use an `Application` that is `KodeinAware`:
+
+[source, kotlin]
+.Example: setup kodein in the application
+----
+class MyApplication : Application(), KodeinAware {
+	override val kodein by Kodein.lazy {
+	    import(autoAndroidModule(this@MyApplication))
+	    bind<String>("log-tag") with instance("MyApplication")
+	}
+}
+----
+
+==== Inheritance Based
+
+Kodein provides base classes for the following Android components:
+
+* Activity (`KodeinActivity`)
+* FragmentActivity (`KodeinFragmentActivity`)
+* AppCompatActivity (`KodeinAppCompatActivity`)
+* Fragment (`KodeinFragment`)
+* Support v4 Fragment (`KodeinSupportFragment`)
+* Service (`KodeinService`)
+* IntentService (`KodeinIntentService`)
+* BroadcastReceiver (`KodeinBroadcastReceiver`)
+
+All it takes to get started is to extend one of those classes, and you're ready to start injecting. Let's see an example.
+
+[source, kotlin]
+.Example: using KodeinActivity to make injecting easier
+----
+class MyActivity : KodeinActivity() { // <1>
+    private val logTag: String by instance("log-tag") // <2>
+    private val app: Application by injector.instance() // <3>
+
+    override fun provideOverridingModule() = Kodein.Module { // <4>
+        bind<MyActivity>() with instance(this@MyActivity)
+        bind<String>("log-tag", overrides = true) with instance("MyActivity")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle) {
+        super.onCreate(savedInstanceState)
+
+        Log.i(logTag, "Calling onCreate from MainActivity in ${app.applicationInfo.className}")
+    }
+}
+----
+<1> Extending `KodeinActivity` provides us with a `KodeinInjector` and takes care of its lifecycle
+<2> `KodeinActivity` implements `KodeinInjected` so we don't need to use the `injector` property if we don't want to
+<3> We can also use the `injector` if we want to
+<4> `provideOverridingModule` allows us to override bindings specified higher up in the dependency tree (for example, we override the "log-tag" `String` binding defined in `MyApplication`)
+
+===== KodeinBroadcastReceiver
+
+Because of how the injector's lifecycle is managed for a `KodeinBroadcastReceiver`, subclasses should override `onBroadcastReceived(Context, Intent)` instead of `onReceive(Context, Intent)`.
+
+==== Interface Based
+
+Kodein also provides a set of interfaces that provide the same functionality as the inheritance based method. The only difference is that the injector lifecycle must be managed. In almost every case, this can be accomplished by simply calling `initializeInjector` immediately after `onCreate` and `destroyInjector` immediately after `onDestroy`.
+
+These are provided so that you can extend non-framework components if needed, because the JVM does not support multiple class inheritance.
+
+The interfaces are:
+
+* ActivityInjector
+* FragmentActivityInjector
+* AppCompatActivityInjector
+* FragmentInjector
+* SupportFragmentInjector
+* ServiceInjector
+* IntentServiceInjector
+* BroadcastReceiverInjector
+
+[source, kotlin]
+.Example: using FragmentInjector to make injecting easier
+----
+class MyFragment : CustomFragment(), FragmentInjector { // <1>
+    override val injector: KodeinInjector = KodeinInjector() // <2>
+
+    private val logTag: String by instance("log-tag") // <3>
+    private val app: Application by injector.instance() // <4>
+
+    override fun provideOverridingModule() = Kodein.Module { // <5>
+        bind<MyFragment>() with instance(this@MyFragment)
+        bind<String>("log-tag", overrides = true) with instance("MyFragment")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle) {
+        super.onCreate(savedInstanceState)
+
+        initializeInjector() // <6>
+
+        Log.i(logTag, "Calling onCreate from MainActivity in ${app.applicationInfo.className}")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        destroyInjector() // <7>
+    }
+}
+----
+<1> Because we extends `CustomFragment` we cannot extend `KodeinFragment` so instead we implement `FragmentInjector`
+<2> We have to provide an injector (typically all that entails is just creating a new instance of `KodeinInjector`)
+<3> `FragmentInjector` implements `KodeinInjected` so we don't need to use the `injector` property if we don't want to
+<4> We can also use the `injector` if we want to
+<5> `provideOverridingModule` allows us to override bindings specified higher up in the dependency tree (for example, we override the "log-tag" `String` binding defined in `MyApplication`)
+<6> Since we have to manage the injector's lifecycle we initialize it when the fragment is initialized; in `onCreate`
+<7> Since we have to manage the injector's lifecycle we destroy it when the fragment is destroyedl in `onDestroy`
+
+===== BroadcastReceiverInjector
+
+`BroadcastReceiverInjector` should be used like this:
+
+[source, kotlin]
+.Example: implementing BroadcastReceiverInjector
+----
+class MyBroadcastReceiver : CustomBroadcastReceiver(), BroadcastReceiverInjector {
+    override val injector: KodeinInjector = KodeinInjector()
+
+    final override var context: Context? = null
+
+    final override fun onReceive(context: Context, intent: Intent) {
+      super.onReceive(context, intent)
+
+      this.context = context <1>
+      initializeInjector()
+      // do something
+      destroyInjector()
+    }
+}
+----
+<1> It is necessary to set `BroadcastReceiverInjector.context` before calling `initializeInjector`
+
 
 === Android module
 
@@ -1045,6 +1193,33 @@ class MyActivity : Activity(), LazyKodeinAware {
     val inflater: LayoutInflater by withContext(this).instance()
 }
 ----
+
+There is also an "auto" version of the module.
+
+[source, kotlin]
+.Example: importing the android module
+----
+class MyApplication : Application(), KodeinAware {
+  override val kodein by Kodein.lazy {
+    import(autoAndroidModule(this@MyApplication))
+    /* other bindings */
+  }
+}
+----
+
+Retrieving instances of bindings from the autoAndroidModule does not require a `Context`.
+
+[source, kotlin]
+.Example: using kodein to retrieve a LayoutInflater
+----
+class MyActivity : Activity(), LazyKodeinAware {
+    override val kodein = LazyKodein(appKodein)
+
+    val inflater: LayoutInflater by instance()
+}
+----
+
+You can see everything that this module proposes in the https://github.com/SalomonBrys/Kodein/blob/master/kodein-android/src/main/kotlin/com/github/salomonbrys/kodein/android/AndroidModule.kt[AndroidModule.kt] file.
 
 
 === Android scopes
@@ -1215,7 +1390,7 @@ val logger: Logger = kodein.with(supportFragment).instance()
 
 === Android example project
 
-Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/AndroidDemo[Android demo project]!
+Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/android-demo[Android demo project]!
 
 
 == Debugging
