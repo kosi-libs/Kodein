@@ -1,4 +1,15 @@
 
+### 3.2.0-beta3 (29-12-2016)
+
+ - FEATURES
+   * You can use `overriddenInstance` in an overriding binding to access the instance retrieved by the overridden binding.
+   * For Android, added the `autoAndroidModule`: a module that allows for automatic retrieval of Android services, without providing a `Context` (Thanks to Eliezer Graber).
+   * For Android, added Android component classes that makes it easier to bootstrap Kodein with Android (Thanks to Eliezer Graber).
+   * For Android, all services accessible via `Context.*_SERVICE` are now available in the Android modules (up to Android `N_MR2`).
+
+ - STRUCTURE CHANGES
+   * `Curried*` extension methods (introduced in beta2) don't need the `A` (argument type) generic parameter.
+
 ### 3.2.0-beta2 (28-10-2016)
 
  - FEATURES

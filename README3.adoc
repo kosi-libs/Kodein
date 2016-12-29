@@ -3,12 +3,12 @@ Author <salomon.brys@gmail.com>
 :toc: macro
 :toclevels: 4
 
-:version: 3.2.0-beta2
+:version: 3.2.0-beta3
 :branch: v3.2.0-beta
 
 image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]
 
-image:https://img.shields.io/badge/Kotlin-1.0.3-blue.svg[alt="Kotlin 1.0.3", link="http://kotlinlang.org"]
+image:https://img.shields.io/badge/Kotlin-1.0.6-blue.svg[alt="Kotlin 1.0.6", link="http://kotlinlang.org"]
 image:https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg[alt="Maven Central", link="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22"]
 image:https://img.shields.io/travis/SalomonBrys/Kodein.svg[alt="Travis", link="https://travis-ci.org/SalomonBrys/Kodein/builds"]
 image:https://img.shields.io/github/license/salomonbrys/kodein.svg[alt="MIT License", link="https://github.com/SalomonBrys/Kodein/blob/{branch}/LICENSE.txt"]
@@ -390,7 +390,6 @@ WARNING: The bindings in the module still need to specify explicitly the overrid
 Sometimes, you just want to define bindings without knowing if you are actually overriding a previous binding or defining a new.
 Those cases should be rare and you should know what you are doing.
 
-
 [source, kotlin]
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
@@ -399,6 +398,18 @@ val testModule = Kodein.Module(allowSilentOverride = true) {
 }
 ----
 <1> Maybe adding a new binding, maybe overriding an existing, who knows?
+
+If you want to access an instance retrieved by the overridden binding, you can use overriddenInstance.
+This is useful if you want to "enhance" a binding (for example, using the decorator pattern).
+
+[source, kotlin]
+.Example: declaring a module in which each binding may or may not override existing bindings.
+----
+val testModule = Kodein.Module {
+    bind<Logger>(overrides = true) with singleton { FileLoggerWrapper("path/to/file", overriddenInstance()) } <1>
+}
+----
+<1> `overriddenInstance()` will return the `Logger` instance retrieved by the overridden binding.
 
 
 == Dependency retrieval
@@ -1019,6 +1030,8 @@ class MyActivity : Activity(), KodeinInjected {
 === Bootstrapping Kodein on Android
 
 To easily setup Kodein with your Android app, you can use the Android Injectors. They make it simple to creating activities, fragments, services, and broadcast recivers that work with Kodein out of the box.
+
+NOTE: This method allows for deep Kodein integration into you Android components. You can choose to use Kodein without it.
 
 There are two ways to use them depending on your needs; inheritance based and interface based.
 
