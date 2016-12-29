@@ -5,8 +5,8 @@ apply plugin: 'signing'
 apply plugin: 'org.jetbrains.dokka'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.3'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         minSdkVersion 15
@@ -55,7 +55,7 @@ dependencies {
 
     compile project(':kodein-core')
 
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.1.0'
 
     testCompile "junit:junit:$junit_version"
 }
