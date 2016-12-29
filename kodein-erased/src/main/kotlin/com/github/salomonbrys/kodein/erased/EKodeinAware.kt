@@ -111,7 +111,7 @@ inline fun <reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null) = 
  * @throws Kodein.NotFoundException if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedKodeinFactory<A>.provider(tag: Any? = null) = erasedProvider<A, T>(tag)
+inline fun <reified T : Any> CurriedKodeinFactory<*>.provider(tag: Any? = null) = erasedProvider<T>(tag)
 
 /**
  * Gets a provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -125,7 +125,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.provider(tag: Any? = nul
  * @return A provider, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedKodeinFactory<A>.providerOrNull(tag: Any? = null) = erasedProviderOrNull<A, T>(tag)
+inline fun <reified T : Any> CurriedKodeinFactory<*>.providerOrNull(tag: Any? = null) = erasedProviderOrNull<T>(tag)
 
 /**
  * Gets an instance of `T` for the given tag from a curried factory with an `A` argument.
@@ -140,7 +140,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.providerOrNull(tag: Any?
  * @throws Kodein.NotFoundException if no factory was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedKodeinFactory<A>.instance(tag: Any? = null) = erasedInstance<A, T>(tag)
+inline fun <reified T : Any> CurriedKodeinFactory<*>.instance(tag: Any? = null) = erasedInstance<T>(tag)
 
 /**
  * Gets an instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -154,7 +154,7 @@ inline fun <A, reified T : Any> CurriedKodeinFactory<A>.instance(tag: Any? = nul
  * @return An instance, or null if no factory was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedKodeinFactory<A>.instanceOrNull(tag: Any? = null) = erasedInstanceOrNull<A, T>(tag)
+inline fun <reified T : Any> CurriedKodeinFactory<*>.instanceOrNull(tag: Any? = null) = erasedInstanceOrNull<T>(tag)
 
 /**
  * Allows to get a provider or an instance from a curried factory with an `A` argument.

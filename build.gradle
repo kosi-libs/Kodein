@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
 
-    ext.kotlin_version = '1.0.4'
+    ext.kotlin_version = '1.0.6'
     ext.junit_version = '4.12'
 
     dependencies {

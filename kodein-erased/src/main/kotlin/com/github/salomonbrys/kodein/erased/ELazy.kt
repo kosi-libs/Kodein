@@ -96,7 +96,7 @@ inline fun <reified T : Any> LazyKodeinAwareBase.instanceOrNull(tag: Any? = null
  * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.provider(tag: Any? = null) = erasedProvider<A, T>(tag)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.provider(tag: Any? = null) = erasedProvider<T>(tag)
 
 /**
  * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -108,7 +108,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.provider(tag: Any? =
  * @return A lazy property that yields a provider of `T`, or null if no factory is found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.providerOrNull(tag: Any? = null) = erasedProviderOrNull<A, T>(tag)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.providerOrNull(tag: Any? = null) = erasedProviderOrNull<T>(tag)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument.
@@ -121,7 +121,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.providerOrNull(tag: 
  * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.instance(tag: Any? = null) = erasedInstance<A, T>(tag)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.instance(tag: Any? = null) = erasedInstance<T>(tag)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -133,7 +133,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.instance(tag: Any? =
  * @return A lazy instance of `T`, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.instanceOrNull(tag: Any? = null) = erasedInstanceOrNull<A, T>(tag)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.instanceOrNull(tag: Any? = null) = erasedInstanceOrNull<T>(tag)
 
 
 /**

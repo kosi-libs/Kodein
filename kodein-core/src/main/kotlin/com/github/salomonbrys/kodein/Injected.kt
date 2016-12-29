@@ -273,7 +273,7 @@ class CurriedInjectorFactory<out A>(val injector: KodeinInjector, val arg: () ->
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericProvider(tag: Any? = null): Lazy<() -> T> = injector.typed.factory(argType, genericToken<T>(), tag).toProvider(arg)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.genericProvider(tag: Any? = null): Lazy<() -> T> = injector.typed.factory(argType, genericToken<T>(), tag).toProvider(arg)
 
 /**
  * Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument.
@@ -288,7 +288,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericProvider(tag: A
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedProvider(tag: Any? = null): Lazy<() -> T> = injector.typed.factory(argType, T::class.java, tag).toProvider(arg)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.erasedProvider(tag: Any? = null): Lazy<() -> T> = injector.typed.factory(argType, T::class.java, tag).toProvider(arg)
 
 /**
  * Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument, or null if none is found.
@@ -303,7 +303,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedProvider(tag: An
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericProviderOrNull(tag: Any? = null): Lazy<(() -> T)?> = injector.typed.factoryOrNull(argType, genericToken<T>(), tag).toProvider(arg)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.genericProviderOrNull(tag: Any? = null): Lazy<(() -> T)?> = injector.typed.factoryOrNull(argType, genericToken<T>(), tag).toProvider(arg)
 
 /**
  * Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument, or null if none is found.
@@ -318,7 +318,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericProviderOrNull(
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedProviderOrNull(tag: Any? = null): Lazy<(() -> T)?> = injector.typed.factoryOrNull(argType, T::class.java, tag).toProvider(arg)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.erasedProviderOrNull(tag: Any? = null): Lazy<(() -> T)?> = injector.typed.factoryOrNull(argType, T::class.java, tag).toProvider(arg)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument.
@@ -332,7 +332,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedProviderOrNull(t
  * @return A lazy property that yields a `T`.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericInstance(tag: Any? = null): Lazy<T> = injector.typed.factory(argType, genericToken<T>(), tag).toInstance(arg)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.genericInstance(tag: Any? = null): Lazy<T> = injector.typed.factory(argType, genericToken<T>(), tag).toInstance(arg)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument.
@@ -346,7 +346,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericInstance(tag: A
  * @return A lazy property that yields a `T`.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedInstance(tag: Any? = null): Lazy<T> = injector.typed.factory(argType, T::class.java, tag).toInstance(arg)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.erasedInstance(tag: Any? = null): Lazy<T> = injector.typed.factory(argType, T::class.java, tag).toInstance(arg)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument, or null if none is found.
@@ -360,7 +360,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedInstance(tag: An
  * @return A lazy property that yields a `T` or null if no factory was found.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericInstanceOrNull(tag: Any? = null): Lazy<T?> = injector.typed.factoryOrNull(argType, genericToken<T>(), tag).toInstance(arg)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.genericInstanceOrNull(tag: Any? = null): Lazy<T?> = injector.typed.factoryOrNull(argType, genericToken<T>(), tag).toInstance(arg)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument, or null if none is found.
@@ -374,7 +374,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.genericInstanceOrNull(
  * @return A lazy property that yields a `T` or null if no factory was found.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.erasedInstanceOrNull(tag: Any? = null): Lazy<T?> = injector.typed.factoryOrNull(argType, T::class.java, tag).toInstance(arg)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.erasedInstanceOrNull(tag: Any? = null): Lazy<T?> = injector.typed.factoryOrNull(argType, T::class.java, tag).toInstance(arg)
 
 /**
  * Allows to inject a provider or an instance from a curried factory with an `A` argument.

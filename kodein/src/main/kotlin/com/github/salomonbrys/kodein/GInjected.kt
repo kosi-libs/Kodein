@@ -109,7 +109,7 @@ inline fun <reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null)
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.provider(tag: Any? = null) = genericProvider<A, T>(tag)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.provider(tag: Any? = null) = genericProvider<T>(tag)
 
 /**
  * Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument, or null if none is found.
@@ -124,7 +124,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.provider(tag: Any? = n
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.providerOrNull(tag: Any? = null) = genericProviderOrNull<A, T>(tag)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.providerOrNull(tag: Any? = null) = genericProviderOrNull<T>(tag)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument.
@@ -138,7 +138,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.providerOrNull(tag: An
  * @return A lazy property that yields a `T`.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.instance(tag: Any? = null) = genericInstance<A, T>(tag)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.instance(tag: Any? = null) = genericInstance<T>(tag)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument, or null if none is found.
@@ -152,7 +152,7 @@ inline fun <A, reified T : Any> CurriedInjectorFactory<A>.instance(tag: Any? = n
  * @return A lazy property that yields a `T` or null if no factory was found.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
-inline fun <A, reified T : Any> CurriedInjectorFactory<A>.instanceOrNull(tag: Any? = null) = genericInstanceOrNull<A, T>(tag)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.instanceOrNull(tag: Any? = null) = genericInstanceOrNull<T>(tag)
 
 /**
  * Allows to inject a provider or an instance from a curried factory with an `A` argument.

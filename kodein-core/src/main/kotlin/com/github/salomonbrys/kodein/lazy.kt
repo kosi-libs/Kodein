@@ -240,7 +240,7 @@ class CurriedLazyKodeinFactory<out A>(val kodein: () -> Kodein, val arg: () -> A
  * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.genericProvider(tag: Any? = null): Lazy<() -> T> = lazy { kodein().typed.factory(argType, genericToken<T>(), tag) } .toProvider(arg)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.genericProvider(tag: Any? = null): Lazy<() -> T> = lazy { kodein().typed.factory(argType, genericToken<T>(), tag) } .toProvider(arg)
 
 /**
  * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument.
@@ -253,7 +253,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.genericProvider(tag:
  * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.erasedProvider(tag: Any? = null): Lazy<() -> T> = lazy { kodein().typed.factory(argType, T::class.java, tag) } .toProvider(arg)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.erasedProvider(tag: Any? = null): Lazy<() -> T> = lazy { kodein().typed.factory(argType, T::class.java, tag) } .toProvider(arg)
 
 /**
  * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -265,7 +265,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.erasedProvider(tag: 
  * @return A lazy property that yields a provider of `T`, or null if no factory is found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.genericProviderOrNull(tag: Any? = null): Lazy<(() -> T)?> = lazy { kodein().typed.factoryOrNull(argType, genericToken<T>(), tag) } .toProvider(arg)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.genericProviderOrNull(tag: Any? = null): Lazy<(() -> T)?> = lazy { kodein().typed.factoryOrNull(argType, genericToken<T>(), tag) } .toProvider(arg)
 
 /**
  * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -277,7 +277,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.genericProviderOrNul
  * @return A lazy property that yields a provider of `T`, or null if no factory is found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.erasedProviderOrNull(tag: Any? = null): Lazy<(() -> T)?> = lazy { kodein().typed.factoryOrNull(argType, T::class.java, tag) } .toProvider(arg)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.erasedProviderOrNull(tag: Any? = null): Lazy<(() -> T)?> = lazy { kodein().typed.factoryOrNull(argType, T::class.java, tag) } .toProvider(arg)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument.
@@ -290,7 +290,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.erasedProviderOrNull
  * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.genericInstance(tag: Any? = null): Lazy<T> = lazy { kodein().typed.factory(argType, genericToken<T>(), tag) } .toInstance(arg)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.genericInstance(tag: Any? = null): Lazy<T> = lazy { kodein().typed.factory(argType, genericToken<T>(), tag) } .toInstance(arg)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument.
@@ -303,7 +303,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.genericInstance(tag:
  * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.erasedInstance(tag: Any? = null): Lazy<T> = lazy { kodein().typed.factory(argType, T::class.java, tag) } .toInstance(arg)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.erasedInstance(tag: Any? = null): Lazy<T> = lazy { kodein().typed.factory(argType, T::class.java, tag) } .toInstance(arg)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -315,7 +315,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.erasedInstance(tag: 
  * @return A lazy instance of `T`, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.genericInstanceOrNull(tag: Any? = null): Lazy<T?> = lazy { kodein().typed.factoryOrNull(argType, genericToken<T>(), tag) } .toInstance(arg)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.genericInstanceOrNull(tag: Any? = null): Lazy<T?> = lazy { kodein().typed.factoryOrNull(argType, genericToken<T>(), tag) } .toInstance(arg)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -327,7 +327,7 @@ inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.genericInstanceOrNul
  * @return A lazy instance of `T`, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> CurriedLazyKodeinFactory<A>.erasedInstanceOrNull(tag: Any? = null): Lazy<T?> = lazy { kodein().typed.factoryOrNull(argType, T::class.java, tag) } .toInstance(arg)
+inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.erasedInstanceOrNull(tag: Any? = null): Lazy<T?> = lazy { kodein().typed.factoryOrNull(argType, T::class.java, tag) } .toInstance(arg)
 
 
 /**
