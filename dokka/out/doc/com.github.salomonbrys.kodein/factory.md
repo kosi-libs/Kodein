@@ -2,9 +2,9 @@
 
 # factory
 
-`inline fun <reified A, reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.factory(noinline creator: `[`Kodein`](-kodein/index.md)`.(A) -> T): `[`CFactory`](-c-factory/index.md)`<A, T>`
+`inline fun <reified A, reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.factory(noinline creator: `[`FactoryKodein`](-factory-kodein/index.md)`.(A) -> T): `[`CFactory`](-c-factory/index.md)`<A, T>`
 
-Creates a factory: each time an instance is needed, the function [creator](factory.md#com.github.salomonbrys.kodein$factory(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.factory.A, com.github.salomonbrys.kodein.factory.T)))/creator) function will be called.
+Creates a factory: each time an instance is needed, the function [creator](factory.md#com.github.salomonbrys.kodein$factory(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function2((com.github.salomonbrys.kodein.FactoryKodein, com.github.salomonbrys.kodein.factory.A, com.github.salomonbrys.kodein.factory.T)))/creator) function will be called.
 
 A &amp; T generics will be kept.
 
@@ -18,34 +18,6 @@ A &amp; T generics will be kept.
 
 **Return**
 A factory ready to be bound.
-
-`inline fun <reified A, reified T : Any> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.factory(tag: Any? = null): `[`InjectedProperty`](-injected-property/index.md)`<(A) -> T>`
-
-Gets a lazy factory for the given type, tag and argument type.
-
-A &amp; T generics will be kept.
-
-The returned property should not be accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
-
-### Parameters
-
-`A` - The type of argument the factory held by this property takes.
-
-`T` - The type of object to retrieve with the factory held by this property.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`KodeinInjector.UninjectedException` - When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
-
-`Kodein.DependencyLoopException` - When calling the factory, if the value construction triggered a dependency loop.
-
-**Receiver**
-Either a [KodeinInjector](-kodein-injector/index.md) instance or a [KodeinInjected](-kodein-injected.md) class.
-
-**Return**
-A lazy property that yields a factory of `T`.
 
 `inline fun <reified A, reified T : Any> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.factory(tag: Any? = null): Lazy<(A) -> T>`
 
@@ -100,4 +72,32 @@ Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md
 
 **Return**
 A factory.
+
+`inline fun <reified A, reified T : Any> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.factory(tag: Any? = null): `[`InjectedProperty`](-injected-property/index.md)`<(A) -> T>`
+
+Gets a lazy factory for the given type, tag and argument type.
+
+A &amp; T generics will be kept.
+
+The returned property should not be accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
+
+### Parameters
+
+`A` - The type of argument the factory held by this property takes.
+
+`T` - The type of object to retrieve with the factory held by this property.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`KodeinInjector.UninjectedException` - When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
+
+`Kodein.DependencyLoopException` - When calling the factory, if the value construction triggered a dependency loop.
+
+**Receiver**
+Either a [KodeinInjector](-kodein-injector/index.md) instance or a [KodeinInjected](-kodein-injected.md) class.
+
+**Return**
+A lazy property that yields a factory of `T`.
 

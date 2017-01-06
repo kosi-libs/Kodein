@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`CEagerSingleton(builder: `[`Builder`](../-kodein/-builder/index.md)`, createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`Kodein`](../-kodein/index.md)`.() -> T)`
+`CEagerSingleton(builder: `[`Builder`](../-kodein/-builder/index.md)`, createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T)`
 
 Concrete eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.
 

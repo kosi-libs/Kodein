@@ -2,7 +2,7 @@
 
 # getInstance
 
-`abstract fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: A): T`
+`abstract fun getInstance(kodein: `[`FactoryKodein`](../-factory-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: A): T`
 
 Get an instance of type `T` function argument `A`.
 

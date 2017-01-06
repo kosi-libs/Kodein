@@ -94,3 +94,5 @@ val kodein = Kodein {
 | Name | Summary |
 |---|---|
 | [ConfigurableKodein](../../com.github.salomonbrys.kodein.conf/-configurable-kodein/index.md) | `class ConfigurableKodein : Kodein`<br>A class that can be used to configure a kodein object and as a kodein object. |
+| [FactoryKodein](../-factory-kodein/index.md) | `interface FactoryKodein : Kodein`<br>Kodein interface to be passed to factory scope methods. |
+| [ProviderKodein](../-provider-kodein/index.md) | `class ProviderKodein : Kodein`<br>Kodein interface to be passed to provider or instance scope methods. |

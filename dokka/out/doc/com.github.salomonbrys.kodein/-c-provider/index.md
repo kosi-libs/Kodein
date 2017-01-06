@@ -18,13 +18,13 @@ A provider is like a [CFactory](../-c-factory/index.md), but without argument.
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `CProvider(createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`Kodein`](../-kodein/index.md)`.() -> T)`<br>Concrete provider: each time an instance is needed, the function [creator](-init-.md#com.github.salomonbrys.kodein.CProvider$<init>(java.lang.reflect.Type, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CProvider.T)))/creator) function will be called. |
+| [&lt;init&gt;](-init-.md) | `CProvider(createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T)`<br>Concrete provider: each time an instance is needed, the function [creator](-init-.md#com.github.salomonbrys.kodein.CProvider$<init>(java.lang.reflect.Type, kotlin.Function1((com.github.salomonbrys.kodein.ProviderKodein, com.github.salomonbrys.kodein.CProvider.T)))/creator) function will be called. |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
-| [creator](creator.md) | `val creator: `[`Kodein`](../-kodein/index.md)`.() -> T`<br>The function that will be called each time an instance is requested. Should create a new instance. |
+| [creator](creator.md) | `val creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T`<br>The function that will be called each time an instance is requested. Should create a new instance. |
 
 ### Inherited Properties
 
@@ -40,10 +40,10 @@ A provider is like a [CFactory](../-c-factory/index.md), but without argument.
 
 | Name | Summary |
 |---|---|
-| [getInstance](get-instance.md) | `fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`<br>Get an instance of type `T`. |
+| [getInstance](get-instance.md) | `fun getInstance(kodein: `[`ProviderKodein`](../-provider-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`<br>Get an instance of type `T`. |
 
 ### Inherited Functions
 
 | Name | Summary |
 |---|---|
-| [getInstance](../-a-provider/get-instance.md) | `open fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: Unit): T`<br>Get an instance of type `T`. |
+| [getInstance](../-a-provider/get-instance.md) | `fun getInstance(kodein: `[`FactoryKodein`](../-factory-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: Unit): T`<br>Get an instance of type `T`. |

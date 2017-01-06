@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`CThreadSingleton(createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`Kodein`](../-kodein/index.md)`.() -> T)`
+`CThreadSingleton(createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T)`
 
 Concrete thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread.
 

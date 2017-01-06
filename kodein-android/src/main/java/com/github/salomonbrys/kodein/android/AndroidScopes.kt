@@ -12,7 +12,18 @@ import com.github.salomonbrys.kodein.android.androidActivityScope.lifecycleManag
 import java.util.*
 import android.support.v4.app.Fragment as SupportFragment
 
+/**
+ * Base interface from all Android scopes.
+ *
+ * @param T The type of context of the scope.
+ */
 interface AndroidScope<in T> : Scope<T> {
+
+    /**
+     * Removes a context from the scope to prevent it's leak.
+     *
+     * @param context The context to remove.
+     */
     fun removeFromScope(context: T): ScopeRegistry?
 }
 

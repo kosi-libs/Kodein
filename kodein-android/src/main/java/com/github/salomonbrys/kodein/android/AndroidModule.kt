@@ -1,6 +1,7 @@
 package com.github.salomonbrys.kodein.android
 
 import android.accounts.AccountManager
+import android.annotation.SuppressLint
 import android.app.*
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobScheduler
@@ -67,7 +68,8 @@ import java.io.File
  * }
  * ```
  */
-val androidModule = Kodein.Module {
+@SuppressLint("NewApi")
+private fun defineAndroidModule() = Kodein.Module {
 
     bindErased<Application>() with erasedFactory { ctx: Context -> ctx.applicationContext as Application }
 
@@ -177,6 +179,8 @@ val androidModule = Kodein.Module {
     }
 }
 
+val androidModule = defineAndroidModule()
+
 /**
  * A module that binds a lot of Android framework classes:
  *
@@ -188,6 +192,7 @@ val androidModule = Kodein.Module {
  * }
  * ```
  */
+@SuppressLint("NewApi")
 fun autoAndroidModule(app: Application) = Kodein.Module {
     fun Kodein.ctx() = erasedInstanceOrNull<Context>() ?: app.applicationContext
 

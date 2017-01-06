@@ -156,7 +156,7 @@ inline fun <reified T : Any> Kodein.Builder.erasedSingleton(noinline creator: Pr
 class CEagerSingleton<out T : Any>(builder: Kodein.Builder, createdType: Type, creator: ProviderKodein.() -> T) : ASingleton<T>("eagerSingleton", createdType, creator) {
     init {
         val key = Kodein.Key(Kodein.Bind(createdType, null), Unit::class.java)
-        builder.onReady(key) { getInstance(ProviderKodein(this), key) }
+        builder.onProviderReady(key) { getInstance(this, key) }
     }
 }
 

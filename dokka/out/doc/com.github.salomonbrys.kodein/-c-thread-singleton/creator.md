@@ -2,7 +2,7 @@
 
 # creator
 
-`val creator: `[`Kodein`](../-kodein/index.md)`.() -> T`
+`val creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T`
 
 The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance.
 

@@ -4,9 +4,7 @@
 
 `val androidModule: `[`Module`](../com.github.salomonbrys.kodein/-kodein/-module/index.md)
 
-A module that binds a lot of services for Android.
-
-With that, you can easily retrieve Androids services:
+A module that binds a lot of Android framework classes:
 
 ```
 class MyActivity : Activity(), KodeinInjected {

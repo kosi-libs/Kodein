@@ -2,7 +2,7 @@
 
 # creator
 
-`val creator: `[`Kodein`](../-kodein/index.md)`.() -> T`
+`val creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T`
 
 The function that will be called each time an instance is requested. Should create a new instance.
 

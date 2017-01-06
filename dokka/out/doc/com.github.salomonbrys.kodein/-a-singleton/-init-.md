@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`ASingleton(factoryName: String, createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`Kodein`](../-kodein/index.md)`.() -> T)`
+`ASingleton(factoryName: String, createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T)`
 
 Singleton base: will create an instance on first request and will subsequently always return the same instance.
 

@@ -2,7 +2,6 @@ package com.github.salomonbrys.kodein
 
 import com.github.salomonbrys.kodein.internal.CMap
 import java.lang.reflect.*
-import java.util.*
 
 /**
  * Container class where the bindings and their factories are stored.
@@ -17,6 +16,9 @@ interface KodeinContainer {
      */
     val bindings: Map<Kodein.Key, Factory<*, *>>
 
+    /**
+     * An immutable view of the bindings that were defined and later overridden. *For inspection & debug*.
+     */
     val overriddenBindings: Map<Kodein.Key, List<Factory<*, *>>>
 
     /**
@@ -43,7 +45,7 @@ interface KodeinContainer {
      *
      * @param key The key to look for.
      * @return The found factory.
-     * @throws Kodein.NotFoundException if no factory was found.
+     * @throws Kodein.NotFoundException If no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
     fun nonNullFactory(key: Kodein.Key): ((Any?) -> Any)
@@ -66,23 +68,61 @@ interface KodeinContainer {
      *
      * @param bind The bind (type and tag) to look for.
      * @return The found provider.
-     * @throws Kodein.NotFoundException if no provider was found.
+     * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
     fun nonNullProvider(bind: Kodein.Bind): (() -> Any)
             = providerOrNull(bind) ?: throw _notFoundException(Kodein.Key(bind, Unit::class.java), "provider")
 
 
+    /**
+     * Retrieve an overridden factory for the given key at the given override level, if there is an overridden binding at that level.
+     *
+     * @param key The key to look for.
+     * @param overrideLevel The override level.
+     *                      Override level 0 means the first overridden factory (not the "active" binding).
+     * @return The overridden factory, or null if there was o binding overridden at that level.
+     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     */
     fun overriddenFactoryOrNull(key: Kodein.Key, overrideLevel: Int): ((Any?) -> Any)?
 
+    /**
+     * Retrieve an overridden factory for the given key at the given override level.
+     *
+     * @param key The key to look for.
+     * @param overrideLevel The override level.
+     *                      Override level 0 means the first overridden factory (not the "active" binding).
+     * @return The overridden factory.
+     * @throws Kodein.NotFoundException If there was no binding overridden at that level.
+     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     */
     fun overriddenNonNullFactory(key: Kodein.Key, overrideLevel: Int): ((Any?) -> Any)
             = overriddenFactoryOrNull(key, overrideLevel) ?: throw _notFoundException(key, "overridden factory")
 
+    /**
+     * Retrieve an overridden provider for the given key at the given override level, if there is an overridden binding at that level.
+     *
+     * @param key The key to look for.
+     * @param overrideLevel The override level.
+     *                      Override level 0 means the first overridden factory (not the "active" binding).
+     * @return The overridden provider, or null if there was o binding overridden at that level.
+     * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     */
     fun overriddenProviderOrNull(bind: Kodein.Bind, overrideLevel: Int): (() -> Any)? {
         val factory = overriddenFactoryOrNull(Kodein.Key(bind, Unit::class.java), overrideLevel) ?: return null
         return { factory(Unit) }
     }
 
+    /**
+     * Retrieve an overridden provider for the given key at the given override level.
+     *
+     * @param key The key to look for.
+     * @param overrideLevel The override level.
+     *                      Override level 0 means the first overridden factory (not the "active" binding).
+     * @return The overridden provider.
+     * @throws Kodein.NotFoundException If there was no binding overridden at that level.
+     * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     */
     fun overriddenNonNullProvider(bind: Kodein.Bind, overrideLevel: Int): (() -> Any)
             = overriddenProviderOrNull(bind, overrideLevel) ?: throw _notFoundException(Kodein.Key(bind, Unit::class.java), "overridden provider")
 

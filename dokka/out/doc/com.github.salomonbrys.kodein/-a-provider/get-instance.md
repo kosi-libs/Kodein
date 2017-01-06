@@ -2,7 +2,7 @@
 
 # getInstance
 
-`open fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: Unit): T`
+`fun getInstance(kodein: `[`FactoryKodein`](../-factory-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: Unit): T`
 
 Get an instance of type `T`.
 
@@ -19,7 +19,7 @@ Whether its a new instance or not entirely depends on implementation.
 **Return**
 an instance of `T`.
 
-`abstract fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`
+`abstract fun getInstance(kodein: `[`ProviderKodein`](../-provider-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`
 
 Get an instance of type `T`.
 

@@ -43,3 +43,9 @@ Any class that extends this interface can be injected "seamlessly".
 | [withErased](with-erased.md) | `fun <A> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.withErased(arg: () -> A): `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<A>`<br>`fun <A> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.withErased(arg: A): `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<A>`<br>Allows to inject a provider or an instance from a curried factory with an `A` argument. |
 | [withGeneric](with-generic.md) | `fun <A> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.withGeneric(arg: () -> A): `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<A>`<br>`fun <A> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.withGeneric(arg: A): `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<A>`<br>Allows to inject a provider or an instance from a curried factory with an `A` argument. |
 | [withKClass](with-k-class.md) | `fun <T : `[`LazyKodeinAware`](-lazy-kodein-aware.md)`> T.withKClass(): `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<KClass<*>>`<br>Allows to lazily retrieve a provider or an instance from a curried factory with a `KClass` argument. |
+
+### Inheritors
+
+| Name | Summary |
+|---|---|
+| [AndroidInjector](../com.github.salomonbrys.kodein.android/-android-injector/index.md) | `interface AndroidInjector<T, out S : `[`AndroidScope`](../com.github.salomonbrys.kodein.android/-android-scope/index.md)`<T>> : KodeinInjected`<br>An interface for adding a [KodeinInjector](-kodein-injector/index.md) to Android component classes (Activity, Fragment, Service, etc...) |

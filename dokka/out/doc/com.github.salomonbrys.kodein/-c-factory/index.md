@@ -20,13 +20,13 @@ Concrete factory: each time an instance is needed, the function [creator](creato
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `CFactory(argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`Kodein`](../-kodein/index.md)`.(A) -> T)`<br>Concrete factory: each time an instance is needed, the function [creator](-init-.md#com.github.salomonbrys.kodein.CFactory$<init>(java.lang.reflect.Type, java.lang.reflect.Type, kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.CFactory.A, com.github.salomonbrys.kodein.CFactory.T)))/creator) function will be called. |
+| [&lt;init&gt;](-init-.md) | `CFactory(argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`FactoryKodein`](../-factory-kodein/index.md)`.(A) -> T)`<br>Concrete factory: each time an instance is needed, the function [creator](-init-.md#com.github.salomonbrys.kodein.CFactory$<init>(java.lang.reflect.Type, java.lang.reflect.Type, kotlin.Function2((com.github.salomonbrys.kodein.FactoryKodein, com.github.salomonbrys.kodein.CFactory.A, com.github.salomonbrys.kodein.CFactory.T)))/creator) function will be called. |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
-| [creator](creator.md) | `val creator: `[`Kodein`](../-kodein/index.md)`.(A) -> T`<br>The function that will be called each time an instance is requested. Should create a new instance. |
+| [creator](creator.md) | `val creator: `[`FactoryKodein`](../-factory-kodein/index.md)`.(A) -> T`<br>The function that will be called each time an instance is requested. Should create a new instance. |
 
 ### Inherited Properties
 
@@ -42,4 +42,4 @@ Concrete factory: each time an instance is needed, the function [creator](creato
 
 | Name | Summary |
 |---|---|
-| [getInstance](get-instance.md) | `fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: A): T`<br>Get an instance of type `T` function argument `A`. |
+| [getInstance](get-instance.md) | `fun getInstance(kodein: `[`FactoryKodein`](../-factory-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: A): T`<br>Get an instance of type `T` function argument `A`. |

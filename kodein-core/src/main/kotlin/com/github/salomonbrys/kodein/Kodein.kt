@@ -410,9 +410,27 @@ interface Kodein : KodeinAwareBase {
             _callbacks += cb
         }
 
-        fun onReady(key: Kodein.Key, cb: FactoryKodein.() -> Unit) {
+        /**
+         * Adds a callback that will be called once the Kodein object is configured and instantiated.
+         *
+         * The callback will be able to access the overridden factory binding.
+         *
+         * @param key The key that defines the overridden factory access.
+         * @param cb The callback.
+         */
+        fun onFactoryReady(key: Kodein.Key, cb: FactoryKodein.() -> Unit) {
             _factoryCallbacks += key to cb
         }
+
+        /**
+         * Adds a callback that will be called once the Kodein object is configured and instantiated.
+         *
+         * The callback will be able to access the overridden provider binding.
+         *
+         * @param key The key that defines the overridden provider access.
+         * @param cb The callback.
+         */
+        fun onProviderReady(key: Kodein.Key, cb: ProviderKodein.() -> Unit) = onFactoryReady(key) { cb(ProviderKodein(this)) }
     }
 
     /**

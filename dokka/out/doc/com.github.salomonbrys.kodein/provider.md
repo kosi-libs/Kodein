@@ -2,9 +2,9 @@
 
 # provider
 
-`inline fun <reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.provider(noinline creator: `[`Kodein`](-kodein/index.md)`.() -> T): `[`CProvider`](-c-provider/index.md)`<T>`
+`inline fun <reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.provider(noinline creator: `[`ProviderKodein`](-provider-kodein/index.md)`.() -> T): `[`CProvider`](-c-provider/index.md)`<T>`
 
-Creates a factory: each time an instance is needed, the function [creator](provider.md#com.github.salomonbrys.kodein$provider(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.provider.T)))/creator) function will be called.
+Creates a factory: each time an instance is needed, the function [creator](provider.md#com.github.salomonbrys.kodein$provider(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.ProviderKodein, com.github.salomonbrys.kodein.provider.T)))/creator) function will be called.
 
 T generics will be kept.
 
@@ -18,55 +18,6 @@ A provider is like a [factory](factory.md), but without argument.
 
 **Return**
 A provider ready to be bound.
-
-`inline fun <reified T : Any> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.provider(tag: Any? = null): `[`InjectedProperty`](-injected-property/index.md)`<() -> T>`
-
-Gets a lazy provider for the given type and tag.
-
-The returned property should not be accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of object to retrieve with the provider held by this property.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`KodeinInjector.UninjectedException` - When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
-
-`Kodein.DependencyLoopException` - When calling the provider, if the value construction triggered a dependency loop.
-
-**Receiver**
-Either a [KodeinInjector](-kodein-injector/index.md) instance or a [KodeinInjected](-kodein-injected.md) class.
-
-**Return**
-A lazy property that yields a provider of `T`.
-
-`inline fun <A, reified T : Any> `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<A>.provider(tag: Any? = null): Lazy<() -> T>`
-
-Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument.
-
-The returned property should not be accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of object to retrieve with the provider.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`KodeinInjector.UninjectedException` - When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
-
-`Kodein.DependencyLoopException` - When calling the provider, if the value construction triggered a dependency loop.
-
-**Return**
-A lazy property that yields a provider of `T`.
 
 `inline fun <reified T : Any> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.provider(tag: Any? = null): Lazy<() -> T>`
 
@@ -92,7 +43,7 @@ Either a [LazyKodein](-lazy-kodein/index.md) instance or a [LazyKodeinAware](-la
 **Return**
 A lazy property that yields a provider of `T`.
 
-`inline fun <A, reified T : Any> `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<A>.provider(tag: Any? = null): Lazy<() -> T>`
+`inline fun <reified T : Any> `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<*>.provider(tag: Any? = null): Lazy<() -> T>`
 
 Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument.
 
@@ -139,7 +90,7 @@ Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md
 **Return**
 A provider.
 
-`inline fun <A, reified T : Any> `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<A>.provider(tag: Any? = null): () -> T`
+`inline fun <reified T : Any> `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<*>.provider(tag: Any? = null): () -> T`
 
 Gets a provider of `T` for the given tag from a curried factory with an `A` argument.
 
@@ -161,4 +112,53 @@ T generics will be kept.
 
 **Return**
 A provider.
+
+`inline fun <reified T : Any> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.provider(tag: Any? = null): `[`InjectedProperty`](-injected-property/index.md)`<() -> T>`
+
+Gets a lazy provider for the given type and tag.
+
+The returned property should not be accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of object to retrieve with the provider held by this property.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`KodeinInjector.UninjectedException` - When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
+
+`Kodein.DependencyLoopException` - When calling the provider, if the value construction triggered a dependency loop.
+
+**Receiver**
+Either a [KodeinInjector](-kodein-injector/index.md) instance or a [KodeinInjected](-kodein-injected.md) class.
+
+**Return**
+A lazy property that yields a provider of `T`.
+
+`inline fun <reified T : Any> `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<*>.provider(tag: Any? = null): Lazy<() -> T>`
+
+Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument.
+
+The returned property should not be accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of object to retrieve with the provider.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`KodeinInjector.UninjectedException` - When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject](-kodein-injected-base/inject.md).
+
+`Kodein.DependencyLoopException` - When calling the provider, if the value construction triggered a dependency loop.
+
+**Return**
+A lazy property that yields a provider of `T`.
 

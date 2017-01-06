@@ -2,7 +2,7 @@
 
 # androidActivityScope
 
-`object androidActivityScope : `[`AutoScope`](../../com.github.salomonbrys.kodein/-auto-scope/index.md)`<Activity>`
+`object androidActivityScope : `[`AndroidScope`](../-android-scope/index.md)`<Activity>, `[`AutoScope`](../../com.github.salomonbrys.kodein/-auto-scope/index.md)`<Activity>`
 
 Androids activity scope. Allows to register activity-specific singletons.
 
@@ -22,3 +22,4 @@ Scope that can be used both as a scope or as an auto-scope.
 |---|---|
 | [getContext](get-context.md) | `fun getContext(): Activity` |
 | [getRegistry](get-registry.md) | `fun getRegistry(context: Activity): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein/-scope-registry/index.md)<br>Get a registry for a given activity. Will always return the same registry for the same activity. |
+| [removeFromScope](remove-from-scope.md) | `fun removeFromScope(context: Activity): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein/-scope-registry/index.md)`?`<br>Allows for cleaning up after an activity has been destroyed |

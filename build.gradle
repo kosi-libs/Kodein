@@ -25,14 +25,18 @@ allprojects {
 }
 
 def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }
+def getAndroidClassPath(String p) { return project(p).android.getBootClasspath() +  project(p).android.libraryVariants.javaCompile.classpath.collect { it.collect { it.absolutePath } } .flatten() }
 
-task("classpath") << {
-    println((
-            getClassPath(':kodein')
-        +   getClassPath(':kodein-core')
-        +   getClassPath(':kodein-android')
-        +   getClassPath(':kodein-conf')
-    ).join(":"))
+task("classpath") {
+    doLast {
+        println((
+                getClassPath(':kodein')
+            +   getClassPath(':kodein-conf')
+            +   getClassPath(':kodein-core')
+            +   getClassPath(':kodein-erased')
+            +   getAndroidClassPath(':kodein-android')
+        ).join(":"))
+    }
 }
 
 // used for Android builds on travis

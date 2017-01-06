@@ -18,16 +18,16 @@ Concrete eager singleton: will create an instance as soon as kodein is ready (al
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `CEagerSingleton(builder: `[`Builder`](../-kodein/-builder/index.md)`, createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`Kodein`](../-kodein/index.md)`.() -> T)`<br>Concrete eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance. |
+| [&lt;init&gt;](-init-.md) | `CEagerSingleton(builder: `[`Builder`](../-kodein/-builder/index.md)`, createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T)`<br>Concrete eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance. |
 
 ### Inherited Properties
 
 | Name | Summary |
 |---|---|
-| [creator](../-a-singleton/creator.md) | `val creator: `[`Kodein`](../-kodein/index.md)`.() -> T`<br>The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance. |
+| [creator](../-a-singleton/creator.md) | `val creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T`<br>The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance. |
 
 ### Inherited Functions
 
 | Name | Summary |
 |---|---|
-| [getInstance](../-a-singleton/get-instance.md) | `open fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`<br>Get an instance of type `T`. |
+| [getInstance](../-a-singleton/get-instance.md) | `open fun getInstance(kodein: `[`ProviderKodein`](../-provider-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`<br>Get an instance of type `T`. |

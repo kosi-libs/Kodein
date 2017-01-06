@@ -2,7 +2,7 @@
 
 # getInstance
 
-`open fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`
+`open fun getInstance(kodein: `[`ProviderKodein`](../-provider-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`
 
 Overrides [AProvider.getInstance](../-a-provider/get-instance.md)
 

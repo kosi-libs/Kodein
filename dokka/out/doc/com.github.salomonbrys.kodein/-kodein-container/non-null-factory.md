@@ -12,7 +12,7 @@ Retrieve a factory for the given key.
 
 ### Exceptions
 
-`Kodein.NotFoundException` - if no factory was found.
+`Kodein.NotFoundException` - If no factory was found.
 
 `Kodein.DependencyLoopException` - When calling the factory function, if the instance construction triggered a dependency loop.
 

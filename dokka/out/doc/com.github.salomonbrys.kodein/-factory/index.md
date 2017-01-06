@@ -13,7 +13,7 @@ Whether this factory creates a new instance at each call or not is left to imple
 
 `A` - The type of argument used to create or retrieve an instance.
 
-`T` - The type instance this factory creates or retrieves.
+`T` - The type of instance this factory creates or retrieves.
 
 ### Properties
 
@@ -29,7 +29,7 @@ Whether this factory creates a new instance at each call or not is left to imple
 
 | Name | Summary |
 |---|---|
-| [getInstance](get-instance.md) | `abstract fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: A): T`<br>Get an instance of type `T` function argument `A`. |
+| [getInstance](get-instance.md) | `abstract fun getInstance(kodein: `[`FactoryKodein`](../-factory-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: A): T`<br>Get an instance of type `T` function argument `A`. |
 
 ### Inheritors
 

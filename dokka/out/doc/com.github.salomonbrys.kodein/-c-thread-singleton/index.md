@@ -16,13 +16,13 @@ Concrete thread singleton: will create an instance on first request per thread a
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `CThreadSingleton(createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`Kodein`](../-kodein/index.md)`.() -> T)`<br>Concrete thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread. |
+| [&lt;init&gt;](-init-.md) | `CThreadSingleton(createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T)`<br>Concrete thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread. |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
-| [creator](creator.md) | `val creator: `[`Kodein`](../-kodein/index.md)`.() -> T`<br>The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance. |
+| [creator](creator.md) | `val creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T`<br>The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance. |
 
 ### Inherited Properties
 
@@ -38,10 +38,10 @@ Concrete thread singleton: will create an instance on first request per thread a
 
 | Name | Summary |
 |---|---|
-| [getInstance](get-instance.md) | `fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`<br>Get an instance of type `T`. |
+| [getInstance](get-instance.md) | `fun getInstance(kodein: `[`ProviderKodein`](../-provider-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`<br>Get an instance of type `T`. |
 
 ### Inherited Functions
 
 | Name | Summary |
 |---|---|
-| [getInstance](../-a-provider/get-instance.md) | `open fun getInstance(kodein: `[`Kodein`](../-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: Unit): T`<br>Get an instance of type `T`. |
+| [getInstance](../-a-provider/get-instance.md) | `fun getInstance(kodein: `[`FactoryKodein`](../-factory-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: Unit): T`<br>Get an instance of type `T`. |

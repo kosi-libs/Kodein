@@ -8,12 +8,38 @@ Kodein module &amp; API extensions for Android.
 
 | Name | Summary |
 |---|---|
-| [androidActivityScope](android-activity-scope/index.md) | `object androidActivityScope : `[`AutoScope`](../com.github.salomonbrys.kodein/-auto-scope/index.md)`<Activity>`<br>Androids activity scope. Allows to register activity-specific singletons. |
-| [androidBroadcastReceiverScope](android-broadcast-receiver-scope/index.md) | `object androidBroadcastReceiverScope : `[`Scope`](../com.github.salomonbrys.kodein/-scope/index.md)`<BroadcastReceiver>`<br>Androids broadcast receiver scope. Allows to register broadcast receiver-specific singletons. |
+| [ActivityInjector](-activity-injector/index.md) | `interface ActivityInjector : `[`AndroidInjector`](-android-injector/index.md)`<Activity, `[`AndroidScope`](-android-scope/index.md)`<Activity>>`<br>An interface for adding injection and bindings to an Activity. |
+| [AndroidInjector](-android-injector/index.md) | `interface AndroidInjector<T, out S : `[`AndroidScope`](-android-scope/index.md)`<T>> : `[`KodeinInjected`](../com.github.salomonbrys.kodein/-kodein-injected.md)<br>An interface for adding a [KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) to Android component classes (Activity, Fragment, Service, etc...) |
+| [AndroidScope](-android-scope/index.md) | `interface AndroidScope<in T> : `[`Scope`](../com.github.salomonbrys.kodein/-scope/index.md)`<T>`<br>Base interface from all Android scopes. |
+| [AppCompatActivityInjector](-app-compat-activity-injector/index.md) | `interface AppCompatActivityInjector : `[`AndroidInjector`](-android-injector/index.md)`<AppCompatActivity, `[`AndroidScope`](-android-scope/index.md)`<AppCompatActivity>>`<br>An interface for adding injection and bindings to an AppCompatActivity. |
+| [BroadcastReceiverInjector](-broadcast-receiver-injector/index.md) | `interface BroadcastReceiverInjector : `[`AndroidInjector`](-android-injector/index.md)`<BroadcastReceiver, `[`AndroidScope`](-android-scope/index.md)`<BroadcastReceiver>>`<br>An interface for adding injection and bindings to a BroadcastReceiver. |
+| [FragmentActivityInjector](-fragment-activity-injector/index.md) | `interface FragmentActivityInjector : `[`AndroidInjector`](-android-injector/index.md)`<FragmentActivity, `[`AndroidScope`](-android-scope/index.md)`<FragmentActivity>>`<br>An interface for adding injection and bindings to a FragmentActivity. |
+| [FragmentInjector](-fragment-injector/index.md) | `interface FragmentInjector : `[`AndroidInjector`](-android-injector/index.md)`<Fragment, `[`AndroidScope`](-android-scope/index.md)`<Fragment>>`<br>An interface for adding injection and bindings to a Fragment. |
+| [IntentServiceInjector](-intent-service-injector/index.md) | `interface IntentServiceInjector : `[`AndroidInjector`](-android-injector/index.md)`<IntentService, `[`AndroidScope`](-android-scope/index.md)`<IntentService>>`<br>An interface for adding injection and bindings to an IntentService. |
+| [KodeinActivity](-kodein-activity/index.md) | `abstract class KodeinActivity : Activity, `[`ActivityInjector`](-activity-injector/index.md)<br>A base class that manages an [ActivityInjector](-activity-injector/index.md) for easy bootstrapping of Kodein.
+Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [KodeinAppCompatActivity](-kodein-app-compat-activity/index.md) | `abstract class KodeinAppCompatActivity : AppCompatActivity, `[`AppCompatActivityInjector`](-app-compat-activity-injector/index.md)<br>A base class that manages an [AppCompatActivityInjector](-app-compat-activity-injector/index.md) for easy bootstrapping of Kodein.
+Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [KodeinBroadcastReceiver](-kodein-broadcast-receiver/index.md) | `abstract class KodeinBroadcastReceiver : BroadcastReceiver, `[`BroadcastReceiverInjector`](-broadcast-receiver-injector/index.md)<br>A base class that manages a [BroadcastReceiverInjector](-broadcast-receiver-injector/index.md) for easy bootstrapping of Kodein.
+Injections will be available as soon as [onBroadcastReceived](-kodein-broadcast-receiver/on-broadcast-received.md) is called and will be destroyed immediately after it returns. |
+| [KodeinFragment](-kodein-fragment/index.md) | `abstract class KodeinFragment : Fragment, `[`FragmentInjector`](-fragment-injector/index.md)<br>A base class that manages a [FragmentInjector](-fragment-injector/index.md) for easy bootstrapping of Kodein.
+Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [KodeinFragmentActivity](-kodein-fragment-activity/index.md) | `abstract class KodeinFragmentActivity : FragmentActivity, `[`FragmentActivityInjector`](-fragment-activity-injector/index.md)<br>A base class that manages a [FragmentActivityInjector](-fragment-activity-injector/index.md) for easy bootstrapping of Kodein.
+Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [KodeinIntentService](-kodein-intent-service/index.md) | `abstract class KodeinIntentService : IntentService, `[`IntentServiceInjector`](-intent-service-injector/index.md)<br>A base class that manages an [IntentServiceInjector](-intent-service-injector/index.md) for easy bootstrapping of Kodein.
+Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [KodeinService](-kodein-service/index.md) | `abstract class KodeinService : Service, `[`ServiceInjector`](-service-injector/index.md)<br>A base class that manages a [ServiceInjector](-service-injector/index.md) for easy bootstrapping of Kodein.
+Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [KodeinSupportFragment](-kodein-support-fragment/index.md) | `abstract class KodeinSupportFragment : Fragment, `[`SupportFragmentInjector`](-support-fragment-injector/index.md)<br>A base class that manages a [SupportFragmentInjector](-support-fragment-injector/index.md) for easy bootstrapping of Kodein.
+Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [ServiceInjector](-service-injector/index.md) | `interface ServiceInjector : `[`AndroidInjector`](-android-injector/index.md)`<Service, `[`AndroidScope`](-android-scope/index.md)`<Service>>`<br>An interface for adding injection and bindings to a Service. |
+| [SupportFragmentInjector](-support-fragment-injector/index.md) | `interface SupportFragmentInjector : `[`AndroidInjector`](-android-injector/index.md)`<Fragment, `[`AndroidScope`](-android-scope/index.md)`<Fragment>>`<br>An interface for adding injection and bindings to a android.support.v4.app.Fragment. |
+| [androidActivityScope](android-activity-scope/index.md) | `object androidActivityScope : `[`AndroidScope`](-android-scope/index.md)`<Activity>, `[`AutoScope`](../com.github.salomonbrys.kodein/-auto-scope/index.md)`<Activity>`<br>Androids activity scope. Allows to register activity-specific singletons. |
+| [androidBroadcastReceiverScope](android-broadcast-receiver-scope/index.md) | `object androidBroadcastReceiverScope : `[`AndroidScope`](-android-scope/index.md)`<BroadcastReceiver>`<br>Androids broadcast receiver scope. Allows to register broadcast receiver-specific singletons. |
 | [androidContextScope](android-context-scope/index.md) | `object androidContextScope : `[`Scope`](../com.github.salomonbrys.kodein/-scope/index.md)`<Context>`<br>Androids context scope. Allows to register context-specific singletons. |
-| [androidFragmentScope](android-fragment-scope/index.md) | `object androidFragmentScope : `[`Scope`](../com.github.salomonbrys.kodein/-scope/index.md)`<Fragment>`<br>Androids fragment scope. Allows to register fragment-specific singletons. |
-| [androidServiceScope](android-service-scope/index.md) | `object androidServiceScope : `[`Scope`](../com.github.salomonbrys.kodein/-scope/index.md)`<Service>`<br>Androids service scope. Allows to register service-specific singletons. |
-| [androidSupportFragmentScope](android-support-fragment-scope/index.md) | `object androidSupportFragmentScope : `[`Scope`](../com.github.salomonbrys.kodein/-scope/index.md)`<Fragment>`<br>Androids support fragment scope. Allows to register support fragment-specific singletons. |
+| [androidFragmentScope](android-fragment-scope/index.md) | `object androidFragmentScope : `[`AndroidScope`](-android-scope/index.md)`<Fragment>`<br>Androids fragment scope. Allows to register fragment-specific singletons. |
+| [androidServiceScope](android-service-scope/index.md) | `object androidServiceScope : `[`AndroidScope`](-android-scope/index.md)`<Service>`<br>Androids service scope. Allows to register service-specific singletons. |
+| [androidSupportFragmentScope](android-support-fragment-scope/index.md) | `object androidSupportFragmentScope : `[`AndroidScope`](-android-scope/index.md)`<Fragment>`<br>Androids support fragment scope. Allows to register support fragment-specific singletons. |
 
 ### Extensions for External Classes
 
@@ -32,7 +58,7 @@ Kodein module &amp; API extensions for Android.
 
 | Name | Summary |
 |---|---|
-| [androidModule](android-module.md) | `val androidModule: `[`Module`](../com.github.salomonbrys.kodein/-kodein/-module/index.md)<br>A module that binds a lot of services for Android. |
+| [androidModule](android-module.md) | `val androidModule: `[`Module`](../com.github.salomonbrys.kodein/-kodein/-module/index.md)<br>A module that binds a lot of Android framework classes: |
 
 ### Functions
 
@@ -40,6 +66,7 @@ Kodein module &amp; API extensions for Android.
 |---|---|
 | [activitySingleton](activity-singleton.md) | `fun <T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.~~activitySingleton~~(creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(Activity) -> T): `[`Factory`](../com.github.salomonbrys.kodein/-factory/index.md)`<Activity, T>`<br>Creates an activity scoped singleton factory, effectively a `factory { Activity -> T }`. |
 | [autoActivitySingleton](auto-activity-singleton.md) | `fun <T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.~~autoActivitySingleton~~(creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(Activity) -> T): `[`Factory`](../com.github.salomonbrys.kodein/-factory/index.md)`<Unit, T>`<br>Creates an activity auto-scoped singleton factory, effectively a `provider { -> T }`. |
+| [autoAndroidModule](auto-android-module.md) | `fun autoAndroidModule(app: Application): `[`Module`](../com.github.salomonbrys.kodein/-kodein/-module/index.md)<br>A module that binds a lot of Android framework classes: |
 | [broadcastReceiverSingleton](broadcast-receiver-singleton.md) | `fun <T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.~~broadcastReceiverSingleton~~(creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(BroadcastReceiver) -> T): `[`Factory`](../com.github.salomonbrys.kodein/-factory/index.md)`<BroadcastReceiver, T>`<br>Creates a broadcast receiver scoped singleton factory, effectively a `factory { BroadcastReceiver -> T }`. |
 | [contextSingleton](context-singleton.md) | `fun <T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.~~contextSingleton~~(creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(Context) -> T): `[`Factory`](../com.github.salomonbrys.kodein/-factory/index.md)`<Context, T>`<br>Creates a context scoped singleton factory, effectively a `factory { Context -> T }`. |
 | [fragmentSingleton](fragment-singleton.md) | `fun <T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.~~fragmentSingleton~~(creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(Fragment) -> T): `[`Factory`](../com.github.salomonbrys.kodein/-factory/index.md)`<Fragment, T>`<br>Creates a fragment scoped singleton factory, effectively a `factory { Fragment -> T }`. |

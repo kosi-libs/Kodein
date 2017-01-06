@@ -2,7 +2,7 @@
 
 # erasedScopedSingleton
 
-`inline fun <reified C, reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.erasedScopedSingleton(scope: `[`Scope`](-scope/index.md)`<C>, noinline creator: `[`Kodein`](-kodein/index.md)`.(C) -> T): `[`CScopedSingleton`](-c-scoped-singleton/index.md)`<C, T>`
+`inline fun <reified C, reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.erasedScopedSingleton(scope: `[`Scope`](-scope/index.md)`<C>, noinline creator: `[`ProviderKodein`](-provider-kodein/index.md)`.(C) -> T): `[`CScopedSingleton`](-c-scoped-singleton/index.md)`<C, T>`
 
 Creates a scoped singleton factory, effectively a `factory { Scope -> T }`.
 

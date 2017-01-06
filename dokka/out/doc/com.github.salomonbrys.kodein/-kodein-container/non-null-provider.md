@@ -12,7 +12,7 @@ Retrieve a provider for the given bind.
 
 ### Exceptions
 
-`Kodein.NotFoundException` - if no provider was found.
+`Kodein.NotFoundException` - If no provider was found.
 
 `Kodein.DependencyLoopException` - When calling the provider function, if the instance construction triggered a dependency loop.
 

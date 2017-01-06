@@ -22,7 +22,7 @@ Concrete auto-scoped singleton provider, effectively a `provider { -> T }`.
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `CAutoScopedSingleton(createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, _scope: `[`AutoScope`](../-auto-scope/index.md)`<C>, creator: `[`Kodein`](../-kodein/index.md)`.(C) -> T)`<br>Concrete auto-scoped singleton provider, effectively a `provider { -> T }`. |
+| [&lt;init&gt;](-init-.md) | `CAutoScopedSingleton(createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, _scope: `[`AutoScope`](../-auto-scope/index.md)`<C>, creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.(C) -> T)`<br>Concrete auto-scoped singleton provider, effectively a `provider { -> T }`. |
 
 ### Properties
 

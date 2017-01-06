@@ -2,42 +2,6 @@
 
 # with
 
-`inline fun <reified A> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.with(noinline arg: () -> A): `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<A>`
-
-Allows to inject a provider or an instance from a curried factory with an `A` argument.
-
-A generics will be kept.
-
-### Parameters
-
-`A` - The type of argument the factory takes.
-
-`arg` - A function that provides the argument that will be passed to the factory.
-
-**Receiver**
-Either a [KodeinInjector](-kodein-injector/index.md) instance or a [KodeinInjected](-kodein-injected.md) class.
-
-**Return**
-An object from which you can inject an instance or a provider.
-
-`inline fun <reified A> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.with(arg: A): `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<A>`
-
-Allows to inject a provider or an instance from a curried factory with an `A` argument.
-
-A generics will be kept.
-
-### Parameters
-
-`A` - The type of argument the factory takes.
-
-`arg` - The argument that will be passed to the factory.
-
-**Receiver**
-Either a [KodeinInjector](-kodein-injector/index.md) instance or a [KodeinInjected](-kodein-injected.md) class.
-
-**Return**
-An object from which you can inject an instance or a provider.
-
 `inline fun <reified A> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.with(noinline arg: () -> A): `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<A>`
 
 Allows to get a lazy provider or instance from a curried factory with an `A` argument.
@@ -99,4 +63,40 @@ A generics will be kept.
 
 **Receiver**
 Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
+
+`inline fun <reified A> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.with(noinline arg: () -> A): `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<A>`
+
+Allows to inject a provider or an instance from a curried factory with an `A` argument.
+
+A generics will be kept.
+
+### Parameters
+
+`A` - The type of argument the factory takes.
+
+`arg` - A function that provides the argument that will be passed to the factory.
+
+**Receiver**
+Either a [KodeinInjector](-kodein-injector/index.md) instance or a [KodeinInjected](-kodein-injected.md) class.
+
+**Return**
+An object from which you can inject an instance or a provider.
+
+`inline fun <reified A> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.with(arg: A): `[`CurriedInjectorFactory`](-curried-injector-factory/index.md)`<A>`
+
+Allows to inject a provider or an instance from a curried factory with an `A` argument.
+
+A generics will be kept.
+
+### Parameters
+
+`A` - The type of argument the factory takes.
+
+`arg` - The argument that will be passed to the factory.
+
+**Receiver**
+Either a [KodeinInjector](-kodein-injector/index.md) instance or a [KodeinInjected](-kodein-injected.md) class.
+
+**Return**
+An object from which you can inject an instance or a provider.
 

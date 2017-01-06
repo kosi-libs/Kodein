@@ -41,7 +41,7 @@ interface AndroidInjector<T, out S : AndroidScope<T>> : KodeinInjected {
     val kodeinScope: S
 
     /**
-     * Adds bindings specific for this component and injects all the properties created with the [injector].
+     * Adds bindings specific for this component and injects all the properties created with the injector.
      * Should be called when the component is being created.
      */
     fun initializeInjector()
@@ -59,16 +59,16 @@ interface AndroidInjector<T, out S : AndroidScope<T>> : KodeinInjected {
 }
 
 /**
- * An interface for adding injection and bindings to an [Activity].
+ * An interface for adding injection and bindings to an Activity.
  *
  * The following bindings are provided:
  *
- * - [KodeinInjected] = [Activity.this]
- * - [Context] = [Activity.this]
- * - [Activity] = [Activity.this]
- * - [FragmentManager] = [Activity.getFragmentManager]
- * - [LoaderManager] = [Activity.getLoaderManager]
- * - [LayoutInflater] = [Activity.getLayoutInflater]
+ * - [KodeinInjected] = this@Activity
+ * - Context = this@Activity
+ * - Activity = this@Activity
+ * - FragmentManager = Activity.getFragmentManager
+ * - LoaderManager = Activity.getLoaderManager
+ * - LayoutInflater = Activity.getLayoutInflater
  *
  * The underlying [Kodein] object will [Kodein.Builder.extend] from [appKodein].
  */
@@ -102,6 +102,7 @@ abstract class KodeinActivity : Activity(), ActivityInjector {
 
     final override fun initializeInjector() = super.initializeInjector()
 
+    /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -110,6 +111,7 @@ abstract class KodeinActivity : Activity(), ActivityInjector {
 
     final override fun destroyInjector() = super.destroyInjector()
 
+    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -118,19 +120,19 @@ abstract class KodeinActivity : Activity(), ActivityInjector {
 }
 
 /**
- * An interface for adding injection and bindings to a [FragmentActivity].
+ * An interface for adding injection and bindings to a FragmentActivity.
  *
  * The following bindings are provided:
  *
- * - [KodeinInjected] = [FragmentActivity.this]
- * - [Context] = [FragmentActivity.this]
- * - [Activity] = [FragmentActivity.this]
- * - [FragmentActivity] = [FragmentActivity.this]
- * - [FragmentManager] = [FragmentActivity.getFragmentManager]
- * - [LoaderManager] = [FragmentActivity.getLoaderManager]
- * - [LayoutInflater] = [FragmentActivity.getLayoutInflater]
- * - [android.support.v4.app.FragmentManager] = [FragmentActivity.getSupportFragmentManager]
- * - [android.support.v4.app.LoaderManager] = [FragmentActivity.getSupportLoaderManager]
+ * - [KodeinInjected] = this@FragmentActivity
+ * - Context = this@FragmentActivity
+ * - Activity = this@FragmentActivity
+ * - FragmentActivity = this@FragmentActivity
+ * - FragmentManager = FragmentActivity.getFragmentManager
+ * - LoaderManager = FragmentActivity.getLoaderManager
+ * - LayoutInflater = FragmentActivity.getLayoutInflater
+ * - android.support.v4.app.FragmentManager = FragmentActivity.getSupportFragmentManager
+ * - android.support.v4.app.LoaderManager = FragmentActivity.getSupportLoaderManager
  *
  * The underlying [Kodein] object will [Kodein.Builder.extend] from [appKodein].
  */
@@ -167,6 +169,7 @@ abstract class KodeinFragmentActivity : FragmentActivity(), FragmentActivityInje
 
     final override fun initializeInjector() = super.initializeInjector()
 
+    /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -175,6 +178,7 @@ abstract class KodeinFragmentActivity : FragmentActivity(), FragmentActivityInje
 
     final override fun destroyInjector() = super.destroyInjector()
 
+    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -183,20 +187,20 @@ abstract class KodeinFragmentActivity : FragmentActivity(), FragmentActivityInje
 }
 
 /**
- * An interface for adding injection and bindings to an [AppCompatActivity].
+ * An interface for adding injection and bindings to an AppCompatActivity.
  *
  * The following bindings are provided:
  *
- * - [KodeinInjected] = [AppCompatActivity.this]
- * - [Context] = [AppCompatActivity.this]
- * - [Activity] = [AppCompatActivity.this]
- * - [FragmentActivity] = [AppCompatActivity.this]
- * - [AppCompatActivity] = [AppCompatActivity.this]
- * - [FragmentManager] = [AppCompatActivity.getFragmentManager]
- * - [LoaderManager] = [AppCompatActivity.getLoaderManager]
- * - [LayoutInflater] = [AppCompatActivity.getLayoutInflater]
- * - [android.support.v4.app.FragmentManager] = [AppCompatActivity.getSupportFragmentManager]
- * - [android.support.v4.app.LoaderManager] = [AppCompatActivity.getSupportLoaderManager]
+ * - [KodeinInjected] = this@AppCompatActivity
+ * - Context = this@AppCompatActivity
+ * - Activity = this@AppCompatActivity
+ * - FragmentActivity = this@AppCompatActivity
+ * - AppCompatActivity = this@AppCompatActivity
+ * - FragmentManager = AppCompatActivity.getFragmentManager
+ * - LoaderManager = AppCompatActivity.getLoaderManager
+ * - LayoutInflater = AppCompatActivity.getLayoutInflater
+ * - android.support.v4.app.FragmentManager = AppCompatActivity.getSupportFragmentManager
+ * - android.support.v4.app.LoaderManager = AppCompatActivity.getSupportLoaderManager
  *
  * The underlying [Kodein] object will [Kodein.Builder.extend] from [appKodein].
  */
@@ -234,6 +238,7 @@ abstract class KodeinAppCompatActivity : AppCompatActivity(), AppCompatActivityI
 
     final override fun initializeInjector() = super.initializeInjector()
 
+    /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -242,6 +247,7 @@ abstract class KodeinAppCompatActivity : AppCompatActivity(), AppCompatActivityI
 
     final override fun destroyInjector() = super.destroyInjector()
 
+    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -250,19 +256,19 @@ abstract class KodeinAppCompatActivity : AppCompatActivity(), AppCompatActivityI
 }
 
 /**
- * An interface for adding injection and bindings to a [Fragment].
+ * An interface for adding injection and bindings to a Fragment.
  *
  * The following bindings are provided:
  *
- * - [KodeinInjected] = [Fragment.this]
- * - [Context] = [Fragment.getActivity]
- * - [Activity] = [Fragment.getActivity]
- * - [Fragment] = [Fragment.this]
- * - [FragmentManager] = [Fragment.getFragmentManager]
- * - [LoaderManager] = [Fragment.getLoaderManager]
- * - [LayoutInflater] = [Fragment.getActivity.getLayoutInflater][Activity.getLayoutInflater]
+ * - [KodeinInjected] = this@Fragment
+ * - Context = Fragment.getActivity
+ * - Activity = Fragment.getActivity
+ * - Fragment = this@Fragment
+ * - FragmentManager = Fragment.getFragmentManager
+ * - LoaderManager = Fragment.getLoaderManager
+ * - LayoutInflater = Fragment.getActivity.getLayoutInflater, Activity.getLayoutInflater
  *
- * The underlying [Kodein] object will [Kodein.Builder.extend] from [appKodein] and from [Fragment.getActivity]'s [Kodein] if it implements [KodeinInjected].
+ * The underlying [Kodein] object will [Kodein.Builder.extend] from [appKodein] and from Fragment.getActivity's [Kodein] if it implements [KodeinInjected].
  */
 interface FragmentInjector : AndroidInjector<Fragment, AndroidScope<Fragment>> {
     override val kodeinScope: AndroidScope<Fragment> get() = androidFragmentScope
@@ -310,6 +316,7 @@ abstract class KodeinFragment : Fragment(), FragmentInjector {
 
     final override fun initializeInjector() = super.initializeInjector()
 
+    /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -318,6 +325,7 @@ abstract class KodeinFragment : Fragment(), FragmentInjector {
 
     final override fun destroyInjector() = super.destroyInjector()
 
+    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -326,21 +334,21 @@ abstract class KodeinFragment : Fragment(), FragmentInjector {
 }
 
 /**
- * An interface for adding injection and bindings to a [android.support.v4.app.Fragment].
+ * An interface for adding injection and bindings to a android.support.v4.app.Fragment.
  *
  * The following bindings are provided:
  *
- * - [KodeinInjected] = [android.support.v4.app.Fragment.this]
- * - [Context] = [android.support.v4.app.Fragment.getActivity]
- * - [Activity] = [android.support.v4.app.Fragment.getActivity]
- * - [FragmentActivity] = [android.support.v4.app.Fragment.getActivity] (if `activity` is a `FragmentActivity`)
- * - [AppCompatActivity] = [android.support.v4.app.Fragment.getActivity] (if `activity` is a `AppCompatActivity`)
- * - [android.support.v4.app.Fragment] = [android.support.v4.app.Fragment.this]
- * - [FragmentManager] = [android.support.v4.app.Fragment.getFragmentManager]
- * - [LoaderManager] = [android.support.v4.app.Fragment.getLoaderManager]
- * - [LayoutInflater] = [android.support.v4.app.Fragment.getActivity.getLayoutInflater][Activity.getLayoutInflater]
+ * - [KodeinInjected] = this@android.support.v4.app.Fragment
+ * - Context = android.support.v4.app.Fragment.getActivity
+ * - Activity = android.support.v4.app.Fragment.getActivity
+ * - FragmentActivity = android.support.v4.app.Fragment.getActivity (if `activity` is a `FragmentActivity`)
+ * - AppCompatActivity = android.support.v4.app.Fragment.getActivity (if `activity` is a `AppCompatActivity`)
+ * - android.support.v4.app.Fragment = this@android.support.v4.app.Fragment
+ * - FragmentManager = android.support.v4.app.Fragment.getFragmentManager
+ * - LoaderManager = android.support.v4.app.Fragment.getLoaderManager
+ * - LayoutInflater = android.support.v4.app.Fragment.getActivity.getLayoutInflater, Activity.getLayoutInflater
  *
- * The underlying [Kodein] object will [Kodein.Builder.extend] from [appKodein] and from [android.support.v4.app.Fragment.getActivity]'s [Kodein] if it implements [KodeinInjected].
+ * The underlying [Kodein] object will [Kodein.Builder.extend] from [appKodein] and from android.support.v4.app.Fragment.getActivity's [Kodein] if it implements [KodeinInjected].
  */
 interface SupportFragmentInjector : AndroidInjector<SupportFragment, AndroidScope<SupportFragment>> {
     override val kodeinScope: AndroidScope<SupportFragment> get() = androidSupportFragmentScope
@@ -392,6 +400,7 @@ abstract class KodeinSupportFragment : SupportFragment(), SupportFragmentInjecto
 
     final override fun initializeInjector() = super.initializeInjector()
 
+    /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -400,6 +409,7 @@ abstract class KodeinSupportFragment : SupportFragment(), SupportFragmentInjecto
 
     final override fun destroyInjector() = super.destroyInjector()
 
+    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -408,13 +418,13 @@ abstract class KodeinSupportFragment : SupportFragment(), SupportFragmentInjecto
 }
 
 /**
- * An interface for adding injection and bindings to a [Service].
+ * An interface for adding injection and bindings to a Service.
  *
  * The following bindings are provided:
  *
- * - [KodeinInjected] = [Service.this]
- * - [Context] = [Service.this]
- * - [Service] = [Service.this]
+ * - [KodeinInjected] = this@Service
+ * - Context = this@Service
+ * - Service = this@Service
  *
  * The underlying [Kodein] object will [Kodein.Builder.extend] from [appKodein].
  */
@@ -445,6 +455,7 @@ abstract class KodeinService : Service(), ServiceInjector {
 
     final override fun initializeInjector() = super.initializeInjector()
 
+    /** @suppress */
     override fun onCreate() {
         super.onCreate()
 
@@ -453,6 +464,7 @@ abstract class KodeinService : Service(), ServiceInjector {
 
     final override fun destroyInjector() = super.destroyInjector()
 
+    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -461,14 +473,14 @@ abstract class KodeinService : Service(), ServiceInjector {
 }
 
 /**
- * An interface for adding injection and bindings to an [IntentService].
+ * An interface for adding injection and bindings to an IntentService.
  *
  * The following bindings are provided:
  *
- * - [KodeinInjected] = [IntentService.this]
- * - [Context] = [IntentService.this]
- * - [Service] = [IntentService.this]
- * - [IntentService] = [IntentService.this]
+ * - [KodeinInjected] = this@IntentService
+ * - Context = this@IntentService
+ * - Service = this@IntentService
+ * - IntentService = this@IntentService
  *
  * The underlying [Kodein] object will [Kodein.Builder.extend] from [appKodein].
  */
@@ -492,16 +504,22 @@ interface IntentServiceInjector : AndroidInjector<IntentService, AndroidScope<In
 /**
  * A base class that manages an [IntentServiceInjector] for easy bootstrapping of Kodein.
  * Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`.
+ *
+ * @param name The name of the service
  */
 abstract class KodeinIntentService(name: String) : IntentService(name), IntentServiceInjector {
     final override val injector = KodeinInjector()
     final override val kodeinComponent = super.kodeinComponent
     final override val kodeinScope = super.kodeinScope
 
+    /**
+     * Default constructor that sets the service name to "KodeinIntentService".
+     */
     constructor() : this("KodeinIntentService")
 
     final override fun initializeInjector() = super.initializeInjector()
 
+    /** @suppress */
     override fun onCreate() {
         super.onCreate()
 
@@ -510,6 +528,7 @@ abstract class KodeinIntentService(name: String) : IntentService(name), IntentSe
 
     final override fun destroyInjector() = super.destroyInjector()
 
+    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -518,32 +537,38 @@ abstract class KodeinIntentService(name: String) : IntentService(name), IntentSe
 }
 
 /**
- * An interface for adding injection and bindings to a [BroadcastReceiver].
+ * An interface for adding injection and bindings to a BroadcastReceiver.
  *
- * Implementations should set [context] to the `Context` from [BroadcastReceiver.onReceive].
+ * Implementations should set [context] to the `Context` from BroadcastReceiver.onReceive.
  *
  * The following bindings are provided:
  *
- * - [KodeinInjected] = [BroadcastReceiver.this]
- * - [Context] = [BroadcastReceiverInjector.context]
- * - [BroadcastReceiver] = [BroadcastReceiver.this]
+ * - [KodeinInjected] = this@BroadcastReceiver
+ * - Context = BroadcastReceiverInjector.context
+ * - BroadcastReceiver = this@BroadcastReceiver
  *
  * The underlying [Kodein] object will [Kodein.Builder.extend] from [appKodein].
  */
 interface BroadcastReceiverInjector : AndroidInjector<BroadcastReceiver, AndroidScope<BroadcastReceiver>> {
     override val kodeinScope: AndroidScope<BroadcastReceiver> get() = androidBroadcastReceiverScope
+
+    /**
+     * Property that needs to be set in BroadcastReceiver.onReceive.
+     */
     var context: Context?
 
     override fun initializeInjector() {
+        val context = context ?: throw IllegalStateException("Please set the context property in onReceive")
+
         val receiverModule = Kodein.Module {
             bindErased<KodeinInjected>() with erasedInstance(this@BroadcastReceiverInjector)
-            bindErased<Context>() with erasedInstance(context!!)
+            bindErased<Context>() with erasedInstance(context)
             bindErased<BroadcastReceiver>() with erasedInstance(kodeinComponent)
 
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        inject(this, receiverModule, context!!.appKodein())
+        inject(this, receiverModule, context.appKodein())
     }
 
     override fun destroyInjector(): ScopeRegistry? {
@@ -565,6 +590,7 @@ abstract class KodeinBroadcastReceiver : BroadcastReceiver(), BroadcastReceiverI
 
     final override fun initializeInjector() = super.initializeInjector()
 
+    /** @suppress */
     final override fun onReceive(context: Context, intent: Intent) {
         this.context = context
         initializeInjector()
@@ -572,6 +598,12 @@ abstract class KodeinBroadcastReceiver : BroadcastReceiver(), BroadcastReceiverI
         destroyInjector()
     }
 
+    /**
+     * Override this instead of onReceive to handle received broadcast intents.
+     *
+     * @param context The context.
+     * @param intent The intent.
+     */
     abstract fun onBroadcastReceived(context: Context, intent: Intent)
 
     final override fun destroyInjector() = super.destroyInjector()
