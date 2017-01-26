@@ -11,7 +11,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.11'
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.13'
     }
 }
 
@@ -21,7 +21,7 @@ allprojects {
     }
 
     group = 'com.github.salomonbrys.kodein'
-    version = '3.2.0-beta3'
+    version = '3.2.0'
 }
 
 def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }
@@ -43,5 +43,5 @@ task("classpath") {
 ext {
     travisBuild = System.getenv("TRAVIS") == "true"
     // allows for -Dpre-dex=false to be set
-    preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
+    preDexEnabled = System.getProperty("pre-dex", "true") == "true"
 }
