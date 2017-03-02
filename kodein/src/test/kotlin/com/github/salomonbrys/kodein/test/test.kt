@@ -144,7 +144,7 @@ class KodeinTests : TestCase() {
     }
 
     @Test fun test02_0_ThreadSingletonBindingGetInstance() {
-        val kodein = Kodein { bind<Person>() with threadSingleton { Person() } }
+        val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
 
         var tp1: Person? = null
 
@@ -166,7 +166,7 @@ class KodeinTests : TestCase() {
     }
 
     @Test fun test02_1_ThreadSingletonBindingGetProvider() {
-        val kodein = Kodein { bind<Person>() with threadSingleton { Person() } }
+        val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
 
         var tp1: Person? = null
 
@@ -599,7 +599,7 @@ class KodeinTests : TestCase() {
 
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>("thread-singleton") with threadSingleton { Person("ts") }
+            bind<IPerson>("thread-singleton") with refSingleton(threadLocal) { Person("ts") }
             bind<IPerson>("singleton") with singleton { Person("s") }
             bind<IPerson>("factory") with factory { name: String -> Person(name) }
             bind<IPerson>("instance") with instance(Person("i"))
@@ -611,20 +611,19 @@ class KodeinTests : TestCase() {
         val lines = kodein.container.bindings.description.lineSequence().map(String::trim).toList()
         assertEquals(8, lines.size)
         assertTrue("bind<IPerson>() with provider { Person }" in lines)
-        assertTrue("bind<IPerson>(\"thread-singleton\") with threadSingleton { Person }" in lines)
+        assertTrue("bind<IPerson>(\"thread-singleton\") with refSingleton(threadLocal) { Person }" in lines)
         assertTrue("bind<IPerson>(\"singleton\") with singleton { Person }" in lines)
         assertTrue("bind<IPerson>(\"factory\") with factory { String -> Person }" in lines)
         assertTrue("bind<IPerson>(\"instance\") with instance ( Person )" in lines)
         assertTrue("bind<Int>(\"answer\") with instance ( Int )" in lines)
         assertTrue("bind<String>(\"scoped\") with scopedSingleton(KodeinTests.test15Scope) { Unit -> String }" in lines)
         assertTrue("bind<String>(\"auto-scoped\") with autoScopedSingleton(KodeinTests.test15Scope) { String }" in lines)
-        println(lines.joinToString("\n"))
     }
 
     @Test fun test15_1_RegisteredBindings() {
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>("thread-singleton") with threadSingleton { Person("ts") }
+            bind<IPerson>("thread-singleton") with refSingleton(threadLocal) { Person("ts") }
             bind<IPerson>("singleton") with singleton { Person("s") }
             bind<IPerson>("factory") with factory { name: String -> Person(name) }
             bind<IPerson>("instance") with instance(Person("i"))
@@ -633,7 +632,7 @@ class KodeinTests : TestCase() {
 
         assertEquals(6, kodein.container.bindings.size)
         assertEquals("provider", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, null), Unit::class.java)]?.factoryName)
-        assertEquals("threadSingleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "thread-singleton"), Unit::class.java)]?.factoryName)
+        assertEquals("refSingleton(threadLocal)", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "thread-singleton"), Unit::class.java)]?.factoryName)
         assertEquals("singleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "singleton"), Unit::class.java)]?.factoryName)
         assertEquals("factory", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "factory"), String::class.java)]?.factoryName)
         assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "instance"), Unit::class.java)]?.factoryName)

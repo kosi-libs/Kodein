@@ -185,27 +185,6 @@ inline fun <reified T : Any> Kodein.Builder.erasedEagerSingleton(noinline creato
 
 
 /**
- * Concrete thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread.
- *
- * @param T The created type.
- * @param createdType The type of the created objects, *used for debug print only*.
- * @property creator The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance.
- */
-class CThreadSingleton<out T : Any>(createdType: Type, val creator: ProviderKodein.() -> T) : AProvider<T>("threadSingleton", createdType) {
-
-    private val _storage = ThreadLocal<T>()
-
-    override fun getInstance(kodein: ProviderKodein, key: Kodein.Key): T {
-        var instance = _storage.get()
-        if (instance == null) {
-            instance = kodein.creator()
-            _storage.set(instance)
-        }
-        return instance
-    }
-}
-
-/**
  * Creates a thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread.
  *
  * T generics will be kept.
@@ -214,7 +193,8 @@ class CThreadSingleton<out T : Any>(createdType: Type, val creator: ProviderKode
  * @param creator The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance.
  * @return A thread singleton ready to be bound.
  */
-inline fun <reified T : Any> Kodein.Builder.genericThreadSingleton(noinline creator: ProviderKodein.() -> T): AProvider<T> = CThreadSingleton(genericToken<T>().type, creator)
+@Deprecated(message = "Use refSingleton with threadLocal", replaceWith = ReplaceWith("genericRefSingleton(threadLocal, creator)")) // Deprecated since 3.3.0
+inline fun <reified T : Any> Kodein.Builder.genericThreadSingleton(noinline creator: ProviderKodein.() -> T): AProvider<T> = genericRefSingleton(threadLocal, creator)
 
 /**
  * Creates a thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread.
@@ -225,7 +205,8 @@ inline fun <reified T : Any> Kodein.Builder.genericThreadSingleton(noinline crea
  * @param creator The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance.
  * @return A thread singleton ready to be bound.
  */
-inline fun <reified T : Any> Kodein.Builder.erasedThreadSingleton(noinline creator: ProviderKodein.() -> T): AProvider<T> = CThreadSingleton(T::class.java, creator)
+@Deprecated(message = "Use refSingleton with threadLocal", replaceWith = ReplaceWith("erasedRefSingleton(threadLocal, creator)")) // Deprecated since 3.3.0
+inline fun <reified T : Any> Kodein.Builder.erasedThreadSingleton(noinline creator: ProviderKodein.() -> T): AProvider<T> = erasedRefSingleton(threadLocal, creator)
 
 
 

@@ -56,7 +56,8 @@ inline fun <reified T : Any> Kodein.Builder.eagerSingleton(noinline creator: Pro
  * @param creator The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance.
  * @return A thread singleton ready to be bound.
  */
-inline fun <reified T : Any> Kodein.Builder.threadSingleton(noinline creator: ProviderKodein.() -> T) = genericThreadSingleton(creator)
+@Deprecated(message = "Use refSingleton with threadLocal", replaceWith = ReplaceWith("refSingleton(threadLocal, creator)")) // Deprecated since 3.3.0
+inline fun <reified T : Any> Kodein.Builder.threadSingleton(noinline creator: ProviderKodein.() -> T) = refSingleton(threadLocal, creator)
 
 /**
  * Creates an instance provider: will always return the given instance.
