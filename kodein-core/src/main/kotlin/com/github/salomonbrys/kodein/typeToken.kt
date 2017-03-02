@@ -82,7 +82,7 @@ abstract class TypeReference<T> protected constructor() : TypeToken<T> {
  */
 inline fun <reified T> genericToken(): TypeToken<T> = (object : TypeReference<T>() {})
 
-@Deprecated(message = "Use genericToken instead.", replaceWith = ReplaceWith("genericToken<T>()"))
+@Deprecated(message = "Use genericToken instead.", replaceWith = ReplaceWith("genericToken<T>()"), level = DeprecationLevel.ERROR) // Deprecated since 3.2.0
 inline fun <reified T> typeToken() = genericToken<T>()
 
 
