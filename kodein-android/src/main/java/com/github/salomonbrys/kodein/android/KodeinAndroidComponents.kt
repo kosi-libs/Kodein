@@ -1,6 +1,11 @@
 package com.github.salomonbrys.kodein.android
 
-import android.app.*
+import android.app.Activity
+import android.app.Fragment
+import android.app.FragmentManager
+import android.app.IntentService
+import android.app.LoaderManager
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,10 +14,16 @@ import android.support.annotation.CallSuper
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
-import com.github.salomonbrys.kodein.*
+import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.KodeinInjected
+import com.github.salomonbrys.kodein.KodeinInjector
+import com.github.salomonbrys.kodein.ScopeRegistry
+import com.github.salomonbrys.kodein.erasedInstance
 import android.support.v4.app.Fragment as SupportFragment
 import android.support.v4.app.FragmentManager as SupportFragmentManager
 import android.support.v4.app.LoaderManager as SupportLoaderManager
+
+val ACTIVITY_LAYOUT_INFLATER = Any()
 
 private fun inject(injector: KodeinInjected, componentModule: Kodein.Module, superKodein: Kodein) {
     val kodein = Kodein {
@@ -82,7 +93,7 @@ interface ActivityInjector : AndroidInjector<Activity, AndroidScope<Activity>> {
             bindErased<Activity>() with erasedInstance(kodeinComponent)
             bindErased<FragmentManager>() with erasedInstance(kodeinComponent.fragmentManager)
             bindErased<LoaderManager>() with erasedInstance(kodeinComponent.loaderManager)
-            bindErased<LayoutInflater>() with erasedInstance(kodeinComponent.layoutInflater)
+            bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER) with erasedInstance(kodeinComponent.layoutInflater)
 
             import(provideOverridingModule(), allowOverride = true)
         }
@@ -149,7 +160,7 @@ interface FragmentActivityInjector : AndroidInjector<FragmentActivity, AndroidSc
             bindErased<LoaderManager>() with erasedInstance(kodeinComponent.loaderManager)
             bindErased<SupportFragmentManager>() with erasedInstance(kodeinComponent.supportFragmentManager)
             bindErased<SupportLoaderManager>() with erasedInstance(kodeinComponent.supportLoaderManager)
-            bindErased<LayoutInflater>() with erasedInstance(kodeinComponent.layoutInflater)
+            bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER) with erasedInstance(kodeinComponent.layoutInflater)
 
             import(provideOverridingModule(), allowOverride = true)
         }
@@ -218,7 +229,7 @@ interface AppCompatActivityInjector : AndroidInjector<AppCompatActivity, Android
             bindErased<LoaderManager>() with erasedInstance(kodeinComponent.loaderManager)
             bindErased<SupportFragmentManager>() with erasedInstance(kodeinComponent.supportFragmentManager)
             bindErased<SupportLoaderManager>() with erasedInstance(kodeinComponent.supportLoaderManager)
-            bindErased<LayoutInflater>() with erasedInstance(kodeinComponent.layoutInflater)
+            bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER) with erasedInstance(kodeinComponent.layoutInflater)
 
             import(provideOverridingModule(), allowOverride = true)
         }
@@ -286,7 +297,7 @@ interface FragmentInjector : AndroidInjector<Fragment, AndroidScope<Fragment>> {
                     }
                 }
 
-                bindErased<LayoutInflater>(overrides = true) with erasedInstance(activity.layoutInflater)
+                bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER, overrides = true) with erasedInstance(activity.layoutInflater)
             }
             bindErased<Fragment>() with erasedInstance(kodeinComponent)
             bindErased<FragmentManager>(overrides = true) with erasedInstance(kodeinComponent.fragmentManager)
@@ -370,7 +381,7 @@ interface SupportFragmentInjector : AndroidInjector<SupportFragment, AndroidScop
                     }
                 }
 
-                bindErased<LayoutInflater>(overrides = true) with erasedInstance(activity.layoutInflater)
+                bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER, overrides = true) with erasedInstance(activity.layoutInflater)
             }
             bindErased<SupportFragment>() with erasedInstance(kodeinComponent)
             bindErased<SupportFragmentManager>(overrides = true) with erasedInstance(kodeinComponent.fragmentManager)
