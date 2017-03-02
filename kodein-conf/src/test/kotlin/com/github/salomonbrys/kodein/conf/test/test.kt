@@ -4,6 +4,7 @@ import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.conf.ConfigurableKodein
 import com.github.salomonbrys.kodein.conf.global
 import junit.framework.TestCase
+import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
@@ -171,7 +172,7 @@ class KodeinGlobalTests : TestCase() {
         assertEquals("Salomon *", kodein.withGeneric(listOf("Salomon", "BRYS")).erasedInstance())
 
         kodein.addConfig {
-            bindErased<String>() with genericFactory { l: List<String> -> l[0].toString() + " " + l[1].toString() }
+            bindErased<String>() with genericFactory { l: List<String> -> l[0] + " " + l[1] }
         }
 
         assertEquals("Salomon BRYS", kodein.withGeneric(listOf("Salomon", "BRYS")).erasedInstance())
@@ -193,6 +194,21 @@ class KodeinGlobalTests : TestCase() {
 
         assertEquals(21, Kodein.global.erasedInstance<Int>("half"))
         assertEquals(42, Kodein.global.erasedInstance<Int>("full"))
+    }
+
+    object Test05_0 {
+        val kodein = ConfigurableKodein()
+
+        class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.erasedInstance())
+    }
+
+    @Test fun test05_0_loop() {
+        Test05_0.kodein.addConfig {
+            bind() from erasedSingleton { "test" }
+            bind() from erasedEagerSingleton { Test05_0.Loop() }
+        }
+
+        Test05_0.kodein.getOrConstruct()
     }
 
 }

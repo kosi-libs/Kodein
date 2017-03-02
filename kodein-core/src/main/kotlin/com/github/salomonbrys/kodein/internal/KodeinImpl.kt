@@ -14,6 +14,8 @@ import java.util.*
  */
 internal open class KodeinImpl internal constructor(final override val container: KodeinContainer) : Kodein {
 
+    private var _init: (() -> Unit)? = null
+
     /**
      * Creates a Kodein object with a [Kodein.Builder]'s internal.
      *
@@ -23,17 +25,42 @@ internal open class KodeinImpl internal constructor(final override val container
      * @param builder The builder to use.
      */
     @Suppress("unused")
-    private constructor(builder: Kodein.Builder) : this(KodeinContainerImpl(builder.container)) {
-        builder._callbacks.forEach { it() }
-        builder._factoryCallbacks.forEach { it.second.invoke(FactoryKodeinImpl(container, it.first, 0)) }
+    private constructor(builder: Kodein.Builder, runCallbacks: Boolean) : this(KodeinContainerImpl(builder.container)) {
+        val init: () -> Unit = {
+            builder._callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it() }
+            builder._factoryCallbacks.forEach { it.second.invoke(FactoryKodeinImpl(container, it.first, 0)) }
+        }
+
+        if (runCallbacks)
+            init()
+        else
+            _init = {
+                synchronized(this) {
+                    _init = null
+                    init()
+                }
+            }
     }
 
     /**
      * "Main" constructor.
      */
-    constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(Kodein.Builder(KodeinContainer.Builder(true, allowSilentOverride, CMap()), ArrayList(), ArrayList(), init))
+    constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(Kodein.Builder(KodeinContainer.Builder(true, allowSilentOverride, CMap()), ArrayList(), ArrayList(), init), true)
 
-    override val typed = TKodein(container)
+    companion object {
+        fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit): Pair<Kodein, () -> Unit> {
+            val kodein = KodeinImpl(Kodein.Builder(KodeinContainer.Builder(true, allowSilentOverride, CMap()), ArrayList(), ArrayList(), init), false)
+            return kodein to { kodein._init?.invoke() ; Unit }
+        }
+    }
+
+    override val typed: TKodein = TKodein(container)
+        get() {
+            if (_init != null)
+                throw IllegalStateException("Kodein has not been initialized")
+            return field
+        }
+
 }
 
 @Suppress("UNCHECKED_CAST")

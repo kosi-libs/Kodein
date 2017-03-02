@@ -74,15 +74,19 @@ class ConfigurableKodein : Kodein {
             if (mutable == null)
                 mutable = false
 
-            val configs = checkNotNull(_configs) {"recursive initialization detected"}
+            val configs = checkNotNull(_configs) { "recursive initialization detected" }
             _configs = null
 
-            _instance = Kodein {
+            val (kodein, init) = Kodein.withDelayedCallbacks {
                 for (config in configs)
                     config()
             }
 
-            return _instance!!
+            _instance = kodein
+
+            init()
+
+            return kodein
         }
     }
 

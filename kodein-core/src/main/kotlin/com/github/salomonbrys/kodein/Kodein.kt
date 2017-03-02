@@ -467,6 +467,8 @@ interface Kodein : KodeinAwareBase {
          * @return The new Kodein object, freshly created, and ready for hard work!
          */
         operator fun invoke(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit): Kodein = KodeinImpl(allowSilentOverride, init)
+
+        fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit): Pair<Kodein, () -> Unit> = KodeinImpl.withDelayedCallbacks(allowSilentOverride, init)
     }
 
 }
