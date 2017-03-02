@@ -266,6 +266,14 @@ abstract class KodeinAppCompatActivity : AppCompatActivity(), AppCompatActivityI
     }
 }
 
+private fun validateFragmentsActivity(activity: Activity) {
+    if(activity !is AndroidInjector<*, *>) {
+        throw RuntimeException("The Activity of a Kodein Fragment component must be one of " +
+                                   "KodeinActivity, KodeinFragmentActivity, KodeinAppCompatActivity, " +
+                                   "ActivityInjector, FragmentActivityInjector, or AppCompatActivityInjector")
+    }
+}
+
 /**
  * An interface for adding injection and bindings to a Fragment.
  *
@@ -287,16 +295,11 @@ interface FragmentInjector : AndroidInjector<Fragment, AndroidScope<Fragment>> {
     override fun initializeInjector() {
         val activity = kodeinComponent.activity
 
+        validateFragmentsActivity(activity)
+
         val fragmentModule = Kodein.Module {
             bindErased<KodeinInjected>(overrides = true) with erasedInstance(this@FragmentInjector)
             activity?.let {
-                when (it) {
-                    !is KodeinActivity -> {
-                        bindErased<Context>(overrides = true) with erasedInstance(it)
-                        bindErased<Activity>(overrides = true) with erasedInstance(it)
-                    }
-                }
-
                 bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER, overrides = true) with erasedInstance(activity.layoutInflater)
             }
             bindErased<Fragment>() with erasedInstance(kodeinComponent)
@@ -306,13 +309,7 @@ interface FragmentInjector : AndroidInjector<Fragment, AndroidScope<Fragment>> {
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        val superKodeins = if (activity is KodeinInjected) {
-            activity.injector.kodein().value
-        } else {
-            kodeinComponent.appKodein()
-        }
-
-        inject(this, fragmentModule, superKodeins)
+        inject(this, fragmentModule, (activity as KodeinInjected).injector.kodein().value)
     }
 }
 
@@ -367,20 +364,11 @@ interface SupportFragmentInjector : AndroidInjector<SupportFragment, AndroidScop
     override fun initializeInjector() {
         val activity = kodeinComponent.activity
 
+        validateFragmentsActivity(activity)
+
         val fragmentModule = Kodein.Module {
             bindErased<KodeinInjected>(overrides = true) with erasedInstance(this@SupportFragmentInjector)
             activity?.let {
-                when (it) {
-                    !is KodeinActivity, !is KodeinFragmentActivity, !is KodeinAppCompatActivity -> {
-                        bindErased<Context>(overrides = true) with erasedInstance(it)
-                        bindErased<Activity>(overrides = true) with erasedInstance(it)
-                        if (it is FragmentActivity) {
-                            bindErased<FragmentActivity>(overrides = true) with erasedInstance(it)
-                            if (it is AppCompatActivity) bindErased<AppCompatActivity>(overrides = true) with erasedInstance(it)
-                        }
-                    }
-                }
-
                 bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER, overrides = true) with erasedInstance(activity.layoutInflater)
             }
             bindErased<SupportFragment>() with erasedInstance(kodeinComponent)
@@ -390,13 +378,7 @@ interface SupportFragmentInjector : AndroidInjector<SupportFragment, AndroidScop
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        val superKodeins = if (activity is KodeinInjected) {
-            activity.injector.kodein().value
-        } else {
-            kodeinComponent.appKodein()
-        }
-
-        inject(this, fragmentModule, superKodeins)
+        inject(this, fragmentModule, (activity as KodeinInjected).injector.kodein().value)
     }
 }
 

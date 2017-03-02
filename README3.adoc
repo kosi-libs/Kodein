@@ -1177,6 +1177,10 @@ class MyBroadcastReceiver : CustomBroadcastReceiver(), BroadcastReceiverInjector
 ----
 <1> It is necessary to set `BroadcastReceiverInjector.context` before calling `initializeInjector`
 
+==== Fragments
+
+If you use one of `KodeinFragment`, `KodeinSupportFragment`, `FragmentInjector`, or `SupportFragmentInjector`, then the `Activity` of that `Fragment` **must** be one of `KodeinActivity`, `KodeinFragmentActivity`, `KodeinAppCompatActivity`, `ActivityInjector`, `FragmentActivityInjector`, or `AppCompatActivityInjector`.
+
 
 === Android module
 
