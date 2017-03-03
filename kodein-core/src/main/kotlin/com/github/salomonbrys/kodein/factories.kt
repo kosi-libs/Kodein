@@ -47,7 +47,7 @@ inline fun <reified A, reified T : Any> Kodein.Builder.erasedFactory(noinline cr
 
 
 class CMultiton<in A, out T : Any>(argType: Type, createdType: Type, val creator: FactoryKodein.(A) -> T) : AFactory<A, T>("factory", argType, createdType) {
-    private var _instances = ConcurrentHashMap<A, T>()
+    private val _instances = ConcurrentHashMap<A, T>()
 
     override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: A): T {
         _instances[arg]?.let { return it }

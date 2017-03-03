@@ -37,9 +37,11 @@ class CRefSingleton<out T : Any>(createdType: Type, val refMaker: RefMaker, val 
 
     private var _ref: () -> T? = { null }
 
+    private val _lock = Any()
+
     override fun getInstance(kodein: ProviderKodein, key: Kodein.Key): T {
         _ref.invoke()?.let { return it }
-        synchronized(this) {
+        synchronized(_lock) {
             _ref.invoke()?.let { return it }
             val pair = refMaker.make { kodein.creator() }
             _ref = pair.second
@@ -59,11 +61,11 @@ inline fun <reified T : Any> Kodein.Builder.erasedRefSingleton(refMaker: RefMake
 
 class CRefMultiton<in A, out T: Any>(argType: Type, createdType: Type, val refMaker: RefMaker, val creator: FactoryKodein.(A) -> T): AFactory<A, T>("refMultiton(${refMaker.javaClass.simpleDispString})", argType, createdType) {
 
-    private var _refs = ConcurrentHashMap<A, () -> T?>()
+    private val _refs = ConcurrentHashMap<A, () -> T?>()
 
     override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: A): T {
         _refs[arg]?.invoke()?.let { return it }
-        synchronized(this) {
+        synchronized(_refs) {
             _refs[arg]?.invoke()?.let { return it }
             val pair = refMaker.make { kodein.creator(arg) }
             _refs[arg] = pair.second
