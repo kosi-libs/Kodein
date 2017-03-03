@@ -38,6 +38,8 @@ inline fun <reified T : Any> Kodein.Builder.provider(noinline creator: Kodein.()
  */
 inline fun <reified T : Any> Kodein.Builder.singleton(noinline creator: Kodein.() -> T) = erasedSingleton(creator)
 
+inline fun <reified A, reified T : Any> Kodein.Builder.multiton(noinline creator: FactoryKodein.(A) -> T) = erasedMultiton(creator)
+
 /**
  * Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.
  *

@@ -36,6 +36,8 @@ inline fun <reified T : Any> Kodein.Builder.provider(noinline creator: ProviderK
  */
 inline fun <reified T : Any> Kodein.Builder.singleton(noinline creator: ProviderKodein.() -> T) = genericSingleton(creator)
 
+inline fun <reified A, reified T : Any> Kodein.Builder.multiton(noinline creator: FactoryKodein.(A) -> T) = genericMultiton(creator)
+
 /**
  * Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.
  *

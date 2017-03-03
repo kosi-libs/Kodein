@@ -187,6 +187,26 @@ class KodeinTests : TestCase() {
         assertNotSame(p1, tp1)
     }
 
+    @Suppress("UNUSED_VALUE")
+    @Test fun test02_3_WeakSingletonBinding() {
+        val kodein = Kodein { bind<Person>() with refSingleton(weakReference) { Person() } }
+
+        var p1: Person? = kodein.instance()
+        var p2: Person? = kodein.instance()
+        assertSame(p1, p2)
+
+        val id = System.identityHashCode(p1)
+
+        p1 = null
+        p2 = null
+        System.gc()
+
+        p1 = kodein.instance()
+
+        assertNotEquals(id, System.identityHashCode(p1))
+    }
+
+
     @Test fun test03_0_InstanceBindingGetInstance() {
 
         val p = Person()
@@ -551,7 +571,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    class PersonInject() {
+    class PersonInject {
         val injector = KodeinInjector()
         val newPerson: () -> Person by injector.provider()
         val salomon: Person by injector.instance("named")
@@ -787,7 +807,7 @@ class KodeinTests : TestCase() {
         }
     }
 
-    @Test fun test19_0_onReadyCallback() {
+    @Test fun test19_0_OnReadyCallback() {
         var passed = false
         Kodein {
             constant("name") with "Salomon"
@@ -808,7 +828,7 @@ class KodeinTests : TestCase() {
         val logger: FakeLogger = withClass().instance()
     }
 
-    @Test fun test20_0_injectForClass() {
+    @Test fun test20_0_InjectForClass() {
         val kodein = Kodein {
             bind<FakeLogger>() with factory { cls: Class<*> -> FakeLoggerImpl(cls) }
         }
@@ -820,9 +840,10 @@ class KodeinTests : TestCase() {
 
     open class Test21_A
     class Test21_B : Test21_A()
+    @Suppress("unused")
     class Test21_G<out T : Test21_A>
 
-    @Test fun test21_0_simpleDispString() {
+    @Test fun test21_0_SimpleDispString() {
 
         assertEquals("Int", genericToken<Int>().type.simpleDispString)
 
@@ -841,7 +862,7 @@ class KodeinTests : TestCase() {
         val name: String by kodein.lazy.instance("name")
     }
 
-    @Test fun test22_0_lazy() {
+    @Test fun test22_0_Lazy() {
         val kodein = Kodein {
             constant("name") with "Salomon"
         }
@@ -849,5 +870,82 @@ class KodeinTests : TestCase() {
 
         assertEquals("Salomon", test.name)
     }
+
+    @Test fun test23_0_Multiton() {
+        val kodein = Kodein { bind() from multiton { name: String -> Person(name) } }
+
+        val p1: Person = kodein.with("Salomon").instance()
+        val p2: Person = kodein.with("Salomon").instance()
+        val p3: Person = kodein.with("Laila").instance()
+        val p4: Person = kodein.with("Laila").instance()
+
+        assertSame(p1, p2)
+        assertSame(p3, p4)
+
+        assertNotSame(p1, p3)
+
+        assertEquals("Salomon", p1.name)
+        assertEquals("Laila", p3.name)
+    }
+
+    @Test fun test23_1_threadMultiton() {
+        val kodein = Kodein { bind() from refMultiton(threadLocal) { name: String -> Person(name) } }
+
+        var tp1: Person? = null
+        var tp3: Person? = null
+
+        val t = thread {
+            tp1 = kodein.with("Salomon").instance()
+            val tp2: Person = kodein.with("Salomon").instance()
+            tp3 = kodein.with("Laila").instance()
+
+            assertSame(tp1, tp2)
+            assertNotEquals(tp1, tp3)
+        }
+
+        val p1: Person = kodein.with("Salomon").instance()
+        val p2: Person = kodein.with("Salomon").instance()
+        val p3: Person = kodein.with("Laila").instance()
+
+        assertSame(p1, p2)
+        assertNotEquals(p1, p3)
+
+        t.join()
+
+        assertNotSame(p1, tp1)
+        assertEquals(p1, tp1)
+        assertEquals("Salomon", p1.name)
+        assertNotSame(p3, tp3)
+        assertEquals(p3, tp3)
+        assertEquals("Laila", p3.name)
+    }
+
+    @Suppress("UNUSED_VALUE")
+    @Test fun test23_3_WeakMultiton() {
+        val kodein = Kodein { bind() from refMultiton(weakReference) { name: String -> Person(name) } }
+
+        var p1: Person? = kodein.with("Salomon").instance()
+        var p2: Person? = kodein.with("Salomon").instance()
+        var p3: Person? = kodein.with("Laila").instance()
+        assertSame(p1, p2)
+        assertNotSame(p1, p3)
+        assertEquals("Salomon", p1?.name)
+        assertEquals("Laila", p3?.name)
+
+        val id1 = System.identityHashCode(p1)
+        val id3 = System.identityHashCode(p3)
+
+        p1 = null
+        p2 = null
+        p3 = null
+        System.gc()
+
+        p1 = kodein.with("Salomon").instance()
+        p3 = kodein.with("Laila").instance()
+
+        assertNotEquals(id1, System.identityHashCode(p1))
+        assertNotEquals(id3, System.identityHashCode(p3))
+    }
+
 
 }
