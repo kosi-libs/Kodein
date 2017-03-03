@@ -1096,6 +1096,10 @@ class MyActivity : KodeinActivity() { // <1>
 <3> We can also use the `injector` if we want to
 <4> `provideOverridingModule` allows us to override bindings specified higher up in the dependency tree (for example, we override the "log-tag" `String` binding defined in `MyApplication`)
 
+===== Kodein Activities
+
+`KodeinActivity`, `KodeinFragmentActivity`, and `KodeinAppCompatActivity` will internally initialize their injector before they call `super.onCreate` (see https://github.com/SalomonBrys/Kodein/issues/50[the issue that necessitates this]).
+
 ===== KodeinBroadcastReceiver
 
 Because of how the injector's lifecycle is managed for a `KodeinBroadcastReceiver`, subclasses should override `onBroadcastReceived(Context, Intent)` instead of `onReceive(Context, Intent)`.
@@ -1152,6 +1156,10 @@ class MyFragment : CustomFragment(), FragmentInjector { // <1>
 <5> `provideOverridingModule` allows us to override bindings specified higher up in the dependency tree (for example, we override the "log-tag" `String` binding defined in `MyApplication`)
 <6> Since we have to manage the injector's lifecycle we initialize it when the fragment is initialized; in `onCreate`
 <7> Since we have to manage the injector's lifecycle we destroy it when the fragment is destroyedl in `onDestroy`
+
+===== Activity Injectors
+
+When using `ActivityInjector`, `FragmentActivityInjector`, or `AppCompatActivityInjector` it is suggested to call `initializeInjector` before `super.onCreate` (see https://github.com/SalomonBrys/Kodein/issues/50[the issue that necessitates this]).
 
 ===== BroadcastReceiverInjector
 

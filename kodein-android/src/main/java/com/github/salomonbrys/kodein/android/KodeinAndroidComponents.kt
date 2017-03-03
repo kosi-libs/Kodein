@@ -115,9 +115,9 @@ abstract class KodeinActivity : Activity(), ActivityInjector {
 
     /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         initializeInjector()
+
+        super.onCreate(savedInstanceState)
     }
 
     final override fun destroyInjector() = super.destroyInjector()
@@ -182,9 +182,9 @@ abstract class KodeinFragmentActivity : FragmentActivity(), FragmentActivityInje
 
     /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         initializeInjector()
+
+        super.onCreate(savedInstanceState)
     }
 
     final override fun destroyInjector() = super.destroyInjector()
@@ -251,9 +251,9 @@ abstract class KodeinAppCompatActivity : AppCompatActivity(), AppCompatActivityI
 
     /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         initializeInjector()
+
+        super.onCreate(savedInstanceState)
     }
 
     final override fun destroyInjector() = super.destroyInjector()
