@@ -1179,8 +1179,7 @@ class MyBroadcastReceiver : CustomBroadcastReceiver(), BroadcastReceiverInjector
 
 ==== Fragments
 
-If you use one of `KodeinFragment`, `KodeinSupportFragment`, `FragmentInjector`, or `SupportFragmentInjector`, then the `Activity` of that `Fragment` **must** be one of `KodeinActivity`, `KodeinFragmentActivity`, `KodeinAppCompatActivity`, `ActivityInjector`, `FragmentActivityInjector`, or `AppCompatActivityInjector`.
-
+The parent of any `KodeinFragment`, `KodeinSupportFragment`, `FragmentInjector`, or `SupportFragmentInjector` **must** be `KodeinInjected`. This means a `parentFragment` **must** be one of `KodeinFragment`, `KodeinSupportFragment`, `FragmentInjector`, or `SupportFragmentInjector`. If there is no `parentFragment`, the `Activity` of the `Fragment` **must** be one of `KodeinActivity`, `KodeinFragmentActivity`, `KodeinAppCompatActivity`, `ActivityInjector`, `FragmentActivityInjector`, or `AppCompatActivityInjector`.
 
 === Android module
 
