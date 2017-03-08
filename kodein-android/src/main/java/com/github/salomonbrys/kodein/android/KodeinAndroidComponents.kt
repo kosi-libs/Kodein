@@ -9,6 +9,7 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.v4.app.FragmentActivity
@@ -309,7 +310,14 @@ interface FragmentInjector : AndroidInjector<Fragment, AndroidScope<Fragment>> {
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        inject(this, fragmentModule, (activity as KodeinInjected).injector.kodein().value)
+
+        val parent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            kodeinComponent.parentFragment ?: activity
+        } else {
+            activity
+        }
+
+        inject(this, fragmentModule, (parent as KodeinInjected).injector.kodein().value)
     }
 }
 
