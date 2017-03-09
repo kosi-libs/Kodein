@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceFragment
 import android.support.annotation.CallSuper
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
@@ -318,6 +319,30 @@ interface FragmentInjector : AndroidInjector<Fragment, AndroidScope<Fragment>> {
  * Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`.
  */
 abstract class KodeinFragment : Fragment(), FragmentInjector {
+    final override val injector = KodeinInjector()
+    final override val kodeinComponent = super.kodeinComponent
+    final override val kodeinScope = super.kodeinScope
+
+    final override fun initializeInjector() = super.initializeInjector()
+
+    /** @suppress */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initializeInjector()
+    }
+
+    final override fun destroyInjector() = super.destroyInjector()
+
+    /** @suppress */
+    override fun onDestroy() {
+        super.onDestroy()
+
+        destroyInjector()
+    }
+}
+
+abstract class KodeinPreferenceFragment : PreferenceFragment(), FragmentInjector {
     final override val injector = KodeinInjector()
     final override val kodeinComponent = super.kodeinComponent
     final override val kodeinScope = super.kodeinScope
