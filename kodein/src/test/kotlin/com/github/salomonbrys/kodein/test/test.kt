@@ -947,5 +947,18 @@ class KodeinTests : TestCase() {
         assertNotEquals(id3, System.identityHashCode(p3))
     }
 
+    @Test fun test24_0_Callback() {
+        var ready = false
+
+        Kodein {
+            onReady {
+                ready = true
+            }
+
+            assertFalse(ready)
+        }
+
+        assertTrue(ready)
+    }
 
 }

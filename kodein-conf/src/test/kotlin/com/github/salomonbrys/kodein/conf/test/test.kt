@@ -179,7 +179,7 @@ class KodeinGlobalTests : TestCase() {
         assertEquals("42 *", kodein.withGeneric(listOf(42)).erasedInstance())
     }
 
-    @Test fun test04_0_global() {
+    @Test fun test04_0_Global() {
         Kodein.global.mutable = true
 
         Kodein.global.addConfig {
@@ -202,13 +202,32 @@ class KodeinGlobalTests : TestCase() {
         class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.erasedInstance())
     }
 
-    @Test fun test05_0_loop() {
+    @Test fun test05_0_Loop() {
         Test05_0.kodein.addConfig {
             bind() from erasedSingleton { "test" }
             bind() from erasedEagerSingleton { Test05_0.Loop() }
         }
 
         Test05_0.kodein.getOrConstruct()
+    }
+
+    @Test fun test06_0_Callback() {
+        val kodein = ConfigurableKodein()
+
+        var ready = false
+
+        kodein.addConfig {
+            onReady {
+                bind() from erasedSingleton { "test" }
+                ready = true
+            }
+
+            assertFalse(ready)
+        }
+
+        kodein.erasedInstance<String>()
+
+        assertTrue(ready)
     }
 
 }
