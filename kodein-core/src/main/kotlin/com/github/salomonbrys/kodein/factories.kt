@@ -119,18 +119,17 @@ inline fun <reified T : Any> Kodein.Builder.erasedProvider(noinline creator: Pro
  * @property creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
 abstract class ASingleton<out T : Any>(factoryName: String, createdType: Type, val creator: ProviderKodein.() -> T) : AProvider<T>(factoryName, createdType) {
-    private var _instance: T? = null
+    private @Volatile var _instance: T? = null
     private val _lock = Any()
 
     override fun getInstance(kodein: ProviderKodein, key: Kodein.Key): T {
-        if (_instance != null)
+        _instance?.let { return it }
+
+        synchronized(_lock) {
+            if (_instance == null)
+                _instance = kodein.creator()
             return _instance!!
-        else
-            synchronized(_lock) {
-                if (_instance == null)
-                    _instance = kodein.creator()
-                return _instance!!
-            }
+        }
     }
 }
 

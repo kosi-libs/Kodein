@@ -43,7 +43,7 @@ class KodeinInjector() : KodeinInjectedBase {
     /**
      * Kodein instance that was used to inject. Is null before calling [KodeinInjector.inject].
      */
-    private var _kodein: Kodein? = null
+    private @Volatile var _kodein: Kodein? = null
 
     /**
      * List of callbacks to call when being [injected][KodeinInjector.inject].
@@ -51,17 +51,13 @@ class KodeinInjector() : KodeinInjectedBase {
     private var _onInjecteds = ArrayList<(Kodein) -> Unit>()
 
     override fun onInjected(cb: (Kodein) -> Unit) {
-        val k1 = _kodein
-        if (k1 != null)
-            cb(k1)
-        else
-            synchronized(_lock) {
-                val k2 = _kodein
-                if (k2 != null)
-                    cb(k2)
-                else
-                    _onInjecteds.add(cb)
-            }
+        _kodein?.let { return cb(it) }
+
+        synchronized(_lock) {
+            _kodein?.let { return cb(it) }
+
+            _onInjecteds.add(cb)
+        }
     }
 
     /**
@@ -73,19 +69,14 @@ class KodeinInjector() : KodeinInjectedBase {
      * @return The property, for ease of use.
      */
     private fun <T> _register(injected: InjectedProperty<T>): InjectedProperty<T> {
-        val k1 = _kodein
-        if (k1 != null)
-            injected._inject(k1.container)
-        else
-            synchronized(_lock) {
-                val k2 = _kodein
-                if (k2 != null)
-                    injected._inject(k2.container)
-                else
-                    _list.add(injected)
-            }
+        _kodein?.let { return injected.apply { _inject(it.container) } }
 
-        return injected
+        synchronized(_lock) {
+            _kodein?.let { return injected.apply { _inject(it.container) } }
+
+            _list.add(injected)
+            return injected
+        }
     }
 
     /**
@@ -531,10 +522,10 @@ class KodeinInjector() : KodeinInjectedBase {
                 return
 
             _kodein = kodein
-        }
 
-        _list.forEach { it._inject(kodein.container) }
-        _list.clear()
+            _list.forEach { it._inject(kodein.container) }
+            _list.clear()
+        }
 
         _onInjecteds.forEach { it(kodein) }
         _onInjecteds.clear()

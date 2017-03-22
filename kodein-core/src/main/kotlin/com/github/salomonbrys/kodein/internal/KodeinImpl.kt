@@ -14,7 +14,7 @@ import java.util.*
  */
 internal open class KodeinImpl internal constructor(final override val container: KodeinContainer) : Kodein {
 
-    private var _init: (() -> Unit)? = null
+    private @Volatile var _init: (() -> Unit)? = null
 
     /**
      * Creates a Kodein object with a [Kodein.Builder]'s internal.
@@ -35,8 +35,10 @@ internal open class KodeinImpl internal constructor(final override val container
             init()
         else {
             val lock = Any()
-            _init = {
+            _init = init@ {
+                if (_init == null) return@init
                 synchronized(lock) {
+                    if (_init == null) return@init
                     _init = null
                     init()
                 }

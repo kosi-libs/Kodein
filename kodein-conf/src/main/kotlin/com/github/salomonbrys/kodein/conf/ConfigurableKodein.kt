@@ -58,7 +58,7 @@ class ConfigurableKodein : Kodein {
     /**
      * Kodein instance. If it is not null, than it cannot be configured anymore.
      */
-    private var _instance: Kodein? = null
+    private @Volatile var _instance: Kodein? = null
 
     /**
      * Get the kodein instance if it has already been constructed, or construct it if not.
@@ -66,12 +66,10 @@ class ConfigurableKodein : Kodein {
      * The first time this function is called is the end of the configuration.
      */
     fun getOrConstruct(): Kodein {
-        if (_instance != null)
-            return _instance!!
+        _instance?.let { return it }
 
         synchronized(_lock) {
-            if (_instance != null)
-                return _instance!!
+            _instance?.let { return it }
 
             if (mutable == null)
                 mutable = false
@@ -106,7 +104,6 @@ class ConfigurableKodein : Kodein {
 
             if (configs != null) {
                 configs.clear()
-                return
             }
             else {
                 _instance = null
