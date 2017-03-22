@@ -9,6 +9,7 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.v4.app.FragmentActivity
@@ -266,11 +267,11 @@ abstract class KodeinAppCompatActivity : AppCompatActivity(), AppCompatActivityI
     }
 }
 
-private fun validateFragmentsActivity(activity: Activity) {
-    if(activity !is AndroidInjector<*, *>) {
+private fun Activity.mustBeAndroidInjector() {
+    if(this !is AndroidInjector<*, *>) {
         throw RuntimeException("The Activity of a Kodein Fragment component must be one of " +
-                                   "KodeinActivity, KodeinFragmentActivity, KodeinAppCompatActivity, " +
-                                   "ActivityInjector, FragmentActivityInjector, or AppCompatActivityInjector")
+                "KodeinActivity, KodeinFragmentActivity, KodeinAppCompatActivity, " +
+                "ActivityInjector, FragmentActivityInjector, or AppCompatActivityInjector")
     }
 }
 
@@ -294,22 +295,31 @@ interface FragmentInjector : AndroidInjector<Fragment, AndroidScope<Fragment>> {
 
     override fun initializeInjector() {
         val activity = kodeinComponent.activity
+        activity.mustBeAndroidInjector()
 
-        validateFragmentsActivity(activity)
+        val parentFragment = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            kodeinComponent.parentFragment
+        } else {
+            null
+        }
+        parentFragment?.mustBeAndroidInjector()
+        val hasParentFragment = parentFragment != null
 
         val fragmentModule = Kodein.Module {
             bindErased<KodeinInjected>(overrides = true) with erasedInstance(this@FragmentInjector)
             activity?.let {
                 bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER, overrides = true) with erasedInstance(activity.layoutInflater)
             }
-            bindErased<Fragment>() with erasedInstance(kodeinComponent)
+            bindErased<Fragment>(overrides = hasParentFragment) with erasedInstance(kodeinComponent)
             bindErased<FragmentManager>(overrides = true) with erasedInstance(kodeinComponent.fragmentManager)
             bindErased<LoaderManager>(overrides = true) with erasedInstance(kodeinComponent.loaderManager)
 
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        inject(this, fragmentModule, (activity as KodeinInjected).injector.kodein().value)
+        val parent = parentFragment ?: activity
+
+        inject(this, fragmentModule, (parent as KodeinInjected).injector.kodein().value)
     }
 }
 
@@ -324,20 +334,26 @@ abstract class KodeinFragment : Fragment(), FragmentInjector {
 
     final override fun initializeInjector() = super.initializeInjector()
 
-    /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         initializeInjector()
+
+        super.onCreate(savedInstanceState)
     }
 
     final override fun destroyInjector() = super.destroyInjector()
 
-    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
         destroyInjector()
+    }
+}
+
+private fun Fragment.mustBeAndroidInjector() {
+    if(this !is AndroidInjector<*, *>) {
+        throw RuntimeException("The parent Fragment of a Kodein Fragment component must be one of " +
+                "KodeinFragment, KodeinSupportFragment, " +
+                "FragmentInjector, or SupportFragmentInjector")
     }
 }
 
@@ -363,22 +379,27 @@ interface SupportFragmentInjector : AndroidInjector<SupportFragment, AndroidScop
 
     override fun initializeInjector() {
         val activity = kodeinComponent.activity
+        activity.mustBeAndroidInjector()
 
-        validateFragmentsActivity(activity)
+        val parentFragment = kodeinComponent.parentFragment
+        parentFragment?.mustBeAndroidInjector()
+        val hasParentFragment = parentFragment != null
 
         val fragmentModule = Kodein.Module {
             bindErased<KodeinInjected>(overrides = true) with erasedInstance(this@SupportFragmentInjector)
             activity?.let {
                 bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER, overrides = true) with erasedInstance(activity.layoutInflater)
             }
-            bindErased<SupportFragment>() with erasedInstance(kodeinComponent)
+            bindErased<SupportFragment>(overrides = hasParentFragment) with erasedInstance(kodeinComponent)
             bindErased<SupportFragmentManager>(overrides = true) with erasedInstance(kodeinComponent.fragmentManager)
             bindErased<SupportLoaderManager>(overrides = true) with erasedInstance(kodeinComponent.loaderManager)
 
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        inject(this, fragmentModule, (activity as KodeinInjected).injector.kodein().value)
+        val parent = parentFragment ?: activity
+
+        inject(this, fragmentModule, (parent as KodeinInjected).injector.kodein().value)
     }
 }
 
@@ -393,20 +414,26 @@ abstract class KodeinSupportFragment : SupportFragment(), SupportFragmentInjecto
 
     final override fun initializeInjector() = super.initializeInjector()
 
-    /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         initializeInjector()
+
+        super.onCreate(savedInstanceState)
     }
 
     final override fun destroyInjector() = super.destroyInjector()
 
-    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
         destroyInjector()
+    }
+}
+
+private fun SupportFragment.mustBeAndroidInjector() {
+    if(this !is AndroidInjector<*, *>) {
+        throw RuntimeException("The parent Fragment of a Kodein Fragment component must be one of " +
+                "KodeinFragment, KodeinSupportFragment, " +
+                "FragmentInjector, or SupportFragmentInjector")
     }
 }
 
