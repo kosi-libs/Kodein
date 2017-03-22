@@ -27,6 +27,8 @@ class KodeinInjector() : KodeinInjectedBase {
 
     override val injector = this
 
+    private val _lock = Any()
+
     /**
      * Exception thrown when trying to access the [value][InjectedProperty.value] of an [InjectedProperty]
      * before the [KodeinInjector] that created this property is [injected][KodeinInjector.inject].
@@ -53,7 +55,7 @@ class KodeinInjector() : KodeinInjectedBase {
         if (k1 != null)
             cb(k1)
         else
-            synchronized(this@KodeinInjector) {
+            synchronized(_lock) {
                 val k2 = _kodein
                 if (k2 != null)
                     cb(k2)
@@ -75,7 +77,7 @@ class KodeinInjector() : KodeinInjectedBase {
         if (k1 != null)
             injected._inject(k1.container)
         else
-            synchronized(this@KodeinInjector) {
+            synchronized(_lock) {
                 val k2 = _kodein
                 if (k2 != null)
                     injected._inject(k2.container)
@@ -524,7 +526,7 @@ class KodeinInjector() : KodeinInjectedBase {
         if (_kodein != null)
             return
 
-        synchronized(this@KodeinInjector) {
+        synchronized(_lock) {
             if (_kodein != null)
                 return
 

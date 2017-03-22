@@ -33,13 +33,15 @@ internal open class KodeinImpl internal constructor(final override val container
 
         if (runCallbacks)
             init()
-        else
+        else {
+            val lock = Any()
             _init = {
-                synchronized(this) {
+                synchronized(lock) {
                     _init = null
                     init()
                 }
             }
+        }
     }
 
     /**

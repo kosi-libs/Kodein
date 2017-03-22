@@ -163,14 +163,7 @@ class ProviderKodein(private val _kodein: FactoryKodein) : Kodein by _kodein {
     fun <T : Any> overriddenInstanceOrNull(): T? = _kodein.overriddenInstanceOrNull(Unit)
 }
 
-/**
- * Provider base.
- *
- * A provider is like a [AFactory], but without argument (the [Factory] is registered with a `Unit` argument).
- *
- * @param T The created type.
- */
-abstract class AProvider<out T : Any>(override val factoryName: String, override val createdType: Type) : Factory<Unit, T> {
+interface Provider<out T: Any> : Factory<Unit, T> {
 
     /**
      * Get an instance of type `T`.
@@ -182,7 +175,7 @@ abstract class AProvider<out T : Any>(override val factoryName: String, override
      * @param arg: A Unit argument that is ignored (a provider does not take arguments).
      * @return an instance of `T`.
      */
-    override final fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: Unit): T = getInstance(ProviderKodein(kodein), key)
+    override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: Unit): T = getInstance(ProviderKodein(kodein), key)
 
     /**
      * Get an instance of type `T`.
@@ -193,9 +186,19 @@ abstract class AProvider<out T : Any>(override val factoryName: String, override
      * @param key: The key of the instance to get.
      * @return an instance of `T`.
      */
-    abstract fun getInstance(kodein: ProviderKodein, key: Kodein.Key): T
+    fun getInstance(kodein: ProviderKodein, key: Kodein.Key): T
 
-    override val argType: Type = Unit::class.java
+    override val argType: Type get() = Unit::class.java
+}
+
+/**
+ * Provider base.
+ *
+ * A provider is like a [AFactory], but without argument (the [Factory] is registered with a `Unit` argument).
+ *
+ * @param T The created type.
+ */
+abstract class AProvider<out T : Any>(override val factoryName: String, override val createdType: Type) : Provider<T> {
 
     override val description: String get() = "$factoryName { ${createdType.simpleDispString} } "
     override val fullDescription: String get() = "$factoryName { ${createdType.fullDispString} } "

@@ -38,6 +38,8 @@ inline fun <reified T : Any> Kodein.Builder.provider(noinline creator: Kodein.()
  */
 inline fun <reified T : Any> Kodein.Builder.singleton(noinline creator: Kodein.() -> T) = erasedSingleton(creator)
 
+inline fun <reified A, reified T : Any> Kodein.Builder.multiton(noinline creator: FactoryKodein.(A) -> T) = erasedMultiton(creator)
+
 /**
  * Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.
  *
@@ -58,7 +60,8 @@ inline fun <reified T : Any> Kodein.Builder.eagerSingleton(noinline creator: Kod
  * @param creator The function that will be called the first time an instance is requested in a thread. Guaranteed to be called only once per thread. Should create a new instance.
  * @return A thread singleton ready to be bound.
  */
-inline fun <reified T : Any> Kodein.Builder.threadSingleton(noinline creator: Kodein.() -> T) = erasedThreadSingleton(creator)
+@Deprecated(message = "Use refSingleton with threadLocal", replaceWith = ReplaceWith("refSingleton(threadLocal, creator)")) // Deprecated since 3.3.0
+inline fun <reified T : Any> Kodein.Builder.threadSingleton(noinline creator: Kodein.() -> T) = refSingleton(threadLocal, creator)
 
 /**
  * Creates an instance provider: will always return the given instance.

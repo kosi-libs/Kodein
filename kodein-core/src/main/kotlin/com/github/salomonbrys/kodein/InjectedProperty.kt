@@ -21,6 +21,8 @@ abstract class InjectedProperty<out T> internal constructor(val key: Kodein.Key)
      */
     @Volatile private var _value: Any? = UNINITIALIZED_VALUE
 
+    private val _lock = Any()
+
     /**
      * The injected value.
      *
@@ -33,7 +35,7 @@ abstract class InjectedProperty<out T> internal constructor(val key: Kodein.Key)
             if (_v1 !== UNINITIALIZED_VALUE)
                 return _v1 as T
 
-            return synchronized(this) {
+            return synchronized(_lock) {
                 val _v2 = _value
                 if (_v2 !== UNINITIALIZED_VALUE)
                     _v2 as T

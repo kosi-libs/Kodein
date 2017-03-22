@@ -16,6 +16,8 @@ class ConfigurableKodein : Kodein {
     /** @suppress */
     override val kodein: Kodein get() = this
 
+    private val _lock = Any()
+
     /**
      * Whether this ConfigurableKodein can be mutated.
      *
@@ -67,7 +69,7 @@ class ConfigurableKodein : Kodein {
         if (_instance != null)
             return _instance!!
 
-        synchronized(this) {
+        synchronized(_lock) {
             if (_instance != null)
                 return _instance!!
 
@@ -99,7 +101,7 @@ class ConfigurableKodein : Kodein {
         if (mutable != true)
             throw IllegalStateException("ConfigurableKodein is not mutable, you cannot clear bindings.")
 
-        synchronized(this) {
+        synchronized(_lock) {
             val configs = _configs
 
             if (configs != null) {
@@ -125,7 +127,7 @@ class ConfigurableKodein : Kodein {
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
      */
     fun addConfig(config: Kodein.Builder.() -> Unit) {
-        synchronized(this) {
+        synchronized(_lock) {
             val configs = _configs
             if (configs == null) {
                 if (mutable != true)
