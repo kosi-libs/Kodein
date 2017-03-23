@@ -151,8 +151,8 @@ class CScopedSingleton<C, out T : Any>(val contextType: Type, override val creat
 
     override fun getContextAndRegistry(arg: C): Pair<C, ScopeRegistry> = arg to _scope.getRegistry(arg)
 
-    override val factoryName: String get() = "scopedSingleton(${_scope.javaClass.simpleDispString})"
-    override val factoryFullName: String get() = "scopedSingleton(${_scope.javaClass.fullDispString})"
+    override fun factoryName() = "scopedSingleton(${_scope.javaClass.simpleDispString})"
+    override fun factoryFullName() = "scopedSingleton(${_scope.javaClass.fullDispString})"
 }
 
 /**
@@ -203,8 +203,8 @@ class CAutoScopedSingleton<out C, out T : Any>(override val createdType: Type, p
 
     override fun getContextAndRegistry(arg: Unit): Pair<C, ScopeRegistry> = _scope.getContext().let { it to _scope.getRegistry(it) }
 
-    override val factoryName: String get() = "autoScopedSingleton(${_scope.javaClass.simpleDispString})"
-    override val factoryFullName: String get() = "autoScopedSingleton(${_scope.javaClass.fullDispString})"
+    override fun factoryName() = "autoScopedSingleton(${_scope.javaClass.simpleDispString})"
+    override fun factoryFullName() = "autoScopedSingleton(${_scope.javaClass.fullDispString})"
 }
 
 /**

@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @property creator The function that will be called each time an instance is requested. Should create a new instance.
  */
 class CFactory<in A, out T : Any>(override val argType: Type, override val createdType: Type, val creator: FactoryKodein.(A) -> T) : Factory<A, T> {
-    override val factoryName: String get() = "factory"
+    override fun factoryName() = "factory"
 
     override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: A) = this.creator(kodein, arg)
 
@@ -60,7 +60,7 @@ inline fun <reified A, reified T : Any> Kodein.Builder.erasedFactory(noinline cr
 class CMultiton<in A, out T : Any>(override val argType: Type, override val createdType: Type, val creator: FactoryKodein.(A) -> T) : Factory<A, T> {
     private val _instances = ConcurrentHashMap<A, T>()
 
-    override val factoryName: String get() = "multiton"
+    override fun factoryName() = "multiton"
 
     override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: A): T {
         _instances[arg]?.let { return it }
@@ -110,7 +110,7 @@ inline fun <reified A, reified T : Any> Kodein.Builder.erasedMultiton(noinline c
  * @property creator The function that will be called each time an instance is requested. Should create a new instance.
  */
 class CProvider<out T : Any>(override val createdType: Type, val creator: ProviderKodein.() -> T) : Provider<T> {
-    override val factoryName: String get() = "provider"
+    override fun factoryName() = "provider"
 
     override fun getInstance(kodein: ProviderKodein, key: Kodein.Key) = this.creator(kodein)
 }
@@ -176,7 +176,7 @@ abstract class ASingleton<out T : Any>(val creator: ProviderKodein.() -> T) : Pr
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
 class CSingleton<out T : Any>(override val createdType: Type, creator: ProviderKodein.() -> T) : ASingleton<T>(creator) {
-    override val factoryName: String get() = "singleton"
+    override fun factoryName() = "singleton"
 }
 
 /**
@@ -213,7 +213,7 @@ inline fun <reified T : Any> Kodein.Builder.erasedSingleton(noinline creator: Pr
  * @param creator The function that will be called as soon as Kodein is ready. Guaranteed to be called only once. Should create a new instance.
  */
 class CEagerSingleton<out T : Any>(builder: Kodein.Builder, override val createdType: Type, creator: ProviderKodein.() -> T) : ASingleton<T>(creator) {
-    override val factoryName: String get() = "eagerSingleton"
+    override fun factoryName() = "eagerSingleton"
 
     init {
         val key = Kodein.Key(Kodein.Bind(createdType, null), Unit::class.java)
@@ -283,12 +283,12 @@ inline fun <reified T : Any> Kodein.Builder.erasedThreadSingleton(noinline creat
  * @property instance The object that will always be returned.
  */
 class CInstance<out T : Any>(override val createdType: Type, val instance: T) : Provider<T> {
-    override val factoryName: String get() = "instance"
+    override fun factoryName() = "instance"
 
     override fun getInstance(kodein: ProviderKodein, key: Kodein.Key): T = this.instance
 
-    override val description: String get() = "$factoryName ( ${createdType.simpleDispString} ) "
-    override val fullDescription: String get() = "$factoryFullName ( ${createdType.fullDispString} ) "
+    override val description: String get() = "${factoryName()} ( ${createdType.simpleDispString} ) "
+    override val fullDescription: String get() = "${factoryFullName()} ( ${createdType.fullDispString} ) "
 }
 
 /**

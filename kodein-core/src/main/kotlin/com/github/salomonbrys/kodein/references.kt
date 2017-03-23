@@ -82,8 +82,8 @@ class CRefSingleton<out T : Any>(override val createdType: Type, val refMaker: R
 
     private val _lock = Any()
 
-    override val factoryName: String get() = "refSingleton(${refMaker.javaClass.simpleDispString})"
-    override val factoryFullName: String get() = "refSingleton(${refMaker.javaClass.fullDispString})"
+    override fun factoryName() = "refSingleton(${refMaker.javaClass.simpleDispString})"
+    override fun factoryFullName() = "refSingleton(${refMaker.javaClass.fullDispString})"
 
     override fun getInstance(kodein: ProviderKodein, key: Kodein.Key): T {
         _ref.invoke()?.let { return it }
@@ -136,8 +136,8 @@ class CRefMultiton<in A, out T: Any>(override val argType: Type, override val cr
 
     private val _refs = ConcurrentHashMap<A, () -> T?>()
 
-    override val factoryName: String get() = "refMultiton(${refMaker.javaClass.simpleDispString})"
-    override val factoryFullName: String get() = "refMultiton(${refMaker.javaClass.fullDispString})"
+    override fun factoryName() = "refMultiton(${refMaker.javaClass.simpleDispString})"
+    override fun factoryFullName() = "refMultiton(${refMaker.javaClass.fullDispString})"
 
     override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: A): T {
         _refs[arg]?.invoke()?.let { return it }

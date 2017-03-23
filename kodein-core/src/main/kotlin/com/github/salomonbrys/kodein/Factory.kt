@@ -79,13 +79,17 @@ interface Factory<in A, out T : Any> {
 
     /**
      * The name of this factory, *used for debug print only*.
+     *
+     * @return The simple name of this factory.
      */
-    val factoryName: String
+    fun factoryName(): String
 
     /**
      * The full(er) name of this factory, *used for debug print only*.
+     *
+     * @return The full name of this factory.
      */
-    val factoryFullName: String get() = factoryName
+    fun factoryFullName(): String = factoryName()
 
     /**
      * The type of the argument this factory will function for.
@@ -100,12 +104,12 @@ interface Factory<in A, out T : Any> {
     /**
      * The description of this factory (using simple type names), *used for debug print only*.
      */
-    val description: String get() = "$factoryName { ${argType.simpleDispString} -> ${createdType.simpleDispString} } "
+    val description: String get() = "${factoryName()} { ${argType.simpleDispString} -> ${createdType.simpleDispString} } "
 
     /**
      * The description of this factory (using full type names), *used for debug print only*.
      */
-    val fullDescription: String get() = "$factoryFullName { ${argType.fullDispString} -> ${createdType.fullDispString} } "
+    val fullDescription: String get() = "${factoryFullName()} { ${argType.fullDispString} -> ${createdType.fullDispString} } "
 }
 
 /**
@@ -186,8 +190,8 @@ interface Provider<out T: Any> : Factory<Unit, T> {
 
     override val argType: Type get() = Unit::class.java
 
-    override val description: String get() = "$factoryName { ${createdType.simpleDispString} } "
+    override val description: String get() = "${factoryName()} { ${createdType.simpleDispString} } "
 
-    override val fullDescription: String get() = "$factoryName { ${createdType.fullDispString} } "
+    override val fullDescription: String get() = "${factoryName()} { ${createdType.fullDispString} } "
 
 }
