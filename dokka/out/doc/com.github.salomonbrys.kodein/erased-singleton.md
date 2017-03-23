@@ -2,7 +2,7 @@
 
 # erasedSingleton
 
-`inline fun <reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.erasedSingleton(noinline creator: `[`ProviderKodein`](-provider-kodein/index.md)`.() -> T): `[`AProvider`](-a-provider/index.md)`<T>`
+`inline fun <reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.erasedSingleton(noinline creator: `[`ProviderKodein`](-provider-kodein/index.md)`.() -> T): `[`Provider`](-provider/index.md)`<T>`
 
 Creates a singleton: will create an instance on first request and will subsequently always return the same instance.
 

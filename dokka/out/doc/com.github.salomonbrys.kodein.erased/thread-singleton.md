@@ -2,7 +2,8 @@
 
 # threadSingleton
 
-`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.threadSingleton(noinline creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.() -> T): `[`AProvider`](../com.github.salomonbrys.kodein/-a-provider/index.md)`<T>`
+`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.~~threadSingleton~~(noinline creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.() -> T): `[`Provider`](../com.github.salomonbrys.kodein/-provider/index.md)`<T>`
+**Deprecated:** Use refSingleton with threadLocal
 
 Creates a thread singleton: will create an instance on first request per thread and will subsequently always return the same instance for this thread.
 

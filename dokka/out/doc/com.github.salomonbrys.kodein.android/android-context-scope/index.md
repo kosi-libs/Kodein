@@ -4,7 +4,7 @@
 
 `object androidContextScope : `[`Scope`](../../com.github.salomonbrys.kodein/-scope/index.md)`<Context>`
 
-Androids context scope. Allows to register context-specific singletons.
+Android's context scope. Allows to register context-specific singletons.
 
 ### Functions
 

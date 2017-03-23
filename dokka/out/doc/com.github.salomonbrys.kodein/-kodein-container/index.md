@@ -6,7 +6,7 @@
 
 Container class where the bindings and their factories are stored.
 
-In kodein, every binding is stored as a factory (thats why a scope is a function creating a factory).
+In kodein, every binding is stored as a factory (that's why a scope is a function creating a factory).
 Providers are special classes of factories that take Unit as parameter.
 
 ### Types

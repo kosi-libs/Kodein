@@ -4,7 +4,7 @@
 
 `object androidActivityScope : `[`AndroidScope`](../-android-scope/index.md)`<Activity>, `[`AutoScope`](../../com.github.salomonbrys.kodein/-auto-scope/index.md)`<Activity>`
 
-Androids activity scope. Allows to register activity-specific singletons.
+Android's activity scope. Allows to register activity-specific singletons.
 
 Scope that can be used both as a scope or as an auto-scope.
 
@@ -14,7 +14,7 @@ Scope that can be used both as a scope or as an auto-scope.
 
 | Name | Summary |
 |---|---|
-| [lifecycleManager](lifecycle-manager.md) | `object lifecycleManager : ActivityLifecycleCallbacks`<br>If you use [autoActivitySingleton](../auto-activity-singleton.md), you **must** register this lifecycle manager in your applications oncreate: |
+| [lifecycleManager](lifecycle-manager.md) | `object lifecycleManager : ActivityLifecycleCallbacks`<br>If you use [autoActivitySingleton](../auto-activity-singleton.md), you **must** register this lifecycle manager in your application's oncreate: |
 
 ### Functions
 

@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`AScoped(argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, factoryName: String, _creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.(C) -> T)`
+`AScoped(_creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.(C) -> T)`
 
 A factory to bind a type and tag into a [Scope](../-scope/index.md) or an [AutoScope](../-auto-scope/index.md).
 

@@ -11,7 +11,7 @@ Retrieve an overridden provider for the given key at the given override level.
 `key` - The key to look for.
 
 `overrideLevel` - The override level.
-Override level 0 means the first overridden factory (not the "active" binding).
+    Override level 0 means the first overridden factory (not the "active" binding).
 
 ### Exceptions
 

@@ -6,13 +6,13 @@
 
 An injector is an object which creates injected property delegates **before** having access to a Kodein instance.
 
-For example, in Android, you cant access the Kodein instance before onCreate is called:
+For example, in Android, you can't access the Kodein instance before onCreate is called:
 
-```
+``` kotlin
 class MyActivity : Activity() {
     val injector: KodeinInjector()
     val engine: Engine by injector.instance()
-    val random: () -&gt; Int by injector.provider("random")
+    val random: () -> Int by injector.provider("random")
     fun onCreate(savedInstanceState: Bundle) {
         injector.inject(appKodein()) // See Android's documentation for appKodein
         // Here, you can now access engine and random properties.

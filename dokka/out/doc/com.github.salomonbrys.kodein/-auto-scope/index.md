@@ -20,4 +20,4 @@ An object that can, in addition to being a regular scope, can also get a context
 
 | Name | Summary |
 |---|---|
-| [androidActivityScope](../../com.github.salomonbrys.kodein.android/android-activity-scope/index.md) | `object androidActivityScope : `[`AndroidScope`](../../com.github.salomonbrys.kodein.android/-android-scope/index.md)`<Activity>, AutoScope<Activity>`<br>Androids activity scope. Allows to register activity-specific singletons. |
+| [androidActivityScope](../../com.github.salomonbrys.kodein.android/android-activity-scope/index.md) | `object androidActivityScope : `[`AndroidScope`](../../com.github.salomonbrys.kodein.android/-android-scope/index.md)`<Activity>, AutoScope<Activity>`<br>Android's activity scope. Allows to register activity-specific singletons. |

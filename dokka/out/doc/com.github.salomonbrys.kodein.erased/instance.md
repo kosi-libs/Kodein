@@ -2,6 +2,66 @@
 
 # instance
 
+`inline fun <reified T : Any> `[`KodeinInjectedBase`](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md)`.instance(tag: Any? = null): `[`InjectedProperty`](../com.github.salomonbrys.kodein/-injected-property/index.md)`<T>`
+
+Gets a lazy instance for the given type and tag.
+
+The returned property should not be accessed before calling [KodeinInjectedBase.inject](../com.github.salomonbrys.kodein/-kodein-injected-base/inject.md).
+
+T generics will be erased!
+
+### Parameters
+
+`T` - The type of object to retrieve.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`KodeinInjector.UninjectedException` - When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject](../com.github.salomonbrys.kodein/-kodein-injected-base/inject.md).
+
+**Receiver**
+Either a [KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) instance or a [KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) class.
+
+**Return**
+A lazy property that yields a `T`.
+
+`inline fun <reified T : Any> `[`CurriedInjectorFactory`](../com.github.salomonbrys.kodein/-curried-injector-factory/index.md)`<*>.instance(tag: Any? = null): Lazy<T>`
+
+Gets a lazy instance of `T` for the given tag from a factory with an `A` argument.
+
+The returned property should not be accessed before calling [KodeinInjectedBase.inject](../com.github.salomonbrys.kodein/-kodein-injected-base/inject.md).
+
+T generics will be erased!
+
+### Parameters
+
+`T` - The type of object to retrieve.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`KodeinInjector.UninjectedException` - When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject](../com.github.salomonbrys.kodein/-kodein-injected-base/inject.md).
+
+**Return**
+A lazy property that yields a `T`.
+
+`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.instance(instance: T): `[`Provider`](../com.github.salomonbrys.kodein/-provider/index.md)`<T>`
+
+Creates an instance provider: will always return the given instance.
+
+T generics will be erased!
+
+### Parameters
+
+`T` - The type of the instance.
+
+`instance` - The object that will always be returned.
+
+**Return**
+An instance provider ready to be bound.
+
 `inline fun <reified T : Any> `[`LazyKodeinAwareBase`](../com.github.salomonbrys.kodein/-lazy-kodein-aware-base/index.md)`.instance(tag: Any? = null): Lazy<T>`
 
 Gets a lazy instance for the given type and tag.
@@ -95,64 +155,4 @@ T generics will be erased!
 
 **Return**
 An instance.
-
-`inline fun <reified T : Any> `[`KodeinInjectedBase`](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md)`.instance(tag: Any? = null): `[`InjectedProperty`](../com.github.salomonbrys.kodein/-injected-property/index.md)`<T>`
-
-Gets a lazy instance for the given type and tag.
-
-The returned property should not be accessed before calling [KodeinInjectedBase.inject](../com.github.salomonbrys.kodein/-kodein-injected-base/inject.md).
-
-T generics will be erased!
-
-### Parameters
-
-`T` - The type of object to retrieve.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`KodeinInjector.UninjectedException` - When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject](../com.github.salomonbrys.kodein/-kodein-injected-base/inject.md).
-
-**Receiver**
-Either a [KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) instance or a [KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) class.
-
-**Return**
-A lazy property that yields a `T`.
-
-`inline fun <reified T : Any> `[`CurriedInjectorFactory`](../com.github.salomonbrys.kodein/-curried-injector-factory/index.md)`<*>.instance(tag: Any? = null): Lazy<T>`
-
-Gets a lazy instance of `T` for the given tag from a factory with an `A` argument.
-
-The returned property should not be accessed before calling [KodeinInjectedBase.inject](../com.github.salomonbrys.kodein/-kodein-injected-base/inject.md).
-
-T generics will be erased!
-
-### Parameters
-
-`T` - The type of object to retrieve.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`KodeinInjector.UninjectedException` - When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject](../com.github.salomonbrys.kodein/-kodein-injected-base/inject.md).
-
-**Return**
-A lazy property that yields a `T`.
-
-`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.instance(instance: T): `[`CInstance`](../com.github.salomonbrys.kodein/-c-instance/index.md)`<T>`
-
-Creates an instance provider: will always return the given instance.
-
-T generics will be erased!
-
-### Parameters
-
-`T` - The type of the instance.
-
-`instance` - The object that will always be returned.
-
-**Return**
-An instance provider ready to be bound.
 

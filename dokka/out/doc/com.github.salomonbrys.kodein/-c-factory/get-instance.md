@@ -6,7 +6,7 @@
 
 Get an instance of type `T` function argument `A`.
 
-Whether its a new instance or not entirely depends on implementation.
+Whether it's a new instance or not entirely depends on implementation.
 
 ### Parameters
 

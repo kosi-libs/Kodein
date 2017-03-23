@@ -15,5 +15,5 @@ The bindings map, obtained with [KodeinContainer.bindings](../-kodein-container/
 
 **Return**
 The list of tags that are bound with this type. Each entry represents a different [Kodein.Bind](../-kodein/-bind/index.md),
-but there may be multiple [Kodein.Key](../-kodein/-key/index.md) for the same [Kodein.Bind](../-kodein/-bind/index.md).
+    but there may be multiple [Kodein.Key](../-kodein/-key/index.md) for the same [Kodein.Bind](../-kodein/-bind/index.md).
 

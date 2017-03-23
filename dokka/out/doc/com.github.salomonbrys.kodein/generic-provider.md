@@ -2,72 +2,6 @@
 
 # genericProvider
 
-`inline fun <reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.genericProvider(noinline creator: `[`ProviderKodein`](-provider-kodein/index.md)`.() -> T): `[`CProvider`](-c-provider/index.md)`<T>`
-
-Creates a factory: each time an instance is needed, the function [creator](generic-provider.md#com.github.salomonbrys.kodein$genericProvider(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.ProviderKodein, com.github.salomonbrys.kodein.genericProvider.T)))/creator) function will be called.
-
-T generics will be kept.
-
-A provider is like a factory, but without argument.
-
-### Parameters
-
-`T` - The created type.
-
-`creator` - The function that will be called each time an instance is requested. Should create a new instance.
-
-**Return**
-A provider ready to be bound.
-
-`inline fun <reified T : Any> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.genericProvider(tag: Any? = null): () -> T`
-
-Gets a provider of `T` for the given type and tag.
-
-Whether this provider will re-create a new instance at each call or not depends on the binding scope.
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of object the provider returns.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.NotFoundException` - if no provider was found.
-
-`Kodein.DependencyLoopException` - When calling the provider function, if the instance construction triggered a dependency loop.
-
-**Receiver**
-Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
-
-**Return**
-A provider.
-
-`inline fun <reified T : Any> `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<*>.genericProvider(tag: Any? = null): () -> T`
-
-Gets a provider of `T` for the given tag from a curried factory with an `A` argument.
-
-Whether this provider will re-create a new instance at each call or not depends on the binding scope.
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of object the factory returns.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.NotFoundException` - if no factory was found.
-
-`Kodein.DependencyLoopException` - When calling the provider function, if the instance construction triggered a dependency loop.
-
-**Return**
-A provider.
-
 `inline fun <reified T : Any> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.genericProvider(tag: Any? = null): Lazy<() -> T>`
 
 Gets a lazy provider for the given type and tag.
@@ -161,4 +95,70 @@ T generics will be kept.
 
 **Return**
 A lazy property that yields a provider of `T`.
+
+`inline fun <reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.genericProvider(noinline creator: `[`ProviderKodein`](-provider-kodein/index.md)`.() -> T): `[`Provider`](-provider/index.md)`<T>`
+
+Creates a factory: each time an instance is needed, the function [creator](generic-provider.md#com.github.salomonbrys.kodein$genericProvider(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.ProviderKodein, com.github.salomonbrys.kodein.genericProvider.T)))/creator) function will be called.
+
+T generics will be kept.
+
+A provider is like a factory, but without argument.
+
+### Parameters
+
+`T` - The created type.
+
+`creator` - The function that will be called each time an instance is requested. Should create a new instance.
+
+**Return**
+A provider ready to be bound.
+
+`inline fun <reified T : Any> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.genericProvider(tag: Any? = null): () -> T`
+
+Gets a provider of `T` for the given type and tag.
+
+Whether this provider will re-create a new instance at each call or not depends on the binding scope.
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of object the provider returns.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.NotFoundException` - if no provider was found.
+
+`Kodein.DependencyLoopException` - When calling the provider function, if the instance construction triggered a dependency loop.
+
+**Receiver**
+Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
+
+**Return**
+A provider.
+
+`inline fun <reified T : Any> `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<*>.genericProvider(tag: Any? = null): () -> T`
+
+Gets a provider of `T` for the given tag from a curried factory with an `A` argument.
+
+Whether this provider will re-create a new instance at each call or not depends on the binding scope.
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of object the factory returns.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.NotFoundException` - if no factory was found.
+
+`Kodein.DependencyLoopException` - When calling the provider function, if the instance construction triggered a dependency loop.
+
+**Return**
+A provider.
 

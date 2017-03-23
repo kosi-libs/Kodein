@@ -4,7 +4,7 @@
 
 `object androidServiceScope : `[`AndroidScope`](../-android-scope/index.md)`<Service>`
 
-Androids service scope. Allows to register service-specific singletons.
+Android's service scope. Allows to register service-specific singletons.
 
 ### Functions
 

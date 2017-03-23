@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`CInstance(instanceType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, instance: T)`
+`CInstance(createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, instance: T)`
 
 Concrete instance provider: will always return the given instance.
 
@@ -10,4 +10,4 @@ Concrete instance provider: will always return the given instance.
 
 `T` - The type of the instance.
 
-`instanceType` - The type of the object, *used for debug print only*.
+`createdType` - The type of the object, *used for debug print only*.

@@ -20,11 +20,23 @@ Concrete eager singleton: will create an instance as soon as kodein is ready (al
 |---|---|
 | [&lt;init&gt;](-init-.md) | `CEagerSingleton(builder: `[`Builder`](../-kodein/-builder/index.md)`, createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T)`<br>Concrete eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance. |
 
+### Properties
+
+| Name | Summary |
+|---|---|
+| [createdType](created-type.md) | `val createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type of object that is created by this factory. |
+
 ### Inherited Properties
 
 | Name | Summary |
 |---|---|
 | [creator](../-a-singleton/creator.md) | `val creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T`<br>The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance. |
+
+### Functions
+
+| Name | Summary |
+|---|---|
+| [factoryName](factory-name.md) | `fun factoryName(): String`<br>The name of this factory, *used for debug print only*. |
 
 ### Inherited Functions
 

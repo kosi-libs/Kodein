@@ -4,7 +4,7 @@
 
 `object androidFragmentScope : `[`AndroidScope`](../-android-scope/index.md)`<Fragment>`
 
-Androids fragment scope. Allows to register fragment-specific singletons.
+Android's fragment scope. Allows to register fragment-specific singletons.
 
 ### Functions
 

@@ -4,11 +4,11 @@
 
 `fun getInstance(kodein: `[`ProviderKodein`](../-provider-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`
 
-Overrides [AProvider.getInstance](../-a-provider/get-instance.md)
+Overrides [Provider.getInstance](../-provider/get-instance.md)
 
 Get an instance of type `T`.
 
-Whether its a new instance or not entirely depends on implementation.
+Whether it's a new instance or not entirely depends on implementation.
 
 ### Parameters
 

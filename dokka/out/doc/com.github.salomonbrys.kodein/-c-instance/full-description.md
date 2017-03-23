@@ -4,11 +4,7 @@
 
 `val fullDescription: String`
 
-Overrides [AProvider.fullDescription](../-a-provider/full-description.md)
-
-The description of this factory (using full type names), *used for debug print only*.
-
-**Getter**
+Overrides [Provider.fullDescription](../-provider/full-description.md)
 
 The description of this factory (using full type names), *used for debug print only*.
 

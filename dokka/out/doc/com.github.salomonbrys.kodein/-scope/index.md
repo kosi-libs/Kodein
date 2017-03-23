@@ -22,4 +22,4 @@ An object capable of providing a [ScopeRegistry](../-scope-registry/index.md) fo
 |---|---|
 | [AndroidScope](../../com.github.salomonbrys.kodein.android/-android-scope/index.md) | `interface AndroidScope<in T> : Scope<T>`<br>Base interface from all Android scopes. |
 | [AutoScope](../-auto-scope/index.md) | `interface AutoScope<C> : Scope<C>`<br>An object that can, in addition to being a regular scope, can also get a context from a static environment. |
-| [androidContextScope](../../com.github.salomonbrys.kodein.android/android-context-scope/index.md) | `object androidContextScope : Scope<Context>`<br>Androids context scope. Allows to register context-specific singletons. |
+| [androidContextScope](../../com.github.salomonbrys.kodein.android/android-context-scope/index.md) | `object androidContextScope : Scope<Context>`<br>Android's context scope. Allows to register context-specific singletons. |

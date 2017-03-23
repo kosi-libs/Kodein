@@ -2,51 +2,6 @@
 
 # erasedProviderOrNull
 
-`inline fun <reified T : Any> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.erasedProviderOrNull(tag: Any? = null): () -> T`
-
-Gets a provider of `T` for the given type and tag, or null if none is found.
-
-Whether this provider will re-create a new instance at each call or not depends on the binding scope.
-
-T generics will be erased!
-
-### Parameters
-
-`T` - The type of object the provider returns.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.DependencyLoopException` - When calling the provider function, if the instance construction triggered a dependency loop.
-
-**Receiver**
-Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
-
-**Return**
-A provider, or null if no provider was found.
-
-`inline fun <reified T : Any> `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<*>.erasedProviderOrNull(tag: Any? = null): () -> T`
-
-Gets a provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
-
-Whether this provider will re-create a new instance at each call or not depends on the binding scope.
-
-T generics will be erased!
-
-### Parameters
-
-`T` - The type of object the factory returns.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.DependencyLoopException` - When calling the provider function, if the instance construction triggered a dependency loop.
-
-**Return**
-A provider, or null if no factory was found.
-
 `inline fun <reified T : Any> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.erasedProviderOrNull(tag: Any? = null): Lazy<() -> T>`
 
 Gets a lazy provider for the given type and tag, or null if none is found.
@@ -136,4 +91,49 @@ T generics will be kept.
 
 **Return**
 A lazy property that yields a provider of `T` or null if no factory was found.
+
+`inline fun <reified T : Any> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.erasedProviderOrNull(tag: Any? = null): () -> T`
+
+Gets a provider of `T` for the given type and tag, or null if none is found.
+
+Whether this provider will re-create a new instance at each call or not depends on the binding scope.
+
+T generics will be erased!
+
+### Parameters
+
+`T` - The type of object the provider returns.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.DependencyLoopException` - When calling the provider function, if the instance construction triggered a dependency loop.
+
+**Receiver**
+Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
+
+**Return**
+A provider, or null if no provider was found.
+
+`inline fun <reified T : Any> `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<*>.erasedProviderOrNull(tag: Any? = null): () -> T`
+
+Gets a provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
+
+Whether this provider will re-create a new instance at each call or not depends on the binding scope.
+
+T generics will be erased!
+
+### Parameters
+
+`T` - The type of object the factory returns.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.DependencyLoopException` - When calling the provider function, if the instance construction triggered a dependency loop.
+
+**Return**
+A provider, or null if no factory was found.
 

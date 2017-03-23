@@ -14,9 +14,9 @@ Both kodein objects will share the same instance.
 `kodein` - The kodein object to import.
 
 `allowOverride` - Whether this module is allowed to override existing bindings.
-If it is not, overrides (even explicit) will throw an [OverridingException](../-overriding-exception/index.md).
+    If it is not, overrides (even explicit) will throw an [OverridingException](../-overriding-exception/index.md).
 
 ### Exceptions
 
 `OverridingException` - If this kodein overrides an existing binding and is not allowed to
-OR [allowOverride](extend.md#com.github.salomonbrys.kodein.Kodein.Builder$extend(com.github.salomonbrys.kodein.Kodein, kotlin.Boolean)/allowOverride) is true while YOU dont have the permission to override.
+    OR [allowOverride](extend.md#com.github.salomonbrys.kodein.Kodein.Builder$extend(com.github.salomonbrys.kodein.Kodein, kotlin.Boolean)/allowOverride) is true while YOU don't have the permission to override.

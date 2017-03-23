@@ -2,7 +2,7 @@
 
 # CScopedSingleton
 
-`class CScopedSingleton<C, out T : Any> : `[`AScoped`](../-a-scoped/index.md)`<C, C, T>`
+`class CScopedSingleton<C, out T : Any> : `[`AScoped`](../-a-scoped/index.md)`<C, C, T>, `[`Factory`](../-factory/index.md)`<C, T>`
 
 Concrete scoped singleton factory, effectively a `factory { Scope -> T }`.
 
@@ -11,14 +11,6 @@ Concrete scoped singleton factory, effectively a `factory { Scope -> T }`.
 `C` - The scope context type.
 
 `T` - The singleton type.
-
-`contextType` - The scope context type.
-
-`createdType` - The singleton type.
-
-`_scope` - The scope object in which the singleton will be stored.
-
-`creator` - A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
 
 ### Constructors
 
@@ -30,19 +22,22 @@ Concrete scoped singleton factory, effectively a `factory { Scope -> T }`.
 
 | Name | Summary |
 |---|---|
-| [description](description.md) | `val description: String`<br>The description of this factory (using simple type names), *used for debug print only*. |
-| [fullDescription](full-description.md) | `val fullDescription: String`<br>The description of this factory (using full type names), *used for debug print only*. |
+| [argType](arg-type.md) | `val argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type of the argument this factory will function for. |
+| [contextType](context-type.md) | `val contextType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The scope context type. |
+| [createdType](created-type.md) | `val createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The singleton type. |
 
 ### Inherited Properties
 
 | Name | Summary |
 |---|---|
-| [argType](../-a-scoped/arg-type.md) | `open val argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type of the argument this factory will function for. |
-| [createdType](../-a-scoped/created-type.md) | `open val createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type of object that is created by this factory. |
-| [factoryName](../-a-scoped/factory-name.md) | `open val factoryName: String`<br>The name of this factory, *used for debug print only*. |
+| [description](../-factory/description.md) | `open val description: String`<br>The description of this factory (using simple type names), *used for debug print only*. |
+| [fullDescription](../-factory/full-description.md) | `open val fullDescription: String`<br>The description of this factory (using full type names), *used for debug print only*. |
 
 ### Functions
 
 | Name | Summary |
 |---|---|
-| [_getContextAndRegistry](_get-context-and-registry.md) | `fun _getContextAndRegistry(arg: C): Pair<C, `[`ScopeRegistry`](../-scope-registry/index.md)`>`<br>Retrieve the scope context and registry associated with the given argument. |
+| [factoryFullName](factory-full-name.md) | `fun factoryFullName(): String`<br>The full(er) name of this factory, *used for debug print only*. |
+| [factoryName](factory-name.md) | `fun factoryName(): String`<br>The name of this factory, *used for debug print only*. |
+| [getContextAndRegistry](get-context-and-registry.md) | `fun getContextAndRegistry(arg: C): Pair<C, `[`ScopeRegistry`](../-scope-registry/index.md)`>`<br>Retrieve the scope context and registry associated with the given argument. |
+| [getInstance](get-instance.md) | `fun getInstance(kodein: `[`FactoryKodein`](../-factory-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: C): T`<br>Get an instance of type `T` function argument `A`. |

@@ -18,7 +18,7 @@ The following bindings are provided:
 * LoaderManager = android.support.v4.app.Fragment.getLoaderManager
 * LayoutInflater = android.support.v4.app.Fragment.getActivity.getLayoutInflater, Activity.getLayoutInflater
 
-The underlying [Kodein](../../com.github.salomonbrys.kodein/-kodein/index.md) object will [Kodein.Builder.extend](../../com.github.salomonbrys.kodein/-kodein/-builder/extend.md) from [appKodein](../android.content.-context/app-kodein.md) and from android.support.v4.app.Fragment.getActivitys [Kodein](../../com.github.salomonbrys.kodein/-kodein/index.md) if it implements [KodeinInjected](../../com.github.salomonbrys.kodein/-kodein-injected.md).
+The underlying [Kodein](../../com.github.salomonbrys.kodein/-kodein/index.md) object will [Kodein.Builder.extend](../../com.github.salomonbrys.kodein/-kodein/-builder/extend.md) from [appKodein](../android.content.-context/app-kodein.md) and from android.support.v4.app.Fragment.getActivity's [Kodein](../../com.github.salomonbrys.kodein/-kodein/index.md) if it implements [KodeinInjected](../../com.github.salomonbrys.kodein/-kodein-injected.md).
 
 ### Properties
 

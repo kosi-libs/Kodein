@@ -2,7 +2,7 @@
 
 # erasedEagerSingleton
 
-`inline fun <reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.erasedEagerSingleton(noinline creator: `[`ProviderKodein`](-provider-kodein/index.md)`.() -> T): `[`AProvider`](-a-provider/index.md)`<T>`
+`inline fun <reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.erasedEagerSingleton(noinline creator: `[`ProviderKodein`](-provider-kodein/index.md)`.() -> T): `[`Provider`](-provider/index.md)`<T>`
 
 Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.
 

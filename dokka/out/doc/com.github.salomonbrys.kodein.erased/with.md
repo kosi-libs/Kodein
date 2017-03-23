@@ -2,6 +2,42 @@
 
 # with
 
+`inline fun <reified A> `[`KodeinInjectedBase`](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md)`.with(noinline arg: () -> A): `[`CurriedInjectorFactory`](../com.github.salomonbrys.kodein/-curried-injector-factory/index.md)`<A>`
+
+Allows to inject a provider or an instance from a curried factory with an `A` argument.
+
+A generics will be erased!
+
+### Parameters
+
+`A` - The type of argument the factory takes.
+
+`arg` - A function that provides the argument that will be passed to the factory.
+
+**Receiver**
+Either a [KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) instance or a [KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) class.
+
+**Return**
+An object from which you can inject an instance or a provider.
+
+`inline fun <reified A> `[`KodeinInjectedBase`](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md)`.with(arg: A): `[`CurriedInjectorFactory`](../com.github.salomonbrys.kodein/-curried-injector-factory/index.md)`<A>`
+
+Allows to inject a provider or an instance from a curried factory with an `A` argument.
+
+A generics will be erased!
+
+### Parameters
+
+`A` - The type of argument the factory takes.
+
+`arg` - The argument that will be passed to the factory.
+
+**Receiver**
+Either a [KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) instance or a [KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) class.
+
+**Return**
+An object from which you can inject an instance or a provider.
+
 `inline infix fun <reified T : Any> `[`ConstantBinder`](../com.github.salomonbrys.kodein/-kodein/-builder/-constant-binder/index.md)`.with(value: T): Unit`
 
 Binds the previously given tag to the given instance.
@@ -63,40 +99,4 @@ A generics will be erased!
 
 **Receiver**
 Either a [Kodein](../com.github.salomonbrys.kodein/-kodein/index.md) instance or a [KodeinAware](../com.github.salomonbrys.kodein/-kodein-aware.md) class.
-
-`inline fun <reified A> `[`KodeinInjectedBase`](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md)`.with(noinline arg: () -> A): `[`CurriedInjectorFactory`](../com.github.salomonbrys.kodein/-curried-injector-factory/index.md)`<A>`
-
-Allows to inject a provider or an instance from a curried factory with an `A` argument.
-
-A generics will be erased!
-
-### Parameters
-
-`A` - The type of argument the factory takes.
-
-`arg` - A function that provides the argument that will be passed to the factory.
-
-**Receiver**
-Either a [KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) instance or a [KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) class.
-
-**Return**
-An object from which you can inject an instance or a provider.
-
-`inline fun <reified A> `[`KodeinInjectedBase`](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md)`.with(arg: A): `[`CurriedInjectorFactory`](../com.github.salomonbrys.kodein/-curried-injector-factory/index.md)`<A>`
-
-Allows to inject a provider or an instance from a curried factory with an `A` argument.
-
-A generics will be erased!
-
-### Parameters
-
-`A` - The type of argument the factory takes.
-
-`arg` - The argument that will be passed to the factory.
-
-**Receiver**
-Either a [KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) instance or a [KodeinInjected](../com.github.salomonbrys.kodein/-kodein-injected.md) class.
-
-**Return**
-An object from which you can inject an instance or a provider.
 

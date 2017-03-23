@@ -2,32 +2,6 @@
 
 # genericFactoryOrNull
 
-`inline fun <reified A, reified T : Any> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.genericFactoryOrNull(tag: Any? = null): (A) -> T`
-
-Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
-
-Whether this factory will re-create a new instance at each call or not depends on the binding scope.
-
-A &amp; T generics will be kept.
-
-### Parameters
-
-`A` - The type of argument the factory takes.
-
-`T` - The type of object the factory returns.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.DependencyLoopException` - When calling the factory function, if the instance construction triggered a dependency loop.
-
-**Receiver**
-Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
-
-**Return**
-A factory, or null if no factory was found.
-
 `inline fun <reified A, reified T : Any> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.genericFactoryOrNull(tag: Any? = null): Lazy<(A) -> T>`
 
 Gets a lazy factory for the given type, tag and argument type, or null if none is found.
@@ -79,4 +53,30 @@ Either a [KodeinInjector](-kodein-injector/index.md) instance or a [KodeinInject
 
 **Return**
 A lazy property that yields either a factory of `T` or null if no factory was found.
+
+`inline fun <reified A, reified T : Any> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.genericFactoryOrNull(tag: Any? = null): (A) -> T`
+
+Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
+
+Whether this factory will re-create a new instance at each call or not depends on the binding scope.
+
+A &amp; T generics will be kept.
+
+### Parameters
+
+`A` - The type of argument the factory takes.
+
+`T` - The type of object the factory returns.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.DependencyLoopException` - When calling the factory function, if the instance construction triggered a dependency loop.
+
+**Receiver**
+Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
+
+**Return**
+A factory, or null if no factory was found.
 

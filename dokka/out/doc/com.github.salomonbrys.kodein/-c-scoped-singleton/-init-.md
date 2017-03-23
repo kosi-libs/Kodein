@@ -11,11 +11,3 @@ Concrete scoped singleton factory, effectively a `factory { Scope -> T }`.
 `C` - The scope context type.
 
 `T` - The singleton type.
-
-`contextType` - The scope context type.
-
-`createdType` - The singleton type.
-
-`_scope` - The scope object in which the singleton will be stored.
-
-`creator` - A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.

@@ -2,7 +2,7 @@
 
 # CProvider
 
-`class CProvider<out T : Any> : `[`AProvider`](../-a-provider/index.md)`<T>`
+`class CProvider<out T : Any> : `[`Provider`](../-provider/index.md)`<T>`
 
 Concrete provider: each time an instance is needed, the function [creator](creator.md) function will be called.
 
@@ -24,26 +24,26 @@ A provider is like a [CFactory](../-c-factory/index.md), but without argument.
 
 | Name | Summary |
 |---|---|
+| [createdType](created-type.md) | `val createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type of object that is created by this factory. |
 | [creator](creator.md) | `val creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T`<br>The function that will be called each time an instance is requested. Should create a new instance. |
 
 ### Inherited Properties
 
 | Name | Summary |
 |---|---|
-| [argType](../-a-provider/arg-type.md) | `open val argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type of the argument this factory will function for. |
-| [createdType](../-a-provider/created-type.md) | `open val createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type of object that is created by this factory. |
-| [description](../-a-provider/description.md) | `open val description: String`<br>The description of this factory (using simple type names), *used for debug print only*. |
-| [factoryName](../-a-provider/factory-name.md) | `open val factoryName: String`<br>The name of this factory, *used for debug print only*. |
-| [fullDescription](../-a-provider/full-description.md) | `open val fullDescription: String`<br>The description of this factory (using full type names), *used for debug print only*. |
+| [argType](../-provider/arg-type.md) | `open val argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type of the argument this factory will function for. |
+| [description](../-provider/description.md) | `open val description: String`<br>The description of this factory (using simple type names), *used for debug print only*. |
+| [fullDescription](../-provider/full-description.md) | `open val fullDescription: String`<br>The description of this factory (using full type names), *used for debug print only*. |
 
 ### Functions
 
 | Name | Summary |
 |---|---|
+| [factoryName](factory-name.md) | `fun factoryName(): String`<br>The name of this factory, *used for debug print only*. |
 | [getInstance](get-instance.md) | `fun getInstance(kodein: `[`ProviderKodein`](../-provider-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`): T`<br>Get an instance of type `T`. |
 
 ### Inherited Functions
 
 | Name | Summary |
 |---|---|
-| [getInstance](../-a-provider/get-instance.md) | `fun getInstance(kodein: `[`FactoryKodein`](../-factory-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: Unit): T`<br>Get an instance of type `T`. |
+| [getInstance](../-provider/get-instance.md) | `open fun getInstance(kodein: `[`FactoryKodein`](../-factory-kodein/index.md)`, key: `[`Key`](../-kodein/-key/index.md)`, arg: Unit): T`<br>Get an instance of type `T`. |

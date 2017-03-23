@@ -34,12 +34,12 @@ Injections will be available after `super.onCreate` and will be destroyed after 
 Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
 | [ServiceInjector](-service-injector/index.md) | `interface ServiceInjector : `[`AndroidInjector`](-android-injector/index.md)`<Service, `[`AndroidScope`](-android-scope/index.md)`<Service>>`<br>An interface for adding injection and bindings to a Service. |
 | [SupportFragmentInjector](-support-fragment-injector/index.md) | `interface SupportFragmentInjector : `[`AndroidInjector`](-android-injector/index.md)`<Fragment, `[`AndroidScope`](-android-scope/index.md)`<Fragment>>`<br>An interface for adding injection and bindings to a android.support.v4.app.Fragment. |
-| [androidActivityScope](android-activity-scope/index.md) | `object androidActivityScope : `[`AndroidScope`](-android-scope/index.md)`<Activity>, `[`AutoScope`](../com.github.salomonbrys.kodein/-auto-scope/index.md)`<Activity>`<br>Androids activity scope. Allows to register activity-specific singletons. |
-| [androidBroadcastReceiverScope](android-broadcast-receiver-scope/index.md) | `object androidBroadcastReceiverScope : `[`AndroidScope`](-android-scope/index.md)`<BroadcastReceiver>`<br>Androids broadcast receiver scope. Allows to register broadcast receiver-specific singletons. |
-| [androidContextScope](android-context-scope/index.md) | `object androidContextScope : `[`Scope`](../com.github.salomonbrys.kodein/-scope/index.md)`<Context>`<br>Androids context scope. Allows to register context-specific singletons. |
-| [androidFragmentScope](android-fragment-scope/index.md) | `object androidFragmentScope : `[`AndroidScope`](-android-scope/index.md)`<Fragment>`<br>Androids fragment scope. Allows to register fragment-specific singletons. |
-| [androidServiceScope](android-service-scope/index.md) | `object androidServiceScope : `[`AndroidScope`](-android-scope/index.md)`<Service>`<br>Androids service scope. Allows to register service-specific singletons. |
-| [androidSupportFragmentScope](android-support-fragment-scope/index.md) | `object androidSupportFragmentScope : `[`AndroidScope`](-android-scope/index.md)`<Fragment>`<br>Androids support fragment scope. Allows to register support fragment-specific singletons. |
+| [androidActivityScope](android-activity-scope/index.md) | `object androidActivityScope : `[`AndroidScope`](-android-scope/index.md)`<Activity>, `[`AutoScope`](../com.github.salomonbrys.kodein/-auto-scope/index.md)`<Activity>`<br>Android's activity scope. Allows to register activity-specific singletons. |
+| [androidBroadcastReceiverScope](android-broadcast-receiver-scope/index.md) | `object androidBroadcastReceiverScope : `[`AndroidScope`](-android-scope/index.md)`<BroadcastReceiver>`<br>Android's broadcast receiver scope. Allows to register broadcast receiver-specific singletons. |
+| [androidContextScope](android-context-scope/index.md) | `object androidContextScope : `[`Scope`](../com.github.salomonbrys.kodein/-scope/index.md)`<Context>`<br>Android's context scope. Allows to register context-specific singletons. |
+| [androidFragmentScope](android-fragment-scope/index.md) | `object androidFragmentScope : `[`AndroidScope`](-android-scope/index.md)`<Fragment>`<br>Android's fragment scope. Allows to register fragment-specific singletons. |
+| [androidServiceScope](android-service-scope/index.md) | `object androidServiceScope : `[`AndroidScope`](-android-scope/index.md)`<Service>`<br>Android's service scope. Allows to register service-specific singletons. |
+| [androidSupportFragmentScope](android-support-fragment-scope/index.md) | `object androidSupportFragmentScope : `[`AndroidScope`](-android-scope/index.md)`<Fragment>`<br>Android's support fragment scope. Allows to register support fragment-specific singletons. |
 
 ### Extensions for External Classes
 
@@ -58,6 +58,7 @@ Injections will be available after `super.onCreate` and will be destroyed after 
 
 | Name | Summary |
 |---|---|
+| [ACTIVITY_LAYOUT_INFLATER](-a-c-t-i-v-i-t-y_-l-a-y-o-u-t_-i-n-f-l-a-t-e-r.md) | `val ACTIVITY_LAYOUT_INFLATER: Any`<br>Tag that allows to get the Activity LayoutInflater as opposed to a LayoutInflater received as a Context Service. |
 | [androidModule](android-module.md) | `val androidModule: `[`Module`](../com.github.salomonbrys.kodein/-kodein/-module/index.md)<br>A module that binds a lot of Android framework classes: |
 
 ### Functions

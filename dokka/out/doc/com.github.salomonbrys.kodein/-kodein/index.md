@@ -6,13 +6,13 @@
 
 KOtlin DEpendency INjection.
 
-To construct a Kodein instance, simply use [its block constructor](invoke.md) and define your bindings in it :
+To construct a Kodein instance, simply use [it's block constructor](invoke.md) and define your bindings in it :
 
-```
+``` kotlin
 val kodein = Kodein {
-    bind&lt;Dice&gt;() with factory { sides: Int -&gt; RandomDice(sides) }
-    bind&lt;DataSource&gt;() with singleton { SqliteDS.open("path/to/file") }
-    bind&lt;Random&gt;() with provider { SecureRandom() }
+    bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
+    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+    bind<Random>() with provider { SecureRandom() }
     constant("answer") with "forty-two"
 }
 ```
@@ -47,6 +47,7 @@ val kodein = Kodein {
 | Name | Summary |
 |---|---|
 | [invoke](invoke.md) | `operator fun invoke(allowSilentOverride: Boolean = false, init: `[`Builder`](-builder/index.md)`.() -> Unit): Kodein`<br>Creates a Kodein instance. |
+| [withDelayedCallbacks](with-delayed-callbacks.md) | `fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: `[`Builder`](-builder/index.md)`.() -> Unit): Pair<Kodein, () -> Unit>`<br>Creates a Kodein object but without directly calling onReady callbacks. |
 
 ### Extension Properties
 

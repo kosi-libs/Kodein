@@ -4,7 +4,7 @@
 
 `object androidBroadcastReceiverScope : `[`AndroidScope`](../-android-scope/index.md)`<BroadcastReceiver>`
 
-Androids broadcast receiver scope. Allows to register broadcast receiver-specific singletons.
+Android's broadcast receiver scope. Allows to register broadcast receiver-specific singletons.
 
 ### Functions
 

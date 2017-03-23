@@ -2,20 +2,6 @@
 
 # withGeneric
 
-`inline fun <reified A> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.withGeneric(noinline arg: () -> A): `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<A>`
-`inline fun <reified A> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.withGeneric(arg: A): `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<A>`
-
-Allows to get a provider or an instance from a curried factory with an `A` argument.
-
-A generics will be kept.
-
-### Parameters
-
-`A` - The type of argument the factory takes.
-
-**Receiver**
-Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
-
 `inline fun <reified A> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.withGeneric(noinline arg: () -> A): `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<A>`
 
 Allows to get a lazy provider or instance from a curried factory with an `A` argument.
@@ -87,4 +73,18 @@ Either a [KodeinInjector](-kodein-injector/index.md) instance or a [KodeinInject
 
 **Return**
 An object from which you can inject an instance or a provider.
+
+`inline fun <reified A> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.withGeneric(noinline arg: () -> A): `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<A>`
+`inline fun <reified A> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.withGeneric(arg: A): `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<A>`
+
+Allows to get a provider or an instance from a curried factory with an `A` argument.
+
+A generics will be kept.
+
+### Parameters
+
+`A` - The type of argument the factory takes.
+
+**Receiver**
+Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
 

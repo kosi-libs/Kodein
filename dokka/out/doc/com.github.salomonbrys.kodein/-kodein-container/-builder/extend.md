@@ -14,9 +14,9 @@ Both containers will share the same instance.
 `container` - The container object to import.
 
 `allowOverride` - Whether this module is allowed to override existing bindings.
-If it is not, overrides (even explicit) will throw an [Kodein.OverridingException](../../-kodein/-overriding-exception/index.md).
+    If it is not, overrides (even explicit) will throw an [Kodein.OverridingException](../../-kodein/-overriding-exception/index.md).
 
 ### Exceptions
 
 `Kodein.OverridingException` - If this kodein overrides an existing binding and is not allowed to
-OR [allowOverride](extend.md#com.github.salomonbrys.kodein.KodeinContainer.Builder$extend(com.github.salomonbrys.kodein.KodeinContainer, kotlin.Boolean)/allowOverride) is true while YOU dont have the permission to override.
+    OR [allowOverride](extend.md#com.github.salomonbrys.kodein.KodeinContainer.Builder$extend(com.github.salomonbrys.kodein.KodeinContainer, kotlin.Boolean)/allowOverride) is true while YOU don't have the permission to override.

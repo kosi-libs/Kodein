@@ -20,11 +20,23 @@ Concrete singleton: will create an instance on first request and will subsequent
 |---|---|
 | [&lt;init&gt;](-init-.md) | `CSingleton(createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T)`<br>Concrete singleton: will create an instance on first request and will subsequently always return the same instance. |
 
+### Properties
+
+| Name | Summary |
+|---|---|
+| [createdType](created-type.md) | `val createdType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type of object that is created by this factory. |
+
 ### Inherited Properties
 
 | Name | Summary |
 |---|---|
 | [creator](../-a-singleton/creator.md) | `val creator: `[`ProviderKodein`](../-provider-kodein/index.md)`.() -> T`<br>The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance. |
+
+### Functions
+
+| Name | Summary |
+|---|---|
+| [factoryName](factory-name.md) | `fun factoryName(): String`<br>The name of this factory, *used for debug print only*. |
 
 ### Inherited Functions
 

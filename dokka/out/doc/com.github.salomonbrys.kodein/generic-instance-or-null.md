@@ -2,51 +2,6 @@
 
 # genericInstanceOrNull
 
-`inline fun <reified T : Any> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.genericInstanceOrNull(tag: Any? = null): T?`
-
-Gets an instance of `T` for the given type and tag, or null if none is found.
-
-Whether the returned object is a new instance at each call or not depends on the binding scope.
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of object to retrieve.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.DependencyLoopException` - If the instance construction triggered a dependency loop.
-
-**Receiver**
-Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
-
-**Return**
-An instance, or null if no provider was found.
-
-`inline fun <reified T : Any> `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<*>.genericInstanceOrNull(tag: Any? = null): T?`
-
-Gets an instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
-
-Whether the returned object is a new instance at each call or not depends on the binding scope.
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of object to retrieve.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.DependencyLoopException` - If the instance construction triggered a dependency loop.
-
-**Return**
-An instance, or null if no factory was found.
-
 `inline fun <reified T : Any> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.genericInstanceOrNull(tag: Any? = null): Lazy<T?>`
 
 Gets a lazy instance for the given type and tag, or null is none is found.
@@ -132,4 +87,49 @@ T generics will be kept.
 
 **Return**
 A lazy property that yields a `T` or null if no factory was found.
+
+`inline fun <reified T : Any> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.genericInstanceOrNull(tag: Any? = null): T?`
+
+Gets an instance of `T` for the given type and tag, or null if none is found.
+
+Whether the returned object is a new instance at each call or not depends on the binding scope.
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of object to retrieve.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.DependencyLoopException` - If the instance construction triggered a dependency loop.
+
+**Receiver**
+Either a [Kodein](-kodein/index.md) instance or a [KodeinAware](-kodein-aware.md) class.
+
+**Return**
+An instance, or null if no provider was found.
+
+`inline fun <reified T : Any> `[`CurriedKodeinFactory`](-curried-kodein-factory/index.md)`<*>.genericInstanceOrNull(tag: Any? = null): T?`
+
+Gets an instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
+
+Whether the returned object is a new instance at each call or not depends on the binding scope.
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of object to retrieve.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.DependencyLoopException` - If the instance construction triggered a dependency loop.
+
+**Return**
+An instance, or null if no factory was found.
 
