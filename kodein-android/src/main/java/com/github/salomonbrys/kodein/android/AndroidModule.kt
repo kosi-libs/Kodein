@@ -58,15 +58,7 @@ import com.github.salomonbrys.kodein.erasedProvider
 import java.io.File
 
 /**
- * A module that binds a lot of Android framework classes:
- *
- * ```kotlin
- * class MyActivity : Activity(), KodeinInjected {
- *   override val injector = KodeinInjector()
- *
- *   override val inflator: LayoutInflator by withContext(this).instance()
- * }
- * ```
+ * Defines the [androidModule]
  */
 @SuppressLint("NewApi")
 private fun defineAndroidModule() = Kodein.Module {
@@ -179,6 +171,17 @@ private fun defineAndroidModule() = Kodein.Module {
     }
 }
 
+/**
+ * A module that binds a lot of Android framework classes:
+ *
+ * ```kotlin
+ * class MyActivity : Activity(), KodeinInjected {
+ *   override val injector = KodeinInjector()
+ *
+ *   override val inflator: LayoutInflator by withContext(this).instance()
+ * }
+ * ```
+ */
 val androidModule = defineAndroidModule()
 
 /**

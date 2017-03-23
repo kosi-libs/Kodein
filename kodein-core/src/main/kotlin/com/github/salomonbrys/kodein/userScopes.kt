@@ -106,16 +106,20 @@ interface AutoScope<C> : Scope<C> {
  * @param _creator A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
  */
 abstract class AScoped<in A, out C, out T : Any>(
-        override val argType: Type,
-        override val createdType: Type,
-        override val factoryName: String,
         private val _creator: ProviderKodein.(C) -> T
-) : Factory<A, T> {
+) {
 
+    /**
+     * Finds an instance inside a scope, or creates it if needs be.
+     *
+     * @param kodein: A Kodein instance to use for transitive dependencies.
+     * @param key: The key of the instance to get.
+     * @param arg: The argument to use to get the instance.
+     */
     @Suppress("UNCHECKED_CAST")
-    override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: A): T {
-        val (context, registry) = _getContextAndRegistry(arg)
-        return registry.getOrCreate(key.bind) { _creator(ProviderKodein(kodein), context) }
+    protected fun getScopedInstance(kodein: ProviderKodein, key: Kodein.Key, arg: A): T {
+        val (context, registry) = getContextAndRegistry(arg)
+        return registry.getOrCreate(key.bind) { _creator(kodein, context) }
     }
 
     /**
@@ -124,7 +128,7 @@ abstract class AScoped<in A, out C, out T : Any>(
      * @param arg The argument associated with the returned scope.
      * @return The scope associated with the given argument.
      */
-    abstract protected fun _getContextAndRegistry(arg: A): Pair<C, ScopeRegistry>
+    abstract protected fun getContextAndRegistry(arg: A): Pair<C, ScopeRegistry>
 }
 
 
@@ -133,18 +137,22 @@ abstract class AScoped<in A, out C, out T : Any>(
  *
  * @param C The scope context type.
  * @param T The singleton type.
- * @param contextType The scope context type.
- * @param createdType The singleton type.
- * @param _scope The scope object in which the singleton will be stored.
+ * @property contextType The scope context type.
+ * @property createdType The singleton type.
+ * @property _scope The scope object in which the singleton will be stored.
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
  */
-class CScopedSingleton<C, out T : Any>(contextType: Type, createdType: Type, private val _scope: Scope<C>, creator: ProviderKodein.(C) -> T)
-: AScoped<C, C, T>(contextType, createdType, "scopedSingleton", creator)
+class CScopedSingleton<C, out T : Any>(val contextType: Type, override val createdType: Type, private val _scope: Scope<C>, creator: ProviderKodein.(C) -> T)
+: AScoped<C, C, T>(creator), Factory<C, T>
 {
-    override fun _getContextAndRegistry(arg: C): Pair<C, ScopeRegistry> = arg to _scope.getRegistry(arg)
+    override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: C) = getScopedInstance(ProviderKodein(kodein), key, arg)
 
-    override val description: String get() = "$factoryName(${_scope.javaClass.simpleDispString}) { ${argType.simpleDispString} -> ${createdType.simpleDispString} } "
-    override val fullDescription: String get() = "$factoryName(${_scope.javaClass.fullDispString}) { ${argType.fullDispString} -> ${createdType.fullDispString} } "
+    override val argType: Type get() = contextType
+
+    override fun getContextAndRegistry(arg: C): Pair<C, ScopeRegistry> = arg to _scope.getRegistry(arg)
+
+    override val factoryName: String get() = "scopedSingleton(${_scope.javaClass.simpleDispString})"
+    override val factoryFullName: String get() = "scopedSingleton(${_scope.javaClass.fullDispString})"
 }
 
 /**
@@ -186,13 +194,17 @@ inline fun <reified C, reified T : Any> Kodein.Builder.erasedScopedSingleton(sco
  * @param _scope The scope object in which the singleton will be stored.
  * @param creator A function that creates the singleton object. Will be called only if the singleton does not already exist in the scope.
  */
-class CAutoScopedSingleton<out C, out T : Any>(createdType: Type, private val _scope: AutoScope<C>, creator: ProviderKodein.(C) -> T)
-: AScoped<Unit, C, T>(Unit::class.java, createdType, "autoScopedSingleton", creator)
+class CAutoScopedSingleton<out C, out T : Any>(override val createdType: Type, private val _scope: AutoScope<C>, creator: ProviderKodein.(C) -> T)
+: AScoped<Unit, C, T>(creator), Provider<T>
 {
-    override fun _getContextAndRegistry(arg: Unit): Pair<C, ScopeRegistry> = _scope.getContext().let { it to _scope.getRegistry(it) }
+    override fun getInstance(kodein: ProviderKodein, key: Kodein.Key) = getScopedInstance(kodein, key, Unit)
 
-    override val description: String get() = "$factoryName(${_scope.javaClass.simpleDispString}) { ${createdType.simpleDispString} } "
-    override val fullDescription: String get() = "$factoryName(${_scope.javaClass.fullDispString}) { ${createdType.fullDispString} } "
+    override val argType: Type get() = Unit::class.java
+
+    override fun getContextAndRegistry(arg: Unit): Pair<C, ScopeRegistry> = _scope.getContext().let { it to _scope.getRegistry(it) }
+
+    override val factoryName: String get() = "autoScopedSingleton(${_scope.javaClass.simpleDispString})"
+    override val factoryFullName: String get() = "autoScopedSingleton(${_scope.javaClass.fullDispString})"
 }
 
 /**

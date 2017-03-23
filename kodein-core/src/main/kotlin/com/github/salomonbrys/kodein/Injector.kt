@@ -509,9 +509,9 @@ class KodeinInjector() : KodeinInjectedBase {
      * Creates a property delegate that will hold a Kodein instance.
      *
      * @return A property delegate that will lazily provide a Kodein instance.
-     * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
+     * @throws UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      */
-    fun kodein(): Lazy<Kodein> = lazy { _kodein ?: throw KodeinInjector.UninjectedException() }
+    fun kodein(): Lazy<Kodein> = lazy { _kodein ?: throw UninjectedException() }
 
     override fun inject(kodein: Kodein) {
         if (_kodein != null)

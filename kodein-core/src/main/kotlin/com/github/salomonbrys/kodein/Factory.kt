@@ -83,6 +83,11 @@ interface Factory<in A, out T : Any> {
     val factoryName: String
 
     /**
+     * The full(er) name of this factory, *used for debug print only*.
+     */
+    val factoryFullName: String get() = factoryName
+
+    /**
      * The type of the argument this factory will function for.
      */
     val argType: Type
@@ -95,26 +100,12 @@ interface Factory<in A, out T : Any> {
     /**
      * The description of this factory (using simple type names), *used for debug print only*.
      */
-    val description: String
+    val description: String get() = "$factoryName { ${argType.simpleDispString} -> ${createdType.simpleDispString} } "
 
     /**
      * The description of this factory (using full type names), *used for debug print only*.
      */
-    val fullDescription: String
-}
-
-/**
- * Factory base.
- *
- * Enables sub-classes to implement only [Factory.getInstance].
- *
- * @param A The factory argument type.
- * @param T The created type.
- */
-abstract class AFactory<in A, out T : Any>(override val factoryName: String, override val argType: Type, override val createdType: Type) : Factory<A, T> {
-
-    override val description: String get() = "$factoryName { ${argType.simpleDispString} -> ${createdType.simpleDispString} } "
-    override val fullDescription: String get() = "$factoryName { ${argType.fullDispString} -> ${createdType.fullDispString} } "
+    val fullDescription: String get() = "$factoryFullName { ${argType.fullDispString} -> ${createdType.fullDispString} } "
 }
 
 /**
@@ -163,6 +154,11 @@ class ProviderKodein(private val _kodein: FactoryKodein) : Kodein by _kodein {
     fun <T : Any> overriddenInstanceOrNull(): T? = _kodein.overriddenInstanceOrNull(Unit)
 }
 
+/**
+ * [Factory] specialization that has no argument.
+ *
+ * As a factory does need an argument, it uses `Unit` as its argument.
+ */
 interface Provider<out T: Any> : Factory<Unit, T> {
 
     /**
@@ -189,17 +185,9 @@ interface Provider<out T: Any> : Factory<Unit, T> {
     fun getInstance(kodein: ProviderKodein, key: Kodein.Key): T
 
     override val argType: Type get() = Unit::class.java
-}
-
-/**
- * Provider base.
- *
- * A provider is like a [AFactory], but without argument (the [Factory] is registered with a `Unit` argument).
- *
- * @param T The created type.
- */
-abstract class AProvider<out T : Any>(override val factoryName: String, override val createdType: Type) : Provider<T> {
 
     override val description: String get() = "$factoryName { ${createdType.simpleDispString} } "
+
     override val fullDescription: String get() = "$factoryName { ${createdType.fullDispString} } "
+
 }

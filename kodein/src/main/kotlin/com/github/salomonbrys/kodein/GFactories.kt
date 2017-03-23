@@ -36,6 +36,16 @@ inline fun <reified T : Any> Kodein.Builder.provider(noinline creator: ProviderK
  */
 inline fun <reified T : Any> Kodein.Builder.singleton(noinline creator: ProviderKodein.() -> T) = genericSingleton(creator)
 
+/**
+ * Creates a multiton: will create an instance on first request for each different argument and will subsequently always return the same instance for the same argument.
+ *
+ * A & T generics will be kept.
+ *
+ * @param A The argument type.
+ * @param T The created type.
+ * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
+ * @return A multiton ready to be bound.
+ */
 inline fun <reified A, reified T : Any> Kodein.Builder.multiton(noinline creator: FactoryKodein.(A) -> T) = genericMultiton(creator)
 
 /**

@@ -24,9 +24,12 @@ import android.support.v4.app.Fragment as SupportFragment
 import android.support.v4.app.FragmentManager as SupportFragmentManager
 import android.support.v4.app.LoaderManager as SupportLoaderManager
 
+/**
+ * Tag that allows to get the Activity LayoutInflater as opposed to a LayoutInflater received as a Context Service.
+ */
 val ACTIVITY_LAYOUT_INFLATER = Any()
 
-private fun inject(injector: KodeinInjected, componentModule: Kodein.Module, superKodein: Kodein) {
+private fun _inject(injector: KodeinInjected, componentModule: Kodein.Module, superKodein: Kodein) {
     val kodein = Kodein {
         extend(superKodein, allowOverride = true)
 
@@ -99,7 +102,7 @@ interface ActivityInjector : AndroidInjector<Activity, AndroidScope<Activity>> {
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        inject(this, activityModule, kodeinComponent.appKodein())
+        _inject(this, activityModule, kodeinComponent.appKodein())
     }
 }
 
@@ -166,7 +169,7 @@ interface FragmentActivityInjector : AndroidInjector<FragmentActivity, AndroidSc
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        inject(this, activityModule, kodeinComponent.appKodein())
+        _inject(this, activityModule, kodeinComponent.appKodein())
     }
 }
 
@@ -235,7 +238,7 @@ interface AppCompatActivityInjector : AndroidInjector<AppCompatActivity, Android
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        inject(this, activityModule, kodeinComponent.appKodein())
+        _inject(this, activityModule, kodeinComponent.appKodein())
     }
 }
 
@@ -319,7 +322,7 @@ interface FragmentInjector : AndroidInjector<Fragment, AndroidScope<Fragment>> {
 
         val parent = parentFragment ?: activity
 
-        inject(this, fragmentModule, (parent as KodeinInjected).injector.kodein().value)
+        _inject(this, fragmentModule, (parent as KodeinInjected).injector.kodein().value)
     }
 }
 
@@ -334,6 +337,7 @@ abstract class KodeinFragment : Fragment(), FragmentInjector {
 
     final override fun initializeInjector() = super.initializeInjector()
 
+    /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
         initializeInjector()
 
@@ -342,6 +346,7 @@ abstract class KodeinFragment : Fragment(), FragmentInjector {
 
     final override fun destroyInjector() = super.destroyInjector()
 
+    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -399,7 +404,7 @@ interface SupportFragmentInjector : AndroidInjector<SupportFragment, AndroidScop
 
         val parent = parentFragment ?: activity
 
-        inject(this, fragmentModule, (parent as KodeinInjected).injector.kodein().value)
+        _inject(this, fragmentModule, (parent as KodeinInjected).injector.kodein().value)
     }
 }
 
@@ -414,6 +419,7 @@ abstract class KodeinSupportFragment : SupportFragment(), SupportFragmentInjecto
 
     final override fun initializeInjector() = super.initializeInjector()
 
+    /** @suppress */
     override fun onCreate(savedInstanceState: Bundle?) {
         initializeInjector()
 
@@ -422,6 +428,7 @@ abstract class KodeinSupportFragment : SupportFragment(), SupportFragmentInjecto
 
     final override fun destroyInjector() = super.destroyInjector()
 
+    /** @suppress */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -460,7 +467,7 @@ interface ServiceInjector : AndroidInjector<Service, AndroidScope<Service>> {
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        inject(this, serviceModule, kodeinComponent.appKodein())
+        _inject(this, serviceModule, kodeinComponent.appKodein())
     }
 }
 
@@ -517,7 +524,7 @@ interface IntentServiceInjector : AndroidInjector<IntentService, AndroidScope<In
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        inject(this, serviceModule, kodeinComponent.appKodein())
+        _inject(this, serviceModule, kodeinComponent.appKodein())
     }
 }
 
@@ -588,7 +595,7 @@ interface BroadcastReceiverInjector : AndroidInjector<BroadcastReceiver, Android
             import(provideOverridingModule(), allowOverride = true)
         }
 
-        inject(this, receiverModule, context.appKodein())
+        _inject(this, receiverModule, context.appKodein())
     }
 
     override fun destroyInjector(): ScopeRegistry? {

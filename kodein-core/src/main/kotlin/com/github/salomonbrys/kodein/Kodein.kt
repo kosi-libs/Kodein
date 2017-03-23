@@ -468,6 +468,14 @@ interface Kodein : KodeinAwareBase {
          */
         operator fun invoke(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit): Kodein = KodeinImpl(allowSilentOverride, init)
 
+        /**
+         * Creates a Kodein object but without directly calling onReady callbacks.
+         *
+         * Instead, returns both the kodein instance and the callbacks.
+         * Note that the returned kodein object should not be used before calling the callbacks.
+         *
+         * This is an internal function that exists primarily to prevent Kodein.global recursion.
+         */
         fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit): Pair<Kodein, () -> Unit> = KodeinImpl.withDelayedCallbacks(allowSilentOverride, init)
     }
 
