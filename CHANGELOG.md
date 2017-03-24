@@ -1,4 +1,26 @@
 
+### 3.3.0 (24-03-2017)
+
+ - ANDROID FIXES
+   * Initialize the injector before super.onCreate in components (Thanks to Eliezer Graber). This **may** be a breaking change.
+   * In a fragment, you can now retreive a Layout Inflater either via a service or using the tag ACTIVITY_LAYOUT_INFLATER (Thanks to Eliezer Graber).
+   * FragmentInjector injects from parent fragment when present (Thanks to Corey Downing).
+   * Enforce that an KodeinFragment must be used inside a KodeinActivity (Thanks to Eliezer Graber & Corey Downing).
+
+ - FEATURES
+   * Detect recursive initialization in configurable module (Thanks to Francesco Vasco).
+   * Added `refSingleton` which enables a singleton managed by a reference object (suggested by Francesco Vasco)..
+   * Added `multiton` which is like a `singleton` but whose uniqueness is defined by a parameter (suggested by Francesco Vasco).
+  
+ - DEPRECATION
+   * `threadSingleton {}` is deprecated in favour of `refSingleton(threadLocal) {}`. 
+
+ - STRUCTURE CHANGES
+   * Better synchronization.
+   * Removed `CFactory` and `CProvider`.
+   * In `Factory`, `factoryName` is now a function, which forces computation only when needed.
+
+
 ### 3.2.0 (26-01-2017)
 No changes from `3.2.0-beta3`
 

@@ -33,7 +33,7 @@ the others are mainly about changes in advanced features.
 First, replace the gradle dependency line with:
 
 ```groovy
-compile "com.github.salomonbrys.kodein:kodein:3.0.+"
+compile "com.github.salomonbrys.kodein:kodein:3.3.+"
 ```
 
 If you are using intelliJ, don't forget to update the project's gradle dependencies ;)

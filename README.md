@@ -1,6 +1,6 @@
 <img alt="KODEIN" src="https://raw.githubusercontent.com/SalomonBrys/Kodein/master/Kodein-logo.png" width="700">
 
-[![Kotlin 1.0](https://img.shields.io/badge/Kotlin-1.0.3-blue.svg)](http://kotlinlang.org)
+[![Kotlin 1.0.7](https://img.shields.io/badge/Kotlin-1.0.7-blue.svg)](http://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22)
 [![Travis](https://img.shields.io/travis/SalomonBrys/Kodein.svg)](https://travis-ci.org/SalomonBrys/Kodein/builds)
 [![MIT License](https://img.shields.io/github/license/salomonbrys/kodein.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
@@ -47,7 +47,7 @@ val kodein = Kodein {
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 }
 
-class Controller(private val kodein: Kodein) {
+class Controller(private kodein: Kodein) {
     private val ds: DataSource = kodein.instance()
 }
 ```

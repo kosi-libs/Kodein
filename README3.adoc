@@ -1,14 +1,14 @@
 = KOtlin DEpendency INjection
-Author <salomon.brys@gmail.com>
+Salomon BRYS <salomon.brys@gmail.com>
 :toc: macro
 :toclevels: 4
 
-:version: 3.2.0
+:version: 3.3.0
 :branch: master
 
 image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]
 
-image:https://img.shields.io/badge/Kotlin-1.0.6-blue.svg[alt="Kotlin 1.0.6", link="http://kotlinlang.org"]
+image:https://img.shields.io/badge/Kotlin-1.0.7-blue.svg[alt="Kotlin 1.0.7", link="http://kotlinlang.org"]
 image:https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg[alt="Maven Central", link="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22"]
 image:https://img.shields.io/travis/SalomonBrys/Kodein.svg[alt="Travis", link="https://travis-ci.org/SalomonBrys/Kodein/builds"]
 image:https://img.shields.io/github/license/salomonbrys/kodein.svg[alt="MIT License", link="https://github.com/SalomonBrys/Kodein/blob/{branch}/LICENSE.txt"]
@@ -170,18 +170,58 @@ val kodein = Kodein {
 ----
 
 
-=== Thread singleton binding
+=== Multiton binding
 
-This is the same as the singleton binding, except that each thread gets a different instance.
+A multiton can be thought of a "singleton factory".
+A multiton guarantees to always gives the same object given the same argument.
+In other words, for a given argument, the first time a multiton is called with this argument, it will create an object; and will always yield that same object when called with the same argument.
+
+[source,kotlin]
+.Example: creates one random generator for each value
+----
+val kodein = Kodein {
+    bind<RandomGenerator>() with multiton { max: Int -> SecureRandomGenerator(max) }
+}
+----
+
+
+=== Referenced singleton or multiton binding
+
+A referenced singleton is an object that is guaranteed to be single as long as a reference object can return it.
+A referenced multiton is an object that is guaranteed to be single for the same argument as long as a reference object can return it.
+
+Kodein comes with three reference makers.
+
+==== Soft & weak
+
+These are objects that are guaranteed to be single in the JVM at a given time, but not guaranteed to be single during the application lifetime.
+If there are no more strong references to the objects, they may be GC'd and later, a new object re-created.
+
+[source,kotlin]
+.Example: creates an Cache object that will exist once at a given time
+----
+val kodein = Kodein {
+    bind<Cache>() with refSingleton(softReference) { LRUCache(16 * 1024) } <1>
+}
+----
+<1> Because it's bound by a soft reference, the JVM will GC it before any `OutOfMemoryException` can occur.
+
+Weak singletons use Java's `WeakReference` while soft singletons use Java's `SoftReference`.
+
+==== Thread local
+
+This is the same as the standard singleton binding, except that each thread gets a different instance.
 Therefore, the provided function is called once per thread that needs the instance.
 
 [source,kotlin]
 .Example: creates a Cache object that will exist once per thread
 ----
 val kodein = Kodein {
-    bind<Cache>() with threadSingleton { LRUCache(16 * 1024) }
+    bind<Cache>() with refSingleton(threadLocal) { LRUCache(16 * 1024) }
 }
 ----
+
+NOTE: Semantically, thread local singletons should use <<scoped-singletons,scoped singletons>>, the reason it uses a referenced singleton is because Java's `ThreadLocal` acts like a reference.
 
 
 === Instance binding
@@ -1096,9 +1136,7 @@ class MyActivity : KodeinActivity() { // <1>
 <3> We can also use the `injector` if we want to
 <4> `provideOverridingModule` allows us to override bindings specified higher up in the dependency tree (for example, we override the "log-tag" `String` binding defined in `MyApplication`)
 
-===== Kodein Activities
-
-`KodeinActivity`, `KodeinFragmentActivity`, and `KodeinAppCompatActivity` will internally initialize their injector before they call `super.onCreate` (see https://github.com/SalomonBrys/Kodein/issues/50[the issue that necessitates this]).
+CAUTION: `KodeinActivity`, `KodeinFragmentActivity`, and `KodeinAppCompatActivity` will internally initialize their injector before they call `super.onCreate` (see https://github.com/SalomonBrys/Kodein/issues/50[the issue that necessitates this]).
 
 ===== KodeinBroadcastReceiver
 
@@ -1157,9 +1195,7 @@ class MyFragment : CustomFragment(), FragmentInjector { // <1>
 <6> Since we have to manage the injector's lifecycle we initialize it when the fragment is initialized; in `onCreate`
 <7> Since we have to manage the injector's lifecycle we destroy it when the fragment is destroyedl in `onDestroy`
 
-===== Activity Injectors
-
-When using `ActivityInjector`, `FragmentActivityInjector`, or `AppCompatActivityInjector` it is suggested to call `initializeInjector` before `super.onCreate` (see https://github.com/SalomonBrys/Kodein/issues/50[the issue that necessitates this]).
+CAUTION: When using `ActivityInjector`, `FragmentActivityInjector`, or `AppCompatActivityInjector` it is suggested to call `initializeInjector` before `super.onCreate` (see https://github.com/SalomonBrys/Kodein/issues/50[the issue that necessitates this]).
 
 ===== BroadcastReceiverInjector
 
@@ -1188,6 +1224,9 @@ class MyBroadcastReceiver : CustomBroadcastReceiver(), BroadcastReceiverInjector
 ==== Fragments
 
 The parent of any `KodeinFragment`, `KodeinSupportFragment`, `FragmentInjector`, or `SupportFragmentInjector` **must** be `KodeinInjected`. This means a `parentFragment` **must** be one of `KodeinFragment`, `KodeinSupportFragment`, `FragmentInjector`, or `SupportFragmentInjector`. If there is no `parentFragment`, the `Activity` of the `Fragment` **must** be one of `KodeinActivity`, `KodeinFragmentActivity`, `KodeinAppCompatActivity`, `ActivityInjector`, `FragmentActivityInjector`, or `AppCompatActivityInjector`.
+
+NOTE: Inside a fragment, you can retrive a `LayoutInflater` using the tag `ACTIVITY_LAYOUT_INFLATER`.
+Using the tag will use a more optimized way of retrieving the `LayoutInflater`.
 
 === Android module
 
@@ -1530,6 +1569,7 @@ val appModule = Kodein.Module {
 
 === Create your own scopes
 
+[[scoped-singletons]]
 ==== Scoped singletons
 
 Scoped singleton are singletons that are bound to a context and live while that context exists.

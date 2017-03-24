@@ -22,7 +22,7 @@ allprojects {
     }
 
     group = 'com.github.salomonbrys.kodein'
-    version = '3.2.0'
+    version = '3.3.0'
 }
 
 def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }
