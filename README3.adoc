@@ -21,6 +21,8 @@ image:https://img.shields.io/badge/Backing-Donate-orange.svg[alt="Donate", link=
 
 == Introduction
 
+=== Description
+
 [.lead]
 Kodein is a very simple and yet very useful dependency retrieval container, it is very easy to use and configure.
 
@@ -43,7 +45,7 @@ Kodein is a very simple and yet very useful dependency retrieval container, it i
 - It can be used in plain Java.
 
 
-== Example
+=== Example
 
 [source,kotlin]
 .An example is always better than a thousand words:
@@ -88,11 +90,6 @@ If you are using Proguard, you need to add the following line to your proguard c
 ----
 -keepattributes Signature
 ----
-
-
-== Migrating
-
-If you are migrating from Kodein 2.8, you can read the https://github.com/SalomonBrys/Kodein/blob/{branch}/MIGRATION-2-3.md[migration document].
 
 
 == Bindings: Declaring dependencies
@@ -933,8 +930,6 @@ class MyManager() : KodeinGlobalAware {
 }
 ----
 
-Easy :)
-
 
 == Android
 
@@ -1713,12 +1708,14 @@ From this `Map<Kodein.Key, Factory<*, *>>`, you can explore all bindings, their 
 TIP: The https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein/src/main/kotlin/com/github/salomonbrys/kodein/bindings.kt[bindings.kt] file exposes several extension functions to this map that can be useful for exploring it.
 
 
-== API reference
+=== API reference
 
 The API reference can be found https://github.com/SalomonBrys/Kodein/blob/{branch}/dokka/out/doc/index.md[here]!
 
 
-== Contributing
+== Get involved!
+
+=== Contribute
 
 Contributions are very welcome and greatly appreciated! The great majority of pull requests are eventually merged.
 
@@ -1729,13 +1726,13 @@ If you feel like enhancing this document, you can propose a pull request that mo
 (The documentation page is auto-generated from it).
 
 
-== Let's talk!
+=== Let's talk!
 
 You've read so far?! *You're awesome!* +
 Why don't you drop by the https://kotlinlang.slack.com/messages/kodein/[Kodein Slack channel] on Kotlin's Slack group?
 
 
-== Donate
+=== Donate
 
 Kodein is free to use for both non-profit and commercial use and always will be.
 
