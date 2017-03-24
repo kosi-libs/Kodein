@@ -29,6 +29,7 @@
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/idea.min.css">
 
+        <!--<script type="text/javascript" src="asciidoctor-all.min.js"></script>-->
         <script type="text/javascript" src="asciidoctor-all.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
@@ -40,7 +41,7 @@
             .hljs { background: transparent; }
         </style>
     </head>
-    <body style="overflow-y: scroll; position: inherit;">
+    <body style="overflow-y: scroll; position: inherit;" class="toc2 toc-left">
 
         <a href="https://github.com/SalomonBrys/Kodein">
             <img style="position: fixed; top: 0; right: 0; border: 0; z-index: 100;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" />
@@ -69,24 +70,35 @@
                 var branch = "master";
                 if (location.search != "")
                     branch = location.search.substr(1);
-                $.get("https://raw.githubusercontent.com/SalomonBrys/Kodein/" + branch + "/README3.adoc", function(data) {
+                var url = "https://raw.githubusercontent.com/SalomonBrys/Kodein/" + branch + "/README3.adoc";
+//                var url = "../Kodein/README3.adoc";
+                $.get(url, function(data) {
                     var options = Opal.hash({
                         backend: 'html5',
-                        safe: 'secure',
+                        safe: 'unsafe',
+                        showToc: true,
+                        header_footer: true,
                         attributes: [
                             'showtitle',
                             'icons=font@',
-                            'platform=opal',
-                            'platform-opal',
-                            'env=browser',
-                            'env-browser',
-                            'chart-engine=chartist',
-                            'data-uri!'
+                            'sectanchors',
+                            'linkcss',
+                            'nofooter'
                         ]
                     });
-                    var adocHtml = Opal.Asciidoctor.$convert(data, options);
+                    var adoc = Opal.Asciidoctor.$load(data, options);
+                    adoc.$delete_attribute("author");
+//                    var adocHtml = Opal.Asciidoctor.$convert(Opal.Asciidoctor.$load(data), options);
+                    var adocHtml = adoc.$convert(options);
 
-                    $("#content").html(adocHtml);
+                    var dom = $.parseHTML(adocHtml);
+
+                    $("#content").empty();
+
+                    for (var i = 0; i < dom.length; ++i) {
+                        if (dom[i].tagName == "DIV")
+                            $("#content").append(dom[i]);
+                    }
 
                     $('pre code').each(function(i, block) {
                         hljs.highlightBlock(block);
@@ -103,11 +115,9 @@
                         $('#loadingText').html("No doc for branch <b>" + branch + "</b>.");
                     })
                 ;
-//                alert(location.hash)
             }
 
             asciidocify();
-//            setTimeout(asciidocify, 2000)
         </script>
 
     </body>
