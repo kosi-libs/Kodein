@@ -1,7 +1,9 @@
 = KOtlin DEpendency INjection
 Salomon BRYS <salomon.brys@gmail.com>
-:toc: macro
+:toc: left
+:toc-position: left
 :toclevels: 4
+:revdate: 2017-03-24
 
 :version: 3.3.0
 :branch: master
@@ -86,12 +88,6 @@ If you are using Proguard, you need to add the following line to your proguard c
 ----
 -keepattributes Signature
 ----
-
-
-== Table of contents
-
-.KOtlin DEpendency INjection
-toc::[]
 
 
 == Migrating
