@@ -61,4 +61,4 @@ Kodein version 3 is the current major version available:
 - **[Kodein 3 full documentation](https://salomonbrys.github.io/Kodein/)**
 - [Kodein 3 API reference](https://github.com/SalomonBrys/Kodein/blob/master/dokka/out/doc/index.md)
 
-If you are currently using a `javax.inject` compatible dependency injection library and whish to migrate to Kodein, [there is a guide for that](https://github.com/SalomonBrys/Kodein/blob/master/MIGRATION-JtoK.md).
+If you are currently using a `javax.inject` compatible dependency injection library and whish to migrate to Kodein, [there is a guide for that](https://github.com/SalomonBrys/Kodein/blob/master/MIGRATION-JtoK.adoc).
