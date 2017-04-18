@@ -23,14 +23,6 @@ operator fun BindingsMap.contains(type: Type): Boolean = any { it.key.bind.type 
 
 /**
  * @receiver The bindings map, obtained with [KodeinContainer.bindings].
- * @param type The type to look for.
- * @return Whether or not this type is bound in the binding map, whatever the tag or the factory argument type.
- */
-@Deprecated("Use contains(Type) instead.", ReplaceWith("contains(type.type)"), level = DeprecationLevel.ERROR) // Deprecated since 3.2.0
-operator fun BindingsMap.contains(type: TypeToken<*>): Boolean = contains(type.type)
-
-/**
- * @receiver The bindings map, obtained with [KodeinContainer.bindings].
  * @param bind The bind to look for.
  * @return The list of argument type that are bound with this binding. Each entry represents a different [Kodein.Key].
  */
@@ -43,15 +35,6 @@ fun BindingsMap.factoryArgumentTypes(bind: Kodein.Bind): List<Type> = filter { i
  *         but there may be multiple [Kodein.Key] for the same [Kodein.Bind].
  */
 fun BindingsMap.tags(type: Type): List<Any?> = filter { it.key.bind.type == type } .map { it.key.bind.tag } .distinct()
-
-/**
- * @receiver The bindings map, obtained with [KodeinContainer.bindings].
- * @param type The type to look for.
- * @return The list of tags that are bound with this type. Each entry represents a different [Kodein.Bind],
- *         but there may be multiple [Kodein.Key] for the same [Kodein.Bind].
- */
-@Deprecated("Use contains(Type) instead.", ReplaceWith("contains(type.type)"), level = DeprecationLevel.ERROR) // Deprecated since 3.2.0
-fun BindingsMap.tags(type: TypeToken<*>): List<Any?> = tags(type.type)
 
 /**
  * @receiver The bindings map, obtained with [KodeinContainer.bindings].
