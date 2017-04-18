@@ -7,6 +7,7 @@ import java.lang.reflect.Type
  *
  * It is augmented to allow such methods to access a factory or instance from the binding it is overriding (if it is overriding).
  */
+@Kodein.KodeinDsl
 interface FactoryKodein : Kodein {
 
     /**
@@ -117,6 +118,7 @@ interface Factory<in A, out T : Any> {
  *
  * It is augmented to allow such methods to access a provider or instance from the binding it is overriding (if it is overriding).
  */
+@Kodein.KodeinDsl
 class ProviderKodein(private val _kodein: FactoryKodein) : Kodein by _kodein {
 
     /**

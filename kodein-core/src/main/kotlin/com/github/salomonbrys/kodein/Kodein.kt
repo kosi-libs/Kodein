@@ -153,6 +153,12 @@ interface Kodein : KodeinAwareBase {
     }
 
     /**
+     * Defines a kodein DSL function
+     */
+    @DslMarker
+    annotation class KodeinDsl
+
+    /**
      * Allows for the DSL inside the block argument of the constructor of `Kodein` and `Kodein.Module`.
      *
      * Methods of this classes are really just proxies to the [TBuilder] or [KodeinContainer.Builder] methods.
@@ -160,6 +166,7 @@ interface Kodein : KodeinAwareBase {
      * @property container Every methods, either in this or in [TBuilder] eventually ends up to a call to this builder.
      * @property _callbacks A list of callbacks that will be called once the [Kodein] object is constructed.
      */
+    @KodeinDsl
     class Builder internal constructor(
             val container: KodeinContainer.Builder,
             internal val _callbacks: MutableList<Kodein.() -> Unit>,
