@@ -14,7 +14,8 @@ import java.util.concurrent.ConcurrentHashMap
  * @param createdType The type of objects created by this factory.
  * @property creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-class CFactory<in A, out T : Any>(override val argType: Type, override val createdType: Type, val creator: FactoryKodein.(A) -> T) : Factory<A, T> {
+@PublishedApi
+internal class CFactory<in A, out T : Any>(override val argType: Type, override val createdType: Type, val creator: FactoryKodein.(A) -> T) : Factory<A, T> {
     override fun factoryName() = "factory"
 
     override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: A) = this.creator(kodein, arg)
@@ -57,7 +58,8 @@ inline fun <reified A, reified T : Any> Kodein.Builder.erasedFactory(noinline cr
  * @property createdType The type of the created object, *used for debug print only*.
  * @property creator The function that will be called the first time an instance is requested. Guaranteed to be called only once per argument. Should create a new instance.
  */
-class CMultiton<in A, out T : Any>(override val argType: Type, override val createdType: Type, val creator: FactoryKodein.(A) -> T) : Factory<A, T> {
+@PublishedApi
+internal class CMultiton<in A, out T : Any>(override val argType: Type, override val createdType: Type, val creator: FactoryKodein.(A) -> T) : Factory<A, T> {
     private val _instances = ConcurrentHashMap<A, T>()
 
     override fun factoryName() = "multiton"
@@ -109,7 +111,8 @@ inline fun <reified A, reified T : Any> Kodein.Builder.erasedMultiton(noinline c
  * @param createdType The type of objects created by this provider, *used for debug print only*.
  * @property creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-class CProvider<out T : Any>(override val createdType: Type, val creator: ProviderKodein.() -> T) : Provider<T> {
+@PublishedApi
+internal class CProvider<out T : Any>(override val createdType: Type, val creator: ProviderKodein.() -> T) : Provider<T> {
     override fun factoryName() = "provider"
 
     override fun getInstance(kodein: ProviderKodein, key: Kodein.Key) = this.creator(kodein)
@@ -151,7 +154,7 @@ inline fun <reified T : Any> Kodein.Builder.erasedProvider(noinline creator: Pro
  * @param T The created type.
  * @property creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
-abstract class ASingleton<out T : Any>(val creator: ProviderKodein.() -> T) : Provider<T> {
+internal abstract class ASingleton<out T : Any>(val creator: ProviderKodein.() -> T) : Provider<T> {
     private @Volatile var _instance: T? = null
     private val _lock = Any()
 
@@ -175,7 +178,8 @@ abstract class ASingleton<out T : Any>(val creator: ProviderKodein.() -> T) : Pr
  * @param createdType The type of the created object, *used for debug print only*.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
-class CSingleton<out T : Any>(override val createdType: Type, creator: ProviderKodein.() -> T) : ASingleton<T>(creator) {
+@PublishedApi
+internal class CSingleton<out T : Any>(override val createdType: Type, creator: ProviderKodein.() -> T) : ASingleton<T>(creator) {
     override fun factoryName() = "singleton"
 }
 
@@ -212,7 +216,8 @@ inline fun <reified T : Any> Kodein.Builder.erasedSingleton(noinline creator: Pr
  * @param createdType The type of the created object.
  * @param creator The function that will be called as soon as Kodein is ready. Guaranteed to be called only once. Should create a new instance.
  */
-class CEagerSingleton<out T : Any>(builder: Kodein.Builder, override val createdType: Type, creator: ProviderKodein.() -> T) : ASingleton<T>(creator) {
+@PublishedApi
+internal class CEagerSingleton<out T : Any>(builder: Kodein.Builder, override val createdType: Type, creator: ProviderKodein.() -> T) : ASingleton<T>(creator) {
     override fun factoryName() = "eagerSingleton"
 
     init {
@@ -282,7 +287,8 @@ inline fun <reified T : Any> Kodein.Builder.erasedThreadSingleton(noinline creat
  * @param createdType The type of the object, *used for debug print only*.
  * @property instance The object that will always be returned.
  */
-class CInstance<out T : Any>(override val createdType: Type, val instance: T) : Provider<T> {
+@PublishedApi
+internal class CInstance<out T : Any>(override val createdType: Type, val instance: T) : Provider<T> {
     override fun factoryName() = "instance"
 
     override fun getInstance(kodein: ProviderKodein, key: Kodein.Key): T = this.instance
