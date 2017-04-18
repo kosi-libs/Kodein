@@ -385,6 +385,9 @@ inline fun <reified A> KodeinAwareBase.withGeneric(arg: A): CurriedKodeinFactory
  */
 inline fun <reified A> KodeinAwareBase.withErased(arg: A): CurriedKodeinFactory<A> = withErased { arg }
 
+inline fun <T> KodeinAwareBase.newInstance(creator: Kodein.() -> T): T = kodein.run(creator)
+
+
 /**
  * Any class that extends this interface can use Kodein "seamlessly".
  */

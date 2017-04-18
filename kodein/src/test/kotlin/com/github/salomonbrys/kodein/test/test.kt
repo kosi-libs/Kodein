@@ -961,4 +961,17 @@ class KodeinTests : TestCase() {
         assertTrue(ready)
     }
 
+    class Wedding(val him: Person, val her: Person)
+
+    @Test fun test25_0_NewInstance() {
+        val kodein = Kodein {
+            bind<Person>("Author") with singleton { Person("Salomon") }
+            bind<Person>("Spouse") with singleton { Person("Laila") }
+        }
+
+        val wedding = kodein.newInstance { Wedding(instance("Author"), instance("Spouse")) }
+        assertEquals("Salomon", wedding.him.name)
+        assertEquals("Laila", wedding.her.name)
+    }
+
 }
