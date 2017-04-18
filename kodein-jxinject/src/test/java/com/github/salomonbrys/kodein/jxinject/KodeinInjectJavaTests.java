@@ -22,10 +22,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test00_0_SimpleInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test0());
-
         Test00_0 test = new Test00_0();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test0()).javaxInject(test);
 
         assertEquals("Salomon", test.firstname);
     }
@@ -37,10 +35,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test00_1_NamedInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test0());
-
         Test00_1 test = new Test00_1();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test0()).javaxInject(test);
 
         assertEquals("BRYS", test.lastname);
         assertNull(test.unknown);
@@ -53,10 +49,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test00_2_LazyInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test0());
-
         Test00_2 test = new Test00_2();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test0()).javaxInject(test);
 
         assertEquals("Salomon", test.firstname.getValue());
         assertNotNull(test.unknown);
@@ -86,10 +80,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test00_3_MethodInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test0());
-
         Test00_3 test = new Test00_3();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test0()).javaxInject(test);
 
         assertTrue(test.passed);
     }
@@ -100,10 +92,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test01_0_ProviderInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test1());
-
         Test01_0 test = new Test01_0();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test1()).javaxInject(test);
 
         assertEquals("Salomon 0", test.firstname.invoke());
         assertEquals("Salomon 1", test.firstname.invoke());
@@ -116,10 +106,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test01_1_ProviderNamedInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test1());
-
         Test01_1 test = new Test01_1();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test1()).javaxInject(test);
 
         assertEquals("BRYS 0", test.lastname.invoke());
         assertEquals("BRYS 1", test.lastname.invoke());
@@ -132,10 +120,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test01_2_JavaxProviderInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test1());
-
         Test01_2 test = new Test01_2();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test1()).javaxInject(test);
 
         assertEquals("Salomon 0", test.firstname.get());
         assertEquals("Salomon 1", test.firstname.get());
@@ -148,10 +134,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test01_3_JavaxProviderNamedInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test1());
-
         Test01_3 test = new Test01_3();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test1()).javaxInject(test);
 
         assertEquals("BRYS 0", test.lastname.get());
         assertEquals("BRYS 1", test.lastname.get());
@@ -165,10 +149,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test01_4_LazyProviderInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test1());
-
         Test01_4 test = new Test01_4();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test1()).javaxInject(test);
 
         assertEquals("Salomon 0", test.firstname.getValue().invoke());
         assertNotNull(test.unknown);
@@ -182,10 +164,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test01_5_LazyJavaxProviderInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test1());
-
         Test01_5 test = new Test01_5();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test1()).javaxInject(test);
 
         assertEquals("Salomon 0", test.firstname.getValue().get());
         assertNotNull(test.unknown);
@@ -215,10 +195,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test01_6_ProviderMethodInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test1());
-
         Test01_6 test = new Test01_6();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test1()).javaxInject(test);
 
         assertTrue(test.passed);
     }
@@ -246,10 +224,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test01_7_JavaxProviderMethodInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test1());
-
         Test01_7 test = new Test01_7();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test1()).javaxInject(test);
 
         assertTrue(test.passed);
     }
@@ -260,10 +236,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test02_0_FactoryInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test2());
-
         Test02_0 test = new Test02_0();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test2()).javaxInject(test);
 
         assertEquals("Salomon 21", test.firstname.invoke(21));
     }
@@ -275,10 +249,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test02_1_ProviderNamedInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test2());
-
         Test02_1 test = new Test02_1();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test2()).javaxInject(test);
 
         assertEquals("BRYS 42", test.lastname.invoke(42));
         assertNull(test.unknown);
@@ -307,10 +279,8 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test02_2_FactoryMethodInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test2());
-
         Test02_2 test = new Test02_2();
-        injector.javaxInject(test);
+        Jx.of(KodeinsKt.test2()).javaxInject(test);
 
         assertTrue(test.passed);
     }
@@ -337,8 +307,7 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test03_0_ConstructorInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test0());
-        injector.newInstance(Test03_0.class);
+        Jx.of(KodeinsKt.test0()).newInstance(Test03_0.class);
     }
 
     public static class Test03_1 {
@@ -363,8 +332,7 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test03_1_ConstructorProviderInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test1());
-        injector.newInstance(Test03_1.class);
+        Jx.of(KodeinsKt.test1()).newInstance(Test03_1.class);
     }
 
     public static class Test03_2 {
@@ -389,8 +357,7 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test03_2_ConstructorJavaxProviderInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test1());
-        injector.newInstance(Test03_2.class);
+        Jx.of(KodeinsKt.test1()).newInstance(Test03_2.class);
     }
 
     public static class Test03_3 {
@@ -415,8 +382,7 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test03_3_FactoryConstructorInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test2());
-        injector.newInstance(Test03_3.class);
+        Jx.of(KodeinsKt.test2()).newInstance(Test03_3.class);
     }
 
     public static class Test03_4 {
@@ -440,7 +406,6 @@ public class KodeinInjectJavaTests {
 
     @Test
     public void test03_4_OnlyOneConstructorInjection() {
-        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test0());
-        injector.newInstance(Test03_4.class);
+        Jx.of(KodeinsKt.test0()).newInstance(Test03_4.class);
     }
 }

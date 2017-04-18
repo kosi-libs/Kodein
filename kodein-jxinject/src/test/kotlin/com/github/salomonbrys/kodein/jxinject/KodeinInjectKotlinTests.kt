@@ -19,10 +19,8 @@ class KodeinInjectKotlinTests {
             @Inject lateinit var firstname: String
         }
 
-        val injector = KodeinJavaxInjector(test0())
-
         val test = Test()
-        injector.javaxInject(test)
+        test0().jx.javaxInject(test)
 
         assertEquals("Salomon", test.firstname)
     }
@@ -34,10 +32,8 @@ class KodeinInjectKotlinTests {
             @Inject @field:Named("nope") @Optional var unknown: String? = null
         }
 
-        val injector = KodeinJavaxInjector(test0())
-
         val test = Test()
-        injector.javaxInject(test)
+        test0().jx.javaxInject(test)
 
         assertEquals("BRYS", test.lastname)
         assertNull(test.unknown)
@@ -50,10 +46,8 @@ class KodeinInjectKotlinTests {
             @Inject @field:Named("nope") @Optional lateinit var unknown: Lazy<String?>
         }
 
-        val injector = KodeinJavaxInjector(test0())
-
         val test = Test()
-        injector.javaxInject(test)
+        test0().jx.javaxInject(test)
 
         assertEquals("Salomon", test.firstname.value)
         assertNotNull(test.unknown)
@@ -83,10 +77,8 @@ class KodeinInjectKotlinTests {
             }
         }
 
-        val injector = KodeinJavaxInjector(test0())
-
         val test = Test()
-        injector.javaxInject(test)
+        test0().jx.javaxInject(test)
 
         assertTrue(test.passed)
     }
@@ -97,10 +89,8 @@ class KodeinInjectKotlinTests {
             @Inject @ProviderFun lateinit var firstname: Function0<String>
         }
 
-        val injector = KodeinJavaxInjector(test1())
-
         val test = Test()
-        injector.javaxInject(test)
+        test1().jx.javaxInject(test)
 
         assertEquals("Salomon 0", test.firstname.invoke())
         assertEquals("Salomon 1", test.firstname.invoke())
@@ -113,10 +103,8 @@ class KodeinInjectKotlinTests {
             @Inject @field:Named("nope") @ProviderFun @Optional var unknown: Function0<String>? = null
         }
 
-        val injector = KodeinJavaxInjector(test1())
-
         val test = Test()
-        injector.javaxInject(test)
+        test1().jx.javaxInject(test)
 
         assertEquals("BRYS 0", test.lastname.invoke())
         assertEquals("BRYS 1", test.lastname.invoke())
@@ -129,10 +117,8 @@ class KodeinInjectKotlinTests {
             @Inject lateinit var firstname: Provider<String>
         }
 
-        val injector = KodeinJavaxInjector(test1())
-
         val test = Test()
-        injector.javaxInject(test)
+        test1().jx.javaxInject(test)
 
         assertEquals("Salomon 0", test.firstname.get())
         assertEquals("Salomon 1", test.firstname.get())
@@ -145,10 +131,8 @@ class KodeinInjectKotlinTests {
             @Inject @field:Named("nope") @Optional var unknown: Provider<String>? = null
         }
 
-        val injector = KodeinJavaxInjector(test1())
-
         val test = Test()
-        injector.javaxInject(test)
+        test1().jx.javaxInject(test)
 
         assertEquals("BRYS 0", test.lastname.get())
         assertEquals("BRYS 1", test.lastname.get())
@@ -162,10 +146,8 @@ class KodeinInjectKotlinTests {
             @Inject @field:Named("nope") @Optional @ProviderFun lateinit var unknown: Lazy<Function0<String>?>
         }
 
-        val injector = KodeinJavaxInjector(test1())
-
         val test = Test()
-        injector.javaxInject(test)
+        test1().jx.javaxInject(test)
 
         assertEquals("Salomon 0", test.firstname.value.invoke())
         assertNotNull(test.unknown)
@@ -179,10 +161,8 @@ class KodeinInjectKotlinTests {
             @Inject @field:Named("nope") @Optional lateinit var unknown: Lazy<Provider<String>?>
         }
 
-        val injector = KodeinJavaxInjector(test1())
-
         val test = Test()
-        injector.javaxInject(test)
+        test1().jx.javaxInject(test)
 
         assertEquals("Salomon 0", test.firstname.value.get())
         assertNotNull(test.unknown)
@@ -212,10 +192,8 @@ class KodeinInjectKotlinTests {
             }
         }
 
-        val injector = KodeinJavaxInjector(test1())
-
         val test = Test()
-        injector.javaxInject(test)
+        test1().jx.javaxInject(test)
 
         assertTrue(test.passed)
     }
@@ -243,10 +221,8 @@ class KodeinInjectKotlinTests {
             }
         }
 
-        val injector = KodeinJavaxInjector(test1())
-
         val test = Test()
-        injector.javaxInject(test)
+        test1().jx.javaxInject(test)
 
         assertTrue(test.passed)
     }
@@ -257,10 +233,8 @@ class KodeinInjectKotlinTests {
             @Inject @FactoryFun lateinit var firstname: Function1<Int, String>
         }
 
-        val injector = KodeinJavaxInjector(test2())
-
         val test = Test()
-        injector.javaxInject(test)
+        test2().jx.javaxInject(test)
 
         assertEquals("Salomon 21", test.firstname.invoke(21))
     }
@@ -272,10 +246,8 @@ class KodeinInjectKotlinTests {
             @Inject @field:Named("nope") @FactoryFun @Optional var unknown: Function1<Int, String>? = null
         }
 
-        val injector = KodeinJavaxInjector(test2())
-
         val test = Test()
-        injector.javaxInject(test)
+        test2().jx.javaxInject(test)
 
         assertEquals("BRYS 42", test.lastname.invoke(42))
         assertNull(test.unknown)
@@ -304,10 +276,8 @@ class KodeinInjectKotlinTests {
             }
         }
 
-        val injector = KodeinJavaxInjector(test2())
-
         val test = Test()
-        injector.javaxInject(test)
+        test2().jx.javaxInject(test)
 
         assertTrue(test.passed)
     }
@@ -333,8 +303,7 @@ class KodeinInjectKotlinTests {
             }
         }
 
-        val injector = KodeinJavaxInjector(test0())
-        injector.newInstance(Test::class.java)
+        test0().jx.newInstance(Test::class.java)
     }
 
     @Test
@@ -358,8 +327,7 @@ class KodeinInjectKotlinTests {
             }
         }
 
-        val injector = KodeinJavaxInjector(test1())
-        injector.newInstance(Test::class.java)
+        test1().jx.newInstance(Test::class.java)
     }
 
     @Test
@@ -383,8 +351,7 @@ class KodeinInjectKotlinTests {
             }
         }
 
-        val injector = KodeinJavaxInjector(test1())
-        injector.newInstance(Test::class.java)
+        test1().jx.newInstance(Test::class.java)
     }
 
     @Test
@@ -408,8 +375,7 @@ class KodeinInjectKotlinTests {
             }
         }
 
-        val injector = KodeinJavaxInjector(test2())
-        injector.newInstance(Test::class.java)
+        test2().jx.newInstance(Test::class.java)
     }
 
     @Test
@@ -433,7 +399,6 @@ class KodeinInjectKotlinTests {
             }
         }
 
-        val injector = KodeinJavaxInjector(test0())
-        injector.newInstance(Test::class.java)
+        test0().jx.newInstance(Test::class.java)
     }
 }
