@@ -145,7 +145,7 @@ abstract class AScoped<in A, out C, out T : Any>(
 class CScopedSingleton<C, out T : Any>(val contextType: Type, override val createdType: Type, private val _scope: Scope<C>, creator: ProviderKodein.(C) -> T)
 : AScoped<C, C, T>(creator), Factory<C, T>
 {
-    override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: C) = getScopedInstance(ProviderKodein(kodein), key, arg)
+    override fun getInstance(kodein: FactoryKodein, key: Kodein.Key, arg: C) = getScopedInstance(ProviderKodeinImpl(kodein), key, arg)
 
     override val argType: Type get() = contextType
 

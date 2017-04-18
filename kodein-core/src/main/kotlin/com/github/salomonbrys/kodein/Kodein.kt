@@ -437,7 +437,7 @@ interface Kodein : KodeinAwareBase {
          * @param key The key that defines the overridden provider access.
          * @param cb The callback.
          */
-        fun onProviderReady(key: Kodein.Key, cb: ProviderKodein.() -> Unit) = onFactoryReady(key) { cb(ProviderKodein(this)) }
+        fun onProviderReady(key: Kodein.Key, cb: ProviderKodein.() -> Unit) = onFactoryReady(key) { cb(ProviderKodeinImpl(this)) }
     }
 
     /**
