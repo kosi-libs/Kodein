@@ -32,7 +32,9 @@ Will create the instance on first time a given argument is used and will subsequ
 | [com.github.salomonbrys.kodein.CurriedKodeinFactory](../com.github.salomonbrys.kodein/-curried-kodein-factory/index.md) | Allows to get a provider or an instance from a factory with a curried argument. |
 | [com.github.salomonbrys.kodein.CurriedLazyKodeinFactory](../com.github.salomonbrys.kodein/-curried-lazy-kodein-factory/index.md) | Allows to get a lazy provider or instance from a lazy factory with a curried argument. |
 | [android.app.Dialog](../com.github.salomonbrys.kodein.android/android.app.-dialog/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
+| [com.github.salomonbrys.kodein.jxinject.ErasedBinding](../com.github.salomonbrys.kodein.jxinject/-erased-binding/index.md) | Defines that this should be injected with the erased binding. |
 | [com.github.salomonbrys.kodein.Factory](../com.github.salomonbrys.kodein/-factory/index.md) | Base class that knows how to get an instance. |
+| [com.github.salomonbrys.kodein.jxinject.FactoryFun](../com.github.salomonbrys.kodein.jxinject/-factory-fun/index.md) | Defines that the annotated `Function1` is to be injected as a kodein factory. |
 | [com.github.salomonbrys.kodein.FactoryKodein](../com.github.salomonbrys.kodein/-factory-kodein/index.md) | Kodein interface to be passed to factory scope methods. |
 | [android.app.Fragment](../com.github.salomonbrys.kodein.android/android.app.-fragment/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
 | [android.support.v4.app.Fragment](../com.github.salomonbrys.kodein.android/android.support.v4.app.-fragment/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
@@ -47,6 +49,8 @@ Will create the instance on first time a given argument is used and will subsequ
 | [com.github.salomonbrys.kodein.InjectedProperty](../com.github.salomonbrys.kodein/-injected-property/index.md) | Read only property delegate for an injected value. |
 | [com.github.salomonbrys.kodein.InjectedProviderProperty](../com.github.salomonbrys.kodein/-injected-provider-property/index.md) | A read-only property delegate that injects a provider. |
 | [com.github.salomonbrys.kodein.android.IntentServiceInjector](../com.github.salomonbrys.kodein.android/-intent-service-injector/index.md) | An interface for adding injection and bindings to an IntentService. |
+| [com.github.salomonbrys.kodein.jxinject.Jx](../com.github.salomonbrys.kodein.jxinject/-jx/index.md) | Utility function that eases the retrieval of a [JxInjector](../com.github.salomonbrys.kodein.jxinject/-jx-injector/index.md). |
+| [com.github.salomonbrys.kodein.jxinject.JxInjector](../com.github.salomonbrys.kodein.jxinject/-jx-injector/index.md) | Injector that allows to inject instances that use `javax.inject.*` annotations. |
 | [com.github.salomonbrys.kodein.Kodein](../com.github.salomonbrys.kodein/-kodein/index.md) | KOtlin DEpendency INjection. |
 | [com.github.salomonbrys.kodein.android.KodeinActivity](../com.github.salomonbrys.kodein.android/-kodein-activity/index.md) | A base class that manages an [ActivityInjector](../com.github.salomonbrys.kodein.android/-activity-injector/index.md) for easy bootstrapping of Kodein.
 Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
@@ -79,7 +83,9 @@ Injections will be available after `super.onCreate` and will be destroyed after 
 | [android.content.Loader](../com.github.salomonbrys.kodein.android/android.content.-loader/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
 | [android.support.v4.content.Loader](../com.github.salomonbrys.kodein.android/android.support.v4.content.-loader/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
 | [kotlin.collections.Map](../com.github.salomonbrys.kodein/kotlin.collections.-map/index.md) (extensions in package com.github.salomonbrys.kodein) |  |
+| [com.github.salomonbrys.kodein.jxinject.OrNull](../com.github.salomonbrys.kodein.jxinject/-or-null/index.md) | Defines that this should be null if there is no corresponding binding. |
 | [com.github.salomonbrys.kodein.Provider](../com.github.salomonbrys.kodein/-provider/index.md) | [Factory](../com.github.salomonbrys.kodein/-factory/index.md) specialization that has no argument. |
+| [com.github.salomonbrys.kodein.jxinject.ProviderFun](../com.github.salomonbrys.kodein.jxinject/-provider-fun/index.md) | Defines that the annotated `Function0` is to be injected as a kodein provider. |
 | [com.github.salomonbrys.kodein.ProviderKodein](../com.github.salomonbrys.kodein/-provider-kodein/index.md) | Kodein interface to be passed to provider or instance scope methods. |
 | [com.github.salomonbrys.kodein.RefMaker](../com.github.salomonbrys.kodein/-ref-maker/index.md) | A Function that creates a reference. |
 | [com.github.salomonbrys.kodein.Scope](../com.github.salomonbrys.kodein/-scope/index.md) | An object capable of providing a [ScopeRegistry](../com.github.salomonbrys.kodein/-scope-registry/index.md) for a given `C` context. |

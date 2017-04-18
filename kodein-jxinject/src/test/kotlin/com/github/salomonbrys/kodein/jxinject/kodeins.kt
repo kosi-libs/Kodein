@@ -30,3 +30,11 @@ fun test2() = Kodein {
 
     import(jxInjectorModule)
 }
+
+fun test4() = Kodein {
+    bind(tag = "universe:answer") from erasedInstance("fourty-two")
+
+    import(jxInjectorModule)
+
+    jxQualifier<KodeinInjectJavaTests.Test04_0_UniversePrefix> { "universe:" + it.value }
+}

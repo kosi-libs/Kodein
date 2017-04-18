@@ -385,6 +385,12 @@ inline fun <reified A> KodeinAwareBase.withGeneric(arg: A): CurriedKodeinFactory
  */
 inline fun <reified A> KodeinAwareBase.withErased(arg: A): CurriedKodeinFactory<A> = withErased { arg }
 
+/**
+ * Allows to create a new instance of an unbound object with the same API as when bounding one.
+ *
+ * @param T The type of object to create.
+ * @param creator A function that do create the object.
+ */
 inline fun <T> KodeinAwareBase.newInstance(creator: Kodein.() -> T): T = kodein.run(creator)
 
 

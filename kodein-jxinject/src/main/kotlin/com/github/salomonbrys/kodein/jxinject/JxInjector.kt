@@ -9,6 +9,11 @@ import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Provider
 
+/**
+ * Injector that allows to inject instances that use `javax.inject.*` annotations.
+ *
+ * @property kodein The kodein object to use to retrieve injections.
+ */
 class JxInjector(val kodein: Kodein) {
 
     private val _qualifiers = HashMap<Class<out Annotation>, (Annotation) -> Any>()
@@ -18,15 +23,13 @@ class JxInjector(val kodein: Kodein) {
     private val _constructors = ConcurrentHashMap<Class<*>, () -> Any>()
 
     init {
-        registerQualifier<Named> { it.value }
+        registerQualifier(Named::class.java) { it.value }
     }
 
-    fun <T: Annotation> registerQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
+    internal fun <T: Annotation> registerQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
         @Suppress("UNCHECKED_CAST")
         _qualifiers.put(cls, tagProvider as (Annotation) -> Any)
     }
-
-    inline fun <reified T: Annotation> registerQualifier(noinline tagProvider: (T) -> Any) = registerQualifier(T::class.java, tagProvider)
 
     private fun _getTagFromQualifier(el: AnnotatedElement): Any? {
         _qualifiers.forEach {
@@ -50,7 +53,7 @@ class JxInjector(val kodein: Kodein) {
     private fun _getter(element: Element): TKodein.() -> Any? {
         val tag = _getTagFromQualifier(element)
 
-        val shouldErase = element.isAnnotationPresent(ErasedType::class.java)
+        val shouldErase = element.isAnnotationPresent(ErasedBinding::class.java)
 
         fun Type.boundType() = when {
             shouldErase -> rawType()
@@ -58,7 +61,7 @@ class JxInjector(val kodein: Kodein) {
             else -> this
         }
 
-        val isOptional = element.isAnnotationPresent(Optional::class.java)
+        val isOptional = element.isAnnotationPresent(OrNull::class.java)
 
         fun getterFunction(getter: TKodein.() -> Any?) = getter
 
@@ -190,6 +193,11 @@ class JxInjector(val kodein: Kodein) {
 
     private fun _findSetters(cls: Class<*>): List<(Any) -> Any> = _setters.getOrPut(cls) { _createSetters(cls) }
 
+    /**
+     * Injects all fields and methods annotated with `@Inject` in `receiver`.
+     *
+     * @param receiver The object to inject.
+     */
     fun inject(receiver: Any) {
         _findSetters(receiver.javaClass).forEach { it(receiver) }
     }
@@ -226,12 +234,25 @@ class JxInjector(val kodein: Kodein) {
 
     private fun _findConstructor(cls: Class<*>) = _constructors.getOrPut(cls) { _createConstructor(cls) }
 
-    fun <T: Any> newInstance(cls: Class<T>): T {
+    /** @suppress */
+    @JvmOverloads
+    fun <T: Any> newInstance(cls: Class<T>, injectFields: Boolean = true): T {
         val constructor = _findConstructor(cls)
 
         @Suppress("UNCHECKED_CAST")
-        return constructor.invoke() as T
+        val instance = constructor.invoke() as T
+
+        if (injectFields)
+            inject(instance)
+
+        return instance
     }
 
-    inline fun <reified T: Any> newInstance() = newInstance(T::class.java)
+    /**
+     * Creates a new instance of the given type.
+     *
+     * @param T The type of object to create.
+     * @param injectFields Whether to inject the fields & methods of he newly created instance before returning it.
+     */
+    inline fun <reified T: Any> newInstance(injectFields: Boolean = true) = newInstance(T::class.java, injectFields)
 }

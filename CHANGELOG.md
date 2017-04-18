@@ -1,4 +1,10 @@
 
+### 3.4.0 (18-04-2017)
+
+ - FEATURES
+   * New module: `kodein-jxinject` which allows to gradually move from a `javax.inject.*` java injector.
+   * New sugar syntax `kodein.newInstance {}`.
+
 ### 3.3.0 (24-03-2017)
 
  - ANDROID FIXES

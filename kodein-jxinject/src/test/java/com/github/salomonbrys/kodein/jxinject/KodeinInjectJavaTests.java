@@ -10,6 +10,11 @@ import org.junit.runners.MethodSorters;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
+import javax.inject.Qualifier;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import static org.junit.Assert.*;
 
@@ -30,7 +35,8 @@ public class KodeinInjectJavaTests {
 
     public static class Test00_1 {
         @Inject @Named("lastname") String lastname;
-        @Inject @Named("nope") @Optional String unknown;
+        @Inject @Named("nope") @OrNull
+        String unknown;
     }
 
     @Test
@@ -44,7 +50,8 @@ public class KodeinInjectJavaTests {
 
     public static class Test00_2 {
         @Inject Lazy<String> firstname;
-        @Inject @Named("nope") @Optional Lazy<String> unknown;
+        @Inject @Named("nope") @OrNull
+        Lazy<String> unknown;
     }
 
     @Test
@@ -62,10 +69,10 @@ public class KodeinInjectJavaTests {
         @Inject void inject(
                 String firstname,
                 @Named("lastname") String lastname,
-                @Named("nope") @Optional String unknown,
+                @Named("nope") @OrNull String unknown,
                 Lazy<String> lazyFirstname,
                 @Named("lastname") Lazy<String> lazyLastname,
-                @Named("nope") @Optional Lazy<String> lazyUnknown
+                @Named("nope") @OrNull Lazy<String> lazyUnknown
         ) {
             assertEquals("Salomon", firstname);
             assertEquals("BRYS", lastname);
@@ -101,7 +108,8 @@ public class KodeinInjectJavaTests {
 
     public static class Test01_1 {
         @Inject @Named("lastname") @ProviderFun Function0<String> lastname;
-        @Inject @Named("nope") @ProviderFun @Optional Function0<String> unknown;
+        @Inject @Named("nope") @ProviderFun @OrNull
+        Function0<String> unknown;
     }
 
     @Test
@@ -129,7 +137,8 @@ public class KodeinInjectJavaTests {
 
     public static class Test01_3 {
         @Inject @Named("lastname") Provider<String> lastname;
-        @Inject @Named("nope") @Optional Provider<String> unknown;
+        @Inject @Named("nope") @OrNull
+        Provider<String> unknown;
     }
 
     @Test
@@ -144,7 +153,8 @@ public class KodeinInjectJavaTests {
 
     public static class Test01_4 {
         @Inject @ProviderFun Lazy<Function0<String>> firstname;
-        @Inject @Named("nope") @Optional @ProviderFun Lazy<Function0<String>> unknown;
+        @Inject @Named("nope") @OrNull
+        @ProviderFun Lazy<Function0<String>> unknown;
     }
 
     @Test
@@ -159,7 +169,8 @@ public class KodeinInjectJavaTests {
 
     public static class Test01_5 {
         @Inject Lazy<Provider<String>> firstname;
-        @Inject @Named("nope") @Optional Lazy<Provider<String>> unknown;
+        @Inject @Named("nope") @OrNull
+        Lazy<Provider<String>> unknown;
     }
 
     @Test
@@ -177,10 +188,10 @@ public class KodeinInjectJavaTests {
         @Inject void inject(
                 @ProviderFun Function0<String> firstname,
                 @Named("lastname") @ProviderFun Function0<String> lastname,
-                @Named("nope") @Optional @ProviderFun Function0<String> unknown,
+                @Named("nope") @OrNull @ProviderFun Function0<String> unknown,
                 @ProviderFun Lazy<Function0<String>> lazyFirstname,
                 @Named("lastname") @ProviderFun Lazy<Function0<String>> lazyLastname,
-                @Named("nope") @Optional @ProviderFun Lazy<Function0<String>> lazyUnknown
+                @Named("nope") @OrNull @ProviderFun Lazy<Function0<String>> lazyUnknown
         ) {
             assertEquals("Salomon 0", firstname.invoke());
             assertEquals("BRYS 1", lastname.invoke());
@@ -206,10 +217,10 @@ public class KodeinInjectJavaTests {
         @Inject void inject(
                 Provider<String> firstname,
                 @Named("lastname") Provider<String> lastname,
-                @Named("nope") @Optional Provider<String> unknown,
+                @Named("nope") @OrNull Provider<String> unknown,
                 Lazy<Provider<String>> lazyFirstname,
                 @Named("lastname") Lazy<Provider<String>> lazyLastname,
-                @Named("nope") @Optional Lazy<Provider<String>> lazyUnknown
+                @Named("nope") @OrNull Lazy<Provider<String>> lazyUnknown
         ) {
             assertEquals("Salomon 0", firstname.get());
             assertEquals("BRYS 1", lastname.get());
@@ -244,7 +255,8 @@ public class KodeinInjectJavaTests {
 
     public static class Test02_1 {
         @Inject @Named("lastname") @FactoryFun Function1<Integer, String> lastname;
-        @Inject @Named("nope") @FactoryFun @Optional Function1<Integer, String> unknown;
+        @Inject @Named("nope") @FactoryFun @OrNull
+        Function1<Integer, String> unknown;
     }
 
     @Test
@@ -261,10 +273,10 @@ public class KodeinInjectJavaTests {
         @Inject void inject(
                 @FactoryFun Function1<Integer, String> firstname,
                 @Named("lastname") @FactoryFun Function1<Integer, String> lastname,
-                @Named("nope") @Optional @FactoryFun Function1<Integer, String> unknown,
+                @Named("nope") @OrNull @FactoryFun Function1<Integer, String> unknown,
                 @FactoryFun Lazy<Function1<Integer, String>> lazyFirstname,
                 @Named("lastname") @FactoryFun Lazy<Function1<Integer, String>> lazyLastname,
-                @Named("nope") @Optional @FactoryFun Lazy<Function1<Integer, String>> lazyUnknown
+                @Named("nope") @OrNull @FactoryFun Lazy<Function1<Integer, String>> lazyUnknown
         ) {
             assertEquals("Salomon 21", firstname.invoke(21));
             assertEquals("BRYS 42", lastname.invoke(42));
@@ -290,10 +302,10 @@ public class KodeinInjectJavaTests {
         Test03_0(
                 String firstname,
                 @Named("lastname") String lastname,
-                @Named("nope") @Optional String unknown,
+                @Named("nope") @OrNull String unknown,
                 Lazy<String> lazyFirstname,
                 @Named("lastname") Lazy<String> lazyLastname,
-                @Named("nope") @Optional Lazy<String> lazyUnknown
+                @Named("nope") @OrNull Lazy<String> lazyUnknown
         ) {
             assertEquals("Salomon", firstname);
             assertEquals("BRYS", lastname);
@@ -315,10 +327,10 @@ public class KodeinInjectJavaTests {
         Test03_1(
                 @ProviderFun Function0<String> firstname,
                 @Named("lastname") @ProviderFun Function0<String> lastname,
-                @Named("nope") @Optional @ProviderFun Function0<String> unknown,
+                @Named("nope") @OrNull @ProviderFun Function0<String> unknown,
                 @ProviderFun Lazy<Function0<String>> lazyFirstname,
                 @Named("lastname") @ProviderFun Lazy<Function0<String>> lazyLastname,
-                @Named("nope") @Optional @ProviderFun Lazy<Function0<String>> lazyUnknown
+                @Named("nope") @OrNull @ProviderFun Lazy<Function0<String>> lazyUnknown
         ) {
             assertEquals("Salomon 0", firstname.invoke());
             assertEquals("BRYS 1", lastname.invoke());
@@ -340,10 +352,10 @@ public class KodeinInjectJavaTests {
         Test03_2(
                 Provider<String> firstname,
                 @Named("lastname") Provider<String> lastname,
-                @Named("nope") @Optional Provider<String> unknown,
+                @Named("nope") @OrNull Provider<String> unknown,
                 Lazy<Provider<String>> lazyFirstname,
                 @Named("lastname") Lazy<Provider<String>> lazyLastname,
-                @Named("nope") @Optional Lazy<Provider<String>> lazyUnknown
+                @Named("nope") @OrNull Lazy<Provider<String>> lazyUnknown
         ) {
             assertEquals("Salomon 0", firstname.get());
             assertEquals("BRYS 1", lastname.get());
@@ -365,10 +377,10 @@ public class KodeinInjectJavaTests {
         Test03_3(
                 @FactoryFun Function1<Integer, String> firstname,
                 @Named("lastname") @FactoryFun Function1<Integer, String> lastname,
-                @Named("nope") @Optional @FactoryFun Function1<Integer, String> unknown,
+                @Named("nope") @OrNull @FactoryFun Function1<Integer, String> unknown,
                 @FactoryFun Lazy<Function1<Integer, String>> lazyFirstname,
                 @Named("lastname") @FactoryFun Lazy<Function1<Integer, String>> lazyLastname,
-                @Named("nope") @Optional @FactoryFun Lazy<Function1<Integer, String>> lazyUnknown
+                @Named("nope") @OrNull @FactoryFun Lazy<Function1<Integer, String>> lazyUnknown
         ) {
             assertEquals("Salomon 21", firstname.invoke(21));
             assertEquals("BRYS 42", lastname.invoke(42));
@@ -389,10 +401,10 @@ public class KodeinInjectJavaTests {
         Test03_4(
                 String firstname,
                 @Named("lastname") String lastname,
-                @Named("nope") @Optional String unknown,
+                @Named("nope") @OrNull String unknown,
                 Lazy<String> lazyFirstname,
                 @Named("lastname") Lazy<String> lazyLastname,
-                @Named("nope") @Optional Lazy<String> lazyUnknown
+                @Named("nope") @OrNull Lazy<String> lazyUnknown
         ) {
             assertEquals("Salomon", firstname);
             assertEquals("BRYS", lastname);
@@ -408,4 +420,21 @@ public class KodeinInjectJavaTests {
     public void test03_4_OnlyOneConstructorInjection() {
         Jx.of(KodeinsKt.test0()).newInstance(Test03_4.class);
     }
+
+    @Qualifier
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    public @interface Test04_0_UniversePrefix { String value(); }
+
+    public static class Test04_0 {
+        @Inject @Test04_0_UniversePrefix("answer") String answer;
+    }
+
+    @Test
+    public void test04_0_CustomQualifier() {
+        Test04_0 test = Jx.of(KodeinsKt.test4()).newInstance(Test04_0.class);
+
+        assertEquals("fourty-two", test.answer);
+    }
+
 }

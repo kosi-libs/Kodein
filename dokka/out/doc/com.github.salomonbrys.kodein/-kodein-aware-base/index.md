@@ -46,6 +46,7 @@ For example, [KodeinAware.withClass](../with-class.md), if applied to [Kodein](.
 | [instance](../../com.github.salomonbrys.kodein.erased/instance.md) | `fun <T : Any> KodeinAwareBase.instance(tag: Any? = null): T`<br>Gets an instance of `T` for the given type and tag. |
 | [instanceOrNull](../instance-or-null.md) | `fun <T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null): T?`<br>Gets an instance of `T` for the given type and tag, or null if none is found. |
 | [instanceOrNull](../../com.github.salomonbrys.kodein.erased/instance-or-null.md) | `fun <T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null): T?`<br>Gets an instance of `T` for the given type and tag, or null if none is found. |
+| [newInstance](../new-instance.md) | `fun <T> KodeinAwareBase.newInstance(creator: `[`Kodein`](../-kodein/index.md)`.() -> T): T`<br>Allows to create a new instance of an unbound object with the same API as when bounding one. |
 | [provider](../provider.md) | `fun <T : Any> KodeinAwareBase.provider(tag: Any? = null): () -> T`<br>Gets a provider of `T` for the given type and tag. |
 | [provider](../../com.github.salomonbrys.kodein.erased/provider.md) | `fun <T : Any> KodeinAwareBase.provider(tag: Any? = null): () -> T`<br>Gets a provider of `T` for the given type and tag. |
 | [providerOrNull](../provider-or-null.md) | `fun <T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null): () -> T`<br>Gets a provider of `T` for the given type and tag, or null if none is found. |

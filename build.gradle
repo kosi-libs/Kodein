@@ -22,7 +22,7 @@ allprojects {
     }
 
     group = 'com.github.salomonbrys.kodein'
-    version = '3.3.0'
+    version = '3.4.0'
 }
 
 def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }
@@ -35,6 +35,7 @@ task("classpath") {
             +   getClassPath(':kodein-conf')
             +   getClassPath(':kodein-core')
             +   getClassPath(':kodein-erased')
+            +   getClassPath(':kodein-jxinject')
             +   getAndroidClassPath(':kodein-android')
         ).join(":"))
     }
