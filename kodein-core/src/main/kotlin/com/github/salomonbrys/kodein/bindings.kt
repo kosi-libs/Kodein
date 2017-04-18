@@ -2,6 +2,9 @@ package com.github.salomonbrys.kodein
 
 import java.lang.reflect.Type
 
+/**
+ * A Map containing all bindings associated to their keys
+ */
 typealias BindingsMap = Map<Kodein.Key, Factory<*, *>>
 
 /**

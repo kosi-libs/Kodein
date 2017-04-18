@@ -5,12 +5,41 @@ package com.github.salomonbrys.kodein
 import java.lang.reflect.Type
 import kotlin.coroutines.experimental.*
 
+/**
+ * Allows a coroutine to generate a sequence AND access transitive dependencies.
+ *
+ * @param T The type of instance of the bind.
+ */
 interface SequenceProviderKodein<T> : ProviderKodein {
+    /**
+     * Yields this value as the next instance.
+     *
+     * @param value The next instance for this bind.
+     */
     suspend fun yield(value: T)
+
+    /**
+     * Yields these values as the next instances.
+     *
+     * @param iterator The next instances for this bind.
+     */
     suspend fun yieldAll(iterator: Iterator<T>)
+
+    /**
+     * Yields these values as the next instances.
+     *
+     * @param elements The next instances for this bind.
+     */
     suspend fun yieldAll(elements: Iterable<T>)
+
+    /**
+     * Yields these values as the next instances.
+     *
+     * @param sequence The next instances for this bind.
+     */
     suspend fun yieldAll(sequence: Sequence<T>)
 }
+
 
 @PublishedApi
 internal class CSequenceBinding<T: Any> private constructor (override val createdType: Type) : Provider<T>, SequenceProviderKodein<T>, Continuation<Unit> {
@@ -96,7 +125,30 @@ internal class CSequenceBinding<T: Any> private constructor (override val create
     }
 }
 
+/**
+ * Creates a sequence provider: each time an instance is needed, the coroutine function [creator] will be resumed.
+ *
+ * The coroutine function can yeild values with [SequenceProviderKodein.yield].
+ *
+ * T generics will be kept.
+ *
+ * @param T The created type.
+ * @param creator The coroutine function that will be resumed each time an instance is requested.
+ * @return A provider ready to be bound.
+ */
 @Suppress("unused")
 inline fun <reified T : Any> Kodein.Builder.genericSequence(noinline creator: suspend SequenceProviderKodein<T>.() -> Unit): Provider<T> = CSequenceBinding(genericToken<T>().type, creator)
+
+/**
+ * Creates a sequence provider: each time an instance is needed, the coroutine function [creator] will be resumed.
+ *
+ * The coroutine function can yeild values with [SequenceProviderKodein.yield].
+ *
+ * T generics will be erased!
+ *
+ * @param T The created type.
+ * @param creator The coroutine function that will be resumed each time an instance is requested.
+ * @return A provider ready to be bound.
+ */
 @Suppress("unused")
 inline fun <reified T : Any> Kodein.Builder.erasedSequence(noinline creator: suspend SequenceProviderKodein<T>.() -> Unit): Provider<T> = CSequenceBinding(T::class.java, creator)
