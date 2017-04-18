@@ -9,7 +9,7 @@ import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Provider
 
-class KodeinJavaxInjector(val kodein: Kodein) {
+class JxInjector(val kodein: Kodein) {
 
     private val _qualifiers = HashMap<Class<out Annotation>, (Annotation) -> Any>()
 
@@ -21,12 +21,12 @@ class KodeinJavaxInjector(val kodein: Kodein) {
         registerQualifier<Named> { it.value }
     }
 
-    fun <T : Annotation> registerQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
+    fun <T: Annotation> registerQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
         @Suppress("UNCHECKED_CAST")
         _qualifiers.put(cls, tagProvider as (Annotation) -> Any)
     }
 
-    inline fun <reified T : Annotation> registerQualifier(noinline tagProvider: (T) -> Any) = registerQualifier(T::class.java, tagProvider)
+    inline fun <reified T: Annotation> registerQualifier(noinline tagProvider: (T) -> Any) = registerQualifier(T::class.java, tagProvider)
 
     private fun _getTagFromQualifier(el: AnnotatedElement): Any? {
         _qualifiers.forEach {
@@ -190,7 +190,7 @@ class KodeinJavaxInjector(val kodein: Kodein) {
 
     private fun _findSetters(cls: Class<*>): List<(Any) -> Any> = _setters.getOrPut(cls) { _createSetters(cls) }
 
-    fun javaxInject(receiver: Any) {
+    fun inject(receiver: Any) {
         _findSetters(receiver.javaClass).forEach { it(receiver) }
     }
 

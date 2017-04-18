@@ -20,7 +20,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test0().jx.javaxInject(test)
+        test0().jx.inject(test)
 
         assertEquals("Salomon", test.firstname)
     }
@@ -33,7 +33,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test0().jx.javaxInject(test)
+        test0().jx.inject(test)
 
         assertEquals("BRYS", test.lastname)
         assertNull(test.unknown)
@@ -47,7 +47,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test0().jx.javaxInject(test)
+        test0().jx.inject(test)
 
         assertEquals("Salomon", test.firstname.value)
         assertNotNull(test.unknown)
@@ -78,7 +78,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test0().jx.javaxInject(test)
+        test0().jx.inject(test)
 
         assertTrue(test.passed)
     }
@@ -90,7 +90,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test1().jx.javaxInject(test)
+        test1().jx.inject(test)
 
         assertEquals("Salomon 0", test.firstname.invoke())
         assertEquals("Salomon 1", test.firstname.invoke())
@@ -104,7 +104,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test1().jx.javaxInject(test)
+        test1().jx.inject(test)
 
         assertEquals("BRYS 0", test.lastname.invoke())
         assertEquals("BRYS 1", test.lastname.invoke())
@@ -118,7 +118,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test1().jx.javaxInject(test)
+        test1().jx.inject(test)
 
         assertEquals("Salomon 0", test.firstname.get())
         assertEquals("Salomon 1", test.firstname.get())
@@ -132,7 +132,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test1().jx.javaxInject(test)
+        test1().jx.inject(test)
 
         assertEquals("BRYS 0", test.lastname.get())
         assertEquals("BRYS 1", test.lastname.get())
@@ -147,7 +147,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test1().jx.javaxInject(test)
+        test1().jx.inject(test)
 
         assertEquals("Salomon 0", test.firstname.value.invoke())
         assertNotNull(test.unknown)
@@ -162,7 +162,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test1().jx.javaxInject(test)
+        test1().jx.inject(test)
 
         assertEquals("Salomon 0", test.firstname.value.get())
         assertNotNull(test.unknown)
@@ -193,7 +193,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test1().jx.javaxInject(test)
+        test1().jx.inject(test)
 
         assertTrue(test.passed)
     }
@@ -222,7 +222,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test1().jx.javaxInject(test)
+        test1().jx.inject(test)
 
         assertTrue(test.passed)
     }
@@ -234,7 +234,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test2().jx.javaxInject(test)
+        test2().jx.inject(test)
 
         assertEquals("Salomon 21", test.firstname.invoke(21))
     }
@@ -247,7 +247,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test2().jx.javaxInject(test)
+        test2().jx.inject(test)
 
         assertEquals("BRYS 42", test.lastname.invoke(42))
         assertNull(test.unknown)
@@ -277,7 +277,7 @@ class KodeinInjectKotlinTests {
         }
 
         val test = Test()
-        test2().jx.javaxInject(test)
+        test2().jx.inject(test)
 
         assertTrue(test.passed)
     }

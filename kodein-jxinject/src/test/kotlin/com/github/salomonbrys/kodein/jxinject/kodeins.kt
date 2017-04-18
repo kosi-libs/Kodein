@@ -8,7 +8,7 @@ fun test0() = Kodein {
     bindGeneric<List<String>>() with genericInstance(listOf("a", "b", "c"))
     bindErased<Set<String>>() with erasedInstance(setOf("a", "b", "c"))
 
-    import(jxInjectModule)
+    import(jxInjectorModule)
 }
 
 fun test1() = Kodein {
@@ -19,7 +19,7 @@ fun test1() = Kodein {
     bindGeneric<List<String>>() with genericProvider { listOf("a", "b", "c") }
     bindErased<Set<String>>() with erasedProvider { setOf("a", "b", "c") }
 
-    import(jxInjectModule)
+    import(jxInjectorModule)
 }
 
 fun test2() = Kodein {
@@ -28,5 +28,5 @@ fun test2() = Kodein {
     bindGeneric<List<String>>() with genericFactory { i: Int -> listOf("a$i", "b$i", "c$i") }
     bindErased<Set<String>>() with erasedFactory { i: Int -> setOf("a$i", "b$i", "c$i") }
 
-    import(jxInjectModule)
+    import(jxInjectorModule)
 }
