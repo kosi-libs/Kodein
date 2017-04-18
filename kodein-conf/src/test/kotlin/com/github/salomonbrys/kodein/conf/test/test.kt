@@ -8,6 +8,7 @@ import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
+import kotlin.coroutines.experimental.buildSequence
 
 private open class Name(val firstName: String) {
     override fun equals(other: Any?): Boolean{
@@ -228,6 +229,33 @@ class KodeinGlobalTests : TestCase() {
         kodein.erasedInstance<String>()
 
         assertTrue(ready)
+    }
+
+    @Suppress("EXPERIMENTAL_FEATURE_WARNING")
+    @Test fun test07_0_coroutine() {
+        val kodein = ConfigurableKodein(mutable = true)
+        kodein.addConfig {
+            constant("lastName") withErased "BRYS_2"
+
+            bind("names") from erasedSequence {
+                yieldAll(buildSequence {
+                    yield("Benjamin " + erasedInstance<String>("lastName"))
+                    yield("Maroussia " + erasedInstance<String>("lastName"))
+                })
+                yield("Salomon " + erasedInstance<String>("lastName"))
+            }
+        }
+
+        assertEquals("Benjamin BRYS_2", kodein.erasedInstance<String>("names"))
+
+        kodein.addConfig { constant("lastName", overrides = true) withErased "BRYS_1" }
+
+        assertEquals("Maroussia BRYS_1", kodein.erasedInstance<String>("names"))
+
+        kodein.addConfig { constant("lastName", overrides = true) withErased "BRYS_0" }
+
+        assertEquals("Salomon BRYS_0", kodein.erasedInstance<String>("names"))
+        assertEquals("Salomon BRYS_0", kodein.erasedInstance<String>("names"))
     }
 
 }

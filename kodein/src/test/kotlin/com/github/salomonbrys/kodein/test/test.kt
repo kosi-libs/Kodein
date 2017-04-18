@@ -9,6 +9,7 @@ import org.junit.runners.MethodSorters
 import java.lang.reflect.ParameterizedType
 import java.util.*
 import kotlin.concurrent.thread
+import kotlin.coroutines.experimental.buildSequence
 
 interface IPerson { val name: String? }
 
@@ -972,6 +973,26 @@ class KodeinTests : TestCase() {
         val wedding = kodein.newInstance { Wedding(instance("Author"), instance("Spouse")) }
         assertEquals("Salomon", wedding.him.name)
         assertEquals("Laila", wedding.her.name)
+    }
+
+    @Suppress("EXPERIMENTAL_FEATURE_WARNING")
+    @Test fun test26_0_coroutine() {
+        val kodein = Kodein {
+            constant("lastName") with "BRYS"
+
+            bind("names") from sequence {
+                yieldAll(buildSequence {
+                    yield("Benjamin " + instance<String>("lastName"))
+                    yield("Maroussia " + instance<String>("lastName"))
+                })
+                yield("Salomon " + instance<String>("lastName"))
+            }
+        }
+
+        assertEquals("Benjamin BRYS", kodein.instance<String>("names"))
+        assertEquals("Maroussia BRYS", kodein.instance<String>("names"))
+        assertEquals("Salomon BRYS", kodein.instance<String>("names"))
+        assertEquals("Salomon BRYS", kodein.instance<String>("names"))
     }
 
 }
