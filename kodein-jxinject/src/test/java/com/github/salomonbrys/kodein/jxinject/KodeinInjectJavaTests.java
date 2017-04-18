@@ -31,8 +31,8 @@ public class KodeinInjectJavaTests {
     }
 
     public static class Test00_1 {
-        public @Inject @Named("lastname") String lastname;
-        public @Inject @Named("nope") @Optional String unknown;
+        @Inject @Named("lastname") String lastname;
+        @Inject @Named("nope") @Optional String unknown;
     }
 
     @Test
@@ -47,8 +47,8 @@ public class KodeinInjectJavaTests {
     }
 
     public static class Test00_2 {
-        public @Inject Lazy<String> firstname;
-        public @Inject @Named("nope") @Optional Lazy<String> unknown;
+        @Inject Lazy<String> firstname;
+        @Inject @Named("nope") @Optional Lazy<String> unknown;
     }
 
     @Test
@@ -110,8 +110,8 @@ public class KodeinInjectJavaTests {
     }
 
     public static class Test01_1 {
-        public @Inject @Named("lastname") @ProviderFun Function0<String> lastname;
-        public @Inject @Named("nope") @ProviderFun @Optional Function0<String> unknown;
+        @Inject @Named("lastname") @ProviderFun Function0<String> lastname;
+        @Inject @Named("nope") @ProviderFun @Optional Function0<String> unknown;
     }
 
     @Test
@@ -127,7 +127,7 @@ public class KodeinInjectJavaTests {
     }
 
     public static class Test01_2 {
-        public @Inject Provider<String> firstname;
+        @Inject Provider<String> firstname;
     }
 
     @Test
@@ -142,8 +142,8 @@ public class KodeinInjectJavaTests {
     }
 
     public static class Test01_3 {
-        public @Inject @Named("lastname") Provider<String> lastname;
-        public @Inject @Named("nope") @Optional Provider<String> unknown;
+        @Inject @Named("lastname") Provider<String> lastname;
+        @Inject @Named("nope") @Optional Provider<String> unknown;
     }
 
     @Test
@@ -159,8 +159,8 @@ public class KodeinInjectJavaTests {
     }
 
     public static class Test01_4 {
-        public @Inject @ProviderFun Lazy<Function0<String>> firstname;
-        public @Inject @Named("nope") @Optional @ProviderFun Lazy<Function0<String>> unknown;
+        @Inject @ProviderFun Lazy<Function0<String>> firstname;
+        @Inject @Named("nope") @Optional @ProviderFun Lazy<Function0<String>> unknown;
     }
 
     @Test
@@ -176,8 +176,8 @@ public class KodeinInjectJavaTests {
     }
 
     public static class Test01_5 {
-        public @Inject Lazy<Provider<String>> firstname;
-        public @Inject @Named("nope") @Optional Lazy<Provider<String>> unknown;
+        @Inject Lazy<Provider<String>> firstname;
+        @Inject @Named("nope") @Optional Lazy<Provider<String>> unknown;
     }
 
     @Test
@@ -269,8 +269,8 @@ public class KodeinInjectJavaTests {
     }
 
     public static class Test02_1 {
-        public @Inject @Named("lastname") @FactoryFun Function1<Integer, String> lastname;
-        public @Inject @Named("nope") @FactoryFun @Optional Function1<Integer, String> unknown;
+        @Inject @Named("lastname") @FactoryFun Function1<Integer, String> lastname;
+        @Inject @Named("nope") @FactoryFun @Optional Function1<Integer, String> unknown;
     }
 
     @Test
@@ -417,5 +417,30 @@ public class KodeinInjectJavaTests {
     public void test03_3_FactoryConstructorInjection() {
         KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test2());
         injector.newInstance(Test03_3.class);
+    }
+
+    public static class Test03_4 {
+        Test03_4(
+                String firstname,
+                @Named("lastname") String lastname,
+                @Named("nope") @Optional String unknown,
+                Lazy<String> lazyFirstname,
+                @Named("lastname") Lazy<String> lazyLastname,
+                @Named("nope") @Optional Lazy<String> lazyUnknown
+        ) {
+            assertEquals("Salomon", firstname);
+            assertEquals("BRYS", lastname);
+            assertNull(unknown);
+            assertEquals("Salomon", lazyFirstname.getValue());
+            assertEquals("BRYS", lazyLastname.getValue());
+            assertNotNull(lazyUnknown);
+            assertNull(lazyUnknown.getValue());
+        }
+    }
+
+    @Test
+    public void test03_4_OnlyOneConstructorInjection() {
+        KodeinJavaxInjector injector = new KodeinJavaxInjector(KodeinsKt.test0());
+        injector.newInstance(Test03_4.class);
     }
 }

@@ -196,7 +196,8 @@ class KodeinJavaxInjector(val kodein: Kodein) {
 
     private fun _createConstructor(cls: Class<*>): () -> Any {
         val constructor = cls.declaredConstructors.firstOrNull { it.isAnnotationPresent(Inject::class.java) }
-            ?: throw IllegalArgumentException("Class ${cls.name} has no @Inject annotated constructors")
+            ?:  if (cls.declaredConstructors.size == 1) cls.declaredConstructors[0]
+                else throw IllegalArgumentException("Class ${cls.name} must either have only one constructor or an @Inject annotated constructor")
 
         class ConstructorElement(private val _index: Int) : Element {
             override val classType: Class<*> get() = constructor.parameterTypes[_index]

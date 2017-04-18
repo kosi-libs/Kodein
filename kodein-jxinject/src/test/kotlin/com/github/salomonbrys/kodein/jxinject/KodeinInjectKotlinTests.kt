@@ -411,4 +411,29 @@ class KodeinInjectKotlinTests {
         val injector = KodeinJavaxInjector(test2())
         injector.newInstance(Test::class.java)
     }
+
+    @Test
+    fun test03_4_OnlyOneConstructorInjection() {
+        class Test(
+            firstname: String,
+            @Named("lastname") lastname: String,
+            @Named("nope") @Optional unknown: String,
+            lazyFirstname: Lazy<String>,
+            @Named("lastname") lazyLastname: Lazy<String>,
+            @Named("nope") @Optional lazyUnknown: Lazy<String>
+        ) {
+            init {
+                assertEquals("Salomon", firstname)
+                assertEquals("BRYS", lastname)
+                assertNull(unknown)
+                assertEquals("Salomon", lazyFirstname.value)
+                assertEquals("BRYS", lazyLastname.value)
+                assertNotNull(lazyUnknown)
+                assertNull(lazyUnknown.value)
+            }
+        }
+
+        val injector = KodeinJavaxInjector(test0())
+        injector.newInstance(Test::class.java)
+    }
 }
