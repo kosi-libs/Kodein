@@ -2,8 +2,7 @@ package com.github.salomonbrys.kodein.conf
 
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinContainer
-import com.github.salomonbrys.kodein.TKodein
-import java.util.*
+import com.github.salomonbrys.kodein.internal.synchronizedIfNull
 
 /**
  * A class that can be used to configure a kodein object and as a kodein object.
@@ -53,7 +52,7 @@ class ConfigurableKodein : Kodein {
      *
      * When constructing the Kodein instance (upon first retrieval), all configuration lambdas will be applied.
      */
-    private var _configs: MutableList<Kodein.Builder.() -> Unit>? = LinkedList()
+    private var _configs: MutableList<Kodein.Builder.() -> Unit>? = ArrayList()
 
     /**
      * Kodein instance. If it is not null, than it cannot be configured anymore.
@@ -66,11 +65,7 @@ class ConfigurableKodein : Kodein {
      * The first time this function is called is the end of the configuration.
      */
     fun getOrConstruct(): Kodein {
-        _instance?.let { return it }
-
-        synchronized(_lock) {
-            _instance?.let { return it }
-
+        synchronizedIfNull(_lock, this::_instance, { return it }) {
             if (mutable == null)
                 mutable = false
 
@@ -85,9 +80,9 @@ class ConfigurableKodein : Kodein {
             _instance = kodein
 
             init()
-
-            return kodein
         }
+
+        return _instance!!
     }
 
     /**
@@ -107,7 +102,7 @@ class ConfigurableKodein : Kodein {
             }
             else {
                 _instance = null
-                _configs = LinkedList()
+                _configs = ArrayList()
             }
         }
     }
@@ -131,7 +126,7 @@ class ConfigurableKodein : Kodein {
                     throw IllegalStateException("The non-mutable ConfigurableKodein has been accessed and therefore constructed, you cannot add bindings after first retrieval.")
                 val previous = _instance
                 _instance = null
-                _configs = LinkedList()
+                _configs = ArrayList()
                 if (previous != null)
                     addExtend(previous)
             }
@@ -156,9 +151,6 @@ class ConfigurableKodein : Kodein {
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
      */
     fun addExtend(kodein: Kodein, allowOverride: Boolean = false) = addConfig { extend(kodein, allowOverride) }
-
-    /** @suppress */
-    override val typed: TKodein get() = getOrConstruct().typed
 
     /** @suppress */
     override val container: KodeinContainer get() = getOrConstruct().container

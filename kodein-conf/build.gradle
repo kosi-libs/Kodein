@@ -3,6 +3,16 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'org.jetbrains.dokka'
 
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    compile project(':kodein-core')
+
+    testCompile "junit:junit:$junit_version"
+
+//    testCompile project(':kodein-core').sourceSets.test.output
+}
+
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from dokka
@@ -32,16 +42,6 @@ dokka {
         url = "https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin"
         suffix = "#L"
     }
-}
-
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    compile project(':kodein-core')
-
-    testCompile "junit:junit:$junit_version"
-
-    testCompile project(':kodein-core').sourceSets.test.output
 }
 
 if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {

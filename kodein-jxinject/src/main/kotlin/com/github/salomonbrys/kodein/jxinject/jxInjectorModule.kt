@@ -1,24 +1,25 @@
 package com.github.salomonbrys.kodein.jxinject
 
 import com.github.salomonbrys.kodein.*
+import com.github.salomonbrys.kodein.bindings.SingletonBinding
 
 /**
  * Module that must be imported in order to use [JxInjector].
  */
 val jxInjectorModule = Kodein.Module {
-    bind() from erasedSingleton { JxInjector(kodein) }
+    bind() from SingletonBinding(erased()) { JxInjector(kodein) }
 }
 
 /**
  * Utility function that eases the retrieval of a [JxInjector].
  */
-val Kodein.jx: JxInjector get() = erasedInstanceOrNull<JxInjector>()
+val Kodein.jx: JxInjector get() = InstanceOrNull<JxInjector>(erased())
                                   ?: throw IllegalStateException("Did you forget to import(jxInjectorModule)?")
 
 /** @suppress */
 fun <T: Annotation> Kodein.Builder.jxQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
     onReady {
-        erasedInstance<JxInjector>().registerQualifier(cls, tagProvider)
+        Instance<JxInjector>(erased()).registerQualifier(cls, tagProvider)
     }
 }
 

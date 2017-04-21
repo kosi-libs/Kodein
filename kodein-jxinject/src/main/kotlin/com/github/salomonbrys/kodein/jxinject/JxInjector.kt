@@ -1,7 +1,8 @@
 package com.github.salomonbrys.kodein.jxinject
 
 import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.TKodein
+import com.github.salomonbrys.kodein.TT
+import com.github.salomonbrys.kodein.TypeToken
 import java.lang.reflect.*
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -50,7 +51,7 @@ class JxInjector(val kodein: Kodein) {
         override fun toString(): String
     }
 
-    private fun _getter(element: Element): TKodein.() -> Any? {
+    private fun _getter(element: Element): Kodein.() -> Any? {
         val tag = _getTagFromQualifier(element)
 
         val shouldErase = element.isAnnotationPresent(ErasedBinding::class.java)
@@ -63,7 +64,7 @@ class JxInjector(val kodein: Kodein) {
 
         val isOptional = element.isAnnotationPresent(OrNull::class.java)
 
-        fun getterFunction(getter: TKodein.() -> Any?) = getter
+        fun getterFunction(getter: Kodein.() -> Any?) = getter
 
         return when {
             element.classType == Lazy::class.java -> { // Must be first
@@ -80,36 +81,40 @@ class JxInjector(val kodein: Kodein) {
             element.isAnnotationPresent(ProviderFun::class.java) -> {
                 if (element.classType != Function0::class.java)
                     throw IllegalArgumentException("When visiting $element, @ProviderFun annotated members must be of type Function0 () -> T")
-                val boundType = (element.genericType as ParameterizedType).actualTypeArguments[0].boundType()
+                @Suppress("UNCHECKED_CAST")
+                val boundType = TT((element.genericType as ParameterizedType).actualTypeArguments[0].boundType()) as TypeToken<out Any>
                 when (isOptional) {
-                    true  -> getterFunction { providerOrNull(boundType, tag) }
-                    false -> getterFunction { provider(boundType, tag) }
+                    true  -> getterFunction { ProviderOrNull(boundType, tag) }
+                    false -> getterFunction { Provider(boundType, tag) }
                 }
             }
             element.classType == Provider::class.java -> {
-                val boundType = (element.genericType as ParameterizedType).actualTypeArguments[0].boundType()
+                @Suppress("UNCHECKED_CAST")
+                val boundType = TT((element.genericType as ParameterizedType).actualTypeArguments[0].boundType()) as TypeToken<out Any>
                 fun (() -> Any).toJavaxProvider() = javax.inject.Provider { invoke() }
                 when (isOptional) {
-                    true  -> getterFunction { providerOrNull(boundType, tag)?.toJavaxProvider() }
-                    false -> getterFunction { provider(boundType, tag).toJavaxProvider() }
+                    true  -> getterFunction { ProviderOrNull(boundType, tag)?.toJavaxProvider() }
+                    false -> getterFunction { Provider(boundType, tag).toJavaxProvider() }
                 }
             }
             element.isAnnotationPresent(FactoryFun::class.java) -> {
                 if (element.classType != Function1::class.java)
                     throw IllegalArgumentException("When visiting $element, @FactoryFun annotated members must be of type Function1 (A) -> T")
                 val fieldType = element.genericType as ParameterizedType
-                val argType = fieldType.actualTypeArguments[0].lower()
-                val boundType = fieldType.actualTypeArguments[1].boundType()
+                val argType = TT(fieldType.actualTypeArguments[0].lower())
+                @Suppress("UNCHECKED_CAST")
+                val boundType = TT(fieldType.actualTypeArguments[1].boundType()) as TypeToken<out Any>
                 when (isOptional) {
-                    true  -> getterFunction { factoryOrNull(argType, boundType, tag) }
-                    false -> getterFunction { factory(argType, boundType, tag) }
+                    true  -> getterFunction { FactoryOrNull(argType, boundType, tag) }
+                    false -> getterFunction { Factory(argType, boundType, tag) }
                 }
             }
             else -> {
-                val boundType = if (shouldErase) element.classType else element.genericType
+                @Suppress("UNCHECKED_CAST")
+                val boundType = if (shouldErase) TT(element.classType) else TT(element.genericType) as TypeToken<out Any>
                 when (isOptional) {
-                    true  -> getterFunction { instanceOrNull(boundType, tag) }
-                    false -> getterFunction { instance(boundType, tag) }
+                    true  -> getterFunction { InstanceOrNull(boundType, tag) }
+                    false -> getterFunction { Instance(boundType, tag) }
                 }
             }
         }
@@ -132,7 +137,7 @@ class JxInjector(val kodein: Kodein) {
 
                 setters += { receiver ->
                     val arguments = Array<Any?>(getters.size) { null }
-                    getters.forEachIndexed { i, getter -> arguments[i] = kodein.typed.getter() }
+                    getters.forEachIndexed { i, getter -> arguments[i] = kodein.getter() }
 
                     if (!isAccessible) member.isAccessible = true
                     try {
@@ -220,7 +225,7 @@ class JxInjector(val kodein: Kodein) {
 
         return {
             val arguments = Array<Any?>(getters.size) { null }
-            getters.forEachIndexed { i, getter -> arguments[i] = kodein.typed.getter() }
+            getters.forEachIndexed { i, getter -> arguments[i] = kodein.getter() }
 
             if (!isAccessible) constructor.isAccessible = true
             try {

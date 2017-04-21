@@ -22,7 +22,7 @@ class DemoApplication : Application(), KodeinAware {
         bind<Coffee>() with provider { Coffee(instance()) }
 
         // this is bound in the scope of an activity so any retrieval using the same activity will return the same Kettle instance
-        bindGeneric<Kettle<Coffee>>() with scopedSingleton(androidActivityScope) { Kettle<Coffee>(instance(), instance(), instance(), provider()) }
+        bind<Kettle<Coffee>>() with scopedSingleton(androidActivityScope) { Kettle<Coffee>(instance(), instance(), instance(), provider()) }
 
         bind<String>() with instance("DemoApplication")
     }

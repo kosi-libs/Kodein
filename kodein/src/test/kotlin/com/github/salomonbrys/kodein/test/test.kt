@@ -1,6 +1,9 @@
 package com.github.salomonbrys.kodein.test
 
 import com.github.salomonbrys.kodein.*
+import com.github.salomonbrys.kodein.bindings.AutoScope
+import com.github.salomonbrys.kodein.bindings.Scope
+import com.github.salomonbrys.kodein.bindings.ScopeRegistry
 import junit.framework.TestCase
 import org.junit.Assert.assertNotEquals
 import org.junit.FixMethodOrder
@@ -70,7 +73,9 @@ class KodeinTests : TestCase() {
 
     @Test fun test00_2_FactoryBindingGetFactory() {
 
-        val kodein = Kodein { bind() from factory { name: String -> Person(name) } }
+        val kodein = Kodein {
+            bind() from factory { name: String -> Person(name) }
+        }
 
         val p1 = kodein.factory<String, Person>()
         val p2 = kodein.factory<String, Person>()
@@ -150,14 +155,14 @@ class KodeinTests : TestCase() {
         var tp1: Person? = null
 
         val t = thread {
-            tp1 = kodein.instance()
-            val tp2: Person = kodein.instance()
+            tp1 = kodein.Instance(generic())
+            val tp2: Person = kodein.Instance(generic())
 
             assertSame(tp1, tp2)
         }
 
-        val p1: Person = kodein.instance()
-        val p2: Person = kodein.instance()
+        val p1: Person = kodein.Instance(generic())
+        val p2: Person = kodein.Instance(generic())
 
         assertSame(p1, p2)
 
@@ -652,12 +657,12 @@ class KodeinTests : TestCase() {
         }
 
         assertEquals(6, kodein.container.bindings.size)
-        assertEquals("provider", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, null), Unit::class.java)]?.factoryName())
-        assertEquals("refSingleton(threadLocal)", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "thread-singleton"), Unit::class.java)]?.factoryName())
-        assertEquals("singleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "singleton"), Unit::class.java)]?.factoryName())
-        assertEquals("factory", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "factory"), String::class.java)]?.factoryName())
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(IPerson::class.java, "instance"), Unit::class.java)]?.factoryName())
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(Int::class.javaObjectType, "answer"), Unit::class.java)]?.factoryName())
+        assertEquals("provider", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), null), UnitToken)]?.factoryName())
+        assertEquals("refSingleton(threadLocal)", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "thread-singleton"), UnitToken)]?.factoryName())
+        assertEquals("singleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "singleton"), UnitToken)]?.factoryName())
+        assertEquals("factory", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "factory"), erased<String>())]?.factoryName())
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "instance"), UnitToken)]?.factoryName())
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<Int>(), "answer"), UnitToken)]?.factoryName())
     }
 
     @Test fun test16_1_ScopedSingleton() {
@@ -743,8 +748,8 @@ class KodeinTests : TestCase() {
     @Test fun test17_4_OverrideWithSuper() {
         val kodein = Kodein(allowSilentOverride = true) {
             bind<String>("name") with instance("Salomon")
-            bind<String>("name", overrides = true) with singleton { overriddenInstance<String>() + " BRYS" }
-            bind<String>("name", overrides = true) with singleton { overriddenInstance<String>() + " the great" } // just kidding!
+            bind<String>("name", overrides = true) with singleton { (overriddenInstance() as String) + " BRYS" }
+            bind<String>("name", overrides = true) with singleton { (overriddenInstance() as String) + " the great" } // just kidding!
         }
 
         assertEquals("Salomon BRYS the great", kodein.instance<String>("name"))
@@ -754,8 +759,8 @@ class KodeinTests : TestCase() {
 
         val kodein = Kodein {
             bind<String>("name") with singleton { instance<String>("title") + " Salomon " }
-            bind<String>("name", overrides = true) with singleton { overriddenInstance<String>() + " BRYS " }
-            bind<String>("name", overrides = true) with singleton { overriddenInstance<String>() + " of France" }
+            bind<String>("name", overrides = true) with singleton { (overriddenInstance() as String) + " BRYS " }
+            bind<String>("name", overrides = true) with singleton { (overriddenInstance() as String) + " of France" }
             bind<String>("title") with singleton { instance<String>("name") + " the great" }
 
         }
@@ -846,17 +851,17 @@ class KodeinTests : TestCase() {
 
     @Test fun test21_0_SimpleDispString() {
 
-        assertEquals("Int", genericToken<Int>().type.simpleDispString)
+        assertEquals("Int", generic<Int>().simpleDispString())
 
-        assertEquals("Array<Char>", genericToken<Array<Char>>().type.simpleDispString)
+        assertEquals("Array<Char>", generic<Array<Char>>().simpleDispString())
 
-        assertEquals("List<*>", genericToken<List<*>>().type.simpleDispString)
+        assertEquals("List<*>", generic<List<*>>().simpleDispString())
 
-        assertEquals("Map<String, *>", genericToken<Map<String, *>>().type.simpleDispString)
+        assertEquals("Map<String, *>", generic<Map<String, *>>().simpleDispString())
 
-        assertEquals("KodeinTests.Test21_G<*>", genericToken<Test21_G<*>>().type.simpleDispString)
-        assertEquals("KodeinTests.Test21_G<*>", genericToken<Test21_G<Test21_A>>().type.simpleDispString)
-        assertEquals("KodeinTests.Test21_G<out KodeinTests.Test21_B>", genericToken<Test21_G<Test21_B>>().type.simpleDispString)
+        assertEquals("KodeinTests.Test21_G<*>", generic<Test21_G<*>>().simpleDispString())
+        assertEquals("KodeinTests.Test21_G<*>", generic<Test21_G<Test21_A>>().simpleDispString())
+        assertEquals("KodeinTests.Test21_G<out KodeinTests.Test21_B>", generic<Test21_G<Test21_B>>().simpleDispString())
     }
 
     class Test22(kodein: Kodein) {

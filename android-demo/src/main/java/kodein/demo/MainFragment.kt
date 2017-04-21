@@ -39,7 +39,7 @@ class MainFragment : Fragment(), FragmentInjector {
         Log.i(logTag, "onCreate")
 
         // since Kettle<Coffee> is bound in the activity scope we need a reference to an Activity to retrieve it
-        coffeeMaker = injector.kodein().value.withGeneric(activity as Activity).genericInstance()
+        coffeeMaker = injector.kodein().value.with(activity as Activity).instance()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

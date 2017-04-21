@@ -18,8 +18,9 @@ import android.view.LayoutInflater
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinInjected
 import com.github.salomonbrys.kodein.KodeinInjector
-import com.github.salomonbrys.kodein.ScopeRegistry
-import com.github.salomonbrys.kodein.erasedInstance
+import com.github.salomonbrys.kodein.bindings.InstanceBinding
+import com.github.salomonbrys.kodein.bindings.ScopeRegistry
+import com.github.salomonbrys.kodein.erased
 import android.support.v4.app.Fragment as SupportFragment
 import android.support.v4.app.FragmentManager as SupportFragmentManager
 import android.support.v4.app.LoaderManager as SupportLoaderManager
@@ -92,12 +93,12 @@ interface ActivityInjector : AndroidInjector<Activity, AndroidScope<Activity>> {
 
     override fun initializeInjector() {
         val activityModule = Kodein.Module {
-            bindErased<KodeinInjected>() with erasedInstance(this@ActivityInjector)
-            bindErased<Context>() with erasedInstance(kodeinComponent)
-            bindErased<Activity>() with erasedInstance(kodeinComponent)
-            bindErased<FragmentManager>() with erasedInstance(kodeinComponent.fragmentManager)
-            bindErased<LoaderManager>() with erasedInstance(kodeinComponent.loaderManager)
-            bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER) with erasedInstance(kodeinComponent.layoutInflater)
+            Bind<KodeinInjected>(erased()) with InstanceBinding(erased(), this@ActivityInjector)
+            Bind<Context>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<Activity>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<FragmentManager>(erased()) with InstanceBinding(erased(), kodeinComponent.fragmentManager)
+            Bind<LoaderManager>(erased()) with InstanceBinding(erased(), kodeinComponent.loaderManager)
+            Bind<LayoutInflater>(erased(), tag = ACTIVITY_LAYOUT_INFLATER) with InstanceBinding(erased(), kodeinComponent.layoutInflater)
 
             import(provideOverridingModule(), allowOverride = true)
         }
@@ -156,15 +157,15 @@ interface FragmentActivityInjector : AndroidInjector<FragmentActivity, AndroidSc
 
     override fun initializeInjector() {
         val activityModule = Kodein.Module {
-            bindErased<KodeinInjected>() with erasedInstance(this@FragmentActivityInjector)
-            bindErased<Context>() with erasedInstance(kodeinComponent)
-            bindErased<Activity>() with erasedInstance(kodeinComponent)
-            bindErased<FragmentActivity>() with erasedInstance(kodeinComponent)
-            bindErased<FragmentManager>() with erasedInstance(kodeinComponent.fragmentManager)
-            bindErased<LoaderManager>() with erasedInstance(kodeinComponent.loaderManager)
-            bindErased<SupportFragmentManager>() with erasedInstance(kodeinComponent.supportFragmentManager)
-            bindErased<SupportLoaderManager>() with erasedInstance(kodeinComponent.supportLoaderManager)
-            bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER) with erasedInstance(kodeinComponent.layoutInflater)
+            Bind<KodeinInjected>(erased()) with InstanceBinding(erased(), this@FragmentActivityInjector)
+            Bind<Context>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<Activity>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<FragmentActivity>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<FragmentManager>(erased()) with InstanceBinding(erased(), kodeinComponent.fragmentManager)
+            Bind<LoaderManager>(erased()) with InstanceBinding(erased(), kodeinComponent.loaderManager)
+            Bind<SupportFragmentManager>(erased()) with InstanceBinding(erased(), kodeinComponent.supportFragmentManager)
+            Bind<SupportLoaderManager>(erased()) with InstanceBinding(erased(), kodeinComponent.supportLoaderManager)
+            Bind<LayoutInflater>(erased(), ACTIVITY_LAYOUT_INFLATER) with InstanceBinding(erased(), kodeinComponent.layoutInflater)
 
             import(provideOverridingModule(), allowOverride = true)
         }
@@ -224,16 +225,16 @@ interface AppCompatActivityInjector : AndroidInjector<AppCompatActivity, Android
 
     override fun initializeInjector() {
         val activityModule = Kodein.Module {
-            bindErased<KodeinInjected>() with erasedInstance(this@AppCompatActivityInjector)
-            bindErased<Context>() with erasedInstance(kodeinComponent)
-            bindErased<Activity>() with erasedInstance(kodeinComponent)
-            bindErased<FragmentActivity>() with erasedInstance(kodeinComponent)
-            bindErased<AppCompatActivity>() with erasedInstance(kodeinComponent)
-            bindErased<FragmentManager>() with erasedInstance(kodeinComponent.fragmentManager)
-            bindErased<LoaderManager>() with erasedInstance(kodeinComponent.loaderManager)
-            bindErased<SupportFragmentManager>() with erasedInstance(kodeinComponent.supportFragmentManager)
-            bindErased<SupportLoaderManager>() with erasedInstance(kodeinComponent.supportLoaderManager)
-            bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER) with erasedInstance(kodeinComponent.layoutInflater)
+            Bind<KodeinInjected>(erased()) with InstanceBinding(erased(), this@AppCompatActivityInjector)
+            Bind<Context>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<Activity>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<FragmentActivity>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<AppCompatActivity>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<FragmentManager>(erased()) with InstanceBinding(erased(), kodeinComponent.fragmentManager)
+            Bind<LoaderManager>(erased()) with InstanceBinding(erased(), kodeinComponent.loaderManager)
+            Bind<SupportFragmentManager>(erased()) with InstanceBinding(erased(), kodeinComponent.supportFragmentManager)
+            Bind<SupportLoaderManager>(erased()) with InstanceBinding(erased(), kodeinComponent.supportLoaderManager)
+            Bind<LayoutInflater>(erased(), tag =ACTIVITY_LAYOUT_INFLATER) with InstanceBinding(erased(), kodeinComponent.layoutInflater)
 
             import(provideOverridingModule(), allowOverride = true)
         }
@@ -309,13 +310,13 @@ interface FragmentInjector : AndroidInjector<Fragment, AndroidScope<Fragment>> {
         val hasParentFragment = parentFragment != null
 
         val fragmentModule = Kodein.Module {
-            bindErased<KodeinInjected>(overrides = true) with erasedInstance(this@FragmentInjector)
+            Bind<KodeinInjected>(erased(), overrides = true) with InstanceBinding(erased(), this@FragmentInjector)
             activity?.let {
-                bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER, overrides = true) with erasedInstance(activity.layoutInflater)
+                Bind<LayoutInflater>(erased(), tag = ACTIVITY_LAYOUT_INFLATER, overrides = true) with InstanceBinding(erased(), activity.layoutInflater)
             }
-            bindErased<Fragment>(overrides = hasParentFragment) with erasedInstance(kodeinComponent)
-            bindErased<FragmentManager>(overrides = true) with erasedInstance(kodeinComponent.fragmentManager)
-            bindErased<LoaderManager>(overrides = true) with erasedInstance(kodeinComponent.loaderManager)
+            Bind<Fragment>(erased(), overrides = hasParentFragment) with InstanceBinding(erased(), kodeinComponent)
+            Bind<FragmentManager>(erased(), overrides = true) with InstanceBinding(erased(), kodeinComponent.fragmentManager)
+            Bind<LoaderManager>(erased(), overrides = true) with InstanceBinding(erased(), kodeinComponent.loaderManager)
 
             import(provideOverridingModule(), allowOverride = true)
         }
@@ -391,13 +392,13 @@ interface SupportFragmentInjector : AndroidInjector<SupportFragment, AndroidScop
         val hasParentFragment = parentFragment != null
 
         val fragmentModule = Kodein.Module {
-            bindErased<KodeinInjected>(overrides = true) with erasedInstance(this@SupportFragmentInjector)
+            Bind<KodeinInjected>(erased(), overrides = true) with InstanceBinding(erased(), this@SupportFragmentInjector)
             activity?.let {
-                bindErased<LayoutInflater>(ACTIVITY_LAYOUT_INFLATER, overrides = true) with erasedInstance(activity.layoutInflater)
+                Bind<LayoutInflater>(erased(), ACTIVITY_LAYOUT_INFLATER, overrides = true) with InstanceBinding(erased(), activity.layoutInflater)
             }
-            bindErased<SupportFragment>(overrides = hasParentFragment) with erasedInstance(kodeinComponent)
-            bindErased<SupportFragmentManager>(overrides = true) with erasedInstance(kodeinComponent.fragmentManager)
-            bindErased<SupportLoaderManager>(overrides = true) with erasedInstance(kodeinComponent.loaderManager)
+            Bind<SupportFragment>(erased(), overrides = hasParentFragment) with InstanceBinding(erased(), kodeinComponent)
+            Bind<SupportFragmentManager>(erased(), overrides = true) with InstanceBinding(erased(), kodeinComponent.fragmentManager)
+            Bind<SupportLoaderManager>(erased(), overrides = true) with InstanceBinding(erased(), kodeinComponent.loaderManager)
 
             import(provideOverridingModule(), allowOverride = true)
         }
@@ -460,9 +461,9 @@ interface ServiceInjector : AndroidInjector<Service, AndroidScope<Service>> {
 
     override fun initializeInjector() {
         val serviceModule = Kodein.Module {
-            bindErased<KodeinInjected>() with erasedInstance(this@ServiceInjector)
-            bindErased<Context>() with erasedInstance(kodeinComponent)
-            bindErased<Service>() with erasedInstance(kodeinComponent)
+            Bind<KodeinInjected>(erased()) with InstanceBinding(erased(), this@ServiceInjector)
+            Bind<Context>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<Service>(erased()) with InstanceBinding(erased(), kodeinComponent)
 
             import(provideOverridingModule(), allowOverride = true)
         }
@@ -516,10 +517,10 @@ interface IntentServiceInjector : AndroidInjector<IntentService, AndroidScope<In
 
     override fun initializeInjector() {
         val serviceModule = Kodein.Module {
-            bindErased<KodeinInjected>() with erasedInstance(this@IntentServiceInjector)
-            bindErased<Context>() with erasedInstance(kodeinComponent)
-            bindErased<Service>() with erasedInstance(kodeinComponent)
-            bindErased<IntentService>() with erasedInstance(kodeinComponent)
+            Bind<KodeinInjected>(erased()) with InstanceBinding(erased(), this@IntentServiceInjector)
+            Bind<Context>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<Service>(erased()) with InstanceBinding(erased(), kodeinComponent)
+            Bind<IntentService>(erased()) with InstanceBinding(erased(), kodeinComponent)
 
             import(provideOverridingModule(), allowOverride = true)
         }
@@ -588,9 +589,9 @@ interface BroadcastReceiverInjector : AndroidInjector<BroadcastReceiver, Android
         val context = context ?: throw IllegalStateException("Please set the context property in onReceive")
 
         val receiverModule = Kodein.Module {
-            bindErased<KodeinInjected>() with erasedInstance(this@BroadcastReceiverInjector)
-            bindErased<Context>() with erasedInstance(context)
-            bindErased<BroadcastReceiver>() with erasedInstance(kodeinComponent)
+            Bind<KodeinInjected>(erased()) with InstanceBinding(erased(), this@BroadcastReceiverInjector)
+            Bind<Context>(erased()) with InstanceBinding(erased(), context)
+            Bind<BroadcastReceiver>(erased()) with InstanceBinding(erased(), kodeinComponent)
 
             import(provideOverridingModule(), allowOverride = true)
         }

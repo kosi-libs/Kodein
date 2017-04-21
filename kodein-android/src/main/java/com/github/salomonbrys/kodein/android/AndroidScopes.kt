@@ -7,8 +7,10 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.os.Bundle
-import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.androidActivityScope.lifecycleManager
+import com.github.salomonbrys.kodein.bindings.AutoScope
+import com.github.salomonbrys.kodein.bindings.Scope
+import com.github.salomonbrys.kodein.bindings.ScopeRegistry
 import java.util.*
 import android.support.v4.app.Fragment as SupportFragment
 

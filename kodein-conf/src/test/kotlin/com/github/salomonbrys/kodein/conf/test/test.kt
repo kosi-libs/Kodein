@@ -1,6 +1,7 @@
 package com.github.salomonbrys.kodein.conf.test
 
 import com.github.salomonbrys.kodein.*
+import com.github.salomonbrys.kodein.bindings.*
 import com.github.salomonbrys.kodein.conf.ConfigurableKodein
 import com.github.salomonbrys.kodein.conf.global
 import junit.framework.TestCase
@@ -45,10 +46,10 @@ class KodeinGlobalTests : TestCase() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
-            constant("answer") withErased 42
+            constant("answer").With(erased(), 42)
         }
 
-        val answer: Int = kodein.erasedInstance("answer")
+        val answer: Int = kodein.Instance(erased(), tag = "answer")
 
         assertEquals(42, answer)
     }
@@ -57,45 +58,45 @@ class KodeinGlobalTests : TestCase() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
-            constant("answer") withErased 21
+            constant("answer").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.erasedInstance<Int>("answer"))
+        assertEquals(21, kodein.Instance<Int>(erased(), tag = "answer"))
 
         kodein.clear()
 
         kodein.addConfig {
-            constant("answer") withErased 42
+            constant("answer").With(erased(), 42)
         }
 
-        assertEquals(42, kodein.erasedInstance<Int>("answer"))
+        assertEquals(42, kodein.Instance<Int>(erased(), tag = "answer"))
     }
 
     @Test fun test01_1_Mutate() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
-            constant("half") withErased 21
+            constant("half").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.erasedInstance<Int>("half"))
+        assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
 
         kodein.addConfig {
-            constant("full") withErased 42
+            constant("full").With(erased(), 42)
         }
 
-        assertEquals(21, kodein.erasedInstance<Int>("half"))
-        assertEquals(42, kodein.erasedInstance<Int>("full"))
+        assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
+        assertEquals(42, kodein.Instance<Int>(erased(), tag = "full"))
     }
 
     @Test fun test01_2_NonMutableClear() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
-            constant("answer") withErased 21
+            constant("answer").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.erasedInstance<Int>("answer"))
+        assertEquals(21, kodein.Instance<Int>(erased(), tag = "answer"))
 
         assertThrown<IllegalStateException> {
             kodein.clear()
@@ -106,10 +107,10 @@ class KodeinGlobalTests : TestCase() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
-            constant("answer") withErased 21
+            constant("answer").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.erasedInstance<Int>("answer"))
+        assertEquals(21, kodein.Instance<Int>(erased(), tag = "answer"))
 
         assertThrown<IllegalStateException> {
             kodein.addConfig {}
@@ -120,27 +121,27 @@ class KodeinGlobalTests : TestCase() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
-            constant("half") withErased 21
+            constant("half").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.erasedInstance<Int>("half"))
+        assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
 
         kodein.addConfig {
-            constant("full") withErased 42
+            constant("full").With(erased(), 42)
         }
 
-        assertEquals(21, kodein.erasedInstance<Int>("half"))
-        assertEquals(42, kodein.erasedInstance<Int>("full"))
+        assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
+        assertEquals(42, kodein.Instance<Int>(erased(), tag = "full"))
     }
 
     @Test fun test02_1_nonMutableMutateConfig() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
-            constant("half") withErased 21
+            constant("half").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.erasedInstance<Int>("half"))
+        assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
 
         assertThrown<IllegalStateException> {
             kodein.addConfig {}
@@ -151,62 +152,62 @@ class KodeinGlobalTests : TestCase() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
-            bindErased<String>() with erasedFactory { n: Name -> n.firstName }
+            Bind<String>(erased()) with FactoryBinding(erased(), erased()) { n: Name -> n.firstName }
         }
 
-        assertEquals("Salomon", kodein.withErased(FullName("Salomon", "BRYS")).erasedInstance())
+        assertEquals("Salomon", kodein.With(erased(), FullName ("Salomon", "BRYS")).Instance<String>(erased()))
 
         kodein.addConfig {
-            bindErased<String>() with erasedFactory { n: FullName -> n.firstName + " " + n.lastName }
+            Bind<String>(erased()) with FactoryBinding(erased(), erased()) { n: FullName -> n.firstName + " " + n.lastName }
         }
 
-        assertEquals("Salomon BRYS", kodein.withErased(FullName("Salomon", "BRYS")).erasedInstance())
+        assertEquals("Salomon BRYS", kodein.With(erased(), FullName("Salomon", "BRYS")).Instance<String>(erased()))
     }
 
     @Test fun test03_1_GenericOverride() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
-            bindErased<String>() with erasedFactory { l: List<*> -> l.first().toString() + " *" }
+            Bind<String>(erased()) with FactoryBinding(erased(), erased()) { l: List<*> -> l.first().toString() + " *" }
         }
 
-        assertEquals("Salomon *", kodein.withGeneric(listOf("Salomon", "BRYS")).erasedInstance())
+        assertEquals("Salomon *", kodein.With(generic(), listOf("Salomon", "BRYS")).Instance<String>(erased()))
 
         kodein.addConfig {
-            bindErased<String>() with genericFactory { l: List<String> -> l[0] + " " + l[1] }
+            Bind<String>(erased()) with FactoryBinding(generic(), erased()) { l: List<String> -> l[0] + " " + l[1] }
         }
 
-        assertEquals("Salomon BRYS", kodein.withGeneric(listOf("Salomon", "BRYS")).erasedInstance())
-        assertEquals("42 *", kodein.withGeneric(listOf(42)).erasedInstance())
+        assertEquals("Salomon BRYS", kodein.With(generic(), listOf("Salomon", "BRYS")).Instance<String>(erased()))
+        assertEquals("42 *", kodein.With(generic(), listOf(42)).Instance<String>(erased()))
     }
 
     @Test fun test04_0_Global() {
         Kodein.global.mutable = true
 
         Kodein.global.addConfig {
-            constant("half") withErased 21
+            constant("half").With(erased(), 21)
         }
 
-        assertEquals(21, Kodein.global.erasedInstance<Int>("half"))
+        assertEquals(21, Kodein.global.Instance<Int>(erased(), tag = "half"))
 
         Kodein.global.addConfig {
-            constant("full") withErased 42
+            constant("full").With(erased(), 42)
         }
 
-        assertEquals(21, Kodein.global.erasedInstance<Int>("half"))
-        assertEquals(42, Kodein.global.erasedInstance<Int>("full"))
+        assertEquals(21, Kodein.global.Instance<Int>(erased(), tag = "half"))
+        assertEquals(42, Kodein.global.Instance<Int>(erased(), tag = "full"))
     }
 
     object Test05_0 {
         val kodein = ConfigurableKodein()
 
-        class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.erasedInstance())
+        class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.Instance(erased()))
     }
 
     @Test fun test05_0_Loop() {
         Test05_0.kodein.addConfig {
-            bind() from erasedSingleton { "test" }
-            bind() from erasedEagerSingleton { Test05_0.Loop() }
+            bind() from SingletonBinding(erased()) { "test" }
+            bind() from EagerSingletonBinding(this, erased()) { Test05_0.Loop() }
         }
 
         Test05_0.kodein.getOrConstruct()
@@ -219,14 +220,14 @@ class KodeinGlobalTests : TestCase() {
 
         kodein.addConfig {
             onReady {
-                bind() from erasedSingleton { "test" }
+                bind() from SingletonBinding(erased()) { "test" }
                 ready = true
             }
 
             assertFalse(ready)
         }
 
-        kodein.erasedInstance<String>()
+        kodein.Instance<String>(erased())
 
         assertTrue(ready)
     }
@@ -235,27 +236,27 @@ class KodeinGlobalTests : TestCase() {
     @Test fun test07_0_coroutine() {
         val kodein = ConfigurableKodein(mutable = true)
         kodein.addConfig {
-            constant("lastName") withErased "BRYS_2"
+            constant("lastName").With(erased(), "BRYS_2")
 
-            bind("names") from erasedSequence {
+            bind("names") from SequenceBinding<String>(erased()) {
                 yieldAll(buildSequence {
-                    yield("Benjamin " + erasedInstance<String>("lastName"))
-                    yield("Maroussia " + erasedInstance<String>("lastName"))
+                    yield("Benjamin " + Instance<String>(erased(), "lastName"))
+                    yield("Maroussia " + Instance<String>(erased(), "lastName"))
                 })
-                yield("Salomon " + erasedInstance<String>("lastName"))
+                yield("Salomon " + Instance<String>(erased(), "lastName"))
             }
         }
 
-        assertEquals("Benjamin BRYS_2", kodein.erasedInstance<String>("names"))
+        assertEquals("Benjamin BRYS_2", kodein.Instance<String>(erased(), tag = "names"))
 
-        kodein.addConfig { constant("lastName", overrides = true) withErased "BRYS_1" }
+        kodein.addConfig { constant("lastName", overrides = true).With(erased(), "BRYS_1") }
 
-        assertEquals("Maroussia BRYS_1", kodein.erasedInstance<String>("names"))
+        assertEquals("Maroussia BRYS_1", kodein.Instance<String>(erased(), tag = "names"))
 
-        kodein.addConfig { constant("lastName", overrides = true) withErased "BRYS_0" }
+        kodein.addConfig { constant("lastName", overrides = true).With(erased(), "BRYS_0") }
 
-        assertEquals("Salomon BRYS_0", kodein.erasedInstance<String>("names"))
-        assertEquals("Salomon BRYS_0", kodein.erasedInstance<String>("names"))
+        assertEquals("Salomon BRYS_0", kodein.Instance<String>(erased(), tag = "names"))
+        assertEquals("Salomon BRYS_0", kodein.Instance<String>(erased(), tag = "names"))
     }
 
 }

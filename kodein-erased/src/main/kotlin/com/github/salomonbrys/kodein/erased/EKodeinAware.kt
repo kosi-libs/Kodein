@@ -17,7 +17,7 @@ import com.github.salomonbrys.kodein.*
  * @throws Kodein.NotFoundException if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> KodeinAwareBase.factory(tag: Any? = null) = erasedFactory<A, T>(tag)
+inline fun <reified A, reified T : Any> KodeinAwareBase.factory(tag: Any? = null) = kodein.Factory<A, T>(erased(), erased(), tag)
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
@@ -33,7 +33,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factory(tag: Any? = null
  * @return A factory, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? = null) = erasedFactoryOrNull<A, T>(tag)
+inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? = null) = kodein.FactoryOrNull<A, T>(erased(), erased(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -49,7 +49,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? 
  * @throws Kodein.NotFoundException if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null) = erasedProvider<T>(tag)
+inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null) = kodein.Provider<T>(erased(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -65,7 +65,7 @@ inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null) = erased
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null) = erasedProviderOrNull<T>(tag)
+inline fun <reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null) = kodein.ProviderOrNull<T>(erased(), tag)
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -81,7 +81,7 @@ inline fun <reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null) = 
  * @throws Kodein.NotFoundException if no provider was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> KodeinAwareBase.instance(tag: Any? = null) = erasedInstance<T>(tag)
+inline fun <reified T : Any> KodeinAwareBase.instance(tag: Any? = null) = kodein.Instance<T>(erased(), tag)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -96,7 +96,7 @@ inline fun <reified T : Any> KodeinAwareBase.instance(tag: Any? = null) = erased
  * @return An instance, or null if no provider was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null) = erasedInstanceOrNull<T>(tag)
+inline fun <reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null) = kodein.InstanceOrNull<T>(erased(), tag)
 
 /**
  * Gets a provider of `T` for the given tag from a curried factory with an `A` argument.
@@ -111,7 +111,7 @@ inline fun <reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null) = 
  * @throws Kodein.NotFoundException if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> CurriedKodeinFactory<*>.provider(tag: Any? = null) = erasedProvider<T>(tag)
+inline fun <reified T : Any> CurriedKodeinFactory<*>.provider(tag: Any? = null) = Provider<T>(erased(), tag)
 
 /**
  * Gets a provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -125,7 +125,7 @@ inline fun <reified T : Any> CurriedKodeinFactory<*>.provider(tag: Any? = null) 
  * @return A provider, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> CurriedKodeinFactory<*>.providerOrNull(tag: Any? = null) = erasedProviderOrNull<T>(tag)
+inline fun <reified T : Any> CurriedKodeinFactory<*>.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(erased(), tag)
 
 /**
  * Gets an instance of `T` for the given tag from a curried factory with an `A` argument.
@@ -140,7 +140,7 @@ inline fun <reified T : Any> CurriedKodeinFactory<*>.providerOrNull(tag: Any? = 
  * @throws Kodein.NotFoundException if no factory was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> CurriedKodeinFactory<*>.instance(tag: Any? = null) = erasedInstance<T>(tag)
+inline fun <reified T : Any> CurriedKodeinFactory<*>.instance(tag: Any? = null) = Instance<T>(erased(), tag)
 
 /**
  * Gets an instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -154,7 +154,7 @@ inline fun <reified T : Any> CurriedKodeinFactory<*>.instance(tag: Any? = null) 
  * @return An instance, or null if no factory was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> CurriedKodeinFactory<*>.instanceOrNull(tag: Any? = null) = erasedInstanceOrNull<T>(tag)
+inline fun <reified T : Any> CurriedKodeinFactory<*>.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(erased(), tag)
 
 /**
  * Allows to get a provider or an instance from a curried factory with an `A` argument.
@@ -166,7 +166,7 @@ inline fun <reified T : Any> CurriedKodeinFactory<*>.instanceOrNull(tag: Any? = 
  * @property arg A function that provides the argument that will be passed to the factory.
  * @return An object from which you can get an instance or a provider.
  */
-inline fun <reified A> KodeinAwareBase.with(noinline arg: () -> A) = withErased(arg)
+inline fun <reified A> KodeinAwareBase.with(noinline arg: () -> A) = WithF(erased(), arg)
 
 /**
  * Allows to get a provider or an instance from a curried factory with an `A` argument.
@@ -178,4 +178,4 @@ inline fun <reified A> KodeinAwareBase.with(noinline arg: () -> A) = withErased(
  * @property arg The argument that will be passed to the factory.
  * @return An object from which you can get an instance or a provider.
  */
-inline fun <reified A> KodeinAwareBase.with(arg: A) = withErased(arg)
+inline fun <reified A> KodeinAwareBase.with(arg: A) = With(erased(), arg)

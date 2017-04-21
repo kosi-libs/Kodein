@@ -1508,7 +1508,7 @@ com.github.salomonbrys.kodein.Kodein$DependencyLoopException: Dependency recursi
 By default, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `kodein.instance<List<String>>()` and `kodein.instance<List<Int>>()` will yield two different list.
 
-To be erasure immune, kodein relies heavily on the `genericToken` function, *which is real a performance pitfall*.
+To be erasure immune, kodein relies heavily on the `generic` function, *which is real a performance pitfall*.
 
 To improve performance, you can use the `erased*` set of kodein functions, which are faster, but do suffer from type erasure!
 
@@ -1923,12 +1923,12 @@ A `KodeinInjector` also provides a typed API, simply use `injector.typed`.
 === Use TypeToken
 
 Kodein almost never uses java classes, because they are subject to type erasure.
-To get a real type, Kodein uses the `genericToken` function.
+To get a real type, Kodein uses the `generic` function.
 
-The `genericToken` function produces a `TypeToken` object, which only contains a type.
+The `generic` function produces a `TypeToken` object, which only contains a type.
 
-* `genericToken<String>().type` is the String's java `Class`.
-* `genericToken<List<String>>.type` is a `ParameterizedType` describing exactly a `List<String>`.
+* `generic<String>().type` is the String's java `Class`.
+* `generic<List<String>>.type` is a `ParameterizedType` describing exactly a `List<String>`.
 
 `TypeToken` is a generic interface, that way, even if it's `type` is a weird type, functions that use a `TypeToken` (such as the typed API) can preserve type safety.
 

@@ -55,7 +55,7 @@ No changes from `3.2.0-beta3`
    * Removed methods that were deprecated in 3.1.0
    * For Android, \[scope\]ScopedSingleton methods are deprecated (for example, `contextScopedSingleton {}` is
      deprecated in favour of `scopedSingleton(androidContextScope) {}`)
-   * `typeToken` has been renamed to `genericToken`. The `typeToken` function still exists but is deprecated.
+   * `typeToken` has been renamed to `generic`. The `typeToken` function still exists but is deprecated.
 
  - STRUCTURE CHANGES
    * The `bind` methods and their `with` associates are now extension functions and need to be imported.
