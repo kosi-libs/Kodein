@@ -5,11 +5,16 @@ apply plugin: 'org.jetbrains.dokka'
 
 sourceSets {
     main.kotlin.srcDirs += project(':kodein-core').projectDir.toString() + "/src/shared/kotlin"
+    main.kotlin.srcDirs += project(':kodein-erased').projectDir.toString() + "/src/main/kotlin"
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
 
+}
+
+compileKotlin2Js {
+    kotlinOptions.moduleKind = "umd"
 }
 
 task javadocJar(type: Jar) {
