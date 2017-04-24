@@ -4,8 +4,9 @@ apply plugin: 'signing'
 apply plugin: 'org.jetbrains.dokka'
 
 sourceSets {
-    main.kotlin.srcDirs += project(':kodein-core').projectDir.toString() + "/src/shared/kotlin"
-    main.kotlin.srcDirs += project(':kodein-erased').projectDir.toString() + "/src/main/kotlin"
+    main.kotlin.srcDirs += "src/main/kotlin"
+    main.kotlin.srcDirs += "$rootDir/shared/core/kotlin"
+    main.kotlin.srcDirs += "$rootDir/shared/erased/kotlin"
 }
 
 dependencies {
