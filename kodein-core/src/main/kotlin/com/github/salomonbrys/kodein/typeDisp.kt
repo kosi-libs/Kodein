@@ -79,7 +79,7 @@ private object FullTypeStringer : TypeStringer() {
         cls.isArray -> "Array<" + dispString(cls.componentType) + ">"
         cls.enclosingClass != null -> dispString(cls.enclosingClass) + "." + cls.simpleName
         else -> cls.primitiveName?.let { "kotlin.$it" }
-                ?: cls.`package`.name + "." + SimpleTypeStringer.dispName(cls)
+                ?: (cls.`package`?.name?.let { "$it." } ?: "") + SimpleTypeStringer.dispName(cls)
     }
 }
 

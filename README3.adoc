@@ -5,7 +5,7 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toclevels: 4
 :revdate: 2017-04-18
 
-:version: 3.4.0
+:version: 3.4.1
 :branch: master
 
 image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]

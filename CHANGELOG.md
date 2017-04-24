@@ -1,4 +1,9 @@
 
+### 3.4.1 (24-04-2017)
+
+ - BUG FIXES
+   * Crash in `fullDescription` when displaying the name of a package-less class.
+
 ### 3.4.0 (18-04-2017)
 
  - FEATURES
