@@ -646,7 +646,32 @@ class KodeinTests : TestCase() {
         assertTrue("bind<String>(\"auto-scoped\") with autoScopedSingleton(KodeinTests.test15Scope) { String }" in lines)
     }
 
-    @Test fun test15_1_RegisteredBindings() {
+    @Test fun test15_1_BindingsFullDescription() {
+
+        val kodein = Kodein {
+            bind<IPerson>() with provider { Person() }
+            bind<IPerson>("thread-singleton") with refSingleton(threadLocal) { Person("ts") }
+            bind<IPerson>("singleton") with singleton { Person("s") }
+            bind<IPerson>("factory") with factory { name: String -> Person(name) }
+            bind<IPerson>("instance") with instance(Person("i"))
+            bind<String>("scoped") with scopedSingleton(test15Scope) { "" }
+            bind<String>("auto-scoped") with autoScopedSingleton(test15Scope) { "" }
+            constant("answer") with 42
+        }
+
+        val lines = kodein.container.bindings.fullDescription.lineSequence().map(String::trim).toList()
+        assertEquals(8, lines.size)
+        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>() with provider { com.github.salomonbrys.kodein.test.Person }" in lines)
+        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"thread-singleton\") with refSingleton(threadLocal) { com.github.salomonbrys.kodein.test.Person }" in lines)
+        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"singleton\") with singleton { com.github.salomonbrys.kodein.test.Person }" in lines)
+        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"factory\") with factory { java.lang.String -> com.github.salomonbrys.kodein.test.Person }" in lines)
+        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"instance\") with instance ( com.github.salomonbrys.kodein.test.Person )" in lines)
+        assertTrue("bind<kotlin.Int>(\"answer\") with instance ( kotlin.Int )" in lines)
+        assertTrue("bind<java.lang.String>(\"scoped\") with scopedSingleton(com.github.salomonbrys.kodein.test.KodeinTests.test15Scope) { kotlin.Unit -> java.lang.String }" in lines)
+        assertTrue("bind<java.lang.String>(\"auto-scoped\") with autoScopedSingleton(KodeinTests.test15Scope) { java.lang.String }" in lines)
+    }
+
+    @Test fun test15_2_RegisteredBindings() {
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
             bind<IPerson>("thread-singleton") with refSingleton(threadLocal) { Person("ts") }
