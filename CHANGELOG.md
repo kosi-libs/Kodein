@@ -1,4 +1,35 @@
 
+#### 4.0.0 (???)
+
+ - FEATURES
+   * Kotlin 1.1.2.
+
+#### 4.0.0-beta2 (24-04-2017)
+
+ - FEATURES
+   * Kotlin 1.1.0.
+   * Javascript modules (`kodein-js` & `kodein-js-conf`).
+     Uses the erased methods as JS does not support generic type reflection.
+   * The Kodein binding DSL is now protected with `@DslMarker` to prevent weird things from happenning.
+   * New binding factory: `sequence` which uses coroutines to bind a sequence.
+   
+- BREAKING CHANGES
+   * Removed all `erased*` and `generic*` methods.
+     Each core method now takes type parameters that are obtained with either `generic()` or `erased()`.
+   * Functions and classes that were part of the internal system, but declared public (because inline function references) are now truly internal.
+   * Removed all deprecated API: new major version means clean slate.
+
+- STRUCTURE CHANGES
+   * Every type is now represented with a `TypeToken<T>` instead of a `Type`.
+
+- BUG FIX
+  * issue #61: FullTypeStringer failed on a type with no package.
+
+### 3.4.1 (24-04-2017)
+
+- BUG FIX
+  * issue #61: FullTypeStringer failed on a type with no package.
+
 ### 3.4.0 (18-04-2017)
 
  - FEATURES
@@ -45,7 +76,7 @@ No changes from `3.2.0-beta3`
 ### 3.2.0-beta2 (28-10-2016)
 
  - FEATURES
-   * Every function that do generic type reflexivity is renamed `generic*` and has an `erased*` counterpart.
+   * Every function that do generic type reflection is renamed `generic*` and has an `erased*` counterpart.
    * All functions are now inside the `kodein-core` module. The `kodein` module defines extension functions that alias
      to the  "generic*" functions by default.
    * The `kodein-erased` module is the same as the `kodein` module, but with functions that alias to the `erased*`
