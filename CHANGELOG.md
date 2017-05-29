@@ -3,6 +3,9 @@
 
  - FEATURES
    * Kotlin 1.1.2.
+   
+ - BUG FIX
+   * Kodein JS now intercept type reflection failure (which happens when reflecting on primitive types).
 
 #### 4.0.0-beta2 (24-04-2017)
 

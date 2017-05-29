@@ -27,7 +27,14 @@ class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
 }
 
 @Suppress("UNCHECKED_CAST", "UNCHECKED_CAST_TO_NATIVE_INTERFACE")
-inline fun <reified T> erased(): TypeToken<T> = JSTypeToken((T::class as KClass<*>).js as JsClass<*>)
+inline fun <reified T> erased(): TypeToken<T> {
+    try {
+        return JSTypeToken((T::class as KClass<*>).js as JsClass<*>)
+    }
+    catch (ex: Throwable) {
+        throw IllegalArgumentException("Could not get KClass. Note that Kotlin does NOT support reflection over primitives.")
+    }
+}
 
 fun <T: Any> TT(cls: JsClass<T>): TypeToken<T> = JSTypeToken(cls)
 

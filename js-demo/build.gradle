@@ -23,5 +23,5 @@ build.doLast {
 compileKotlin2Js {
     kotlinOptions.outputFile = "${projectDir}/web/out/demo.js"
     kotlinOptions.sourceMap = true
-    kotlinOptions.moduleKind = "amd"
+    kotlinOptions.moduleKind = "umd"
 }

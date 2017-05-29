@@ -2,10 +2,9 @@ package kodein.demo.coffee
 
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.erased.bind
-import com.github.salomonbrys.kodein.erased.instance
 import com.github.salomonbrys.kodein.erased.singleton
 
-class ElectricHeater() : Heater {
+class ElectricHeater : Heater {
     private var heating: Boolean = false
 
     init {

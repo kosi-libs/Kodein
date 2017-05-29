@@ -5,12 +5,12 @@ interface Ration {
     fun name(): String
 }
 
-class Coffee() : Ration {
+class Coffee : Ration {
     init { console.log("<Creating CoffeeRation>") }
     override fun name(): String = "coffee"
 }
 
-class Tea() : Ration {
+class Tea : Ration {
     init { console.log("<Creating TeaRation>") }
     override fun name(): String = "tea"
 }

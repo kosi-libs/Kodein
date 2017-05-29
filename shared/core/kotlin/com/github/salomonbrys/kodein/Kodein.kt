@@ -181,7 +181,7 @@ interface Kodein : KodeinAwareBase {
          * @param T The type to bind.
          * @property _binder The container binder to use to complete the binding.
          */
-        inner class TypeBinder<T : Any> internal constructor(private val _binder: KodeinContainer.Builder.BindBinder<T>) {
+        class TypeBinder<T : Any> internal constructor(private val _binder: KodeinContainer.Builder.BindBinder<T>) {
             /**
              * Binds the previously given type and tag to the given binding.
              *
@@ -323,7 +323,7 @@ interface Kodein : KodeinAwareBase {
     /**
      * A module is constructed the same way as in [Kodein] is:
      *
-     * ```kotlin
+     * ```kotlinprivate
      * val module = Kodein.Module {
      *     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
      * }

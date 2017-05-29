@@ -324,4 +324,7 @@ fun TT(type: Type): TypeToken<*> =
     else
         TypeTypeToken<Any>(type)
 
+@Suppress("UNCHECKED_CAST")
+fun <T> TT(type: TypeReference<T>): TypeToken<T> = TT(type.type) as TypeToken<T>
+
 fun <T: Any> TTOf(obj: T): TypeToken<out T> = ClassTypeToken(obj.javaClass)
