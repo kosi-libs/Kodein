@@ -996,24 +996,4 @@ class KodeinTests : TestCase() {
         assertEquals("Laila", wedding.her.name)
     }
 
-    @Suppress("EXPERIMENTAL_FEATURE_WARNING")
-    @Test fun test26_0_coroutine() {
-        val kodein = Kodein {
-            constant("lastName") with "BRYS"
-
-            bind("names") from sequence {
-                yieldAll(buildSequence {
-                    yield("Benjamin " + instance<String>("lastName"))
-                    yield("Maroussia " + instance<String>("lastName"))
-                })
-                yield("Salomon " + instance<String>("lastName"))
-            }
-        }
-
-        assertEquals("Benjamin BRYS", kodein.instance<String>("names"))
-        assertEquals("Maroussia BRYS", kodein.instance<String>("names"))
-        assertEquals("Salomon BRYS", kodein.instance<String>("names"))
-        assertEquals("Salomon BRYS", kodein.instance<String>("names"))
-    }
-
 }

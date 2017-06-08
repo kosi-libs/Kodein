@@ -232,31 +232,4 @@ class KodeinGlobalTests : TestCase() {
         assertTrue(ready)
     }
 
-    @Suppress("EXPERIMENTAL_FEATURE_WARNING")
-    @Test fun test07_0_coroutine() {
-        val kodein = ConfigurableKodein(mutable = true)
-        kodein.addConfig {
-            constant("lastName").With(erased(), "BRYS_2")
-
-            bind("names") from SequenceBinding<String>(erased()) {
-                yieldAll(buildSequence {
-                    yield("Benjamin " + Instance<String>(erased(), "lastName"))
-                    yield("Maroussia " + Instance<String>(erased(), "lastName"))
-                })
-                yield("Salomon " + Instance<String>(erased(), "lastName"))
-            }
-        }
-
-        assertEquals("Benjamin BRYS_2", kodein.Instance<String>(erased(), tag = "names"))
-
-        kodein.addConfig { constant("lastName", overrides = true).With(erased(), "BRYS_1") }
-
-        assertEquals("Maroussia BRYS_1", kodein.Instance<String>(erased(), tag = "names"))
-
-        kodein.addConfig { constant("lastName", overrides = true).With(erased(), "BRYS_0") }
-
-        assertEquals("Salomon BRYS_0", kodein.Instance<String>(erased(), tag = "names"))
-        assertEquals("Salomon BRYS_0", kodein.Instance<String>(erased(), tag = "names"))
-    }
-
 }

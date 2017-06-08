@@ -123,17 +123,3 @@ inline fun <reified T: Any> Kodein.Builder.refSingleton(refMaker: RefMaker, noin
  */
 inline fun <reified A, reified T: Any> Kodein.Builder.refMultiton(refMaker: RefMaker, noinline creator: BindingKodein.(A) -> T)
     = RefMultitonBinding(generic(), generic(), refMaker, creator)
-
-/**
- * Creates a sequence provider: each time an instance is needed, the coroutine function [creator] will be resumed.
- *
- * The coroutine function can yeild values with [SequenceBindingKodein.yield].
- *
- * T generics will be kept.
- *
- * @param T The created type.
- * @param creator The coroutine function that will be resumed each time an instance is requested.
- * @return A provider ready to be bound.
- */
-@Suppress("EXPERIMENTAL_FEATURE_WARNING")
-inline fun <reified T: Any> Kodein.Builder.sequence(noinline creator: suspend SequenceBindingKodein<T>.() -> Unit) = SequenceBinding(generic(), creator)

@@ -1,5 +1,7 @@
 include(
         ':kodein-core', ':kodein', ':kodein-erased', ':kodein-conf', ':kodein-jxinject'
-        , ':kodein-android', ':android-demo'
-        , ':kodein-js', ':kodein-js-conf', ':js-demo'
+        ,
+        ':kodein-android', ':android-demo'
+        ,
+        ':kodein-js', ':kodein-js-conf', ':js-demo'
 )

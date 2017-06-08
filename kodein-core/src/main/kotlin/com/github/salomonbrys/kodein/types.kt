@@ -60,39 +60,41 @@ private fun _checkIsReified(disp: Any, type: Type) {
 
 internal abstract class JVMTypeToken<T> : TypeToken<T> {
 
-    abstract val type: Type
+    abstract fun type(): Type
 
-    override fun simpleDispString() = type.simpleDispString()
-    override fun fullDispString() = type.fullDispString()
+    override fun simpleDispString() = type().simpleDispString()
+    override fun fullDispString() = type().fullDispString()
 
-    override fun checkIsReified(disp: Any) = _checkIsReified(disp, type)
+    override fun checkIsReified(disp: Any) = _checkIsReified(disp, type())
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is JVMTypeToken<*>) return false
 
-        if (type != other.type) return false
+        if (type() != other.type()) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return type.hashCode()
+        return type().hashCode()
     }
 }
 
 internal abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
     abstract val trueType: Type
 
-    override val type: Type = run {
-        //  TypeReference cannot create WildcardTypes nor TypeVariables
+    private var _type: Type? = null
+
+    override fun type(): Type = _type ?: run {
+        // TypeReference cannot create WildcardTypes nor TypeVariables
         when {
             !_needPTWrapper && !_needGATWrapper -> trueType
             trueType is Class<*> -> trueType
             _needPTWrapper && trueType is ParameterizedType -> KodeinWrappedType(trueType)
             _needGATWrapper && trueType is GenericArrayType -> KodeinWrappedType(trueType)
             else -> trueType
-        }
+        }.also { _type = it }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -299,14 +301,16 @@ private fun <T> Type._getTypeSuperTT(): TypeToken<in T>? =
     }
 
 @PublishedApi
-internal class ClassTypeToken<T>(override val type: Class<T>) : JVMTypeToken<T>() {
+internal class ClassTypeToken<T>(private val _type: Class<T>) : JVMTypeToken<T>() {
+
+    override fun type() = _type
 
     override fun getRawIfGeneric() = null
     override fun getRawIfWildcard() = null
 
     override fun checkIsReified(disp: Any) {}
 
-    override fun getSuper() = type._getClassSuperTT()
+    override fun getSuper() = _type._getClassSuperTT()
 }
 
 /**
