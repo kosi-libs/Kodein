@@ -1,11 +1,15 @@
 
-#### 4.0.0 (???)
+#### 4.0.0 (08-06-2017)
 
  - FEATURES
-   * Kotlin 1.1.2.
+   * Kotlin 1.1.2-4.
+   * The `generic` function is now 40% faster.
    
  - BUG FIX
-   * Kodein JS now intercept type reflection failure (which happens when reflecting on primitive types).
+   * Kodein JS now intercept type reflection failure (which happens when reflecting on primitive types on older versions of Kotlin).
+ 
+ - REMOVAL
+   * Removed the `sequence` coroutine binder (too experimental).
 
 #### 4.0.0-beta2 (24-04-2017)
 

@@ -2,7 +2,8 @@ package com.github.salomonbrys.kodein
 
 import kotlin.reflect.KClass
 
-class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
+@PublishedApi
+internal class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
 
     override fun simpleDispString() = type.name
     override fun fullDispString() = type.name
@@ -26,6 +27,12 @@ class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
     }
 }
 
+/**
+ * Function used to get a TypeToken representing the provided type **being erased**.
+ *
+ * @param T The type to get.
+ * @return The type object representing `T`.
+ */
 @Suppress("UNCHECKED_CAST", "UNCHECKED_CAST_TO_NATIVE_INTERFACE")
 inline fun <reified T> erased(): TypeToken<T> {
     try {
@@ -36,6 +43,12 @@ inline fun <reified T> erased(): TypeToken<T> {
     }
 }
 
+/**
+ * Gives a [TypeToken] representing the given class.
+ */
 fun <T: Any> TT(cls: JsClass<T>): TypeToken<T> = JSTypeToken(cls)
 
+/**
+ * Gives a [TypeToken] representing the *erased* type of the given object.
+ */
 fun <T: Any> TTOf(obj: T): TypeToken<out T> = JSTypeToken(obj::class.js)

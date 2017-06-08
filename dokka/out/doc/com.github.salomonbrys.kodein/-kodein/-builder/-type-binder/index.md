@@ -1,0 +1,17 @@
+[com.github.salomonbrys.kodein](../../../index.md) / [Kodein](../../index.md) / [Builder](../index.md) / [TypeBinder](.)
+
+# TypeBinder
+
+`class TypeBinder<T : Any>`
+
+Left part of the type-binding syntax (`bind(type, tag)`).
+
+### Parameters
+
+`T` - The type to bind.
+
+### Functions
+
+| Name | Summary |
+|---|---|
+| [with](with.md) | `infix fun <R : T> with(binding: `[`Binding`](../../../../com.github.salomonbrys.kodein.bindings/-binding/index.md)`<*, R>): Unit`<br>Binds the previously given type and tag to the given binding. |

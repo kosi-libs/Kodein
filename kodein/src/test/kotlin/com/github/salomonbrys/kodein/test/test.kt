@@ -672,6 +672,8 @@ class KodeinTests : TestCase() {
             constant("answer") with 42
         }
 
+        val UnitToken = erased<Unit>()
+
         assertEquals(6, kodein.container.bindings.size)
         assertEquals("provider", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), null), UnitToken)]?.factoryName())
         assertEquals("refSingleton(threadLocal)", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "thread-singleton"), UnitToken)]?.factoryName())

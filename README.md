@@ -1,6 +1,6 @@
 <img alt="KODEIN" src="https://raw.githubusercontent.com/SalomonBrys/Kodein/master/Kodein-logo.png" width="700">
 
-[![Kotlin 1.0.7](https://img.shields.io/badge/Kotlin-1.0.7-blue.svg)](http://kotlinlang.org)
+[![Kotlin 1.1.2-4](https://img.shields.io/badge/Kotlin-1.1-blue.svg)](http://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22)
 [![Travis](https://img.shields.io/travis/SalomonBrys/Kodein.svg)](https://travis-ci.org/SalomonBrys/Kodein/builds)
 [![MIT License](https://img.shields.io/github/license/salomonbrys/kodein.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
@@ -56,9 +56,11 @@ class Controller(private kodein: Kodein) {
 Read more
 ---------
 
-Kodein version 3 is the current major version available:
+Kodein version 4 is the current major version available:
 
-- **[Kodein 3 full documentation](https://salomonbrys.github.io/Kodein/)**
-- [Kodein 3 API reference](https://github.com/SalomonBrys/Kodein/blob/master/dokka/out/doc/index.md)
+- **[Kodein 4 full documentation](https://salomonbrys.github.io/Kodein/)**
+- [Kodein 4 API reference](https://github.com/SalomonBrys/Kodein/blob/master/dokka/out/doc/index.md)
 
 If you are currently using a `javax.inject` compatible dependency injection library and whish to migrate to Kodein, [there is a guide for that](https://github.com/SalomonBrys/Kodein/blob/master/MIGRATION-JtoK.md).
+
+If you are still using version 3, you can access [version 3 documentation](https://github.com/SalomonBrys/Kodein/blob/master/DOCUMENTATION_V3.pdf).

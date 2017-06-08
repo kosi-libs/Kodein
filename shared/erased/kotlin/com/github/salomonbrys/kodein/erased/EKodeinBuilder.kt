@@ -11,7 +11,7 @@ import com.github.salomonbrys.kodein.erased
  * @param T The type to bind.
  * @param tag The tag to bind.
  * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
- * @return The binder: call [Kodein.Builder.TBuilder.TypeBinder.with]) on it to finish the binding syntax and register the binding.
+ * @return The binder: call [Kodein.Builder.TypeBinder.with]) on it to finish the binding syntax and register the binding.
  */
 inline fun <reified T : Any> Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null) = Bind<T>(erased(), tag, overrides)
 

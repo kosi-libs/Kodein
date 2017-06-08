@@ -314,7 +314,7 @@ internal class ClassTypeToken<T>(private val _type: Class<T>) : JVMTypeToken<T>(
 }
 
 /**
- * Function used to get a Class object. Same as T::class but with T being possibly nullable.
+ * Function used to get a TypeToken representing the provided type **being erased**.
  *
  * @param T The type to get.
  * @return The type object representing `T`.
@@ -322,12 +322,21 @@ internal class ClassTypeToken<T>(private val _type: Class<T>) : JVMTypeToken<T>(
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T> erased(): TypeToken<T> = ClassTypeToken((T::class as KClass<*>).java as Class<T>)
 
+/**
+ * Gives a [TypeToken] representing the given class.
+ */
 fun <T> TT(cls: Class<T>): TypeToken<T> = ClassTypeToken(cls)
 
+/**
+ * Gives a [TypeToken] representing the given type.
+ */
 fun TT(type: Type): TypeToken<*> =
     if (type is Class<*>)
         ClassTypeToken(type)
     else
         TypeTypeToken<Any>(type)
 
+/**
+ * Gives a [TypeToken] representing the *erased* type of the given object.
+ */
 fun <T: Any> TTOf(obj: T): TypeToken<out T> = ClassTypeToken(obj.javaClass)

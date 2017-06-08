@@ -1,5 +1,6 @@
 package com.github.salomonbrys.kodein.internal
 
+/** @suppress */
 inline fun <T> synchronizedIfNull(lock: Any, crossinline predicate: () -> T?, ifNotNull: (T) -> Unit, crossinline ifNull: () -> Unit) {
     predicate()?.let {
         ifNotNull(it)
@@ -17,6 +18,7 @@ inline fun <T> synchronizedIfNull(lock: Any, crossinline predicate: () -> T?, if
         ifNotNull(value)
 }
 
+/** @suppress */
 inline fun <T> synchronizedIfNotNull(lock: Any, crossinline predicate: () -> T?, ifNull: () -> Unit, crossinline ifNotNull: (T) -> Unit) {
     if (predicate() == null) {
         ifNull()
