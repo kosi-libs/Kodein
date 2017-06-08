@@ -1578,21 +1578,8 @@ Kotlin does not provide, at this moment, a way to circumvent type erasure on JS.
 This means that you cannot bind `List<String>` and `List<User>` as both will effectively be bound as `List`.
 (At least one of them needs to be bound with a tag).
 
-Note that because of the package difference, shared JVM / JS code need to either use `kodein-erased` or the uppercase functions.
+NOTE: Because of the package difference, shared JVM / JS code need to either use `kodein-erased` or the uppercase functions.
 Read <<jvm-performance>> to learn more.
-
-==== Primitives
-
-Currently, Kotlin JS does not support reflection over primitives. +
-This means that you cannot bind `String` or `Int` instances.
-
-The use of the `constant(tag) with value` syntax is therefore discouraged since this syntax is mainly used with primitives.
-
-To circumvent this, you need to encapsulate any primitive you need to bind into a data class.
-
-The issue has been https://youtrack.jetbrains.com/issue/KT-18172[reported].
-
-Note that this means that you cannot use primitives in factories parameter either :(
 
 ==== Factory parameter super type inference
 
@@ -1609,9 +1596,9 @@ val kodein = Kodein {
 val sqlDS: SQLiteDataSource = getSQLiteDS()
 val con: Connection = kodein.with(sqlDS).instance() <1>
 ----
-<1> Because `sqlDS` is of type `SQLiteDataSource` and not `DataSource`, this will fail in JS
+<1> Because `sqlDS` is of type `SQLiteDataSource` and not `DataSource`, this will succeed in the JVM but fail in JS.
 
-To have the retrieval working in JS, you need to pass an argument of the exact type, which you can have by casting:
+To have the retrieval working in JS, you need to pass an argument of the exact type, which you can have by _casting_:
 
 [source, kotlin]
 .Example: retrieving a factory with the exact argument type.
@@ -1625,7 +1612,7 @@ This limitation of Kotlin JS is https://kotlinlang.org/docs/reference/js-reflect
 
 === JS Configurable Kodein
 
-The Configurable Kodein extension is available for JS, without any difference from the JVM version.
+The `ConfigurableKodein` extension is available for JS, without any difference from the JVM version.
 
 ==== With Maven
 

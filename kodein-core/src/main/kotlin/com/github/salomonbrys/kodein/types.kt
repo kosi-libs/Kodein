@@ -5,13 +5,20 @@ import kotlin.reflect.KClass
 
 
 /**
+ * Internal class used ONLY to test if wrapping is needed
+ */
+private abstract class _Test<T> {
+    val type: Type get() = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0]
+}
+
+/**
  * Whether or not the running JVM needs [ParameterizedType] to be wrapped.
  *
  * @see KodeinWrappedType
  */
 private val _needPTWrapper: Boolean by lazy {
-    val t1 = (object : TypeReference<List<String>>() {}).trueType as ParameterizedType
-    val t2 = (object : TypeReference<List<String>>() {}).trueType as ParameterizedType
+    val t1 = (object : _Test<List<String>>() {}).type as ParameterizedType
+    val t2 = (object : _Test<List<String>>() {}).type as ParameterizedType
     t1 != t2
 }
 
@@ -22,8 +29,8 @@ private val _needPTWrapper: Boolean by lazy {
  * @see KodeinWrappedType
  */
 private val _needGATWrapper: Boolean by lazy {
-    val t1 = (object : TypeReference<Array<List<String>>>() {}).trueType as GenericArrayType
-    val t2 = (object : TypeReference<Array<List<String>>>() {}).trueType as GenericArrayType
+    val t1 = (object : _Test<Array<List<String>>>() {}).type as GenericArrayType
+    val t2 = (object : _Test<Array<List<String>>>() {}).type as GenericArrayType
     t1 != t2
 }
 
@@ -51,7 +58,7 @@ private fun _checkIsReified(disp: Any, type: Type) {
     }
 }
 
-abstract class JVMTypeToken<T> : TypeToken<T> {
+internal abstract class JVMTypeToken<T> : TypeToken<T> {
 
     abstract val type: Type
 
@@ -74,10 +81,10 @@ abstract class JVMTypeToken<T> : TypeToken<T> {
     }
 }
 
-abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
+internal abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
     abstract val trueType: Type
 
-    override val type: Type by lazy {
+    override val type: Type = run {
         //  TypeReference cannot create WildcardTypes nor TypeVariables
         when {
             !_needPTWrapper && !_needGATWrapper -> trueType
@@ -129,19 +136,13 @@ abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
  * @param T The type to extract.
  * @see generic
  */
-abstract class TypeReference<T> : ATypeTypeToken<T>() {
+@PublishedApi
+internal abstract class TypeReference<T> : ATypeTypeToken<T>() {
 
     /**
      * Generic type, unwrapped.
      */
-    override val trueType: Type = run {
-        val t = javaClass.genericSuperclass as? ParameterizedType ?: throw RuntimeException("Invalid TypeToken; must specify type parameters")
-
-        if (t.rawType != TypeReference::class.java)
-            throw RuntimeException("Invalid TypeToken; must directly extend TypeReference")
-
-        t.actualTypeArguments[0]
-    }
+    override val trueType: Type = (javaClass.genericSuperclass as? ParameterizedType ?: throw RuntimeException("Invalid TypeToken; must specify type parameters")).actualTypeArguments[0]
 }
 
 /**
@@ -276,7 +277,7 @@ class KodeinWrappedType(val type: Type) : Type {
  */
 inline fun <reified T> generic(): TypeToken<T> = (object : TypeReference<T>() {})
 
-class TypeTypeToken<T>(override val trueType: Type) : ATypeTypeToken<T>()
+internal class TypeTypeToken<T>(override val trueType: Type) : ATypeTypeToken<T>()
 
 private fun <T> Class<T>._getClassSuperTT(): TypeToken<in T>? {
     if (this == Unit::class.java)
@@ -297,7 +298,8 @@ private fun <T> Type._getTypeSuperTT(): TypeToken<in T>? =
         else -> null
     }
 
-class ClassTypeToken<T>(override val type: Class<T>) : JVMTypeToken<T>() {
+@PublishedApi
+internal class ClassTypeToken<T>(override val type: Class<T>) : JVMTypeToken<T>() {
 
     override fun getRawIfGeneric() = null
     override fun getRawIfWildcard() = null
@@ -323,8 +325,5 @@ fun TT(type: Type): TypeToken<*> =
         ClassTypeToken(type)
     else
         TypeTypeToken<Any>(type)
-
-@Suppress("UNCHECKED_CAST")
-fun <T> TT(type: TypeReference<T>): TypeToken<T> = TT(type.type) as TypeToken<T>
 
 fun <T: Any> TTOf(obj: T): TypeToken<out T> = ClassTypeToken(obj.javaClass)

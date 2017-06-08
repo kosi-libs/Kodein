@@ -480,15 +480,6 @@ class KodeinTests : TestCase() {
         assertSame(kodein.instance<List<B>>(), lb)
     }
 
-    @Test fun test10_1_ParameterizedTypeWrap() {
-        val typeLS1 = KodeinWrappedType((object : TypeReference<List<String>>() {}).trueType as ParameterizedType)
-        val typeLS2 = KodeinWrappedType((object : TypeReference<List<String>>() {}).trueType as ParameterizedType)
-        val typeLI = KodeinWrappedType((object : TypeReference<List<Int>>() {}).trueType as ParameterizedType)
-
-        assertEquals(typeLS1, typeLS2)
-        assertNotEquals(typeLS1, typeLI)
-    }
-
     class PersonLazy(kodein: LazyKodein) {
         val newPerson: () -> Person by kodein.provider()
         val salomon: Person by kodein.instance("named")
