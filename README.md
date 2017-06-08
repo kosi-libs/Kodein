@@ -21,24 +21,6 @@ Kodein allows you to:
 - Easily bind classes or interfaces to their instance or provider
 - Easily debug your dependency bindings and recursions
 
-Kodein does *not* allow you to:
-
-- Automatically instantiate your dependencies via injected constructor and reflexivity. For that, you need Guice.
-- Have dependency injection validated at compile time. For that, you need Dagger.
-
-Kodein is a good choice because:
-
-- It is small, fast and optimized (makes extensive use of `inline`)
-- It proposes a very simple and readable declarative DSL
-- It is not subject to type erasure (like Java)
-- It integrates nicely with Android
-- It proposes a very kotlin-esque idiomatic API
-- It can be used in plain Java
-
-
-Example
--------
-
 An example is always better than a thousand words:
 
 ```kotlin
@@ -52,6 +34,15 @@ class Controller(private kodein: Kodein) {
 }
 ```
 
+Kodein is a good choice because:
+
+- It is small, fast and optimized (makes extensive use of `inline`)
+- It proposes a very simple and readable declarative DSL
+- It is not subject to type erasure (as Java is)
+- It integrates nicely with Android
+- It proposes a very kotlin-esque idiomatic API
+- It can be used in plain Java
+
 
 Read more
 ---------
@@ -64,3 +55,39 @@ Kodein version 4 is the current major version available:
 If you are currently using a `javax.inject` compatible dependency injection library and whish to migrate to Kodein, [there is a guide for that](https://github.com/SalomonBrys/Kodein/blob/master/MIGRATION-JtoK.md).
 
 If you are still using version 3, you can access [version 3 documentation](https://github.com/SalomonBrys/Kodein/blob/master/DOCUMENTATION_V3.pdf).
+
+
+Testimonies
+-----------
+
+<img src="https://www.collokia.com/images/collokia-logo.png" height="30" />
+&nbsp;
+
+> At [Collokia](https://www.collokia.com/) we use Kodein in all of our backend service infrastructure and all modules in those services are loosely coupled through injection with Kodein.
+> It allows us to have nice module independence, and to opt-out of injection during testing or build separate modules in support of testing.  
+> It is a key component and building block in our architecture.  
+> -- [Jason Minard](https://github.com/apatrida)
+
+<img src="http://imgur.com/Ymo1qoh.jpg" height="60" />
+&nbsp;
+
+> Kodein is used in [the android app of the OhelShem school](https://github.com/OhelShem/android).  
+> -- [Yoav Sternberg](https://github.com/yoavst)
+
+<img src="https://moovel-group.com/assets/images/sign.png" height="40" />
+&nbsp;
+
+> At [Moovel Group GmbH](https://www.moovel.com/de/en), we have successfully used the wonderful Kodein library into in [this Android app](https://play.google.com/store/apps/details?id=com.daimler.moovel.android).
+> As we improved it, we found Kodein to be much more useful than Dagger2 as it simplified our code throughout.  
+> Kodein is in my view, much easier to understand, doesn't have that nasty ceremony, and has really nice debug messages.  
+> We are also working now on other projects where we are using Kodein as well.  
+> -- [Sorin Albu-Irimies](https://github.com/sorinirimies)
+
+<img src="https://dental-monitoring.com/wp-content/uploads/2015/02/logo.png" height="60" />
+
+> Kodein was created at [Dental Monitoring](https://dental-monitoring.com/) with the opinion that Dagger2 is way too verbose and complex.
+> It is now used in almost all our projects: the server, the internal production software & the Android application.  
+> Kodein is very easy to use and set up: it allows our team to easily share code and patterns, as well as quickly bootstrapping new ideas.  
+> -- [Salomon Brys](https://github.com/SalomonBrys)
+
+If you are using Kodein, please [let me know](mailto:salomon.brys@gmail.com)!
