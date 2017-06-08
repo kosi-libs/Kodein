@@ -57,25 +57,34 @@ If you are currently using a `javax.inject` compatible dependency injection libr
 If you are still using version 3, you can access [version 3 documentation](https://github.com/SalomonBrys/Kodein/blob/master/DOCUMENTATION_V3.pdf).
 
 
+&nbsp;
+
 Testimonies
 -----------
 
-<img src="https://www.collokia.com/images/collokia-logo.png" height="30" />
 &nbsp;
+
+<img src="https://www.collokia.com/images/collokia-logo.png" height="30" />
 
 > At [Collokia](https://www.collokia.com/) we use Kodein in all of our backend service infrastructure and all modules in those services are loosely coupled through injection with Kodein.
 > It allows us to have nice module independence, and to opt-out of injection during testing or build separate modules in support of testing.  
 > It is a key component and building block in our architecture.  
 > -- [Jason Minard](https://github.com/apatrida)
 
-<img src="http://imgur.com/Ymo1qoh.jpg" height="60" />
 &nbsp;
+
+&nbsp;
+
+<img src="http://imgur.com/Ymo1qoh.jpg" height="60" />
 
 > Kodein is used in [the android app of the OhelShem school](https://github.com/OhelShem/android).  
 > -- [Yoav Sternberg](https://github.com/yoavst)
 
-<img src="https://moovel-group.com/assets/images/sign.png" height="40" />
 &nbsp;
+
+&nbsp;
+
+<img src="https://moovel-group.com/assets/images/sign.png" height="40" />
 
 > At [Moovel Group GmbH](https://www.moovel.com/de/en), we have successfully used the wonderful Kodein library into in [this Android app](https://play.google.com/store/apps/details?id=com.daimler.moovel.android).
 > As we improved it, we found Kodein to be much more useful than Dagger2 as it simplified our code throughout.  
@@ -83,11 +92,19 @@ Testimonies
 > We are also working now on other projects where we are using Kodein as well.  
 > -- [Sorin Albu-Irimies](https://github.com/sorinirimies)
 
+&nbsp;
+
+&nbsp;
+
 <img src="https://dental-monitoring.com/wp-content/uploads/2015/02/logo.png" height="60" />
 
 > Kodein was created at [Dental Monitoring](https://dental-monitoring.com/) with the opinion that Dagger2 is way too verbose and complex.
 > It is now used in almost all our projects: the server, the internal production software & the Android application.  
 > Kodein is very easy to use and set up: it allows our team to easily share code and patterns, as well as quickly bootstrapping new ideas.  
 > -- [Salomon Brys](https://github.com/SalomonBrys)
+
+&nbsp;
+
+&nbsp;
 
 If you are using Kodein, please [let me know](mailto:salomon.brys@gmail.com)!
