@@ -2,7 +2,7 @@
 
 # nonNullFactory
 
-`open fun nonNullFactory(key: `[`Key`](../-kodein/-key/index.md)`): (Any?) -> Any`
+`open fun <A, T : Any> nonNullFactory(key: `[`Key`](../-kodein/-key/index.md)`<A, T>): (A) -> T`
 
 Retrieve a factory for the given key.
 

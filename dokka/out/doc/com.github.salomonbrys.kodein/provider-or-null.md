@@ -2,47 +2,6 @@
 
 # providerOrNull
 
-`inline fun <reified T : Any> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.providerOrNull(tag: Any? = null): Lazy<() -> T>`
-
-Gets a lazy provider for the given type and tag, or null if none is found.
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of object to retrieve with the provider held by this property.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.DependencyLoopException` - When calling the provider, if the value construction triggered a dependency loop.
-
-**Receiver**
-Either a [LazyKodein](-lazy-kodein/index.md) instance or a [LazyKodeinAware](-lazy-kodein-aware.md) class.
-
-**Return**
-A lazy property that yields a provider of `T`, or null if no provider was found.
-
-`inline fun <reified T : Any> `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<*>.providerOrNull(tag: Any? = null): Lazy<() -> T>`
-
-Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of object to retrieve with the provider held by this property.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.DependencyLoopException` - When calling the provider, if the value construction triggered a dependency loop.
-
-**Return**
-A lazy property that yields a provider of `T`, or null if no factory is found.
-
 `inline fun <reified T : Any> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.providerOrNull(tag: Any? = null): `[`InjectedProperty`](-injected-property/index.md)`<() -> T>`
 
 Gets a lazy provider for the given type and tag, or null if none is found.
@@ -89,6 +48,47 @@ T generics will be kept.
 
 **Return**
 A lazy property that yields a provider of `T` or null if no factory was found.
+
+`inline fun <reified T : Any> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.providerOrNull(tag: Any? = null): Lazy<() -> T>`
+
+Gets a lazy provider for the given type and tag, or null if none is found.
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of object to retrieve with the provider held by this property.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.DependencyLoopException` - When calling the provider, if the value construction triggered a dependency loop.
+
+**Receiver**
+Either a [LazyKodein](-lazy-kodein/index.md) instance or a [LazyKodeinAware](-lazy-kodein-aware.md) class.
+
+**Return**
+A lazy property that yields a provider of `T`, or null if no provider was found.
+
+`inline fun <reified T : Any> `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<*>.providerOrNull(tag: Any? = null): Lazy<() -> T>`
+
+Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of object to retrieve with the provider held by this property.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.DependencyLoopException` - When calling the provider, if the value construction triggered a dependency loop.
+
+**Return**
+A lazy property that yields a provider of `T`, or null if no factory is found.
 
 `inline fun <reified T : Any> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.providerOrNull(tag: Any? = null): () -> T`
 

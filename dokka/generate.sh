@@ -8,5 +8,10 @@ java \
     -jar dokka-fatjar.jar \
     -format gfm \
     -classpath $classpath \
-    -include ../kodein/dokka-module.md:../kodein/dokka-package.md:../kodein-android/dokka-package.md:../kodein-conf/dokka-package.md:../kodein-erased/dokka-package.md:../kodein-jxinject/dokka-package.md \
-    ../kodein-core/src/main/kotlin ../kodein/src/main/kotlin ../kodein-erased/src/main/kotlin ../kodein-android/src/main/java ../kodein-conf/src/main/kotlin ../kodein-jxinject/src/main/kotlin
+    -include ../kodein-core/dokka-module.md:../kodein-core/dokka-package.md:../kodein-android/dokka-package.md:../kodein-conf/dokka-package.md:../kodein-erased/dokka-package.md:../kodein-jxinject/dokka-package.md \
+    ../kodein/src/main/kotlin                                \
+    ../kodein-android/src/main/java                          \
+                                    ../shared/conf/kotlin    \
+    ../kodein-core/src/main/kotlin  ../shared/core/kotlin    \
+                                    ../shared/erased/kotlin  \
+    ../kodein-jxinject/src/main/kotlin

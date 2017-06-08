@@ -2,6 +2,21 @@
 
 # instance
 
+`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.instance(instance: T): `[`InstanceBinding`](../com.github.salomonbrys.kodein.bindings/-instance-binding/index.md)`<T>`
+
+Creates an instance provider: will always return the given instance.
+
+T generics will be erased!
+
+### Parameters
+
+`T` - The type of the instance.
+
+`instance` - The object that will always be returned.
+
+**Return**
+An instance provider ready to be bound.
+
 `inline fun <reified T : Any> `[`KodeinInjectedBase`](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md)`.instance(tag: Any? = null): `[`InjectedProperty`](../com.github.salomonbrys.kodein/-injected-property/index.md)`<T>`
 
 Gets a lazy instance for the given type and tag.
@@ -46,21 +61,6 @@ T generics will be erased!
 
 **Return**
 A lazy property that yields a `T`.
-
-`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.instance(instance: T): `[`Provider`](../com.github.salomonbrys.kodein/-provider/index.md)`<T>`
-
-Creates an instance provider: will always return the given instance.
-
-T generics will be erased!
-
-### Parameters
-
-`T` - The type of the instance.
-
-`instance` - The object that will always be returned.
-
-**Return**
-An instance provider ready to be bound.
 
 `inline fun <reified T : Any> `[`LazyKodeinAwareBase`](../com.github.salomonbrys.kodein/-lazy-kodein-aware-base/index.md)`.instance(tag: Any? = null): Lazy<T>`
 

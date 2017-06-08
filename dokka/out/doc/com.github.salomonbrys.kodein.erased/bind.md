@@ -2,7 +2,7 @@
 
 # bind
 
-`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.bind(tag: Any? = null, overrides: Boolean? = null): `[`TypeBinder`](../com.github.salomonbrys.kodein/-kodein/-builder/-t-builder/-type-binder/index.md)`<T>`
+`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.bind(tag: Any? = null, overrides: Boolean? = null): `[`TypeBinder`](../com.github.salomonbrys.kodein/-kodein/-builder/-type-binder/index.md)`<T>`
 
 Starts the binding of a given type with a given tag.
 
@@ -17,5 +17,5 @@ T generics will be erased!
 `overrides` - Whether this bind **must**, **may** or **must not** override an existing binding.
 
 **Return**
-The binder: call [Kodein.Builder.TBuilder.TypeBinder.with](../com.github.salomonbrys.kodein/-kodein/-builder/-t-builder/-type-binder/with.md)) on it to finish the binding syntax and register the binding.
+The binder: call [Kodein.Builder.TypeBinder.with](../com.github.salomonbrys.kodein/-kodein/-builder/-type-binder/with.md)) on it to finish the binding syntax and register the binding.
 

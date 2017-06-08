@@ -10,5 +10,5 @@ Android's broadcast receiver scope. Allows to register broadcast receiver-specif
 
 | Name | Summary |
 |---|---|
-| [getRegistry](get-registry.md) | `fun getRegistry(context: BroadcastReceiver): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein/-scope-registry/index.md)<br>Get a registry for a given broadcast receiver. Will always return the same registry for the same broadcast receiver. |
-| [removeFromScope](remove-from-scope.md) | `fun removeFromScope(context: BroadcastReceiver): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein/-scope-registry/index.md)`?`<br>Allows for cleaning up after a broadcast receiver has been destroyed |
+| [getRegistry](get-registry.md) | `fun getRegistry(context: BroadcastReceiver): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein.bindings/-scope-registry/index.md)<br>Get a registry for a given broadcast receiver. Will always return the same registry for the same broadcast receiver. |
+| [removeFromScope](remove-from-scope.md) | `fun removeFromScope(context: BroadcastReceiver): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein.bindings/-scope-registry/index.md)`?`<br>Allows for cleaning up after a broadcast receiver has been destroyed |

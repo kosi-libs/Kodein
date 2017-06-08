@@ -2,7 +2,7 @@
 
 # invoke
 
-`fun invoke(): `[`Kodein`](../-kodein/index.md)
+`operator fun invoke(): `[`Kodein`](../-kodein/index.md)
 
 **Return**
 

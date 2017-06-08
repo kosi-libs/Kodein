@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`InjectedNullableFactoryProperty(key: `[`Key`](../-kodein/-key/index.md)`)`
+`InjectedNullableFactoryProperty(key: `[`Key`](../-kodein/-key/index.md)`<A, T>)`
 
 A read-only property delegate that injects a factory, or null if none is found.
 

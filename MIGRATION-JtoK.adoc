@@ -29,7 +29,7 @@ This is for Java only!
 
 === Fields & methods
 
-If you can access a `Kodein` instance, you can inject any class that use the classic `@Inject` annotation.
+If you can access a `Kodein` instance, you can inject any class that uses the classic `@Inject` annotation.
 
 .Example: Java class whose fields can be automatically injected.
 [source, java]
@@ -104,11 +104,11 @@ MyJavaController controller = Jx.of(kodein).newInstance(MyJavaController.class);
 
 == Qualifiers
 
-JavaX injection dependencies libraries use the concept of qualifier annotations while Kodein uses the very similar concept of https://salomonbrys.github.io/Kodein/#_tagged_bindings[tag].
+JavaX dependency injection libraries use the concept of qualifier annotations while Kodein uses the very similar concept of https://salomonbrys.github.io/Kodein/#_tagged_bindings[tag].
 
 NOTE: The `@Named` annotation is supported out of the box and uses the string value of the annotation directly as the tag.
 
-If you are using qualifiers annotations other than `@Named`, you need to register "transform" functions that transforms qualifier annotations into tags.
+If you are using qualifiers annotations other than `@Named`, you need to register "transform" functions that transform qualifier annotations into tags.
 
 .Example: Registering a qualifier annotation
 [source, kotlin]
@@ -125,7 +125,7 @@ val kodein = Kodein {
 
 == Use Kodein's Kotlin API
 
-Don't forget that `kodein-jxinject` should only be used on Java code!
+Don't forget that `kodein-jxinject` should only be used in or on Java code!
 If you are transforming Java code into Kotlin, than take the time to migrate the injection code to Kodein's native api.
 
 Simply: *Replace all `@Inject` annotated fields with their `kodein.instance()` counterparts*.

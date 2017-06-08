@@ -2,7 +2,7 @@
 
 # simpleDispString
 
-`val `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`.simpleDispString: String`
+`fun `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`.simpleDispString(): String`
 
 A string representing this type in a Kotlin-esque fashion using simple type names.
 

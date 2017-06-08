@@ -10,5 +10,5 @@ Android's service scope. Allows to register service-specific singletons.
 
 | Name | Summary |
 |---|---|
-| [getRegistry](get-registry.md) | `fun getRegistry(context: Service): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein/-scope-registry/index.md)<br>Get a registry for a given service. Will always return the same registry for the same service. |
-| [removeFromScope](remove-from-scope.md) | `fun removeFromScope(context: Service): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein/-scope-registry/index.md)`?`<br>Allows for cleaning up after a service has been destroyed |
+| [getRegistry](get-registry.md) | `fun getRegistry(context: Service): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein.bindings/-scope-registry/index.md)<br>Get a registry for a given service. Will always return the same registry for the same service. |
+| [removeFromScope](remove-from-scope.md) | `fun removeFromScope(context: Service): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein.bindings/-scope-registry/index.md)`?`<br>Allows for cleaning up after a service has been destroyed |

@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`InjectedNullableProviderProperty(bind: `[`Bind`](../-kodein/-bind/index.md)`)`
+`InjectedNullableProviderProperty(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>)`
 
 A read-only property delegate that injects a provider, or null if none is found.
 

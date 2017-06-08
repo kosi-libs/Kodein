@@ -2,7 +2,7 @@
 
 # OverridingException
 
-`class OverridingException : `[`RuntimeException`](http://docs.oracle.com/javase/6/docs/api/java/lang/RuntimeException.html)
+`class OverridingException : RuntimeException`
 
 Exception thrown when there is an overriding error.
 

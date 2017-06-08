@@ -58,7 +58,7 @@ val android.support.v4.content.Loader<*>.appKodein: () -> Kodein get() = { (cont
  * @param ctx The context to curry the factory with.
  * @return A curried factory object from which you can retrieve an instance or a provider.
  */
-fun KodeinAware.withContext(ctx: Context): CurriedKodeinFactory<Context> = withErased(ctx)
+fun KodeinAware.withContext(ctx: Context): CurriedKodeinFactory<Context> = With(erased(), ctx)
 
 /**
  * Allows to inject an instance or a provider from a factory which takes a `Context` as argument.
@@ -66,7 +66,7 @@ fun KodeinAware.withContext(ctx: Context): CurriedKodeinFactory<Context> = withE
  * @param ctx The context to curry the factory with.
  * @return A curried factory object from which you can get an injected instance or provider property.
  */
-fun KodeinInjected.withContext(ctx: Context): CurriedInjectorFactory<Context> = withErased(ctx)
+fun KodeinInjected.withContext(ctx: Context): CurriedInjectorFactory<Context> = With(erased(),ctx)
 
 /**
  * Allows to get a lazy instance or provider property from a factory which takes a `Context` as argument.
@@ -74,7 +74,7 @@ fun KodeinInjected.withContext(ctx: Context): CurriedInjectorFactory<Context> = 
  * @param ctx The context to curry the factory with.
  * @return A curried factory object from which you can get a lazy instance or provider.
  */
-fun LazyKodeinAware.withContext(ctx: Context): CurriedLazyKodeinFactory<Context> = withErased(ctx)
+fun LazyKodeinAware.withContext(ctx: Context): CurriedLazyKodeinFactory<Context> = With(erased(),ctx)
 
 
 /**
@@ -83,7 +83,7 @@ fun LazyKodeinAware.withContext(ctx: Context): CurriedLazyKodeinFactory<Context>
  * @param f The fragment whose activity context to curry the factory with.
  * @return A curried factory object from which you can retrieve an instance or a provider.
  */
-fun KodeinAware.withContext(f: Fragment): CurriedKodeinFactory<Context> = withErased { f.activity }
+fun KodeinAware.withContext(f: Fragment): CurriedKodeinFactory<Context> = WithF(erased()) { f.activity }
 
 /**
  * Allows to inject an instance or a provider from a factory which takes a `Context` as argument.
@@ -91,7 +91,7 @@ fun KodeinAware.withContext(f: Fragment): CurriedKodeinFactory<Context> = withEr
  * @param f The fragment whose activity context to curry the factory with.
  * @return A curried factory object from which you can get an injected instance or provider property.
  */
-fun KodeinInjected.withContext(f: Fragment): CurriedInjectorFactory<Context> = withErased { f.activity }
+fun KodeinInjected.withContext(f: Fragment): CurriedInjectorFactory<Context> = WithF(erased()) { f.activity }
 
 /**
  * Allows to get a lazy instance or provider property from a factory which takes a `Context` as argument.
@@ -99,7 +99,7 @@ fun KodeinInjected.withContext(f: Fragment): CurriedInjectorFactory<Context> = w
  * @param f The fragment whose activity context to curry the factory with.
  * @return A curried factory object from which you can get a lazy instance or provider.
  */
-fun LazyKodeinAware.withContext(f: Fragment): CurriedLazyKodeinFactory<Context> = withErased { f.activity }
+fun LazyKodeinAware.withContext(f: Fragment): CurriedLazyKodeinFactory<Context> = WithF(erased()) { f.activity }
 
 
 /**
@@ -108,7 +108,7 @@ fun LazyKodeinAware.withContext(f: Fragment): CurriedLazyKodeinFactory<Context> 
  * @param f The fragment whose activity context to curry the factory with.
  * @return A curried factory object from which you can retrieve an instance or a provider.
  */
-fun KodeinAware.withContext(f: android.support.v4.app.Fragment): CurriedKodeinFactory<Context> = withErased { f.activity }
+fun KodeinAware.withContext(f: android.support.v4.app.Fragment): CurriedKodeinFactory<Context> = WithF(erased()) { f.activity }
 
 /**
  * Allows to inject an instance or a provider from a factory which takes a `Context` as argument.
@@ -116,7 +116,7 @@ fun KodeinAware.withContext(f: android.support.v4.app.Fragment): CurriedKodeinFa
  * @param f The fragment whose activity context to curry the factory with.
  * @return A curried factory object from which you can get an injected instance or provider property.
  */
-fun KodeinInjected.withContext(f: android.support.v4.app.Fragment): CurriedInjectorFactory<Context> = withErased { f.activity }
+fun KodeinInjected.withContext(f: android.support.v4.app.Fragment): CurriedInjectorFactory<Context> = WithF(erased()) { f.activity }
 
 /**
  * Allows to get a lazy instance or provider property from a factory which takes a `Context` as argument.
@@ -124,7 +124,7 @@ fun KodeinInjected.withContext(f: android.support.v4.app.Fragment): CurriedInjec
  * @param f The fragment whose activity context to curry the factory with.
  * @return A curried factory object from which you can get a lazy instance or provider.
  */
-fun LazyKodeinAware.withContext(f: android.support.v4.app.Fragment): CurriedLazyKodeinFactory<Context> = withErased { f.activity }
+fun LazyKodeinAware.withContext(f: android.support.v4.app.Fragment): CurriedLazyKodeinFactory<Context> = WithF(erased()) { f.activity }
 
 
 /**
@@ -133,7 +133,7 @@ fun LazyKodeinAware.withContext(f: android.support.v4.app.Fragment): CurriedLazy
  * @param d The dialog whose context to curry the factory with.
  * @return A curried factory object from which you can retrieve an instance or a provider.
  */
-fun KodeinAware.withContext(d: Dialog): CurriedKodeinFactory<Context> = withErased { d.context }
+fun KodeinAware.withContext(d: Dialog): CurriedKodeinFactory<Context> = WithF(erased()) { d.context }
 
 /**
  * Allows to inject an instance or a provider from a factory which takes a `Context` as argument.
@@ -141,7 +141,7 @@ fun KodeinAware.withContext(d: Dialog): CurriedKodeinFactory<Context> = withEras
  * @param d The dialog whose context to curry the factory with.
  * @return A curried factory object from which you can get an injected instance or provider property.
  */
-fun KodeinInjected.withContext(d: Dialog): CurriedInjectorFactory<Context> = withErased { d.context }
+fun KodeinInjected.withContext(d: Dialog): CurriedInjectorFactory<Context> = WithF(erased()) { d.context }
 
 /**
  * Allows to get a lazy instance or provider property from a factory which takes a `Context` as argument.
@@ -149,7 +149,7 @@ fun KodeinInjected.withContext(d: Dialog): CurriedInjectorFactory<Context> = wit
  * @param d The dialog whose context to curry the factory with.
  * @return A curried factory object from which you can get a lazy instance or provider.
  */
-fun LazyKodeinAware.withContext(d: Dialog): CurriedLazyKodeinFactory<Context> = withErased { d.context }
+fun LazyKodeinAware.withContext(d: Dialog): CurriedLazyKodeinFactory<Context> = WithF(erased()) { d.context }
 
 
 /**
@@ -158,7 +158,7 @@ fun LazyKodeinAware.withContext(d: Dialog): CurriedLazyKodeinFactory<Context> = 
  * @param v The dialog whose context to curry the factory with.
  * @return A curried factory object from which you can retrieve an instance or a provider.
  */
-fun KodeinAware.withContext(v: View): CurriedKodeinFactory<Context> = withErased { v.context }
+fun KodeinAware.withContext(v: View): CurriedKodeinFactory<Context> = WithF(erased()) { v.context }
 
 /**
  * Allows to inject an instance or a provider from a factory which takes a `Context` as argument.
@@ -166,7 +166,7 @@ fun KodeinAware.withContext(v: View): CurriedKodeinFactory<Context> = withErased
  * @param v The dialog whose context to curry the factory with.
  * @return A curried factory object from which you can get an injected instance or provider property.
  */
-fun KodeinInjected.withContext(v: View): CurriedInjectorFactory<Context> = withErased { v.context }
+fun KodeinInjected.withContext(v: View): CurriedInjectorFactory<Context> = WithF(erased()) { v.context }
 
 /**
  * Allows to get a lazy instance or provider property from a factory which takes a `Context` as argument.
@@ -174,7 +174,7 @@ fun KodeinInjected.withContext(v: View): CurriedInjectorFactory<Context> = withE
  * @param v The dialog whose context to curry the factory with.
  * @return A curried factory object from which you can get a lazy instance or provider.
  */
-fun LazyKodeinAware.withContext(v: View): CurriedLazyKodeinFactory<Context> = withErased { v.context }
+fun LazyKodeinAware.withContext(v: View): CurriedLazyKodeinFactory<Context> = WithF(erased()) { v.context }
 
 
 /**
@@ -183,7 +183,7 @@ fun LazyKodeinAware.withContext(v: View): CurriedLazyKodeinFactory<Context> = wi
  * @param tsa The threaded sync adapter whose context to curry the factory with.
  * @return A curried factory object from which you can retrieve an instance or a provider.
  */
-fun KodeinAware.withContext(tsa: AbstractThreadedSyncAdapter): CurriedKodeinFactory<Context> = withErased { tsa.context }
+fun KodeinAware.withContext(tsa: AbstractThreadedSyncAdapter): CurriedKodeinFactory<Context> = WithF(erased()) { tsa.context }
 
 /**
  * Allows to inject an instance or a provider from a factory which takes a `Context` as argument.
@@ -191,7 +191,7 @@ fun KodeinAware.withContext(tsa: AbstractThreadedSyncAdapter): CurriedKodeinFact
  * @param tsa The threaded sync adapter whose context to curry the factory with.
  * @return A curried factory object from which you can get an injected instance or provider property.
  */
-fun KodeinInjected.withContext(tsa: AbstractThreadedSyncAdapter): CurriedInjectorFactory<Context> = withErased { tsa.context }
+fun KodeinInjected.withContext(tsa: AbstractThreadedSyncAdapter): CurriedInjectorFactory<Context> = WithF(erased()) { tsa.context }
 
 /**
  * Allows to get a lazy instance or provider property from a factory which takes a `Context` as argument.
@@ -199,7 +199,7 @@ fun KodeinInjected.withContext(tsa: AbstractThreadedSyncAdapter): CurriedInjecto
  * @param tsa The threaded sync adapter whose context to curry the factory with.
  * @return A curried factory object from which you can get a lazy instance or provider.
  */
-fun LazyKodeinAware.withContext(tsa: AbstractThreadedSyncAdapter): CurriedLazyKodeinFactory<Context> = withErased { tsa.context }
+fun LazyKodeinAware.withContext(tsa: AbstractThreadedSyncAdapter): CurriedLazyKodeinFactory<Context> = WithF(erased()) { tsa.context }
 
 
 /**
@@ -208,7 +208,7 @@ fun LazyKodeinAware.withContext(tsa: AbstractThreadedSyncAdapter): CurriedLazyKo
  * @param l The loader whose context to curry the factory with.
  * @return A curried factory object from which you can retrieve an instance or a provider.
  */
-fun KodeinAware.withContext(l: Loader<*>): CurriedKodeinFactory<Context> = withErased { l.context }
+fun KodeinAware.withContext(l: Loader<*>): CurriedKodeinFactory<Context> = WithF(erased()) { l.context }
 
 /**
  * Allows to inject an instance or a provider from a factory which takes a `Context` as argument.
@@ -216,7 +216,7 @@ fun KodeinAware.withContext(l: Loader<*>): CurriedKodeinFactory<Context> = withE
  * @param l The loader whose context to curry the factory with.
  * @return A curried factory object from which you can get an injected instance or provider property.
  */
-fun KodeinInjected.withContext(l: Loader<*>): CurriedInjectorFactory<Context> = withErased { l.context }
+fun KodeinInjected.withContext(l: Loader<*>): CurriedInjectorFactory<Context> = WithF(erased()) { l.context }
 
 /**
  * Allows to get a lazy instance or provider property from a factory which takes a `Context` as argument.
@@ -224,7 +224,7 @@ fun KodeinInjected.withContext(l: Loader<*>): CurriedInjectorFactory<Context> = 
  * @param l The loader whose context to curry the factory with.
  * @return A curried factory object from which you can get a lazy instance or provider.
  */
-fun LazyKodeinAware.withContext(l: Loader<*>): CurriedLazyKodeinFactory<Context> = withErased { l.context }
+fun LazyKodeinAware.withContext(l: Loader<*>): CurriedLazyKodeinFactory<Context> = WithF(erased()) { l.context }
 
 
 /**
@@ -233,7 +233,7 @@ fun LazyKodeinAware.withContext(l: Loader<*>): CurriedLazyKodeinFactory<Context>
  * @param l The loader whose context to curry the factory with.
  * @return A curried factory object from which you can retrieve an instance or a provider.
  */
-fun KodeinAware.withContext(l: android.support.v4.content.Loader<*>): CurriedKodeinFactory<Context> = withErased { l.context }
+fun KodeinAware.withContext(l: android.support.v4.content.Loader<*>): CurriedKodeinFactory<Context> = WithF(erased()) { l.context }
 
 /**
  * Allows to inject an instance or a provider from a factory which takes a `Context` as argument.
@@ -241,7 +241,7 @@ fun KodeinAware.withContext(l: android.support.v4.content.Loader<*>): CurriedKod
  * @param l The loader whose context to curry the factory with.
  * @return A curried factory object from which you can get an injected instance or provider property.
  */
-fun KodeinInjected.withContext(l: android.support.v4.content.Loader<*>): CurriedInjectorFactory<Context> = withErased { l.context }
+fun KodeinInjected.withContext(l: android.support.v4.content.Loader<*>): CurriedInjectorFactory<Context> = WithF(erased()) { l.context }
 
 /**
  * Allows to get a lazy instance or provider property from a factory which takes a `Context` as argument.
@@ -249,4 +249,4 @@ fun KodeinInjected.withContext(l: android.support.v4.content.Loader<*>): Curried
  * @param l The loader whose context to curry the factory with.
  * @return A curried factory object from which you can get a lazy instance or provider.
  */
-fun LazyKodeinAware.withContext(l: android.support.v4.content.Loader<*>): CurriedLazyKodeinFactory<Context> = withErased { l.context }
+fun LazyKodeinAware.withContext(l: android.support.v4.content.Loader<*>): CurriedLazyKodeinFactory<Context> = WithF(erased()) { l.context }

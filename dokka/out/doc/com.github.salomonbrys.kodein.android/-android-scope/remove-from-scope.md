@@ -2,7 +2,7 @@
 
 # removeFromScope
 
-`abstract fun removeFromScope(context: T): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein/-scope-registry/index.md)`?`
+`abstract fun removeFromScope(context: T): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein.bindings/-scope-registry/index.md)`?`
 
 Removes a context from the scope to prevent it's leak.
 

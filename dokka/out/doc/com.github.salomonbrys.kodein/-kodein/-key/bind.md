@@ -2,7 +2,7 @@
 
 # bind
 
-`val bind: `[`Bind`](../-bind/index.md)
+`val bind: `[`Bind`](../-bind/index.md)`<T>`
 
 The left part of the bind declaration.
 

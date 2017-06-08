@@ -2,27 +2,29 @@ buildscript {
 
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
     }
 
-    ext.kotlin_version = '1.0.7'
+    ext.kotlin_version = '1.1.2-4'
     ext.junit_version = '4.12'
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.3.2'
         //noinspection DifferentKotlinGradleVersion
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.13'
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.14'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
     }
 
     group = 'com.github.salomonbrys.kodein'
-    version = '3.4.1'
+    version = '4.0.0'
 }
 
 def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }

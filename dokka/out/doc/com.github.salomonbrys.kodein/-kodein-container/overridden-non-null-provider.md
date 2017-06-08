@@ -2,7 +2,7 @@
 
 # overriddenNonNullProvider
 
-`open fun overriddenNonNullProvider(bind: `[`Bind`](../-kodein/-bind/index.md)`, overrideLevel: Int): () -> Any`
+`open fun <T : Any> overriddenNonNullProvider(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>, overrideLevel: Int): () -> T`
 
 Retrieve an overridden provider for the given key at the given override level.
 

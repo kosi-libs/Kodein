@@ -15,7 +15,7 @@ package com.github.salomonbrys.kodein
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> KodeinInjectedBase.factory(tag: Any? = null) = genericFactory<A, T>(tag)
+inline fun <reified A, reified T : Any> KodeinInjectedBase.factory(tag: Any? = null) = injector.Factory<A, T>(generic(), generic(), tag)
 
 /**
  * Gets a lazy factory for the given type, tag and argument type, or null if none is found
@@ -32,7 +32,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.factory(tag: Any? = n
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> KodeinInjectedBase.factoryOrNull(tag: Any? = null) = genericFactoryOrNull<A, T>(tag)
+inline fun <reified A, reified T : Any> KodeinInjectedBase.factoryOrNull(tag: Any? = null) = injector.FactoryOrNull<A, T>(generic(), generic(), tag)
 
 /**
  * Gets a lazy provider for the given type and tag.
@@ -48,7 +48,7 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.factoryOrNull(tag: An
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> KodeinInjectedBase.provider(tag: Any? = null) = genericProvider<T>(tag)
+inline fun <reified T : Any> KodeinInjectedBase.provider(tag: Any? = null) = injector.Provider<T>(generic(), tag)
 
 /**
  * Gets a lazy provider for the given type and tag, or null if none is found.
@@ -62,7 +62,7 @@ inline fun <reified T : Any> KodeinInjectedBase.provider(tag: Any? = null) = gen
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null) = genericProviderOrNull<T>(tag)
+inline fun <reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null) = injector.ProviderOrNull<T>(generic(), tag)
 
 /**
  * Gets a lazy instance for the given type and tag.
@@ -77,7 +77,7 @@ inline fun <reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null)
  * @return A lazy property that yields a `T`.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
-inline fun <reified T : Any> KodeinInjectedBase.instance(tag: Any? = null) = genericInstance<T>(tag)
+inline fun <reified T : Any> KodeinInjectedBase.instance(tag: Any? = null) = injector.Instance<T>(generic(), tag)
 
 /**
  * Gets a lazy instance for the given type and tag.
@@ -92,7 +92,7 @@ inline fun <reified T : Any> KodeinInjectedBase.instance(tag: Any? = null) = gen
  * @return A lazy property that yields a `T`.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
-inline fun <reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null) = genericInstanceOrNull<T>(tag)
+inline fun <reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null) = injector.InstanceOrNull<T>(generic(), tag)
 
 
 
@@ -109,7 +109,7 @@ inline fun <reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null)
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> CurriedInjectorFactory<*>.provider(tag: Any? = null) = genericProvider<T>(tag)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.provider(tag: Any? = null) = Provider<T>(generic(), tag)
 
 /**
  * Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument, or null if none is found.
@@ -124,7 +124,7 @@ inline fun <reified T : Any> CurriedInjectorFactory<*>.provider(tag: Any? = null
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> CurriedInjectorFactory<*>.providerOrNull(tag: Any? = null) = genericProviderOrNull<T>(tag)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(generic(), tag)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument.
@@ -138,7 +138,7 @@ inline fun <reified T : Any> CurriedInjectorFactory<*>.providerOrNull(tag: Any? 
  * @return A lazy property that yields a `T`.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
-inline fun <reified T : Any> CurriedInjectorFactory<*>.instance(tag: Any? = null) = genericInstance<T>(tag)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.instance(tag: Any? = null) = Instance<T>(generic(), tag)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument, or null if none is found.
@@ -152,7 +152,7 @@ inline fun <reified T : Any> CurriedInjectorFactory<*>.instance(tag: Any? = null
  * @return A lazy property that yields a `T` or null if no factory was found.
  * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
  */
-inline fun <reified T : Any> CurriedInjectorFactory<*>.instanceOrNull(tag: Any? = null) = genericInstanceOrNull<T>(tag)
+inline fun <reified T : Any> CurriedInjectorFactory<*>.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(generic(), tag)
 
 /**
  * Allows to inject a provider or an instance from a curried factory with an `A` argument.
@@ -164,7 +164,7 @@ inline fun <reified T : Any> CurriedInjectorFactory<*>.instanceOrNull(tag: Any? 
  * @param arg A function that provides the argument that will be passed to the factory.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified A> KodeinInjectedBase.with(noinline arg: () -> A) = withGeneric(arg)
+inline fun <reified A> KodeinInjectedBase.with(noinline arg: () -> A) = WithF(generic(), arg)
 
 /**
  * Allows to inject a provider or an instance from a curried factory with an `A` argument.
@@ -176,4 +176,4 @@ inline fun <reified A> KodeinInjectedBase.with(noinline arg: () -> A) = withGene
  * @param arg The argument that will be passed to the factory.
  * @return An object from which you can inject an instance or a provider.
  */
-inline fun <reified A> KodeinInjectedBase.with(arg: A) = withGeneric(arg)
+inline fun <reified A> KodeinInjectedBase.with(arg: A) = With(generic(), arg)

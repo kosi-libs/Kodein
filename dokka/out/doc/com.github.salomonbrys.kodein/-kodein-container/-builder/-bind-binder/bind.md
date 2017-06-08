@@ -2,7 +2,7 @@
 
 # bind
 
-`val bind: `[`Bind`](../../../-kodein/-bind/index.md)
+`val bind: `[`Bind`](../../../-kodein/-bind/index.md)`<T>`
 
 The type and tag object that will compose the key to bind.
 

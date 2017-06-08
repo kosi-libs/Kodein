@@ -2,7 +2,7 @@
 
 # types
 
-`fun Map<`[`Key`](../-kodein/-key/index.md)`, `[`Factory`](../-factory/index.md)`<*, *>>.types(tag: Any?): List<`[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`>`
+`fun `[`BindingsMap`](../-bindings-map.md)`.types(tag: Any?): List<`[`TypeToken`](../-type-token/index.md)`<*>>`
 
 ### Parameters
 

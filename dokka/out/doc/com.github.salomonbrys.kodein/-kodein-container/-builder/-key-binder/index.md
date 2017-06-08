@@ -2,7 +2,7 @@
 
 # KeyBinder
 
-`inner class KeyBinder`
+`inner class KeyBinder<A, T : Any>`
 
 Left part of the key-binding syntax (`bind(Kodein.Key(Kodein.Bind(type, tag), argType))`).
 
@@ -10,10 +10,10 @@ Left part of the key-binding syntax (`bind(Kodein.Key(Kodein.Bind(type, tag), ar
 
 | Name | Summary |
 |---|---|
-| [key](key.md) | `val key: `[`Key`](../../../-kodein/-key/index.md)<br>The key to bind. |
+| [key](key.md) | `val key: `[`Key`](../../../-kodein/-key/index.md)`<A, T>`<br>The key to bind. |
 
 ### Functions
 
 | Name | Summary |
 |---|---|
-| [with](with.md) | `infix fun with(factory: `[`Factory`](../../../-factory/index.md)`<*, Any>): Unit`<br>Binds the previously given key to the given factory. |
+| [with](with.md) | `infix fun with(binding: `[`Binding`](../../../../com.github.salomonbrys.kodein.bindings/-binding/index.md)`<A, T>): Unit`<br>Binds the previously given key to the given binding. |

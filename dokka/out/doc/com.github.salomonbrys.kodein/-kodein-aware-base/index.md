@@ -26,22 +26,12 @@ For example, [KodeinAware.withClass](../with-class.md), if applied to [Kodein](.
 
 | Name | Summary |
 |---|---|
-| [erasedFactory](../erased-factory.md) | `fun <A, T : Any> KodeinAwareBase.erasedFactory(tag: Any? = null): (A) -> T`<br>Gets a factory of `T` for the given argument type, return type and tag. |
-| [erasedFactoryOrNull](../erased-factory-or-null.md) | `fun <A, T : Any> KodeinAwareBase.erasedFactoryOrNull(tag: Any? = null): (A) -> T`<br>Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found. |
-| [erasedInstance](../erased-instance.md) | `fun <T : Any> KodeinAwareBase.erasedInstance(tag: Any? = null): T`<br>Gets an instance of `T` for the given type and tag. |
-| [erasedInstanceOrNull](../erased-instance-or-null.md) | `fun <T : Any> KodeinAwareBase.erasedInstanceOrNull(tag: Any? = null): T?`<br>Gets an instance of `T` for the given type and tag, or null if none is found. |
-| [erasedProvider](../erased-provider.md) | `fun <T : Any> KodeinAwareBase.erasedProvider(tag: Any? = null): () -> T`<br>Gets a provider of `T` for the given type and tag. |
-| [erasedProviderOrNull](../erased-provider-or-null.md) | `fun <T : Any> KodeinAwareBase.erasedProviderOrNull(tag: Any? = null): () -> T`<br>Gets a provider of `T` for the given type and tag, or null if none is found. |
+| [With](../-with.md) | `fun <A> KodeinAwareBase.With(argType: `[`TypeToken`](../-type-token/index.md)`<A>, arg: A): `[`CurriedKodeinFactory`](../-curried-kodein-factory/index.md)`<A>`<br>Allows to get a provider or an instance from a curried factory with an `A` argument. |
+| [WithF](../-with-f.md) | `fun <A> KodeinAwareBase.WithF(argType: `[`TypeToken`](../-type-token/index.md)`<A>, arg: () -> A): `[`CurriedKodeinFactory`](../-curried-kodein-factory/index.md)`<A>`<br>Allows to get a provider or an instance from a curried factory with an `A` argument. |
 | [factory](../factory.md) | `fun <A, T : Any> KodeinAwareBase.factory(tag: Any? = null): (A) -> T`<br>Gets a factory of `T` for the given argument type, return type and tag. |
 | [factory](../../com.github.salomonbrys.kodein.erased/factory.md) | `fun <A, T : Any> KodeinAwareBase.factory(tag: Any? = null): (A) -> T`<br>Gets a factory of `T` for the given argument type, return type and tag. |
 | [factoryOrNull](../factory-or-null.md) | `fun <A, T : Any> KodeinAwareBase.factoryOrNull(tag: Any? = null): (A) -> T`<br>Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found. |
 | [factoryOrNull](../../com.github.salomonbrys.kodein.erased/factory-or-null.md) | `fun <A, T : Any> KodeinAwareBase.factoryOrNull(tag: Any? = null): (A) -> T`<br>Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found. |
-| [genericFactory](../generic-factory.md) | `fun <A, T : Any> KodeinAwareBase.genericFactory(tag: Any? = null): (A) -> T`<br>Gets a factory of `T` for the given argument type, return type and tag. |
-| [genericFactoryOrNull](../generic-factory-or-null.md) | `fun <A, T : Any> KodeinAwareBase.genericFactoryOrNull(tag: Any? = null): (A) -> T`<br>Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found. |
-| [genericInstance](../generic-instance.md) | `fun <T : Any> KodeinAwareBase.genericInstance(tag: Any? = null): T`<br>Gets an instance of `T` for the given type and tag. |
-| [genericInstanceOrNull](../generic-instance-or-null.md) | `fun <T : Any> KodeinAwareBase.genericInstanceOrNull(tag: Any? = null): T?`<br>Gets an instance of `T` for the given type and tag, or null if none is found. |
-| [genericProvider](../generic-provider.md) | `fun <T : Any> KodeinAwareBase.genericProvider(tag: Any? = null): () -> T`<br>Gets a provider of `T` for the given type and tag. |
-| [genericProviderOrNull](../generic-provider-or-null.md) | `fun <T : Any> KodeinAwareBase.genericProviderOrNull(tag: Any? = null): () -> T`<br>Gets a provider of `T` for the given type and tag, or null if none is found. |
 | [instance](../instance.md) | `fun <T : Any> KodeinAwareBase.instance(tag: Any? = null): T`<br>Gets an instance of `T` for the given type and tag. |
 | [instance](../../com.github.salomonbrys.kodein.erased/instance.md) | `fun <T : Any> KodeinAwareBase.instance(tag: Any? = null): T`<br>Gets an instance of `T` for the given type and tag. |
 | [instanceOrNull](../instance-or-null.md) | `fun <T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null): T?`<br>Gets an instance of `T` for the given type and tag, or null if none is found. |
@@ -53,8 +43,6 @@ For example, [KodeinAware.withClass](../with-class.md), if applied to [Kodein](.
 | [providerOrNull](../../com.github.salomonbrys.kodein.erased/provider-or-null.md) | `fun <T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null): () -> T`<br>Gets a provider of `T` for the given type and tag, or null if none is found. |
 | [with](../with.md) | `fun <A> KodeinAwareBase.with(arg: () -> A): `[`CurriedKodeinFactory`](../-curried-kodein-factory/index.md)`<A>`<br>`fun <A> KodeinAwareBase.with(arg: A): `[`CurriedKodeinFactory`](../-curried-kodein-factory/index.md)`<A>`<br>Allows to get a provider or an instance from a curried factory with an `A` argument. |
 | [with](../../com.github.salomonbrys.kodein.erased/with.md) | `fun <A> KodeinAwareBase.with(arg: () -> A): `[`CurriedKodeinFactory`](../-curried-kodein-factory/index.md)`<A>`<br>`fun <A> KodeinAwareBase.with(arg: A): `[`CurriedKodeinFactory`](../-curried-kodein-factory/index.md)`<A>`<br>Allows to get a provider or an instance from a curried factory with an `A` argument. |
-| [withErased](../with-erased.md) | `fun <A> KodeinAwareBase.withErased(arg: () -> A): `[`CurriedKodeinFactory`](../-curried-kodein-factory/index.md)`<A>`<br>`fun <A> KodeinAwareBase.withErased(arg: A): `[`CurriedKodeinFactory`](../-curried-kodein-factory/index.md)`<A>`<br>Allows to get a provider or an instance from a curried factory with an `A` argument. |
-| [withGeneric](../with-generic.md) | `fun <A> KodeinAwareBase.withGeneric(arg: () -> A): `[`CurriedKodeinFactory`](../-curried-kodein-factory/index.md)`<A>`<br>`fun <A> KodeinAwareBase.withGeneric(arg: A): `[`CurriedKodeinFactory`](../-curried-kodein-factory/index.md)`<A>`<br>Allows to get a provider or an instance from a curried factory with an `A` argument. |
 
 ### Inheritors
 

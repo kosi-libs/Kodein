@@ -14,7 +14,7 @@ A read-only property delegate that injects a provider, or null if none is found.
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `InjectedNullableProviderProperty(bind: `[`Bind`](../-kodein/-bind/index.md)`)`<br>A read-only property delegate that injects a provider, or null if none is found. |
+| [&lt;init&gt;](-init-.md) | `InjectedNullableProviderProperty(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>)`<br>A read-only property delegate that injects a provider, or null if none is found. |
 
 ### Properties
 
@@ -26,7 +26,7 @@ A read-only property delegate that injects a provider, or null if none is found.
 
 | Name | Summary |
 |---|---|
-| [key](../-injected-property/key.md) | `val key: `[`Key`](../-kodein/-key/index.md)<br>The key of the value that will be injected. |
+| [key](../-injected-property/key.md) | `val key: `[`Key`](../-kodein/-key/index.md)`<*, *>`<br>The key of the value that will be injected. |
 | [value](../-injected-property/value.md) | `val value: T`<br>The injected value. |
 
 ### Functions

@@ -4,8 +4,8 @@
 
 `val container: `[`Builder`](../../-kodein-container/-builder/index.md)
 
-Every methods, either in this or in [TBuilder](-t-builder/index.md) eventually ends up to a call to this builder.
+Every methods eventually ends up to a call to this builder.
 
 ### Property
 
-`container` - Every methods, either in this or in [TBuilder](-t-builder/index.md) eventually ends up to a call to this builder.
+`container` - Every methods eventually ends up to a call to this builder.

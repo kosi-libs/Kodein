@@ -4,7 +4,7 @@
 
 `object lifecycleManager : ActivityLifecycleCallbacks`
 
-If you use [autoActivitySingleton](../auto-activity-singleton.md), you **must** register this lifecycle manager in your application's oncreate:
+If you use `autoScopedSingleton(androidActivityScope)`, you **must** register this lifecycle manager in your application's oncreate:
 
 ``` kotlin
 class MyActivity : Activity {

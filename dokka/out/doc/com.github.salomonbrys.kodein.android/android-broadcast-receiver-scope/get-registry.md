@@ -2,7 +2,7 @@
 
 # getRegistry
 
-`fun getRegistry(context: BroadcastReceiver): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein/-scope-registry/index.md)
+`fun getRegistry(context: BroadcastReceiver): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein.bindings/-scope-registry/index.md)
 
 Get a registry for a given broadcast receiver. Will always return the same registry for the same broadcast receiver.
 

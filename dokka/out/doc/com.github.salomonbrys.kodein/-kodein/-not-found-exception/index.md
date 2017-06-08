@@ -2,7 +2,7 @@
 
 # NotFoundException
 
-`class NotFoundException : `[`RuntimeException`](http://docs.oracle.com/javase/6/docs/api/java/lang/RuntimeException.html)
+`class NotFoundException : RuntimeException`
 
 Exception thrown when asked for a dependency that cannot be found.
 
@@ -10,10 +10,10 @@ Exception thrown when asked for a dependency that cannot be found.
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `NotFoundException(key: `[`Key`](../-key/index.md)`, message: String)`<br>Exception thrown when asked for a dependency that cannot be found. |
+| [&lt;init&gt;](-init-.md) | `NotFoundException(key: `[`Key`](../-key/index.md)`<*, *>, message: String)`<br>Exception thrown when asked for a dependency that cannot be found. |
 
 ### Properties
 
 | Name | Summary |
 |---|---|
-| [key](key.md) | `val key: `[`Key`](../-key/index.md)<br>The key that was not found. |
+| [key](key.md) | `val key: `[`Key`](../-key/index.md)`<*, *>`<br>The key that was not found. |

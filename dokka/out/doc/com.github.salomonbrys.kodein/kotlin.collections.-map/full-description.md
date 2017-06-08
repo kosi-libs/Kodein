@@ -2,7 +2,7 @@
 
 # fullDescription
 
-`val Map<`[`Key`](../-kodein/-key/index.md)`, `[`Factory`](../-factory/index.md)`<*, *>>.fullDescription: String`
+`val `[`BindingsMap`](../-bindings-map.md)`.fullDescription: String`
 
 The description of all bindings in this map, using type full display names.
 

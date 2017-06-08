@@ -2,7 +2,7 @@
 
 # argType
 
-`val argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)
+`val argType: `[`TypeToken`](../../-type-token/index.md)`<out A>`
 
 The argument type of the associated factory (Will be `Unit` for a provider).
 

@@ -1,3 +1,3 @@
 # Package com.github.salomonbrys.kodein
 
-Kodein API
+KOtlin DEpendency INjection

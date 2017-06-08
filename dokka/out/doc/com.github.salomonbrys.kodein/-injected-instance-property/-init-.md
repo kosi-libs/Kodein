@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`InjectedInstanceProperty(bind: `[`Bind`](../-kodein/-bind/index.md)`)`
+`InjectedInstanceProperty(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>)`
 
 A read-only property delegate that injects an instance.
 

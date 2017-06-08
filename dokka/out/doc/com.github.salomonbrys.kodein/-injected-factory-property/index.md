@@ -14,7 +14,7 @@ A read-only property delegate that injects a factory.
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `InjectedFactoryProperty(key: `[`Key`](../-kodein/-key/index.md)`)`<br>A read-only property delegate that injects a factory. |
+| [&lt;init&gt;](-init-.md) | `InjectedFactoryProperty(key: `[`Key`](../-kodein/-key/index.md)`<A, T>)`<br>A read-only property delegate that injects a factory. |
 
 ### Properties
 
@@ -26,7 +26,7 @@ A read-only property delegate that injects a factory.
 
 | Name | Summary |
 |---|---|
-| [key](../-injected-property/key.md) | `val key: `[`Key`](../-kodein/-key/index.md)<br>The key of the value that will be injected. |
+| [key](../-injected-property/key.md) | `val key: `[`Key`](../-kodein/-key/index.md)`<*, *>`<br>The key of the value that will be injected. |
 | [value](../-injected-property/value.md) | `val value: T`<br>The injected value. |
 
 ### Functions

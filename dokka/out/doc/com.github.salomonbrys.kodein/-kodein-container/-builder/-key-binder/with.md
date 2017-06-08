@@ -2,10 +2,10 @@
 
 # with
 
-`infix fun with(factory: `[`Factory`](../../../-factory/index.md)`<*, Any>): Unit`
+`infix fun with(binding: `[`Binding`](../../../../com.github.salomonbrys.kodein.bindings/-binding/index.md)`<A, T>): Unit`
 
-Binds the previously given key to the given factory.
+Binds the previously given key to the given binding.
 
 ### Parameters
 
-`factory` - The factory to bind.
+`binding` - The binding to bind.

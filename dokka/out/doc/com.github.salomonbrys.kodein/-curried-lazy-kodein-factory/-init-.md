@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`CurriedLazyKodeinFactory(kodein: () -> `[`Kodein`](../-kodein/index.md)`, arg: () -> A, argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`)`
+`CurriedLazyKodeinFactory(kodein: () -> `[`Kodein`](../-kodein/index.md)`, arg: () -> A, argType: `[`TypeToken`](../-type-token/index.md)`<A>)`
 
 Allows to get a lazy provider or instance from a lazy factory with a curried argument.
 

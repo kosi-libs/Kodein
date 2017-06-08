@@ -2,7 +2,7 @@
 
 # eagerSingleton
 
-`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.eagerSingleton(noinline creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.() -> T): `[`Provider`](../com.github.salomonbrys.kodein/-provider/index.md)`<T>`
+`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.eagerSingleton(noinline creator: `[`NoArgBindingKodein`](../com.github.salomonbrys.kodein.bindings/-no-arg-binding-kodein/index.md)`.() -> T): `[`EagerSingletonBinding`](../com.github.salomonbrys.kodein.bindings/-eager-singleton-binding/index.md)`<T>`
 
 Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.
 

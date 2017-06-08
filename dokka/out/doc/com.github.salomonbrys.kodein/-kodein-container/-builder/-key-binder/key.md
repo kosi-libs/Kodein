@@ -2,7 +2,7 @@
 
 # key
 
-`val key: `[`Key`](../../../-kodein/-key/index.md)
+`val key: `[`Key`](../../../-kodein/-key/index.md)`<A, T>`
 
 The key to bind.
 

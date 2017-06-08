@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`InjectedProviderProperty(bind: `[`Bind`](../-kodein/-bind/index.md)`)`
+`InjectedProviderProperty(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>)`
 
 A read-only property delegate that injects a provider.
 

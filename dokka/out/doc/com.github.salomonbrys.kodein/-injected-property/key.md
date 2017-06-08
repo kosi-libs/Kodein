@@ -2,7 +2,7 @@
 
 # key
 
-`val key: `[`Key`](../-kodein/-key/index.md)
+`val key: `[`Key`](../-kodein/-key/index.md)`<*, *>`
 
 The key of the value that will be injected.
 

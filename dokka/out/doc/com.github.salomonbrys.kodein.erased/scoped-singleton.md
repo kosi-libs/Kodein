@@ -2,7 +2,7 @@
 
 # scopedSingleton
 
-`inline fun <reified C, reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.scopedSingleton(scope: `[`Scope`](../com.github.salomonbrys.kodein/-scope/index.md)`<C>, noinline creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(C) -> T): `[`CScopedSingleton`](../com.github.salomonbrys.kodein/-c-scoped-singleton/index.md)`<C, T>`
+`inline fun <reified C, reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.scopedSingleton(scope: `[`Scope`](../com.github.salomonbrys.kodein.bindings/-scope/index.md)`<C>, noinline creator: `[`NoArgBindingKodein`](../com.github.salomonbrys.kodein.bindings/-no-arg-binding-kodein/index.md)`.(C) -> T): `[`ScopedSingletonBinding`](../com.github.salomonbrys.kodein.bindings/-scoped-singleton-binding/index.md)`<C, T>`
 
 Creates a scoped singleton factory, effectively a `factory { Scope -> T }`.
 

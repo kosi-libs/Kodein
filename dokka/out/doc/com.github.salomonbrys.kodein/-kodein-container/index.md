@@ -19,18 +19,18 @@ Providers are special classes of factories that take Unit as parameter.
 
 | Name | Summary |
 |---|---|
-| [bindings](bindings.md) | `abstract val bindings: Map<`[`Key`](../-kodein/-key/index.md)`, `[`Factory`](../-factory/index.md)`<*, *>>`<br>An immutable view of the bindings map. *For inspection&amp;debug*. |
-| [overriddenBindings](overridden-bindings.md) | `abstract val overriddenBindings: Map<`[`Key`](../-kodein/-key/index.md)`, List<`[`Factory`](../-factory/index.md)`<*, *>>>`<br>An immutable view of the bindings that were defined and later overridden. *For inspection&amp;debug*. |
+| [bindings](bindings.md) | `abstract val bindings: Map<`[`Key`](../-kodein/-key/index.md)`<*, *>, `[`Binding`](../../com.github.salomonbrys.kodein.bindings/-binding/index.md)`<*, *>>`<br>An immutable view of the bindings map. *For inspection&amp;debug*. |
+| [overriddenBindings](overridden-bindings.md) | `abstract val overriddenBindings: Map<`[`Key`](../-kodein/-key/index.md)`<*, *>, List<`[`Binding`](../../com.github.salomonbrys.kodein.bindings/-binding/index.md)`<*, *>>>`<br>An immutable view of the bindings that were defined and later overridden. *For inspection&amp;debug*. |
 
 ### Functions
 
 | Name | Summary |
 |---|---|
-| [factoryOrNull](factory-or-null.md) | `abstract fun factoryOrNull(key: `[`Key`](../-kodein/-key/index.md)`): (Any?) -> Any`<br>Retrieve a factory for the given key, or null if none is found. |
-| [nonNullFactory](non-null-factory.md) | `open fun nonNullFactory(key: `[`Key`](../-kodein/-key/index.md)`): (Any?) -> Any`<br>Retrieve a factory for the given key. |
-| [nonNullProvider](non-null-provider.md) | `open fun nonNullProvider(bind: `[`Bind`](../-kodein/-bind/index.md)`): () -> Any`<br>Retrieve a provider for the given bind. |
-| [overriddenFactoryOrNull](overridden-factory-or-null.md) | `abstract fun overriddenFactoryOrNull(key: `[`Key`](../-kodein/-key/index.md)`, overrideLevel: Int): (Any?) -> Any`<br>Retrieve an overridden factory for the given key at the given override level, if there is an overridden binding at that level. |
-| [overriddenNonNullFactory](overridden-non-null-factory.md) | `open fun overriddenNonNullFactory(key: `[`Key`](../-kodein/-key/index.md)`, overrideLevel: Int): (Any?) -> Any`<br>Retrieve an overridden factory for the given key at the given override level. |
-| [overriddenNonNullProvider](overridden-non-null-provider.md) | `open fun overriddenNonNullProvider(bind: `[`Bind`](../-kodein/-bind/index.md)`, overrideLevel: Int): () -> Any`<br>Retrieve an overridden provider for the given key at the given override level. |
-| [overriddenProviderOrNull](overridden-provider-or-null.md) | `open fun overriddenProviderOrNull(bind: `[`Bind`](../-kodein/-bind/index.md)`, overrideLevel: Int): () -> Any`<br>Retrieve an overridden provider for the given key at the given override level, if there is an overridden binding at that level. |
-| [providerOrNull](provider-or-null.md) | `open fun providerOrNull(bind: `[`Bind`](../-kodein/-bind/index.md)`): () -> Any`<br>Retrieve a provider for the given bind, or null if none is found. |
+| [factoryOrNull](factory-or-null.md) | `abstract fun <A, T : Any> factoryOrNull(key: `[`Key`](../-kodein/-key/index.md)`<A, T>): (A) -> T`<br>Retrieve a factory for the given key, or null if none is found. |
+| [nonNullFactory](non-null-factory.md) | `open fun <A, T : Any> nonNullFactory(key: `[`Key`](../-kodein/-key/index.md)`<A, T>): (A) -> T`<br>Retrieve a factory for the given key. |
+| [nonNullProvider](non-null-provider.md) | `open fun <T : Any> nonNullProvider(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>): () -> T`<br>Retrieve a provider for the given bind. |
+| [overriddenFactoryOrNull](overridden-factory-or-null.md) | `abstract fun <A, T : Any> overriddenFactoryOrNull(key: `[`Key`](../-kodein/-key/index.md)`<A, T>, overrideLevel: Int): (A) -> T`<br>Retrieve an overridden factory for the given key at the given override level, if there is an overridden binding at that level. |
+| [overriddenNonNullFactory](overridden-non-null-factory.md) | `open fun <A, T : Any> overriddenNonNullFactory(key: `[`Key`](../-kodein/-key/index.md)`<A, T>, overrideLevel: Int): (A) -> T`<br>Retrieve an overridden factory for the given key at the given override level. |
+| [overriddenNonNullProvider](overridden-non-null-provider.md) | `open fun <T : Any> overriddenNonNullProvider(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>, overrideLevel: Int): () -> T`<br>Retrieve an overridden provider for the given key at the given override level. |
+| [overriddenProviderOrNull](overridden-provider-or-null.md) | `open fun <T : Any> overriddenProviderOrNull(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>, overrideLevel: Int): () -> T`<br>Retrieve an overridden provider for the given key at the given override level, if there is an overridden binding at that level. |
+| [providerOrNull](provider-or-null.md) | `open fun <T : Any> providerOrNull(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>): () -> T`<br>Retrieve a provider for the given bind, or null if none is found. |

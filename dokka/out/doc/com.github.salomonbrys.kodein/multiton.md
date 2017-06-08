@@ -2,7 +2,7 @@
 
 # multiton
 
-`inline fun <reified A, reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.multiton(noinline creator: `[`FactoryKodein`](-factory-kodein/index.md)`.(A) -> T): `[`Factory`](-factory/index.md)`<A, T>`
+`inline fun <reified A, reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.multiton(noinline creator: `[`BindingKodein`](../com.github.salomonbrys.kodein.bindings/-binding-kodein/index.md)`.(A) -> T): `[`MultitonBinding`](../com.github.salomonbrys.kodein.bindings/-multiton-binding/index.md)`<A, T>`
 
 Creates a multiton: will create an instance on first request for each different argument and will subsequently always return the same instance for the same argument.
 

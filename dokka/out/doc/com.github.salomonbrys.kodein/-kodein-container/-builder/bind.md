@@ -2,7 +2,7 @@
 
 # bind
 
-`fun bind(key: `[`Key`](../../-kodein/-key/index.md)`, overrides: Boolean? = null): `[`KeyBinder`](-key-binder/index.md)
+`fun <A, T : Any> bind(key: `[`Key`](../../-kodein/-key/index.md)`<A, T>, overrides: Boolean? = null): `[`KeyBinder`](-key-binder/index.md)`<A, T>`
 
 Starts the binding of a given key.
 
@@ -15,7 +15,7 @@ Starts the binding of a given key.
 **Return**
 The binder: call [KeyBinder.with](-key-binder/with.md)) on it to finish the binding syntax and register the binding.
 
-`fun bind(bind: `[`Bind`](../../-kodein/-bind/index.md)`, overrides: Boolean? = null): `[`BindBinder`](-bind-binder/index.md)
+`fun <T : Any> bind(bind: `[`Bind`](../../-kodein/-bind/index.md)`<T>, overrides: Boolean? = null): `[`BindBinder`](-bind-binder/index.md)`<T>`
 
 Starts the binding of a given type and tag.
 

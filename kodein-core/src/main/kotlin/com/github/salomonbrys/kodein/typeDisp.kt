@@ -86,9 +86,9 @@ private object FullTypeStringer : TypeStringer() {
 /**
  * A string representing this type in a Kotlin-esque fashion using simple type names.
  */
-val Type.simpleDispString: String get() = SimpleTypeStringer.dispString(this)
+fun Type.simpleDispString(): String = SimpleTypeStringer.dispString(this)
 
 /**
  * A string representing this type in a Kotlin-esque fashion using full type names.
  */
-val Type.fullDispString: String get() = FullTypeStringer.dispString(this)
+fun Type.fullDispString(): String = FullTypeStringer.dispString(this)

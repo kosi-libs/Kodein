@@ -2,6 +2,23 @@
 
 # provider
 
+`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.provider(noinline creator: `[`NoArgBindingKodein`](../com.github.salomonbrys.kodein.bindings/-no-arg-binding-kodein/index.md)`.() -> T): `[`ProviderBinding`](../com.github.salomonbrys.kodein.bindings/-provider-binding/index.md)`<T>`
+
+Creates a factory: each time an instance is needed, the function [creator](provider.md#com.github.salomonbrys.kodein.erased$provider(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.bindings.NoArgBindingKodein, com.github.salomonbrys.kodein.erased.provider.T)))/creator) function will be called.
+
+T generics will be erased!
+
+A provider is like a [factory](factory.md), but without argument.
+
+### Parameters
+
+`T` - The created type.
+
+`creator` - The function that will be called each time an instance is requested. Should create a new instance.
+
+**Return**
+A provider ready to be bound.
+
 `inline fun <reified T : Any> `[`KodeinInjectedBase`](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md)`.provider(tag: Any? = null): `[`InjectedProperty`](../com.github.salomonbrys.kodein/-injected-property/index.md)`<() -> T>`
 
 Gets a lazy provider for the given type and tag.
@@ -50,23 +67,6 @@ T generics will be erased!
 
 **Return**
 A lazy property that yields a provider of `T`.
-
-`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.provider(noinline creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.() -> T): `[`Provider`](../com.github.salomonbrys.kodein/-provider/index.md)`<T>`
-
-Creates a factory: each time an instance is needed, the function [creator](provider.md#com.github.salomonbrys.kodein.erased$provider(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function1((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.erased.provider.T)))/creator) function will be called.
-
-T generics will be erased!
-
-A provider is like a [factory](factory.md), but without argument.
-
-### Parameters
-
-`T` - The created type.
-
-`creator` - The function that will be called each time an instance is requested. Should create a new instance.
-
-**Return**
-A provider ready to be bound.
 
 `inline fun <reified T : Any> `[`LazyKodeinAwareBase`](../com.github.salomonbrys.kodein/-lazy-kodein-aware-base/index.md)`.provider(tag: Any? = null): Lazy<() -> T>`
 

@@ -2,7 +2,7 @@
 
 # autoScopedSingleton
 
-`inline fun <C, reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.autoScopedSingleton(scope: `[`AutoScope`](-auto-scope/index.md)`<C>, noinline creator: `[`Kodein`](-kodein/index.md)`.(C) -> T): `[`CAutoScopedSingleton`](-c-auto-scoped-singleton/index.md)`<C, T>`
+`inline fun <C, reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.autoScopedSingleton(scope: `[`AutoScope`](../com.github.salomonbrys.kodein.bindings/-auto-scope/index.md)`<C>, noinline creator: `[`Kodein`](-kodein/index.md)`.(C) -> T): `[`AutoScopedSingletonBinding`](../com.github.salomonbrys.kodein.bindings/-auto-scoped-singleton-binding/index.md)`<C, T>`
 
 Creates an auto-scoped singleton provider, effectively a `provider { -> T }`.
 

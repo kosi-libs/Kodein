@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`CurriedKodeinFactory(kodein: () -> `[`Kodein`](../-kodein/index.md)`, arg: () -> A, argType: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`)`
+`CurriedKodeinFactory(kodein: () -> `[`Kodein`](../-kodein/index.md)`, arg: () -> A, argType: `[`TypeToken`](../-type-token/index.md)`<A>)`
 
 Allows to get a provider or an instance from a factory with a curried argument.
 

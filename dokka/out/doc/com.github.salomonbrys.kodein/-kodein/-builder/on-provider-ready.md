@@ -2,7 +2,7 @@
 
 # onProviderReady
 
-`fun onProviderReady(key: `[`Key`](../-key/index.md)`, cb: `[`ProviderKodein`](../../-provider-kodein/index.md)`.() -> Unit): Unit`
+`fun <T : Any> onProviderReady(key: `[`Key`](../-key/index.md)`<Unit, T>, cb: `[`NoArgBindingKodein`](../../../com.github.salomonbrys.kodein.bindings/-no-arg-binding-kodein/index.md)`.() -> Unit): Unit`
 
 Adds a callback that will be called once the Kodein object is configured and instantiated.
 

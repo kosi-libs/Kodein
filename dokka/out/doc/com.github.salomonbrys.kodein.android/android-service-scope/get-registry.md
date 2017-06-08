@@ -2,7 +2,7 @@
 
 # getRegistry
 
-`fun getRegistry(context: Service): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein/-scope-registry/index.md)
+`fun getRegistry(context: Service): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein.bindings/-scope-registry/index.md)
 
 Get a registry for a given service. Will always return the same registry for the same service.
 

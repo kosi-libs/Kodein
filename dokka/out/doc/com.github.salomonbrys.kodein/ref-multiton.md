@@ -2,7 +2,7 @@
 
 # refMultiton
 
-`inline fun <reified A, reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.refMultiton(refMaker: `[`RefMaker`](-ref-maker/index.md)`, noinline creator: `[`FactoryKodein`](-factory-kodein/index.md)`.(A) -> T): `[`Factory`](-factory/index.md)`<A, T>`
+`inline fun <reified A, reified T : Any> `[`Builder`](-kodein/-builder/index.md)`.refMultiton(refMaker: `[`RefMaker`](-ref-maker/index.md)`, noinline creator: `[`BindingKodein`](../com.github.salomonbrys.kodein.bindings/-binding-kodein/index.md)`.(A) -> T): `[`RefMultitonBinding`](-ref-multiton-binding/index.md)`<A, T>`
 
 Creates a referenced multiton, for the same argument, will return always the same object as long as the reference is valid.
 

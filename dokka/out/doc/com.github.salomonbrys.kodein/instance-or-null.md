@@ -2,47 +2,6 @@
 
 # instanceOrNull
 
-`inline fun <reified T : Any> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.instanceOrNull(tag: Any? = null): Lazy<T?>`
-
-Gets a lazy instance for the given type and tag, or null is none is found.
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of object to retrieve.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.DependencyLoopException` - When accessing the property, if the value construction triggered a dependency loop.
-
-**Receiver**
-Either a [LazyKodein](-lazy-kodein/index.md) instance or a [LazyKodeinAware](-lazy-kodein-aware.md) class.
-
-**Return**
-A lazy property that yields an instance of `T`, or null if no provider is found.
-
-`inline fun <reified T : Any> `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<*>.instanceOrNull(tag: Any? = null): Lazy<T?>`
-
-Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
-
-T generics will be kept.
-
-### Parameters
-
-`T` - The type of object to retrieve.
-
-`tag` - The bound tag, if any.
-
-### Exceptions
-
-`Kodein.DependencyLoopException` - When accessing the property, if the value construction triggered a dependency loop.
-
-**Return**
-A lazy instance of `T`, or null if no factory was found.
-
 `inline fun <reified T : Any> `[`KodeinInjectedBase`](-kodein-injected-base/index.md)`.instanceOrNull(tag: Any? = null): `[`InjectedProperty`](-injected-property/index.md)`<T?>`
 
 Gets a lazy instance for the given type and tag.
@@ -87,6 +46,47 @@ T generics will be kept.
 
 **Return**
 A lazy property that yields a `T` or null if no factory was found.
+
+`inline fun <reified T : Any> `[`LazyKodeinAwareBase`](-lazy-kodein-aware-base/index.md)`.instanceOrNull(tag: Any? = null): Lazy<T?>`
+
+Gets a lazy instance for the given type and tag, or null is none is found.
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of object to retrieve.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.DependencyLoopException` - When accessing the property, if the value construction triggered a dependency loop.
+
+**Receiver**
+Either a [LazyKodein](-lazy-kodein/index.md) instance or a [LazyKodeinAware](-lazy-kodein-aware.md) class.
+
+**Return**
+A lazy property that yields an instance of `T`, or null if no provider is found.
+
+`inline fun <reified T : Any> `[`CurriedLazyKodeinFactory`](-curried-lazy-kodein-factory/index.md)`<*>.instanceOrNull(tag: Any? = null): Lazy<T?>`
+
+Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
+
+T generics will be kept.
+
+### Parameters
+
+`T` - The type of object to retrieve.
+
+`tag` - The bound tag, if any.
+
+### Exceptions
+
+`Kodein.DependencyLoopException` - When accessing the property, if the value construction triggered a dependency loop.
+
+**Return**
+A lazy instance of `T`, or null if no factory was found.
 
 `inline fun <reified T : Any> `[`KodeinAwareBase`](-kodein-aware-base/index.md)`.instanceOrNull(tag: Any? = null): T?`
 

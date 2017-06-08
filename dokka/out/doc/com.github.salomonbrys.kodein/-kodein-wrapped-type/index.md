@@ -27,9 +27,9 @@ ParameterizedType (I know...).
 |---|---|
 | [toString](to-string.md) | `fun toString(): String`<br>Stringify. |
 
-### Extension Properties
+### Extension Functions
 
 | Name | Summary |
 |---|---|
-| [fullDispString](../java.lang.reflect.-type/full-disp-string.md) | `val `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`.fullDispString: String`<br>A string representing this type in a Kotlin-esque fashion using full type names. |
-| [simpleDispString](../java.lang.reflect.-type/simple-disp-string.md) | `val `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`.simpleDispString: String`<br>A string representing this type in a Kotlin-esque fashion using simple type names. |
+| [fullDispString](../java.lang.reflect.-type/full-disp-string.md) | `fun `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`.fullDispString(): String`<br>A string representing this type in a Kotlin-esque fashion using full type names. |
+| [simpleDispString](../java.lang.reflect.-type/simple-disp-string.md) | `fun `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`.simpleDispString(): String`<br>A string representing this type in a Kotlin-esque fashion using simple type names. |

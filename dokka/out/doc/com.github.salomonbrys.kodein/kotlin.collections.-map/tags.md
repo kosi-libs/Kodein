@@ -2,9 +2,7 @@
 
 # tags
 
-`fun Map<`[`Key`](../-kodein/-key/index.md)`, `[`Factory`](../-factory/index.md)`<*, *>>.tags(type: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`): List<Any?>`
-`fun Map<`[`Key`](../-kodein/-key/index.md)`, `[`Factory`](../-factory/index.md)`<*, *>>.~~tags~~(type: `[`TypeToken`](../-type-token/index.md)`<*>): List<Any?>`
-**Deprecated:** Use contains(Type) instead.
+`fun `[`BindingsMap`](../-bindings-map.md)`.tags(type: `[`TypeToken`](../-type-token/index.md)`<*>): List<Any?>`
 
 ### Parameters
 

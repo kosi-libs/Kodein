@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`InjectedNullableInstanceProperty(bind: `[`Bind`](../-kodein/-bind/index.md)`)`
+`InjectedNullableInstanceProperty(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>)`
 
 A read-only property delegate that injects an instance, or null if none is found.
 

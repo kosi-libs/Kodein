@@ -2,7 +2,7 @@
 
 # providerOrNull
 
-`open fun providerOrNull(bind: `[`Bind`](../-kodein/-bind/index.md)`): () -> Any`
+`open fun <T : Any> providerOrNull(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>): () -> T`
 
 Retrieve a provider for the given bind, or null if none is found.
 

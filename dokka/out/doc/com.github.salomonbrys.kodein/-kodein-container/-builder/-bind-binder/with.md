@@ -2,15 +2,15 @@
 
 # with
 
-`infix fun with(factory: `[`Factory`](../../../-factory/index.md)`<*, Any>): Unit`
+`infix fun with(binding: `[`Binding`](../../../../com.github.salomonbrys.kodein.bindings/-binding/index.md)`<*, out T>): Unit`
 
-Binds the previously given type &amp; tag to the given factory.
+Binds the previously given type &amp; tag to the given binding.
 
-The bound type will be the [Factory.createdType](../../../-factory/created-type.md).
+The bound type will be the [Binding.createdType](../../../../com.github.salomonbrys.kodein.bindings/-binding/created-type.md).
 
 ### Parameters
 
-`factory` - The factory to bind.
+`binding` - The binding to bind.
 
 ### Exceptions
 

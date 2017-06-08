@@ -2,7 +2,7 @@
 
 # overriddenNonNullFactory
 
-`open fun overriddenNonNullFactory(key: `[`Key`](../-kodein/-key/index.md)`, overrideLevel: Int): (Any?) -> Any`
+`open fun <A, T : Any> overriddenNonNullFactory(key: `[`Key`](../-kodein/-key/index.md)`<A, T>, overrideLevel: Int): (A) -> T`
 
 Retrieve an overridden factory for the given key at the given override level.
 

@@ -2,7 +2,7 @@
 
 # onFactoryReady
 
-`fun onFactoryReady(key: `[`Key`](../-key/index.md)`, cb: `[`FactoryKodein`](../../-factory-kodein/index.md)`.() -> Unit): Unit`
+`fun <A, T : Any> onFactoryReady(key: `[`Key`](../-key/index.md)`<A, T>, cb: `[`BindingKodein`](../../../com.github.salomonbrys.kodein.bindings/-binding-kodein/index.md)`.() -> Unit): Unit`
 
 Adds a callback that will be called once the Kodein object is configured and instantiated.
 

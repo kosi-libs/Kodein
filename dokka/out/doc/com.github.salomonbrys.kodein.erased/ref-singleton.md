@@ -2,7 +2,7 @@
 
 # refSingleton
 
-`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.refSingleton(refMaker: `[`RefMaker`](../com.github.salomonbrys.kodein/-ref-maker/index.md)`, noinline creator: `[`ProviderKodein`](../com.github.salomonbrys.kodein/-provider-kodein/index.md)`.() -> T): `[`Provider`](../com.github.salomonbrys.kodein/-provider/index.md)`<T>`
+`inline fun <reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.refSingleton(refMaker: `[`RefMaker`](../com.github.salomonbrys.kodein/-ref-maker/index.md)`, noinline creator: `[`NoArgBindingKodein`](../com.github.salomonbrys.kodein.bindings/-no-arg-binding-kodein/index.md)`.() -> T): `[`RefSingletonBinding`](../com.github.salomonbrys.kodein/-ref-singleton-binding/index.md)`<T>`
 
 Creates a referenced singleton, will return always the same object as long as the reference is valid.
 

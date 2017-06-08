@@ -2,7 +2,7 @@
 
 # overriddenFactoryOrNull
 
-`abstract fun overriddenFactoryOrNull(key: `[`Key`](../-kodein/-key/index.md)`, overrideLevel: Int): (Any?) -> Any`
+`abstract fun <A, T : Any> overriddenFactoryOrNull(key: `[`Key`](../-kodein/-key/index.md)`<A, T>, overrideLevel: Int): (A) -> T`
 
 Retrieve an overridden factory for the given key at the given override level, if there is an overridden binding at that level.
 

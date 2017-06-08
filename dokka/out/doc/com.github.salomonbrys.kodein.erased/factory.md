@@ -2,6 +2,23 @@
 
 # factory
 
+`inline fun <reified A, reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.factory(noinline creator: `[`BindingKodein`](../com.github.salomonbrys.kodein.bindings/-binding-kodein/index.md)`.(A) -> T): `[`FactoryBinding`](../com.github.salomonbrys.kodein.bindings/-factory-binding/index.md)`<A, T>`
+
+Creates a factory: each time an instance is needed, the function [creator](factory.md#com.github.salomonbrys.kodein.erased$factory(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function2((com.github.salomonbrys.kodein.bindings.BindingKodein, com.github.salomonbrys.kodein.erased.factory.A, com.github.salomonbrys.kodein.erased.factory.T)))/creator) function will be called.
+
+A &amp; T generics will be erased!
+
+### Parameters
+
+`A` - The argument type.
+
+`T` - The created type.
+
+`creator` - The function that will be called each time an instance is requested. Should create a new instance.
+
+**Return**
+A factory ready to be bound.
+
 `inline fun <reified A, reified T : Any> `[`KodeinInjectedBase`](../com.github.salomonbrys.kodein/-kodein-injected-base/index.md)`.factory(tag: Any? = null): `[`InjectedProperty`](../com.github.salomonbrys.kodein/-injected-property/index.md)`<(A) -> T>`
 
 Gets a lazy factory for the given type, tag and argument type.
@@ -29,23 +46,6 @@ Either a [KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/inde
 
 **Return**
 A lazy property that yields a factory of `T`.
-
-`inline fun <reified A, reified T : Any> `[`Builder`](../com.github.salomonbrys.kodein/-kodein/-builder/index.md)`.factory(noinline creator: `[`Kodein`](../com.github.salomonbrys.kodein/-kodein/index.md)`.(A) -> T): `[`Factory`](../com.github.salomonbrys.kodein/-factory/index.md)`<A, T>`
-
-Creates a factory: each time an instance is needed, the function [creator](factory.md#com.github.salomonbrys.kodein.erased$factory(com.github.salomonbrys.kodein.Kodein.Builder, kotlin.Function2((com.github.salomonbrys.kodein.Kodein, com.github.salomonbrys.kodein.erased.factory.A, com.github.salomonbrys.kodein.erased.factory.T)))/creator) function will be called.
-
-A &amp; T generics will be erased!
-
-### Parameters
-
-`A` - The argument type.
-
-`T` - The created type.
-
-`creator` - The function that will be called each time an instance is requested. Should create a new instance.
-
-**Return**
-A factory ready to be bound.
 
 `inline fun <reified A, reified T : Any> `[`LazyKodeinAwareBase`](../com.github.salomonbrys.kodein/-lazy-kodein-aware-base/index.md)`.factory(tag: Any? = null): Lazy<(A) -> T>`
 

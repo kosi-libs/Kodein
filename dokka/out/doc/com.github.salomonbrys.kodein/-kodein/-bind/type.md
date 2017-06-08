@@ -2,7 +2,7 @@
 
 # type
 
-`val type: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)
+`val type: `[`TypeToken`](../../-type-token/index.md)`<out T>`
 
 The type that is bound.
 

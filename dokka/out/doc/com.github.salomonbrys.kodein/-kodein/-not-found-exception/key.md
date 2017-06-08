@@ -2,7 +2,7 @@
 
 # key
 
-`val key: `[`Key`](../-key/index.md)
+`val key: `[`Key`](../-key/index.md)`<*, *>`
 
 The key that was not found.
 

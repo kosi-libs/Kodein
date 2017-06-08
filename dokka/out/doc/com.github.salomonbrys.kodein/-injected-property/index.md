@@ -11,7 +11,7 @@ Read only property delegate for an injected value.
 | Name | Summary |
 |---|---|
 | [_type](_type.md) | `abstract val _type: String`<br>The type of the object to inject, *used for debug print only*. |
-| [key](key.md) | `val key: `[`Key`](../-kodein/-key/index.md)<br>The key of the value that will be injected. |
+| [key](key.md) | `val key: `[`Key`](../-kodein/-key/index.md)`<*, *>`<br>The key of the value that will be injected. |
 | [value](value.md) | `val value: T`<br>The injected value. |
 
 ### Functions
@@ -27,8 +27,10 @@ Read only property delegate for an injected value.
 
 | Name | Summary |
 |---|---|
-| [toInstance](../to-instance.md) | `fun <A, T : Any> InjectedProperty<(A) -> T>.toInstance(arg: () -> A): Lazy<T?>`<br>Transforms an injected factory property into an injected instance property by currying the factory with the given argument. |
-| [toProvider](../to-provider.md) | `fun <A, T : Any> InjectedProperty<(A) -> T>.toProvider(arg: () -> A): Lazy<() -> T>`<br>Transforms an injected nullable factory property into an injected nullable provider property by currying the factory with the given argument. |
+| [toInstance](../to-instance.md) | `fun <A, T : Any> InjectedProperty<(A) -> T>.toInstance(arg: () -> A): Lazy<T>`<br>Transforms an injected factory property into an injected instance property by currying the factory with the given argument. |
+| [toInstanceOrNull](../to-instance-or-null.md) | `fun <A, T : Any> InjectedProperty<(A) -> T>.toInstanceOrNull(arg: () -> A): Lazy<T?>`<br>Transforms an injected factory property into an injected instance property by currying the factory with the given argument. |
+| [toProvider](../to-provider.md) | `fun <A, T : Any> InjectedProperty<(A) -> T>.toProvider(arg: () -> A): Lazy<() -> T>`<br>Transforms an injected factory property into an injected provider property by currying the factory with the given argument. |
+| [toProviderOrNull](../to-provider-or-null.md) | `fun <A, T : Any> InjectedProperty<(A) -> T>.toProviderOrNull(arg: () -> A): Lazy<() -> T>`<br>Transforms an injected nullable factory property into an injected nullable provider property by currying the factory with the given argument. |
 
 ### Inheritors
 

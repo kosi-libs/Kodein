@@ -2,7 +2,7 @@
 
 # factoryArgumentTypes
 
-`fun Map<`[`Key`](../-kodein/-key/index.md)`, `[`Factory`](../-factory/index.md)`<*, *>>.factoryArgumentTypes(bind: `[`Bind`](../-kodein/-bind/index.md)`): List<`[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`>`
+`fun `[`BindingsMap`](../-bindings-map.md)`.factoryArgumentTypes(bind: `[`Bind`](../-kodein/-bind/index.md)`<*>): List<`[`TypeToken`](../-type-token/index.md)`<*>>`
 
 ### Parameters
 

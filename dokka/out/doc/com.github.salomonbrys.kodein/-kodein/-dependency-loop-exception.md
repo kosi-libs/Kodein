@@ -2,7 +2,7 @@
 
 # DependencyLoopException
 
-`class DependencyLoopException : `[`RuntimeException`](http://docs.oracle.com/javase/6/docs/api/java/lang/RuntimeException.html)
+`class DependencyLoopException : RuntimeException`
 
 Exception thrown when there is a dependency loop.
 

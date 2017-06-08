@@ -2,7 +2,7 @@
 
 # overriddenProviderOrNull
 
-`open fun overriddenProviderOrNull(bind: `[`Bind`](../-kodein/-bind/index.md)`, overrideLevel: Int): () -> Any`
+`open fun <T : Any> overriddenProviderOrNull(bind: `[`Bind`](../-kodein/-bind/index.md)`<T>, overrideLevel: Int): () -> T`
 
 Retrieve an overridden provider for the given key at the given override level, if there is an overridden binding at that level.
 

@@ -1,8 +1,41 @@
 
+#### 4.0.0 (08-06-2017)
+
+ - FEATURES
+   * Kotlin 1.1.2-4.
+   * The `generic` function is now 40% faster.
+   
+ - BUG FIX
+   * Kodein JS now intercept type reflection failure (which happens when reflecting on primitive types on older versions of Kotlin).
+ 
+ - REMOVAL
+   * Removed the `sequence` coroutine binder (too experimental).
+
+#### 4.0.0-beta2 (24-04-2017)
+
+ - FEATURES
+   * Kotlin 1.1.0.
+   * Javascript modules (`kodein-js` & `kodein-js-conf`).
+     Uses the erased methods as JS does not support generic type reflection.
+   * The Kodein binding DSL is now protected with `@DslMarker` to prevent weird things from happenning.
+   * New binding factory: `sequence` which uses coroutines to bind a sequence.
+   
+- BREAKING CHANGES
+   * Removed all `erased*` and `generic*` methods.
+     Each core method now takes type parameters that are obtained with either `generic()` or `erased()`.
+   * Functions and classes that were part of the internal system, but declared public (because inline function references) are now truly internal.
+   * Removed all deprecated API: new major version means clean slate.
+
+- STRUCTURE CHANGES
+   * Every type is now represented with a `TypeToken<T>` instead of a `Type`.
+
+- BUG FIX
+  * issue #61: FullTypeStringer failed on a type with no package.
+
 ### 3.4.1 (24-04-2017)
 
- - BUG FIXES
-   * Crash in `fullDescription` when displaying the name of a package-less class.
+- BUG FIX
+  * issue #61: FullTypeStringer failed on a type with no package.
 
 ### 3.4.0 (18-04-2017)
 
@@ -50,7 +83,7 @@ No changes from `3.2.0-beta3`
 ### 3.2.0-beta2 (28-10-2016)
 
  - FEATURES
-   * Every function that do generic type reflexivity is renamed `generic*` and has an `erased*` counterpart.
+   * Every function that do generic type reflection is renamed `generic*` and has an `erased*` counterpart.
    * All functions are now inside the `kodein-core` module. The `kodein` module defines extension functions that alias
      to the  "generic*" functions by default.
    * The `kodein-erased` module is the same as the `kodein` module, but with functions that alias to the `erased*`
@@ -60,7 +93,7 @@ No changes from `3.2.0-beta3`
    * Removed methods that were deprecated in 3.1.0
    * For Android, \[scope\]ScopedSingleton methods are deprecated (for example, `contextScopedSingleton {}` is
      deprecated in favour of `scopedSingleton(androidContextScope) {}`)
-   * `typeToken` has been renamed to `genericToken`. The `typeToken` function still exists but is deprecated.
+   * `typeToken` has been renamed to `generic`. The `typeToken` function still exists but is deprecated.
 
  - STRUCTURE CHANGES
    * The `bind` methods and their `with` associates are now extension functions and need to be imported.

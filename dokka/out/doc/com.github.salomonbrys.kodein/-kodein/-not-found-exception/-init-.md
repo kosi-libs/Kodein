@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`NotFoundException(key: `[`Key`](../-key/index.md)`, message: String)`
+`NotFoundException(key: `[`Key`](../-key/index.md)`<*, *>, message: String)`
 
 Exception thrown when asked for a dependency that cannot be found.
 

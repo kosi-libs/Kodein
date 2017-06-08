@@ -2,7 +2,7 @@
 
 # destroyInjector
 
-`open fun destroyInjector(): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein/-scope-registry/index.md)`?`
+`open fun destroyInjector(): `[`ScopeRegistry`](../../com.github.salomonbrys.kodein.bindings/-scope-registry/index.md)`?`
 
 Overrides [AndroidInjector.destroyInjector](../-android-injector/destroy-injector.md)
 

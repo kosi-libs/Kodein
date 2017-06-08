@@ -2,7 +2,7 @@
 
 # Bind
 
-`data class Bind`
+`data class Bind<out T : Any>`
 
 Part of a [Key](../-key/index.md) that represents the left part of a bind declaration.
 
@@ -10,7 +10,7 @@ Part of a [Key](../-key/index.md) that represents the left part of a bind declar
 
 | Name | Summary |
 |---|---|
-| [&lt;init&gt;](-init-.md) | `Bind(type: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)`, tag: Any?)`<br>Part of a [Key](../-key/index.md) that represents the left part of a bind declaration. |
+| [&lt;init&gt;](-init-.md) | `Bind(type: `[`TypeToken`](../../-type-token/index.md)`<out T>, tag: Any?)`<br>Part of a [Key](../-key/index.md) that represents the left part of a bind declaration. |
 
 ### Properties
 
@@ -19,7 +19,7 @@ Part of a [Key](../-key/index.md) that represents the left part of a bind declar
 | [description](description.md) | `val description: String`<br>Description using simple type names. The description is as close as possible to the code used to create this bind. |
 | [fullDescription](full-description.md) | `val fullDescription: String`<br>Description using full type names. The description is as close as possible to the code used to create this bind. |
 | [tag](tag.md) | `val tag: Any?`<br>The optional tag. |
-| [type](type.md) | `val type: `[`Type`](http://docs.oracle.com/javase/6/docs/api/java/lang/reflect/Type.html)<br>The type that is bound. |
+| [type](type.md) | `val type: `[`TypeToken`](../../-type-token/index.md)`<out T>`<br>The type that is bound. |
 
 ### Functions
 

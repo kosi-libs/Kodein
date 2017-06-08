@@ -10,8 +10,8 @@ Starts a constant binding.
 
 `tag` - The tag to bind.
 
-`overrides` - Whether this bind **must**, **may** or **must not** override an existing binding.
+`overrides` - Whether this bind **must** or **must not** override an existing binding.
 
 **Return**
-The binder: call [ConstantBinder.with](../../with.md)) on it to finish the binding syntax and register the binding.
+The binder: call `with` on it to finish the binding syntax and register the binding.
 
