@@ -54,7 +54,7 @@ Kodein version 4 is the current major version available:
 
 If you are currently using a `javax.inject` compatible dependency injection library and whish to migrate to Kodein, [there is a guide for that](https://github.com/SalomonBrys/Kodein/blob/master/MIGRATION-JtoK.adoc).
 
-If you are still using version 3, you can access [version 3 documentation](https://github.com/SalomonBrys/Kodein/blob/master/DOCUMENTATION_V3.pdf).
+If you are still using version 3, you can access [version 3 documentation](https://github.com/SalomonBrys/Kodein/blob/master/DOCUMENTATION_V3.adoc).
 
 
 &nbsp;
