@@ -70,8 +70,7 @@
                 var branch = "master";
                 if (location.search != "")
                     branch = location.search.substr(1);
-                var url = "https://raw.githubusercontent.com/SalomonBrys/Kodein/" + branch + "/README3.adoc";
-//                var url = "../Kodein/README3.adoc";
+                var url = "https://raw.githubusercontent.com/SalomonBrys/Kodein/" + branch + "/DOCUMENTATION.adoc";
                 $.get(url, function(data) {
                     var options = Opal.hash({
                         backend: 'html5',
