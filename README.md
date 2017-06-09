@@ -69,7 +69,7 @@ Testimonies
 > At [Collokia](https://www.collokia.com/) we use Kodein in all of our backend service infrastructure and all modules in those services are loosely coupled through injection with Kodein.
 > It allows us to have nice module independence, and to opt-out of injection during testing or build separate modules in support of testing.  
 > It is a key component and building block in our architecture.  
-> -- [Jason Minard](https://github.com/apatrida)
+> -- [Jayson Minard](https://github.com/apatrida)
 
 &nbsp;
 
