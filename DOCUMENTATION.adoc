@@ -1633,7 +1633,6 @@ compile 'com.github.salomonbrys.kodein:kodein-js-conf:{version}'
 ----
 
 
-
 == Debugging
 
 === Print bindings
@@ -1673,68 +1672,6 @@ com.github.salomonbrys.kodein.Kodein$DependencyLoopException: Dependency recursi
 <1> `com.test.A` depends on `com.test.B`
 <2> `com.test.B` depends on `com.test.C` with the tag "Yay"
 <3> `com.test.C` with the tag "Yay" depends on `com.test.A`, *we have found the dependency loop!*.
-
-
-[[jvm-performance]]
-== Performance for the JVM
-
-NOTE: To be clear, this section do not apply to JavaScript!
-
-=== The type erasure problem
-
-By default, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
-Similarly, `kodein.instance<List<String>>()` and `kodein.instance<List<Int>>()` will yield two different list.
-
-To be erasure immune, Kodein relies heavily on the `generic` function, *which is real a performance pitfall*.
-
-To improve performance, you can use the `erased` function with Kodein, which are faster, but do suffer from type erasure!
-
-[WARNING]
-====
-Yes, #perfmatters. However, the humble opinion of the author is that:
-
-- There is a balance to be found between performance, readability, security and debuggability.
-- Optimisation is important in critical path, not _everywhere_.
-- Kodein is already pretty optimized ;)
-- In the vast majority of cases, using the `erased` function will result in **no significant performance change** to your application, as IoC is not a performance pitfall!
-
-Therefore, please make sure that, using the `erased` function is right for your use case, before blindly using it ;).
-Do profile your app!
-====
-
-=== Using generic and erased function forms
-
-Each kodein function that handles a type exists in two form: as inline (lowercased first letter) and as regular function (uppercased first letter). +
-For example, the `kodein.instance` function also exists as `kodein.Instance`.
-
-The uppercase functions needs `TypeToken` parameters that define the type being bound / retrieved and maybe the factory's argument. +
-You can easily use these functions with the `generic` or `erased` functions:
-
-[source, kotlin]
-.Example: using the `erased` function
-----
-val ds: DataSource = kodein.Instance(erased())
-----
-
-By default, all inline functions are aliases to their uppercase counterparts using the `generic` function. +
-For example, the `kodein.instance()` function is an alias to `kodein.Instance(generic())`
-
-So, when you know that you inject a type that is *not generic*, you can use `kodein.Instance(erased())`:
-
-
-[[erased-by-default]]
-=== Using erased by default
-
-WARNING: Profile your code before using this, as this is very likely to bring no performance improvement to your application.
-
-If you know what you are doing, and *_why_* you are doing it, you can change the default methods to alias with the `erased` function.
-
-For this, you *must not* depend on the `kodein` module, and instead, depend on the `kodein-erased` module.
-
-CAUTION: This means that, by default, `kodein.instance<List<String>>()` will look for an erased `List` binding. +
-         Therefore, to bind a `List<String>` you *must* use `Bind<List<String>>(generic())`, and to retrieve it, you *must* use `kodein.Instance(generic())`.
-
-NOTE: The inline function set that alias with the `erased` function is located in a different package than the regular one: `com.github.salomonbrys.kodein.erased`.
 
 
 == Using reflexivity to auto-inject
@@ -2069,6 +2006,68 @@ A binding function is an extension function to `Kodein.Builder` that returns a `
 If your scope is a provider scope (such as singleton), you can use the `NoArgBinding<T>` interface for ease of use.
 Have a look at existing bindings in the https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein/src/main/kotlin/com/github/salomonbrys/kodein/factories.kt[factories.kt] file.
 The `singleton` binding function is very easy to understand and is a good starting point.
+
+
+[[jvm-performance]]
+=== Performance for the JVM
+
+NOTE: To be clear, this section do not apply to JavaScript!
+
+==== The type erasure problem
+
+By default, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
+Similarly, `kodein.instance<List<String>>()` and `kodein.instance<List<Int>>()` will yield two different list.
+
+To be erasure immune, Kodein relies heavily on the `generic` function, which is known to be slow.
+
+To improve performance, you can use the `erased` function with Kodein, which are faster, but do suffer from type erasure!
+
+[WARNING]
+====
+Yes, #perfmatters. However, the humble opinion of the author is that:
+
+- There is a balance to be found between performance, readability, security and debuggability.
+- Optimisation is important *in critical path*, not _everywhere_.
+- Kodein is already pretty optimized ;)
+- In the vast majority of cases, using the `erased` function will result in **no significant performance change** to your application, as IoC is not a performance pitfall!
+
+Therefore, please make sure that, using the `erased` function is right for your use case, before blindly using it ;).
+*Do profile your code*!
+====
+
+==== Using generic and erased function forms
+
+Each kodein function that handles a type exists in two form: as inline (lowercased first letter) and as regular function (uppercased first letter). +
+For example, the `kodein.instance` function also exists as `kodein.Instance`.
+
+The uppercase functions need `TypeToken` parameters that define the type being bound / retrieved and maybe the factory's argument. +
+You can easily use these functions with the `generic` or `erased` functions:
+
+[source, kotlin]
+.Example: using the `erased` function
+----
+val ds: DataSource = kodein.Instance(erased())
+----
+
+By default, all inline functions are aliases to their uppercase counterparts using the `generic` function. +
+For example, the `kodein.instance()` function is an alias to `kodein.Instance(generic())`
+
+So, when you know that you inject a type that is *not generic*, you can use `kodein.Instance(erased())`.
+
+
+[[erased-by-default]]
+==== Using erased by default
+
+WARNING: Profile your code before using this, as this is very likely to bring no performance improvement to your application.
+
+If you know what you are doing, and *_why_* you are doing it, you can change the default methods to alias with the `erased` function.
+
+For this, you *must not* depend on the `kodein` module, and instead, depend on the `kodein-erased` module.
+
+CAUTION: This means that, by default, `kodein.instance<List<String>>()` will look for an erased `List` binding. +
+         Therefore, to bind a `List<String>` you *must* use `Bind<List<String>>(generic())`, and to retrieve it, you *must* use `kodein.Instance(generic())`.
+
+NOTE: The inline function set that alias with the `erased` function is located in a different package than the regular one: `com.github.salomonbrys.kodein.erased`.
 
 
 === Bind the same type to different factories
