@@ -96,6 +96,15 @@ Testimonies
 
 &nbsp;
 
+<img src="https://insiteapplications.com/static/InSiteLogo.png" width="150" height="35" />
+
+> Kodein has been instrumental in moving our entire production application to Kotlin at [InSite Applications](https://insiteapplications.com). It uses standard Kotlin idioms and features for ultimate clarity and simplicity. It was clear to us from the beginning that Kodein would be our DI solution. Our devs love it so much that they've transitioned to using it in their personal apps, both Java and Kotlin!
+> -- [Eliezer Graber](https://github.com/eygraber)
+
+&nbsp;
+
+&nbsp;
+
 <img src="https://dental-monitoring.com/wp-content/uploads/2015/02/logo.png" height="60" />
 
 > Kodein was created at [Dental Monitoring](https://dental-monitoring.com/) with the opinion that Dagger2 is way too verbose and complex.
