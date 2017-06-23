@@ -184,6 +184,13 @@ private fun defineAndroidModule() = Kodein.Module {
 val androidModule = defineAndroidModule()
 
 /**
+ * A helper class for binding a named SharedPreferences
+ */
+data class KodeinSharedPreferencesInfo(val ctx: Context, val name: String, val visibility: Int = Context.MODE_PRIVATE) {
+    fun getSharedPreferences(): SharedPreferences = ctx.getSharedPreferences(name, visibility)
+}
+
+/**
  * A module that binds a lot of Android framework classes:
  *
  * ```kotlin
@@ -198,10 +205,6 @@ val androidModule = defineAndroidModule()
 fun autoAndroidModule(app: Application) = Kodein.Module {
     fun Kodein.ctx() = InstanceOrNull<Context>(erased()) ?: app.applicationContext
 
-    data class SharedPreferencesInfo(val ctx: Context, val name: String, val visibility: Int = Context.MODE_PRIVATE) {
-        fun getSharedPreferences() = ctx.getSharedPreferences(name, visibility)
-    }
-
     bind() from ProviderBinding(erased()) { app }
 
     bind() from ProviderBinding(erased()) { ctx().assets }
@@ -213,7 +216,7 @@ fun autoAndroidModule(app: Application) = Kodein.Module {
     bind() from ProviderBinding(erased()) { ctx().theme }
 
     bind() from ProviderBinding(erased()) { PreferenceManager.getDefaultSharedPreferences(ctx()) }
-    bind(tag = "named") from FactoryBinding(erased(), erased()) { info: SharedPreferencesInfo -> info.getSharedPreferences() }
+    bind(tag = "named") from FactoryBinding(erased(), erased()) { info: KodeinSharedPreferencesInfo -> info.getSharedPreferences() }
 
     Bind<File>(erased(), tag = "cache") with ProviderBinding(erased()) { ctx().cacheDir }
     Bind<File>(erased(), tag = "externalCache") with ProviderBinding(erased()) { ctx().externalCacheDir }
