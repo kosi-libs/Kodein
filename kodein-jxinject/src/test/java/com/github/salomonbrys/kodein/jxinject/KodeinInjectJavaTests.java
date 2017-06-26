@@ -1,5 +1,7 @@
 package com.github.salomonbrys.kodein.jxinject;
 
+import com.github.salomonbrys.kodein.Kodein;
+import com.github.salomonbrys.kodein.TypesKt;
 import kotlin.Lazy;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
@@ -16,6 +18,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import static com.github.salomonbrys.kodein.TypesKt.TT;
 import static org.junit.Assert.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -435,6 +438,14 @@ public class KodeinInjectJavaTests {
         Test04_0 test = Jx.of(KodeinsKt.test4()).newInstance(Test04_0.class);
 
         assertEquals("fourty-two", test.answer);
+    }
+
+    @Test
+    public void test05_0_BindWithJX() {
+        Kodein kodein = KodeinsKt.test5();
+
+        Test5B b = kodein.Instance(TT(Test5B.class), null);
+        assertNotNull(b.getA());
     }
 
 }
