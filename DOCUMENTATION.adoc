@@ -180,6 +180,7 @@ TIP: The tag is of type `Any`, it does not have to be a `String`.
 IMPORTANT: Tag objects must support equality & hashcode comparison.
            It is therefore recommended to either use primitives (Strings, Ints, etc.) or data classes.
 
+
 === Eager singleton binding
 
 This is the same as a regular singleton, except that the provided function will be called as soon as the Kodein instance is created and all bindings are defined.
@@ -372,7 +373,10 @@ val kodein = Kodein {
 
 NOTE: The order in which the bindings are declared has *no importance whatsoever*.
 
-Finally, you can also pass the `kodein` object to the class so it can itself use the Kodein object to retrieve its own dependencies.
+
+=== Being responsible for its own retrieval
+
+You can pass the `kodein` object to the class so it can itself use the Kodein object to retrieve its own dependencies.
 
 [source, kotlin]
 .Example: bindings of Manager that is responsible for retrieving its own dependencies
@@ -382,6 +386,8 @@ val kodein = Kodein {
 }
 ----
 <1> ManagerImpl is given a Kodein instance.
+
+See <<kodein-aware>> for how the class can retrieve its own dependencies.
 
 
 == Bindings separation
@@ -577,7 +583,10 @@ Doing so has the benefit of getting a simpler syntax for retrieval.
 .Example: a KodeinAware class
 ----
 class MyManager(override val kodein: Kodein) : KodeinAware {
-    val ds: DataSource = instance()
+    val datasource: DataSource = instance()
+    val random: Random = instance()
+    val diceFactory: (Int) -> Dice = factory()
+    val d6: Dice = with(6).instance()
 }
 ----
 
@@ -667,7 +676,6 @@ private val sixSideDiceProvider: () -> Dice by injector.with(6).provider()
 private val tenSideDiceProvider: Dice by injector.with(10).instance()
 ----
 
-
 [[kodein-injected]]
 ==== In a Kodein injected class
 
@@ -733,7 +741,6 @@ class Controller() {
 ----
 <1> The `kodein` object is of type `LazyKodein`, not `Kodein`.
 <2> Only there will "doing bindings" will be printed.
-
 
 [[lazy-kodein-aware]]
 ==== In a lazy Kodein aware class
@@ -1074,7 +1081,6 @@ class MyActivity : Activity() {
 
 WARNING: You cannot use `kodein` with parenthesis and access the Kodein instance while the activity is not initialized by Android.
 
-
 ==== Using an injector
 
 Using an injector allows you to resolve all dependencies in `onCreate`, reducing the cost of dependency first-access (but more processing happening in `onCreate`).
@@ -1095,7 +1101,6 @@ class MyActivity : Activity() {
 
 NOTE: Using this approach has an important advantage: as all dependencies are retrieved in `onCreate`, you can be sure that all your dependencies have correctly been retrieved, meaning that there were no non-declared dependency. +
       If you only use `instance` (no `provider` or `factory`), you can also be sure that there were no dependency loop.
-
 
 ==== Being aware in Android
 
@@ -1148,7 +1153,6 @@ Both methods provide you with:
 
 IMPORTANT: Don't forget to use an `Application` that is `KodeinAware`:
 
-
 ==== Inheritance Based
 
 Kodein provides base classes for the following Android components:
@@ -1190,11 +1194,9 @@ class MyActivity : KodeinActivity() { // <1>
 
 CAUTION: `KodeinActivity`, `KodeinFragmentActivity`, and `KodeinAppCompatActivity` will internally initialize their injector before they call `super.onCreate` (see https://github.com/SalomonBrys/Kodein/issues/50[the issue that necessitates this]).
 
-
 ===== KodeinBroadcastReceiver
 
 Because of how the injector's lifecycle is managed for a `KodeinBroadcastReceiver`, subclasses should override `onBroadcastReceived(Context, Intent)` instead of `onReceive(Context, Intent)`.
-
 
 ==== Interface Based
 
@@ -1253,7 +1255,6 @@ class MyFragment : CustomFragment(), FragmentInjector { // <1>
 
 CAUTION: When using `ActivityInjector`, `FragmentActivityInjector`, or `AppCompatActivityInjector` it is suggested to call `initializeInjector` before `super.onCreate` (see https://github.com/SalomonBrys/Kodein/issues/50[the issue that necessitates this]).
 
-
 ===== BroadcastReceiverInjector
 
 `BroadcastReceiverInjector` should be used like this:
@@ -1278,7 +1279,6 @@ class MyBroadcastReceiver : CustomBroadcastReceiver(), BroadcastReceiverInjector
 ----
 <1> It is necessary to set `BroadcastReceiverInjector.context` before calling `initializeInjector`
 
-
 ==== Fragments
 
 The parent of any `KodeinFragment`, `KodeinSupportFragment`, `FragmentInjector`, or `SupportFragmentInjector` **must** be `KodeinInjected`.
@@ -1287,7 +1287,6 @@ If there is no `parentFragment`, the `Activity` of the `Fragment` **must** be on
 
 NOTE: Inside a fragment, you can retrive a `LayoutInflater` using the tag `ACTIVITY_LAYOUT_INFLATER`.
       Using the tag will use a more optimized way of retrieving the `LayoutInflater`.
-
 
 === Android module
 
@@ -1378,7 +1377,6 @@ val otherLogger: Logger = kodein.with(otherContext).instance() // this will be a
 NOTE: The activity and service scope are special cases of the context scope.
       The bindings returned for an `Activity` or `Service` object from the context scope will be the same one returned for that object from the activity or service scope.
 
-
 [[activity-scope]]
 ==== The activity scope
 
@@ -1400,7 +1398,6 @@ As with the context scope, to retrieve objects bound in the activity scope, you 
 ----
 val logger: Logger = kodein.with(getActivity()).instance()
 ----
-
 
 ==== The auto activity scope
 
@@ -1438,7 +1435,6 @@ class MyApplication : Application {
 
 CAUTION: Objects that are bound in the auto `androidActivityScope` will always be injected according to *the last displayed activity*.
 
-
 [[service-scope]]
 ==== The service scope
 
@@ -1460,7 +1456,6 @@ As with the context scope, to retrieve objects bound in the service scope, you n
 ----
 val logger: Logger = kodein.with(service).instance()
 ----
-
 
 ==== The fragment (and support fragment) scope
 
@@ -1497,7 +1492,6 @@ val logger: Logger = kodein.with(fragment).instance()
 ----
 val logger: Logger = kodein.with(supportFragment).instance()
 ----
-
 
 ==== The broadcast receiver scope
 
@@ -1735,6 +1729,7 @@ val kodein = Kodein {
 }
 ----
 
+
 === JavaX injections
 
 ==== Constructor injection
@@ -1826,6 +1821,7 @@ public class MyJavaController {
 ----
 
 You know the drill, use `kodein.jx` in Kotlin or `Jx.of(kodein)` in Java the exact same way as for field injection.
+
 
 === Being specific
 
@@ -1960,7 +1956,6 @@ object myScope: Scope<Request> { // <1>
 <1> The scope's context type is `Request`.
 <2> Creates a `ScopeRegistry` in the context `Request` if there is none.
 
-
 ==== Auto Scoped singletons
 
 Scoped singletons are not always ideal since you need the context to retrieve any object.
@@ -2053,7 +2048,6 @@ By default, all inline functions are aliases to their uppercase counterparts usi
 For example, the `kodein.instance()` function is an alias to `kodein.Instance(generic())`
 
 So, when you know that you inject a type that is *not generic*, you can use `kodein.Instance(erased())`.
-
 
 [[erased-by-default]]
 ==== Using erased by default
