@@ -1,0 +1,20 @@
+apply plugin: 'konan'
+
+//sourceSets {
+//    main.kotlin.srcDirs += "src/main/kotlin"
+//    main.kotlin.srcDirs += "$rootDir/shared/core/kotlin"
+//    main.kotlin.srcDirs += "$rootDir/shared/erased/kotlin"
+//}
+
+//dependencies {
+//    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+//}
+
+konanArtifacts {
+    libkodein {
+        inputFiles fileTree("src/main/kotlin")
+        inputFiles fileTree("$rootDir/shared/core/kotlin")
+        inputFiles fileTree("$rootDir/shared/erased/kotlin")
+        produce 'library'
+    }
+}

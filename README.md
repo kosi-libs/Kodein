@@ -14,6 +14,12 @@ KOtlin DEpendency INjection
 
 Kodein is a very simple and yet very useful dependency retrieval container. it is very easy to use and configure.
 
+Kodein works:
+
+- On the JVM.
+- On Android.
+- On Javascript (both in the browser and on Node.js).
+
 Kodein allows you to:
 
 - Lazily instantiate your dependencies when needed
