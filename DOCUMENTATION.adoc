@@ -1014,7 +1014,7 @@ NOTE: Kodein does work on Android as-is.
       The `kodein-android` extension adds multiple android-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
-Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/android-demo[Android demo project]!
+Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/demo-android[Android demo project]!
 
 
 === Install
