@@ -1,4 +1,18 @@
 
+#### 4.1.0 (???)
+
+ - CORE
+   * Kotlin 1.1.3
+   * Introducing `erasedComp1`, `erasedComp2` and `erasedComp3` to describe generic types in an erased-only environment.
+
+ - ANDROID
+   * `KodeinSharedPreferencesInfo` is now accessible from outside autoAndroidModule.
+   * Added `KodeinPreferenceFragment`.
+
+ - INTERNALS
+   * `JxInjector` now delegates to the internal `JxInjectorContainer`.
+   * Refactored `TypeToken`
+
 #### 4.0.0 (08-06-2017)
 
  - FEATURES
