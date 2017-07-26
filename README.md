@@ -63,6 +63,13 @@ If you are currently using a `javax.inject` compatible dependency injection libr
 If you are still using version 3, you can access [version 3 documentation](https://github.com/SalomonBrys/Kodein/blob/master/DOCUMENTATION_V3.adoc).
 
 
+Support
+-------
+
+Support is held in the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/).
+You can get an invite to the Kotlin Slack [here](http://slack.kotlinlang.org/).
+
+
 &nbsp;
 
 Testimonies
