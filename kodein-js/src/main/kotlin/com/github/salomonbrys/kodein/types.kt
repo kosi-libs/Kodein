@@ -9,8 +9,9 @@ internal class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
     override fun fullDispString() = type.name
 
     override fun checkIsReified(disp: Any) {}
-    override fun getRawIfGeneric() = null
-    override fun getRawIfWildcard() = null
+    override fun getRaw() = this
+    override fun isGeneric() = false
+    override fun isWildcard() = false
     override fun getSuper() = null
 
     override fun equals(other: Any?): Boolean {

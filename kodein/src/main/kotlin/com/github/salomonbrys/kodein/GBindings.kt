@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.github.salomonbrys.kodein
 
 import com.github.salomonbrys.kodein.bindings.*

@@ -9,10 +9,8 @@ import org.junit.Assert.assertNotEquals
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import java.lang.reflect.ParameterizedType
 import java.util.*
 import kotlin.concurrent.thread
-import kotlin.coroutines.experimental.buildSequence
 
 interface IPerson { val name: String? }
 
@@ -47,6 +45,8 @@ class FullName(firstName: String, val lastName: String) : Name(firstName) {
         return 31 * super.hashCode() + lastName.hashCode()
     }
 }
+
+typealias PersonEntry = Pair<String, Person>
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KodeinTests : TestCase() {
@@ -996,6 +996,45 @@ class KodeinTests : TestCase() {
         val wedding = kodein.newInstance { Wedding(instance("Author"), instance("Spouse")) }
         assertEquals("Salomon", wedding.him.name)
         assertEquals("Laila", wedding.her.name)
+    }
+
+    @Test fun test26_0_MultiSet() {
+        val kodein = Kodein {
+            bind() from setBinding<Person>()
+
+            bind<Person>().inSet() with singleton { Person("Salomon") }
+            bind<Person>().inSet() with provider { Person("Laila") }
+        }
+
+        val persons1 = kodein.instance<Set<Person>>()
+
+        assertTrue(Person("Salomon") in persons1)
+        assertTrue(Person("Laila") in persons1)
+
+        val persons2 = kodein.instance<Set<Person>>()
+
+        val salomon1 = persons1.first { it.name == "Salomon" }
+        val salomon2 = persons2.first { it.name == "Salomon" }
+
+        val laila1 = persons1.first { it.name == "Laila" }
+        val laila2 = persons2.first { it.name == "Laila" }
+
+        assertSame(salomon1, salomon2)
+        assertNotSame(laila1, laila2)
+    }
+
+    @Test fun test27_1_MultiMap() {
+        val kodein = Kodein {
+            bind() from setBinding<PersonEntry>()
+
+            bind<PersonEntry>().inSet() with singleton { "so" to Person("Salomon") }
+            bind<PersonEntry>().inSet() with provider { "loulou" to Person("Laila") }
+        }
+
+        val persons = kodein.instance<Set<PersonEntry>>().toMap()
+
+        assertEquals(Person("Salomon"), persons["so"])
+        assertEquals(Person("Laila"), persons["loulou"])
     }
 
 }

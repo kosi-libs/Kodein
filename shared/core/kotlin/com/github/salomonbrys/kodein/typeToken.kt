@@ -1,5 +1,7 @@
 package com.github.salomonbrys.kodein
 
+import java.util.*
+
 /**
  * An interface that contains a simple Type but is parameterized to enable type safety.
  *
@@ -25,14 +27,12 @@ interface TypeToken<T> {
      */
     fun checkIsReified(disp: Any)
 
-    /**
-     * Returns the raw type of the type represented by this TypeToken if it is generic.
-     * If the type is not generic, return null.
-     */
-    fun getRawIfGeneric(): TypeToken<T>?
+    fun getRaw(): TypeToken<T>
+
+    fun isGeneric(): Boolean
 
     /**
-     * Returns the raw type if the type represented by this TypeToken is generic and is entirely wildcard.
+     * Returns whether the type represented by this TypeToken is generic and is entirely wildcard.
      *
      * Examples:
      *
@@ -43,14 +43,49 @@ interface TypeToken<T> {
      * - `Map<*, String>`: false
      * - `Map<String, String>`: very false!
      *
-     * @return the raw type if the type represented by this TypeToken is generic and is entirely wildcard, otherwise null.
+     * @return whether the type represented by this TypeToken is generic and is entirely wildcard, otherwise null.
      */
-    fun getRawIfWildcard(): TypeToken<T>?
+    fun isWildcard(): Boolean
 
     /**
      * Returns the parent type of the type represented by this TypeToken, if any.
      */
     fun getSuper(): TypeToken<in T>?
+}
+
+class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken<*>) : TypeToken<T> {
+
+    init {
+        if (params.isEmpty())
+            throw IllegalStateException("CompositeTypeToken must be given at least one type parameter")
+    }
+
+    override fun simpleDispString() = "${main.simpleDispString()}<${params.joinToString(", ")}>"
+
+    override fun fullDispString() = "${main.fullDispString()}<${params.joinToString(", ")}>"
+
+    override fun checkIsReified(disp: Any) {
+        main.checkIsReified(disp)
+        params.forEach { it.checkIsReified(disp) }
+    }
+
+    override fun getRaw() = main.getRaw()
+
+    override fun isGeneric() = true
+
+    override fun isWildcard() = false
+
+    override fun getSuper() = main.getSuper()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+
+        if (other !is CompositeTypeToken<*>) return false
+
+        return main == other.main && Arrays.equals(params, other.params)
+    }
+
+    override fun hashCode() = 31 * main.hashCode() + Arrays.hashCode(params)
 }
 
 internal val UnitToken = erased<Unit>()

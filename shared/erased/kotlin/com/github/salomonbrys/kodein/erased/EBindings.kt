@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.github.salomonbrys.kodein.erased
 
 import com.github.salomonbrys.kodein.*

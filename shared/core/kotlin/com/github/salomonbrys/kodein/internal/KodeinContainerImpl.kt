@@ -71,7 +71,7 @@ internal class KodeinContainerImpl private constructor(private val _map: CMap, p
     /**
      * "Main" constructor that uses the bindings map configured by a [KodeinContainer.Builder].
      */
-    internal constructor(builder: KodeinContainer.Builder) : this(builder._map)
+    internal constructor(builder: KodeinContainer.Builder) : this(builder.map)
 
     override val bindings: Map<Kodein.Key<*, *>, Binding<*, *>> get() = _map.bindings
 
@@ -105,9 +105,8 @@ internal class KodeinContainerImpl private constructor(private val _map: CMap, p
     private fun <A, T: Any> _findBindingOrNull(key: Kodein.Key<A, T>, cache: Boolean) : Binding<A, T>? {
         get(key)?.let { return it as Binding<A, T> }
 
-        val rawType = key.argType.getRawIfGeneric()
-        if (rawType != null) {
-            get(Kodein.Key(key.bind, rawType))?.let {
+        if (key.argType.isGeneric()) {
+            get(Kodein.Key(key.bind, key.argType.getRaw()))?.let {
                 if (cache)
                     _cache[key] = it
                 return it as Binding<A, T>

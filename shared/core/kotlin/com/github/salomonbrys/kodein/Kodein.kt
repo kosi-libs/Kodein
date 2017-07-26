@@ -179,9 +179,9 @@ interface Kodein : KodeinAwareBase {
          * Left part of the type-binding syntax (`bind(type, tag)`).
          *
          * @param T The type to bind.
-         * @property _binder The container binder to use to complete the binding.
+         * @property binder The container binder to use to complete the binding.
          */
-        class TypeBinder<T : Any> internal constructor(private val _binder: KodeinContainer.Builder.BindBinder<T>) {
+        class TypeBinder<T : Any> internal constructor(internal val binder: KodeinContainer.Builder.BindBinder<T>) {
             /**
              * Binds the previously given type and tag to the given binding.
              *
@@ -189,7 +189,7 @@ interface Kodein : KodeinAwareBase {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun <R: T> with(binding: Binding<*, R>): Unit = _binder with binding
+            infix fun <R: T> with(binding: Binding<*, R>) = binder with binding
         }
 
         /**
@@ -207,7 +207,7 @@ interface Kodein : KodeinAwareBase {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun from(binding: Binding<*, *>): Unit = container.bind(Kodein.Bind(binding.createdType, _tag), _overrides) with binding
+            infix fun from(binding: Binding<*, *>) = container.bind(Kodein.Bind(binding.createdType, _tag), _overrides) with binding
         }
 
         /**
@@ -225,7 +225,7 @@ interface Kodein : KodeinAwareBase {
              * @param valueType The type to bind the instance to.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            fun <T: Any> With(valueType: TypeToken<T>, value: T): Unit = container.bind(Kodein.Bind(valueType, _tag), _overrides) with InstanceBinding(valueType, value)
+            fun <T: Any> With(valueType: TypeToken<T>, value: T) = container.bind(Kodein.Bind(valueType, _tag), _overrides) with InstanceBinding(valueType, value)
         }
 
         /**
@@ -269,7 +269,7 @@ interface Kodein : KodeinAwareBase {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun import(module: Kodein.Module, allowOverride: Boolean = false): Unit {
+        fun import(module: Kodein.Module, allowOverride: Boolean = false) {
             Builder(container.subBuilder(allowOverride, module.allowSilentOverride), _callbacks, _bindingCallbacks, module.init)
         }
 
@@ -285,7 +285,7 @@ interface Kodein : KodeinAwareBase {
          * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(kodein: Kodein, allowOverride: Boolean = false): Unit = container.extend(kodein.container, allowOverride)
+        fun extend(kodein: Kodein, allowOverride: Boolean = false) = container.extend(kodein.container, allowOverride)
 
         /**
          * Adds a callback that will be called once the Kodein object is configured and instantiated.

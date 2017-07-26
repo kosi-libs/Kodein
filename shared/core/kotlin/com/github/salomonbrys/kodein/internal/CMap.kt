@@ -71,9 +71,8 @@ internal class CMap {
         if (overridden != null)
             _overrides.getOrPut(key, { ArrayList() }).add(overridden)
 
-        val rawArgType = key.argType.getRawIfWildcard()
-        if (rawArgType != null)
-            _raws[Kodein.Key(key.bind, rawArgType)] = binding
+        if (key.argType.isWildcard())
+            _raws[Kodein.Key(key.bind, key.argType.getRaw())] = binding
     }
 
     /**

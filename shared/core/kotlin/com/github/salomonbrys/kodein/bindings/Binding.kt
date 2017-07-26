@@ -23,8 +23,6 @@ interface BindingKodein : Kodein {
     /**
      * Gets a factory from the overridden binding.
      *
-     * @param A The type of argument used to create or retrieve an instance by this factory binding and therefore the overridden one.
-     * @param T The type of instance the returned factory creates or retrieves.
      * @return A factory yielded by the overridden binding.
      * @throws Kodein.NotFoundException if this binding does not override an existing binding.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
@@ -34,8 +32,6 @@ interface BindingKodein : Kodein {
     /**
      * Gets a factory from the overridden binding, if this binding overrides an existing binding.
      *
-     * @param A The type of argument used to create or retrieve an instance by this factory binding and therefore the overridden one.
-     * @param T The type of instance the returned factory creates or retrieves.
      * @return A factory yielded by the overridden binding, or null if this binding does not override an existing binding.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
@@ -44,8 +40,6 @@ interface BindingKodein : Kodein {
     /**
      * Gets an instance from the overridden factory binding.
      *
-     * @param A The type of argument used to create or retrieve an instance by this factory binding and therefore the overridden one.
-     * @param T The type of instance of this binding.
      * @param arg The argument to provide to the factory to retrieve or create an instance.
      * @return An instance yielded by the overridden factory binding.
      * @throws Kodein.NotFoundException if this binding does not override an existing binding.
@@ -56,8 +50,6 @@ interface BindingKodein : Kodein {
     /**
      * Gets an instance from the overridden factory binding, if this binding overrides an existing binding.
      *
-     * @param A The type of argument used to create or retrieve an instance by this factory binding and therefore the overridden one.
-     * @param T The type of instance of this binding.
      * @param arg The argument to provide to the factory to retrieve or create an instance.
      * @return An instance yielded by the overridden factory binding, or null if this binding does not override an existing binding.
      * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
@@ -134,7 +126,6 @@ interface NoArgBindingKodein : Kodein {
     /**
      * Gets a provider from the overridden binding.
      *
-     * @param T The type of instance of this binding.
      * @return A provider yielded by the overridden binding.
      * @throws Kodein.NotFoundException if this binding does not override an existing binding.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
@@ -144,7 +135,6 @@ interface NoArgBindingKodein : Kodein {
     /**
      * Gets a provider from the overridden binding, if this binding overrides an existing binding.
      *
-     * @param T The type of instance of this binding.
      * @return A provider yielded by the overridden binding, or null if this binding does not override an existing binding.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
@@ -153,7 +143,6 @@ interface NoArgBindingKodein : Kodein {
     /**
      * Gets an instance from the overridden binding.
      *
-     * @param T The type of instance of this binding.
      * @return An instance yielded by the overridden binding.
      * @throws Kodein.NotFoundException if this binding does not override an existing binding.
      * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
@@ -163,7 +152,6 @@ interface NoArgBindingKodein : Kodein {
     /**
      * Gets an instance from the overridden binding, if this binding overrides an existing binding.
      *
-     * @param T The type of instance of this binding.
      * @return An instance yielded by the overridden binding, or null if this binding does not override an existing binding.
      * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
      */
@@ -208,7 +196,7 @@ interface NoArgBinding<T: Any> : Binding<Unit, T> {
      */
     fun getInstance(kodein: NoArgBindingKodein, key: Kodein.Key<Unit, T>): T
 
-    override val argType: TypeToken<in Unit> get() = UnitToken
+    override val argType: TypeToken<Unit> get() = UnitToken
 
     override val description: String get() = "${factoryName()} { ${createdType.simpleDispString()} } "
 

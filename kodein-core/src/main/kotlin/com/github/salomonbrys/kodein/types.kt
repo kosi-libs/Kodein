@@ -98,16 +98,16 @@ internal abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun getRawIfGeneric(): TypeToken<T>? {
-        val realType = (trueType as? KodeinWrappedType)?.type ?: trueType
-        if (realType is ParameterizedType)
-            return ClassTypeToken(realType.rawType as Class<T>)
-        return null
+    override fun getRaw(): TypeToken<T> {
+        val realType = ((trueType as? KodeinWrappedType)?.type ?: trueType) as? ParameterizedType ?: return this
+        return ClassTypeToken(realType.rawType as Class<T>)
     }
 
+    override fun isGeneric() = ((trueType as? KodeinWrappedType)?.type ?: trueType) is ParameterizedType
+
     @Suppress("UNCHECKED_CAST")
-    override fun getRawIfWildcard(): TypeToken<T>? {
-        val realType = ((trueType as? KodeinWrappedType)?.type ?: trueType) as? ParameterizedType ?: return null
+    override fun isWildcard(): Boolean {
+        val realType = ((trueType as? KodeinWrappedType)?.type ?: trueType) as? ParameterizedType ?: return false
 
         var hasWildCard = false
         var hasSpecific = false
@@ -122,10 +122,7 @@ internal abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
                 hasSpecific = true
         }
 
-        return if (hasWildCard && !hasSpecific)
-            ClassTypeToken(realType.rawType as Class<T>)
-        else
-            null
+        return hasWildCard && !hasSpecific
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -305,8 +302,10 @@ internal class ClassTypeToken<T>(private val _type: Class<T>) : JVMTypeToken<T>(
 
     override fun type() = _type
 
-    override fun getRawIfGeneric() = null
-    override fun getRawIfWildcard() = null
+    override fun getRaw() = this
+
+    override fun isGeneric() = false
+    override fun isWildcard() = false
 
     override fun checkIsReified(disp: Any) {}
 

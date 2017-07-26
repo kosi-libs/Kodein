@@ -4,6 +4,6 @@ include(
         ':kodein-android', ':demo-android'
         ,
         ':kodein-js', ':kodein-js-conf', ':demo-js'
-//        ,
-//        ':kodein-native', ':demo-native'
+        ,
+        ':kodein-native', ':demo-native'
 )

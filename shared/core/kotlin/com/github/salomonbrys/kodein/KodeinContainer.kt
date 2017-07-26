@@ -102,7 +102,7 @@ interface KodeinContainer {
     /**
      * Retrieve an overridden provider for the given key at the given override level, if there is an overridden binding at that level.
      *
-     * @param key The key to look for.
+     * @param bind The binding to look for.
      * @param overrideLevel The override level.
      *                      Override level 0 means the first overridden factory (not the "active" binding).
      * @return The overridden provider, or null if there was o binding overridden at that level.
@@ -116,7 +116,7 @@ interface KodeinContainer {
     /**
      * Retrieve an overridden provider for the given key at the given override level.
      *
-     * @param key The key to look for.
+     * @param bind The binding to look for.
      * @param overrideLevel The override level.
      *                      Override level 0 means the first overridden factory (not the "active" binding).
      * @return The overridden provider.
@@ -132,9 +132,9 @@ interface KodeinContainer {
      *
      * @param allowOverride Whether or not the bindings defined by this builder or its imports are allowed to **explicitly** override existing bindings.
      * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
-     * @property _map The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
+     * @property map The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
      */
-    class Builder internal constructor(allowOverride: Boolean, silentOverride: Boolean, internal val _map: CMap) {
+    class Builder internal constructor(allowOverride: Boolean, silentOverride: Boolean, internal val map: CMap) {
 
         /**
          * The override permission for a builder.
@@ -216,9 +216,9 @@ interface KodeinContainer {
             val mustOverride = _overrideMode.must(overrides)
 
             if (mustOverride != null) {
-                if (mustOverride && key !in _map)
+                if (mustOverride && key !in map)
                     throw Kodein.OverridingException("Binding $key must override an existing binding.")
-                if (!mustOverride && key in _map)
+                if (!mustOverride && key in map)
                     throw Kodein.OverridingException("Binding $key must not override an existing binding.")
             }
         }
@@ -243,7 +243,7 @@ interface KodeinContainer {
              * @param binding The binding to bind.
              */
             infix fun with(binding: Binding<A, T>) {
-                _map[key] = binding
+                map[key] = binding
             }
         }
 
@@ -272,8 +272,10 @@ interface KodeinContainer {
                 val key = Kodein.Key(bind, binding.argType)
                 _checkOverrides(key, overrides)
 
-                _map[key] = binding
+                map[key] = binding
             }
+
+            internal val builder get() = this@Builder
         }
 
         /**
@@ -323,7 +325,7 @@ interface KodeinContainer {
             if (!allowOverride)
                 container.bindings.keys.forEach { _checkOverrides(it, null) }
 
-            _map.putAll(container.bindings)
+            map.putAll(container.bindings)
         }
 
         /**
@@ -334,7 +336,7 @@ interface KodeinContainer {
          */
         fun subBuilder(allowOverride: Boolean = false, silentOverride: Boolean = false): Builder {
             _checkMatch(allowOverride)
-            return Builder(allowOverride, silentOverride, _map)
+            return Builder(allowOverride, silentOverride, map)
         }
     }
 
