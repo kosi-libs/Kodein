@@ -8,7 +8,7 @@ Retrieve an overridden provider for the given key at the given override level.
 
 ### Parameters
 
-`key` - The key to look for.
+`bind` - The binding to look for.
 
 `overrideLevel` - The override level.
     Override level 0 means the first overridden factory (not the "active" binding).

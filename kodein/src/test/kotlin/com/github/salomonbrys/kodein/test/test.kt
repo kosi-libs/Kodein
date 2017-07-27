@@ -1,9 +1,7 @@
 package com.github.salomonbrys.kodein.test
 
 import com.github.salomonbrys.kodein.*
-import com.github.salomonbrys.kodein.bindings.AutoScope
-import com.github.salomonbrys.kodein.bindings.Scope
-import com.github.salomonbrys.kodein.bindings.ScopeRegistry
+import com.github.salomonbrys.kodein.bindings.*
 import junit.framework.TestCase
 import org.junit.Assert.assertNotEquals
 import org.junit.FixMethodOrder
@@ -47,6 +45,7 @@ class FullName(firstName: String, val lastName: String) : Name(firstName) {
 }
 
 typealias PersonEntry = Pair<String, Person>
+typealias PersonEntries = Set<PersonEntry>
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KodeinTests : TestCase() {
@@ -1006,12 +1005,12 @@ class KodeinTests : TestCase() {
             bind<Person>().inSet() with provider { Person("Laila") }
         }
 
-        val persons1 = kodein.instance<Set<Person>>()
+        val persons1: Set<Person> = kodein.instance()
 
         assertTrue(Person("Salomon") in persons1)
         assertTrue(Person("Laila") in persons1)
 
-        val persons2 = kodein.instance<Set<Person>>()
+        val persons2: Set<Person> = kodein.instance()
 
         val salomon1 = persons1.first { it.name == "Salomon" }
         val salomon2 = persons2.first { it.name == "Salomon" }
@@ -1023,7 +1022,7 @@ class KodeinTests : TestCase() {
         assertNotSame(laila1, laila2)
     }
 
-    @Test fun test27_1_MultiMap() {
+    @Test fun test26_1_MultiMap() {
         val kodein = Kodein {
             bind() from setBinding<PersonEntry>()
 
@@ -1031,10 +1030,36 @@ class KodeinTests : TestCase() {
             bind<PersonEntry>().inSet() with provider { "loulou" to Person("Laila") }
         }
 
-        val persons = kodein.instance<Set<PersonEntry>>().toMap()
+        val persons = kodein.instance<PersonEntries>().toMap()
 
         assertEquals(Person("Salomon"), persons["so"])
         assertEquals(Person("Laila"), persons["loulou"])
     }
+
+    @Test fun test26_2_ErasedMultiSet() {
+        val kodein = Kodein {
+            bind() from SetBinding<Person>(erased(), erasedSet())
+
+            bind<Person>().InSet(erasedSet()) with singleton { Person("Salomon") }
+            bind<Person>().InSet(erasedSet()) with provider { Person("Laila") }
+        }
+
+        val persons1: Set<Person> = kodein.Instance(erasedSet())
+
+        assertTrue(Person("Salomon") in persons1)
+        assertTrue(Person("Laila") in persons1)
+
+        val persons2: Set<Person> = kodein.Instance(erasedSet())
+
+        val salomon1 = persons1.first { it.name == "Salomon" }
+        val salomon2 = persons2.first { it.name == "Salomon" }
+
+        val laila1 = persons1.first { it.name == "Laila" }
+        val laila2 = persons2.first { it.name == "Laila" }
+
+        assertSame(salomon1, salomon2)
+        assertNotSame(laila1, laila2)
+    }
+
 
 }

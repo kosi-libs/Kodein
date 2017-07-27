@@ -2,7 +2,7 @@
 
 # argType
 
-`open val argType: `[`TypeToken`](../../com.github.salomonbrys.kodein/-type-token/index.md)`<in Unit>`
+`open val argType: `[`TypeToken`](../../com.github.salomonbrys.kodein/-type-token/index.md)`<Unit>`
 
 Overrides [Binding.argType](../-binding/arg-type.md)
 

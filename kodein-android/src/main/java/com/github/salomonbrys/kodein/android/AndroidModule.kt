@@ -185,8 +185,15 @@ val androidModule = defineAndroidModule()
 
 /**
  * A helper class for binding a named SharedPreferences
+ *
+ * @property ctx A context
+ * @property name The name of the shared preferences.
+ * @property visibility The visibility of the shared preferences, when creating it.
  */
 data class KodeinSharedPreferencesInfo(val ctx: Context, val name: String, val visibility: Int = Context.MODE_PRIVATE) {
+    /**
+     * @return The shared preferemces given the classes parameters.
+     */
     fun getSharedPreferences(): SharedPreferences = ctx.getSharedPreferences(name, visibility)
 }
 

@@ -28,8 +28,11 @@ Injections will be available after `super.onCreate` and will be destroyed after 
 Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
 | [KodeinIntentService](-kodein-intent-service/index.md) | `abstract class KodeinIntentService : IntentService, `[`IntentServiceInjector`](-intent-service-injector/index.md)<br>A base class that manages an [IntentServiceInjector](-intent-service-injector/index.md) for easy bootstrapping of Kodein.
 Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [KodeinPreferenceFragment](-kodein-preference-fragment/index.md) | `abstract class KodeinPreferenceFragment : PreferenceFragment, `[`FragmentInjector`](-fragment-injector/index.md)<br>A base class that manages a [FragmentInjector](-fragment-injector/index.md) for easy bootstrapping of Kodein.
+Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
 | [KodeinService](-kodein-service/index.md) | `abstract class KodeinService : Service, `[`ServiceInjector`](-service-injector/index.md)<br>A base class that manages a [ServiceInjector](-service-injector/index.md) for easy bootstrapping of Kodein.
 Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [KodeinSharedPreferencesInfo](-kodein-shared-preferences-info/index.md) | `data class KodeinSharedPreferencesInfo`<br>A helper class for binding a named SharedPreferences |
 | [KodeinSupportFragment](-kodein-support-fragment/index.md) | `abstract class KodeinSupportFragment : Fragment, `[`SupportFragmentInjector`](-support-fragment-injector/index.md)<br>A base class that manages a [SupportFragmentInjector](-support-fragment-injector/index.md) for easy bootstrapping of Kodein.
 Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
 | [ServiceInjector](-service-injector/index.md) | `interface ServiceInjector : `[`AndroidInjector`](-android-injector/index.md)`<Service, `[`AndroidScope`](-android-scope/index.md)`<Service>>`<br>An interface for adding injection and bindings to a Service. |

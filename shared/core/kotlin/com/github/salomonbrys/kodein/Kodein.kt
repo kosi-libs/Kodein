@@ -185,11 +185,10 @@ interface Kodein : KodeinAwareBase {
             /**
              * Binds the previously given type and tag to the given binding.
              *
-             * @param R The real type the binding will return.
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun <R: T> with(binding: Binding<*, R>) = binder with binding
+            infix fun with(binding: Binding<*, out T>) = binder with binding
         }
 
         /**

@@ -31,7 +31,7 @@ Concrete instance provider: will always return the given instance.
 
 | Name | Summary |
 |---|---|
-| [argType](../-no-arg-binding/arg-type.md) | `open val argType: `[`TypeToken`](../../com.github.salomonbrys.kodein/-type-token/index.md)`<in Unit>`<br>The type of the argument this factory will function for. |
+| [argType](../-no-arg-binding/arg-type.md) | `open val argType: `[`TypeToken`](../../com.github.salomonbrys.kodein/-type-token/index.md)`<Unit>`<br>The type of the argument this factory will function for. |
 
 ### Functions
 

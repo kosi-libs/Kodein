@@ -2,16 +2,39 @@
 
 package com.github.salomonbrys.kodein.erased
 
-import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.bindings.ArgSetBinding
 import com.github.salomonbrys.kodein.bindings.InSet
 import com.github.salomonbrys.kodein.bindings.SetBinding
-import com.github.salomonbrys.kodein.erased
 
+/**
+ * Creates a set: multiple bindings can be added in this set.
+ *
+ * T generics will be erased!
+ *
+ * @param T The created type.
+ * @return A set binding ready to be bound.
+ */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified T: Any> Kodein.Builder.setBinding() = SetBinding(erased<T>(), erasedComp1<Set<T>, T>())
+inline fun <reified T: Any> Kodein.Builder.setBinding() = SetBinding<T>(erased(), erasedSet())
 
+/**
+ * Creates a set: multiple bindings can be added in this set.
+ *
+ * A & T generics will be erased!
+ *
+ * @param A The argument type.
+ * @param T The created type.
+ * @return A set binding ready to be bound.
+ */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified A, reified T: Any> Kodein.Builder.argSetBinding() = ArgSetBinding(erased<A>(), erased<T>(), erasedComp1<Set<T>, T>())
+inline fun <reified A, reified T: Any> Kodein.Builder.argSetBinding() = ArgSetBinding<A, T>(erased(), erased(), erasedSet())
 
-inline fun <reified T: Any> Kodein.Builder.TypeBinder<T>.inSet() = InSet(erasedComp1<Set<T>, T>())
+/**
+ * Defines that the binding will be saved in a set binding.
+ *
+ * T generics will be erased!
+ *
+ * @param T The type of the binding.
+ */
+inline fun <reified T: Any> Kodein.Builder.TypeBinder<T>.inSet() = InSet(erasedSet())

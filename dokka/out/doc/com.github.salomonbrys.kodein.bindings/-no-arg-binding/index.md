@@ -12,7 +12,7 @@ As a factory does need an argument, it uses `Unit` as its argument.
 
 | Name | Summary |
 |---|---|
-| [argType](arg-type.md) | `open val argType: `[`TypeToken`](../../com.github.salomonbrys.kodein/-type-token/index.md)`<in Unit>`<br>The type of the argument this factory will function for. |
+| [argType](arg-type.md) | `open val argType: `[`TypeToken`](../../com.github.salomonbrys.kodein/-type-token/index.md)`<Unit>`<br>The type of the argument this factory will function for. |
 | [description](description.md) | `open val description: String`<br>The description of this factory (using simple type names), *used for debug print only*. |
 | [fullDescription](full-description.md) | `open val fullDescription: String`<br>The description of this factory (using full type names), *used for debug print only*. |
 
@@ -44,3 +44,4 @@ As a factory does need an argument, it uses `Unit` as its argument.
 | [InstanceBinding](../-instance-binding/index.md) | `class InstanceBinding<T : Any> : NoArgBinding<T>`<br>Concrete instance provider: will always return the given instance. |
 | [ProviderBinding](../-provider-binding/index.md) | `class ProviderBinding<T : Any> : NoArgBinding<T>`<br>Concrete provider: each time an instance is needed, the function [creator](../-provider-binding/creator.md) function will be called. |
 | [RefSingletonBinding](../../com.github.salomonbrys.kodein/-ref-singleton-binding/index.md) | `class RefSingletonBinding<T : Any> : NoArgBinding<T>`<br>Concrete referenced singleton provider: will always return the instance managed by the given reference. |
+| [SetBinding](../-set-binding/index.md) | `class SetBinding<T : Any> : NoArgBinding<Set<T>>, `[`BaseMultiBinding`](../-base-multi-binding/index.md)`<Unit, T, Set<T>>`<br>Binding that holds multiple factory bindings (e.g. with argument) in a set. |

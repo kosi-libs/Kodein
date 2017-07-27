@@ -6,10 +6,6 @@
 
 Gets a provider from the overridden binding.
 
-### Parameters
-
-`T` - The type of instance of this binding.
-
 ### Exceptions
 
 `Kodein.NotFoundException` - if this binding does not override an existing binding.

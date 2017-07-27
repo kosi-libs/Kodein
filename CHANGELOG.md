@@ -3,10 +3,11 @@
 
  - CORE
    * Kotlin 1.1.3
-   * Introducing `erasedComp1`, `erasedComp2` and `erasedComp3` to describe generic types in an erased-only environment.
+   * Introducing `CompositeTypeToken`, `erasedComp1`, `erasedComp2` and `erasedComp3` to describe generic types in an erased-only environment.
+   * Introducing the `SetBinding` binding for Set multi-binding.
 
  - ANDROID
-   * `KodeinSharedPreferencesInfo` is now accessible from outside autoAndroidModule.
+   * `KodeinSharedPreferencesInfo` is now outside of autoAndroidModule.
    * Added `KodeinPreferenceFragment`.
 
  - INTERNALS

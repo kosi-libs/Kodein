@@ -342,7 +342,7 @@ WARNING: In the case of generic types, the bound type will be the specialized ty
          e.g. `bind() from singleton { listOf(1, 2, 3, 4) }` registers the binding to `List<Int>`.
 
 
-=== Transitive dependency
+=== Transitive dependencies
 
 With those lazily instantiated dependencies, a dependency (very) often needs another dependency.
 Such object can have their dependencies passed to their constructor.
@@ -842,7 +842,125 @@ class JavaClass {
 ====
 
 
-== Configurable Kodein
+== Multi-binding
+
+Kodein allows multi bindings via a binding set.
+
+
+=== In a set
+
+To have multiple bindings in a set, you need to:
+
+* Declare that you are using a set binding for a particular bound type.
+* Add bindings to the set.
+
+[source,kotlin]
+.Example creating a set of `Configuration` bindings.
+----
+val kodein = Kodein {
+    bind() from setBinding<Configuration>() <1>
+
+    bind<Configuration>().inSet() with provider { FooConfiguration() } <2>
+    bind<Configuration>().inSet() with singleton { BarConfiguration() } <2>
+}
+----
+<1> Creating a set binding of `Configuration`.
+<2> Binding multiple `Configuration` implementations.
+
+[NOTE]
+====
+You can:
+
+* Use different binding types (such as `provider` or `singleton`) in the same set.
+* Add bindings to the same set in different modules, provided that the set has been declared first.
+====
+
+
+=== Retrieve a set binding
+
+Note that the type being bound is `Set<T>`, not `T`. +
+Therefore, you need to retrieve a `Set`:
+
+[source,kotlin]
+.Example retrieving set of `Configuration`.
+----
+val configurations: Set<Configuration> = kodein.instance()
+----
+
+
+=== Using bindings with arguments
+
+You can also bind multiple bindings with arguments (such as `factory` or `multiton`) in a set *as long as all bindings share the same argument type*.
+
+[source,kotlin]
+.Example creating a set of `Result` bindings.
+----
+val kodein = Kodein {
+    bind() from argSetBinding<Query, Result>()
+
+    bind<Result>().inSet() with factory { q: Query -> Foo.query(q) }
+    bind<Result>().inSet() with multiton { q: Query -> Bar.query(q) }
+}
+----
+
+
+=== In a map
+
+Kodein does not support map multibinding directly.
+However, it is very easy to create a binding map by using a binding set.
+
+First, create the following primitive:
+
+[source,kotlin]
+.Example of the type alias for a map multibinding as `Map<String, Configuration>`.
+----
+typealias ConfigurationEntry = Pair<String, Configuration>
+typealias ConfigurationEntries = Set<ConfigurationEntry>
+----
+
+Then, bind with keys:
+
+[source,kotlin]
+.Example binding as in a map multibinding.
+----
+val kodein = Kodein {
+    bind() from setBinding<ConfigurationEntry>()
+
+    bind<ConfigurationEntry>().inSet() with factory { "foo" to FooConfiguration() }
+    bind<ConfigurationEntry>().inSet() with multiton { "bar" to BarConfiguration() }
+}
+----
+
+Finally, retrieve the map:
+
+[source,kotlin]
+.Example retrieving a map multibinding.
+----
+val configurations = kodein.instance<ConfigurationEntries>().toMap()
+----
+
+
+=== Special considerations for erased environments
+
+WARNING: This paragraph is addressed to <<javascript>> users or JVM users who chose to <<erased-by-default,use erased by default>>.
+         Please read the corresponding sections before reading this.
+
+As you may have notice, `Set` is a parameterized type, meaning that set binding cannot work as is.
+To circumvent this, in erased environments, set bindings are bound using <<erased-comp,composite type tokens>>.
+
+This means that you *cannot retrieve a set binding with `kodein.instance()`*.
+You must retrieve a set binding with `kodein.Instance()` (note the uppercase) and provide the appropriate composite type token.
+
+To make it easier, Kodein provides the `erasedSet` function:
+
+[source,kotlin]
+.Example retrieving a set multibinding in an erased environment.
+----
+val configurations: Set<Configuration> = kodein.Instance(erasedSet())
+----
+
+
+== Configuring on the go (Configurable Kodein)
 
 Maybe you want a Kodein instance that you can pass around and have different sections of your code configure its bindings.
 
@@ -1515,6 +1633,7 @@ val logger: Logger = kodein.with(broadcastReceiver).instance()
 ----
 
 
+[[javascript]]
 == JavaScript
 
 [.lead]
@@ -2048,6 +2167,25 @@ By default, all inline functions are aliases to their uppercase counterparts usi
 For example, the `kodein.instance()` function is an alias to `kodein.Instance(generic())`
 
 So, when you know that you inject a type that is *not generic*, you can use `kodein.Instance(erased())`.
+
+[[erased-comp]]
+==== Erased parameterized generic types
+
+When using the `erased` function or using erased by default (either by choice on the JVM or forced on JavaScript), you cannot represent a generic type. +
+For example, `erased<Set<String>>` will yield a `TypeToken` representing `Set<*>`.
+
+Kodein provides a way to represent a generic type in an erased way:
+
+[source, kotlin]
+.Example: generic type tokens, using erased
+----
+erasedComp1<Set<String>, String>                         // Represents a Set<String>
+erasedComp2<Map<Int, String>, Int, String>               // Represents a Map<Int, String>
+erasedComp3<Triple<Int, String, Int>, Int, String, Int>  // Represents a Triple<Int, String, Int>
+----
+
+NOTE: The type parameter themselves are erased, meaning that you cannot represent a multi-level generic type.
+      You can, however, construct your own `CompositeTypeToken` to represent such a type.
 
 [[erased-by-default]]
 ==== Using erased by default

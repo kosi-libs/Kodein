@@ -61,3 +61,5 @@ Should be called when the component is being created. |
 |---|---|
 | [KodeinFragment](../-kodein-fragment/index.md) | `abstract class KodeinFragment : Fragment, FragmentInjector`<br>A base class that manages a FragmentInjector for easy bootstrapping of Kodein.
 Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [KodeinPreferenceFragment](../-kodein-preference-fragment/index.md) | `abstract class KodeinPreferenceFragment : PreferenceFragment, FragmentInjector`<br>A base class that manages a FragmentInjector for easy bootstrapping of Kodein.
+Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |

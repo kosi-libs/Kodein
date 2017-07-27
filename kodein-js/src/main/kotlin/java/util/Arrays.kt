@@ -28,7 +28,7 @@ package java.util
 
 object Arrays {
 
-    fun equals(a: Array<out Any>, a2: Array<out Any>): Boolean {
+    fun equals(a: Array<*>, a2: Array<*>): Boolean {
         if (a === a2)
             return true
 
@@ -46,11 +46,11 @@ object Arrays {
         return true
     }
 
-    fun hashCode(a: Array<out Any>): Int {
+    fun hashCode(a: Array<*>): Int {
         var result = 1
 
         for (element in a)
-            result = 31 * result + (element.hashCode() ?: 0)
+            result = 31 * result + (element?.hashCode() ?: 0)
 
         return result
     }

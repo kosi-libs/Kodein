@@ -27,8 +27,16 @@ interface TypeToken<T> {
      */
     fun checkIsReified(disp: Any)
 
+    /**
+     * Returns the raw type represented by this type.
+     *
+     * If this type is not generic, than it's raw type is itself.
+     */
     fun getRaw(): TypeToken<T>
 
+    /**
+     * Returns whether the type represented by this TypeToken is generic.
+     */
     fun isGeneric(): Boolean
 
     /**
@@ -53,6 +61,21 @@ interface TypeToken<T> {
     fun getSuper(): TypeToken<in T>?
 }
 
+/**
+ * A composite type token represents a generic class in an erased manner.
+ *
+ * For example, the type `Map<String, List<String>>` can be represented as:
+ *
+ * ```
+ * CompositeTypeToken(erased<Map<*, *>>(), erased<String>(), CompositeTypeToken(erased<List<*>(), erased<String>()))
+ * ```
+ *
+ * Note that you should rather use the [erasedComp1], [erasedComp2] or [erasedComp3] functions to create a composite type token.
+ *
+ * @param T The main type represented by this type token.
+ * @property main The main type represented by this type token.
+ * @property params The type parameters of the main type.
+ */
 class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken<*>) : TypeToken<T> {
 
     init {
@@ -77,6 +100,7 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
 
     override fun getSuper() = main.getSuper()
 
+    /** @suppress */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
 
@@ -85,6 +109,7 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
         return main == other.main && Arrays.equals(params, other.params)
     }
 
+    /** @suppress */
     override fun hashCode() = 31 * main.hashCode() + Arrays.hashCode(params)
 }
 

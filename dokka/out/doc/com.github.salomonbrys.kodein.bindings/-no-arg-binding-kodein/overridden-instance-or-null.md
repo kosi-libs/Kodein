@@ -6,10 +6,6 @@
 
 Gets an instance from the overridden binding, if this binding overrides an existing binding.
 
-### Parameters
-
-`T` - The type of instance of this binding.
-
 ### Exceptions
 
 `Kodein.DependencyLoopException` - If the instance construction triggered a dependency loop.

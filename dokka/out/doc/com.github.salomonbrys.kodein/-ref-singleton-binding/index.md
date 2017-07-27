@@ -28,7 +28,7 @@ Concrete referenced singleton provider: will always return the instance managed 
 
 | Name | Summary |
 |---|---|
-| [argType](../../com.github.salomonbrys.kodein.bindings/-no-arg-binding/arg-type.md) | `open val argType: `[`TypeToken`](../-type-token/index.md)`<in Unit>`<br>The type of the argument this factory will function for. |
+| [argType](../../com.github.salomonbrys.kodein.bindings/-no-arg-binding/arg-type.md) | `open val argType: `[`TypeToken`](../-type-token/index.md)`<Unit>`<br>The type of the argument this factory will function for. |
 | [description](../../com.github.salomonbrys.kodein.bindings/-no-arg-binding/description.md) | `open val description: String`<br>The description of this factory (using simple type names), *used for debug print only*. |
 | [fullDescription](../../com.github.salomonbrys.kodein.bindings/-no-arg-binding/full-description.md) | `open val fullDescription: String`<br>The description of this factory (using full type names), *used for debug print only*. |
 

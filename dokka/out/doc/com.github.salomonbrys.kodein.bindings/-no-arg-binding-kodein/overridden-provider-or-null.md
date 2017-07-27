@@ -6,10 +6,6 @@
 
 Gets a provider from the overridden binding, if this binding overrides an existing binding.
 
-### Parameters
-
-`T` - The type of instance of this binding.
-
 ### Exceptions
 
 `Kodein.DependencyLoopException` - When calling the provider function, if the instance construction triggered a dependency loop.

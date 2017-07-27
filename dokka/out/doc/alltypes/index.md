@@ -13,12 +13,15 @@ KOtlin DEpendency INjection.
 | [com.github.salomonbrys.kodein.android.AndroidInjector](../com.github.salomonbrys.kodein.android/-android-injector/index.md) | An interface for adding a [KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) to Android component classes (Activity, Fragment, Service, etc...) |
 | [com.github.salomonbrys.kodein.android.AndroidScope](../com.github.salomonbrys.kodein.android/-android-scope/index.md) | Base interface from all Android scopes. |
 | [com.github.salomonbrys.kodein.android.AppCompatActivityInjector](../com.github.salomonbrys.kodein.android/-app-compat-activity-injector/index.md) | An interface for adding injection and bindings to an AppCompatActivity. |
+| [com.github.salomonbrys.kodein.bindings.ArgSetBinding](../com.github.salomonbrys.kodein.bindings/-arg-set-binding/index.md) | Binding that holds multiple factory bindings (e.g. with argument) in a set. |
 | [com.github.salomonbrys.kodein.bindings.AutoScope](../com.github.salomonbrys.kodein.bindings/-auto-scope/index.md) | An object that can, in addition to being a regular scope, can also get a context from a static environment. |
 | [com.github.salomonbrys.kodein.bindings.AutoScopedSingletonBinding](../com.github.salomonbrys.kodein.bindings/-auto-scoped-singleton-binding/index.md) | Concrete auto-scoped singleton provider, effectively a `provider { -> T }`. |
+| [com.github.salomonbrys.kodein.bindings.BaseMultiBinding](../com.github.salomonbrys.kodein.bindings/-base-multi-binding/index.md) | Base class for binding set. |
 | [com.github.salomonbrys.kodein.bindings.Binding](../com.github.salomonbrys.kodein.bindings/-binding/index.md) | Base class that knows how to get an instance. |
 | [com.github.salomonbrys.kodein.bindings.BindingKodein](../com.github.salomonbrys.kodein.bindings/-binding-kodein/index.md) | Kodein interface to be passed to factory scope methods. |
 | [com.github.salomonbrys.kodein.BindingsMap](../com.github.salomonbrys.kodein/-bindings-map.md) | A Map containing all bindings associated to their keys |
 | [com.github.salomonbrys.kodein.android.BroadcastReceiverInjector](../com.github.salomonbrys.kodein.android/-broadcast-receiver-injector/index.md) | An interface for adding injection and bindings to a BroadcastReceiver. |
+| [com.github.salomonbrys.kodein.CompositeTypeToken](../com.github.salomonbrys.kodein/-composite-type-token/index.md) | A composite type token represents a generic class in an erased manner. |
 | [com.github.salomonbrys.kodein.conf.ConfigurableKodein](../com.github.salomonbrys.kodein.conf/-configurable-kodein/index.md) | A class that can be used to configure a kodein object and as a kodein object. |
 | [android.content.Context](../com.github.salomonbrys.kodein.android/android.content.-context/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
 | [com.github.salomonbrys.kodein.CurriedInjectorFactory](../com.github.salomonbrys.kodein/-curried-injector-factory/index.md) | Used to inject lazy providers or instances for factory bound types. |
@@ -65,8 +68,11 @@ Injections will be available after `super.onCreate` and will be destroyed after 
 | [com.github.salomonbrys.kodein.KodeinInjector](../com.github.salomonbrys.kodein/-kodein-injector/index.md) | An injector is an object which creates injected property delegates **before** having access to a Kodein instance. |
 | [com.github.salomonbrys.kodein.android.KodeinIntentService](../com.github.salomonbrys.kodein.android/-kodein-intent-service/index.md) | A base class that manages an [IntentServiceInjector](../com.github.salomonbrys.kodein.android/-intent-service-injector/index.md) for easy bootstrapping of Kodein.
 Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [com.github.salomonbrys.kodein.android.KodeinPreferenceFragment](../com.github.salomonbrys.kodein.android/-kodein-preference-fragment/index.md) | A base class that manages a [FragmentInjector](../com.github.salomonbrys.kodein.android/-fragment-injector/index.md) for easy bootstrapping of Kodein.
+Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
 | [com.github.salomonbrys.kodein.android.KodeinService](../com.github.salomonbrys.kodein.android/-kodein-service/index.md) | A base class that manages a [ServiceInjector](../com.github.salomonbrys.kodein.android/-service-injector/index.md) for easy bootstrapping of Kodein.
 Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
+| [com.github.salomonbrys.kodein.android.KodeinSharedPreferencesInfo](../com.github.salomonbrys.kodein.android/-kodein-shared-preferences-info/index.md) | A helper class for binding a named SharedPreferences |
 | [com.github.salomonbrys.kodein.android.KodeinSupportFragment](../com.github.salomonbrys.kodein.android/-kodein-support-fragment/index.md) | A base class that manages a [SupportFragmentInjector](../com.github.salomonbrys.kodein.android/-support-fragment-injector/index.md) for easy bootstrapping of Kodein.
 Injections will be available after `super.onCreate` and will be destroyed after `super.onDestroy`. |
 | [com.github.salomonbrys.kodein.KodeinWrappedType](../com.github.salomonbrys.kodein/-kodein-wrapped-type/index.md) | Wraps a ParameterizedType and implements hashCode / equals. |
@@ -91,9 +97,11 @@ Will create the instance on first time a given argument is used and will subsequ
 | [com.github.salomonbrys.kodein.bindings.ScopeRegistry](../com.github.salomonbrys.kodein.bindings/-scope-registry/index.md) | Represents a scope: used to store and retrieve scoped singleton objects. |
 | [com.github.salomonbrys.kodein.bindings.ScopedSingletonBinding](../com.github.salomonbrys.kodein.bindings/-scoped-singleton-binding/index.md) | Concrete scoped singleton factory, effectively a `factory { Scope -> T }`. |
 | [com.github.salomonbrys.kodein.android.ServiceInjector](../com.github.salomonbrys.kodein.android/-service-injector/index.md) | An interface for adding injection and bindings to a Service. |
+| [com.github.salomonbrys.kodein.bindings.SetBinding](../com.github.salomonbrys.kodein.bindings/-set-binding/index.md) | Binding that holds multiple factory bindings (e.g. with argument) in a set. |
 | [com.github.salomonbrys.kodein.bindings.SingletonBinding](../com.github.salomonbrys.kodein.bindings/-singleton-binding/index.md) | Concrete singleton: will create an instance on first request and will subsequently always return the same instance. |
 | [com.github.salomonbrys.kodein.android.SupportFragmentInjector](../com.github.salomonbrys.kodein.android/-support-fragment-injector/index.md) | An interface for adding injection and bindings to a android.support.v4.app.Fragment. |
 | [java.lang.reflect.Type](../com.github.salomonbrys.kodein/java.lang.reflect.-type/index.md) (extensions in package com.github.salomonbrys.kodein) |  |
+| [com.github.salomonbrys.kodein.bindings.TypeBinderInSet](../com.github.salomonbrys.kodein.bindings/-type-binder-in-set/index.md) | Second part of the `bind<Type>().inSet() with binding` syntax. |
 | [com.github.salomonbrys.kodein.TypeToken](../com.github.salomonbrys.kodein/-type-token/index.md) | An interface that contains a simple Type but is parameterized to enable type safety. |
 | [android.view.View](../com.github.salomonbrys.kodein.android/android.view.-view/index.md) (extensions in package com.github.salomonbrys.kodein.android) |  |
 | [com.github.salomonbrys.kodein.android.androidActivityScope](../com.github.salomonbrys.kodein.android/android-activity-scope/index.md) | Android's activity scope. Allows to register activity-specific singletons. |

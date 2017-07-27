@@ -2,13 +2,11 @@
 
 # with
 
-`infix fun <R : T> with(binding: `[`Binding`](../../../../com.github.salomonbrys.kodein.bindings/-binding/index.md)`<*, R>): Unit`
+`infix fun with(binding: `[`Binding`](../../../../com.github.salomonbrys.kodein.bindings/-binding/index.md)`<*, out T>): Unit`
 
 Binds the previously given type and tag to the given binding.
 
 ### Parameters
-
-`R` - The real type the binding will return.
 
 `binding` - The binding to bind.
 

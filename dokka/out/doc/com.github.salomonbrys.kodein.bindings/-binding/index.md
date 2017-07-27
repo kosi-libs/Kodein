@@ -36,6 +36,8 @@ Whether this factory creates a new instance at each call or not is left to imple
 
 | Name | Summary |
 |---|---|
+| [ArgSetBinding](../-arg-set-binding/index.md) | `class ArgSetBinding<A, T : Any> : Binding<A, Set<T>>, `[`BaseMultiBinding`](../-base-multi-binding/index.md)`<A, T, Set<T>>`<br>Binding that holds multiple factory bindings (e.g. with argument) in a set. |
+| [BaseMultiBinding](../-base-multi-binding/index.md) | `abstract class BaseMultiBinding<A, T : Any, C : Any> : Binding<A, C>`<br>Base class for binding set. |
 | [FactoryBinding](../-factory-binding/index.md) | `class FactoryBinding<A, T : Any> : Binding<A, T>`<br>Concrete factory: each time an instance is needed, the function [creator](../-factory-binding/creator.md) function will be called. |
 | [MultitonBinding](../-multiton-binding/index.md) | `class MultitonBinding<A, T : Any> : Binding<A, T>`<br>Concrete multiton: will create one and only one instance for each argument.
 Will create the instance on first time a given argument is used and will subsequently always return the same instance for the same argument. |

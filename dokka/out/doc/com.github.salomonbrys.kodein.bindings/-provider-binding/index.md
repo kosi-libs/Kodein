@@ -31,7 +31,7 @@ A provider is like a [FactoryBinding](../-factory-binding/index.md), but without
 
 | Name | Summary |
 |---|---|
-| [argType](../-no-arg-binding/arg-type.md) | `open val argType: `[`TypeToken`](../../com.github.salomonbrys.kodein/-type-token/index.md)`<in Unit>`<br>The type of the argument this factory will function for. |
+| [argType](../-no-arg-binding/arg-type.md) | `open val argType: `[`TypeToken`](../../com.github.salomonbrys.kodein/-type-token/index.md)`<Unit>`<br>The type of the argument this factory will function for. |
 | [description](../-no-arg-binding/description.md) | `open val description: String`<br>The description of this factory (using simple type names), *used for debug print only*. |
 | [fullDescription](../-no-arg-binding/full-description.md) | `open val fullDescription: String`<br>The description of this factory (using full type names), *used for debug print only*. |
 
