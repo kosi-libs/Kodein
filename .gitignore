@@ -11,6 +11,7 @@
 .gradle
 build/
 out/
+!dokka/out/
 gradle.properties
 gradle.props
 local.properties
