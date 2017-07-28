@@ -5,12 +5,12 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toclevels: 5
 :revdate: 2017-04-18
 
-:version: 4.0.0
+:version: 4.1.0
 :branch: master
 
 image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]
 
-image:https://img.shields.io/badge/Kotlin-1.1-blue.svg[alt="Kotlin 1.1.2-4", link="http://kotlinlang.org"]
+image:https://img.shields.io/badge/Kotlin-1.1-blue.svg[alt="Kotlin 1.1.3-2", link="http://kotlinlang.org"]
 image:https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg[alt="Maven Central", link="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22"]
 image:https://img.shields.io/travis/SalomonBrys/Kodein.svg[alt="Travis", link="https://travis-ci.org/SalomonBrys/Kodein/builds"]
 image:https://img.shields.io/github/license/salomonbrys/kodein.svg[alt="MIT License", link="https://github.com/SalomonBrys/Kodein/blob/{branch}/LICENSE.txt"]

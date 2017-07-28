@@ -10,6 +10,7 @@
 # GRADLE
 .gradle
 build/
+out/
 gradle.properties
 gradle.props
 local.properties

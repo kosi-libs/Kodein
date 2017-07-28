@@ -2,11 +2,11 @@ buildscript {
 
     repositories {
         jcenter()
-        maven { url 'https://maven.google.com' }
+        google()
         maven { url "https://dl.bintray.com/jetbrains/kotlin-native-dependencies" }
     }
 
-    ext.kotlin_version = '1.1.3'
+    ext.kotlin_version = '1.1.3-2'
     ext.junit_version = '4.12'
 
     dependencies {
@@ -26,7 +26,7 @@ allprojects {
     }
 
     group = 'com.github.salomonbrys.kodein'
-    version = '4.0.0'
+    version = '4.1.0'
 }
 
 def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }
