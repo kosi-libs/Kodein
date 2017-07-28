@@ -1535,21 +1535,20 @@ val kodein = Kodein {
 val logger: Logger = kodein.instance()
 ----
 
-[WARNING]
-====
-In your `Application` class, in the `onCreate` method, you *must* add this line:
+However, for Kodein to know which activity is the current one, you *must* add this line in your `Application` class in the `onCreate` method:
 
 [source, kotlin]
 .Example: registering kodein's lifecycle manager to enable the auto activity scope to work
 ----
 class MyApplication : Application {
     override fun onCreate() {
-        registerActivityLifecycleCallbacks(androidActivityScope.lifecycleManager) // <1>
+        registerActivityLifecycleCallbacks(
+                androidActivityScope.lifecycleManager // <1>
+        )
     }
 }
 ----
 <1> `androidActivityScope.lifecycleManager` is what enables the auto scope to work.
-====
 
 CAUTION: Objects that are bound in the auto `androidActivityScope` will always be injected according to *the last displayed activity*.
 
@@ -2060,7 +2059,7 @@ Scoped singleton are singletons that are bound to a context and live while that 
 To define a scope that can contain scoped singleton, you must define an object that implements the `Scope` interface.
 This object will be responsible for providing a `ScopeRegistry` according to a context.
 It should always return the same `ScopeRegistry` when given the same context object.
-Standard ways of doing so is to use the `userData` property of the context, if is has one, or else to use a `WeakHashMap<C, ScopeRegistry>`.
+Standard ways of doing so is to use the `userData` property of the context, if it has one, or else to use a `WeakHashMap<C, ScopeRegistry>`.
 
 To declare bindings in your scope, use `scopedSingleton`.
 
