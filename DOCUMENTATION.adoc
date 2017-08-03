@@ -1421,7 +1421,7 @@ val kodein = Kodein {
 }
 ----
 
-You can see everything that this module proposes in the https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein-android/src/main/kotlin/com/github/salomonbrys/kodein/android/AndroidModule.kt[AndroidModule.kt] file.
+You can see everything that this module proposes in the https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein-android/src/main/java/com/github/salomonbrys/kodein/android/AndroidModule.kt[AndroidModule.kt] file.
 
 To retrieve instances of bindings defined in this module, you can use `withContext`.
 
@@ -1460,7 +1460,7 @@ class MyActivity : Activity(), LazyKodeinAware {
 }
 ----
 
-You can see everything that this module proposes in the https://github.com/SalomonBrys/Kodein/blob/master/kodein-android/src/main/kotlin/com/github/salomonbrys/kodein/android/AndroidModule.kt[AndroidModule.kt] file.
+You can see everything that this module proposes in the https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein-android/src/main/java/com/github/salomonbrys/kodein/android/AndroidModule.kt[AndroidModule.kt] file.
 
 
 === Android scopes
