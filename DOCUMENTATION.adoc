@@ -1786,9 +1786,9 @@ com.github.salomonbrys.kodein.Kodein$DependencyLoopException: Dependency recursi
 <3> `com.test.C` with the tag "Yay" depends on `com.test.A`, *we have found the dependency loop!*.
 
 
-== Using reflexivity to auto-inject
+== JSR-330: Using reflexivity to auto-inject
 
-Kodein offers a module that implements reflexivity injection based on the `javax.inject.*` annotations.
+Kodein offers a module that implements reflexivity injection based on the JSR-330 `javax.inject.*` annotations.
 There are two reasons to use this module:
 
 - You are moving a code base from a Java injection library (such as Guice or Dagger) and want the Java code to work the same while there still is injected java code.
@@ -1811,7 +1811,7 @@ CAUTION: Every-thing that is described here is *a lot less performant* than usin
 ----
 &lt;dependency&gt;
     &lt;groupId&gt;com.github.salomonbrys.kodein&lt;/groupId&gt;
-    &lt;artifactId&gt;kodein-conf&lt;/artifactId&gt;
+    &lt;artifactId&gt;kodein-jxinject&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
 ----
