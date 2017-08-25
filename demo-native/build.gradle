@@ -1,12 +1,11 @@
 apply plugin: 'konan'
 
 dependencies {
-//    compile "org.jetbrains.kotlin:kotlin-stdlib-???:$kotlin_version"
-//    compile project(":kodein-native")
+    compile project(":kodein-native")
 }
 
 konanArtifacts {
     demo {
-
+        inputFiles fileTree("src/main/kotlin")
     }
 }

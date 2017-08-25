@@ -18,38 +18,6 @@ android {
     }
 }
 
-task androidJavadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from dokka
-}
-
-task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.sourceFiles
-}
-
-artifacts {
-    archives androidSourcesJar, androidJavadocJar
-}
-
-signing {
-    required { gradle.taskGraph.hasTask(tasks.uploadArchives) }
-    sign configurations.archives
-}
-
-dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
-    processConfigurations = ['compile', 'provided']
-    includes = ['dokka-module.md', 'dokka-package.md']
-
-    linkMapping {
-        dir = "src/main/java"
-        url = "https://github.com/SalomonBrys/Kodein/blob/master/kodein-android/src/main/kotlin"
-        suffix = "#L"
-    }
-}
-
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
@@ -60,55 +28,11 @@ dependencies {
     testCompile "junit:junit:$junit_version"
 }
 
-if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+apply from: "../gradle/dokka.gradle"
 
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                pom.project {
-                    name 'Kodein-Android'
-                    packaging 'jar'
-                    artifactId 'kodein-android'
-                    description 'Kodein extension for Android'
-                    url 'https://github.com/SalomonBrys/Kodein'
-
-                    licenses {
-                        license {
-                            name 'MIT'
-                            url 'http://opensource.org/licenses/MIT'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id 'salomonbrys'
-                            name 'Salomon BRYS'
-                            email 'salomon.brys@gmail.com'
-                        }
-                    }
-
-                    scm {
-                        url 'https://github.com/SalomonBrys/Kodein'
-                        connection 'scm:git:https://github.com/SalomonBrys/Kodein.git'
-                        developerConnection 'scm:git:git@github.com:SalomonBrys/Kodein.git'
-                        tag 'HEAD'
-                    }
-
-                    issueManagement {
-                        system 'GitHub Issues'
-                        url 'https://github.com/SalomonBrys/Kodein/issues'
-                    }
-                }
-            }
-        }
-    }
+ext {
+    android_sourceSet = true
+    pom_name = "Kodein Android"
+    pom_description = "Kotlin extensions for Android"
 }
+apply from: "../gradle/upload.gradle"

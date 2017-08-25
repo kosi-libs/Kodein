@@ -1,0 +1,13 @@
+apply plugin: 'org.jetbrains.dokka'
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+    includes = ['dokka-module.md', 'dokka-package.md']
+
+    linkMapping {
+        dir = "src/main/kotlin"
+        url = "https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin"
+        suffix = "#L"
+    }
+}
