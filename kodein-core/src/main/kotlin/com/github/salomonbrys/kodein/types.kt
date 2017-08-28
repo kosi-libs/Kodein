@@ -69,6 +69,9 @@ internal abstract class JVMTypeToken<T> : TypeToken<T> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
+        if (other is CompositeTypeToken<*>) {
+            return fullDispString().equals(this.fullDispString())
+        }
         if (other !is JVMTypeToken<*>) return false
 
         if (type() != other.type()) return false
@@ -76,9 +79,11 @@ internal abstract class JVMTypeToken<T> : TypeToken<T> {
         return true
     }
 
-    override fun hashCode(): Int {
-        return type().hashCode()
-    }
+    override fun hashCode() = fullDispString().hashCode()
+
+//    override fun hashCode(): Int {
+//        return type().hashCode()
+//    }
 }
 
 internal abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {

@@ -59,6 +59,7 @@ interface TypeToken<T> {
      * Returns the parent type of the type represented by this TypeToken, if any.
      */
     fun getSuper(): TypeToken<in T>?
+
 }
 
 /**
@@ -83,9 +84,9 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
             throw IllegalStateException("CompositeTypeToken must be given at least one type parameter")
     }
 
-    override fun simpleDispString() = "${main.simpleDispString()}<${params.joinToString(", ")}>"
+    override fun simpleDispString() = "${main.simpleDispString()}<${params.joinToString(", ") { it.simpleDispString() }}>"
 
-    override fun fullDispString() = "${main.fullDispString()}<${params.joinToString(", ")}>"
+    override fun fullDispString() = "${main.fullDispString()}<${params.joinToString(", ") { it.fullDispString() }}>"
 
     override fun checkIsReified(disp: Any) {
         main.checkIsReified(disp)
@@ -103,14 +104,16 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
     /** @suppress */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-
-        if (other !is CompositeTypeToken<*>) return false
-
+        if (other !is TypeToken<*>) return false
+        if (other !is CompositeTypeToken<*>) return other.equals(this)
         return main == other.main && Arrays.equals(params, other.params)
     }
 
     /** @suppress */
-    override fun hashCode() = 31 * main.hashCode() + Arrays.hashCode(params)
+//    override fun hashCode() = 31 * main.hashCode() + Arrays.hashCode(params)
+
+    override fun hashCode() = fullDispString().hashCode()
+
 }
 
 internal val UnitToken = erased<Unit>()
