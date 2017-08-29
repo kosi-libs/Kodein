@@ -179,16 +179,19 @@ interface Kodein : KodeinAwareBase {
          * Left part of the type-binding syntax (`bind(type, tag)`).
          *
          * @param T The type to bind.
-         * @property binder The container binder to use to complete the binding.
+         * @param bind The type and tag object that will compose the key to bind.
+         * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          */
-        class TypeBinder<T : Any> internal constructor(internal val binder: KodeinContainer.Builder.BindBinder<T>) {
+        inner class TypeBinder<T : Any> internal constructor(val bind: Kodein.Bind<T>, val overrides: Boolean?) {
+            internal val containerBuilder get() = container
+
             /**
              * Binds the previously given type and tag to the given binding.
              *
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun with(binding: Binding<*, out T>) = binder with binding
+            infix fun with(binding: Binding<*, out T>) = container.bindBind(bind, binding, overrides)
         }
 
         /**
@@ -206,7 +209,7 @@ interface Kodein : KodeinAwareBase {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun from(binding: Binding<*, *>) = container.bind(Kodein.Bind(binding.createdType, _tag), _overrides) with binding
+            infix fun from(binding: Binding<*, *>) = container.bindBind(Kodein.Bind(binding.createdType, _tag), binding, _overrides)
         }
 
         /**
@@ -224,7 +227,7 @@ interface Kodein : KodeinAwareBase {
              * @param valueType The type to bind the instance to.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            fun <T: Any> With(valueType: TypeToken<T>, value: T) = container.bind(Kodein.Bind(valueType, _tag), _overrides) with InstanceBinding(valueType, value)
+            fun <T: Any> With(valueType: TypeToken<T>, value: T) = container.bindBind(Kodein.Bind(valueType, _tag), InstanceBinding(valueType, value), _overrides)
         }
 
         /**
@@ -236,7 +239,7 @@ interface Kodein : KodeinAwareBase {
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          * @return The binder: call [TypeBinder.with]) on it to finish the binding syntax and register the binding.
          */
-        fun <T : Any> Bind(type: TypeToken<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(container.bind(Kodein.Bind(type, tag), overrides))
+        fun <T : Any> Bind(type: TypeToken<T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Kodein.Bind(type, tag), overrides)
 
         /**
          * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.

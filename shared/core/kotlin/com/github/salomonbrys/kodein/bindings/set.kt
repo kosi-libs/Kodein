@@ -1,7 +1,6 @@
 package com.github.salomonbrys.kodein.bindings
 
 import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.KodeinContainer
 import com.github.salomonbrys.kodein.TypeToken
 
 /**
@@ -58,7 +57,7 @@ class SetBinding<T: Any>(val elementType: TypeToken<out T>, override val created
  *
  * @param T The type of the binding in the set.
  */
-class TypeBinderInSet<in T : Any, C: Any> internal constructor(private val _binder: KodeinContainer.Builder.BindBinder<T>, private val _colTypeToken: TypeToken<C>) {
+class TypeBinderInSet<in T : Any, C: Any> internal constructor(private val _binder: Kodein.Builder.TypeBinder<T>, private val _colTypeToken: TypeToken<C>) {
 
     /**
      * Second part of the `bind<Type>().inSet() with binding` syntax.
@@ -68,7 +67,7 @@ class TypeBinderInSet<in T : Any, C: Any> internal constructor(private val _bind
     @Suppress("UNCHECKED_CAST")
     infix fun with(binding: Binding<*, out T>) {
         val setKey = Kodein.Key(Kodein.Bind(_colTypeToken, _binder.bind.tag), binding.argType)
-        val setBinding = _binder.builder.map[setKey] ?: throw IllegalStateException("No set binding to $setKey")
+        val setBinding = _binder.containerBuilder.map[setKey] ?: throw IllegalStateException("No set binding to $setKey")
 
         setBinding as? BaseMultiBinding<Any, T, C> ?: throw IllegalStateException("$setKey is associated to a ${setBinding.factoryName()} while it should be associated with bindingSet")
 
@@ -83,4 +82,4 @@ class TypeBinderInSet<in T : Any, C: Any> internal constructor(private val _bind
  *
  * @param setTypeToken The type of the bound set.
  */
-fun <T: Any> Kodein.Builder.TypeBinder<T>.InSet(setTypeToken: TypeToken<Set<T>>) = TypeBinderInSet(binder, setTypeToken)
+fun <T: Any> Kodein.Builder.TypeBinder<T>.InSet(setTypeToken: TypeToken<Set<T>>) = TypeBinderInSet(this, setTypeToken)

@@ -224,77 +224,40 @@ interface KodeinContainer {
         }
 
         /**
-         * Left part of the key-binding syntax (`bind(Kodein.Key(Kodein.Bind(type, tag), argType))`).
+         * Binds the given key to the given binding.
          *
-         * @property key The key to bind.
+         * @param key The key to bind.
+         * @param binding The binding to bind.
          * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          * @throws Kodein.OverridingException If this bindings overrides an existing binding and is not allowed to.
          */
-        inner class KeyBinder<A, T: Any> internal constructor(val key: Kodein.Key<A, T>, overrides: Boolean?) {
-            init {
-                key.bind.type.checkIsReified(key.bind)
-                key.argType.checkIsReified(key)
-                _checkOverrides(key, overrides)
-            }
+        fun <A, T: Any> bindKey(key: Kodein.Key<A, T>, binding: Binding<A, T>, overrides: Boolean?) {
+            key.bind.type.checkIsReified(key.bind)
+            key.argType.checkIsReified(key)
+            _checkOverrides(key, overrides)
 
-            /**
-             * Binds the previously given key to the given binding.
-             *
-             * @param binding The binding to bind.
-             */
-            infix fun with(binding: Binding<A, T>) {
-                map[key] = binding
-            }
+            map[key] = binding
         }
 
         /**
-         * Left part of the bind-binding syntax (`bind(Kodein.Bind(type, tag))`).
+         * Binds the given type & tag to the given binding.
          *
-         * @property bind The type and tag object that will compose the key to bind.
-         * @property overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
+         * The bound type will be the [Binding.createdType].
+         *
+         * @param bind The type and tag object that will compose the key to bind.
+         * @param binding The binding to bind.
+         * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
+         * @throws Kodein.OverridingException If this bindings overrides an existing binding and is not allowed to.
          */
-        inner class BindBinder<T: Any> internal constructor(val bind: Kodein.Bind<T>, val overrides: Boolean?) {
-            init {
-                bind.type.checkIsReified(bind)
-            }
+        fun <T: Any> bindBind(bind: Kodein.Bind<T>, binding: Binding<*, out T>, overrides: Boolean?) {
+            bind.type.checkIsReified(bind)
+            binding.argType.checkIsReified(binding)
 
-            /**
-             * Binds the previously given type & tag to the given binding.
-             *
-             * The bound type will be the [Binding.createdType].
-             *
-             * @param binding The binding to bind.
-             * @throws Kodein.OverridingException If this bindings overrides an existing binding and is not allowed to.
-             */
-            infix fun with(binding: Binding<*, out T>) {
-                binding.argType.checkIsReified(binding)
+            val key = Kodein.Key(bind, binding.argType)
+            _checkOverrides(key, overrides)
 
-                val key = Kodein.Key(bind, binding.argType)
-                _checkOverrides(key, overrides)
-
-                map[key] = binding
-            }
-
-            internal val builder get() = this@Builder
+            map[key] = binding
         }
-
-        /**
-         * Starts the binding of a given key.
-         *
-         * @param key The key to bind.
-         * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
-         * @return The binder: call [KeyBinder.with]) on it to finish the binding syntax and register the binding.
-         */
-        fun <A, T: Any> bind(key: Kodein.Key<A, T>, overrides: Boolean? = null): KeyBinder<A, T> = KeyBinder(key, overrides)
-
-        /**
-         * Starts the binding of a given type and tag.
-         *
-         * @param bind The type and tag to bind.
-         * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
-         * @return The binder: call [BindBinder.with]) on it to finish the binding syntax and register the binding.
-         */
-        fun <T: Any> bind(bind: Kodein.Bind<T>, overrides: Boolean? = null): BindBinder<T> = BindBinder(bind, overrides)
 
         /**
          * Checks whether the given overriding declaration is allowed.
@@ -338,6 +301,7 @@ interface KodeinContainer {
             _checkMatch(allowOverride)
             return Builder(allowOverride, silentOverride, map)
         }
+
     }
 
 
