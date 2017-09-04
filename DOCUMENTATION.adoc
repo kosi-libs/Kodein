@@ -972,13 +972,13 @@ NOTE: Using or not using this is a matter of taste and is neither recommended no
 .Example creating, configuring and using a `ConfigurableKodein`.
 ----
 fun addSomeConf(kodein: Kodein) {
-    kodein.addModule(apiModule)
-    kodein.addModule(dbModule)
+    kodein.addImport(apiModule)
+    kodein.addImport(dbModule)
 }
 
 fun test() {
     val kodein = ConfigurableKodein()
-    kodein.addModule(appModule)
+    kodein.addImport(appModule)
 
     addSomeConf(kodein)
 
@@ -1019,12 +1019,12 @@ IMPORTANT: Do not remove the `kodein` (or `kodein-erased`) dependency.
 You can import modules, extend kodein objects, or add bindings inside this `ConfigurableKodein` using `addImport`, `addExtend` and `addConfig`.
 
 [source, kotlin]
-.Example: adding a module inside the global Kodein
+.Example: importing a module inside the global Kodein
 ----
 fun test() {
     val kodein = ConfigurableKodein()
 
-    kodein.addModule(aModule)
+    kodein.addImport(aModule)
     kodein.addExtend(otherKodein)
 
     kodein.addConfig {
@@ -1071,11 +1071,11 @@ A mutable `ConfigurableKodein` can be configured even _after first retrieval_.
 fun test() {
     val kodein = ConfigurableKodein(mutable = true)
 
-    kodein.addModule(aModule)
+    kodein.addImport(aModule)
 
     val ds: DataSource = kodein.instance()
 
-    kodein.addModule(anotherModule) <1>
+    kodein.addImport(anotherModule) <1>
 }
 ----
 <1> This would have failed if the ConfigurableKodein was not mutable.
@@ -1094,8 +1094,8 @@ For these cases, the `kodein-conf` module proposes a static `Kodein.global` inst
 .Example creating, configuring and using the global one true Kodein.
 ----
 fun test() {
-    kodein.global.addModule(apiModule)
-    kodein.global.addModule(dbModule)
+    kodein.global.addImport(apiModule)
+    kodein.global.addImport(dbModule)
 
     val ds: DataSource = kodein.global.instance()
 }
