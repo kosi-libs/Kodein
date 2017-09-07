@@ -1,8 +1,8 @@
 package com.github.salomonbrys.kodein.internal
 
-import com.github.salomonbrys.kodein.bindings.BindingKodein
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinContainer
+import com.github.salomonbrys.kodein.bindings.BindingKodein
 
 /**
  * Kodein implementation.
@@ -45,11 +45,14 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
     /**
      * "Main" constructor.
      */
-    constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(Kodein.Builder(KodeinContainer.Builder(true, allowSilentOverride, CMap()), ArrayList(), ArrayList(), init), true)
+    constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(_newBuilder(allowSilentOverride, init), true)
 
     companion object {
+        private fun _newBuilder(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) =
+                Kodein.Builder(KodeinContainer.Builder(true, allowSilentOverride, BindingsMap(), KodeinContainer.Builder.ExternalReference()), ArrayList(), ArrayList(), init)
+
         fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit): Pair<Kodein, () -> Unit> {
-            val kodein = KodeinImpl(Kodein.Builder(KodeinContainer.Builder(true, allowSilentOverride, CMap()), ArrayList(), ArrayList(), init), false)
+            val kodein = KodeinImpl(_newBuilder(allowSilentOverride, init), false)
             return kodein to { kodein._init?.invoke() ; Unit }
         }
     }

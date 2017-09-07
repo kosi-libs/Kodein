@@ -1,7 +1,8 @@
 package com.github.salomonbrys.kodein
 
 import com.github.salomonbrys.kodein.bindings.Binding
-import com.github.salomonbrys.kodein.internal.CMap
+import com.github.salomonbrys.kodein.bindings.BindingFun
+import com.github.salomonbrys.kodein.internal.BindingsMap
 
 /**
  * Container class where the bindings and their factories are stored.
@@ -134,7 +135,11 @@ interface KodeinContainer {
      * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
      * @property map The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
      */
-    class Builder internal constructor(allowOverride: Boolean, silentOverride: Boolean, internal val map: CMap) {
+    class Builder internal constructor(allowOverride: Boolean, silentOverride: Boolean, internal val bindings: BindingsMap, internal val external: ExternalReference) {
+
+        internal class ExternalReference {
+            var fetcher: ExternalSource? = null
+        }
 
         /**
          * The override permission for a builder.
@@ -216,9 +221,9 @@ interface KodeinContainer {
             val mustOverride = _overrideMode.must(overrides)
 
             if (mustOverride != null) {
-                if (mustOverride && key !in map)
+                if (mustOverride && key !in bindings)
                     throw Kodein.OverridingException("Binding $key must override an existing binding.")
-                if (!mustOverride && key in map)
+                if (!mustOverride && key in bindings)
                     throw Kodein.OverridingException("Binding $key must not override an existing binding.")
             }
         }
@@ -231,12 +236,12 @@ interface KodeinContainer {
          * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          * @throws Kodein.OverridingException If this bindings overrides an existing binding and is not allowed to.
          */
-        fun <A, T: Any> bindKey(key: Kodein.Key<A, T>, binding: Binding<A, T>, overrides: Boolean?) {
+        fun <A, T: Any> bindKey(key: Kodein.Key<A, T>, binding: Binding<A, T>, overrides: Boolean? = null) {
             key.bind.type.checkIsReified(key.bind)
             key.argType.checkIsReified(key)
             _checkOverrides(key, overrides)
 
-            map[key] = binding
+            bindings[key] = binding
         }
 
         /**
@@ -249,14 +254,14 @@ interface KodeinContainer {
          * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          * @throws Kodein.OverridingException If this bindings overrides an existing binding and is not allowed to.
          */
-        fun <T: Any> bindBind(bind: Kodein.Bind<T>, binding: Binding<*, out T>, overrides: Boolean?) {
+        fun <T: Any> bindBind(bind: Kodein.Bind<T>, binding: Binding<*, out T>, overrides: Boolean? = null) {
             bind.type.checkIsReified(bind)
             binding.argType.checkIsReified(binding)
 
             val key = Kodein.Key(bind, binding.argType)
             _checkOverrides(key, overrides)
 
-            map[key] = binding
+            bindings[key] = binding
         }
 
         /**
@@ -288,7 +293,7 @@ interface KodeinContainer {
             if (!allowOverride)
                 container.bindings.keys.forEach { _checkOverrides(it, null) }
 
-            map.putAll(container.bindings)
+            bindings.putAll(container.bindings)
         }
 
         /**
@@ -299,10 +304,24 @@ interface KodeinContainer {
          */
         fun subBuilder(allowOverride: Boolean = false, silentOverride: Boolean = false): Builder {
             _checkMatch(allowOverride)
-            return Builder(allowOverride, silentOverride, map)
+            return Builder(allowOverride, silentOverride, bindings, external)
+        }
+
+        fun bindExternalSource(overrides: Boolean? = null, source: ExternalSource) {
+            val mustOverride = _overrideMode.must(overrides)
+
+            if (mustOverride != null) {
+                if (mustOverride && external.fetcher == null)
+                    throw Kodein.OverridingException("Binding of external fetcher must override a previously set fetcher.")
+                if (!mustOverride && external.fetcher != null)
+                    throw Kodein.OverridingException("Binding of external fetcher must not override previously set fetcher.")
+            }
+
+            external.fetcher = source
         }
 
     }
 
-
 }
+
+typealias ExternalSource = (Kodein, Kodein.Key<*, *>) -> BindingFun<*, *>?

@@ -57,6 +57,12 @@ interface BindingKodein : Kodein {
     fun overriddenInstanceOrNull(arg: Any?): Any? = overriddenFactoryOrNull()?.invoke(arg)
 }
 
+typealias BindingFun<A, T> = (BindingKodein, Kodein.Key<A, T>, A) -> T
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <A, T: Any> bindingFun(noinline f: BindingFun<A, T>): BindingFun<A, T> = f
+inline fun <A, T: Any> simpleBindingFun(crossinline f: (A) -> T): BindingFun<A, T> = bindingFun { _, _, a -> f(a) }
+
 /**
  * Base class that knows how to get an instance.
  *
@@ -66,7 +72,7 @@ interface BindingKodein : Kodein {
  * @param A The type of argument used to create or retrieve an instance.
  * @param T The type of instance this factory creates or retrieves.
  */
-interface Binding<in A, T : Any> {
+interface Binding<in A, T : Any> : BindingFun<A, T> {
 
     /**
      * Get an instance of type `T` function argument `A`.
@@ -79,6 +85,8 @@ interface Binding<in A, T : Any> {
      * @return The instance of the requested type.
      */
     fun getInstance(kodein: BindingKodein, key: Kodein.Key<A, T>, arg: A): T
+
+    override fun invoke(kodein: BindingKodein, key: Kodein.Key<A, T>, args: A) = getInstance(kodein, key, args)
 
     /**
      * The name of this factory, *used for debug print only*.

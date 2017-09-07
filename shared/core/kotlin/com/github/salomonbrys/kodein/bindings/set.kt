@@ -67,7 +67,7 @@ class TypeBinderInSet<in T : Any, C: Any> internal constructor(private val _bind
     @Suppress("UNCHECKED_CAST")
     infix fun with(binding: Binding<*, out T>) {
         val setKey = Kodein.Key(Kodein.Bind(_colTypeToken, _binder.bind.tag), binding.argType)
-        val setBinding = _binder.containerBuilder.map[setKey] ?: throw IllegalStateException("No set binding to $setKey")
+        val setBinding = _binder.containerBuilder.bindings[setKey] ?: throw IllegalStateException("No set binding to $setKey")
 
         setBinding as? BaseMultiBinding<Any, T, C> ?: throw IllegalStateException("$setKey is associated to a ${setBinding.factoryName()} while it should be associated with bindingSet")
 

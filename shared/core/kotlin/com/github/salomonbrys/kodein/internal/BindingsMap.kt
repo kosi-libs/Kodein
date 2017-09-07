@@ -11,7 +11,7 @@ import com.github.salomonbrys.kodein.Kodein
  * For example, when adding a factory with a key's argType being `List<*>`, the same factory will be added to the [_raws] map associated with a slightly different key: argType being the class `List`.
  * However, when adding a factory with a key's argType being `List<String>`, nothing will be added to the [_raws] map.
  */
-internal class CMap {
+internal class BindingsMap {
     /**
      * The regular map associating keys to factories
      */

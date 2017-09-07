@@ -81,6 +81,8 @@ internal abstract class JVMTypeToken<T> : TypeToken<T> {
     }
 }
 
+val TypeToken<*>.jvmType get() = (this as? JVMTypeToken<*>)?.type() ?: throw IllegalStateException("Not a JVM Type Token")
+
 internal abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
     abstract val trueType: Type
 

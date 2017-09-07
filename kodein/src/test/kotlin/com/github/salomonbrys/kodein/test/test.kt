@@ -1061,5 +1061,38 @@ class KodeinTests : TestCase() {
         assertNotSame(laila1, laila2)
     }
 
+    @Test fun test27_0_ExternalSource() {
+        val kodein = Kodein {
+            bind(tag = "him") from singleton { Person("Salomon") }
+
+            val laila = Person("Laila")
+            container.bindExternalSource { kodein, key ->
+                @Suppress("UNUSED_PARAMETER")
+                fun _createAnyone(kodein: Kodein, key: Kodein.Key<*, *>, arg: Unit) = Person("Anyone")
+
+                when (key.bind.type.jvmType) {
+                    Person::class.java -> when (key.bind.tag) {
+                        "her" -> simpleBindingFun { laila }
+                        null -> ::_createAnyone
+                        else -> null
+                    }
+                    else -> null
+                }
+            }
+        }
+
+        assertNotNull(kodein.instanceOrNull<Person>())
+
+        assertNull(kodein.instanceOrNull<Person>(tag = "no-one"))
+
+        assertNotNull(kodein.instanceOrNull<Person>(tag = "him"))
+        assertSame(kodein.instanceOrNull<Person>(tag = "him"), kodein.instanceOrNull<Person>(tag = "him"))
+
+        assertNotNull(kodein.instanceOrNull<Person>(tag = "her"))
+        assertSame(kodein.instanceOrNull<Person>(tag = "her"), kodein.instanceOrNull<Person>(tag = "her"))
+
+        assertNotSame(kodein.instanceOrNull<Person>(), kodein.instanceOrNull<Person>())
+        assertEquals(kodein.instanceOrNull<Person>(), kodein.instanceOrNull<Person>())
+    }
 
 }
