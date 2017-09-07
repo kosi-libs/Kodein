@@ -28,7 +28,7 @@ interface RefMaker {
  * @property refMaker Reference Maker that defines the kind of reference being used.
  * @property creator A function that should always create a new object.
  */
-class RefSingletonBinding<T : Any>(override val createdType: TypeToken<T>, val refMaker: RefMaker, val creator: NoArgBindingKodein.() -> T) : NoArgBinding<T> {
+class RefSingletonBinding<T : Any>(override val createdType: TypeToken<out T>, val refMaker: RefMaker, val creator: NoArgBindingKodein.() -> T) : NoArgBinding<T> {
 
      // Should always return the same object or null.
     private var _ref: (() -> T?) = { null }
@@ -60,7 +60,7 @@ class RefSingletonBinding<T : Any>(override val createdType: TypeToken<T>, val r
  * @property refMaker Reference Maker that defines the kind of reference being used.
  * @property creator A function that should always create a new object.
  */
-class RefMultitonBinding<A, T: Any>(override val argType: TypeToken<A>, override val createdType: TypeToken<T>, val refMaker: RefMaker, val creator: BindingKodein.(A) -> T): Binding<A, T> {
+class RefMultitonBinding<in A, T: Any>(override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val refMaker: RefMaker, val creator: BindingKodein.(A) -> T): Binding<A, T> {
 
     private val _refs = newConcurrentMap<A, () -> T?>()
 

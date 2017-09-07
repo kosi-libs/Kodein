@@ -148,7 +148,7 @@ class ScopedSingletonBinding<C, T : Any>(val contextType: TypeToken<C>, override
     @Suppress("UNCHECKED_CAST")
     override fun getInstance(kodein: BindingKodein, key: Kodein.Key<C, T>, arg: C) = getScopedInstance(NoArgBindingKodeinImpl(kodein), key, arg)
 
-    override val argType: TypeToken<C> get() = contextType
+    override val argType = contextType
 
     override fun getContextAndRegistry(arg: C): Pair<C, ScopeRegistry> = arg to _scope.getRegistry(arg)
 

@@ -203,7 +203,7 @@ interface NoArgBinding<T: Any> : Binding<Unit, T> {
      */
     fun getInstance(kodein: NoArgBindingKodein, key: Kodein.Key<Unit, T>): T
 
-    override val argType: TypeToken<Unit> get() = UnitToken
+    override val argType get() = UnitToken
 
     override val description: String get() = "${factoryName()} { ${createdType.simpleDispString()} } "
 

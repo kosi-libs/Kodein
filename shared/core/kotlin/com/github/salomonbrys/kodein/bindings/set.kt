@@ -22,7 +22,7 @@ abstract class BaseMultiBinding<A, T: Any, C: Any> : Binding<A, C> {
  * @param T The provided type of all bindings in the set.
  * @property elementType The provided type of all bindings in the set.
  */
-class ArgSetBinding<A, T: Any>(override val argType: TypeToken<A>, val elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : Binding<A, Set<T>>, BaseMultiBinding<A, T, Set<T>>() {
+class ArgSetBinding<A, T: Any>(override val argType: TypeToken<in A>, val elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : Binding<A, Set<T>>, BaseMultiBinding<A, T, Set<T>>() {
 
     override val set = LinkedHashSet<Binding<A, T>>()
 

@@ -125,4 +125,4 @@ inline fun <reified T : Any> Kodein.Builder.refSingleton(refMaker: RefMaker, noi
  * @param creator A function that creates the multiton object. For the same argument, will be called only if the multiton does not already exist or if the reference is not valid anymore.
  */
 inline fun <reified A, reified T : Any> Kodein.Builder.refMultiton(refMaker: RefMaker, noinline creator: BindingKodein.(A) -> T)
-    = RefMultitonBinding(erased(), erased(), refMaker, creator)
+    = RefMultitonBinding<A, T>(erased(), erased(), refMaker, creator)

@@ -12,7 +12,7 @@ import com.github.salomonbrys.kodein.internal.synchronizedIfNull
  * @param createdType The type of objects created by this factory.
  * @property creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-class FactoryBinding<A, T: Any>(override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val creator: BindingKodein.(A) -> T) : Binding<A, T> {
+class FactoryBinding<in A, T: Any>(override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val creator: BindingKodein.(A) -> T) : Binding<A, T> {
     override fun factoryName() = "factory"
 
     override fun getInstance(kodein: BindingKodein, key: Kodein.Key<A, T>, arg: A) = this.creator(kodein, arg)
@@ -28,7 +28,7 @@ class FactoryBinding<A, T: Any>(override val argType: TypeToken<in A>, override 
  * @property createdType The type of the created object, *used for debug print only*.
  * @property creator The function that will be called the first time an instance is requested. Guaranteed to be called only once per argument. Should create a new instance.
  */
-class MultitonBinding<A, T : Any>(override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val creator: BindingKodein.(A) -> T) : Binding<A, T> {
+class MultitonBinding<in A, T : Any>(override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val creator: BindingKodein.(A) -> T) : Binding<A, T> {
     private val _instances = newConcurrentMap<A, T>()
 
     override fun factoryName() = "multiton"
@@ -81,7 +81,7 @@ abstract class ASingleton<T : Any> internal constructor(val creator: NoArgBindin
  * @param createdType The type of the created object, *used for debug print only*.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
-class SingletonBinding<T : Any>(override val createdType: TypeToken<T>, creator: NoArgBindingKodein.() -> T) : ASingleton<T>(creator) {
+class SingletonBinding<T : Any>(override val createdType: TypeToken<out T>, creator: NoArgBindingKodein.() -> T) : ASingleton<T>(creator) {
     override fun factoryName() = "singleton"
 }
 
@@ -92,7 +92,7 @@ class SingletonBinding<T : Any>(override val createdType: TypeToken<T>, creator:
  * @param createdType The type of the created object.
  * @param creator The function that will be called as soon as Kodein is ready. Guaranteed to be called only once. Should create a new instance.
  */
-class EagerSingletonBinding<T : Any>(builder: Kodein.Builder, override val createdType: TypeToken<T>, creator: NoArgBindingKodein.() -> T) : ASingleton<T>(creator) {
+class EagerSingletonBinding<T : Any>(builder: Kodein.Builder, override val createdType: TypeToken<out T>, creator: NoArgBindingKodein.() -> T) : ASingleton<T>(creator) {
     override fun factoryName() = "eagerSingleton"
 
     init {
@@ -108,7 +108,7 @@ class EagerSingletonBinding<T : Any>(builder: Kodein.Builder, override val creat
  * @param createdType The type of the object, *used for debug print only*.
  * @property instance The object that will always be returned.
  */
-class InstanceBinding<T : Any>(override val createdType: TypeToken<T>, val instance: T) : NoArgBinding<T> {
+class InstanceBinding<T : Any>(override val createdType: TypeToken<out T>, val instance: T) : NoArgBinding<T> {
     override fun factoryName() = "instance"
 
     override fun getInstance(kodein: NoArgBindingKodein, key: Kodein.Key<Unit, T>): T = this.instance

@@ -1112,4 +1112,18 @@ class KodeinTests : TestCase() {
         assertEquals(kodein.instanceOrNull<Person>(), kodein.instanceOrNull<Person>())
     }
 
+    @Test fun test28_0_ManualTyping() {
+
+        open class Resource
+        class SubResource : Resource()
+
+        val resourceClass: Class<out Resource> = SubResource::class.java
+
+        val kodein = Kodein {
+            Bind(TT(resourceClass)) with SingletonBinding(TT(resourceClass)) { resourceClass.getConstructor().newInstance() }
+        }
+
+        kodein.instance<SubResource>()
+    }
+
 }
