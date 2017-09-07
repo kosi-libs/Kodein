@@ -9,6 +9,7 @@ dependencies {
     compile project(':kodein-core')
 
     testCompile "junit:junit:$junit_version"
+    testCompile 'com.google.inject:guice:4.1.0'
 }
 
 apply from: "../gradle/dokka.gradle"

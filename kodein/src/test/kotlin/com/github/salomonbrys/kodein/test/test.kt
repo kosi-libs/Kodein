@@ -9,6 +9,12 @@ import org.junit.Test
 import org.junit.runners.MethodSorters
 import java.util.*
 import kotlin.concurrent.thread
+import com.google.inject.AbstractModule
+import com.google.inject.Guice
+import com.google.inject.name.Names
+import javax.inject.Named
+import javax.inject.Provider
+
 
 interface IPerson { val name: String? }
 
@@ -1062,21 +1068,32 @@ class KodeinTests : TestCase() {
     }
 
     @Test fun test27_0_ExternalSource() {
+        fun Kodein.Key<*, *>.toGuice() = when (bind.tag) {
+            null -> com.google.inject.Key.get(bind.type.jvmType)
+            is String -> com.google.inject.Key.get(bind.type.jvmType, Names.named(bind.tag as String))
+            is Annotation -> com.google.inject.Key.get(bind.type.jvmType, bind.tag as Annotation)
+            else -> throw IllegalStateException("Unsupported tag type")
+        }
+
+        class GuiceModule : AbstractModule() {
+            override fun configure() {
+                bind(Person::class.java).annotatedWith(Names.named("her")).toInstance(Person("Laila"))
+                bind(Person::class.java).toProvider(Provider { Person("Anyone") })
+            }
+        }
+
+        val guice = Guice.createInjector(GuiceModule())
+
         val kodein = Kodein {
             bind(tag = "him") from singleton { Person("Salomon") }
 
-            val laila = Person("Laila")
-            container.bindExternalSource { kodein, key ->
-                @Suppress("UNUSED_PARAMETER")
-                fun _createAnyone(kodein: Kodein, key: Kodein.Key<*, *>, arg: Unit) = Person("Anyone")
-
-                when (key.bind.type.jvmType) {
-                    Person::class.java -> when (key.bind.tag) {
-                        "her" -> simpleBindingFun { laila }
-                        null -> ::_createAnyone
-                        else -> null
-                    }
-                    else -> null
+            container.bindExternalSource { _, key ->
+                try {
+                    val binding = guice.getBinding(key.toGuice())
+                    bindingFun { binding.provider.get() }
+                }
+                catch (_: Throwable) {
+                    null
                 }
             }
         }

@@ -60,8 +60,7 @@ interface BindingKodein : Kodein {
 typealias BindingFun<A, T> = (BindingKodein, Kodein.Key<A, T>, A) -> T
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun <A, T: Any> bindingFun(noinline f: BindingFun<A, T>): BindingFun<A, T> = f
-inline fun <A, T: Any> simpleBindingFun(crossinline f: (A) -> T): BindingFun<A, T> = bindingFun { _, _, a -> f(a) }
+inline fun <A, T: Any> bindingFun(crossinline f: BindingKodein.(A) -> T): BindingFun<A, T> = { k, _, a -> k.f(a) }
 
 /**
  * Base class that knows how to get an instance.
