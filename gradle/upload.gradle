@@ -3,7 +3,7 @@ apply plugin: 'signing'
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
-    from dokka
+//    from dokka
 }
 
 task sourcesJar(type: Jar) {

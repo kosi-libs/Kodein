@@ -16,3 +16,6 @@ gradle.properties
 gradle.props
 local.properties
 .gradletasknamecache
+
+# JS
+node_modules/

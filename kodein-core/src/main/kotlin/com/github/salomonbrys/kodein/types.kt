@@ -88,6 +88,11 @@ internal abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
 
     private var _type: Type? = null
 
+    override fun simpleErasedDispString() = trueType.simpleErasedName()
+
+    override fun fullErasedDispString() = trueType.fullErasedName()
+
+
     override fun type(): Type = _type ?: run {
         // TypeReference cannot create WildcardTypes nor TypeVariables
         when {
@@ -303,6 +308,9 @@ private fun <T> Type._getTypeSuperTT(): TypeToken<in T>? =
 internal class ClassTypeToken<T>(private val _type: Class<T>) : JVMTypeToken<T>() {
 
     override fun type() = _type
+
+    override fun simpleErasedDispString() = type().simpleErasedName()
+    override fun fullErasedDispString() = type().fullErasedName()
 
     override fun getRaw() = this
 

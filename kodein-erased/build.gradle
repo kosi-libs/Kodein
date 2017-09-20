@@ -5,6 +5,7 @@ sourceCompatibility = 1.6
 
 sourceSets {
     main.kotlin.srcDirs += "$rootDir/shared/erased/kotlin"
+    test.kotlin.srcDirs += "$rootDir/shared/test/erased/kotlin"
 }
 
 dependencies {
@@ -12,9 +13,9 @@ dependencies {
 
     compile project(':kodein-core')
 
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
-
-    testCompile project(':kodein-core').sourceSets.test.output
+    testCompile project(':test-utils')
 }
 
 apply from: "../gradle/dokka.gradle"

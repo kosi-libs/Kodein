@@ -57,21 +57,7 @@ interface BindingKodein : Kodein {
     fun overriddenInstanceOrNull(arg: Any?): Any? = overriddenFactoryOrNull()?.invoke(arg)
 }
 
-typealias BindingFun<A, T> = (BindingKodein, Kodein.Key<A, T>, A) -> T
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun <A, T: Any> bindingFun(crossinline f: BindingKodein.(A) -> T): BindingFun<A, T> = { k, _, a -> k.f(a) }
-
-/**
- * Base class that knows how to get an instance.
- *
- * All bindings are bound to a Binding.
- * Whether this factory creates a new instance at each call or not is left to implementation.
- *
- * @param A The type of argument used to create or retrieve an instance.
- * @param T The type of instance this factory creates or retrieves.
- */
-interface Binding<in A, T : Any> : BindingFun<A, T> {
+interface BindingBase<in A, T: Any> {
 
     /**
      * Get an instance of type `T` function argument `A`.
@@ -84,8 +70,30 @@ interface Binding<in A, T : Any> : BindingFun<A, T> {
      * @return The instance of the requested type.
      */
     fun getInstance(kodein: BindingKodein, key: Kodein.Key<A, T>, arg: A): T
+}
 
-    override fun invoke(kodein: BindingKodein, key: Kodein.Key<A, T>, args: A) = getInstance(kodein, key, args)
+inline fun <A, T: Any> bindingBaseFactory(crossinline f: BindingKodein.(A) -> T) = object : BindingBase<A, T> {
+    override fun getInstance(kodein: BindingKodein, key: Kodein.Key<A, T>, arg: A) = kodein.f(arg)
+}
+
+inline fun <T: Any> bindingBaseProvider(crossinline f: BindingKodein.() -> T) = object : BindingBase<Unit, T> {
+    override fun getInstance(kodein: BindingKodein, key: Kodein.Key<Unit, T>, arg: Unit) = kodein.f()
+}
+
+inline fun <A, T: Any> bindingBase(crossinline f: BindingKodein.(Kodein.Key<A, T>, A) -> T) = object : BindingBase<A, T> {
+    override fun getInstance(kodein: BindingKodein, key: Kodein.Key<A, T>, arg: A) = kodein.f(key, arg)
+}
+
+/**
+ * Base class that knows how to get an instance.
+ *
+ * All bindings are bound to a Binding.
+ * Whether this factory creates a new instance at each call or not is left to implementation.
+ *
+ * @param A The type of argument used to create or retrieve an instance.
+ * @param T The type of instance this factory creates or retrieves.
+ */
+interface Binding<in A, T : Any> : BindingBase<A, T> {
 
     /**
      * The name of this factory, *used for debug print only*.
@@ -207,6 +215,6 @@ interface NoArgBinding<T: Any> : Binding<Unit, T> {
 
     override val description: String get() = "${factoryName()} { ${createdType.simpleDispString()} } "
 
-    override val fullDescription: String get() = "${factoryName()} { ${createdType.fullDispString()} } "
+    override val fullDescription: String get() = "${factoryFullName()} { ${createdType.fullDispString()} } "
 
 }

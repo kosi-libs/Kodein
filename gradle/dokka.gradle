@@ -1,13 +1,16 @@
-apply plugin: 'org.jetbrains.dokka'
 
-dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
-    includes = ['dokka-module.md', 'dokka-package.md']
+// Temporarily disabled because of https://github.com/Kotlin/dokka/issues/212
 
-    linkMapping {
-        dir = "src/main/kotlin"
-        url = "https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin"
-        suffix = "#L"
-    }
-}
+//apply plugin: 'org.jetbrains.dokka'
+//
+//dokka {
+//    outputFormat = 'html'
+//    outputDirectory = "$buildDir/javadoc"
+//    includes = ['dokka-module.md', 'dokka-package.md']
+//
+//    linkMapping {
+//        dir = "src/main/kotlin"
+//        url = "https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin"
+//        suffix = "#L"
+//    }
+//}

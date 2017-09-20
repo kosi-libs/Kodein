@@ -8,7 +8,9 @@ dependencies {
 
     compile project(':kodein-core')
 
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
+    testCompile project(':test-utils')
     testCompile 'com.google.inject:guice:4.1.0'
 }
 

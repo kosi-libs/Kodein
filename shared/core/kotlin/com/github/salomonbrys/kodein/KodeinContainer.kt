@@ -1,7 +1,7 @@
 package com.github.salomonbrys.kodein
 
 import com.github.salomonbrys.kodein.bindings.Binding
-import com.github.salomonbrys.kodein.bindings.BindingFun
+import com.github.salomonbrys.kodein.bindings.BindingBase
 import com.github.salomonbrys.kodein.internal.BindingsMap
 
 /**
@@ -324,4 +324,4 @@ interface KodeinContainer {
 
 }
 
-typealias ExternalSource = (Kodein, Kodein.Key<*, *>) -> BindingFun<*, *>?
+typealias ExternalSource = (Kodein, Kodein.Key<*, *>) -> BindingBase<*, *>?

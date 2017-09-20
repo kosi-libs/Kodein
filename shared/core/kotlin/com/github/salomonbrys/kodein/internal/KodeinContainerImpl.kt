@@ -5,7 +5,7 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinContainer
 import com.github.salomonbrys.kodein.UnitToken
 import com.github.salomonbrys.kodein.bindings.Binding
-import com.github.salomonbrys.kodein.bindings.BindingFun
+import com.github.salomonbrys.kodein.bindings.BindingBase
 import com.github.salomonbrys.kodein.bindings.BindingKodein
 
 /**
@@ -128,17 +128,17 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
 
     private fun <A, T: Any> _bindingKodein(key: Kodein.Key<A, T>, overrideLevel: Int) = BindingKodeinImpl(KodeinContainerImpl(_bindings, _externalSource, Node(key, overrideLevel, _node)), key, overrideLevel)
 
-    private fun <A, T: Any> _transformBinding(binding: BindingFun<A, T>, key: Kodein.Key<A, T>, overrideLevel: Int, bindingKodein: BindingKodein): (A) -> T {
+    private fun <A, T: Any> _transformBinding(binding: BindingBase<A, T>, key: Kodein.Key<A, T>, overrideLevel: Int, bindingKodein: BindingKodein): (A) -> T {
         _node?.check(key, overrideLevel)
         @Suppress("UNCHECKED_CAST")
-        return { arg -> binding.invoke(bindingKodein, key, arg) }
+        return { arg -> binding.getInstance(bindingKodein, key, arg) }
     }
 
     override fun <A, T: Any> factoryOrNull(key: Kodein.Key<A, T>): ((A) -> T)? {
         val bindingKodein = _bindingKodein(key, 0)
         @Suppress("UNCHECKED_CAST")
         val binding = _findBindingOrNull(key, true)
-                ?: _externalSource?.invoke(bindingKodein, key) as BindingFun<A, T>?
+                ?: _externalSource?.invoke(bindingKodein, key) as BindingBase<A, T>?
                 ?: return null
         return _transformBinding(binding, key, 0, bindingKodein)
     }

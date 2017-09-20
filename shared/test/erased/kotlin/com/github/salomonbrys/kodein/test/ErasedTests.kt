@@ -1,60 +1,19 @@
+@file:Suppress("DEPRECATION", "unused")
+
 package com.github.salomonbrys.kodein.test
 
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.bindings.*
-import junit.framework.TestCase
-import org.junit.Assert.assertNotEquals
+import com.github.salomonbrys.kodein.erased.*
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import java.util.*
-import kotlin.concurrent.thread
-import com.google.inject.AbstractModule
-import com.google.inject.Guice
-import com.google.inject.name.Names
-import javax.inject.Named
-import javax.inject.Provider
+import kotlin.reflect.KClass
+import kotlin.test.*
 
-
-interface IPerson { val name: String? }
-
-data class Person(override val name: String? = null ) : IPerson
-
-data class A(val b: B?)
-data class B(val c: C?)
-data class C(val a: A?)
-
-open class Name(val firstName: String) {
-    override fun equals(other: Any?): Boolean{
-        if (this === other) return true
-        if (other !is Name) return false
-        if (firstName != other.firstName) return false
-        return true
-    }
-
-    override fun hashCode(): Int{
-        return firstName.hashCode()
-    }
-}
-class FullName(firstName: String, val lastName: String) : Name(firstName) {
-    override fun equals(other: Any?): Boolean{
-        if (this === other) return true
-        if (other !is FullName) return false
-        if (!super.equals(other)) return false
-        if (lastName != other.lastName) return false
-        return true
-    }
-
-    override fun hashCode(): Int{
-        return 31 * super.hashCode() + lastName.hashCode()
-    }
-}
-
-typealias PersonEntry = Pair<String, Person>
-typealias PersonEntries = Set<PersonEntry>
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class KodeinTests : TestCase() {
+class ErasedTests {
 
     @Test fun test00_0_ProviderBindingGetInstance() {
 
@@ -92,7 +51,7 @@ class KodeinTests : TestCase() {
 
         val kodein = Kodein { bind() from factory { name: String -> Person(name) } }
 
-        val f: (String) -> Person = kodein.factory<String, Person>()
+        val f: (String) -> Person = kodein.factory()
         val p: () -> Person = f.toProvider { "Salomon" }
 
         assertEquals("Salomon", p().name)
@@ -112,15 +71,6 @@ class KodeinTests : TestCase() {
         val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
 
         val p: Person = kodein.with("Salomon").instance()
-
-        assertEquals("Salomon", p.name)
-    }
-
-    @Test fun test00_6_WithSubFactoryGetInstance() {
-
-        val kodein = Kodein { bind<Person>() with factory { p: Name -> Person(p.firstName) } }
-
-        val p: Person = kodein.with(FullName("Salomon", "BRYS")).instance()
 
         assertEquals("Salomon", p.name)
     }
@@ -153,70 +103,6 @@ class KodeinTests : TestCase() {
 
         assertSame(p1(), p2())
     }
-
-    @Test fun test02_0_ThreadSingletonBindingGetInstance() {
-        val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
-
-        var tp1: Person? = null
-
-        val t = thread {
-            tp1 = kodein.Instance(generic())
-            val tp2: Person = kodein.Instance(generic())
-
-            assertSame(tp1, tp2)
-        }
-
-        val p1: Person = kodein.Instance(generic())
-        val p2: Person = kodein.Instance(generic())
-
-        assertSame(p1, p2)
-
-        t.join()
-
-        assertNotSame(p1, tp1)
-    }
-
-    @Test fun test02_1_ThreadSingletonBindingGetProvider() {
-        val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
-
-        var tp1: Person? = null
-
-        val t = thread {
-            tp1 = kodein.provider<Person>().invoke()
-            val tp2 = kodein.provider<Person>().invoke()
-
-            assertSame(tp1, tp2)
-        }
-
-        val p1 = kodein.provider<Person>().invoke()
-        val p2 = kodein.provider<Person>().invoke()
-
-        assertSame(p1, p2)
-
-        t.join()
-
-        assertNotSame(p1, tp1)
-    }
-
-    @Suppress("UNUSED_VALUE")
-    @Test fun test02_3_WeakSingletonBinding() {
-        val kodein = Kodein { bind<Person>() with refSingleton(weakReference) { Person() } }
-
-        var p1: Person? = kodein.instance()
-        var p2: Person? = kodein.instance()
-        assertSame(p1, p2)
-
-        val id = System.identityHashCode(p1)
-
-        p1 = null
-        p2 = null
-        System.gc()
-
-        p1 = kodein.instance()
-
-        assertNotEquals(id, System.identityHashCode(p1))
-    }
-
 
     @Test fun test03_0_InstanceBindingGetInstance() {
 
@@ -398,7 +284,7 @@ class KodeinTests : TestCase() {
             bind<C>() with singleton { C(instance()) }
         }
 
-        assertThrown<Kodein.DependencyLoopException> {
+        assertFailsWith<Kodein.DependencyLoopException> {
             kodein.instance<A>()
         }
     }
@@ -420,19 +306,19 @@ class KodeinTests : TestCase() {
 
         val kodein = Kodein {}
 
-        assertThrown<Kodein.NotFoundException> {
+        assertFailsWith<Kodein.NotFoundException> {
             kodein.instance<Person>()
         }
 
-        assertThrown<Kodein.NotFoundException> {
+        assertFailsWith<Kodein.NotFoundException> {
             kodein.instance<FullName>()
         }
 
-        assertThrown<Kodein.NotFoundException> {
+        assertFailsWith<Kodein.NotFoundException> {
             kodein.instance<List<*>>()
         }
 
-        assertThrown<Kodein.NotFoundException> {
+        assertFailsWith<Kodein.NotFoundException> {
             kodein.instance<List<String>>()
         }
     }
@@ -444,7 +330,7 @@ class KodeinTests : TestCase() {
             bind<Person>("named") with provider { Person("Salomon") }
         }
 
-        assertThrown<Kodein.NotFoundException> {
+        assertFailsWith<Kodein.NotFoundException> {
             kodein.instance<Person>("schtroumpf")
         }
     }
@@ -455,7 +341,7 @@ class KodeinTests : TestCase() {
             bind<Person>() with factory { name: String -> Person(name) }
         }
 
-        assertThrown<Kodein.NotFoundException> {
+        assertFailsWith<Kodein.NotFoundException> {
             kodein.provider<Person>()
         }
     }
@@ -466,7 +352,7 @@ class KodeinTests : TestCase() {
             bind<Person>() with provider { Person() }
         }
 
-        assertThrown<Kodein.NotFoundException> {
+        assertFailsWith<Kodein.NotFoundException> {
             kodein.factory<Int, Person>()
         }
     }
@@ -477,12 +363,12 @@ class KodeinTests : TestCase() {
         val lb = listOf(B(null))
 
         val kodein = Kodein {
-            bind<List<A>>() with instance( la )
-            bind<List<B>>() with instance( lb )
+            Bind(erasedComp1<List<A>, A>()) with instance( la )
+            Bind(erasedComp1<List<B>, B>()) with instance( lb )
         }
 
-        assertSame(kodein.instance<List<A>>(), la)
-        assertSame(kodein.instance<List<B>>(), lb)
+        assertSame(kodein.Instance(erasedComp1<List<A>, A>()), la)
+        assertSame(kodein.Instance(erasedComp1<List<B>, B>()), lb)
     }
 
     class PersonLazy(kodein: LazyKodein) {
@@ -568,7 +454,7 @@ class KodeinTests : TestCase() {
             bind("yay") from provider { RecursC(instance()) }
         }
 
-        assertThrown<Kodein.DependencyLoopException> {
+        assertFailsWith<Kodein.DependencyLoopException> {
             kodein.instance<Recurs0>()
         }
     }
@@ -606,86 +492,9 @@ class KodeinTests : TestCase() {
     @Test fun test14_1_InjectorNotInjected() {
         val injected = PersonInject()
 
-        assertThrown<KodeinInjector.UninjectedException> {
+        assertFailsWith<KodeinInjector.UninjectedException> {
             injected.newPerson()
         }
-    }
-
-    object test15Scope : AutoScope<Unit> {
-        val registry = ScopeRegistry()
-        override fun getRegistry(context: Unit) = registry
-        override fun getContext() = Unit
-    }
-
-    @Test fun test15_0_BindingsDescription() {
-
-        val kodein = Kodein {
-            bind<IPerson>() with provider { Person() }
-            bind<IPerson>("thread-singleton") with refSingleton(threadLocal) { Person("ts") }
-            bind<IPerson>("singleton") with singleton { Person("s") }
-            bind<IPerson>("factory") with factory { name: String -> Person(name) }
-            bind<IPerson>("instance") with instance(Person("i"))
-            bind<String>("scoped") with scopedSingleton(test15Scope) { "" }
-            bind<String>("auto-scoped") with autoScopedSingleton(test15Scope) { "" }
-            constant("answer") with 42
-        }
-
-        val lines = kodein.container.bindings.description.lineSequence().map(String::trim).toList()
-        assertEquals(8, lines.size)
-        assertTrue("bind<IPerson>() with provider { Person }" in lines)
-        assertTrue("bind<IPerson>(\"thread-singleton\") with refSingleton(threadLocal) { Person }" in lines)
-        assertTrue("bind<IPerson>(\"singleton\") with singleton { Person }" in lines)
-        assertTrue("bind<IPerson>(\"factory\") with factory { String -> Person }" in lines)
-        assertTrue("bind<IPerson>(\"instance\") with instance ( Person )" in lines)
-        assertTrue("bind<Int>(\"answer\") with instance ( Int )" in lines)
-        assertTrue("bind<String>(\"scoped\") with scopedSingleton(KodeinTests.test15Scope) { Unit -> String }" in lines)
-        assertTrue("bind<String>(\"auto-scoped\") with autoScopedSingleton(KodeinTests.test15Scope) { String }" in lines)
-    }
-
-    @Test fun test15_1_BindingsFullDescription() {
-
-        val kodein = Kodein {
-            bind<IPerson>() with provider { Person() }
-            bind<IPerson>("thread-singleton") with refSingleton(threadLocal) { Person("ts") }
-            bind<IPerson>("singleton") with singleton { Person("s") }
-            bind<IPerson>("factory") with factory { name: String -> Person(name) }
-            bind<IPerson>("instance") with instance(Person("i"))
-            bind<String>("scoped") with scopedSingleton(test15Scope) { "" }
-            bind<String>("auto-scoped") with autoScopedSingleton(test15Scope) { "" }
-            constant("answer") with 42
-        }
-
-        val lines = kodein.container.bindings.fullDescription.lineSequence().map(String::trim).toList()
-        assertEquals(8, lines.size)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>() with provider { com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"thread-singleton\") with refSingleton(threadLocal) { com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"singleton\") with singleton { com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"factory\") with factory { java.lang.String -> com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"instance\") with instance ( com.github.salomonbrys.kodein.test.Person )" in lines)
-        assertTrue("bind<kotlin.Int>(\"answer\") with instance ( kotlin.Int )" in lines)
-        assertTrue("bind<java.lang.String>(\"scoped\") with scopedSingleton(com.github.salomonbrys.kodein.test.KodeinTests.test15Scope) { kotlin.Unit -> java.lang.String }" in lines)
-        assertTrue("bind<java.lang.String>(\"auto-scoped\") with autoScopedSingleton(KodeinTests.test15Scope) { java.lang.String }" in lines)
-    }
-
-    @Test fun test15_2_RegisteredBindings() {
-        val kodein = Kodein {
-            bind<IPerson>() with provider { Person() }
-            bind<IPerson>("thread-singleton") with refSingleton(threadLocal) { Person("ts") }
-            bind<IPerson>("singleton") with singleton { Person("s") }
-            bind<IPerson>("factory") with factory { name: String -> Person(name) }
-            bind<IPerson>("instance") with instance(Person("i"))
-            constant("answer") with 42
-        }
-
-        val UnitToken = erased<Unit>()
-
-        assertEquals(6, kodein.container.bindings.size)
-        assertEquals("provider", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), null), UnitToken)]?.factoryName())
-        assertEquals("refSingleton(threadLocal)", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "thread-singleton"), UnitToken)]?.factoryName())
-        assertEquals("singleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "singleton"), UnitToken)]?.factoryName())
-        assertEquals("factory", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "factory"), erased<String>())]?.factoryName())
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "instance"), UnitToken)]?.factoryName())
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<Int>(), "answer"), UnitToken)]?.factoryName())
     }
 
     @Test fun test16_1_ScopedSingleton() {
@@ -752,7 +561,7 @@ class KodeinTests : TestCase() {
         Kodein {
             bind<String>("name") with instance("Benjamin")
 
-            assertThrown<Kodein.OverridingException> {
+            assertFailsWith<Kodein.OverridingException> {
                 bind<String>("name") with instance("Salomon")
             }
         }
@@ -762,7 +571,7 @@ class KodeinTests : TestCase() {
         Kodein(allowSilentOverride = true) {
             bind<String>("name") with instance("Benjamin")
 
-            assertThrown<Kodein.OverridingException> {
+            assertFailsWith<Kodein.OverridingException> {
                 bind<String>("name", overrides = false) with instance("Salomon")
             }
         }
@@ -788,7 +597,7 @@ class KodeinTests : TestCase() {
 
         }
 
-        assertThrown<Kodein.DependencyLoopException> {
+        assertFailsWith<Kodein.DependencyLoopException> {
             kodein.instance<String>("name")
         }
     }
@@ -814,7 +623,7 @@ class KodeinTests : TestCase() {
         Kodein {
             bind<String>("name") with instance("Benjamin")
 
-            assertThrown<Kodein.OverridingException> {
+            assertFailsWith<Kodein.OverridingException> {
                 import(module)
             }
         }
@@ -830,7 +639,7 @@ class KodeinTests : TestCase() {
         Kodein {
             bind<String>("name") with instance("Benjamin")
 
-            assertThrown<Kodein.OverridingException> {
+            assertFailsWith<Kodein.OverridingException> {
                 import(module)
             }
         }
@@ -849,42 +658,22 @@ class KodeinTests : TestCase() {
         assertTrue(passed)
     }
 
-    interface FakeLogger { val cls: Class<*> }
+    interface FakeLogger { val cls: KClass<*> }
 
-    class FakeLoggerImpl(override val cls: Class<*>) : FakeLogger
+    class FakeLoggerImpl(override val cls: KClass<*>) : FakeLogger
 
     class AwareTest(override val kodein: Kodein) : KodeinAware {
-        val logger: FakeLogger = withClass().instance()
+        val logger: FakeLogger = withKClass().instance()
     }
 
     @Test fun test20_0_InjectForClass() {
         val kodein = Kodein {
-            bind<FakeLogger>() with factory { cls: Class<*> -> FakeLoggerImpl(cls) }
+            bind<FakeLogger>() with factory { cls: KClass<*> -> FakeLoggerImpl(cls) }
         }
 
         val test = AwareTest(kodein)
 
-        assertEquals(AwareTest::class.java, test.logger.cls)
-    }
-
-    open class Test21_A
-    class Test21_B : Test21_A()
-    @Suppress("unused")
-    class Test21_G<out T : Test21_A>
-
-    @Test fun test21_0_SimpleDispString() {
-
-        assertEquals("Int", generic<Int>().simpleDispString())
-
-        assertEquals("Array<Char>", generic<Array<Char>>().simpleDispString())
-
-        assertEquals("List<*>", generic<List<*>>().simpleDispString())
-
-        assertEquals("Map<String, *>", generic<Map<String, *>>().simpleDispString())
-
-        assertEquals("KodeinTests.Test21_G<*>", generic<Test21_G<*>>().simpleDispString())
-        assertEquals("KodeinTests.Test21_G<*>", generic<Test21_G<Test21_A>>().simpleDispString())
-        assertEquals("KodeinTests.Test21_G<out KodeinTests.Test21_B>", generic<Test21_G<Test21_B>>().simpleDispString())
+        assertEquals(AwareTest::class, test.logger.cls)
     }
 
     class Test22(kodein: Kodein) {
@@ -915,65 +704,6 @@ class KodeinTests : TestCase() {
 
         assertEquals("Salomon", p1.name)
         assertEquals("Laila", p3.name)
-    }
-
-    @Test fun test23_1_threadMultiton() {
-        val kodein = Kodein { bind() from refMultiton(threadLocal) { name: String -> Person(name) } }
-
-        var tp1: Person? = null
-        var tp3: Person? = null
-
-        val t = thread {
-            tp1 = kodein.with("Salomon").instance()
-            val tp2: Person = kodein.with("Salomon").instance()
-            tp3 = kodein.with("Laila").instance()
-
-            assertSame(tp1, tp2)
-            assertNotEquals(tp1, tp3)
-        }
-
-        val p1: Person = kodein.with("Salomon").instance()
-        val p2: Person = kodein.with("Salomon").instance()
-        val p3: Person = kodein.with("Laila").instance()
-
-        assertSame(p1, p2)
-        assertNotEquals(p1, p3)
-
-        t.join()
-
-        assertNotSame(p1, tp1)
-        assertEquals(p1, tp1)
-        assertEquals("Salomon", p1.name)
-        assertNotSame(p3, tp3)
-        assertEquals(p3, tp3)
-        assertEquals("Laila", p3.name)
-    }
-
-    @Suppress("UNUSED_VALUE")
-    @Test fun test23_3_WeakMultiton() {
-        val kodein = Kodein { bind() from refMultiton(weakReference) { name: String -> Person(name) } }
-
-        var p1: Person? = kodein.with("Salomon").instance()
-        var p2: Person? = kodein.with("Salomon").instance()
-        var p3: Person? = kodein.with("Laila").instance()
-        assertSame(p1, p2)
-        assertNotSame(p1, p3)
-        assertEquals("Salomon", p1?.name)
-        assertEquals("Laila", p3?.name)
-
-        val id1 = System.identityHashCode(p1)
-        val id3 = System.identityHashCode(p3)
-
-        p1 = null
-        p2 = null
-        p3 = null
-        System.gc()
-
-        p1 = kodein.with("Salomon").instance()
-        p3 = kodein.with("Laila").instance()
-
-        assertNotEquals(id1, System.identityHashCode(p1))
-        assertNotEquals(id3, System.identityHashCode(p3))
     }
 
     @Test fun test24_0_Callback() {
@@ -1011,12 +741,12 @@ class KodeinTests : TestCase() {
             bind<Person>().inSet() with provider { Person("Laila") }
         }
 
-        val persons1: Set<Person> = kodein.instance()
+        val persons1: Set<Person> = kodein.Instance(erasedSet())
 
         assertTrue(Person("Salomon") in persons1)
         assertTrue(Person("Laila") in persons1)
 
-        val persons2: Set<Person> = kodein.instance()
+        val persons2: Set<Person> = kodein.Instance(erasedSet())
 
         val salomon1 = persons1.first { it.name == "Salomon" }
         val salomon2 = persons2.first { it.name == "Salomon" }
@@ -1036,64 +766,28 @@ class KodeinTests : TestCase() {
             bind<PersonEntry>().inSet() with provider { "loulou" to Person("Laila") }
         }
 
-        val persons = kodein.instance<PersonEntries>().toMap()
+        val persons = kodein.Instance<PersonEntries>(erasedSet()).toMap()
 
         assertEquals(Person("Salomon"), persons["so"])
         assertEquals(Person("Laila"), persons["loulou"])
     }
 
-    @Test fun test26_2_ErasedMultiSet() {
-        val kodein = Kodein {
-            bind() from SetBinding<Person>(erased(), erasedSet())
-
-            bind<Person>().InSet(erasedSet()) with singleton { Person("Salomon") }
-            bind<Person>().InSet(erasedSet()) with provider { Person("Laila") }
-        }
-
-        val persons1: Set<Person> = kodein.Instance(erasedSet())
-
-        assertTrue(Person("Salomon") in persons1)
-        assertTrue(Person("Laila") in persons1)
-
-        val persons2: Set<Person> = kodein.Instance(erasedSet())
-
-        val salomon1 = persons1.first { it.name == "Salomon" }
-        val salomon2 = persons2.first { it.name == "Salomon" }
-
-        val laila1 = persons1.first { it.name == "Laila" }
-        val laila2 = persons2.first { it.name == "Laila" }
-
-        assertSame(salomon1, salomon2)
-        assertNotSame(laila1, laila2)
-    }
-
     @Test fun test27_0_ExternalSource() {
-        fun Kodein.Key<*, *>.toGuice() = when (bind.tag) {
-            null -> com.google.inject.Key.get(bind.type.jvmType)
-            is String -> com.google.inject.Key.get(bind.type.jvmType, Names.named(bind.tag as String))
-            is Annotation -> com.google.inject.Key.get(bind.type.jvmType, bind.tag as Annotation)
-            else -> throw IllegalStateException("Unsupported tag type")
-        }
-
-        class GuiceModule : AbstractModule() {
-            override fun configure() {
-                bind(Person::class.java).annotatedWith(Names.named("her")).toInstance(Person("Laila"))
-                bind(Person::class.java).toProvider(Provider { Person("Anyone") })
-            }
-        }
-
-        val guice = Guice.createInjector(GuiceModule())
-
         val kodein = Kodein {
             bind(tag = "him") from singleton { Person("Salomon") }
 
-            container.bindExternalSource { _, key ->
-                try {
-                    val binding = guice.getBinding(key.toGuice())
-                    bindingFun { binding.provider.get() }
-                }
-                catch (_: Throwable) {
-                    null
+            val laila = Person("Laila")
+            container.bindExternalSource { _, (bind) ->
+                @Suppress("UNUSED_PARAMETER")
+                fun _createAnyone(kodein: Kodein, key: Kodein.Key<*, *>, arg: Unit) = Person("Anyone")
+
+                when (bind.type) {
+                    erased<Person>() -> when (bind.tag) {
+                        "her" -> bindingBaseProvider { laila }
+                        null -> bindingBase(::_createAnyone)
+                        else -> null
+                    }
+                    else -> null
                 }
             }
         }
@@ -1112,18 +806,18 @@ class KodeinTests : TestCase() {
         assertEquals(kodein.instanceOrNull<Person>(), kodein.instanceOrNull<Person>())
     }
 
-    @Test fun test28_0_ManualTyping() {
-
-        open class Resource
-        class SubResource : Resource()
-
-        val resourceClass: Class<out Resource> = SubResource::class.java
-
-        val kodein = Kodein {
-            Bind(TT(resourceClass)) with SingletonBinding(TT(resourceClass)) { resourceClass.getConstructor().newInstance() }
-        }
-
-        kodein.instance<SubResource>()
-    }
+//    @Test fun test28_0_ManualTyping() {
+//
+//        open class Resource
+//        class SubResource : Resource()
+//
+//        val resourceClass: Class<out Resource> = SubResource::class.java
+//
+//        val kodein = Kodein {
+//            Bind(TT(resourceClass)) with SingletonBinding(TT(resourceClass)) { resourceClass.getConstructor().newInstance() }
+//        }
+//
+//        kodein.instance<SubResource>()
+//    }
 
 }

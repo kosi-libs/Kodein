@@ -14,10 +14,14 @@ interface TypeToken<T> {
      */
     fun simpleDispString(): String
 
+    fun simpleErasedDispString(): String
+
     /**
      * The fully qualified name of the type represented by this TypeToken.
      */
     fun fullDispString(): String
+
+    fun fullErasedDispString(): String
 
     /**
      * Checks that the type represented by this TypeToken is reified. Meaning that it is not or does not reference a `TypeVariable`.
@@ -83,9 +87,13 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
             throw IllegalStateException("CompositeTypeToken must be given at least one type parameter")
     }
 
-    override fun simpleDispString() = "${main.simpleDispString()}<${params.joinToString(", ")}>"
+    override fun simpleDispString() = "${main.simpleErasedDispString()}<${params.joinToString(", ") { it.simpleDispString() }}>"
 
-    override fun fullDispString() = "${main.fullDispString()}<${params.joinToString(", ")}>"
+    override fun simpleErasedDispString() = main.simpleErasedDispString()
+
+    override fun fullDispString() = "${main.fullErasedDispString()}<${params.joinToString(", ")  { it.fullDispString() }}>"
+
+    override fun fullErasedDispString() = main.fullErasedDispString()
 
     override fun checkIsReified(disp: Any) {
         main.checkIsReified(disp)

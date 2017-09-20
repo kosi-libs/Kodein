@@ -6,7 +6,9 @@ import kotlin.reflect.KClass
 internal class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
 
     override fun simpleDispString() = type.name
+    override fun simpleErasedDispString() = type.name
     override fun fullDispString() = type.name
+    override fun fullErasedDispString() = type.name
 
     override fun checkIsReified(disp: Any) {}
     override fun getRaw() = this
