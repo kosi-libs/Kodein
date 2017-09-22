@@ -15,6 +15,7 @@ internal class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
     override fun isGeneric() = false
     override fun isWildcard() = false
     override fun getSuper() = null
+    override fun getInterfaces() = emptyList<TypeToken<*>>()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -50,6 +51,8 @@ inline fun <reified T> erased(): TypeToken<T> {
  * Gives a [TypeToken] representing the given class.
  */
 fun <T: Any> TT(cls: JsClass<T>): TypeToken<T> = JSTypeToken(cls)
+
+fun <T: Any> TT(cls: KClass<T>): TypeToken<T> = TT(cls.js)
 
 /**
  * Gives a [TypeToken] representing the *erased* type of the given object.

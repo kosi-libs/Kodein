@@ -13,7 +13,7 @@ import kotlin.test.*
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class GenericJvmTests {
 
-    @Test fun test00_0_ProviderBindingGetInstance() {
+    @Test fun test00_00_ProviderBindingGetInstance() {
 
         val kodein = Kodein { bind<Person>() with provider { Person() } }
 
@@ -23,7 +23,7 @@ class GenericJvmTests {
         assertNotSame(p1, p2)
     }
 
-    @Test fun test00_1_ProviderBindingGetProvider() {
+    @Test fun test00_01_ProviderBindingGetProvider() {
 
         val kodein = Kodein { bind<Person>() with provider { Person() } }
 
@@ -33,7 +33,7 @@ class GenericJvmTests {
         assertNotSame(p1(), p2())
     }
 
-    @Test fun test00_2_FactoryBindingGetFactory() {
+    @Test fun test00_02_FactoryBindingGetFactory() {
 
         val kodein = Kodein {
             bind() from factory { name: String -> Person(name) }
@@ -45,7 +45,7 @@ class GenericJvmTests {
         assertNotSame(p1("Salomon"), p2("Salomon"))
     }
 
-    @Test fun test00_3_FactoryBindingGetProvider() {
+    @Test fun test00_03_FactoryBindingGetProvider() {
 
         val kodein = Kodein { bind() from factory { name: String -> Person(name) } }
 
@@ -55,7 +55,7 @@ class GenericJvmTests {
         assertEquals("Salomon", p().name)
     }
 
-    @Test fun test00_4_WithFactoryGetProvider() {
+    @Test fun test00_04_WithFactoryGetProvider() {
 
         val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
 
@@ -64,7 +64,7 @@ class GenericJvmTests {
         assertEquals("Salomon", p().name)
     }
 
-    @Test fun test00_5_WithFactoryGetInstance() {
+    @Test fun test00_05_WithFactoryGetInstance() {
 
         val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
 
@@ -73,7 +73,7 @@ class GenericJvmTests {
         assertEquals("Salomon", p.name)
     }
 
-    @Test fun test00_6_WithSubFactoryGetInstance() {
+    @Test fun test00_06_WithSubFactoryGetInstance() {
 
         val kodein = Kodein { bind<Person>() with factory { p: Name -> Person(p.firstName) } }
 
@@ -82,7 +82,7 @@ class GenericJvmTests {
         assertEquals("Salomon", p.name)
     }
 
-    @Test fun test00_7_WithGenericFactoryGetInstance() {
+    @Test fun test00_07_WithGenericFactoryGetInstance() {
 
         val kodein = Kodein { bind<Person>() with factory { l: List<*> -> Person(l.first().toString()) } }
 
@@ -91,7 +91,28 @@ class GenericJvmTests {
         assertEquals("Salomon", p.name)
     }
 
-    @Test fun test01_0_SingletonBindingGetInstance() {
+    @Test fun test00_08_WithItfFactoryGetInstance() {
+
+        val kodein = Kodein { bind<Person>() with factory { p: IName -> Person(p.firstName) } }
+
+        val p: Person = kodein.with(FullName("Salomon", "BRYS")).instance()
+
+        assertEquals("Salomon", p.name)
+    }
+
+    @Test fun test00_09_WithTwoItfFactoryGetInstance() {
+
+        val kodein = Kodein {
+            bind<Person>() with factory { p: IName -> Person(p.firstName) }
+            bind<Person>() with factory { p: IFullName -> Person(p.firstName + " " + p.lastName) }
+        }
+
+        val p: Person = kodein.with(FullInfos("Salomon", "BRYS", 30)).instance()
+
+        assertEquals("Salomon BRYS", p.name)
+    }
+
+    @Test fun test01_00_SingletonBindingGetInstance() {
 
         val kodein = Kodein { bind<Person>() with singleton { Person() } }
 
@@ -101,7 +122,7 @@ class GenericJvmTests {
         assertSame(p1, p2)
     }
 
-    @Test fun test01_1_SingletonBindingGetProvider() {
+    @Test fun test01_01_SingletonBindingGetProvider() {
 
         val kodein = Kodein { bind<Person>() with singleton { Person() } }
 
@@ -111,7 +132,7 @@ class GenericJvmTests {
         assertSame(p1(), p2())
     }
 
-    @Test fun test02_0_ThreadSingletonBindingGetInstance() {
+    @Test fun test02_00_ThreadSingletonBindingGetInstance() {
         val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
 
         var tp1: Person? = null
@@ -133,7 +154,7 @@ class GenericJvmTests {
         assertNotSame(p1, tp1)
     }
 
-    @Test fun test02_1_ThreadSingletonBindingGetProvider() {
+    @Test fun test02_01_ThreadSingletonBindingGetProvider() {
         val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
 
         var tp1: Person? = null
@@ -156,7 +177,7 @@ class GenericJvmTests {
     }
 
     @Suppress("UNUSED_VALUE")
-    @Test fun test02_3_WeakSingletonBinding() {
+    @Test fun test02_03_WeakSingletonBinding() {
         val kodein = Kodein { bind<Person>() with refSingleton(weakReference) { Person() } }
 
         var p1: Person? = kodein.instance()
@@ -175,7 +196,7 @@ class GenericJvmTests {
     }
 
 
-    @Test fun test03_0_InstanceBindingGetInstance() {
+    @Test fun test03_00_InstanceBindingGetInstance() {
 
         val p = Person()
 
@@ -188,7 +209,7 @@ class GenericJvmTests {
         assertSame(p2, p)
     }
 
-    @Test fun test03_1_InstanceBindingGetProvider() {
+    @Test fun test03_01_InstanceBindingGetProvider() {
 
         val p = Person()
 
@@ -201,7 +222,7 @@ class GenericJvmTests {
         assertSame(p2(), p)
     }
 
-    @Test fun test04_0_NullBindingGetInstance() {
+    @Test fun test04_00_NullBindingGetInstance() {
 
         val kodein = Kodein {}
 
@@ -210,7 +231,7 @@ class GenericJvmTests {
         assertNull(p)
     }
 
-    @Test fun test04_1_NullBindingGetProvider() {
+    @Test fun test04_01_NullBindingGetProvider() {
 
         val kodein = Kodein {}
 
@@ -219,7 +240,7 @@ class GenericJvmTests {
         assertNull(p)
     }
 
-    @Test fun test04_2_NullBindingGetFactory() {
+    @Test fun test04_02_NullBindingGetFactory() {
 
         val kodein = Kodein {}
 
@@ -228,7 +249,7 @@ class GenericJvmTests {
         assertNull(p)
     }
 
-    @Test fun test05_0_NamedProviderBindingGetInstance() {
+    @Test fun test05_00_NamedProviderBindingGetInstance() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("named") with provider { Person("Salomon") }
@@ -241,7 +262,7 @@ class GenericJvmTests {
         assertEquals("Salomon", p2.name)
     }
 
-    @Test fun test05_1_NamedProviderBindingGetProvider() {
+    @Test fun test05_01_NamedProviderBindingGetProvider() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("named") with provider { Person("Salomon") }
@@ -254,7 +275,7 @@ class GenericJvmTests {
         assertEquals("Salomon", p2().name)
     }
 
-    @Test fun test06_0_NamedSingletonBindingGetInstance() {
+    @Test fun test06_00_NamedSingletonBindingGetInstance() {
         val kodein = Kodein {
             bind<Person>() with singleton { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -267,7 +288,7 @@ class GenericJvmTests {
         assertSame(p1, p2)
     }
 
-    @Test fun test06_1_NamedSingletonBindingGetProvider() {
+    @Test fun test06_01_NamedSingletonBindingGetProvider() {
         val kodein = Kodein {
             bind<Person>() with singleton { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -280,7 +301,7 @@ class GenericJvmTests {
         assertSame(p1(), p2())
     }
 
-    @Test fun test07_0_NamedInstanceBindingGetInstance() {
+    @Test fun test07_00_NamedInstanceBindingGetInstance() {
 
         val kodein = Kodein {
             bind<Person>() with instance(Person())
@@ -297,7 +318,7 @@ class GenericJvmTests {
         assertSame(p2, p3)
     }
 
-    @Test fun test07_1_NamedInstanceBindingGetProvider() {
+    @Test fun test07_01_NamedInstanceBindingGetProvider() {
 
         val kodein = Kodein {
             bind<Person>() with instance(Person())
@@ -314,7 +335,7 @@ class GenericJvmTests {
         assertSame(p2(), p3())
     }
 
-    @Test fun test08_0_ConstantBindingGetInstance() {
+    @Test fun test08_00_ConstantBindingGetInstance() {
 
         val kodein = Kodein {
             constant("answer") with 42
@@ -325,7 +346,7 @@ class GenericJvmTests {
         assertEquals(42, c)
     }
 
-    @Test fun test08_1_ConstantBindingGetProvider() {
+    @Test fun test08_01_ConstantBindingGetProvider() {
 
         val kodein = Kodein {
             constant("answer") with 42
@@ -336,7 +357,7 @@ class GenericJvmTests {
         assertEquals(42, c())
     }
 
-    @Test fun test08_2_ConstantBindingGetProviderPolymorphic() {
+    @Test fun test08_02_ConstantBindingGetProviderPolymorphic() {
 
         val kodein = Kodein {
             constant("salomon") with Person("Salomon") as IPerson
@@ -347,7 +368,7 @@ class GenericJvmTests {
         assertEquals(Person("Salomon"), p)
     }
 
-    @Test fun test09_0_DependencyLoop() {
+    @Test fun test09_00_DependencyLoop() {
 
         val kodein = Kodein {
             bind<A>() with singleton { A(instance()) }
@@ -360,7 +381,7 @@ class GenericJvmTests {
         }
     }
 
-    @Test fun test09_1_NoDependencyLoop() {
+    @Test fun test09_01_NoDependencyLoop() {
 
         val kodein = Kodein {
             bind<A>() with singleton { A(instance()) }
@@ -373,7 +394,7 @@ class GenericJvmTests {
         assertNotNull(a.b?.c?.a)
     }
 
-    @Test fun test09_2_TypeNotFound() {
+    @Test fun test09_02_TypeNotFound() {
 
         val kodein = Kodein {}
 
@@ -394,7 +415,7 @@ class GenericJvmTests {
         }
     }
 
-    @Test fun test09_3_NameNotFound() {
+    @Test fun test09_03_NameNotFound() {
 
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
@@ -406,7 +427,7 @@ class GenericJvmTests {
         }
     }
 
-    @Test fun test09_4_FactoryIsNotProvider() {
+    @Test fun test09_04_FactoryIsNotProvider() {
 
         val kodein = Kodein {
             bind<Person>() with factory { name: String -> Person(name) }
@@ -417,7 +438,7 @@ class GenericJvmTests {
         }
     }
 
-    @Test fun test09_5_ProviderIsNotFactory() {
+    @Test fun test09_05_ProviderIsNotFactory() {
 
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
@@ -428,7 +449,7 @@ class GenericJvmTests {
         }
     }
 
-    @Test fun test10_0_TypeErasure() {
+    @Test fun test10_00_TypeErasure() {
 
         val la = listOf(A(null))
         val lb = listOf(B(null))
@@ -448,7 +469,7 @@ class GenericJvmTests {
         val factory: (String) -> Person by kodein.factory("factory")
     }
 
-    @Test fun test11_0_Class() {
+    @Test fun test11_00_Class() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -463,7 +484,7 @@ class GenericJvmTests {
         assertEquals("Laila", lazied.factory("Laila").name)
     }
 
-    @Test fun test12_0_ModuleImport() {
+    @Test fun test12_00_ModuleImport() {
 
         val personModule = Kodein.Module {
             bind<Person>() with provider { Person() }
@@ -491,7 +512,7 @@ class GenericJvmTests {
         assertNotSame(kodein.instance<Person>("named"), kodein2.instance<Person>("named"))
     }
 
-    @Test fun test12_1_KodeinExtend() {
+    @Test fun test12_01_KodeinExtend() {
 
         val parent = Kodein {
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -516,7 +537,7 @@ class GenericJvmTests {
     @Suppress("unused")
     class RecursC(val a: RecursA)
 
-    @Test fun test13_0_RecursiveDependencies() {
+    @Test fun test13_00_RecursiveDependencies() {
 
         val kodein = Kodein {
             bind() from provider { Recurs0(instance()) }
@@ -539,7 +560,7 @@ class GenericJvmTests {
         val instance: Person by injector.with("reified").instance("factory")
     }
 
-    @Test fun test14_0_InjectorInjected() {
+    @Test fun test14_00_InjectorInjected() {
         val injected = PersonInject()
 
         val kodein = Kodein {
@@ -560,7 +581,7 @@ class GenericJvmTests {
         assertSame(injected.instance, injected.instance)
     }
 
-    @Test fun test14_1_InjectorNotInjected() {
+    @Test fun test14_01_InjectorNotInjected() {
         val injected = PersonInject()
 
         assertFailsWith<KodeinInjector.UninjectedException> {
@@ -574,7 +595,7 @@ class GenericJvmTests {
         override fun getContext() = Unit
     }
 
-    @Test fun test15_0_BindingsDescription() {
+    @Test fun test15_00_BindingsDescription() {
 
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
@@ -599,7 +620,7 @@ class GenericJvmTests {
         assertTrue("bind<String>(\"auto-scoped\") with autoScopedSingleton(GenericJvmTests.test15Scope) { String }" in lines)
     }
 
-    @Test fun test15_1_BindingsFullDescription() {
+    @Test fun test15_01_BindingsFullDescription() {
 
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
@@ -624,7 +645,7 @@ class GenericJvmTests {
         assertTrue("bind<kotlin.String>(\"auto-scoped\") with autoScopedSingleton(com.github.salomonbrys.kodein.test.GenericJvmTests.test15Scope) { kotlin.String }" in lines)
     }
 
-    @Test fun test15_2_RegisteredBindings() {
+    @Test fun test15_02_RegisteredBindings() {
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
             bind<IPerson>("thread-singleton") with refSingleton(threadLocal) { Person("ts") }
@@ -645,7 +666,7 @@ class GenericJvmTests {
         assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(generic<Int>(), "answer"), UnitToken)]?.factoryName())
     }
 
-    @Test fun test16_1_ScopedSingleton() {
+    @Test fun test16_01_ScopedSingleton() {
 
         val myScope = object : Scope<String> {
             val cache = HashMap<String, ScopeRegistry>()
@@ -668,7 +689,7 @@ class GenericJvmTests {
         assertSame(two, factory("two"))
     }
 
-    @Test fun test16_2_AutoScopedSingleton() {
+    @Test fun test16_02_AutoScopedSingleton() {
         val myScope = object : AutoScope<Unit> {
             val registry = ScopeRegistry()
             override fun getRegistry(context: Unit) = registry
@@ -687,7 +708,7 @@ class GenericJvmTests {
         assertNotSame(p, kodein.instance<Person>())
     }
 
-    @Test fun test17_0_ExplicitOverride() {
+    @Test fun test17_00_ExplicitOverride() {
         val kodein = Kodein {
             bind<String>("name") with instance("Benjamin")
             bind<String>("name", overrides = true) with instance("Salomon")
@@ -696,7 +717,7 @@ class GenericJvmTests {
         assertEquals("Salomon", kodein.instance<String>("name"))
     }
 
-    @Test fun test17_1_SilentOverride() {
+    @Test fun test17_01_SilentOverride() {
         val kodein = Kodein(allowSilentOverride = true) {
             bind<String>("name") with instance("Benjamin")
             bind<String>("name") with instance("Salomon")
@@ -705,7 +726,7 @@ class GenericJvmTests {
         assertEquals("Salomon", kodein.instance<String>("name"))
     }
 
-    @Test fun test17_2_SilentOverrideNotAllowed() {
+    @Test fun test17_02_SilentOverrideNotAllowed() {
         Kodein {
             bind<String>("name") with instance("Benjamin")
 
@@ -715,7 +736,7 @@ class GenericJvmTests {
         }
     }
 
-    @Test fun test17_3_MustNotOverride() {
+    @Test fun test17_03_MustNotOverride() {
         Kodein(allowSilentOverride = true) {
             bind<String>("name") with instance("Benjamin")
 
@@ -725,7 +746,7 @@ class GenericJvmTests {
         }
     }
 
-    @Test fun test17_4_OverrideWithSuper() {
+    @Test fun test17_04_OverrideWithSuper() {
         val kodein = Kodein(allowSilentOverride = true) {
             bind<String>("name") with instance("Salomon")
             bind<String>("name", overrides = true) with singleton { (overriddenInstance() as String) + " BRYS" }
@@ -735,7 +756,7 @@ class GenericJvmTests {
         assertEquals("Salomon BRYS the great", kodein.instance<String>("name"))
     }
 
-    @Test fun test17_5_DependencyLoopWithOverrides() {
+    @Test fun test17_05_DependencyLoopWithOverrides() {
 
         val kodein = Kodein {
             bind<String>("name") with singleton { instance<String>("title") + " Salomon " }
@@ -750,7 +771,7 @@ class GenericJvmTests {
         }
     }
 
-    @Test fun test18_0_ModuleOverride() {
+    @Test fun test18_00_ModuleOverride() {
         val module = Kodein.Module {
             bind<String>("name", overrides = true) with instance("Salomon")
         }
@@ -763,7 +784,7 @@ class GenericJvmTests {
         assertEquals("Salomon", kodein.instance<String>("name"))
     }
 
-    @Test fun test18_1_ModuleForbiddenOverride() {
+    @Test fun test18_01_ModuleForbiddenOverride() {
         val module = Kodein.Module {
             bind<String>("name", overrides = true) with instance("Salomon")
         }
@@ -777,7 +798,7 @@ class GenericJvmTests {
         }
     }
 
-    @Test fun test18_2_ModuleImportsForbiddenOverride() {
+    @Test fun test18_02_ModuleImportsForbiddenOverride() {
         val subModule = Kodein.Module {
             bind<String>("name", overrides = true) with instance("Salomon")
         }
@@ -793,7 +814,7 @@ class GenericJvmTests {
         }
     }
 
-    @Test fun test19_0_OnReadyCallback() {
+    @Test fun test19_00_OnReadyCallback() {
         var passed = false
         Kodein {
             constant("name") with "Salomon"
@@ -814,7 +835,7 @@ class GenericJvmTests {
         val logger: FakeLogger = withClass().instance()
     }
 
-    @Test fun test20_0_InjectForClass() {
+    @Test fun test20_00_InjectForClass() {
         val kodein = Kodein {
             bind<FakeLogger>() with factory { cls: Class<*> -> FakeLoggerImpl(cls) }
         }
@@ -829,7 +850,7 @@ class GenericJvmTests {
     @Suppress("unused")
     class Test21_G<out T : Test21_A>
 
-    @Test fun test21_0_SimpleDispString() {
+    @Test fun test21_00_SimpleDispString() {
 
         assertEquals("Int", generic<Int>().simpleDispString())
 
@@ -850,7 +871,7 @@ class GenericJvmTests {
         val name: String by kodein.lazy.instance("name")
     }
 
-    @Test fun test22_0_Lazy() {
+    @Test fun test22_00_Lazy() {
         val kodein = Kodein {
             constant("name") with "Salomon"
         }
@@ -859,7 +880,7 @@ class GenericJvmTests {
         assertEquals("Salomon", test.name)
     }
 
-    @Test fun test23_0_Multiton() {
+    @Test fun test23_00_Multiton() {
         val kodein = Kodein { bind() from multiton { name: String -> Person(name) } }
 
         val p1: Person = kodein.with("Salomon").instance()
@@ -876,7 +897,7 @@ class GenericJvmTests {
         assertEquals("Laila", p3.name)
     }
 
-    @Test fun test23_1_threadMultiton() {
+    @Test fun test23_01_threadMultiton() {
         val kodein = Kodein { bind() from refMultiton(threadLocal) { name: String -> Person(name) } }
 
         var tp1: Person? = null
@@ -909,7 +930,7 @@ class GenericJvmTests {
     }
 
     @Suppress("UNUSED_VALUE")
-    @Test fun test23_3_WeakMultiton() {
+    @Test fun test23_03_WeakMultiton() {
         val kodein = Kodein { bind() from refMultiton(weakReference) { name: String -> Person(name) } }
 
         var p1: Person? = kodein.with("Salomon").instance()
@@ -935,7 +956,7 @@ class GenericJvmTests {
         assertNotEquals(id3, System.identityHashCode(p3))
     }
 
-    @Test fun test24_0_Callback() {
+    @Test fun test24_00_Callback() {
         var ready = false
 
         Kodein {
@@ -951,7 +972,7 @@ class GenericJvmTests {
 
     class Wedding(val him: Person, val her: Person)
 
-    @Test fun test25_0_NewInstance() {
+    @Test fun test25_00_NewInstance() {
         val kodein = Kodein {
             bind<Person>("Author") with singleton { Person("Salomon") }
             bind<Person>("Spouse") with singleton { Person("Laila") }
@@ -962,7 +983,7 @@ class GenericJvmTests {
         assertEquals("Laila", wedding.her.name)
     }
 
-    @Test fun test26_0_MultiSet() {
+    @Test fun test26_00_MultiSet() {
         val kodein = Kodein {
             bind() from setBinding<Person>()
 
@@ -987,7 +1008,7 @@ class GenericJvmTests {
         assertNotSame(laila1, laila2)
     }
 
-    @Test fun test26_1_MultiMap() {
+    @Test fun test26_01_MultiMap() {
         val kodein = Kodein {
             bind() from setBinding<PersonEntry>()
 
@@ -1001,7 +1022,7 @@ class GenericJvmTests {
         assertEquals(Person("Laila"), persons["loulou"])
     }
 
-    @Test fun test27_0_ExternalSource() {
+    @Test fun test27_00_ExternalSource() {
         val kodein = Kodein {
             bind(tag = "him") from singleton { Person("Salomon") }
 
@@ -1035,7 +1056,7 @@ class GenericJvmTests {
         assertEquals(kodein.instanceOrNull<Person>(), kodein.instanceOrNull<Person>())
     }
 
-    @Test fun test28_0_ManualTyping() {
+    @Test fun test28_00_ManualTyping() {
 
         open class Resource
         class SubResource : Resource()

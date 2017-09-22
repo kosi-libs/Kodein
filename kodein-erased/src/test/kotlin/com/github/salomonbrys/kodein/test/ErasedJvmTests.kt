@@ -3,6 +3,7 @@ package com.github.salomonbrys.kodein.test
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.bindings.AutoScope
 import com.github.salomonbrys.kodein.bindings.ScopeRegistry
+import com.github.salomonbrys.kodein.bindings.SingletonBinding
 import com.github.salomonbrys.kodein.erased.*
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -17,7 +18,7 @@ import kotlin.test.assertTrue
 class ErasedJvmTests {
 
     // Only the JVM supports up cast argument searching
-    @Test fun test00_6_WithSubFactoryGetInstance() {
+    @Test fun test00_06_WithSubFactoryGetInstance() {
 
         val kodein = Kodein { bind<Person>() with factory { p: Name -> Person(p.firstName) } }
 
@@ -26,8 +27,31 @@ class ErasedJvmTests {
         assertEquals("Salomon", p.name)
     }
 
+    // Only the JVM supports up cast argument searching
+    @Test fun test00_08_WithItfFactoryGetInstance() {
+
+        val kodein = Kodein { bind<Person>() with factory { p: IName -> Person(p.firstName) } }
+
+        val p: Person = kodein.with(FullName("Salomon", "BRYS")).instance()
+
+        assertEquals("Salomon", p.name)
+    }
+
+    // Only the JVM supports up cast argument searching
+    @Test fun test00_09_WithTwoItfFactoryGetInstance() {
+
+        val kodein = Kodein {
+            bind<Person>() with factory { p: IName -> Person(p.firstName) }
+            bind<Person>() with factory { p: IFullName -> Person(p.firstName + " " + p.lastName) }
+        }
+
+        val p: Person = kodein.with(FullInfos("Salomon", "BRYS", 30)).instance()
+
+        assertEquals("Salomon BRYS", p.name)
+    }
+
     // Only the JVM supports threads
-    @Test fun test02_0_ThreadSingletonBindingGetInstance() {
+    @Test fun test02_00_ThreadSingletonBindingGetInstance() {
         val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
 
         var tp1: Person? = null
@@ -50,7 +74,7 @@ class ErasedJvmTests {
     }
 
     // Only the JVM supports threads
-    @Test fun test02_1_ThreadSingletonBindingGetProvider() {
+    @Test fun test02_01_ThreadSingletonBindingGetProvider() {
         val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
 
         var tp1: Person? = null
@@ -74,7 +98,7 @@ class ErasedJvmTests {
 
     // Only the JVM supports weak references
     @Suppress("UNUSED_VALUE")
-    @Test fun test02_3_WeakSingletonBinding() {
+    @Test fun test02_03_WeakSingletonBinding() {
         val kodein = Kodein { bind<Person>() with refSingleton(weakReference) { Person() } }
 
         var p1: Person? = kodein.instance()
@@ -99,7 +123,7 @@ class ErasedJvmTests {
     }
 
     // Only the JVM supports precise description
-    @Test fun test15_0_BindingsDescription() {
+    @Test fun test15_00_BindingsDescription() {
 
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
@@ -125,7 +149,7 @@ class ErasedJvmTests {
     }
 
     // Only the JVM supports precise description
-    @Test fun test15_1_BindingsFullDescription() {
+    @Test fun test15_01_BindingsFullDescription() {
 
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
@@ -151,7 +175,7 @@ class ErasedJvmTests {
     }
 
     // Only the JVM supports precise description
-    @Test fun test15_2_RegisteredBindings() {
+    @Test fun test15_02_RegisteredBindings() {
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
             bind<IPerson>("thread-singleton") with refSingleton(threadLocal) { Person("ts") }
@@ -178,7 +202,7 @@ class ErasedJvmTests {
     class Test21_G<out T : Test21_A>
 
     // Only the JVM supports precise description
-    @Test fun test21_0_SimpleDispString() {
+    @Test fun test21_00_SimpleDispString() {
 
         assertEquals("Int", erased<Int>().simpleDispString())
 
@@ -196,7 +220,7 @@ class ErasedJvmTests {
     }
 
     // Only the JVM supports precise description
-    @Test fun test21_1_FullDispString() {
+    @Test fun test21_01_FullDispString() {
 
         assertEquals("kotlin.Int", erased<Int>().fullDispString())
 
@@ -214,7 +238,7 @@ class ErasedJvmTests {
     }
 
     // Only the JVM supports threads
-    @Test fun test23_1_threadMultiton() {
+    @Test fun test23_01_threadMultiton() {
         val kodein = Kodein { bind() from refMultiton(threadLocal) { name: String -> Person(name) } }
 
         var tp1: Person? = null
@@ -248,7 +272,7 @@ class ErasedJvmTests {
 
     // Only the JVM supports weak references
     @Suppress("UNUSED_VALUE")
-    @Test fun test23_2_WeakMultiton() {
+    @Test fun test23_02_WeakMultiton() {
         val kodein = Kodein { bind() from refMultiton(weakReference) { name: String -> Person(name) } }
 
         var p1: Person? = kodein.with("Salomon").instance()
@@ -273,4 +297,5 @@ class ErasedJvmTests {
         assertNotEquals(id1, System.identityHashCode(p1))
         assertNotEquals(id3, System.identityHashCode(p3))
     }
+
 }

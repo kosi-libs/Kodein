@@ -97,8 +97,9 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
      *
      * 1. First, it of course tries with the [key] as is.
      * 2. Then, it tries with the [key] with it's [Kodein.Key.argType] set to the raw type if there is one.
-     * 3. Then it goes back to 1, with the [key] with it's [Kodein.Key.argType] set to the super type if there is one.
-     * 4. If finally a factory is found, it puts it in the cache associated to the original key, so it will be directly found next time.
+     * 3. Then it goes back to 1, with the [key] with it's [Kodein.Key.argType] set te each implementing interfaces and their own interfaces
+     * 4. Then it goes back to 1, with the [key] with it's [Kodein.Key.argType] set to the super type if there is one.
+     * 5. If finally a factory is found, it puts it in the cache associated to the original key, so it will be directly found next time.
      *
      * @param key The key to look for
      * @param cache Whether the function needs to cache the result if a result is found (only the original key should be cached).
@@ -113,6 +114,15 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
                 if (cache)
                     _cache[key] = it
                 return it as Binding<A, T>
+            }
+        }
+
+        for (argItfType in key.argType.getInterfaces()) {
+            val found = _findBindingOrNull(Kodein.Key(key.bind, argItfType), false)
+            if (found != null) {
+                if (cache)
+                    _cache[key] = found
+                return found
             }
         }
 

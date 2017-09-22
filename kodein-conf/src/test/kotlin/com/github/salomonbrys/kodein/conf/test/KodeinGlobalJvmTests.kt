@@ -43,7 +43,7 @@ class KodeinGlobalJvmTests {
 
     @Test
     // Only the JVM supports up cast argument searching
-    fun test03_0_ChildOverride() {
+    fun test03_00_ChildOverride() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
@@ -60,7 +60,7 @@ class KodeinGlobalJvmTests {
     }
 
     // Only the JVM supports generics
-    @Test fun test03_1_GenericOverride() {
+    @Test fun test03_01_GenericOverride() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {

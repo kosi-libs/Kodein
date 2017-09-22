@@ -8,7 +8,11 @@ data class A(val b: B?)
 data class B(val c: C?)
 data class C(val a: A?)
 
-open class Name(val firstName: String) {
+interface IName {
+    val firstName: String
+}
+
+open class Name(override val firstName: String) : IName {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Name) return false
@@ -20,7 +24,12 @@ open class Name(val firstName: String) {
         return firstName.hashCode()
     }
 }
-class FullName(firstName: String, val lastName: String) : Name(firstName) {
+
+interface IFullName : IName {
+    val lastName: String
+}
+
+open class FullName(firstName: String, override val lastName: String) : Name(firstName), IFullName {
     override fun equals(other: Any?): Boolean{
         if (this === other) return true
         if (other !is FullName) return false
@@ -33,6 +42,12 @@ class FullName(firstName: String, val lastName: String) : Name(firstName) {
         return 31 * super.hashCode() + lastName.hashCode()
     }
 }
+
+interface IAge {
+    val age: Int
+}
+
+class FullInfos(firstName: String, lastName: String, override val age: Int) : FullName(firstName, lastName), IAge
 
 typealias PersonEntry = Pair<String, Person>
 typealias PersonEntries = Set<PersonEntry>

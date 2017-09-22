@@ -1,7 +1,6 @@
 package com.github.salomonbrys.kodein.jxinject;
 
 import com.github.salomonbrys.kodein.Kodein;
-import com.github.salomonbrys.kodein.TypesKt;
 import kotlin.Lazy;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
@@ -24,42 +23,42 @@ import static org.junit.Assert.*;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class KodeinInjectJavaTests {
 
-    public static class Test00_0 {
+    public static class Test00_00 {
         @Inject String firstname;
     }
 
     @Test
-    public void test00_0_SimpleInjection() {
-        Test00_0 test = new Test00_0();
+    public void test00_00_SimpleInjection() {
+        Test00_00 test = new Test00_00();
         Jx.of(KodeinsKt.test0()).inject(test);
 
         assertEquals("Salomon", test.firstname);
     }
 
-    public static class Test00_1 {
+    public static class Test00_01 {
         @Inject @Named("lastname") String lastname;
         @Inject @Named("nope") @OrNull
         String unknown;
     }
 
     @Test
-    public void test00_1_NamedInjection() {
-        Test00_1 test = new Test00_1();
+    public void test00_01_NamedInjection() {
+        Test00_01 test = new Test00_01();
         Jx.of(KodeinsKt.test0()).inject(test);
 
         assertEquals("BRYS", test.lastname);
         assertNull(test.unknown);
     }
 
-    public static class Test00_2 {
+    public static class Test00_02 {
         @Inject Lazy<String> firstname;
         @Inject @Named("nope") @OrNull
         Lazy<String> unknown;
     }
 
     @Test
-    public void test00_2_LazyInjection() {
-        Test00_2 test = new Test00_2();
+    public void test00_02_LazyInjection() {
+        Test00_02 test = new Test00_02();
         Jx.of(KodeinsKt.test0()).inject(test);
 
         assertEquals("Salomon", test.firstname.getValue());
@@ -67,7 +66,7 @@ public class KodeinInjectJavaTests {
         assertNull(test.unknown.getValue());
     }
 
-    public static class Test00_3 {
+    public static class Test00_03 {
         boolean passed = false;
         @Inject void inject(
                 String firstname,
@@ -89,35 +88,35 @@ public class KodeinInjectJavaTests {
     }
 
     @Test
-    public void test00_3_MethodInjection() {
-        Test00_3 test = new Test00_3();
+    public void test00_03_MethodInjection() {
+        Test00_03 test = new Test00_03();
         Jx.of(KodeinsKt.test0()).inject(test);
 
         assertTrue(test.passed);
     }
 
-    public static class Test01_0 {
+    public static class Test01_00 {
         @Inject @ProviderFun Function0<String> firstname;
     }
 
     @Test
-    public void test01_0_ProviderInjection() {
-        Test01_0 test = new Test01_0();
+    public void test01_00_ProviderInjection() {
+        Test01_00 test = new Test01_00();
         Jx.of(KodeinsKt.test1()).inject(test);
 
         assertEquals("Salomon 0", test.firstname.invoke());
         assertEquals("Salomon 1", test.firstname.invoke());
     }
 
-    public static class Test01_1 {
+    public static class Test01_01 {
         @Inject @Named("lastname") @ProviderFun Function0<String> lastname;
         @Inject @Named("nope") @ProviderFun @OrNull
         Function0<String> unknown;
     }
 
     @Test
-    public void test01_1_ProviderNamedInjection() {
-        Test01_1 test = new Test01_1();
+    public void test01_01_ProviderNamedInjection() {
+        Test01_01 test = new Test01_01();
         Jx.of(KodeinsKt.test1()).inject(test);
 
         assertEquals("BRYS 0", test.lastname.invoke());
@@ -125,28 +124,28 @@ public class KodeinInjectJavaTests {
         assertNull(test.unknown);
     }
 
-    public static class Test01_2 {
+    public static class Test01_02 {
         @Inject Provider<String> firstname;
     }
 
     @Test
-    public void test01_2_JavaxProviderInjection() {
-        Test01_2 test = new Test01_2();
+    public void test01_02_JavaxProviderInjection() {
+        Test01_02 test = new Test01_02();
         Jx.of(KodeinsKt.test1()).inject(test);
 
         assertEquals("Salomon 0", test.firstname.get());
         assertEquals("Salomon 1", test.firstname.get());
     }
 
-    public static class Test01_3 {
+    public static class Test01_03 {
         @Inject @Named("lastname") Provider<String> lastname;
         @Inject @Named("nope") @OrNull
         Provider<String> unknown;
     }
 
     @Test
-    public void test01_3_JavaxProviderNamedInjection() {
-        Test01_3 test = new Test01_3();
+    public void test01_03_JavaxProviderNamedInjection() {
+        Test01_03 test = new Test01_03();
         Jx.of(KodeinsKt.test1()).inject(test);
 
         assertEquals("BRYS 0", test.lastname.get());
@@ -154,15 +153,15 @@ public class KodeinInjectJavaTests {
         assertNull(test.unknown);
     }
 
-    public static class Test01_4 {
+    public static class Test01_04 {
         @Inject @ProviderFun Lazy<Function0<String>> firstname;
         @Inject @Named("nope") @OrNull
         @ProviderFun Lazy<Function0<String>> unknown;
     }
 
     @Test
-    public void test01_4_LazyProviderInjection() {
-        Test01_4 test = new Test01_4();
+    public void test01_04_LazyProviderInjection() {
+        Test01_04 test = new Test01_04();
         Jx.of(KodeinsKt.test1()).inject(test);
 
         assertEquals("Salomon 0", test.firstname.getValue().invoke());
@@ -170,15 +169,15 @@ public class KodeinInjectJavaTests {
         assertNull(test.unknown.getValue());
     }
 
-    public static class Test01_5 {
+    public static class Test01_05 {
         @Inject Lazy<Provider<String>> firstname;
         @Inject @Named("nope") @OrNull
         Lazy<Provider<String>> unknown;
     }
 
     @Test
-    public void test01_5_LazyJavaxProviderInjection() {
-        Test01_5 test = new Test01_5();
+    public void test01_05_LazyJavaxProviderInjection() {
+        Test01_05 test = new Test01_05();
         Jx.of(KodeinsKt.test1()).inject(test);
 
         assertEquals("Salomon 0", test.firstname.getValue().get());
@@ -186,7 +185,7 @@ public class KodeinInjectJavaTests {
         assertNull(test.unknown.getValue());
     }
 
-    public static class Test01_6 {
+    public static class Test01_06 {
         boolean passed = false;
         @Inject void inject(
                 @ProviderFun Function0<String> firstname,
@@ -208,14 +207,14 @@ public class KodeinInjectJavaTests {
     }
 
     @Test
-    public void test01_6_ProviderMethodInjection() {
-        Test01_6 test = new Test01_6();
+    public void test01_06_ProviderMethodInjection() {
+        Test01_06 test = new Test01_06();
         Jx.of(KodeinsKt.test1()).inject(test);
 
         assertTrue(test.passed);
     }
 
-    public static class Test01_7 {
+    public static class Test01_07 {
         boolean passed = false;
         @Inject void inject(
                 Provider<String> firstname,
@@ -237,41 +236,41 @@ public class KodeinInjectJavaTests {
     }
 
     @Test
-    public void test01_7_JavaxProviderMethodInjection() {
-        Test01_7 test = new Test01_7();
+    public void test01_07_JavaxProviderMethodInjection() {
+        Test01_07 test = new Test01_07();
         Jx.of(KodeinsKt.test1()).inject(test);
 
         assertTrue(test.passed);
     }
 
-    public static class Test02_0 {
+    public static class Test02_00 {
         @Inject @FactoryFun Function1<Integer, String> firstname;
     }
 
     @Test
-    public void test02_0_FactoryInjection() {
-        Test02_0 test = new Test02_0();
+    public void test02_00_FactoryInjection() {
+        Test02_00 test = new Test02_00();
         Jx.of(KodeinsKt.test2()).inject(test);
 
         assertEquals("Salomon 21", test.firstname.invoke(21));
     }
 
-    public static class Test02_1 {
+    public static class Test02_01 {
         @Inject @Named("lastname") @FactoryFun Function1<Integer, String> lastname;
         @Inject @Named("nope") @FactoryFun @OrNull
         Function1<Integer, String> unknown;
     }
 
     @Test
-    public void test02_1_ProviderNamedInjection() {
-        Test02_1 test = new Test02_1();
+    public void test02_01_ProviderNamedInjection() {
+        Test02_01 test = new Test02_01();
         Jx.of(KodeinsKt.test2()).inject(test);
 
         assertEquals("BRYS 42", test.lastname.invoke(42));
         assertNull(test.unknown);
     }
 
-    public static class Test02_2 {
+    public static class Test02_02 {
         boolean passed = false;
         @Inject void inject(
                 @FactoryFun Function1<Integer, String> firstname,
@@ -293,16 +292,16 @@ public class KodeinInjectJavaTests {
     }
 
     @Test
-    public void test02_2_FactoryMethodInjection() {
-        Test02_2 test = new Test02_2();
+    public void test02_02_FactoryMethodInjection() {
+        Test02_02 test = new Test02_02();
         Jx.of(KodeinsKt.test2()).inject(test);
 
         assertTrue(test.passed);
     }
 
-    public static class Test03_0 {
+    public static class Test03_00 {
         @Inject
-        Test03_0(
+        Test03_00(
                 String firstname,
                 @Named("lastname") String lastname,
                 @Named("nope") @OrNull String unknown,
@@ -321,13 +320,13 @@ public class KodeinInjectJavaTests {
     }
 
     @Test
-    public void test03_0_ConstructorInjection() {
-        Jx.of(KodeinsKt.test0()).newInstance(Test03_0.class);
+    public void test03_00_ConstructorInjection() {
+        Jx.of(KodeinsKt.test0()).newInstance(Test03_00.class);
     }
 
-    public static class Test03_1 {
+    public static class Test03_01 {
         @Inject
-        Test03_1(
+        Test03_01(
                 @ProviderFun Function0<String> firstname,
                 @Named("lastname") @ProviderFun Function0<String> lastname,
                 @Named("nope") @OrNull @ProviderFun Function0<String> unknown,
@@ -346,13 +345,13 @@ public class KodeinInjectJavaTests {
     }
 
     @Test
-    public void test03_1_ConstructorProviderInjection() {
-        Jx.of(KodeinsKt.test1()).newInstance(Test03_1.class);
+    public void test03_01_ConstructorProviderInjection() {
+        Jx.of(KodeinsKt.test1()).newInstance(Test03_01.class);
     }
 
-    public static class Test03_2 {
+    public static class Test03_02 {
         @Inject
-        Test03_2(
+        Test03_02(
                 Provider<String> firstname,
                 @Named("lastname") Provider<String> lastname,
                 @Named("nope") @OrNull Provider<String> unknown,
@@ -371,13 +370,13 @@ public class KodeinInjectJavaTests {
     }
 
     @Test
-    public void test03_2_ConstructorJavaxProviderInjection() {
-        Jx.of(KodeinsKt.test1()).newInstance(Test03_2.class);
+    public void test03_02_ConstructorJavaxProviderInjection() {
+        Jx.of(KodeinsKt.test1()).newInstance(Test03_02.class);
     }
 
-    public static class Test03_3 {
+    public static class Test03_03 {
         @Inject
-        Test03_3(
+        Test03_03(
                 @FactoryFun Function1<Integer, String> firstname,
                 @Named("lastname") @FactoryFun Function1<Integer, String> lastname,
                 @Named("nope") @OrNull @FactoryFun Function1<Integer, String> unknown,
@@ -396,12 +395,12 @@ public class KodeinInjectJavaTests {
     }
 
     @Test
-    public void test03_3_FactoryConstructorInjection() {
-        Jx.of(KodeinsKt.test2()).newInstance(Test03_3.class);
+    public void test03_03_FactoryConstructorInjection() {
+        Jx.of(KodeinsKt.test2()).newInstance(Test03_03.class);
     }
 
-    public static class Test03_4 {
-        Test03_4(
+    public static class Test03_04 {
+        Test03_04(
                 String firstname,
                 @Named("lastname") String lastname,
                 @Named("nope") @OrNull String unknown,
@@ -420,28 +419,28 @@ public class KodeinInjectJavaTests {
     }
 
     @Test
-    public void test03_4_OnlyOneConstructorInjection() {
-        Jx.of(KodeinsKt.test0()).newInstance(Test03_4.class);
+    public void test03_04_OnlyOneConstructorInjection() {
+        Jx.of(KodeinsKt.test0()).newInstance(Test03_04.class);
     }
 
     @Qualifier
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
-    public @interface Test04_0_UniversePrefix { String value(); }
+    public @interface Test04_00_UniversePrefix { String value(); }
 
-    public static class Test04_0 {
-        @Inject @Test04_0_UniversePrefix("answer") String answer;
+    public static class Test04_00 {
+        @Inject @Test04_00_UniversePrefix("answer") String answer;
     }
 
     @Test
-    public void test04_0_CustomQualifier() {
-        Test04_0 test = Jx.of(KodeinsKt.test4()).newInstance(Test04_0.class);
+    public void test04_00_CustomQualifier() {
+        Test04_00 test = Jx.of(KodeinsKt.test4()).newInstance(Test04_00.class);
 
         assertEquals("fourty-two", test.answer);
     }
 
     @Test
-    public void test05_0_BindWithJX() {
+    public void test05_00_BindWithJX() {
         Kodein kodein = KodeinsKt.test5();
 
         Test5B b = kodein.Instance(TT(Test5B.class), null);

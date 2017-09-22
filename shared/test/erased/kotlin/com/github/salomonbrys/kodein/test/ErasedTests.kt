@@ -15,7 +15,7 @@ import kotlin.test.*
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ErasedTests {
 
-    @Test fun test00_0_ProviderBindingGetInstance() {
+    @Test fun test00_00_ProviderBindingGetInstance() {
 
         val kodein = Kodein { bind<Person>() with provider { Person() } }
 
@@ -25,7 +25,7 @@ class ErasedTests {
         assertNotSame(p1, p2)
     }
 
-    @Test fun test00_1_ProviderBindingGetProvider() {
+    @Test fun test00_01_ProviderBindingGetProvider() {
 
         val kodein = Kodein { bind<Person>() with provider { Person() } }
 
@@ -35,7 +35,7 @@ class ErasedTests {
         assertNotSame(p1(), p2())
     }
 
-    @Test fun test00_2_FactoryBindingGetFactory() {
+    @Test fun test00_02_FactoryBindingGetFactory() {
 
         val kodein = Kodein {
             bind() from factory { name: String -> Person(name) }
@@ -47,7 +47,7 @@ class ErasedTests {
         assertNotSame(p1("Salomon"), p2("Salomon"))
     }
 
-    @Test fun test00_3_FactoryBindingGetProvider() {
+    @Test fun test00_03_FactoryBindingGetProvider() {
 
         val kodein = Kodein { bind() from factory { name: String -> Person(name) } }
 
@@ -57,7 +57,7 @@ class ErasedTests {
         assertEquals("Salomon", p().name)
     }
 
-    @Test fun test00_4_WithFactoryGetProvider() {
+    @Test fun test00_04_WithFactoryGetProvider() {
 
         val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
 
@@ -66,7 +66,7 @@ class ErasedTests {
         assertEquals("Salomon", p().name)
     }
 
-    @Test fun test00_5_WithFactoryGetInstance() {
+    @Test fun test00_05_WithFactoryGetInstance() {
 
         val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
 
@@ -75,7 +75,7 @@ class ErasedTests {
         assertEquals("Salomon", p.name)
     }
 
-    @Test fun test00_7_WithGenericFactoryGetInstance() {
+    @Test fun test00_07_WithGenericFactoryGetInstance() {
 
         val kodein = Kodein { bind<Person>() with factory { l: List<*> -> Person(l.first().toString()) } }
 
@@ -84,7 +84,7 @@ class ErasedTests {
         assertEquals("Salomon", p.name)
     }
 
-    @Test fun test01_0_SingletonBindingGetInstance() {
+    @Test fun test01_00_SingletonBindingGetInstance() {
 
         val kodein = Kodein { bind<Person>() with singleton { Person() } }
 
@@ -94,7 +94,7 @@ class ErasedTests {
         assertSame(p1, p2)
     }
 
-    @Test fun test01_1_SingletonBindingGetProvider() {
+    @Test fun test01_01_SingletonBindingGetProvider() {
 
         val kodein = Kodein { bind<Person>() with singleton { Person() } }
 
@@ -104,7 +104,7 @@ class ErasedTests {
         assertSame(p1(), p2())
     }
 
-    @Test fun test03_0_InstanceBindingGetInstance() {
+    @Test fun test03_00_InstanceBindingGetInstance() {
 
         val p = Person()
 
@@ -117,7 +117,7 @@ class ErasedTests {
         assertSame(p2, p)
     }
 
-    @Test fun test03_1_InstanceBindingGetProvider() {
+    @Test fun test03_01_InstanceBindingGetProvider() {
 
         val p = Person()
 
@@ -130,7 +130,7 @@ class ErasedTests {
         assertSame(p2(), p)
     }
 
-    @Test fun test04_0_NullBindingGetInstance() {
+    @Test fun test04_00_NullBindingGetInstance() {
 
         val kodein = Kodein {}
 
@@ -139,7 +139,7 @@ class ErasedTests {
         assertNull(p)
     }
 
-    @Test fun test04_1_NullBindingGetProvider() {
+    @Test fun test04_01_NullBindingGetProvider() {
 
         val kodein = Kodein {}
 
@@ -148,7 +148,7 @@ class ErasedTests {
         assertNull(p)
     }
 
-    @Test fun test04_2_NullBindingGetFactory() {
+    @Test fun test04_02_NullBindingGetFactory() {
 
         val kodein = Kodein {}
 
@@ -157,7 +157,7 @@ class ErasedTests {
         assertNull(p)
     }
 
-    @Test fun test05_0_NamedProviderBindingGetInstance() {
+    @Test fun test05_00_NamedProviderBindingGetInstance() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("named") with provider { Person("Salomon") }
@@ -170,7 +170,7 @@ class ErasedTests {
         assertEquals("Salomon", p2.name)
     }
 
-    @Test fun test05_1_NamedProviderBindingGetProvider() {
+    @Test fun test05_01_NamedProviderBindingGetProvider() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("named") with provider { Person("Salomon") }
@@ -183,7 +183,7 @@ class ErasedTests {
         assertEquals("Salomon", p2().name)
     }
 
-    @Test fun test06_0_NamedSingletonBindingGetInstance() {
+    @Test fun test06_00_NamedSingletonBindingGetInstance() {
         val kodein = Kodein {
             bind<Person>() with singleton { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -196,7 +196,7 @@ class ErasedTests {
         assertSame(p1, p2)
     }
 
-    @Test fun test06_1_NamedSingletonBindingGetProvider() {
+    @Test fun test06_01_NamedSingletonBindingGetProvider() {
         val kodein = Kodein {
             bind<Person>() with singleton { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -209,7 +209,7 @@ class ErasedTests {
         assertSame(p1(), p2())
     }
 
-    @Test fun test07_0_NamedInstanceBindingGetInstance() {
+    @Test fun test07_00_NamedInstanceBindingGetInstance() {
 
         val kodein = Kodein {
             bind<Person>() with instance(Person())
@@ -226,7 +226,7 @@ class ErasedTests {
         assertSame(p2, p3)
     }
 
-    @Test fun test07_1_NamedInstanceBindingGetProvider() {
+    @Test fun test07_01_NamedInstanceBindingGetProvider() {
 
         val kodein = Kodein {
             bind<Person>() with instance(Person())
@@ -243,7 +243,7 @@ class ErasedTests {
         assertSame(p2(), p3())
     }
 
-    @Test fun test08_0_ConstantBindingGetInstance() {
+    @Test fun test08_00_ConstantBindingGetInstance() {
 
         val kodein = Kodein {
             constant("answer") with 42
@@ -254,7 +254,7 @@ class ErasedTests {
         assertEquals(42, c)
     }
 
-    @Test fun test08_1_ConstantBindingGetProvider() {
+    @Test fun test08_01_ConstantBindingGetProvider() {
 
         val kodein = Kodein {
             constant("answer") with 42
@@ -265,7 +265,7 @@ class ErasedTests {
         assertEquals(42, c())
     }
 
-    @Test fun test08_2_ConstantBindingGetProviderPolymorphic() {
+    @Test fun test08_02_ConstantBindingGetProviderPolymorphic() {
 
         val kodein = Kodein {
             constant("salomon") with Person("Salomon") as IPerson
@@ -276,7 +276,7 @@ class ErasedTests {
         assertEquals(Person("Salomon"), p)
     }
 
-    @Test fun test09_0_DependencyLoop() {
+    @Test fun test09_00_DependencyLoop() {
 
         val kodein = Kodein {
             bind<A>() with singleton { A(instance()) }
@@ -289,7 +289,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test09_1_NoDependencyLoop() {
+    @Test fun test09_01_NoDependencyLoop() {
 
         val kodein = Kodein {
             bind<A>() with singleton { A(instance()) }
@@ -302,7 +302,7 @@ class ErasedTests {
         assertNotNull(a.b?.c?.a)
     }
 
-    @Test fun test09_2_TypeNotFound() {
+    @Test fun test09_02_TypeNotFound() {
 
         val kodein = Kodein {}
 
@@ -323,7 +323,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test09_3_NameNotFound() {
+    @Test fun test09_03_NameNotFound() {
 
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
@@ -335,7 +335,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test09_4_FactoryIsNotProvider() {
+    @Test fun test09_04_FactoryIsNotProvider() {
 
         val kodein = Kodein {
             bind<Person>() with factory { name: String -> Person(name) }
@@ -346,7 +346,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test09_5_ProviderIsNotFactory() {
+    @Test fun test09_05_ProviderIsNotFactory() {
 
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
@@ -357,7 +357,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test10_0_TypeErasure() {
+    @Test fun test10_00_TypeErasure() {
 
         val la = listOf(A(null))
         val lb = listOf(B(null))
@@ -377,7 +377,7 @@ class ErasedTests {
         val factory: (String) -> Person by kodein.factory("factory")
     }
 
-    @Test fun test11_0_Class() {
+    @Test fun test11_00_Class() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -392,7 +392,7 @@ class ErasedTests {
         assertEquals("Laila", lazied.factory("Laila").name)
     }
 
-    @Test fun test12_0_ModuleImport() {
+    @Test fun test12_00_ModuleImport() {
 
         val personModule = Kodein.Module {
             bind<Person>() with provider { Person() }
@@ -420,7 +420,7 @@ class ErasedTests {
         assertNotSame(kodein.instance<Person>("named"), kodein2.instance<Person>("named"))
     }
 
-    @Test fun test12_1_KodeinExtend() {
+    @Test fun test12_01_KodeinExtend() {
 
         val parent = Kodein {
             bind<Person>("named") with singleton { Person("Salomon") }
@@ -445,7 +445,7 @@ class ErasedTests {
     @Suppress("unused")
     class RecursC(val a: RecursA)
 
-    @Test fun test13_0_RecursiveDependencies() {
+    @Test fun test13_00_RecursiveDependencies() {
 
         val kodein = Kodein {
             bind() from provider { Recurs0(instance()) }
@@ -468,7 +468,7 @@ class ErasedTests {
         val instance: Person by injector.with("reified").instance("factory")
     }
 
-    @Test fun test14_0_InjectorInjected() {
+    @Test fun test14_00_InjectorInjected() {
         val injected = PersonInject()
 
         val kodein = Kodein {
@@ -489,7 +489,7 @@ class ErasedTests {
         assertSame(injected.instance, injected.instance)
     }
 
-    @Test fun test14_1_InjectorNotInjected() {
+    @Test fun test14_01_InjectorNotInjected() {
         val injected = PersonInject()
 
         assertFailsWith<KodeinInjector.UninjectedException> {
@@ -497,7 +497,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test16_1_ScopedSingleton() {
+    @Test fun test16_01_ScopedSingleton() {
 
         val myScope = object : Scope<String> {
             val cache = HashMap<String, ScopeRegistry>()
@@ -520,7 +520,7 @@ class ErasedTests {
         assertSame(two, factory("two"))
     }
 
-    @Test fun test16_2_AutoScopedSingleton() {
+    @Test fun test16_02_AutoScopedSingleton() {
         val myScope = object : AutoScope<Unit> {
             val registry = ScopeRegistry()
             override fun getRegistry(context: Unit) = registry
@@ -539,7 +539,7 @@ class ErasedTests {
         assertNotSame(p, kodein.instance<Person>())
     }
 
-    @Test fun test17_0_ExplicitOverride() {
+    @Test fun test17_00_ExplicitOverride() {
         val kodein = Kodein {
             bind<String>("name") with instance("Benjamin")
             bind<String>("name", overrides = true) with instance("Salomon")
@@ -548,7 +548,7 @@ class ErasedTests {
         assertEquals("Salomon", kodein.instance<String>("name"))
     }
 
-    @Test fun test17_1_SilentOverride() {
+    @Test fun test17_01_SilentOverride() {
         val kodein = Kodein(allowSilentOverride = true) {
             bind<String>("name") with instance("Benjamin")
             bind<String>("name") with instance("Salomon")
@@ -557,7 +557,7 @@ class ErasedTests {
         assertEquals("Salomon", kodein.instance<String>("name"))
     }
 
-    @Test fun test17_2_SilentOverrideNotAllowed() {
+    @Test fun test17_02_SilentOverrideNotAllowed() {
         Kodein {
             bind<String>("name") with instance("Benjamin")
 
@@ -567,7 +567,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test17_3_MustNotOverride() {
+    @Test fun test17_03_MustNotOverride() {
         Kodein(allowSilentOverride = true) {
             bind<String>("name") with instance("Benjamin")
 
@@ -577,7 +577,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test17_4_OverrideWithSuper() {
+    @Test fun test17_04_OverrideWithSuper() {
         val kodein = Kodein(allowSilentOverride = true) {
             bind<String>("name") with instance("Salomon")
             bind<String>("name", overrides = true) with singleton { (overriddenInstance() as String) + " BRYS" }
@@ -587,7 +587,7 @@ class ErasedTests {
         assertEquals("Salomon BRYS the great", kodein.instance<String>("name"))
     }
 
-    @Test fun test17_5_DependencyLoopWithOverrides() {
+    @Test fun test17_05_DependencyLoopWithOverrides() {
 
         val kodein = Kodein {
             bind<String>("name") with singleton { instance<String>("title") + " Salomon " }
@@ -602,7 +602,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test18_0_ModuleOverride() {
+    @Test fun test18_00_ModuleOverride() {
         val module = Kodein.Module {
             bind<String>("name", overrides = true) with instance("Salomon")
         }
@@ -615,7 +615,7 @@ class ErasedTests {
         assertEquals("Salomon", kodein.instance<String>("name"))
     }
 
-    @Test fun test18_1_ModuleForbiddenOverride() {
+    @Test fun test18_01_ModuleForbiddenOverride() {
         val module = Kodein.Module {
             bind<String>("name", overrides = true) with instance("Salomon")
         }
@@ -629,7 +629,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test18_2_ModuleImportsForbiddenOverride() {
+    @Test fun test18_02_ModuleImportsForbiddenOverride() {
         val subModule = Kodein.Module {
             bind<String>("name", overrides = true) with instance("Salomon")
         }
@@ -645,7 +645,7 @@ class ErasedTests {
         }
     }
 
-    @Test fun test19_0_OnReadyCallback() {
+    @Test fun test19_00_OnReadyCallback() {
         var passed = false
         Kodein {
             constant("name") with "Salomon"
@@ -666,7 +666,7 @@ class ErasedTests {
         val logger: FakeLogger = withKClass().instance()
     }
 
-    @Test fun test20_0_InjectForClass() {
+    @Test fun test20_00_InjectForClass() {
         val kodein = Kodein {
             bind<FakeLogger>() with factory { cls: KClass<*> -> FakeLoggerImpl(cls) }
         }
@@ -680,7 +680,7 @@ class ErasedTests {
         val name: String by kodein.lazy.instance("name")
     }
 
-    @Test fun test22_0_Lazy() {
+    @Test fun test22_00_Lazy() {
         val kodein = Kodein {
             constant("name") with "Salomon"
         }
@@ -689,7 +689,7 @@ class ErasedTests {
         assertEquals("Salomon", test.name)
     }
 
-    @Test fun test23_0_Multiton() {
+    @Test fun test23_00_Multiton() {
         val kodein = Kodein { bind() from multiton { name: String -> Person(name) } }
 
         val p1: Person = kodein.with("Salomon").instance()
@@ -706,7 +706,7 @@ class ErasedTests {
         assertEquals("Laila", p3.name)
     }
 
-    @Test fun test24_0_Callback() {
+    @Test fun test24_00_Callback() {
         var ready = false
 
         Kodein {
@@ -722,7 +722,7 @@ class ErasedTests {
 
     class Wedding(val him: Person, val her: Person)
 
-    @Test fun test25_0_NewInstance() {
+    @Test fun test25_00_NewInstance() {
         val kodein = Kodein {
             bind<Person>("Author") with singleton { Person("Salomon") }
             bind<Person>("Spouse") with singleton { Person("Laila") }
@@ -733,7 +733,7 @@ class ErasedTests {
         assertEquals("Laila", wedding.her.name)
     }
 
-    @Test fun test26_0_MultiSet() {
+    @Test fun test26_00_MultiSet() {
         val kodein = Kodein {
             bind() from setBinding<Person>()
 
@@ -758,7 +758,7 @@ class ErasedTests {
         assertNotSame(laila1, laila2)
     }
 
-    @Test fun test26_1_MultiMap() {
+    @Test fun test26_01_MultiMap() {
         val kodein = Kodein {
             bind() from setBinding<PersonEntry>()
 
@@ -772,7 +772,7 @@ class ErasedTests {
         assertEquals(Person("Laila"), persons["loulou"])
     }
 
-    @Test fun test27_0_ExternalSource() {
+    @Test fun test27_00_ExternalSource() {
         val kodein = Kodein {
             bind(tag = "him") from singleton { Person("Salomon") }
 
@@ -806,18 +806,18 @@ class ErasedTests {
         assertEquals(kodein.instanceOrNull<Person>(), kodein.instanceOrNull<Person>())
     }
 
-//    @Test fun test28_0_ManualTyping() {
-//
-//        open class Resource
-//        class SubResource : Resource()
-//
-//        val resourceClass: Class<out Resource> = SubResource::class.java
-//
-//        val kodein = Kodein {
-//            Bind(TT(resourceClass)) with SingletonBinding(TT(resourceClass)) { resourceClass.getConstructor().newInstance() }
-//        }
-//
-//        kodein.instance<SubResource>()
-//    }
+    @Test fun test28_00_ManualTyping() {
+
+        open class Resource
+        class SubResource : Resource()
+
+        val resourceClass: KClass<out Resource> = SubResource::class
+
+        val kodein = Kodein {
+            Bind(TT(resourceClass)) with SingletonBinding(TT(resourceClass)) { SubResource() }
+        }
+
+        kodein.instance<SubResource>()
+    }
 
 }

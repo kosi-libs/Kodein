@@ -63,6 +63,8 @@ interface TypeToken<T> {
      * Returns the parent type of the type represented by this TypeToken, if any.
      */
     fun getSuper(): TypeToken<in T>?
+
+    fun getInterfaces(): List<TypeToken<*>>
 }
 
 /**
@@ -107,6 +109,8 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
     override fun isWildcard() = false
 
     override fun getSuper() = main.getSuper()
+
+    override fun getInterfaces() = main.getInterfaces()
 
     /** @suppress */
     override fun equals(other: Any?): Boolean {

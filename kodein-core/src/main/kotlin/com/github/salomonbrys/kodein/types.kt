@@ -92,6 +92,7 @@ internal abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
 
     override fun fullErasedDispString() = trueType.fullErasedName()
 
+    private val rawType: Class<*> get() = ((((trueType as? KodeinWrappedType)?.type ?: trueType) as? ParameterizedType)?.rawType ?: trueType) as Class<*>
 
     override fun type(): Type = _type ?: run {
         // TypeReference cannot create WildcardTypes nor TypeVariables
@@ -106,8 +107,7 @@ internal abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
 
     @Suppress("UNCHECKED_CAST")
     override fun getRaw(): TypeToken<T> {
-        val realType = ((trueType as? KodeinWrappedType)?.type ?: trueType) as? ParameterizedType ?: return this
-        return ClassTypeToken(realType.rawType as Class<T>)
+        return ClassTypeToken(rawType as Class<T>)
     }
 
     override fun isGeneric() = ((trueType as? KodeinWrappedType)?.type ?: trueType) is ParameterizedType
@@ -134,6 +134,8 @@ internal abstract class ATypeTypeToken<T> : JVMTypeToken<T>() {
 
     @Suppress("UNCHECKED_CAST")
     override fun getSuper(): TypeToken<in T>? = trueType._getTypeSuperTT()
+
+    override fun getInterfaces() = rawType.interfaces.map { TT(it) }
 }
 
 /**
@@ -320,6 +322,8 @@ internal class ClassTypeToken<T>(private val _type: Class<T>) : JVMTypeToken<T>(
     override fun checkIsReified(disp: Any) {}
 
     override fun getSuper() = _type._getClassSuperTT()
+
+    override fun getInterfaces() = _type.interfaces.map { TT(it) }
 }
 
 /**
@@ -335,6 +339,8 @@ inline fun <reified T> erased(): TypeToken<T> = ClassTypeToken((T::class as KCla
  * Gives a [TypeToken] representing the given class.
  */
 fun <T> TT(cls: Class<T>): TypeToken<T> = ClassTypeToken(cls)
+
+fun <T: Any> TT(cls: KClass<T>): TypeToken<T> = TT(cls.java)
 
 /**
  * Gives a [TypeToken] representing the given type.

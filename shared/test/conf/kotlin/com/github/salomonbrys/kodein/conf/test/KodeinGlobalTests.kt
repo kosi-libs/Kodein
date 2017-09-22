@@ -4,7 +4,6 @@ package com.github.salomonbrys.kodein.conf.test
 
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.bindings.EagerSingletonBinding
-import com.github.salomonbrys.kodein.bindings.FactoryBinding
 import com.github.salomonbrys.kodein.bindings.SingletonBinding
 import com.github.salomonbrys.kodein.conf.ConfigurableKodein
 import com.github.salomonbrys.kodein.conf.global
@@ -19,7 +18,7 @@ import kotlin.test.assertTrue
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KodeinGlobalTests {
 
-    @Test fun test00_0_Configurable() {
+    @Test fun test00_00_Configurable() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
@@ -31,7 +30,7 @@ class KodeinGlobalTests {
         assertEquals(42, answer)
     }
 
-    @Test fun test01_0_Clear() {
+    @Test fun test01_04_Clear() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
@@ -49,7 +48,7 @@ class KodeinGlobalTests {
         assertEquals(42, kodein.Instance<Int>(erased(), tag = "answer"))
     }
 
-    @Test fun test01_1_Mutate() {
+    @Test fun test01_02_Mutate() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
@@ -66,7 +65,7 @@ class KodeinGlobalTests {
         assertEquals(42, kodein.Instance<Int>(erased(), tag = "full"))
     }
 
-    @Test fun test01_2_NonMutableClear() {
+    @Test fun test01_03_NonMutableClear() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
@@ -80,7 +79,7 @@ class KodeinGlobalTests {
         }
     }
 
-    @Test fun test01_3_NonMutableMutate() {
+    @Test fun test01_04_NonMutableMutate() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
@@ -94,7 +93,7 @@ class KodeinGlobalTests {
         }
     }
 
-    @Test fun test02_0_mutateConfig() {
+    @Test fun test02_00_mutateConfig() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
@@ -111,7 +110,7 @@ class KodeinGlobalTests {
         assertEquals(42, kodein.Instance<Int>(erased(), tag = "full"))
     }
 
-    @Test fun test02_1_nonMutableMutateConfig() {
+    @Test fun test02_01_nonMutableMutateConfig() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
@@ -125,7 +124,7 @@ class KodeinGlobalTests {
         }
     }
 
-    @Test fun test04_0_Global() {
+    @Test fun test04_00_Global() {
         Kodein.global.mutable = true
 
         Kodein.global.addConfig {
@@ -142,22 +141,22 @@ class KodeinGlobalTests {
         assertEquals(42, Kodein.global.Instance<Int>(erased(), tag = "full"))
     }
 
-    object Test05_0 {
+    private object Test05 {
         val kodein = ConfigurableKodein()
 
         class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.Instance(erased()))
     }
 
-    @Test fun test05_0_Loop() {
-        Test05_0.kodein.addConfig {
+    @Test fun test05_00_Loop() {
+        Test05.kodein.addConfig {
             bind() from SingletonBinding(erased()) { "test" }
-            bind() from EagerSingletonBinding(this, erased()) { Test05_0.Loop() }
+            bind() from EagerSingletonBinding(this, erased()) { Test05.Loop() }
         }
 
-        Test05_0.kodein.getOrConstruct()
+        Test05.kodein.getOrConstruct()
     }
 
-    @Test fun test06_0_Callback() {
+    @Test fun test06_00_Callback() {
         val kodein = ConfigurableKodein()
 
         var ready = false
