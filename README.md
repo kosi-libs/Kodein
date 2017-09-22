@@ -102,7 +102,7 @@ Testimonies
 
 <img src="https://insiteapplications.com/static/InSiteLogo.png" width="150" height="35" />
 
-> Kodein has been instrumental in moving our entire production application to Kotlin at [InSite Applications](https://insiteapplications.com). It uses standard Kotlin idioms and features for ultimate clarity and simplicity. It was clear to us from the beginning that Kodein would be our DI solution. Our devs love it so much that they've transitioned to using it in their personal apps, both Java and Kotlin!
+> Kodein has been instrumental in moving our entire production application to Kotlin at [InSite Applications](https://insiteapplications.com). It uses standard Kotlin idioms and features for ultimate clarity and simplicity. It was clear to us from the beginning that Kodein would be our DI solution. Our devs love it so much that they've transitioned to using it in their personal apps, both Java and Kotlin!  
 > -- [Eliezer Graber](https://github.com/eygraber)
 
 &nbsp;
@@ -111,7 +111,7 @@ Testimonies
 
 <img src="https://cdn2.hubspot.net/hubfs/2561893/compsoft-creative-logo.jpg" height="35" />
 
-> At [Compsoft Creative](https://github.com/CompsoftCreative), Kodein is central our new Kotlin based app architecture, giving us a solid underpinning to all apps we develop and allowing a simple yet powerful way to de-couple our services with a library that is lightweight and perfect for mobile apps.
+> At [Compsoft Creative](https://github.com/CompsoftCreative), Kodein is central our new Kotlin based app architecture, giving us a solid underpinning to all apps we develop and allowing a simple yet powerful way to de-couple our services with a library that is lightweight and perfect for mobile apps.  
 > -- [Daniel Payne](https://github.com/CompsoftCreative)
 
 &nbsp;
