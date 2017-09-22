@@ -88,15 +88,6 @@ Testimonies
 
 &nbsp;
 
-<img src="http://imgur.com/Ymo1qoh.jpg" height="60" />
-
-> Kodein is used in [the android app of the OhelShem school](https://github.com/OhelShem/android).  
-> -- [Yoav Sternberg](https://github.com/yoavst)
-
-&nbsp;
-
-&nbsp;
-
 <img src="https://moovel-group.com/assets/images/sign.png" height="40" />
 
 > At [Moovel Group GmbH](https://www.moovel.com/de/en), we have successfully used the wonderful Kodein library into in [this Android app](https://play.google.com/store/apps/details?id=com.daimler.moovel.android).
@@ -115,6 +106,22 @@ Testimonies
 > -- [Eliezer Graber](https://github.com/eygraber)
 
 &nbsp;
+
+&nbsp;
+
+<img src="https://cdn2.hubspot.net/hubfs/2561893/compsoft-creative-logo.jpg" height="35" />
+
+> At [Compsoft Creative](https://github.com/CompsoftCreative), Kodein is central our new Kotlin based app architecture, giving us a solid underpinning to all apps we develop and allowing a simple yet powerful way to de-couple our services with a library that is lightweight and perfect for mobile apps.
+> -- [Daniel Payne](https://github.com/CompsoftCreative)
+
+&nbsp;
+
+&nbsp;
+
+<img src="http://imgur.com/Ymo1qoh.jpg" height="60" />
+
+> Kodein is used in [the android app of the OhelShem school](https://github.com/OhelShem/android).  
+> -- [Yoav Sternberg](https://github.com/yoavst)&nbsp;
 
 &nbsp;
 
