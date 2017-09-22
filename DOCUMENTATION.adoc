@@ -1758,7 +1758,7 @@ Here's an example of what this prints:
         bind<Dice>() with factory { Int -> RandomDice }
         bind<DataSource>() with singleton { SQLiteDataSource }
         bind<Random>() with provider { SecureRandom }
-        bind<String>("answer") with instance ( Int )
+        bind<String>(tag = "answer") with instance ( Int )
 ----
 
 As you can see, it's really easy to understand which type with which tag is bound to which implementation inside which scope.
@@ -1775,15 +1775,16 @@ The message of the exception explains how the loop happened.
 
 .An example of recursive dependency loop:
 ----
-com.github.salomonbrys.kodein.Kodein$DependencyLoopException: Dependency recursion:
-       ╔═> bind<com.test.A>()
-       ╠─> bind<com.test.B>() // <1>
-       ╠─> bind<com.test.C>("yay") // <2>
-       ╚═> bind<com.test.A>() // <3>
+Kodein$DependencyLoopException: Dependency recursion:
+     bind<Database>()
+    ╔╩>bind<User>()
+    ║  ╚>bind<Repository>(tag = "users")
+    ║    ╚>bind<Database>()
+    ╚══════╝
 ----
-<1> `com.test.A` depends on `com.test.B`
-<2> `com.test.B` depends on `com.test.C` with the tag "Yay"
-<3> `com.test.C` with the tag "Yay" depends on `com.test.A`, *we have found the dependency loop!*.
+<1> `Database` depends on `User`
+<2> `User` depends on `Repository` with the tag "users"
+<3> `Repository` with the tag "users" depends on `Database`, *we have found the dependency loop!*.
 
 
 == JSR-330: Using reflexivity to auto-inject

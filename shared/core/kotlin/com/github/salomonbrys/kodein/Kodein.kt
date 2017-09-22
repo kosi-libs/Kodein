@@ -81,12 +81,12 @@ interface Kodein : KodeinAwareBase {
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this bind.
          */
-        val description: String get() = "bind<${type.simpleDispString()}>(${ if (tag != null) "\"$tag\"" else "" })"
+        val description: String get() = "bind<${type.simpleDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
 
         /**
          * Description using full type names. The description is as close as possible to the code used to create this bind.
          */
-        val fullDescription: String get() = "bind<${type.fullDispString()}>(${ if (tag != null) "\"$tag\"" else "" })"
+        val fullDescription: String get() = "bind<${type.fullDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
     }
 
     /**

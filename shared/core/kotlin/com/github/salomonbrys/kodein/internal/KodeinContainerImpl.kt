@@ -47,8 +47,28 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
          * @throws Kodein.DependencyLoopException if the key exists in the dependency tree.
          */
         internal fun check(searchedKey: Kodein.Key<*, *>, searchedOverrideLevel: Int) {
-            if (!_check(searchedKey, searchedOverrideLevel))
-                throw Kodein.DependencyLoopException("Dependency recursion:\n" + _tree(searchedKey, searchedOverrideLevel) + "\n       ╚═> ${displayString(searchedKey, _overrideLevel)}")
+            if (!_check(searchedKey, searchedOverrideLevel)) {
+                val list = _tree(searchedKey, searchedOverrideLevel) + displayString(searchedKey, _overrideLevel)
+                val sb = StringBuilder()
+                list.forEachIndexed { index, string ->
+                    sb.append("  ")
+                    if (index == 0)
+                        sb.append("   ")
+                    else if (index == 1) {
+                        sb.append("  ╔╩>")
+                    }
+                    else {
+                        sb.append("  ║")
+                        sb.append("  ".repeat(index - 1))
+                        sb.append("╚>")
+                    }
+                    sb.appendln(string)
+                }
+                sb.append("    ╚")
+                sb.append("══".repeat(list.size - 1))
+                sb.append("╝")
+                throw Kodein.DependencyLoopException("Dependency recursion:\n$sb")
+            }
         }
 
         /**
@@ -61,14 +81,24 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
         }
 
         /**
-         * @return The current transitive dependency tree as a string.
+         * @return The current transitive dependency tree as a list of string.
          */
-        private fun _tree(firstKey: Kodein.Key<*, *>, firstOverrideLevel: Int): String {
+        private fun _tree(firstKey: Kodein.Key<*, *>, firstOverrideLevel: Int): List<String> {
             if (firstKey == _key && firstOverrideLevel == _overrideLevel)
-                return "       ╔═> ${displayString(_key, _overrideLevel)}"
+                return listOf(displayString(_key, _overrideLevel))
             else
-                return "${_parent?._tree(firstKey, firstOverrideLevel)}\n       ╠─> ${displayString(_key, _overrideLevel)}"
+                return (_parent?._tree(firstKey, firstOverrideLevel) ?: emptyList()) + displayString(_key, _overrideLevel)
         }
+
+//        /**
+//         * @return The current transitive dependency tree as a string.
+//         */
+//        private fun _tree(firstKey: Kodein.Key<*, *>, firstOverrideLevel: Int): String {
+//            if (firstKey == _key && firstOverrideLevel == _overrideLevel)
+//                return "       ╔═> ${displayString(_key, _overrideLevel)}"
+//            else
+//                return "${_parent?._tree(firstKey, firstOverrideLevel)}\n       ╠─> ${displayString(_key, _overrideLevel)}"
+//        }
     }
 
     /**
