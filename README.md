@@ -111,7 +111,7 @@ Testimonies
 
 <img src="https://cdn2.hubspot.net/hubfs/2561893/compsoft-creative-logo.jpg" height="35" />
 
-> At [Compsoft Creative](https://github.com/CompsoftCreative), Kodein is central our new Kotlin based app architecture, giving us a solid underpinning to all apps we develop and allowing a simple yet powerful way to de-couple our services with a library that is lightweight and perfect for mobile apps.  
+> At [Compsoft Creative](https://www.compsoft.co.uk), Kodein is central our new Kotlin based app architecture, giving us a solid underpinning to all apps we develop and allowing a simple yet powerful way to de-couple our services with a library that is lightweight and perfect for mobile apps.  
 > -- [Daniel Payne](https://github.com/CompsoftCreative)
 
 &nbsp;
