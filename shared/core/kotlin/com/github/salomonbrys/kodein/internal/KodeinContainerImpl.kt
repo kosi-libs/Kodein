@@ -174,11 +174,11 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
         return { arg -> binding.getInstance(bindingKodein, key, arg) }
     }
 
-    override fun <A, T: Any> factoryOrNull(key: Kodein.Key<A, T>): ((A) -> T)? {
+    override fun <A, T: Any> factoryOrNull(key: Kodein.Key<A, T>, receiver: Any?): ((A) -> T)? {
         val bindingKodein = _bindingKodein(key, 0)
         @Suppress("UNCHECKED_CAST")
         val binding = _findBindingOrNull(key, true)
-                ?: _externalSource?.invoke(bindingKodein, key) as BindingBase<A, T>?
+                ?: _externalSource?.invoke(receiver, bindingKodein, key) as BindingBase<A, T>?
                 ?: return null
         return _transformBinding(binding, key, 0, bindingKodein)
     }

@@ -65,22 +65,27 @@ class ConfigurableKodein : Kodein {
      * The first time this function is called is the end of the configuration.
      */
     fun getOrConstruct(): Kodein {
-        synchronizedIfNull(_lock, this::_instance, { return it }) {
-            if (mutable == null)
-                mutable = false
+        synchronizedIfNull(
+                lock = _lock,
+                predicate = this::_instance,
+                ifNotNull = { return it },
+                ifNull = {
+                    if (mutable == null)
+                        mutable = false
 
-            val configs = checkNotNull(_configs) { "recursive initialization detected" }
-            _configs = null
+                    val configs = checkNotNull(_configs) { "recursive initialization detected" }
+                    _configs = null
 
-            val (kodein, init) = Kodein.withDelayedCallbacks {
-                for (config in configs)
-                    config()
-            }
+                    val (kodein, init) = Kodein.withDelayedCallbacks {
+                        for (config in configs)
+                            config()
+                    }
 
-            _instance = kodein
+                    _instance = kodein
 
-            init()
-        }
+                    init()
+                }
+        )
 
         return _instance!!
     }

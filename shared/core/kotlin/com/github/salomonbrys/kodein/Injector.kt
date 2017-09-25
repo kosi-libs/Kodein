@@ -1,6 +1,7 @@
 package com.github.salomonbrys.kodein
 
 import com.github.salomonbrys.kodein.internal.synchronizedIfNull
+import kotlin.reflect.KProperty
 
 /**
  * An injector is an object which creates injected property delegates **before** having access to a Kodein instance.
@@ -49,10 +50,15 @@ class KodeinInjector : KodeinInjectedBase {
      */
     private var _onInjecteds = ArrayList<(Kodein) -> Unit>()
 
-    override fun onInjected(cb: (Kodein) -> Unit): Unit {
-        synchronizedIfNull(_lock, this::_kodein, cb) {
-            _onInjecteds.add(cb)
-        }
+    override fun onInjected(cb: (Kodein) -> Unit) {
+        synchronizedIfNull(
+                lock = _lock,
+                predicate = this::_kodein,
+                ifNotNull = cb,
+                ifNull = {
+                    _onInjecteds.add(cb)
+                }
+        )
     }
 
     /**
@@ -63,11 +69,23 @@ class KodeinInjector : KodeinInjectedBase {
      * @param injected The property to register (and later, inject).
      * @return The property, for ease of use.
      */
-    private fun <T> _register(injected: InjectedProperty<T>): InjectedProperty<T> {
-        synchronizedIfNull(_lock, this::_kodein, { return injected.apply { _inject(it.container) } }) {
-            _list.add(injected)
-        }
-        return injected
+    private fun <T> _register(injected: InjectedProperty<T>) {
+        synchronizedIfNull(
+                lock = _lock,
+                predicate = this::_kodein,
+                ifNotNull = { injected._inject(it.container, injected.receiver) },
+                ifNull = {
+                    _list.add(injected)
+                }
+        )
+    }
+
+    interface InjectedPropertyProvider<out T> {
+        operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>): InjectedProperty<T>
+    }
+
+    private fun <T> provide(provideDelegate: (Any?) -> InjectedProperty<T>) = object : InjectedPropertyProvider<T> {
+        override fun provideDelegate(thisRef: Any?, prop: KProperty<*>) = provideDelegate(thisRef).also { _register(it) }
     }
 
     /**
@@ -82,7 +100,9 @@ class KodeinInjector : KodeinInjectedBase {
      * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> Factory(argType: TypeToken<out A>, type: TypeToken<out T>, tag: Any? = null): InjectedProperty<(A) -> T> = _register(InjectedFactoryProperty(Kodein.Key(Kodein.Bind(type, tag), argType)))
+    fun <A, T : Any> Factory(argType: TypeToken<out A>, type: TypeToken<out T>, tag: Any? = null): InjectedPropertyProvider<(A) -> T> = provide { receiver ->
+        InjectedFactoryProperty(Kodein.Key(Kodein.Bind(type, tag), argType), receiver)
+    }
 
     /**
      * Creates a property delegate that will hold a factory, or null if none is found.
@@ -96,7 +116,9 @@ class KodeinInjector : KodeinInjectedBase {
      * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> FactoryOrNull(argType: TypeToken<out A>, type: TypeToken<out T>, tag: Any? = null): InjectedProperty<((A) -> T)?> = _register(InjectedNullableFactoryProperty(Kodein.Key(Kodein.Bind(type, tag), argType)))
+    fun <A, T : Any> FactoryOrNull(argType: TypeToken<out A>, type: TypeToken<out T>, tag: Any? = null): InjectedPropertyProvider<((A) -> T)?> = provide { receiver ->
+        InjectedNullableFactoryProperty(Kodein.Key(Kodein.Bind(type, tag), argType), receiver)
+    }
 
     /**
      * Creates an injected provider property delegate.
@@ -108,7 +130,9 @@ class KodeinInjector : KodeinInjectedBase {
      * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <T : Any> Provider(type: TypeToken<out T>, tag: Any? = null): InjectedProperty<() -> T> = _register(InjectedProviderProperty(Kodein.Bind(type, tag)))
+    fun <T : Any> Provider(type: TypeToken<out T>, tag: Any? = null): InjectedPropertyProvider<() -> T> = provide { receiver ->
+        InjectedProviderProperty(Kodein.Bind(type, tag), receiver)
+    }
 
     /**
      * Creates a property delegate that will hold a provider, or null if none is found.
@@ -120,7 +144,9 @@ class KodeinInjector : KodeinInjectedBase {
      * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <T : Any> ProviderOrNull(type: TypeToken<out T>, tag: Any? = null): InjectedProperty<(() -> T)?> =  _register(InjectedNullableProviderProperty(Kodein.Bind(type, tag)))
+    fun <T : Any> ProviderOrNull(type: TypeToken<out T>, tag: Any? = null): InjectedPropertyProvider<(() -> T)?> = provide { receiver ->
+        InjectedNullableProviderProperty(Kodein.Bind(type, tag), receiver)
+    }
 
     /**
      * Creates an injected instance property delegate.
@@ -131,7 +157,9 @@ class KodeinInjector : KodeinInjectedBase {
      * @return A property delegate that will lazily provide an instance of `T`.
      * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      */
-    fun <T : Any> Instance(type: TypeToken<out T>, tag: Any? = null): InjectedProperty<T> = _register(InjectedInstanceProperty(Kodein.Bind(type, tag)))
+    fun <T : Any> Instance(type: TypeToken<out T>, tag: Any? = null): InjectedPropertyProvider<T> = provide { receiver ->
+        InjectedInstanceProperty(Kodein.Bind(type, tag), receiver)
+    }
 
     /**
      * Creates a property delegate that will hold an instance, or null if none is found.
@@ -142,7 +170,9 @@ class KodeinInjector : KodeinInjectedBase {
      * @return A property delegate that will lazily provide an instance of `T`, or null if no provider was found.
      * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
      */
-    fun <T : Any> InstanceOrNull(type: TypeToken<out T>, tag: Any? = null): InjectedProperty<T?> = _register(InjectedNullableInstanceProperty(Kodein.Bind(type, tag)))
+    fun <T : Any> InstanceOrNull(type: TypeToken<out T>, tag: Any? = null): InjectedPropertyProvider<T?> = provide { receiver ->
+        InjectedNullableInstanceProperty(Kodein.Bind(type, tag), receiver)
+    }
 
     /**
      * Creates a property delegate that will hold a Kodein instance.
@@ -153,12 +183,17 @@ class KodeinInjector : KodeinInjectedBase {
     fun kodein(): Lazy<Kodein> = lazy { _kodein ?: throw UninjectedException() }
 
     override fun inject(kodein: Kodein) {
-        synchronizedIfNull(_lock, this::_kodein, { return }) {
-            _kodein = kodein
+        synchronizedIfNull(
+                lock = _lock,
+                predicate = this::_kodein,
+                ifNotNull = { return },
+                ifNull = {
+                    _kodein = kodein
 
-            _list.forEach { it._inject(kodein.container) }
-            _list.clear()
-        }
+                    _list.forEach { it._inject(kodein.container, it.receiver) }
+                    _list.clear()
+                }
+        )
 
         _onInjecteds.forEach { it(kodein) }
         _onInjecteds.clear()

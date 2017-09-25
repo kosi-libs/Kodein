@@ -777,7 +777,7 @@ class ErasedTests {
             bind(tag = "him") from singleton { Person("Salomon") }
 
             val laila = Person("Laila")
-            container.bindExternalSource { _, (bind) ->
+            container.bindExternalSource { _, _, (bind) ->
                 @Suppress("UNUSED_PARAMETER")
                 fun _createAnyone(kodein: Kodein, key: Kodein.Key<*, *>, arg: Unit) = Person("Anyone")
 

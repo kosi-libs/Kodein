@@ -1,5 +1,6 @@
 package com.github.salomonbrys.kodein.jxinject
 
+import com.github.salomonbrys.kodein.Instance
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.bindings.SingletonBinding

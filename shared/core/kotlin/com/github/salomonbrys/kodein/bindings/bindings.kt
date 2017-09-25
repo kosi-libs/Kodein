@@ -34,9 +34,14 @@ class MultitonBinding<in A, T : Any>(override val argType: TypeToken<in A>, over
     override fun factoryName() = "multiton"
 
     override fun getInstance(kodein: BindingKodein, key: Kodein.Key<A, T>, arg: A): T {
-        synchronizedIfNull(_instances, { _instances[arg] }, { return it }) {
-            _instances[arg] = kodein.creator(arg)
-        }
+        synchronizedIfNull(
+                lock = _instances,
+                predicate = { _instances[arg] },
+                ifNotNull = { return it },
+                ifNull = {
+                    _instances[arg] = kodein.creator(arg)
+                }
+        )
         return _instances[arg]!!
     }
 }
@@ -67,9 +72,14 @@ abstract class ASingleton<T : Any> internal constructor(val creator: NoArgBindin
     private val _lock = Any()
 
     override fun getInstance(kodein: NoArgBindingKodein, key: Kodein.Key<Unit, T>): T {
-        synchronizedIfNull(_lock, this::_instance, { return it }) {
-            _instance = kodein.creator()
-        }
+        synchronizedIfNull(
+                lock = _lock,
+                predicate = this::_instance,
+                ifNotNull = { return it },
+                ifNull = {
+                    _instance = kodein.creator()
+                }
+        )
         return _instance!!
     }
 }

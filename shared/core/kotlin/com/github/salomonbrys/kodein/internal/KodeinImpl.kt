@@ -34,10 +34,15 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
         else {
             val lock = Any()
             _init = init@ {
-                synchronizedIfNotNull(lock, this::_init, { return@init }) {
-                    _init = null
-                    init()
-                }
+                synchronizedIfNotNull(
+                        lock = lock,
+                        predicate = this::_init,
+                        ifNull = { return@init },
+                        ifNotNull = {
+                            _init = null
+                            init()
+                        }
+                )
             }
         }
     }

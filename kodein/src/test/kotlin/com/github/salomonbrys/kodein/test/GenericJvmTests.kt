@@ -611,13 +611,13 @@ class GenericJvmTests {
         val lines = kodein.container.bindings.description.lineSequence().map(String::trim).toList()
         assertEquals(8, lines.size)
         assertTrue("bind<IPerson>() with provider { Person }" in lines)
-        assertTrue("bind<IPerson>(\"thread-singleton\") with refSingleton(threadLocal) { Person }" in lines)
-        assertTrue("bind<IPerson>(\"singleton\") with singleton { Person }" in lines)
-        assertTrue("bind<IPerson>(\"factory\") with factory { String -> Person }" in lines)
-        assertTrue("bind<IPerson>(\"instance\") with instance ( Person )" in lines)
-        assertTrue("bind<Int>(\"answer\") with instance ( Int )" in lines)
-        assertTrue("bind<String>(\"scoped\") with scopedSingleton(GenericJvmTests.test15Scope) { Unit -> String }" in lines)
-        assertTrue("bind<String>(\"auto-scoped\") with autoScopedSingleton(GenericJvmTests.test15Scope) { String }" in lines)
+        assertTrue("bind<IPerson>(tag = \"thread-singleton\") with refSingleton(threadLocal) { Person }" in lines)
+        assertTrue("bind<IPerson>(tag = \"singleton\") with singleton { Person }" in lines)
+        assertTrue("bind<IPerson>(tag = \"factory\") with factory { String -> Person }" in lines)
+        assertTrue("bind<IPerson>(tag = \"instance\") with instance ( Person )" in lines)
+        assertTrue("bind<Int>(tag = \"answer\") with instance ( Int )" in lines)
+        assertTrue("bind<String>(tag = \"scoped\") with scopedSingleton(GenericJvmTests.test15Scope) { Unit -> String }" in lines)
+        assertTrue("bind<String>(tag = \"auto-scoped\") with autoScopedSingleton(GenericJvmTests.test15Scope) { String }" in lines)
     }
 
     @Test fun test15_01_BindingsFullDescription() {
@@ -636,13 +636,13 @@ class GenericJvmTests {
         val lines = kodein.container.bindings.fullDescription.lineSequence().map(String::trim).toList()
         assertEquals(8, lines.size)
         assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>() with provider { com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"thread-singleton\") with refSingleton(com.github.salomonbrys.kodein.threadLocal) { com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"singleton\") with singleton { com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"factory\") with factory { kotlin.String -> com.github.salomonbrys.kodein.test.Person }" in lines)
-        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(\"instance\") with instance ( com.github.salomonbrys.kodein.test.Person )" in lines)
-        assertTrue("bind<kotlin.Int>(\"answer\") with instance ( kotlin.Int )" in lines)
-        assertTrue("bind<kotlin.String>(\"scoped\") with scopedSingleton(com.github.salomonbrys.kodein.test.GenericJvmTests.test15Scope) { kotlin.Unit -> kotlin.String }" in lines)
-        assertTrue("bind<kotlin.String>(\"auto-scoped\") with autoScopedSingleton(com.github.salomonbrys.kodein.test.GenericJvmTests.test15Scope) { kotlin.String }" in lines)
+        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(tag = \"thread-singleton\") with refSingleton(com.github.salomonbrys.kodein.threadLocal) { com.github.salomonbrys.kodein.test.Person }" in lines)
+        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(tag = \"singleton\") with singleton { com.github.salomonbrys.kodein.test.Person }" in lines)
+        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(tag = \"factory\") with factory { kotlin.String -> com.github.salomonbrys.kodein.test.Person }" in lines)
+        assertTrue("bind<com.github.salomonbrys.kodein.test.IPerson>(tag = \"instance\") with instance ( com.github.salomonbrys.kodein.test.Person )" in lines)
+        assertTrue("bind<kotlin.Int>(tag = \"answer\") with instance ( kotlin.Int )" in lines)
+        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scopedSingleton(com.github.salomonbrys.kodein.test.GenericJvmTests.test15Scope) { kotlin.Unit -> kotlin.String }" in lines)
+        assertTrue("bind<kotlin.String>(tag = \"auto-scoped\") with autoScopedSingleton(com.github.salomonbrys.kodein.test.GenericJvmTests.test15Scope) { kotlin.String }" in lines)
     }
 
     @Test fun test15_02_RegisteredBindings() {
@@ -1027,7 +1027,7 @@ class GenericJvmTests {
             bind(tag = "him") from singleton { Person("Salomon") }
 
             val laila = Person("Laila")
-            container.bindExternalSource { _, (bind) ->
+            container.bindExternalSource { _, _, (bind) ->
                 @Suppress("UNUSED_PARAMETER")
                 fun _createAnyone(kodein: Kodein, key: Kodein.Key<*, *>, arg: Unit) = Person("Anyone")
 

@@ -39,7 +39,7 @@ interface KodeinContainer {
      * @return The found factory, or null if no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <A, T: Any> factoryOrNull(key: Kodein.Key<A, T>): ((A) -> T)?
+    fun <A, T: Any> factoryOrNull(key: Kodein.Key<A, T>, receiver: Any? /*= null*/): ((A) -> T)?
 
     /**
      * Retrieve a factory for the given key.
@@ -49,8 +49,8 @@ interface KodeinContainer {
      * @throws Kodein.NotFoundException If no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <A, T: Any> nonNullFactory(key: Kodein.Key<A, T>): ((A) -> T)
-            = factoryOrNull(key) ?: throw _notFoundException(key, "factory")
+    fun <A, T: Any> nonNullFactory(key: Kodein.Key<A, T>, receiver: Any? /*= null*/): ((A) -> T)
+            = factoryOrNull(key, receiver) ?: throw _notFoundException(key, "factory")
 
     /**
      * Retrieve a provider for the given bind, or null if none is found.
@@ -59,8 +59,8 @@ interface KodeinContainer {
      * @return The found provider, or null if no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <T: Any> providerOrNull(bind: Kodein.Bind<T>): (() -> T)? {
-        val factory = factoryOrNull(Kodein.Key(bind, UnitToken)) ?: return null
+    fun <T: Any> providerOrNull(bind: Kodein.Bind<T>, receiver: Any? /*= null*/): (() -> T)? {
+        val factory = factoryOrNull(Kodein.Key(bind, UnitToken), receiver) ?: return null
         return { factory(Unit) }
     }
 
@@ -72,8 +72,8 @@ interface KodeinContainer {
      * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <T: Any> nonNullProvider(bind: Kodein.Bind<T>): (() -> T)
-            = providerOrNull(bind) ?: throw _notFoundException(Kodein.Key(bind, UnitToken), "provider")
+    fun <T: Any> nonNullProvider(bind: Kodein.Bind<T>, receiver: Any? /*= null*/): (() -> T)
+            = providerOrNull(bind, receiver) ?: throw _notFoundException(Kodein.Key(bind, UnitToken), "provider")
 
 
     /**
@@ -324,4 +324,4 @@ interface KodeinContainer {
 
 }
 
-typealias ExternalSource = (Kodein, Kodein.Key<*, *>) -> BindingBase<*, *>?
+typealias ExternalSource = (receiver: Any?, kodein: Kodein, key: Kodein.Key<*, *>) -> BindingBase<*, *>?

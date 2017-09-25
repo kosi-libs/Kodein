@@ -40,13 +40,18 @@ class RefSingletonBinding<T : Any>(override val createdType: TypeToken<out T>, v
 
     override fun getInstance(kodein: NoArgBindingKodein, key: Kodein.Key<Unit, T>): T {
         var ret: T? = null
-        synchronizedIfNull(_lock, { _ref() }, { return it }) {
-            val pair = refMaker.make {
-                kodein.creator()
-            }
-            _ref = pair.second
-            ret = pair.first
-        }
+        synchronizedIfNull(
+                lock = _lock,
+                predicate = { _ref() },
+                ifNotNull = { return it },
+                ifNull = {
+                    val pair = refMaker.make {
+                        kodein.creator()
+                    }
+                    _ref = pair.second
+                    ret = pair.first
+                }
+        )
         return ret!!
     }
 }
@@ -69,11 +74,16 @@ class RefMultitonBinding<in A, T: Any>(override val argType: TypeToken<in A>, ov
 
     override fun getInstance(kodein: BindingKodein, key: Kodein.Key<A, T>, arg: A): T {
         var ret: T? = null
-        synchronizedIfNull(_refs, { _refs[arg]?.invoke() }, { return it }) {
-            val pair = refMaker.make { kodein.creator(arg) }
-            _refs[arg] = pair.second
-            ret = pair.first
-        }
+        synchronizedIfNull(
+                lock = _refs,
+                predicate = { _refs[arg]?.invoke() },
+                ifNotNull = { return it },
+                ifNull = {
+                    val pair = refMaker.make { kodein.creator(arg) }
+                    _refs[arg] = pair.second
+                    ret = pair.first
+                }
+        )
         return ret!!
     }
 

@@ -1,8 +1,6 @@
 package com.github.salomonbrys.kodein.jxinject.internal
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.TT
-import com.github.salomonbrys.kodein.TypeToken
+import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.jxinject.*
 import java.lang.reflect.*
 import java.util.ArrayList

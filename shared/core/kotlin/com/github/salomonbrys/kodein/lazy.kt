@@ -64,7 +64,7 @@ fun Kodein.Companion.lazy(allowSilentOverride: Boolean = false, f: Kodein.Builde
  * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-fun <A, T : Any> LazyKodeinAwareBase.Factory(argType: TypeToken<A>, type: TypeToken<T>, tag: Any? = null) : Lazy<(A) -> T> = lazy { kodein().Factory(argType, type, tag) }
+fun <A, T : Any> LazyKodeinAwareBase.Factory(argType: TypeToken<A>, type: TypeToken<T>, tag: Any? = null) : Lazy<(A) -> T> = lazy { kodein().Factory(argType, type, tag, this) }
 
 /**
  * Gets a lazy factory for the given type, tag and argument type, or null if none is found.
@@ -78,7 +78,7 @@ fun <A, T : Any> LazyKodeinAwareBase.Factory(argType: TypeToken<A>, type: TypeTo
  * @return A lazy property that yields a factory of `T`, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-fun <A, T : Any> LazyKodeinAwareBase.FactoryOrNull(argType: TypeToken<A>, type: TypeToken<T>, tag: Any? = null) : Lazy<((A) -> T)?> = lazy { kodein().FactoryOrNull(argType, type, tag) }
+fun <A, T : Any> LazyKodeinAwareBase.FactoryOrNull(argType: TypeToken<A>, type: TypeToken<T>, tag: Any? = null) : Lazy<((A) -> T)?> = lazy { kodein().FactoryOrNull(argType, type, tag, this) }
 
 /**
  * Gets a lazy provider for the given type and tag.
@@ -92,7 +92,7 @@ fun <A, T : Any> LazyKodeinAwareBase.FactoryOrNull(argType: TypeToken<A>, type: 
  * @throws Kodein.NotFoundException When accessing the property, if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-fun <T : Any> LazyKodeinAwareBase.Provider(type: TypeToken<T>, tag: Any? = null) : Lazy<() -> T> = lazy { kodein().Provider(type, tag) }
+fun <T : Any> LazyKodeinAwareBase.Provider(type: TypeToken<T>, tag: Any? = null) : Lazy<() -> T> = lazy { kodein().Provider(type, tag, this) }
 
 /**
  * Gets a lazy provider for the given type and tag, or null if none is found.
@@ -105,7 +105,7 @@ fun <T : Any> LazyKodeinAwareBase.Provider(type: TypeToken<T>, tag: Any? = null)
  * @return A lazy property that yields a provider of `T`, or null if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-fun <T : Any> LazyKodeinAwareBase.ProviderOrNull(type: TypeToken<T>, tag: Any? = null) : Lazy<(() -> T)?> = lazy { kodein().ProviderOrNull(type, tag) }
+fun <T : Any> LazyKodeinAwareBase.ProviderOrNull(type: TypeToken<T>, tag: Any? = null) : Lazy<(() -> T)?> = lazy { kodein().ProviderOrNull(type, tag, this) }
 
 /**
  * Gets a lazy instance for the given type and tag.
@@ -119,7 +119,7 @@ fun <T : Any> LazyKodeinAwareBase.ProviderOrNull(type: TypeToken<T>, tag: Any? =
  * @throws Kodein.NotFoundException When accessing the property, if no provider was found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
-fun <T : Any> LazyKodeinAwareBase.Instance(type: TypeToken<T>, tag: Any? = null) : Lazy<T> = lazy { kodein().Instance(type, tag) }
+fun <T : Any> LazyKodeinAwareBase.Instance(type: TypeToken<T>, tag: Any? = null) : Lazy<T> = lazy { kodein().Instance(type, tag, this) }
 
 /**
  * Gets a lazy instance for the given type and tag, or null is none is found.
@@ -132,7 +132,7 @@ fun <T : Any> LazyKodeinAwareBase.Instance(type: TypeToken<T>, tag: Any? = null)
  * @return A lazy property that yields an instance of `T`, or null if no provider is found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
-fun <T : Any> LazyKodeinAwareBase.InstanceOrNull(type: TypeToken<T>, tag: Any? = null) : Lazy<T?> = lazy { kodein().InstanceOrNull(type, tag) }
+fun <T : Any> LazyKodeinAwareBase.InstanceOrNull(type: TypeToken<T>, tag: Any? = null) : Lazy<T?> = lazy { kodein().InstanceOrNull(type, tag, this) }
 
 
 
@@ -144,7 +144,7 @@ fun <T : Any> LazyKodeinAwareBase.InstanceOrNull(type: TypeToken<T>, tag: Any? =
  * @property arg The argument to provide to the factory when retrieving values.
  * @property argType The type of argument that the factory takes.
  */
-class CurriedLazyKodeinFactory<A>(val kodein: () -> Kodein, val arg: () -> A, val argType: TypeToken<A>)
+class CurriedLazyKodeinFactory<A>(val kodein: () -> Kodein, val arg: () -> A, val argType: TypeToken<A>, val receiver: Any? /*= null*/)
 
 /**
  * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument.
@@ -157,7 +157,7 @@ class CurriedLazyKodeinFactory<A>(val kodein: () -> Kodein, val arg: () -> A, va
  * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-fun <T : Any> CurriedLazyKodeinFactory<*>.Provider(type: TypeToken<T>, tag: Any? = null): Lazy<() -> T> = lazy { kodein().Factory(argType, type, tag) } .toProvider(arg)
+fun <T : Any> CurriedLazyKodeinFactory<*>.Provider(type: TypeToken<T>, tag: Any? = null): Lazy<() -> T> = lazy { kodein().Factory(argType, type, tag, receiver) } .toProvider(arg)
 
 /**
  * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -169,7 +169,7 @@ fun <T : Any> CurriedLazyKodeinFactory<*>.Provider(type: TypeToken<T>, tag: Any?
  * @return A lazy property that yields a provider of `T`, or null if no factory is found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-fun <T : Any> CurriedLazyKodeinFactory<*>.ProviderOrNull(type: TypeToken<T>, tag: Any? = null): Lazy<(() -> T)?> = lazy { kodein().FactoryOrNull(argType, type, tag) } .toProviderOrNull(arg)
+fun <T : Any> CurriedLazyKodeinFactory<*>.ProviderOrNull(type: TypeToken<T>, tag: Any? = null): Lazy<(() -> T)?> = lazy { kodein().FactoryOrNull(argType, type, tag, receiver) } .toProviderOrNull(arg)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument.
@@ -182,7 +182,7 @@ fun <T : Any> CurriedLazyKodeinFactory<*>.ProviderOrNull(type: TypeToken<T>, tag
  * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
-fun <T : Any> CurriedLazyKodeinFactory<*>.Instance(type: TypeToken<T>, tag: Any? = null): Lazy<T> = lazy { kodein().Factory(argType, type, tag) } .toInstance(arg)
+fun <T : Any> CurriedLazyKodeinFactory<*>.Instance(type: TypeToken<T>, tag: Any? = null): Lazy<T> = lazy { kodein().Factory(argType, type, tag, receiver) } .toInstance(arg)
 
 /**
  * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
@@ -194,7 +194,7 @@ fun <T : Any> CurriedLazyKodeinFactory<*>.Instance(type: TypeToken<T>, tag: Any?
  * @return A lazy instance of `T`, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
  */
-fun <T : Any> CurriedLazyKodeinFactory<*>.InstanceOrNull(type: TypeToken<T>, tag: Any? = null): Lazy<T?> = lazy { kodein().FactoryOrNull(argType, type, tag) } .toInstanceOrNull(arg)
+fun <T : Any> CurriedLazyKodeinFactory<*>.InstanceOrNull(type: TypeToken<T>, tag: Any? = null): Lazy<T?> = lazy { kodein().FactoryOrNull(argType, type, tag, receiver) } .toInstanceOrNull(arg)
 
 
 /**
@@ -207,7 +207,7 @@ fun <T : Any> CurriedLazyKodeinFactory<*>.InstanceOrNull(type: TypeToken<T>, tag
  * @param arg A function that provides the argument that will be passed to the factory.
  * @return An object from which you can get an instance or a provider.
  */
-fun <A> LazyKodeinAwareBase.WithF(argType: TypeToken<A>, arg: () -> A) = CurriedLazyKodeinFactory(kodein::invoke, arg, argType)
+fun <A> LazyKodeinAwareBase.WithF(argType: TypeToken<A>, arg: () -> A) = CurriedLazyKodeinFactory(kodein::invoke, arg, argType, this)
 
 /**
  * Allows to get a lazy provider or instance from a curried factory with an `A` argument.
@@ -219,7 +219,7 @@ fun <A> LazyKodeinAwareBase.WithF(argType: TypeToken<A>, arg: () -> A) = Curried
  * @param arg The argument that will be passed to the factory.
  * @return An object from which you can get an instance or a provider.
  */
-fun <A> LazyKodeinAwareBase.With(argType: TypeToken<A>, arg: A): CurriedLazyKodeinFactory<A> = CurriedLazyKodeinFactory(kodein::invoke, { arg }, argType)
+fun <A> LazyKodeinAwareBase.With(argType: TypeToken<A>, arg: A): CurriedLazyKodeinFactory<A> = CurriedLazyKodeinFactory(kodein::invoke, { arg }, argType, this)
 
 /**
  * Allows lazy retrieval.
@@ -228,7 +228,7 @@ fun <A> LazyKodeinAwareBase.With(argType: TypeToken<A>, arg: A): CurriedLazyKode
  *
  * @param A The type of argument to pass to the curried factory.
  */
-val <A> CurriedKodeinFactory<A>.lazy: CurriedLazyKodeinFactory<A> get() = CurriedLazyKodeinFactory(kodein, arg, argType)
+val <A> CurriedKodeinFactory<A>.lazy: CurriedLazyKodeinFactory<A> get() = CurriedLazyKodeinFactory(kodein, arg, argType, receiver)
 
 
 

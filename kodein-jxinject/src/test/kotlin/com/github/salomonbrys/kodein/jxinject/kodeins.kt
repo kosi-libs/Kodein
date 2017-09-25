@@ -40,7 +40,7 @@ fun test4() = Kodein {
 
     import(jxInjectorModule)
 
-    jxQualifier<KodeinInjectJavaTests.Test04_00_UniversePrefix> { "universe:" + it.value }
+    jxQualifier<KodeinInjectJvmTests.Test04_00_UniversePrefix> { "universe:" + it.value }
 }
 
 interface Test5A
