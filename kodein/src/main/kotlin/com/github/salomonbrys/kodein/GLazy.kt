@@ -43,6 +43,10 @@ inline fun <reified A, reified T : Any> LazyKodeinAwareBase.factoryOrNull(tag: A
  */
 inline fun <reified T : Any> LazyKodeinAwareBase.provider(tag: Any? = null) = Provider<T>(generic(), tag)
 
+inline fun <reified A, reified T : Any> LazyKodeinAwareBase.provider(tag: Any? = null, arg: A) = Factory<A, T>(generic(), generic(), tag).toProvider { arg }
+
+inline fun <reified A, reified T : Any> LazyKodeinAwareBase.provider(tag: Any? = null, crossinline fArg: () -> A) = Factory<A, T>(generic(), generic(), tag).toProvider(fArg)
+
 /**
  * Gets a lazy provider for the given type and tag, or null if none is found.
  *
@@ -55,6 +59,10 @@ inline fun <reified T : Any> LazyKodeinAwareBase.provider(tag: Any? = null) = Pr
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 inline fun <reified T : Any> LazyKodeinAwareBase.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(generic(), tag)
+
+inline fun <reified A, reified T : Any> LazyKodeinAwareBase.providerOrNull(tag: Any? = null, arg: A) = FactoryOrNull<A, T>(generic(), generic(), tag).toProviderOrNull { arg }
+
+inline fun <reified A, reified T : Any> LazyKodeinAwareBase.providerOrNull(tag: Any? = null, crossinline fArg: () -> A) = FactoryOrNull<A, T>(generic(), generic(), tag).toProviderOrNull(fArg)
 
 /**
  * Gets a lazy instance for the given type and tag.
@@ -70,6 +78,10 @@ inline fun <reified T : Any> LazyKodeinAwareBase.providerOrNull(tag: Any? = null
  */
 inline fun <reified T : Any> LazyKodeinAwareBase.instance(tag: Any? = null) = Instance<T>(generic(), tag)
 
+inline fun <reified A, reified T : Any> LazyKodeinAwareBase.instance(tag: Any? = null, arg: A) = Factory<A, T>(generic(), generic(), tag).toInstance { arg }
+
+inline fun <reified A, reified T : Any> LazyKodeinAwareBase.instance(tag: Any? = null, crossinline fArg: () -> A) = Factory<A, T>(generic(), generic(), tag).toInstance(fArg)
+
 /**
  * Gets a lazy instance for the given type and tag, or null is none is found.
  *
@@ -83,78 +95,6 @@ inline fun <reified T : Any> LazyKodeinAwareBase.instance(tag: Any? = null) = In
  */
 inline fun <reified T : Any> LazyKodeinAwareBase.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(generic(), tag)
 
+inline fun <reified A, reified T : Any> LazyKodeinAwareBase.instanceOrNull(tag: Any? = null, arg: A) = FactoryOrNull<A, T>(generic(), generic(), tag).toInstanceOrNull { arg }
 
-/**
- * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument.
- *
- * T generics will be kept.
- *
- * @param T The type of object to retrieve with the provider held by this property.
- * @param tag The bound tag, if any.
- * @return A lazy property that yields a provider of `T`.
- * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
- */
-inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.provider(tag: Any? = null) = Provider<T>(generic(), tag)
-
-/**
- * Gets a lazy provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
- *
- * T generics will be kept.
- *
- * @param T The type of object to retrieve with the provider held by this property.
- * @param tag The bound tag, if any.
- * @return A lazy property that yields a provider of `T`, or null if no factory is found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
- */
-inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(generic(), tag)
-
-/**
- * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument.
- *
- * T generics will be kept.
- *
- * @param T The type of object to retrieve.
- * @param tag The bound tag, if any.
- * @return A lazy instance of `T`.
- * @throws Kodein.NotFoundException When accessing the property, if no factory was found.
- * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
- */
-inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.instance(tag: Any? = null) = Instance<T>(generic(), tag)
-
-/**
- * Gets a lazy instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
- *
- * T generics will be kept.
- *
- * @param T The type of object to retrieve.
- * @param tag The bound tag, if any.
- * @return A lazy instance of `T`, or null if no factory was found.
- * @throws Kodein.DependencyLoopException When accessing the property, if the value construction triggered a dependency loop.
- */
-inline fun <reified T : Any> CurriedLazyKodeinFactory<*>.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(generic(), tag)
-
-
-/**
- * Allows to get a lazy provider or instance from a curried factory with an `A` argument.
- *
- * A generics will be kept.
- *
- * @param A The type of argument the factory takes.
- * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
- * @param arg A function that provides the argument that will be passed to the factory.
- * @return An object from which you can get an instance or a provider.
- */
-inline fun <reified A> LazyKodeinAwareBase.with(noinline arg: () -> A) = WithF(generic(), arg)
-
-/**
- * Allows to get a lazy provider or instance from a curried factory with an `A` argument.
- *
- * A generics will be kept.
- *
- * @param A The type of argument the factory takes.
- * @receiver Either a [LazyKodein] instance or a [LazyKodeinAware] class.
- * @param arg The argument that will be passed to the factory.
- * @return An object from which you can get an instance or a provider.
- */
-inline fun <reified A> LazyKodeinAwareBase.with(arg: A) = With(generic(), arg)
+inline fun <reified A, reified T : Any> LazyKodeinAwareBase.instanceOrNull(tag: Any? = null, crossinline fArg: () -> A) = FactoryOrNull<A, T>(generic(), generic(), tag).toInstanceOrNull(fArg)

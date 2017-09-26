@@ -51,6 +51,10 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? 
  */
 inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null) = Provider<T>(erased(), tag)
 
+inline fun <reified A, reified T : Any> KodeinAwareBase.provider(tag: Any? = null, arg: A) = Factory<A, T>(erased(), erased(), tag).toProvider { arg }
+
+inline fun <reified A, reified T : Any> KodeinAwareBase.provider(tag: Any? = null, crossinline fArg: () -> A) = Factory<A, T>(erased(), erased(), tag).toProvider(fArg)
+
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
  *
@@ -66,6 +70,10 @@ inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null) = Provid
  */
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(erased(), tag)
+
+inline fun <reified A, reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null, arg: A) = FactoryOrNull<A, T>(erased(), erased(), tag)?.toProvider { arg }
+
+inline fun <reified A, reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null, crossinline fArg: () -> A) = FactoryOrNull<A, T>(erased(), erased(), tag)?.toProvider(fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -83,6 +91,8 @@ inline fun <reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null) = 
  */
 inline fun <reified T : Any> KodeinAwareBase.instance(tag: Any? = null) = Instance<T>(erased(), tag)
 
+inline fun <reified A, reified T : Any> KodeinAwareBase.instance(tag: Any? = null, arg: A) = Factory<A, T>(erased(), erased(), tag).invoke(arg)
+
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
  *
@@ -98,84 +108,4 @@ inline fun <reified T : Any> KodeinAwareBase.instance(tag: Any? = null) = Instan
  */
 inline fun <reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(erased(), tag)
 
-/**
- * Gets a provider of `T` for the given tag from a curried factory with an `A` argument.
- *
- * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
- *
- * T generics will be erased!
- *
- * @param T The type of object the factory returns.
- * @param tag The bound tag, if any.
- * @return A provider.
- * @throws Kodein.NotFoundException if no factory was found.
- * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
- */
-inline fun <reified T : Any> CurriedKodeinFactory<*>.provider(tag: Any? = null) = Provider<T>(erased(), tag)
-
-/**
- * Gets a provider of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
- *
- * Whether this provider will re-create a new instance at each call or not depends on the binding scope.
- *
- * T generics will be erased!
- *
- * @param T The type of object the factory returns.
- * @param tag The bound tag, if any.
- * @return A provider, or null if no factory was found.
- * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
- */
-inline fun <reified T : Any> CurriedKodeinFactory<*>.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(erased(), tag)
-
-/**
- * Gets an instance of `T` for the given tag from a curried factory with an `A` argument.
- *
- * Whether the returned object is a new instance at each call or not depends on the binding scope.
- *
- * T generics will be erased!
- *
- * @param T The type of object to retrieve.
- * @param tag The bound tag, if any.
- * @return An instance.
- * @throws Kodein.NotFoundException if no factory was found.
- * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
- */
-inline fun <reified T : Any> CurriedKodeinFactory<*>.instance(tag: Any? = null) = Instance<T>(erased(), tag)
-
-/**
- * Gets an instance of `T` for the given tag from a curried factory with an `A` argument, or null if none is found.
- *
- * Whether the returned object is a new instance at each call or not depends on the binding scope.
- *
- * T generics will be erased!
- *
- * @param T The type of object to retrieve.
- * @param tag The bound tag, if any.
- * @return An instance, or null if no factory was found.
- * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
- */
-inline fun <reified T : Any> CurriedKodeinFactory<*>.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(erased(), tag)
-
-/**
- * Allows to get a provider or an instance from a curried factory with an `A` argument.
- *
- * A generics will be erased!
- *
- * @param A The type of argument the factory takes.
- * @receiver Either a [Kodein] instance or a [KodeinAware] class.
- * @property arg A function that provides the argument that will be passed to the factory.
- * @return An object from which you can get an instance or a provider.
- */
-inline fun <reified A> KodeinAwareBase.with(noinline arg: () -> A) = WithF(erased(), arg)
-
-/**
- * Allows to get a provider or an instance from a curried factory with an `A` argument.
- *
- * A generics will be erased!
- *
- * @param A The type of argument the factory takes.
- * @receiver Either a [Kodein] instance or a [KodeinAware] class.
- * @property arg The argument that will be passed to the factory.
- * @return An object from which you can get an instance or a provider.
- */
-inline fun <reified A> KodeinAwareBase.with(arg: A) = With(erased(), arg)
+inline fun <reified A, reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null, arg: A) = FactoryOrNull<A, T>(erased(), erased(), tag)?.invoke(arg)

@@ -62,7 +62,8 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
                         sb.append("  ".repeat(index - 1))
                         sb.append("╚>")
                     }
-                    sb.appendln(string)
+                    sb.append(string)
+                    sb.append("\n") // appendln does not exist in JS
                 }
                 sb.append("    ╚")
                 sb.append("══".repeat(list.size - 1))

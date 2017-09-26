@@ -10,4 +10,4 @@ package com.github.salomonbrys.kodein
  * @return A provider function that, when called, will call the receiver factory with the given argument.
  */
 // Note that it cannot be inline as there is currently a bug preventing it.
-fun <A, T : Any> ((A) -> T).toProvider(arg: () -> A): () -> T = { invoke(arg()) }
+inline fun <A, T : Any> ((A) -> T).toProvider(crossinline arg: () -> A): () -> T = { invoke(arg()) }

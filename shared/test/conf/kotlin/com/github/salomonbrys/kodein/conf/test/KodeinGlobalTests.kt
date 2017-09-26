@@ -22,7 +22,7 @@ class KodeinGlobalTests {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
-            constant("answer").With(erased(), 42)
+            constant(tag = "answer").With(erased(), 42)
         }
 
         val answer: Int = kodein.Instance(erased(), tag = "answer")
@@ -34,7 +34,7 @@ class KodeinGlobalTests {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
-            constant("answer").With(erased(), 21)
+            constant(tag = "answer").With(erased(), 21)
         }
 
         assertEquals(21, kodein.Instance<Int>(erased(), tag = "answer"))
@@ -42,7 +42,7 @@ class KodeinGlobalTests {
         kodein.clear()
 
         kodein.addConfig {
-            constant("answer").With(erased(), 42)
+            constant(tag = "answer").With(erased(), 42)
         }
 
         assertEquals(42, kodein.Instance<Int>(erased(), tag = "answer"))
@@ -52,13 +52,13 @@ class KodeinGlobalTests {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
-            constant("half").With(erased(), 21)
+            constant(tag = "half").With(erased(), 21)
         }
 
         assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
 
         kodein.addConfig {
-            constant("full").With(erased(), 42)
+            constant(tag = "full").With(erased(), 42)
         }
 
         assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
@@ -69,7 +69,7 @@ class KodeinGlobalTests {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
-            constant("answer").With(erased(), 21)
+            constant(tag = "answer").With(erased(), 21)
         }
 
         assertEquals(21, kodein.Instance<Int>(erased(), tag = "answer"))
@@ -83,7 +83,7 @@ class KodeinGlobalTests {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
-            constant("answer").With(erased(), 21)
+            constant(tag = "answer").With(erased(), 21)
         }
 
         assertEquals(21, kodein.Instance<Int>(erased(), tag = "answer"))
@@ -97,13 +97,13 @@ class KodeinGlobalTests {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
-            constant("half").With(erased(), 21)
+            constant(tag = "half").With(erased(), 21)
         }
 
         assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
 
         kodein.addConfig {
-            constant("full").With(erased(), 42)
+            constant(tag = "full").With(erased(), 42)
         }
 
         assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
@@ -114,7 +114,7 @@ class KodeinGlobalTests {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
-            constant("half").With(erased(), 21)
+            constant(tag = "half").With(erased(), 21)
         }
 
         assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
@@ -128,13 +128,13 @@ class KodeinGlobalTests {
         Kodein.global.mutable = true
 
         Kodein.global.addConfig {
-            constant("half").With(erased(), 21)
+            constant(tag = "half").With(erased(), 21)
         }
 
         assertEquals(21, Kodein.global.Instance<Int>(erased(), tag = "half"))
 
         Kodein.global.addConfig {
-            constant("full").With(erased(), 42)
+            constant(tag = "full").With(erased(), 42)
         }
 
         assertEquals(21, Kodein.global.Instance<Int>(erased(), tag = "half"))

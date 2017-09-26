@@ -1,11 +1,8 @@
 package com.github.salomonbrys.kodein.conf.test
 
-import com.github.salomonbrys.kodein.Instance
-import com.github.salomonbrys.kodein.With
+import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.bindings.FactoryBinding
 import com.github.salomonbrys.kodein.conf.ConfigurableKodein
-import com.github.salomonbrys.kodein.erased
-import com.github.salomonbrys.kodein.generic
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
@@ -50,13 +47,13 @@ class KodeinGlobalJvmTests {
             Bind<String>(erased()) with FactoryBinding(erased(), erased()) { n: Name -> n.firstName }
         }
 
-        assertEquals("Salomon", kodein.With(erased(), FullName ("Salomon", "BRYS")).Instance<String>(erased()))
+        assertEquals("Salomon", kodein.Factory<FullName, String>(erased(), erased()).invoke(FullName ("Salomon", "BRYS")))
 
         kodein.addConfig {
             Bind<String>(erased()) with FactoryBinding(erased(), erased()) { n: FullName -> n.firstName + " " + n.lastName }
         }
 
-        assertEquals("Salomon BRYS", kodein.With(erased(), FullName("Salomon", "BRYS")).Instance<String>(erased()))
+        assertEquals("Salomon BRYS", kodein.Factory<FullName, String>(erased(), erased()).invoke(FullName("Salomon", "BRYS")))
     }
 
     // Only the JVM supports generics
@@ -67,14 +64,14 @@ class KodeinGlobalJvmTests {
             Bind<String>(erased()) with FactoryBinding(erased(), erased()) { l: List<*> -> l.first().toString() + " *" }
         }
 
-        assertEquals("Salomon *", kodein.With(generic(), listOf("Salomon", "BRYS")).Instance<String>(erased()))
+        assertEquals("Salomon *", kodein.Factory<List<String>, String>(erased(), erased()).invoke(listOf("Salomon", "BRYS")))
 
         kodein.addConfig {
             Bind<String>(erased()) with FactoryBinding(generic(), erased()) { l: List<String> -> l[0] + " " + l[1] }
         }
 
-        assertEquals("Salomon BRYS", kodein.With(generic(), listOf("Salomon", "BRYS")).Instance<String>(erased()))
-        assertEquals("42 *", kodein.With(generic(), listOf(42)).Instance<String>(erased()))
+        assertEquals("Salomon BRYS", kodein.Factory<List<String>, String>(generic(), erased()).invoke(listOf("Salomon", "BRYS")))
+        assertEquals("42 *", kodein.Factory<List<Int>, String>(generic(), erased()).invoke(listOf(42)))
     }
 
 }

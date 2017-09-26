@@ -52,6 +52,10 @@ inline fun <reified A, reified T : Any> KodeinInjectedBase.factoryOrNull(tag: An
  */
 inline fun <reified T : Any> KodeinInjectedBase.provider(tag: Any? = null) = injector.Provider<T>(erased(), tag)
 
+inline fun <reified A, reified T : Any> KodeinInjectedBase.provider(tag: Any? = null, arg: A) = injector.Factory<A, T>(erased(), erased(), tag).toProvider { arg }
+
+inline fun <reified A, reified T : Any> KodeinInjectedBase.provider(tag: Any? = null, crossinline fArg: () -> A) = injector.Factory<A, T>(erased(), erased(), tag).toProvider(fArg)
+
 /**
  * Gets a lazy provider for the given type and tag, or null if none is found.
  *
@@ -65,6 +69,10 @@ inline fun <reified T : Any> KodeinInjectedBase.provider(tag: Any? = null) = inj
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 inline fun <reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null) = injector.ProviderOrNull<T>(erased(), tag)
+
+inline fun <reified A, reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null, arg: A) = injector.FactoryOrNull<A, T>(erased(), erased(), tag).toProviderOrNull { arg }
+
+inline fun <reified A, reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null, crossinline fArg: () -> A) = injector.FactoryOrNull<A, T>(erased(), erased(), tag).toProviderOrNull(fArg)
 
 /**
  * Gets a lazy instance for the given type and tag.
@@ -81,6 +89,10 @@ inline fun <reified T : Any> KodeinInjectedBase.providerOrNull(tag: Any? = null)
  */
 inline fun <reified T : Any> KodeinInjectedBase.instance(tag: Any? = null) = injector.Instance<T>(erased(), tag)
 
+inline fun <reified A, reified T : Any> KodeinInjectedBase.instance(tag: Any? = null, arg: A) = injector.Factory<A, T>(erased(), erased(), tag).toInstance { arg }
+
+inline fun <reified A, reified T : Any> KodeinInjectedBase.instance(tag: Any? = null, crossinline fArg: () -> A) = injector.Factory<A, T>(erased(), erased(), tag).toInstance(fArg)
+
 /**
  * Gets a lazy instance for the given type and tag.
  *
@@ -96,86 +108,6 @@ inline fun <reified T : Any> KodeinInjectedBase.instance(tag: Any? = null) = inj
  */
 inline fun <reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null) = injector.InstanceOrNull<T>(erased(), tag)
 
+inline fun <reified A, reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null, arg: A) = injector.FactoryOrNull<A, T>(erased(), erased(), tag).toInstanceOrNull { arg }
 
-
-/**
- * Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument.
- *
- * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
- *
- * T generics will be erased!
- *
- * @param T The type of object to retrieve with the provider.
- * @param tag The bound tag, if any.
- * @return A lazy property that yields a provider of `T`.
- * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
- */
-inline fun <reified T : Any> CurriedInjectorFactory<*>.provider(tag: Any? = null) = Provider<T>(erased(), tag)
-
-/**
- * Gets a lazy curried provider of `T` for the given tag from a factory with an `A` argument, or null if none is found.
- *
- * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
- *
- * T generics will be erased!
- *
- * @param T The type of object to retrieve with the provider.
- * @param tag The bound tag, if any.
- * @return A lazy property that yields a provider of `T` or null if no factory was found.
- * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
- */
-inline fun <reified T : Any> CurriedInjectorFactory<*>.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(erased(), tag)
-
-/**
- * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument.
- *
- * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
- *
- * T generics will be erased!
- *
- * @param T The type of object to retrieve.
- * @param tag The bound tag, if any.
- * @return A lazy property that yields a `T`.
- * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
- */
-inline fun <reified T : Any> CurriedInjectorFactory<*>.instance(tag: Any? = null) = Instance<T>(erased(), tag)
-
-/**
- * Gets a lazy instance of `T` for the given tag from a factory with an `A` argument, or null if none is found.
- *
- * The returned property should not be accessed before calling [KodeinInjectedBase.inject].
- *
- * T generics will be erased!
- *
- * @param T The type of object to retrieve.
- * @param tag The bound tag, if any.
- * @return A lazy property that yields a `T` or null if no factory was found.
- * @throws KodeinInjector.UninjectedException When accessing the property, if it was accessed before calling [KodeinInjectedBase.inject].
- */
-inline fun <reified T : Any> CurriedInjectorFactory<*>.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(erased(), tag)
-
-/**
- * Allows to inject a provider or an instance from a curried factory with an `A` argument.
- *
- * A generics will be erased!
- *
- * @param A The type of argument the factory takes.
- * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
- * @param arg A function that provides the argument that will be passed to the factory.
- * @return An object from which you can inject an instance or a provider.
- */
-inline fun <reified A> KodeinInjectedBase.with(noinline arg: () -> A) = WithF(erased(), arg)
-
-/**
- * Allows to inject a provider or an instance from a curried factory with an `A` argument.
- *
- * A generics will be erased!
- *
- * @param A The type of argument the factory takes.
- * @receiver Either a [KodeinInjector] instance or a [KodeinInjected] class.
- * @param arg The argument that will be passed to the factory.
- * @return An object from which you can inject an instance or a provider.
- */
-inline fun <reified A> KodeinInjectedBase.with(arg: A) = With(erased(), arg)
+inline fun <reified A, reified T : Any> KodeinInjectedBase.instanceOrNull(tag: Any? = null, crossinline fArg: () -> A) = injector.FactoryOrNull<A, T>(erased(), erased(), tag).toInstanceOrNull(fArg)

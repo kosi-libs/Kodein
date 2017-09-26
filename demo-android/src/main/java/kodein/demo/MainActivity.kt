@@ -13,7 +13,7 @@ import kodein.demo.coffee.Kettle
 // see MainFragment for an example of how to do this using an interface
 class MainActivity : KodeinActivity() {
     // will be the same instance as the coffeeMaker in MainFragment
-    val coffeeMaker: Kettle<Coffee> by with(this as Activity).instance()
+    val coffeeMaker: Kettle<Coffee> by instance(arg = this)
     val log: Logger by instance()
     val logTag: String by instance()
 
