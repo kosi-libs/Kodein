@@ -1,3 +1,3 @@
-# Package com.github.salomonbrys.kodein
+# Package org.kodein
 
 KOtlin DEpendency INjection

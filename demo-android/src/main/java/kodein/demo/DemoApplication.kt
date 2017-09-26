@@ -1,9 +1,9 @@
 package kodein.demo
 
 import android.app.Application
-import com.github.salomonbrys.kodein.*
-import com.github.salomonbrys.kodein.android.androidActivityScope
-import com.github.salomonbrys.kodein.android.autoAndroidModule
+import org.kodein.*
+import org.kodein.android.androidActivityScope
+import org.kodein.android.autoAndroidModule
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 import kodein.demo.coffee.electricHeaterModule

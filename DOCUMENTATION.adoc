@@ -11,7 +11,7 @@ Salomon BRYS <salomon.brys@gmail.com>
 image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]
 
 image:https://img.shields.io/badge/Kotlin-1.1-blue.svg[alt="Kotlin 1.1.3-2", link="http://kotlinlang.org"]
-image:https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg[alt="Maven Central", link="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22"]
+image:https://img.shields.io/maven-central/v/org.kodein/kodein.svg[alt="Maven Central", link="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.kodein%22"]
 image:https://img.shields.io/travis/SalomonBrys/Kodein.svg[alt="Travis", link="https://travis-ci.org/SalomonBrys/Kodein/builds"]
 image:https://img.shields.io/github/license/salomonbrys/kodein.svg[alt="MIT License", link="https://github.com/SalomonBrys/Kodein/blob/{branch}/LICENSE.txt"]
 image:https://img.shields.io/github/issues/SalomonBrys/Kodein.svg[alt="GitHub issues", link="https://github.com/SalomonBrys/Kodein/issues"]
@@ -64,7 +64,7 @@ class Controller(private val kodein: Kodein) {
 [source,xml,subs="attributes"]
 ----
 &lt;dependency&gt;
-    &lt;groupId&gt;com.github.salomonbrys.kodein&lt;/groupId&gt;
+    &lt;groupId&gt;org.kodein&lt;/groupId&gt;
     &lt;artifactId&gt;kodein&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
@@ -75,7 +75,7 @@ class Controller(private val kodein: Kodein) {
 
 [source,groovy,subs="attributes"]
 ----
-compile 'com.github.salomonbrys.kodein:kodein:{version}'
+compile 'org.kodein:kodein:{version}'
 ----
 
 
@@ -807,7 +807,7 @@ Simply give the Kodein instance to your Java classes, use Kodein in Java with th
 [source, java]
 .Example: using Kodein in Java
 ----
-import static com.github.salomonbrys.kodein.TypesKt.TT;
+import static org.kodein.TypesKt.TT;
 
 public class JavaClass {
     private final Function1<Integer, Dice> diceFactory;
@@ -994,7 +994,7 @@ fun test() {
 [source,xml,subs="attributes"]
 ----
 &lt;dependency&gt;
-    &lt;groupId&gt;com.github.salomonbrys.kodein&lt;/groupId&gt;
+    &lt;groupId&gt;org.kodein&lt;/groupId&gt;
     &lt;artifactId&gt;kodein-conf&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
@@ -1007,7 +1007,7 @@ IMPORTANT: Do not remove the `kodein` (or `kodein-erased`) dependency.
 
 [source,groovy,subs="attributes"]
 ----
-compile 'com.github.salomonbrys.kodein:kodein-conf:{version}'
+compile 'org.kodein:kodein-conf:{version}'
 ----
 
 IMPORTANT: Do not remove the `kodein` (or `kodein-erased`) dependency.
@@ -1142,8 +1142,8 @@ Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/demo-andr
 +
 [subs="attributes"]
 ----
-compile 'com.github.salomonbrys.kodein:kodein:{version}'
-compile 'com.github.salomonbrys.kodein:kodein-android:{version}'
+compile 'org.kodein:kodein:{version}'
+compile 'org.kodein:kodein-android:{version}'
 ----
 +
 IMPORTANT: Both `kodein` and `kodein-android` dependencies must be declared. +
@@ -1652,7 +1652,7 @@ Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/js-demo[J
 [source,xml,subs="attributes"]
 ----
 &lt;dependency&gt;
-    &lt;groupId&gt;com.github.salomonbrys.kodein&lt;/groupId&gt;
+    &lt;groupId&gt;org.kodein&lt;/groupId&gt;
     &lt;artifactId&gt;kodein-js&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
@@ -1662,7 +1662,7 @@ Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/js-demo[J
 
 [source,groovy,subs="attributes"]
 ----
-compile 'com.github.salomonbrys.kodein:kodein-js:{version}'
+compile 'org.kodein:kodein-js:{version}'
 ----
 
 
@@ -1731,7 +1731,7 @@ The `ConfigurableKodein` extension is available for JS, without any difference f
 [source,xml,subs="attributes"]
 ----
 &lt;dependency&gt;
-    &lt;groupId&gt;com.github.salomonbrys.kodein&lt;/groupId&gt;
+    &lt;groupId&gt;org.kodein&lt;/groupId&gt;
     &lt;artifactId&gt;kodein-js-conf&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
@@ -1741,7 +1741,7 @@ The `ConfigurableKodein` extension is available for JS, without any difference f
 
 [source,groovy,subs="attributes"]
 ----
-compile 'com.github.salomonbrys.kodein:kodein-js-conf:{version}'
+compile 'org.kodein:kodein-js-conf:{version}'
 ----
 
 
@@ -1811,7 +1811,7 @@ CAUTION: Every-thing that is described here is *a lot less performant* than usin
 [source,xml,subs="attributes"]
 ----
 &lt;dependency&gt;
-    &lt;groupId&gt;com.github.salomonbrys.kodein&lt;/groupId&gt;
+    &lt;groupId&gt;org.kodein&lt;/groupId&gt;
     &lt;artifactId&gt;kodein-jxinject&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
@@ -1826,7 +1826,7 @@ Then, <<import-jxinject-module,import the module>>.
 
 [source,groovy,subs="attributes"]
 ----
-compile 'com.github.salomonbrys.kodein:kodein-jxinject:{version}'
+compile 'org.kodein:kodein-jxinject:{version}'
 ----
 
 IMPORTANT: Do not remove the "kodein" (or "kodein-erased") dependency.
@@ -2199,7 +2199,7 @@ For this, you *must not* depend on the `kodein` module, and instead, depend on t
 CAUTION: This means that, by default, `kodein.instance<List<String>>()` will look for an erased `List` binding. +
          Therefore, to bind a `List<String>` you *must* use `Bind<List<String>>(generic())`, and to retrieve it, you *must* use `kodein.Instance(generic())`.
 
-NOTE: The inline function set that alias with the `erased` function is located in a different package than the regular one: `com.github.salomonbrys.kodein.erased`.
+NOTE: The inline function set that alias with the `erased` function is located in a different package than the regular one: `org.kodein.erased`.
 
 
 === Bind the same type to different factories

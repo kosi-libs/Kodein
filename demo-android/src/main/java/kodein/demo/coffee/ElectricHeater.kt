@@ -1,9 +1,9 @@
 package kodein.demo.coffee
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.singleton
+import org.kodein.Kodein
+import org.kodein.bind
+import org.kodein.instance
+import org.kodein.singleton
 import kodein.demo.Logger
 
 class ElectricHeater(private val log: Logger) : Heater {

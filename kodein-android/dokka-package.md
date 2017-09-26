@@ -1,3 +1,3 @@
-# Package com.github.salomonbrys.kodein.android
+# Package org.kodein.android
 
 Kodein module & API extensions for Android.

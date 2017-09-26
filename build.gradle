@@ -27,7 +27,7 @@ allprojects {
         maven { url 'https://maven.google.com' }
     }
 
-    group = 'com.github.salomonbrys.kodein'
+    group = 'org.kodein'
     version = '4.1.0'
 }
 

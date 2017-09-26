@@ -3,9 +3,9 @@ package kodein.demo
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import com.github.salomonbrys.kodein.*
-import com.github.salomonbrys.kodein.android.KodeinActivity
-import com.github.salomonbrys.kodein.android.appKodein
+import org.kodein.*
+import org.kodein.android.KodeinActivity
+import org.kodein.android.appKodein
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 

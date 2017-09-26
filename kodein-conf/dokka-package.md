@@ -1,3 +1,3 @@
-# Package com.github.salomonbrys.kodein.conf
+# Package org.kodein.conf
 
 Kodein API extensions for a on-the-fly configurable Kodein.

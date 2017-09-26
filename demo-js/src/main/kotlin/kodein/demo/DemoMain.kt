@@ -1,8 +1,8 @@
 package kodein.demo
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.KodeinAware
-import com.github.salomonbrys.kodein.erased.*
+import org.kodein.Kodein
+import org.kodein.KodeinAware
+import org.kodein.erased.*
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 import kodein.demo.coffee.electricHeaterModule

@@ -9,8 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.github.salomonbrys.kodein.*
-import com.github.salomonbrys.kodein.android.FragmentInjector
+import org.kodein.*
+import org.kodein.android.FragmentInjector
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 
