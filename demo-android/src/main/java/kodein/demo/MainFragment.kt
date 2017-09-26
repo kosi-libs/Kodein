@@ -25,7 +25,7 @@ class MainFragment : Fragment(), FragmentInjector {
     val log: Logger by instance()
     val logTag: String by instance()
 
-    val textView: TextView by lazy { activity.findViewById(R.id.text) as TextView }
+    val textView: TextView by lazy { activity.findViewById<TextView>(R.id.text) }
 
     override fun provideOverridingModule() = Kodein.Module {
         bind<String>(overrides = true) with instance("MainFragment")

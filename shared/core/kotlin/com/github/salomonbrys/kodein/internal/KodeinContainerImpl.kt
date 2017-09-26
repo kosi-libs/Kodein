@@ -90,16 +90,6 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
             else
                 return (_parent?._tree(firstKey, firstOverrideLevel) ?: emptyList()) + displayString(_key, _overrideLevel)
         }
-
-//        /**
-//         * @return The current transitive dependency tree as a string.
-//         */
-//        private fun _tree(firstKey: Kodein.Key<*, *>, firstOverrideLevel: Int): String {
-//            if (firstKey == _key && firstOverrideLevel == _overrideLevel)
-//                return "       ╔═> ${displayString(_key, _overrideLevel)}"
-//            else
-//                return "${_parent?._tree(firstKey, firstOverrideLevel)}\n       ╠─> ${displayString(_key, _overrideLevel)}"
-//        }
     }
 
     /**
