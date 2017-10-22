@@ -1,12 +1,10 @@
 package org.kodein.internal
 
-import org.kodein.ExternalSource
-import org.kodein.Kodein
-import org.kodein.KodeinContainer
-import org.kodein.UnitToken
+import org.kodein.*
+import org.kodein.bindings.KodeinBinding
 import org.kodein.bindings.Binding
-import org.kodein.bindings.BindingBase
 import org.kodein.bindings.BindingKodein
+import org.kodein.bindings.ExternalSource
 
 /**
  * Container class where the bindings and their factories are stored.
@@ -17,12 +15,16 @@ import org.kodein.bindings.BindingKodein
  * @property _bindings The map containing all bindings.
  * @property _node See [KodeinContainerImpl.Node]
  */
-internal class KodeinContainerImpl private constructor(private val _bindings: BindingsMap, private val _externalSource: ExternalSource?, private val _node: Node? = null) : KodeinContainer {
+internal class KodeinContainerImpl private constructor(
+        private val _bindings: BindingsMap,
+        override val externalSource: ExternalSource?,
+        private val _node: Node? = null
+) : KodeinContainer {
 
     /**
      * A cache that is filled each time a key is not found directly into the [_bindings] but by modifying the key's [Kodein.Key.argType].
      */
-    private val _cache = HashMap<Kodein.Key<*, *>, Binding<*, *>>()
+    private val _cache = HashMap<Kodein.Key<*, *>, KodeinBinding<*, *>>()
 
     /**
      * Class used to check for recursive dependencies, represents a node in the dependency tree.
@@ -95,11 +97,11 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
     /**
      * "Main" constructor that uses the bindings map configured by a [KodeinContainer.Builder].
      */
-    internal constructor(builder: KodeinContainer.Builder) : this(builder.bindings, builder.external.fetcher)
+    internal constructor(builder: KodeinContainer.Builder, externalSource: ExternalSource?) : this(builder.bindings, externalSource)
 
-    override val bindings: Map<Kodein.Key<*, *>, Binding<*, *>> get() = _bindings.bindings
+    override val bindings: Map<Kodein.Key<*, *>, KodeinBinding<*, *>> get() = _bindings.bindings
 
-    override val overriddenBindings: Map<Kodein.Key<*, *>, List<Binding<*, *>>> get() = _bindings.overrides
+    override val overriddenBindings: Map<Kodein.Key<*, *>, List<KodeinBinding<*, *>>> get() = _bindings.overrides
 
     /**
      * Finds a factory from a key, either in the [_bindings] or in the [_cache].
@@ -107,7 +109,7 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
      * @param key The key associated to the factory that is requested.
      * @return The factory, or null if non is found in both maps.
      */
-    private fun _get(key: Kodein.Key<*, *>) : Binding<*, *>? {
+    private fun _get(key: Kodein.Key<*, *>) : KodeinBinding<*, *>? {
         _bindings[key]?.let { return it }
         _cache[key]?.let { return it }
         return null
@@ -127,14 +129,14 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
      * @return The found factory, or null if none is found.
      */
     @Suppress("UNCHECKED_CAST")
-    private fun <A, T: Any> _findBindingOrNull(key: Kodein.Key<A, T>, cache: Boolean) : Binding<A, T>? {
-        _get(key)?.let { return it as Binding<A, T> }
+    private fun <A, T: Any> _findBindingOrNull(key: Kodein.Key<A, T>, cache: Boolean) : KodeinBinding<A, T>? {
+        _get(key)?.let { return it as KodeinBinding<A, T> }
 
         if (key.argType.isGeneric()) {
             _get(Kodein.Key(key.bind, key.argType.getRaw()))?.let {
                 if (cache)
                     _cache[key] = it
-                return it as Binding<A, T>
+                return it as KodeinBinding<A, T>
             }
         }
 
@@ -143,7 +145,7 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
             if (found != null) {
                 if (cache)
                     _cache[key] = found
-                return found
+                return found as KodeinBinding<A, T>
             }
         }
 
@@ -154,30 +156,36 @@ internal class KodeinContainerImpl private constructor(private val _bindings: Bi
         val found = _findBindingOrNull(Kodein.Key(key.bind, argSuperType), false)
         if (cache && found != null)
             _cache[key] = found
-        return found
+        return found as KodeinBinding<A, T>?
     }
 
-    private fun <A, T: Any> _bindingKodein(key: Kodein.Key<A, T>, overrideLevel: Int) = BindingKodeinImpl(KodeinContainerImpl(_bindings, _externalSource, Node(key, overrideLevel, _node)), key, overrideLevel)
-
-    private fun <A, T: Any> _transformBinding(binding: BindingBase<A, T>, key: Kodein.Key<A, T>, overrideLevel: Int, bindingKodein: BindingKodein): (A) -> T {
-        _node?.check(key, overrideLevel)
-        @Suppress("UNCHECKED_CAST")
-        return { arg -> binding.getInstance(bindingKodein, key, arg) }
+    private fun <A, T: Any> _bindingKodein(key: Kodein.Key<A, T>, receiver: Any?, overrideLevel: Int) : BindingKodein {
+        val container = KodeinContainerImpl(_bindings, externalSource, Node(key, overrideLevel, _node))
+        return BindingKodeinImpl(KodeinImpl(container).direct, key, receiver, overrideLevel)
     }
 
     override fun <A, T: Any> factoryOrNull(key: Kodein.Key<A, T>, receiver: Any?): ((A) -> T)? {
-        val bindingKodein = _bindingKodein(key, 0)
-        @Suppress("UNCHECKED_CAST")
-        val binding = _findBindingOrNull(key, true)
-                ?: _externalSource?.invoke(receiver, bindingKodein, key) as BindingBase<A, T>?
-                ?: return null
-        return _transformBinding(binding, key, 0, bindingKodein)
+        val bindingKodein = _bindingKodein(key, receiver, 0)
+
+        _findBindingOrNull(key, true)?.let {
+            _node?.check(key, 0)
+            return it.getFactory(bindingKodein, key)
+        }
+
+        externalSource?.getFactory(bindingKodein, key)?.let {
+            _node?.check(key, 0)
+            @Suppress("UNCHECKED_CAST")
+            return it as (A) -> T
+        }
+
+        return null
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <A, T: Any> overriddenFactoryOrNull(key: Kodein.Key<A, T>, overrideLevel: Int): ((A) -> T)? {
+    override fun <A, T: Any> overriddenFactoryOrNull(key: Kodein.Key<A, T>, receiver: Any?, overrideLevel: Int): ((A) -> T)? {
         val binding = _bindings.getOverride(key, overrideLevel) ?: return null
         val newOverrideLevel = overrideLevel + 1
-        return _transformBinding(binding as Binding<A, T>, key, newOverrideLevel, _bindingKodein(key, newOverrideLevel))
+        _node?.check(key, newOverrideLevel)
+        return (binding as Binding<A, T>).getFactory(_bindingKodein(key, receiver, newOverrideLevel), key)
     }
 }

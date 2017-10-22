@@ -1,7 +1,9 @@
 package org.kodein
 
 import org.kodein.bindings.*
+import org.kodein.internal.BindingsMap
 import org.kodein.internal.KodeinImpl
+import kotlin.properties.Delegates
 
 /**
  * KOtlin DEpendency INjection.
@@ -90,7 +92,7 @@ interface Kodein : KodeinAwareBase {
     }
 
     /**
-     * In Kodein, each [Binding] is bound to a Key. A Key holds all information necessary to retrieve a factory (and therefore an instance).
+     * In Kodein, each [KodeinBinding] is bound to a Key. A Key holds all information necessary to retrieve a factory (and therefore an instance).
      *
      * @property bind The left part of the bind declaration.
      * @property argType The argument type of the associated factory (Will be `Unit` for a provider).
@@ -162,18 +164,15 @@ interface Kodein : KodeinAwareBase {
      *
      * Methods of this classes are really just proxies to the [KodeinContainer.Builder] methods.
      *
-     * @property container Every methods eventually ends up to a call to this builder.
+     * @property containerBuilder Every methods eventually ends up to a call to this builder.
      * @property _callbacks A list of callbacks that will be called once the [Kodein] object is constructed.
      */
     @KodeinDsl
-    class Builder internal constructor(
-        val container: KodeinContainer.Builder,
-        internal val _callbacks: MutableList<Kodein.() -> Unit>,
-        internal val _bindingCallbacks: MutableList<Pair<Key<*, *>, BindingKodein.() -> Unit>>,
-        init: Builder.() -> Unit
+    open class Builder internal constructor(
+            internal val containerBuilder: KodeinContainer.Builder,
+            internal val _callbacks: MutableList<DKodein.() -> Unit>,
+            internal val _bindingCallbacks: MutableList<Pair<Key<*, *>, BindingKodein.() -> Unit>>
     ) {
-
-        init { init() }
 
         /**
          * Left part of the type-binding syntax (`bind(type, tag)`).
@@ -183,7 +182,7 @@ interface Kodein : KodeinAwareBase {
          * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          */
         inner class TypeBinder<T : Any> internal constructor(val bind: Kodein.Bind<T>, val overrides: Boolean?) {
-            internal val containerBuilder get() = container
+            internal val containerBuilder get() = this@Builder.containerBuilder
 
             /**
              * Binds the previously given type and tag to the given binding.
@@ -191,7 +190,7 @@ interface Kodein : KodeinAwareBase {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun with(binding: Binding<*, out T>) = container.bindBind(bind, binding, overrides)
+            infix fun with(binding: KodeinBinding<*, out T>) = containerBuilder.bindBind(bind, binding, overrides)
         }
 
         /**
@@ -204,12 +203,12 @@ interface Kodein : KodeinAwareBase {
             /**
              * Binds the previously given tag to the given binding.
              *
-             * The bound type will be the [Binding.createdType].
+             * The bound type will be the [KodeinBinding.createdType].
              *
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun from(binding: Binding<*, *>) = container.bindBind(Kodein.Bind(binding.createdType, _tag), binding, _overrides)
+            infix fun from(binding: KodeinBinding<*, *>) = containerBuilder.bindBind(Kodein.Bind(binding.createdType, _tag), binding, _overrides)
         }
 
         /**
@@ -227,7 +226,7 @@ interface Kodein : KodeinAwareBase {
              * @param valueType The type to bind the instance to.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            fun <T: Any> With(valueType: TypeToken<out T>, value: T) = container.bindBind(Kodein.Bind(valueType, _tag), InstanceBinding(valueType, value), _overrides)
+            fun <T: Any> With(valueType: TypeToken<out T>, value: T) = containerBuilder.bindBind(Kodein.Bind(valueType, _tag), InstanceBinding(valueType, value), _overrides)
         }
 
         /**
@@ -272,29 +271,15 @@ interface Kodein : KodeinAwareBase {
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
         fun import(module: Kodein.Module, allowOverride: Boolean = false) {
-            Builder(container.subBuilder(allowOverride, module.allowSilentOverride), _callbacks, _bindingCallbacks, module.init)
+            Builder(containerBuilder.subBuilder(allowOverride, module.allowSilentOverride), _callbacks, _bindingCallbacks).apply(module.init)
         }
-
-        /**
-         * Imports all bindings defined in the given [Kodein] into this builder.
-         *
-         * Note that this preserves scopes, meaning that a singleton-bound in the kodein argument will continue to exist only once.
-         * Both kodein objects will share the same instance.
-         *
-         * @param kodein The kodein object to import.
-         * @param allowOverride Whether this module is allowed to override existing bindings.
-         *                      If it is not, overrides (even explicit) will throw an [OverridingException].
-         * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
-         *                             OR [allowOverride] is true while YOU don't have the permission to override.
-         */
-        fun extend(kodein: Kodein, allowOverride: Boolean = false) = container.extend(kodein.container, allowOverride)
 
         /**
          * Adds a callback that will be called once the Kodein object is configured and instantiated.
          *
          * @param cb The callback.
          */
-        fun onReady(cb: Kodein.() -> Unit) {
+        fun onReady(cb: DKodein.() -> Unit) {
             _callbacks += cb
         }
 
@@ -319,7 +304,32 @@ interface Kodein : KodeinAwareBase {
          * @param key The key that defines the overridden provider access.
          * @param cb The callback.
          */
-        fun <T: Any> onProviderReady(key: Kodein.Key<Unit, T>, cb: NoArgBindingKodein.() -> Unit) = onFactoryReady(key) { cb(NoArgBindingKodeinImpl(this)) }
+        fun <T: Any> onProviderReady(bind: Kodein.Bind<T>, cb: NoArgBindingKodein.() -> Unit) = onFactoryReady(Kodein.Key(bind, UnitToken)) { cb(NoArgBindingKodeinWrap(this)) }
+    }
+
+    class MainBuilder(allowSilentOverride: Boolean) : Builder(KodeinContainer.Builder(true, allowSilentOverride, BindingsMap()), ArrayList(), ArrayList()) {
+
+        var externalSource: ExternalSource? = null
+
+        /**
+         * Imports all bindings defined in the given [Kodein] into this builder.
+         *
+         * Note that this preserves scopes, meaning that a singleton-bound in the kodein argument will continue to exist only once.
+         * Both kodein objects will share the same instance.
+         *
+         * Note that externalSource **will be overeridden** if defined in the extended Kodein.
+         *
+         * @param kodein The kodein object to import.
+         * @param allowOverride Whether this module is allowed to override existing bindings.
+         *                      If it is not, overrides (even explicit) will throw an [OverridingException].
+         * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
+         *                             OR [allowOverride] is true while YOU don't have the permission to override.
+         */
+        fun extend(kodein: Kodein, allowOverride: Boolean = false) {
+            containerBuilder.extend(kodein.container, allowOverride)
+            kodein.container.externalSource?.let { externalSource = it }
+        }
+
     }
 
     /**
@@ -350,7 +360,7 @@ interface Kodein : KodeinAwareBase {
          * @param init The block of configuration.
          * @return The new Kodein object, freshly created, and ready for hard work!
          */
-        operator fun invoke(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit): Kodein = KodeinImpl(allowSilentOverride, init)
+        operator fun invoke(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Kodein = KodeinImpl(allowSilentOverride, init)
 
         /**
          * Creates a Kodein object but without directly calling onReady callbacks.
@@ -360,23 +370,10 @@ interface Kodein : KodeinAwareBase {
          *
          * This is an internal function that exists primarily to prevent Kodein.global recursion.
          */
-        fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit): Pair<Kodein, () -> Unit> = KodeinImpl.withDelayedCallbacks(allowSilentOverride, init)
+        fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Pair<Kodein, () -> Unit> = KodeinImpl.withDelayedCallbacks(allowSilentOverride, init)
     }
 
 }
-
-internal fun <A, T : Any> Kodein.Factory(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null, receiver: Any?): (A) -> T = container.nonNullFactory(Kodein.Key(Kodein.Bind(type, tag), argType), receiver)
-
-internal fun <A, T : Any> Kodein.FactoryOrNull(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null, receiver: Any?): ((A) -> T)? = container.factoryOrNull(Kodein.Key(Kodein.Bind(type, tag), argType), receiver)
-
-internal fun <T : Any> Kodein.Provider(type: TypeToken<T>, tag: Any? = null, receiver: Any?): () -> T = container.nonNullProvider(Kodein.Bind(type, tag), receiver)
-
-internal fun <T : Any> Kodein.ProviderOrNull(type: TypeToken<T>, tag: Any? = null, receiver: Any?): (() -> T)? = container.providerOrNull(Kodein.Bind(type, tag), receiver)
-
-internal fun <T : Any> Kodein.Instance(type: TypeToken<T>, tag: Any? = null, receiver: Any?): T = container.nonNullProvider(Kodein.Bind(type, tag), receiver).invoke()
-
-internal fun <T : Any> Kodein.InstanceOrNull(type: TypeToken<T>, tag: Any? = null, receiver: Any?): T? = container.providerOrNull(Kodein.Bind(type, tag), receiver)?.invoke()
-
 
 /**
  * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.

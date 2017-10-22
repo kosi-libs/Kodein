@@ -1,10 +1,10 @@
-package org.kodein
+package org.kodein.bindings
 
-import org.kodein.bindings.Binding
-import org.kodein.bindings.BindingKodein
-import org.kodein.bindings.NoArgBinding
-import org.kodein.bindings.NoArgBindingKodein
+import org.kodein.Kodein
+import org.kodein.TTOf
+import org.kodein.TypeToken
 import org.kodein.internal.synchronizedIfNull
+import org.kodein.newConcurrentMap
 
 /**
  * A Function that creates a reference.
@@ -28,31 +28,30 @@ interface RefMaker {
  * @property refMaker Reference Maker that defines the kind of reference being used.
  * @property creator A function that should always create a new object.
  */
-class RefSingletonBinding<T : Any>(override val createdType: TypeToken<out T>, val refMaker: RefMaker, val creator: NoArgBindingKodein.() -> T) : NoArgBinding<T> {
+class RefSingletonBinding<T : Any>(override val createdType: TypeToken<out T>, val refMaker: RefMaker, val creator: NoArgSimpleBindingKodein.() -> T) : NoArgKodeinBinding<T> {
 
      // Should always return the same object or null.
-    private var _ref: (() -> T?) = { null }
-
+    private @Volatile var _ref: () -> T? = { null }
     private val _lock = Any()
 
     override fun factoryName() = "refSingleton(${TTOf(refMaker).simpleDispString ()})"
     override fun factoryFullName() = "refSingleton(${TTOf(refMaker).fullDispString()})"
 
-    override fun getInstance(kodein: NoArgBindingKodein, key: Kodein.Key<Unit, T>): T {
-        var ret: T? = null
-        synchronizedIfNull(
-                lock = _lock,
-                predicate = { _ref() },
-                ifNotNull = { return it },
-                ifNull = {
-                    val pair = refMaker.make {
-                        kodein.creator()
+    override fun getProvider(kodein: NoArgBindingKodein, bind: Kodein.Bind<T>): () -> T {
+        return {
+            synchronizedIfNull(
+                    lock = _lock,
+                    predicate = { _ref() },
+                    ifNotNull = { it },
+                    ifNull = {
+                        val (value, later) = refMaker.make {
+                            creator(kodein)
+                        }
+                        _ref = later
+                        value
                     }
-                    _ref = pair.second
-                    ret = pair.first
-                }
-        )
-        return ret!!
+            )
+        }
     }
 }
 
@@ -65,26 +64,26 @@ class RefSingletonBinding<T : Any>(override val createdType: TypeToken<out T>, v
  * @property refMaker Reference Maker that defines the kind of reference being used.
  * @property creator A function that should always create a new object.
  */
-class RefMultitonBinding<in A, T: Any>(override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val refMaker: RefMaker, val creator: BindingKodein.(A) -> T): Binding<A, T> {
+class RefMultitonBinding<A, T: Any>(override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val refMaker: RefMaker, val creator: SimpleBindingKodein.(A) -> T): KodeinBinding<A, T> {
 
     private val _refs = newConcurrentMap<A, () -> T?>()
+    private val _lock = Any()
 
     override fun factoryName() = "refMultiton(${TTOf(refMaker).simpleDispString()})"
     override fun factoryFullName() = "refMultiton(${TTOf(refMaker).fullDispString()})"
 
-    override fun getInstance(kodein: BindingKodein, key: Kodein.Key<A, T>, arg: A): T {
-        var ret: T? = null
-        synchronizedIfNull(
-                lock = _refs,
-                predicate = { _refs[arg]?.invoke() },
-                ifNotNull = { return it },
-                ifNull = {
-                    val pair = refMaker.make { kodein.creator(arg) }
-                    _refs[arg] = pair.second
-                    ret = pair.first
-                }
-        )
-        return ret!!
+    override fun getFactory(kodein: BindingKodein, key: Kodein.Key<A, T>): (A) -> T {
+        return { arg ->
+            synchronizedIfNull(
+                    lock = _lock,
+                    predicate = { _refs[arg]?.invoke() },
+                    ifNotNull = { it },
+                    ifNull = {
+                        val (value, later) = refMaker.make { kodein.creator(arg) }
+                        _refs[arg] = later
+                        value
+                    }
+            )
+        }
     }
-
 }

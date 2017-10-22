@@ -78,8 +78,8 @@ internal class JxInjectorContainer {
                 @Suppress("UNCHECKED_CAST")
                 val boundType = TT((element.genericType as ParameterizedType).actualTypeArguments[0].boundType()) as TypeToken<out Any>
                 when (isOptional) {
-                    true  -> getterFunction { ProviderOrNull(boundType, tag) }
-                    false -> getterFunction { Provider(boundType, tag) }
+                    true  -> getterFunction { direct.ProviderOrNull(boundType, tag) }
+                    false -> getterFunction { direct.Provider(boundType, tag) }
                 }
             }
             element.classType == Provider::class.java -> {
@@ -87,8 +87,8 @@ internal class JxInjectorContainer {
                 val boundType = TT((element.genericType as ParameterizedType).actualTypeArguments[0].boundType()) as TypeToken<out Any>
                 fun (() -> Any).toJavaxProvider() = javax.inject.Provider { invoke() }
                 when (isOptional) {
-                    true  -> getterFunction { ProviderOrNull(boundType, tag)?.toJavaxProvider() }
-                    false -> getterFunction { Provider(boundType, tag).toJavaxProvider() }
+                    true  -> getterFunction { direct.ProviderOrNull(boundType, tag)?.toJavaxProvider() }
+                    false -> getterFunction { direct.Provider(boundType, tag).toJavaxProvider() }
                 }
             }
             element.isAnnotationPresent(FactoryFun::class.java) -> {
@@ -99,16 +99,16 @@ internal class JxInjectorContainer {
                 @Suppress("UNCHECKED_CAST")
                 val boundType = TT(fieldType.actualTypeArguments[1].boundType()) as TypeToken<out Any>
                 when (isOptional) {
-                    true  -> getterFunction { FactoryOrNull(argType, boundType, tag) }
-                    false -> getterFunction { Factory(argType, boundType, tag) }
+                    true  -> getterFunction { direct.FactoryOrNull(argType, boundType, tag) }
+                    false -> getterFunction { direct.Factory(argType, boundType, tag) }
                 }
             }
             else -> {
                 @Suppress("UNCHECKED_CAST")
                 val boundType = if (shouldErase) TT(element.classType) else TT(element.genericType) as TypeToken<out Any>
                 when (isOptional) {
-                    true  -> getterFunction { InstanceOrNull(boundType, tag) }
-                    false -> getterFunction { Instance(boundType, tag) }
+                    true  -> getterFunction { direct.InstanceOrNull(boundType, tag) }
+                    false -> getterFunction { direct.Instance(boundType, tag) }
                 }
             }
         }

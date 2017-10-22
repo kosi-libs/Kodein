@@ -47,13 +47,13 @@ class KodeinGlobalJvmTests {
             Bind<String>(erased()) with FactoryBinding(erased(), erased()) { n: Name -> n.firstName }
         }
 
-        assertEquals("Salomon", kodein.Factory<FullName, String>(erased(), erased()).invoke(FullName ("Salomon", "BRYS")))
+        assertEquals("Salomon", kodein.direct.Factory<FullName, String>(erased(), erased()).invoke(FullName ("Salomon", "BRYS")))
 
         kodein.addConfig {
             Bind<String>(erased()) with FactoryBinding(erased(), erased()) { n: FullName -> n.firstName + " " + n.lastName }
         }
 
-        assertEquals("Salomon BRYS", kodein.Factory<FullName, String>(erased(), erased()).invoke(FullName("Salomon", "BRYS")))
+        assertEquals("Salomon BRYS", kodein.direct.Factory<FullName, String>(erased(), erased()).invoke(FullName("Salomon", "BRYS")))
     }
 
     // Only the JVM supports generics
@@ -64,14 +64,14 @@ class KodeinGlobalJvmTests {
             Bind<String>(erased()) with FactoryBinding(erased(), erased()) { l: List<*> -> l.first().toString() + " *" }
         }
 
-        assertEquals("Salomon *", kodein.Factory<List<String>, String>(erased(), erased()).invoke(listOf("Salomon", "BRYS")))
+        assertEquals("Salomon *", kodein.direct.Factory<List<String>, String>(erased(), erased()).invoke(listOf("Salomon", "BRYS")))
 
         kodein.addConfig {
             Bind<String>(erased()) with FactoryBinding(generic(), erased()) { l: List<String> -> l[0] + " " + l[1] }
         }
 
-        assertEquals("Salomon BRYS", kodein.Factory<List<String>, String>(generic(), erased()).invoke(listOf("Salomon", "BRYS")))
-        assertEquals("42 *", kodein.Factory<List<Int>, String>(generic(), erased()).invoke(listOf(42)))
+        assertEquals("Salomon BRYS", kodein.direct.Factory<List<String>, String>(generic(), erased()).invoke(listOf("Salomon", "BRYS")))
+        assertEquals("42 *", kodein.direct.Factory<List<Int>, String>(generic(), erased()).invoke(listOf(42)))
     }
 
 }

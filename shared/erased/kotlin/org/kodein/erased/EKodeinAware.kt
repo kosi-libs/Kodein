@@ -51,9 +51,9 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? 
  */
 inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null) = Provider<T>(erased(), tag)
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.provider(tag: Any? = null, arg: A) = Factory<A, T>(erased(), erased(), tag).toProvider { arg }
+inline fun <reified A, reified T : Any> KodeinAwareBase.provider(tag: Any? = null, arg: A) = Provider<A, T>(erased(), erased(), tag, { arg })
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.provider(tag: Any? = null, crossinline fArg: () -> A) = Factory<A, T>(erased(), erased(), tag).toProvider(fArg)
+inline fun <reified A, reified T : Any> KodeinAwareBase.provider(tag: Any? = null, noinline fArg: () -> A) = Provider<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -68,12 +68,11 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.provider(tag: Any? = nul
  * @return A provider, or null if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-@Suppress("UNCHECKED_CAST")
 inline fun <reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(erased(), tag)
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null, arg: A) = FactoryOrNull<A, T>(erased(), erased(), tag)?.toProvider { arg }
+inline fun <reified A, reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null, arg: A) = ProviderOrNull<A, T>(erased(), erased(), tag, { arg })
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null, crossinline fArg: () -> A) = FactoryOrNull<A, T>(erased(), erased(), tag)?.toProvider(fArg)
+inline fun <reified A, reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -91,7 +90,9 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.providerOrNull(tag: Any?
  */
 inline fun <reified T : Any> KodeinAwareBase.instance(tag: Any? = null) = Instance<T>(erased(), tag)
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.instance(tag: Any? = null, arg: A) = Factory<A, T>(erased(), erased(), tag).invoke(arg)
+inline fun <reified A, reified T : Any> KodeinAwareBase.instance(tag: Any? = null, arg: A) = Instance<A, T>(erased(), erased(), tag, { arg })
+
+inline fun <reified A, reified T : Any> KodeinAwareBase.instance(tag: Any? = null, noinline fArg: () -> A) = Instance<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -108,4 +109,6 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.instance(tag: Any? = nul
  */
 inline fun <reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(erased(), tag)
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null, arg: A) = FactoryOrNull<A, T>(erased(), erased(), tag)?.invoke(arg)
+inline fun <reified A, reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null, arg: A) = InstanceOrNull<A, T>(erased(), erased(), tag, { arg })
+
+inline fun <reified A, reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null, noinline fArg: () -> A) = InstanceOrNull<A, T>(erased(), erased(), tag, fArg)

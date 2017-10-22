@@ -1,13 +1,10 @@
 package org.kodein.test
 
-import org.kodein.*
-import org.kodein.bindings.AutoScope
-import org.kodein.bindings.ScopeRegistry
-import org.kodein.bindings.SingletonBinding
-import org.kodein.erased.*
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
+import org.kodein.*
+import org.kodein.erased.*
 import kotlin.concurrent.thread
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -22,7 +19,7 @@ class ErasedJvmTests {
 
         val kodein = Kodein { bind<Person>() with factory { p: Name -> Person(p.firstName) } }
 
-        val p: Person = kodein.instance(arg = FullName("Salomon", "BRYS"))
+        val p: Person by kodein.instance(arg = FullName("Salomon", "BRYS"))
 
         assertEquals("Salomon", p.name)
     }
@@ -32,7 +29,7 @@ class ErasedJvmTests {
 
         val kodein = Kodein { bind<Person>() with factory { p: IName -> Person(p.firstName) } }
 
-        val p: Person = kodein.instance(arg = FullName("Salomon", "BRYS"))
+        val p: Person by kodein.instance(arg = FullName("Salomon", "BRYS"))
 
         assertEquals("Salomon", p.name)
     }
@@ -45,7 +42,7 @@ class ErasedJvmTests {
             bind<Person>() with factory { p: IFullName -> Person(p.firstName + " " + p.lastName) }
         }
 
-        val p: Person = kodein.instance(arg = FullInfos("Salomon", "BRYS", 30))
+        val p: Person by kodein.instance(arg = FullInfos("Salomon", "BRYS", 30))
 
         assertEquals("Salomon BRYS", p.name)
     }
@@ -57,14 +54,14 @@ class ErasedJvmTests {
         var tp1: Person? = null
 
         val t = thread {
-            tp1 = kodein.instance()
-            val tp2: Person = kodein.instance()
+            tp1 = kodein.direct.instance()
+            val tp2: Person by kodein.instance()
 
             assertSame(tp1, tp2)
         }
 
-        val p1: Person = kodein.instance()
-        val p2: Person = kodein.instance()
+        val p1: Person by kodein.instance()
+        val p2: Person by kodein.instance()
 
         assertSame(p1, p2)
 
@@ -77,23 +74,25 @@ class ErasedJvmTests {
     @Test fun test02_01_ThreadSingletonBindingGetProvider() {
         val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
 
-        var tp1: Person? = null
+        /*lateinit*/ var tp1: Person? = null
+        /*lateinit*/ var tp2: () -> Person = { throw IllegalStateException() }
 
         val t = thread {
-            tp1 = kodein.provider<Person>().invoke()
-            val tp2 = kodein.provider<Person>().invoke()
+            tp1 = kodein.direct.instance()
+            tp2 = kodein.direct.provider()
 
-            assertSame(tp1, tp2)
+            assertSame(tp1, tp2())
         }
 
-        val p1 = kodein.provider<Person>().invoke()
-        val p2 = kodein.provider<Person>().invoke()
+        val p1: () -> Person by kodein.provider()
+        val p2: () -> Person by kodein.provider()
 
-        assertSame(p1, p2)
+        assertSame(p1(), p2())
 
         t.join()
 
-        assertNotSame(p1, tp1)
+        assertNotSame(p1(), tp1)
+        assertSame(p1(), tp2())
     }
 
     // Only the JVM supports weak references
@@ -101,26 +100,26 @@ class ErasedJvmTests {
     @Test fun test02_03_WeakSingletonBinding() {
         val kodein = Kodein { bind<Person>() with refSingleton(weakReference) { Person() } }
 
-        var p1: Person? = kodein.instance()
-        var p2: Person? = kodein.instance()
-        assertSame(p1, p2)
+        fun getId(): Int {
+            val p1: Person by kodein.instance()
+            val p2: Person by kodein.instance()
+            assertSame(p1, p2)
 
-        val id = System.identityHashCode(p1)
+            return System.identityHashCode(p1)
+        }
+        val id = getId()
 
-        p1 = null
-        p2 = null
         System.gc()
 
-        p1 = kodein.instance()
-
-        assertNotEquals(id, System.identityHashCode(p1))
+        val p: Person by kodein.instance()
+        assertNotEquals(id, System.identityHashCode(p))
     }
 
-    object test15Scope : AutoScope<Unit> {
-        val registry = ScopeRegistry()
-        override fun getRegistry(context: Unit) = registry
-        override fun getContext() = Unit
-    }
+//    object test15Scope : AutoScope<Unit> {
+//        val registry = ScopeRegistry()
+//        override fun getRegistry(context: Unit) = registry
+//        override fun getContext() = Unit
+//    }
 
     // Only the JVM supports precise description
     @Test fun test15_00_BindingsDescription() {
@@ -131,21 +130,21 @@ class ErasedJvmTests {
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
-            bind<String>(tag = "scoped") with scopedSingleton(test15Scope) { "" }
-            bind<String>(tag = "auto-scoped") with autoScopedSingleton(test15Scope) { "" }
+//            bind<String>(tag = "scoped") with scopedSingleton(test15Scope) { "" }
+//            bind<String>(tag = "auto-scoped") with autoScopedSingleton(test15Scope) { "" }
             constant(tag = "answer") with 42
         }
 
         val lines = kodein.container.bindings.description.lineSequence().map(String::trim).toList()
-        assertEquals(8, lines.size)
+        assertEquals(6, lines.size)
         assertTrue("bind<IPerson>() with provider { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"thread-singleton\") with refSingleton(threadLocal) { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"singleton\") with singleton { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"factory\") with factory { String -> Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"instance\") with instance ( Person )" in lines)
         assertTrue("bind<Int>(tag = \"answer\") with instance ( Int )" in lines)
-        assertTrue("bind<String>(tag = \"scoped\") with scopedSingleton(ErasedJvmTests.test15Scope) { Unit -> String }" in lines)
-        assertTrue("bind<String>(tag = \"auto-scoped\") with autoScopedSingleton(ErasedJvmTests.test15Scope) { String }" in lines)
+//        assertTrue("bind<String>(tag = \"scoped\") with scopedSingleton(ErasedJvmTests.test15Scope) { Unit -> String }" in lines)
+//        assertTrue("bind<String>(tag = \"auto-scoped\") with autoScopedSingleton(ErasedJvmTests.test15Scope) { String }" in lines)
     }
 
     // Only the JVM supports precise description
@@ -157,21 +156,21 @@ class ErasedJvmTests {
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
-            bind<String>(tag = "scoped") with scopedSingleton(test15Scope) { "" }
-            bind<String>(tag = "auto-scoped") with autoScopedSingleton(test15Scope) { "" }
+//            bind<String>(tag = "scoped") with scopedSingleton(test15Scope) { "" }
+//            bind<String>(tag = "auto-scoped") with autoScopedSingleton(test15Scope) { "" }
             constant(tag = "answer") with 42
         }
 
         val lines = kodein.container.bindings.fullDescription.lineSequence().map(String::trim).toList()
-        assertEquals(8, lines.size)
+        assertEquals(6, lines.size)
         assertTrue("bind<org.kodein.test.IPerson>() with provider { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"thread-singleton\") with refSingleton(org.kodein.threadLocal) { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"singleton\") with singleton { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"factory\") with factory { kotlin.String -> org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"instance\") with instance ( org.kodein.test.Person )" in lines)
         assertTrue("bind<kotlin.Int>(tag = \"answer\") with instance ( kotlin.Int )" in lines)
-        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scopedSingleton(org.kodein.test.ErasedJvmTests.test15Scope) { kotlin.Unit -> kotlin.String }" in lines)
-        assertTrue("bind<kotlin.String>(tag = \"auto-scoped\") with autoScopedSingleton(org.kodein.test.ErasedJvmTests.test15Scope) { kotlin.String }" in lines)
+//        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scopedSingleton(org.kodein.test.ErasedJvmTests.test15Scope) { kotlin.Unit -> kotlin.String }" in lines)
+//        assertTrue("bind<kotlin.String>(tag = \"auto-scoped\") with autoScopedSingleton(org.kodein.test.ErasedJvmTests.test15Scope) { kotlin.String }" in lines)
     }
 
     // Only the JVM supports precise description
@@ -245,17 +244,17 @@ class ErasedJvmTests {
         var tp3: Person? = null
 
         val t = thread {
-            tp1 = kodein.instance(arg = "Salomon")
-            val tp2: Person = kodein.instance(arg = "Salomon")
-            tp3 = kodein.instance(arg = "Laila")
+            tp1 = kodein.direct.instance(arg = "Salomon")
+            val tp2: Person by kodein.instance(arg = "Salomon")
+            tp3 = kodein.direct.instance(arg = "Laila")
 
             assertSame(tp1, tp2)
             assertNotEquals(tp1, tp3)
         }
 
-        val p1: Person = kodein.instance(arg = "Salomon")
-        val p2: Person = kodein.instance(arg = "Salomon")
-        val p3: Person = kodein.instance(arg = "Laila")
+        val p1: Person by kodein.instance(arg = "Salomon")
+        val p2: Person by kodein.instance(arg = "Salomon")
+        val p3: Person by kodein.instance(arg = "Laila")
 
         assertSame(p1, p2)
         assertNotEquals(p1, p3)
@@ -275,9 +274,9 @@ class ErasedJvmTests {
     @Test fun test23_02_WeakMultiton() {
         val kodein = Kodein { bind() from refMultiton(weakReference) { name: String -> Person(name) } }
 
-        var p1: Person? = kodein.instance(arg = "Salomon")
-        var p2: Person? = kodein.instance(arg = "Salomon")
-        var p3: Person? = kodein.instance(arg = "Laila")
+        var p1: Person? = kodein.direct.instance(arg = "Salomon")
+        var p2: Person? = kodein.direct.instance(arg = "Salomon")
+        var p3: Person? = kodein.direct.instance(arg = "Laila")
         assertSame(p1, p2)
         assertNotSame(p1, p3)
         assertEquals("Salomon", p1?.name)
@@ -291,8 +290,8 @@ class ErasedJvmTests {
         p3 = null
         System.gc()
 
-        p1 = kodein.instance(arg = "Salomon")
-        p3 = kodein.instance(arg = "Laila")
+        p1 = kodein.direct.instance(arg = "Salomon")
+        p3 = kodein.direct.instance(arg = "Laila")
 
         assertNotEquals(id1, System.identityHashCode(p1))
         assertNotEquals(id3, System.identityHashCode(p3))

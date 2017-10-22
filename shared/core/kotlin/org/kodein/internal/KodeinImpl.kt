@@ -1,7 +1,6 @@
 package org.kodein.internal
 
-import org.kodein.Kodein
-import org.kodein.KodeinContainer
+import org.kodein.*
 import org.kodein.bindings.BindingKodein
 
 /**
@@ -23,10 +22,13 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
      * @param builder The builder to use.
      */
     @Suppress("unused")
-    private constructor(builder: Kodein.Builder, runCallbacks: Boolean) : this(KodeinContainerImpl(builder.container)) {
+    private constructor(builder: Kodein.MainBuilder, runCallbacks: Boolean) : this(
+            KodeinContainerImpl(builder.containerBuilder, builder.externalSource)
+    ) {
         val init: () -> Unit = {
-            builder._callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it() }
-            builder._bindingCallbacks.forEach { it.second.invoke(BindingKodeinImpl(container, it.first, 0)) }
+            val dkodein = KodeinImpl(container).direct
+            builder._callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }
+            builder._bindingCallbacks.forEach { it.second.invoke(BindingKodeinImpl(dkodein, it.first, null, 0)) }
         }
 
         if (runCallbacks)
@@ -37,7 +39,7 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
                 synchronizedIfNotNull(
                         lock = lock,
                         predicate = this::_init,
-                        ifNull = { return@init },
+                        ifNull = {},
                         ifNotNull = {
                             _init = null
                             init()
@@ -50,13 +52,12 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
     /**
      * "Main" constructor.
      */
-    constructor(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) : this(_newBuilder(allowSilentOverride, init), true)
+    constructor(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit) : this(_newBuilder(allowSilentOverride, init), true)
 
     companion object {
-        private fun _newBuilder(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit) =
-                Kodein.Builder(KodeinContainer.Builder(true, allowSilentOverride, BindingsMap(), KodeinContainer.Builder.ExternalReference()), ArrayList(), ArrayList(), init)
+        private fun _newBuilder(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit) = Kodein.MainBuilder(allowSilentOverride).apply(init)
 
-        fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.Builder.() -> Unit): Pair<Kodein, () -> Unit> {
+        fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Pair<Kodein, () -> Unit> {
             val kodein = KodeinImpl(_newBuilder(allowSilentOverride, init), false)
             return kodein to { kodein._init?.invoke() ; Unit }
         }
@@ -71,7 +72,12 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
 }
 
 @Suppress("UNCHECKED_CAST")
-internal open class BindingKodeinImpl internal constructor(container: KodeinContainer, private val _key: Kodein.Key<*, *>, private val _overrideLevel: Int) : KodeinImpl(container), BindingKodein {
-    override fun overriddenFactory(): (Any?) -> Any = container.overriddenNonNullFactory(_key, _overrideLevel)
-    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = container.overriddenFactoryOrNull(_key, _overrideLevel) as (Any?) -> Any
+internal open class BindingKodeinImpl<A, out T: Any> internal constructor(
+        val dkodein: DKodein,
+        private val _key: Kodein.Key<A, T>,
+        override val receiver: Any?,
+        private val _overrideLevel: Int
+) : DKodein by dkodein, BindingKodein {
+    override fun overriddenFactory(): (Any?) -> Any = kodein.container.overriddenFactory(_key, receiver, _overrideLevel)
+    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = kodein.container.overriddenFactoryOrNull(_key, receiver, _overrideLevel)
 }

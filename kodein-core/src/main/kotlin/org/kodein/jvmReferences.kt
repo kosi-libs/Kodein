@@ -1,5 +1,6 @@
 package org.kodein
 
+import org.kodein.bindings.RefMaker
 import java.lang.ref.SoftReference
 import java.lang.ref.WeakReference
 

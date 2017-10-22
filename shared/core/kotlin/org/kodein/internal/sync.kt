@@ -1,37 +1,31 @@
 package org.kodein.internal
 
 /** @suppress */
-inline fun <T> synchronizedIfNull(lock: Any, crossinline predicate: () -> T?, ifNotNull: (T) -> Unit, crossinline ifNull: () -> Unit) {
+inline fun <T: Any, R> synchronizedIfNull(lock: Any, predicate: () -> T?, ifNotNull: (T) -> R, ifNull: () -> R): R {
     predicate()?.let {
-        ifNotNull(it)
-        return
+        return ifNotNull(it)
     }
 
     val value = synchronized(lock) {
         predicate()?.let { return@synchronized it }
 
-        ifNull()
-        null
+        return ifNull()
     }
 
-    if (value != null)
-        ifNotNull(value)
+    return ifNotNull(value)
 }
 
 /** @suppress */
-inline fun <T> synchronizedIfNotNull(lock: Any, crossinline predicate: () -> T?, ifNull: () -> Unit, crossinline ifNotNull: (T) -> Unit) {
+inline fun <T: Any, R> synchronizedIfNotNull(lock: Any, predicate: () -> T?, ifNull: () -> R, ifNotNull: (T) -> R): R {
     if (predicate() == null) {
-        ifNull()
-        return
+        return ifNull()
     }
 
-    val wasNull = synchronized(lock) {
-        val value = predicate() ?: return@synchronized true
+    synchronized(lock) {
+        val value = predicate() ?: return@synchronized
 
-        ifNotNull(value)
-        false
+        return ifNotNull(value)
     }
 
-    if (wasNull)
-        ifNull()
+    return ifNull()
 }

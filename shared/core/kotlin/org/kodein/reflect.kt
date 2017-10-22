@@ -1,11 +1,11 @@
 package org.kodein
 
-import org.kodein.bindings.Binding
+import org.kodein.bindings.KodeinBinding
 
 /**
  * A Map containing all bindings associated to their keys
  */
-typealias BindingsMap = Map<Kodein.Key<*, *>, Binding<*, *>>
+typealias BindingsMap = Map<Kodein.Key<*, *>, KodeinBinding<*, *>>
 
 /**
  * @receiver The bindings map, obtained with [KodeinContainer.bindings].

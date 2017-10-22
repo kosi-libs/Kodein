@@ -1,7 +1,8 @@
 package org.kodein
 
+import org.kodein.bindings.KodeinBinding
 import org.kodein.bindings.Binding
-import org.kodein.bindings.BindingBase
+import org.kodein.bindings.ExternalSource
 import org.kodein.internal.BindingsMap
 
 /**
@@ -15,12 +16,14 @@ interface KodeinContainer {
     /**
      * An immutable view of the bindings map. *For inspection & debug*.
      */
-    val bindings: Map<Kodein.Key<*, *>, Binding<*, *>>
+    val bindings: Map<Kodein.Key<*, *>, KodeinBinding<*, *>>
+
+    val externalSource: ExternalSource?
 
     /**
      * An immutable view of the bindings that were defined and later overridden. *For inspection & debug*.
      */
-    val overriddenBindings: Map<Kodein.Key<*, *>, List<Binding<*, *>>>
+    val overriddenBindings: Map<Kodein.Key<*, *>, List<KodeinBinding<*, *>>>
 
     /**
      * Utility function to create a NotFoundException.
@@ -39,7 +42,7 @@ interface KodeinContainer {
      * @return The found factory, or null if no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <A, T: Any> factoryOrNull(key: Kodein.Key<A, T>, receiver: Any? /*= null*/): ((A) -> T)?
+    fun <A, T: Any> factoryOrNull(key: Kodein.Key<A, T>, receiver: Any?): ((A) -> T)?
 
     /**
      * Retrieve a factory for the given key.
@@ -49,7 +52,7 @@ interface KodeinContainer {
      * @throws Kodein.NotFoundException If no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <A, T: Any> nonNullFactory(key: Kodein.Key<A, T>, receiver: Any? /*= null*/): ((A) -> T)
+    fun <A, T: Any> factory(key: Kodein.Key<A, T>, receiver: Any?): (A) -> T
             = factoryOrNull(key, receiver) ?: throw _notFoundException(key, "factory")
 
     /**
@@ -59,7 +62,7 @@ interface KodeinContainer {
      * @return The found provider, or null if no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <T: Any> providerOrNull(bind: Kodein.Bind<T>, receiver: Any? /*= null*/): (() -> T)? {
+    fun <T: Any> providerOrNull(bind: Kodein.Bind<T>, receiver: Any?): (() -> T)? {
         val factory = factoryOrNull(Kodein.Key(bind, UnitToken), receiver) ?: return null
         return { factory(Unit) }
     }
@@ -72,7 +75,7 @@ interface KodeinContainer {
      * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <T: Any> nonNullProvider(bind: Kodein.Bind<T>, receiver: Any? /*= null*/): (() -> T)
+    fun <T: Any> provider(bind: Kodein.Bind<T>, receiver: Any?): () -> T
             = providerOrNull(bind, receiver) ?: throw _notFoundException(Kodein.Key(bind, UnitToken), "provider")
 
 
@@ -85,7 +88,7 @@ interface KodeinContainer {
      * @return The overridden factory, or null if there was o binding overridden at that level.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <A, T: Any> overriddenFactoryOrNull(key: Kodein.Key<A, T>, overrideLevel: Int): ((A) -> T)?
+    fun <A, T: Any> overriddenFactoryOrNull(key: Kodein.Key<A, T>, receiver: Any?, overrideLevel: Int): ((A) -> T)?
 
     /**
      * Retrieve an overridden factory for the given key at the given override level.
@@ -97,8 +100,8 @@ interface KodeinContainer {
      * @throws Kodein.NotFoundException If there was no binding overridden at that level.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <A, T: Any> overriddenNonNullFactory(key: Kodein.Key<A, T>, overrideLevel: Int): ((A) -> T)
-            = overriddenFactoryOrNull(key, overrideLevel) ?: throw _notFoundException(key, "overridden factory")
+    fun <A, T: Any> overriddenFactory(key: Kodein.Key<A, T>, receiver: Any?, overrideLevel: Int): (A) -> T
+            = overriddenFactoryOrNull(key, receiver, overrideLevel) ?: throw _notFoundException(key, "overridden factory")
 
     /**
      * Retrieve an overridden provider for the given key at the given override level, if there is an overridden binding at that level.
@@ -109,8 +112,8 @@ interface KodeinContainer {
      * @return The overridden provider, or null if there was o binding overridden at that level.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <T: Any> overriddenProviderOrNull(bind: Kodein.Bind<T>, overrideLevel: Int): (() -> T)? {
-        val factory = overriddenFactoryOrNull(Kodein.Key(bind, UnitToken), overrideLevel) ?: return null
+    fun <T: Any> overriddenProviderOrNull(bind: Kodein.Bind<T>, receiver: Any?, overrideLevel: Int): (() -> T)? {
+        val factory = overriddenFactoryOrNull(Kodein.Key(bind, UnitToken), receiver, overrideLevel) ?: return null
         return { factory(Unit) }
     }
 
@@ -124,8 +127,8 @@ interface KodeinContainer {
      * @throws Kodein.NotFoundException If there was no binding overridden at that level.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <T: Any> overriddenNonNullProvider(bind: Kodein.Bind<T>, overrideLevel: Int): (() -> T)
-            = overriddenProviderOrNull(bind, overrideLevel) ?: throw _notFoundException(Kodein.Key(bind, UnitToken), "overridden provider")
+    fun <T: Any> overriddenProvider(bind: Kodein.Bind<T>, receiver: Any?, overrideLevel: Int): () -> T
+            = overriddenProviderOrNull(bind, receiver, overrideLevel) ?: throw _notFoundException(Kodein.Key(bind, UnitToken), "overridden provider")
 
 
     /**
@@ -135,11 +138,7 @@ interface KodeinContainer {
      * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
      * @property map The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
      */
-    class Builder internal constructor(allowOverride: Boolean, silentOverride: Boolean, internal val bindings: BindingsMap, internal val external: ExternalReference) {
-
-        internal class ExternalReference {
-            var fetcher: ExternalSource? = null
-        }
+    open class Builder internal constructor(allowOverride: Boolean, silentOverride: Boolean, internal val bindings: BindingsMap) {
 
         /**
          * The override permission for a builder.
@@ -236,7 +235,7 @@ interface KodeinContainer {
          * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          * @throws Kodein.OverridingException If this bindings overrides an existing binding and is not allowed to.
          */
-        fun <A, T: Any> bindKey(key: Kodein.Key<A, T>, binding: Binding<A, T>, overrides: Boolean? = null) {
+        fun <A, T: Any> bindKey(key: Kodein.Key<A, T>, binding: KodeinBinding<A, T>, overrides: Boolean? = null) {
             key.bind.type.checkIsReified(key.bind)
             key.argType.checkIsReified(key)
             _checkOverrides(key, overrides)
@@ -247,14 +246,14 @@ interface KodeinContainer {
         /**
          * Binds the given type & tag to the given binding.
          *
-         * The bound type will be the [Binding.createdType].
+         * The bound type will be the [KodeinBinding.createdType].
          *
          * @param bind The type and tag object that will compose the key to bind.
          * @param binding The binding to bind.
          * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          * @throws Kodein.OverridingException If this bindings overrides an existing binding and is not allowed to.
          */
-        fun <T: Any> bindBind(bind: Kodein.Bind<T>, binding: Binding<*, out T>, overrides: Boolean? = null) {
+        fun <T: Any> bindBind(bind: Kodein.Bind<T>, binding: KodeinBinding<*, out T>, overrides: Boolean? = null) {
             bind.type.checkIsReified(bind)
             binding.argType.checkIsReified(binding)
 
@@ -304,24 +303,9 @@ interface KodeinContainer {
          */
         fun subBuilder(allowOverride: Boolean = false, silentOverride: Boolean = false): Builder {
             _checkMatch(allowOverride)
-            return Builder(allowOverride, silentOverride, bindings, external)
-        }
-
-        fun bindExternalSource(overrides: Boolean? = null, source: ExternalSource) {
-            val mustOverride = _overrideMode.must(overrides)
-
-            if (mustOverride != null) {
-                if (mustOverride && external.fetcher == null)
-                    throw Kodein.OverridingException("Binding of external fetcher must override a previously set fetcher.")
-                if (!mustOverride && external.fetcher != null)
-                    throw Kodein.OverridingException("Binding of external fetcher must not override previously set fetcher.")
-            }
-
-            external.fetcher = source
+            return Builder(allowOverride, silentOverride, bindings)
         }
 
     }
 
 }
-
-typealias ExternalSource = (receiver: Any?, kodein: Kodein, key: Kodein.Key<*, *>) -> BindingBase<*, *>?

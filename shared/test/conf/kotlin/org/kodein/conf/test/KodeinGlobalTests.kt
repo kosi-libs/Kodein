@@ -3,17 +3,14 @@
 package org.kodein.conf.test
 
 import org.kodein.*
-import org.kodein.bindings.EagerSingletonBinding
-import org.kodein.bindings.SingletonBinding
 import org.kodein.conf.ConfigurableKodein
 import org.kodein.conf.global
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import org.kodein.bindings.*
+import org.kodein.conf.KodeinGlobalAware
+import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KodeinGlobalTests {
@@ -25,7 +22,7 @@ class KodeinGlobalTests {
             constant(tag = "answer").With(erased(), 42)
         }
 
-        val answer: Int = kodein.Instance(erased(), tag = "answer")
+        val answer: Int by kodein.Instance(erased(), tag = "answer")
 
         assertEquals(42, answer)
     }
@@ -37,7 +34,7 @@ class KodeinGlobalTests {
             constant(tag = "answer").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.Instance<Int>(erased(), tag = "answer"))
+        assertEquals(21, kodein.direct.Instance<Int>(erased(), tag = "answer"))
 
         kodein.clear()
 
@@ -45,7 +42,7 @@ class KodeinGlobalTests {
             constant(tag = "answer").With(erased(), 42)
         }
 
-        assertEquals(42, kodein.Instance<Int>(erased(), tag = "answer"))
+        assertEquals(42, kodein.direct.Instance<Int>(erased(), tag = "answer"))
     }
 
     @Test fun test01_02_Mutate() {
@@ -55,14 +52,14 @@ class KodeinGlobalTests {
             constant(tag = "half").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
+        assertEquals(21, kodein.direct.Instance<Int>(erased(), tag = "half"))
 
         kodein.addConfig {
             constant(tag = "full").With(erased(), 42)
         }
 
-        assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
-        assertEquals(42, kodein.Instance<Int>(erased(), tag = "full"))
+        assertEquals(21, kodein.direct.Instance<Int>(erased(), tag = "half"))
+        assertEquals(42, kodein.direct.Instance<Int>(erased(), tag = "full"))
     }
 
     @Test fun test01_03_NonMutableClear() {
@@ -72,7 +69,7 @@ class KodeinGlobalTests {
             constant(tag = "answer").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.Instance<Int>(erased(), tag = "answer"))
+        assertEquals(21, kodein.direct.Instance<Int>(erased(), tag = "answer"))
 
         assertFailsWith<IllegalStateException> {
             kodein.clear()
@@ -86,7 +83,7 @@ class KodeinGlobalTests {
             constant(tag = "answer").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.Instance<Int>(erased(), tag = "answer"))
+        assertEquals(21, kodein.direct.Instance<Int>(erased(), tag = "answer"))
 
         assertFailsWith<IllegalStateException> {
             kodein.addConfig {}
@@ -100,14 +97,14 @@ class KodeinGlobalTests {
             constant(tag = "half").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
+        assertEquals(21, kodein.direct.Instance<Int>(erased(), tag = "half"))
 
         kodein.addConfig {
             constant(tag = "full").With(erased(), 42)
         }
 
-        assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
-        assertEquals(42, kodein.Instance<Int>(erased(), tag = "full"))
+        assertEquals(21, kodein.direct.Instance<Int>(erased(), tag = "half"))
+        assertEquals(42, kodein.direct.Instance<Int>(erased(), tag = "full"))
     }
 
     @Test fun test02_01_nonMutableMutateConfig() {
@@ -117,7 +114,7 @@ class KodeinGlobalTests {
             constant(tag = "half").With(erased(), 21)
         }
 
-        assertEquals(21, kodein.Instance<Int>(erased(), tag = "half"))
+        assertEquals(21, kodein.direct.Instance<Int>(erased(), tag = "half"))
 
         assertFailsWith<IllegalStateException> {
             kodein.addConfig {}
@@ -131,20 +128,20 @@ class KodeinGlobalTests {
             constant(tag = "half").With(erased(), 21)
         }
 
-        assertEquals(21, Kodein.global.Instance<Int>(erased(), tag = "half"))
+        assertEquals(21, Kodein.global.direct.Instance<Int>(erased(), tag = "half"))
 
         Kodein.global.addConfig {
             constant(tag = "full").With(erased(), 42)
         }
 
-        assertEquals(21, Kodein.global.Instance<Int>(erased(), tag = "half"))
-        assertEquals(42, Kodein.global.Instance<Int>(erased(), tag = "full"))
+        assertEquals(21, Kodein.global.direct.Instance<Int>(erased(), tag = "half"))
+        assertEquals(42, Kodein.global.direct.Instance<Int>(erased(), tag = "full"))
     }
 
     private object Test05 {
         val kodein = ConfigurableKodein()
 
-        class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.Instance(erased()))
+        class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.direct.Instance(erased()))
     }
 
     @Test fun test05_00_Loop() {
@@ -173,6 +170,28 @@ class KodeinGlobalTests {
         kodein.Instance<String>(erased())
 
         assertTrue(ready)
+    }
+
+    @Test fun test07_00_ExternalSource() {
+        val kodein = ConfigurableKodein(mutable = true)
+        kodein.addConfig {
+            externalSource = ExternalSource { key ->
+                if (key.bind.type.jvmType == String::class.java && key.bind.tag == "foo")
+                    externalFactory { "bar" }
+                else
+                    null
+            }
+        }
+
+        assertEquals("bar", kodein.direct.Instance<String>(erased(), tag = "foo"))
+        assertNull(kodein.direct.InstanceOrNull<String>(erased()))
+
+        kodein.addConfig {
+            bind() from ProviderBinding(erased()) { "def" }
+        }
+
+        assertEquals("bar", kodein.direct.Instance<String>(erased(), tag = "foo"))
+        assertEquals("def", kodein.direct.Instance<String>(erased()))
     }
 
 }

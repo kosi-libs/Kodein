@@ -91,7 +91,7 @@ abstract class InjectedProperty<out T> internal constructor(val key: Kodein.Key<
  */
 internal class InjectedFactoryProperty<in A, out T : Any>(key: Kodein.Key<A, T>, receiver: Any?) : InjectedProperty<(A) -> T>(key, receiver) {
     @Suppress("UNCHECKED_CAST")
-    override fun _getInjection(container: KodeinContainer, receiver: Any?) = container.nonNullFactory(key, receiver) as (A) -> T
+    override fun _getInjection(container: KodeinContainer, receiver: Any?) = container.factory(key, receiver) as (A) -> T
     override val _type = "factory"
 }
 
@@ -113,7 +113,7 @@ internal class InjectedNullableFactoryProperty<in A, out T : Any>(key: Kodein.Ke
  */
 internal class InjectedProviderProperty<out T : Any>(bind: Kodein.Bind<T>, receiver: Any?) : InjectedProperty<() -> T>(Kodein.Key(bind, UnitToken), receiver) {
     @Suppress("UNCHECKED_CAST")
-    override fun _getInjection(container: KodeinContainer, receiver: Any?) = container.nonNullProvider(key.bind, receiver) as () -> T
+    override fun _getInjection(container: KodeinContainer, receiver: Any?) = container.provider(key.bind, receiver) as () -> T
     override val _type = "provider"
 }
 
@@ -135,7 +135,7 @@ internal class InjectedNullableProviderProperty<out T : Any>(bind: Kodein.Bind<T
  */
 internal class InjectedInstanceProperty<out T : Any>(bind: Kodein.Bind<T>, receiver: Any?) : InjectedProperty<T>(Kodein.Key(bind, UnitToken), receiver) {
     @Suppress("UNCHECKED_CAST")
-    override fun _getInjection(container: KodeinContainer, receiver: Any?) = container.nonNullProvider(key.bind, receiver).invoke() as T
+    override fun _getInjection(container: KodeinContainer, receiver: Any?) = container.provider(key.bind, receiver).invoke() as T
     override val _type = "instance"
 }
 

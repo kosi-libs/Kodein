@@ -2,6 +2,7 @@ package org.kodein.conf
 
 import org.kodein.Kodein
 import org.kodein.KodeinContainer
+import org.kodein.PropMode
 import org.kodein.internal.synchronizedIfNull
 
 /**
@@ -52,7 +53,7 @@ class ConfigurableKodein : Kodein {
      *
      * When constructing the Kodein instance (upon first retrieval), all configuration lambdas will be applied.
      */
-    private var _configs: MutableList<Kodein.Builder.() -> Unit>? = ArrayList()
+    private var _configs: MutableList<Kodein.MainBuilder.() -> Unit>? = ArrayList()
 
     /**
      * Kodein instance. If it is not null, than it cannot be configured anymore.
@@ -65,10 +66,10 @@ class ConfigurableKodein : Kodein {
      * The first time this function is called is the end of the configuration.
      */
     fun getOrConstruct(): Kodein {
-        synchronizedIfNull(
+        return synchronizedIfNull(
                 lock = _lock,
                 predicate = this::_instance,
-                ifNotNull = { return it },
+                ifNotNull = { it },
                 ifNull = {
                     if (mutable == null)
                         mutable = false
@@ -84,10 +85,9 @@ class ConfigurableKodein : Kodein {
                     _instance = kodein
 
                     init()
+                    kodein
                 }
         )
-
-        return _instance!!
     }
 
     /**
@@ -123,7 +123,7 @@ class ConfigurableKodein : Kodein {
      * @param config The lambda to be applied when the kodein instance is constructed.
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
      */
-    fun addConfig(config: Kodein.Builder.() -> Unit) {
+    fun addConfig(config: Kodein.MainBuilder.() -> Unit) {
         synchronized(_lock) {
             val configs = _configs
             if (configs == null) {
@@ -159,4 +159,7 @@ class ConfigurableKodein : Kodein {
 
     /** @suppress */
     override val container: KodeinContainer get() = getOrConstruct().container
+
+    /** @suppress */
+    override val propMode: PropMode get() = getOrConstruct().propMode
 }

@@ -1,5 +1,7 @@
 package org.kodein
 
+import org.kodein.internal.DKodeinImpl
+
 /**
  * Base [KodeinAware] interface.
  *
@@ -13,10 +15,9 @@ interface KodeinAwareBase {
      * A Kodein Aware class must be within reach of a Kodein object.
      */
     val kodein: Kodein
-}
 
-@PublishedApi
-internal val KodeinAwareBase._receiver get() = if (this !is Kodein) this else null
+    val propMode: PropMode get() = PropMode.LAZY
+}
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag.
@@ -30,7 +31,8 @@ internal val KodeinAwareBase._receiver get() = if (this !is Kodein) this else nu
  * @throws Kodein.NotFoundException If no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-fun <A, T : Any> KodeinAwareBase.Factory(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null) = kodein.Factory(argType, type, tag, _receiver)
+fun <A, T : Any> KodeinAwareBase.Factory(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null): KodeinProperty<(A) -> T> =
+        KodeinProperty(propMode) { receiver -> kodein.container.factory(Kodein.Key(Kodein.Bind(type, tag), argType), receiver) }
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or null if none is found.
@@ -43,7 +45,8 @@ fun <A, T : Any> KodeinAwareBase.Factory(argType: TypeToken<out A>, type: TypeTo
  * @return A factory of `T`, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-fun <A, T : Any> KodeinAwareBase.FactoryOrNull(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null): ((A) -> T)? = kodein.FactoryOrNull(argType, type, tag, _receiver)
+fun <A, T : Any> KodeinAwareBase.FactoryOrNull(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null): KodeinProperty<((A) -> T)?> =
+        KodeinProperty(propMode) { receiver -> kodein.container.factoryOrNull(Kodein.Key(Kodein.Bind(type, tag), argType), receiver) }
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -55,7 +58,11 @@ fun <A, T : Any> KodeinAwareBase.FactoryOrNull(argType: TypeToken<out A>, type: 
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-fun <T : Any> KodeinAwareBase.Provider(type: TypeToken<T>, tag: Any? = null): () -> T = kodein.Provider(type, tag, _receiver)
+fun <T : Any> KodeinAwareBase.Provider(type: TypeToken<T>, tag: Any? = null): KodeinProperty<() -> T> =
+        KodeinProperty(propMode) { receiver -> kodein.container.provider(Kodein.Bind(type, tag), receiver) }
+
+fun <A, T : Any> KodeinAwareBase.Provider(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): KodeinProperty<() -> T> =
+        KodeinProperty(propMode) { receiver -> kodein.container.factory(Kodein.Key(Kodein.Bind(type, tag), argType), receiver).toProvider(arg) }
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -66,7 +73,11 @@ fun <T : Any> KodeinAwareBase.Provider(type: TypeToken<T>, tag: Any? = null): ()
  * @return A provider of `T`, or null if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-fun <T : Any> KodeinAwareBase.ProviderOrNull(type: TypeToken<T>, tag: Any? = null): (() -> T)? = kodein.ProviderOrNull(type, tag, _receiver)
+fun <T : Any> KodeinAwareBase.ProviderOrNull(type: TypeToken<T>, tag: Any? = null): KodeinProperty<(() -> T)?> =
+        KodeinProperty(propMode) { receiver -> kodein.container.providerOrNull(Kodein.Bind(type, tag), receiver) }
+
+fun <A, T : Any> KodeinAwareBase.ProviderOrNull(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): KodeinProperty<(() -> T)?> =
+        KodeinProperty(propMode) { receiver -> kodein.container.factoryOrNull(Kodein.Key(Kodein.Bind(type, tag), argType), receiver)?.toProvider(arg) }
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -78,7 +89,11 @@ fun <T : Any> KodeinAwareBase.ProviderOrNull(type: TypeToken<T>, tag: Any? = nul
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
  */
-fun <T : Any> KodeinAwareBase.Instance(type: TypeToken<T>, tag: Any? = null): T = kodein.Instance(type, tag, _receiver)
+fun <T : Any> KodeinAwareBase.Instance(type: TypeToken<T>, tag: Any? = null): KodeinProperty<T> =
+        KodeinProperty(propMode) { receiver -> kodein.container.provider(Kodein.Bind(type, tag), receiver).invoke() }
+
+fun <A, T : Any> KodeinAwareBase.Instance(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): KodeinProperty<T> =
+        KodeinProperty(propMode) { receiver -> kodein.container.factory(Kodein.Key(Kodein.Bind(type, tag), argType), receiver).invoke(arg()) }
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -88,8 +103,21 @@ fun <T : Any> KodeinAwareBase.Instance(type: TypeToken<T>, tag: Any? = null): T 
  * @return An instance of `T`, or null if no provider was found.
  * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
  */
-fun <T : Any> KodeinAwareBase.InstanceOrNull(type: TypeToken<T>, tag: Any? = null): T? = kodein.InstanceOrNull(type, tag, _receiver)
+fun <T : Any> KodeinAwareBase.InstanceOrNull(type: TypeToken<T>, tag: Any? = null): KodeinProperty<T?> =
+        KodeinProperty(propMode) { receiver -> kodein.container.providerOrNull(Kodein.Bind(type, tag), receiver)?.invoke() }
 
+fun <A, T : Any> KodeinAwareBase.InstanceOrNull(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): KodeinProperty<T> =
+        KodeinProperty(propMode) { receiver -> kodein.container.factory(Kodein.Key(Kodein.Bind(type, tag), argType), receiver).invoke(arg()) }
+
+
+val KodeinAwareBase.direct: DKodein get() = DKodeinImpl(kodein, null)
+
+fun KodeinAwareBase.directOn(receiver: Any?): DKodein = DKodeinImpl(kodein, receiver)
+
+fun KodeinAwareBase.mode(mode: PropMode): Kodein = object : Kodein by kodein {
+    override val kodein: Kodein get() = this
+    override val propMode: PropMode get() = mode
+}
 
 /**
  * Allows to create a new instance of an unbound object with the same API as when bounding one.
@@ -97,7 +125,8 @@ fun <T : Any> KodeinAwareBase.InstanceOrNull(type: TypeToken<T>, tag: Any? = nul
  * @param T The type of object to create.
  * @param creator A function that do create the object.
  */
-inline fun <T> KodeinAwareBase.newInstance(creator: Kodein.() -> T): T = kodein.run(creator)
+inline fun <T> KodeinAwareBase.newInstance(creator: DKodein.() -> T): T = kodein.direct.run(creator)
+
 
 
 /**

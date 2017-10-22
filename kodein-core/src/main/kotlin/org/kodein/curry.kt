@@ -10,3 +10,6 @@ package org.kodein
  * @return A provider function that, when called, will call the receiver factory with the given argument.
  */
 inline fun <A, T : Any> ((A) -> T).toProvider(crossinline arg: () -> A): () -> T = { invoke(arg()) }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T : Any> (() -> T).toUnitFactory(): (Unit) -> T = { _ -> invoke() }
