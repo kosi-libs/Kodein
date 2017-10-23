@@ -8,12 +8,12 @@ enum class PropMode {
     DIRECT
 }
 
-class KodeinProperty<out V>(@PublishedApi internal val mode: PropMode, @PublishedApi internal val get: (Any?) -> V) {
+class KodeinProperty<out V>(@PublishedApi internal val mode: PropMode, internal val injector: KodeinInjector?, @PublishedApi internal val get: (Any?) -> V) {
 
     operator fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> =
             when (mode) {
-                PropMode.LAZY -> lazy { get(receiver) }
-                PropMode.LAZY_NTS -> lazy(LazyThreadSafetyMode.NONE) { get(receiver) }
+                PropMode.LAZY -> lazy { get(receiver) } .also { injector?.addProperty(it) }
+                PropMode.LAZY_NTS -> lazy(LazyThreadSafetyMode.NONE) { get(receiver) } .also { injector?.addProperty(it) }
                 PropMode.DIRECT -> lazyOf(get(receiver))
             }
 }

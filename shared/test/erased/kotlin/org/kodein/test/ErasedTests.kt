@@ -496,43 +496,54 @@ class ErasedTests {
         }
     }
 
-    class PersonInjectedContainer {
-        val injector = KodeinInjector()
-        val newPerson: () -> Person by injector.provider()
-        val salomon: Person by injector.instance(tag = "named")
-        val factory: (String) -> Person by injector.factory(tag = "factory")
-        val provider: () -> Person by injector.provider(tag = "factory", arg = "provided")
-        val instance: Person by injector.instance(tag = "factory", arg = "reified")
+    class Test14_00(override val kodein: Kodein): KodeinAware {
+        override val injector = KodeinInjector()
+        val newPerson: () -> Person by provider()
+        val salomon: Person by instance(tag = "named")
+        val pFactory: (String) -> Person by factory(tag = "factory")
+        val pProvider: () -> Person by provider(tag = "factory", arg = "provided")
+        val instance: Person by instance(tag = "factory", arg = "reified")
     }
 
     @Test fun test14_00_InjectorInjected() {
-        val injected = PersonInjectedContainer()
-
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
             bind<Person>(tag = "factory") with factory { name: String -> Person(name) }
         }
 
-        injected.injector.inject(kodein)
+        val injected = Test14_00(kodein)
+
+        injected.injector.inject()
         assertNotSame(injected.newPerson(), injected.newPerson())
         assertEquals("Salomon", injected.salomon.name)
         assertSame(injected.salomon, injected.salomon)
-        assertNotSame(injected.factory("Laila"), injected.factory("Laila"))
-        assertEquals("Laila", injected.factory("Laila").name)
-        assertEquals("provided", injected.provider().name)
-        assertNotSame(injected.provider(), injected.provider())
+        assertNotSame(injected.pFactory("Laila"), injected.pFactory("Laila"))
+        assertEquals("Laila", injected.pFactory("Laila").name)
+        assertEquals("provided", injected.pProvider().name)
+        assertNotSame(injected.pProvider(), injected.pProvider())
         assertEquals("reified", injected.instance.name)
         assertSame(injected.instance, injected.instance)
     }
 
-    @Test fun test14_01_InjectorNotInjected() {
-        val container = PersonInjectedContainer()
-
-        assertFailsWith<KodeinInjector.UninjectedException> {
-            container.newPerson()
-        }
+    class Test14_01(override val kodein: Kodein): KodeinAware {
+        override val injector = KodeinInjector()
+        val person: Person by instance()
     }
+
+    @Test fun test14_01_CreatedAtInjection() {
+        var created = false
+        val kodein = Kodein {
+            bind<Person>() with singleton { created = true ; Person() }
+        }
+
+        val container = Test14_01(kodein)
+
+        assertFalse(created)
+        container.injector.inject()
+        assertTrue(created)
+    }
+
 
 //    @Test fun test16_01_ScopedSingleton() {
 //
@@ -915,6 +926,30 @@ class ErasedTests {
         }
 
         kodein.instance<SubResource>()
+    }
+
+    class Test29 : KodeinAware {
+        override lateinit var kodein: Kodein
+
+        val name: String by instance()
+    }
+
+    @Test fun fun29_00_Late() {
+
+        val test = Test29()
+
+        test.kodein = Kodein {
+            bind() from instance("Salomon")
+        }
+
+        assertEquals("Salomon", test.name)
+    }
+
+    @Test fun fun29_01_LateFail() {
+
+        val test = Test29()
+
+        assertFailsWith<UninitializedPropertyAccessException> { test.name }
     }
 
 }
