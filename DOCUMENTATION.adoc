@@ -558,7 +558,7 @@ You can retrieve a provider or an instance from a factory bound type by using `w
 .Example: currying factories
 ----
 private val sixSideDiceProvider: () -> Dice = kodein.with(6).provider()
-private val twentySideDice: Dice = kodein.with(6).instance()
+private val sixSideDice: Dice = kodein.with(6).instance()
 ----
 
 ==== Creating new instances
