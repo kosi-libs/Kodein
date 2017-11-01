@@ -558,7 +558,7 @@ You can retrieve a provider or an instance from a factory bound type by using `w
 .Example: currying factories
 ----
 private val sixSideDiceProvider: () -> Dice = kodein.with(6).provider()
-private val twentySideDice: Dice = kodein.with(6).instance()
+private val sixSideDice: Dice = kodein.with(6).instance()
 ----
 
 ==== Creating new instances
@@ -617,7 +617,7 @@ You can curry factories and retrieve a lazy property with the same `lazy` access
 .Example: retrieving lazy curried factory properties
 ----
 private val sixSideDiceProvider: () -> Dice by kodein.with(6).lazy.provider()
-private val twentySideDice: Dice by kodein.with(6).lazy.instance()
+private val sixSideDice: Dice by kodein.with(6).lazy.instance()
 ----
 
 If you don't know yet the parameter to curry the factory with, you can pass a lambda.
