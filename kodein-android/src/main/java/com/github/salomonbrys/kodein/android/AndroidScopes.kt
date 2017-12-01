@@ -32,7 +32,7 @@ interface AndroidScope<in T> : Scope<T> {
 /**
  * Map that associates a ScopeRegistry to a context.
  *
- * Because it's a weak hash map, this prevents the context from being destroyed.
+ * Because it's a weak hash map, this prevents the context from being leaked.
  */
 private val _contextScopes = WeakHashMap<Context, ScopeRegistry>()
 
