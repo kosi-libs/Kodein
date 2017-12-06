@@ -1,7 +1,7 @@
 package org.kodein.conf.test
 
 import org.kodein.*
-import org.kodein.bindings.FactoryBinding
+import org.kodein.bindings.Factory
 import org.kodein.conf.ConfigurableKodein
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -44,13 +44,13 @@ class KodeinGlobalJvmTests {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
-            Bind<String>(erased()) with FactoryBinding(erased(), erased()) { n: Name -> n.firstName }
+            Bind<String>(erased()) with Factory(AnyToken, erased(), erased()) { n: Name -> n.firstName }
         }
 
         assertEquals("Salomon", kodein.direct.Factory<FullName, String>(erased(), erased()).invoke(FullName ("Salomon", "BRYS")))
 
         kodein.addConfig {
-            Bind<String>(erased()) with FactoryBinding(erased(), erased()) { n: FullName -> n.firstName + " " + n.lastName }
+            Bind<String>(erased()) with Factory(AnyToken, erased(), erased()) { n: FullName -> n.firstName + " " + n.lastName }
         }
 
         assertEquals("Salomon BRYS", kodein.direct.Factory<FullName, String>(erased(), erased()).invoke(FullName("Salomon", "BRYS")))
@@ -61,13 +61,13 @@ class KodeinGlobalJvmTests {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
-            Bind<String>(erased()) with FactoryBinding(erased(), erased()) { l: List<*> -> l.first().toString() + " *" }
+            Bind<String>(erased()) with Factory(AnyToken, erased(), erased()) { l: List<*> -> l.first().toString() + " *" }
         }
 
         assertEquals("Salomon *", kodein.direct.Factory<List<String>, String>(erased(), erased()).invoke(listOf("Salomon", "BRYS")))
 
         kodein.addConfig {
-            Bind<String>(erased()) with FactoryBinding(generic(), erased()) { l: List<String> -> l[0] + " " + l[1] }
+            Bind<String>(erased()) with Factory(AnyToken, generic(), erased()) { l: List<String> -> l[0] + " " + l[1] }
         }
 
         assertEquals("Salomon BRYS", kodein.direct.Factory<List<String>, String>(generic(), erased()).invoke(listOf("Salomon", "BRYS")))

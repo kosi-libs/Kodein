@@ -15,7 +15,7 @@ package org.kodein
  * @throws Kodein.NotFoundException if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> KodeinAwareBase.factory(tag: Any? = null) = Factory<A, T>(generic(), generic(), tag)
+inline fun <reified A, reified T : Any> KodeinAware.factory(tag: Any? = null) = Factory<A, T>(generic(), generic(), tag)
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
@@ -31,7 +31,7 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factory(tag: Any? = null
  * @return A factory, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? = null) = FactoryOrNull<A, T>(generic(), generic(), tag)
+inline fun <reified A, reified T : Any> KodeinAware.factoryOrNull(tag: Any? = null) = FactoryOrNull<A, T>(generic(), generic(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -47,11 +47,11 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.factoryOrNull(tag: Any? 
  * @throws Kodein.NotFoundException if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> KodeinAwareBase.provider(tag: Any? = null) = Provider<T>(generic(), tag)
+inline fun <reified T : Any> KodeinAware.provider(tag: Any? = null) = Provider<T>(generic(), tag)
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.provider(tag: Any? = null, arg: A) = Provider<A, T>(generic(), generic(), tag, { arg })
+inline fun <reified A, reified T : Any> KodeinAware.provider(tag: Any? = null, arg: A) = Provider<A, T>(generic(), generic(), tag, { arg })
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.provider(tag: Any? = null, noinline fArg: () -> A) = Provider<A, T>(generic(), generic(), tag, fArg)
+inline fun <reified A, reified T : Any> KodeinAware.provider(tag: Any? = null, noinline fArg: () -> A) = Provider<A, T>(generic(), generic(), tag, fArg)
 
 
 /**
@@ -67,11 +67,11 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.provider(tag: Any? = nul
  * @return A provider, or null if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(generic(), tag)
+inline fun <reified T : Any> KodeinAware.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(generic(), tag)
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null, arg: A) = ProviderOrNull<A, T>(generic(), generic(), tag, { arg })
+inline fun <reified A, reified T : Any> KodeinAware.providerOrNull(tag: Any? = null, arg: A) = ProviderOrNull<A, T>(generic(), generic(), tag, { arg })
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = ProviderOrNull<A, T>(generic(), generic(), tag, fArg)
+inline fun <reified A, reified T : Any> KodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = ProviderOrNull<A, T>(generic(), generic(), tag, fArg)
 
 
 /**
@@ -88,11 +88,11 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.providerOrNull(tag: Any?
  * @throws Kodein.NotFoundException if no provider was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> KodeinAwareBase.instance(tag: Any? = null) = Instance<T>(generic(), tag)
+inline fun <reified T : Any> KodeinAware.instance(tag: Any? = null) = Instance<T>(generic(), tag)
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.instance(tag: Any? = null, arg: A) = Instance<A, T>(generic(), generic(), tag, { arg })
+inline fun <reified A, reified T : Any> KodeinAware.instance(tag: Any? = null, arg: A) = Instance<A, T>(generic(), generic(), tag, { arg })
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.instance(tag: Any? = null, noinline fArg: () -> A) = Instance<A, T>(generic(), generic(), tag, fArg)
+inline fun <reified A, reified T : Any> KodeinAware.instance(tag: Any? = null, noinline fArg: () -> A) = Instance<A, T>(generic(), generic(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -107,8 +107,10 @@ inline fun <reified A, reified T : Any> KodeinAwareBase.instance(tag: Any? = nul
  * @return An instance, or null if no provider was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(generic(), tag)
+inline fun <reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(generic(), tag)
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null, arg: A) = InstanceOrNull<A, T>(generic(), generic(), tag, { arg })
+inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null, arg: A) = InstanceOrNull<A, T>(generic(), generic(), tag, { arg })
 
-inline fun <reified A, reified T : Any> KodeinAwareBase.instanceOrNull(tag: Any? = null, noinline fArg: () -> A) = InstanceOrNull<A, T>(generic(), generic(), tag, fArg)
+inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null, noinline fArg: () -> A) = InstanceOrNull<A, T>(generic(), generic(), tag, fArg)
+
+inline fun <reified C> context(context: C) = KodeinContext(generic(), context)

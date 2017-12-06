@@ -14,42 +14,9 @@ import kotlin.test.assertTrue
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ErasedJvmTests {
 
-    // Only the JVM supports up cast argument searching
-    @Test fun test00_06_WithSubFactoryGetInstance() {
-
-        val kodein = Kodein { bind<Person>() with factory { p: Name -> Person(p.firstName) } }
-
-        val p: Person by kodein.instance(arg = FullName("Salomon", "BRYS"))
-
-        assertEquals("Salomon", p.name)
-    }
-
-    // Only the JVM supports up cast argument searching
-    @Test fun test00_08_WithItfFactoryGetInstance() {
-
-        val kodein = Kodein { bind<Person>() with factory { p: IName -> Person(p.firstName) } }
-
-        val p: Person by kodein.instance(arg = FullName("Salomon", "BRYS"))
-
-        assertEquals("Salomon", p.name)
-    }
-
-    // Only the JVM supports up cast argument searching
-    @Test fun test00_09_WithTwoItfFactoryGetInstance() {
-
-        val kodein = Kodein {
-            bind<Person>() with factory { p: IName -> Person(p.firstName) }
-            bind<Person>() with factory { p: IFullName -> Person(p.firstName + " " + p.lastName) }
-        }
-
-        val p: Person by kodein.instance(arg = FullInfos("Salomon", "BRYS", 30))
-
-        assertEquals("Salomon BRYS", p.name)
-    }
-
     // Only the JVM supports threads
     @Test fun test02_00_ThreadSingletonBindingGetInstance() {
-        val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
+        val kodein = Kodein { bind<Person>() with singleton(ref = threadLocal) { Person() } }
 
         var tp1: Person? = null
 
@@ -72,7 +39,7 @@ class ErasedJvmTests {
 
     // Only the JVM supports threads
     @Test fun test02_01_ThreadSingletonBindingGetProvider() {
-        val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
+        val kodein = Kodein { bind<Person>() with singleton(ref = threadLocal) { Person() } }
 
         /*lateinit*/ var tp1: Person? = null
         /*lateinit*/ var tp2: () -> Person = { throw IllegalStateException() }
@@ -98,7 +65,7 @@ class ErasedJvmTests {
     // Only the JVM supports weak references
     @Suppress("UNUSED_VALUE")
     @Test fun test02_03_WeakSingletonBinding() {
-        val kodein = Kodein { bind<Person>() with refSingleton(weakReference) { Person() } }
+        val kodein = Kodein { bind<Person>() with singleton(ref = weakReference) { Person() } }
 
         fun getId(): Int {
             val p1: Person by kodein.instance()
@@ -126,7 +93,7 @@ class ErasedJvmTests {
 
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>(tag = "thread-singleton") with refSingleton(threadLocal) { Person("ts") }
+            bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
@@ -135,10 +102,10 @@ class ErasedJvmTests {
             constant(tag = "answer") with 42
         }
 
-        val lines = kodein.container.bindings.description.lineSequence().map(String::trim).toList()
+        val lines = kodein.container.bindings.description().lineSequence().map(String::trim).toList()
         assertEquals(6, lines.size)
         assertTrue("bind<IPerson>() with provider { Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"thread-singleton\") with refSingleton(threadLocal) { Person }" in lines)
+        assertTrue("bind<IPerson>(tag = \"thread-singleton\") with singleton(ref = threadLocal) { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"singleton\") with singleton { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"factory\") with factory { String -> Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"instance\") with instance ( Person )" in lines)
@@ -152,7 +119,7 @@ class ErasedJvmTests {
 
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>(tag = "thread-singleton") with refSingleton(threadLocal) { Person("ts") }
+            bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
@@ -161,10 +128,10 @@ class ErasedJvmTests {
             constant(tag = "answer") with 42
         }
 
-        val lines = kodein.container.bindings.fullDescription.lineSequence().map(String::trim).toList()
+        val lines = kodein.container.bindings.fullDescription().lineSequence().map(String::trim).toList()
         assertEquals(6, lines.size)
         assertTrue("bind<org.kodein.test.IPerson>() with provider { org.kodein.test.Person }" in lines)
-        assertTrue("bind<org.kodein.test.IPerson>(tag = \"thread-singleton\") with refSingleton(org.kodein.threadLocal) { org.kodein.test.Person }" in lines)
+        assertTrue("bind<org.kodein.test.IPerson>(tag = \"thread-singleton\") with singleton(ref = org.kodein.threadLocal) { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"singleton\") with singleton { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"factory\") with factory { kotlin.String -> org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"instance\") with instance ( org.kodein.test.Person )" in lines)
@@ -177,7 +144,7 @@ class ErasedJvmTests {
     @Test fun test15_02_RegisteredBindings() {
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>(tag = "thread-singleton") with refSingleton(threadLocal) { Person("ts") }
+            bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
@@ -187,12 +154,12 @@ class ErasedJvmTests {
         val UnitToken = erased<Unit>()
 
         assertEquals(6, kodein.container.bindings.size)
-        assertEquals("provider", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), null), UnitToken)]?.factoryName())
-        assertEquals("refSingleton(threadLocal)", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "thread-singleton"), UnitToken)]?.factoryName())
-        assertEquals("singleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "singleton"), UnitToken)]?.factoryName())
-        assertEquals("factory", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "factory"), erased<String>())]?.factoryName())
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<IPerson>(), "instance"), UnitToken)]?.factoryName())
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(erased<Int>(), "answer"), UnitToken)]?.factoryName())
+        assertEquals("provider", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().factoryName())
+        assertEquals("singleton(ref = threadLocal)", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "thread-singleton")]!!.first().factoryName())
+        assertEquals("singleton", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "singleton")]!!.first().factoryName())
+        assertEquals("factory", kodein.container.bindings[Kodein.Key(AnyToken, generic<String>(), generic<IPerson>(), "factory")]!!.first().factoryName())
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "instance")]!!.first().factoryName())
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<Int>(), "answer")]!!.first().factoryName())
     }
 
     open class Test21_A
@@ -238,7 +205,7 @@ class ErasedJvmTests {
 
     // Only the JVM supports threads
     @Test fun test23_01_threadMultiton() {
-        val kodein = Kodein { bind() from refMultiton(threadLocal) { name: String -> Person(name) } }
+        val kodein = Kodein { bind() from multiton(ref = threadLocal) { name: String -> Person(name) } }
 
         var tp1: Person? = null
         var tp3: Person? = null
@@ -272,7 +239,7 @@ class ErasedJvmTests {
     // Only the JVM supports weak references
     @Suppress("UNUSED_VALUE")
     @Test fun test23_02_WeakMultiton() {
-        val kodein = Kodein { bind() from refMultiton(weakReference) { name: String -> Person(name) } }
+        val kodein = Kodein { bind() from multiton(ref = weakReference) { name: String -> Person(name) } }
 
         var p1: Person? = kodein.direct.instance(arg = "Salomon")
         var p2: Person? = kodein.direct.instance(arg = "Salomon")

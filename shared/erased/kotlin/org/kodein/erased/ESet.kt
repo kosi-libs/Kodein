@@ -16,7 +16,7 @@ import org.kodein.bindings.SetBinding
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified T: Any> Kodein.Builder.setBinding() = SetBinding<T>(erased(), erasedSet())
+inline fun <reified T: Any> Kodein.Builder.setBinding() = SetBinding(AnyToken, erased<T>(), erasedSet<T>())
 
 /**
  * Creates a set: multiple bindings can be added in this set.
@@ -28,7 +28,7 @@ inline fun <reified T: Any> Kodein.Builder.setBinding() = SetBinding<T>(erased()
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified A, reified T: Any> Kodein.Builder.argSetBinding() = ArgSetBinding<A, T>(erased(), erased(), erasedSet())
+inline fun <reified A, reified T: Any> Kodein.Builder.argSetBinding() = ArgSetBinding(AnyToken, erased<A>(), erased<T>(), erasedSet<T>())
 
 /**
  * Defines that the binding will be saved in a set binding.

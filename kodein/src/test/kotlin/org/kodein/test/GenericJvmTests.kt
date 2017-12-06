@@ -4,11 +4,7 @@ import org.kodein.*
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
-import org.kodein.bindings.Binding
-import org.kodein.bindings.ExternalSource
-import org.kodein.bindings.SingletonBinding
-import org.kodein.bindings.externalFactory
-import java.lang.ref.WeakReference
+import org.kodein.bindings.*
 import kotlin.concurrent.thread
 import kotlin.test.*
 
@@ -102,7 +98,7 @@ class GenericJvmTests {
 
         val p: Person by kodein.instance(arg = FullInfos("Salomon", "BRYS", 30))
 
-        assertEquals("Salomon BRYS", p.name)
+        assertFailsWith<Kodein.NotFoundException> { p.name }
     }
 
     @Test fun test00_09_withFactoryLambdaArgument() {
@@ -141,9 +137,7 @@ class GenericJvmTests {
     }
 
     @Test fun test02_00_ThreadSingletonBindingGetInstance() {
-        val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) {
-            Person(Thread.currentThread().name)
-        } }
+        val kodein = Kodein { bind<Person>() with singleton(ref = threadLocal) { Person(Thread.currentThread().name) } }
 
         /*lateinit*/ var tp1: Person? = null
 
@@ -165,7 +159,7 @@ class GenericJvmTests {
     }
 
     @Test fun test02_01_ThreadSingletonBindingGetProvider() {
-        val kodein = Kodein { bind<Person>() with refSingleton(threadLocal) { Person() } }
+        val kodein = Kodein { bind<Person>() with singleton(ref = threadLocal) { Person() } }
 
         /*lateinit*/ var tp1: Person? = null
         /*lateinit*/ var tp2: () -> Person = { throw IllegalStateException() }
@@ -190,7 +184,7 @@ class GenericJvmTests {
 
     @Suppress("UNUSED_VALUE")
     @Test fun test02_03_WeakSingletonBinding() {
-        val kodein = Kodein { bind<Person>() with refSingleton(weakReference) { Person() } }
+        val kodein = Kodein { bind<Person>() with singleton(ref = weakReference) { Person() } }
 
         fun getId(): Int {
             val p1: Person by kodein.instance()
@@ -611,66 +605,61 @@ class GenericJvmTests {
         assertTrue(created)
     }
 
-//    object test15Scope : AutoScope<Unit> {
-//        val registry = ScopeRegistry()
-//        override fun getRegistry(context: Unit) = registry
-//        override fun getContext() = Unit
-//    }
+    object test15Scope : Scope<Unit> {
+        val registry = MultiItemScopeRegistry()
+        override fun getRegistry(receiver: Any?, context: Unit) = registry
+    }
 
     @Test fun test15_00_BindingsDescription() {
 
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>(tag = "thread-singleton") with refSingleton(threadLocal) { Person("ts") }
+            bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
-//            bind<String>(tag = "scoped") with scopedSingleton(test15Scope) { "" }
-//            bind<String>(tag = "auto-scoped") with autoScopedSingleton(test15Scope) { "" }
+            bind<String>(tag = "scoped") with scoped(test15Scope).singleton { "" }
             constant(tag = "answer") with 42
         }
 
-        val lines = kodein.container.bindings.description.lineSequence().map(String::trim).toList()
-        assertEquals(6, lines.size)
+        val lines = kodein.container.bindings.description().lineSequence().map(String::trim).toList()
+        assertEquals(7, lines.size)
         assertTrue("bind<IPerson>() with provider { Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"thread-singleton\") with refSingleton(threadLocal) { Person }" in lines)
+        assertTrue("bind<IPerson>(tag = \"thread-singleton\") with singleton(ref = threadLocal) { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"singleton\") with singleton { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"factory\") with factory { String -> Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"instance\") with instance ( Person )" in lines)
         assertTrue("bind<Int>(tag = \"answer\") with instance ( Int )" in lines)
-//        assertTrue("bind<String>(tag = \"scoped\") with scopedSingleton(GenericJvmTests.test15Scope) { Unit -> String }" in lines)
-//        assertTrue("bind<String>(tag = \"auto-scoped\") with autoScopedSingleton(GenericJvmTests.test15Scope) { String }" in lines)
+        assertTrue("bind<String>(tag = \"scoped\") with scoped(GenericJvmTests.test15Scope).singleton { String }" in lines)
     }
 
     @Test fun test15_01_BindingsFullDescription() {
 
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>(tag = "thread-singleton") with refSingleton(threadLocal) { Person("ts") }
+            bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
-//            bind<String>(tag = "scoped") with scopedSingleton(test15Scope) { "" }
-//            bind<String>(tag = "auto-scoped") with autoScopedSingleton(test15Scope) { "" }
+            bind<String>(tag = "scoped") with scoped(test15Scope).singleton { "" }
             constant(tag = "answer") with 42
         }
 
-        val lines = kodein.container.bindings.fullDescription.lineSequence().map(String::trim).toList()
-        assertEquals(6, lines.size)
+        val lines = kodein.container.bindings.fullDescription().lineSequence().map(String::trim).toList()
+        assertEquals(7, lines.size)
         assertTrue("bind<org.kodein.test.IPerson>() with provider { org.kodein.test.Person }" in lines)
-        assertTrue("bind<org.kodein.test.IPerson>(tag = \"thread-singleton\") with refSingleton(org.kodein.threadLocal) { org.kodein.test.Person }" in lines)
+        assertTrue("bind<org.kodein.test.IPerson>(tag = \"thread-singleton\") with singleton(ref = org.kodein.threadLocal) { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"singleton\") with singleton { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"factory\") with factory { kotlin.String -> org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"instance\") with instance ( org.kodein.test.Person )" in lines)
         assertTrue("bind<kotlin.Int>(tag = \"answer\") with instance ( kotlin.Int )" in lines)
-//        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scopedSingleton(org.kodein.test.GenericJvmTests.test15Scope) { kotlin.Unit -> kotlin.String }" in lines)
-//        assertTrue("bind<kotlin.String>(tag = \"auto-scoped\") with autoScopedSingleton(org.kodein.test.GenericJvmTests.test15Scope) { kotlin.String }" in lines)
+        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scoped(org.kodein.test.GenericJvmTests.test15Scope).singleton { kotlin.String }" in lines)
     }
 
     @Test fun test15_02_RegisteredBindings() {
         val kodein = Kodein {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>(tag = "thread-singleton") with refSingleton(threadLocal) { Person("ts") }
+            bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
@@ -680,55 +669,63 @@ class GenericJvmTests {
         val UnitToken = generic<Unit>()
 
         assertEquals(6, kodein.container.bindings.size)
-        assertEquals("provider", kodein.container.bindings[Kodein.Key(Kodein.Bind(generic<IPerson>(), null), UnitToken)]?.factoryName())
-        assertEquals("refSingleton(threadLocal)", kodein.container.bindings[Kodein.Key(Kodein.Bind(generic<IPerson>(), "thread-singleton"), UnitToken)]?.factoryName())
-        assertEquals("singleton", kodein.container.bindings[Kodein.Key(Kodein.Bind(generic<IPerson>(), "singleton"), UnitToken)]?.factoryName())
-        assertEquals("factory", kodein.container.bindings[Kodein.Key(Kodein.Bind(generic<IPerson>(), "factory"), generic<String>())]?.factoryName())
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(generic<IPerson>(), "instance"), UnitToken)]?.factoryName())
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(Kodein.Bind(generic<Int>(), "answer"), UnitToken)]?.factoryName())
+        assertEquals("provider", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().factoryName())
+        assertEquals("singleton(ref = threadLocal)", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "thread-singleton")]!!.first().factoryName())
+        assertEquals("singleton", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "singleton")]!!.first().factoryName())
+        assertEquals("factory", kodein.container.bindings[Kodein.Key(AnyToken, generic<String>(), generic<IPerson>(), "factory")]!!.first().factoryName())
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "instance")]!!.first().factoryName())
+        assertEquals("instance", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<Int>(), "answer")]!!.first().factoryName())
     }
 
-//    @Test fun test16_01_ScopedSingleton() {
-//
-//        val myScope = object : Scope<String> {
-//            val cache = HashMap<String, ScopeRegistry>()
-//            override fun getRegistry(context: String): ScopeRegistry = cache.getOrPut(context) { ScopeRegistry() }
-//        }
-//        val kodein = Kodein {
-//            bind<Person>() with scopedSingleton(myScope) { Person() }
-//        }
-//
-//        val factory = kodein.factory<String, Person>()
-//        val one = factory("one")
-//        val two = factory("two")
-//        assertSame(one, factory("one"))
-//        assertNotSame(one, factory("two"))
-//        assertSame(two, factory("two"))
-//
-//        myScope.cache.remove("one")
-//
-//        assertNotSame(one, factory("one"))
-//        assertSame(two, factory("two"))
-//    }
-//
-//    @Test fun test16_02_AutoScopedSingleton() {
-//        val myScope = object : AutoScope<Unit> {
-//            val registry = ScopeRegistry()
-//            override fun getRegistry(context: Unit) = registry
-//            override fun getContext() = Unit
-//        }
-//
-//        val kodein = Kodein {
-//            bind<Person>() with autoScopedSingleton(myScope) { Person() }
-//        }
-//
-//        val p = kodein.instance<Person>()
-//        assertSame(p, kodein.instance<Person>())
-//
-//        myScope.registry.clear()
-//
-//        assertNotSame(p, kodein.instance<Person>())
-//    }
+    @Test fun test16_00_AnyScopeSingleton() {
+        val registry = MultiItemScopeRegistry()
+        val myScope = object : Scope<Any?> {
+            override fun getRegistry(receiver: Any?, context: Any?) = registry
+        }
+        val kodein = Kodein {
+            bind<Person>() with scoped(myScope).singleton { Person() }
+        }
+
+        val person: Person by kodein.instance()
+        assertSame(person, kodein.direct.instance())
+
+        registry.clear()
+
+        assertNotSame(person, kodein.direct.instance())
+    }
+
+    @Test fun test16_01_ScopeSingleton() {
+
+        val registries = mapOf("a" to SingleItemScopeRegistry(), "b" to SingleItemScopeRegistry())
+        val myScope = object : Scope<String> {
+            override fun getRegistry(receiver: Any?, context: String) = registries[context]!!
+        }
+        val kodein = Kodein {
+            bind<Person>() with scoped(myScope).singleton { Person() }
+        }
+
+        val a: Person by kodein.on(context("a")).instance()
+        val b: Person by kodein.on(context("b")).instance()
+        assertNotSame(a, b)
+        assertSame(a, kodein.direct.on(context("a")).instance())
+        assertSame(b, kodein.direct.on(context("b")).instance())
+
+        registries.values.forEach { it.clear() }
+
+        assertNotSame(a, kodein.direct.on(context("a")).instance())
+        assertNotSame(b, kodein.direct.on(context("b")).instance())
+    }
+
+    @Test fun test16_02_ScopeIgnoredSingleton() {
+
+        val kodein = Kodein {
+            bind<Person>() with singleton { Person() }
+        }
+
+        val a: Person by kodein.on(context("a")).instance()
+        val b: Person by kodein.on(context("b")).instance()
+        assertSame(a, b)
+    }
 
     @Test fun test17_00_ExplicitOverride() {
         val kodein = Kodein {
@@ -790,7 +787,7 @@ class GenericJvmTests {
 
         assertFailsWith<Kodein.DependencyLoopException> {
             @Suppress("UNUSED_VARIABLE")
-            val instance: String by kodein.mode(PropMode.DIRECT).instance(tag = "name")
+            val instance: String by kodein.on(mode = PropMode.DIRECT).instance(tag = "name")
         }
     }
 
@@ -907,7 +904,7 @@ class GenericJvmTests {
 
 
     class Test22(kodein: Kodein) {
-        val name: String by kodein.mode(PropMode.DIRECT).instance(tag = "name")
+        val name: String by kodein.on(mode = PropMode.DIRECT).instance(tag = "name")
     }
 
     @Test fun test22_00_Now() {
@@ -937,7 +934,7 @@ class GenericJvmTests {
     }
 
     @Test fun test23_01_threadMultiton() {
-        val kodein = Kodein { bind() from refMultiton(threadLocal) { name: String -> Person(name) } }
+        val kodein = Kodein { bind() from multiton(ref = threadLocal) { name: String -> Person(name) } }
 
         var tp1: Person? = null
         var tp3: Person? = null
@@ -970,7 +967,7 @@ class GenericJvmTests {
 
     @Suppress("UNUSED_VALUE")
     @Test fun test23_02_WeakMultiton() {
-        val kodein = Kodein { bind() from refMultiton(weakReference) { name: String -> Person(name) } }
+        val kodein = Kodein { bind() from multiton(ref = weakReference) { name: String -> Person(name) } }
 
         var p1: Person? = kodein.direct.instance(arg = "Salomon")
         var p2: Person? = kodein.direct.instance(arg = "Salomon")
@@ -1068,9 +1065,9 @@ class GenericJvmTests {
             val laila = Person("Laila")
             externalSource = ExternalSource { key ->
                 @Suppress("UNUSED_PARAMETER")
-                when (key.bind.type.jvmType) {
+                when (key.type.jvmType) {
                     Person::class.java -> {
-                        when (key.bind.tag) {
+                        when (key.tag) {
                             "her" -> externalFactory { laila }
                             null -> externalFactory { Person("Anyone") }
                             else -> null
@@ -1103,7 +1100,7 @@ class GenericJvmTests {
         val resourceClass: Class<out Resource> = SubResource::class.java
 
         val kodein = Kodein {
-            Bind(TT(resourceClass)) with SingletonBinding(TT(resourceClass)) { resourceClass.getConstructor().newInstance() }
+            Bind(TT(resourceClass)) with Singleton(NoScope(), AnyToken, TT(resourceClass)) { resourceClass.getConstructor().newInstance() }
         }
 
         kodein.instance<SubResource>()
@@ -1115,7 +1112,7 @@ class GenericJvmTests {
         val name: String by instance()
     }
 
-    @Test fun fun29_00_Late() {
+    @Test fun test29_00_Late() {
 
         val test = Test29()
 
@@ -1126,7 +1123,7 @@ class GenericJvmTests {
         assertEquals("Salomon", test.name)
     }
 
-    @Test fun fun29_01_LateFail() {
+    @Test fun test29_01_LateFail() {
 
         val test = Test29()
 

@@ -13,9 +13,9 @@ import javax.inject.Provider
 internal class JxInjectorContainer {
     private val _qualifiers = HashMap<Class<out Annotation>, (Annotation) -> Any>()
 
-    private val _setters = ConcurrentHashMap<Class<*>, List<Kodein.(Any) -> Any>>()
+    private val _setters = ConcurrentHashMap<Class<*>, List<DKodein.(Any) -> Any>>()
 
-    private val _constructors = ConcurrentHashMap<Class<*>, Kodein.() -> Any>()
+    private val _constructors = ConcurrentHashMap<Class<*>, DKodein.() -> Any>()
 
     init {
         registerQualifier(Named::class.java) { it.value }
@@ -45,7 +45,7 @@ internal class JxInjectorContainer {
         override fun toString(): String
     }
 
-    private fun _getter(element: Element): Kodein.() -> Any? {
+    private fun _getter(element: Element): DKodein.() -> Any? {
         val tag = _getTagFromQualifier(element)
 
         val shouldErase = element.isAnnotationPresent(ErasedBinding::class.java)
@@ -58,7 +58,7 @@ internal class JxInjectorContainer {
 
         val isOptional = element.isAnnotationPresent(OrNull::class.java)
 
-        fun getterFunction(getter: Kodein.() -> Any?) = getter
+        fun getterFunction(getter: DKodein.() -> Any?) = getter
 
         return when {
             element.classType == Lazy::class.java -> { // Must be first
@@ -78,8 +78,8 @@ internal class JxInjectorContainer {
                 @Suppress("UNCHECKED_CAST")
                 val boundType = TT((element.genericType as ParameterizedType).actualTypeArguments[0].boundType()) as TypeToken<out Any>
                 when (isOptional) {
-                    true  -> getterFunction { direct.ProviderOrNull(boundType, tag) }
-                    false -> getterFunction { direct.Provider(boundType, tag) }
+                    true  -> getterFunction { ProviderOrNull(boundType, tag) }
+                    false -> getterFunction { Provider(boundType, tag) }
                 }
             }
             element.classType == Provider::class.java -> {
@@ -87,8 +87,8 @@ internal class JxInjectorContainer {
                 val boundType = TT((element.genericType as ParameterizedType).actualTypeArguments[0].boundType()) as TypeToken<out Any>
                 fun (() -> Any).toJavaxProvider() = javax.inject.Provider { invoke() }
                 when (isOptional) {
-                    true  -> getterFunction { direct.ProviderOrNull(boundType, tag)?.toJavaxProvider() }
-                    false -> getterFunction { direct.Provider(boundType, tag).toJavaxProvider() }
+                    true  -> getterFunction { ProviderOrNull(boundType, tag)?.toJavaxProvider() }
+                    false -> getterFunction { Provider(boundType, tag).toJavaxProvider() }
                 }
             }
             element.isAnnotationPresent(FactoryFun::class.java) -> {
@@ -99,16 +99,16 @@ internal class JxInjectorContainer {
                 @Suppress("UNCHECKED_CAST")
                 val boundType = TT(fieldType.actualTypeArguments[1].boundType()) as TypeToken<out Any>
                 when (isOptional) {
-                    true  -> getterFunction { direct.FactoryOrNull(argType, boundType, tag) }
-                    false -> getterFunction { direct.Factory(argType, boundType, tag) }
+                    true  -> getterFunction { FactoryOrNull(argType, boundType, tag) }
+                    false -> getterFunction { Factory(argType, boundType, tag) }
                 }
             }
             else -> {
                 @Suppress("UNCHECKED_CAST")
                 val boundType = if (shouldErase) TT(element.classType) else TT(element.genericType) as TypeToken<out Any>
                 when (isOptional) {
-                    true  -> getterFunction { direct.InstanceOrNull(boundType, tag) }
-                    false -> getterFunction { direct.Instance(boundType, tag) }
+                    true  -> getterFunction { InstanceOrNull(boundType, tag) }
+                    false -> getterFunction { Instance(boundType, tag) }
                 }
             }
         }
@@ -118,7 +118,7 @@ internal class JxInjectorContainer {
         members: Array<M>,
         elements: M.() -> Array<Element>,
         call: M.(Any, Array<Any?>) -> Unit,
-        setters: MutableList<Kodein.(Any) -> Any>
+        setters: MutableList<DKodein.(Any) -> Any>
     ) {
         members
             .filter { it.isAnnotationPresent(Inject::class.java) }
@@ -144,7 +144,7 @@ internal class JxInjectorContainer {
             }
     }
 
-    private tailrec fun _fillMembersSetters(cls: Class<*>, setters: MutableList<Kodein.(Any) -> Any>) {
+    private tailrec fun _fillMembersSetters(cls: Class<*>, setters: MutableList<DKodein.(Any) -> Any>) {
         if (cls == Any::class.java)
             return
 
@@ -184,19 +184,19 @@ internal class JxInjectorContainer {
         return _fillMembersSetters(cls.superclass, setters)
     }
 
-    private fun _createSetters(cls: Class<*>): List<Kodein.(Any) -> Any> {
-        val setters = ArrayList<Kodein.(Any) -> Any>()
+    private fun _createSetters(cls: Class<*>): List<DKodein.(Any) -> Any> {
+        val setters = ArrayList<DKodein.(Any) -> Any>()
         _fillMembersSetters(cls, setters)
         return setters
     }
 
-    private fun _findSetters(cls: Class<*>): List<Kodein.(Any) -> Any> = _setters.getOrPut(cls) { _createSetters(cls) }
+    private fun _findSetters(cls: Class<*>): List<DKodein.(Any) -> Any> = _setters.getOrPut(cls) { _createSetters(cls) }
 
-    internal fun inject(kodein: Kodein, receiver: Any) {
+    internal fun inject(kodein: DKodein, receiver: Any) {
         _findSetters(receiver.javaClass).forEach { kodein.it(receiver) }
     }
 
-    private fun _createConstructor(cls: Class<*>): Kodein.() -> Any {
+    private fun _createConstructor(cls: Class<*>): DKodein.() -> Any {
         val constructor = cls.declaredConstructors.firstOrNull { it.isAnnotationPresent(Inject::class.java) }
                           ?:  if (cls.declaredConstructors.size == 1) cls.declaredConstructors[0]
                           else throw IllegalArgumentException("Class ${cls.name} must either have only one constructor or an @Inject annotated constructor")
@@ -230,7 +230,7 @@ internal class JxInjectorContainer {
 
     /** @suppress */
     @JvmOverloads
-    internal fun <T: Any> newInstance(kodein: Kodein, cls: Class<T>, injectFields: Boolean = true): T {
+    internal fun <T: Any> newInstance(kodein: DKodein, cls: Class<T>, injectFields: Boolean = true): T {
         val constructor = _findConstructor(cls)
 
         @Suppress("UNCHECKED_CAST")

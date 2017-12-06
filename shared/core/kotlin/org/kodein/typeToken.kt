@@ -62,9 +62,9 @@ interface TypeToken<T> {
     /**
      * Returns the parent type of the type represented by this TypeToken, if any.
      */
-    fun getSuper(): TypeToken<in T>?
+    fun getSuper(): List<TypeToken<*>>
 
-    fun getInterfaces(): List<TypeToken<*>>
+    fun isAssignableFrom(typeToken: TypeToken<*>): Boolean
 }
 
 /**
@@ -110,7 +110,7 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
 
     override fun getSuper() = main.getSuper()
 
-    override fun getInterfaces() = main.getInterfaces()
+    override fun isAssignableFrom(typeToken: TypeToken<*>) = main.isAssignableFrom(typeToken)
 
     /** @suppress */
     override fun equals(other: Any?): Boolean {
@@ -125,4 +125,5 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
     override fun hashCode() = 31 * main.hashCode() + Arrays.hashCode(params)
 }
 
-internal val UnitToken = erased<Unit>()
+val UnitToken = erased<Unit>()
+val AnyToken = erased<Any?>()

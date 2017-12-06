@@ -2,6 +2,7 @@ package org.kodein.internal
 
 import org.kodein.*
 import org.kodein.bindings.BindingKodein
+import org.kodein.bindings.FullBindingKodein
 
 /**
  * Kodein implementation.
@@ -28,7 +29,7 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
         val init: () -> Unit = {
             val dkodein = KodeinImpl(container).direct
             builder._callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }
-            builder._bindingCallbacks.forEach { it.second.invoke(BindingKodeinImpl(dkodein, it.first, null, 0)) }
+            builder._bindingCallbacks.forEach { it.second.invoke(BindingKodeinImpl(dkodein, it.first, Unit, null, 0)) }
         }
 
         if (runCallbacks)
@@ -72,12 +73,13 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
 }
 
 @Suppress("UNCHECKED_CAST")
-internal open class BindingKodeinImpl<A, out T: Any> internal constructor(
+internal open class BindingKodeinImpl<out C, out A, out T: Any> internal constructor(
         val dkodein: DKodein,
-        private val _key: Kodein.Key<A, T>,
+        private val _key: Kodein.Key<C, A, T>,
+        override val context: C,
         override val receiver: Any?,
         private val _overrideLevel: Int
-) : DKodein by dkodein, BindingKodein {
-    override fun overriddenFactory(): (Any?) -> Any = kodein.container.overriddenFactory(_key, receiver, _overrideLevel)
-    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = kodein.container.overriddenFactoryOrNull(_key, receiver, _overrideLevel)
+) : DKodein by dkodein, FullBindingKodein<C> {
+    override fun overriddenFactory(): (Any?) -> Any = kodein.container.factory(_key, context, receiver, _overrideLevel + 1) as (Any?) -> Any
+    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = kodein.container.factoryOrNull(_key, context, receiver, _overrideLevel + 1) as ((Any?) -> Any)?
 }

@@ -1,33 +1,25 @@
 package org.kodein.jxinject
 
-import org.kodein.Kodein
-import org.kodein.TT
-import org.kodein.TypeToken
+import org.kodein.DKodein
 import org.kodein.jxinject.internal.JxInjectorContainer
-import java.lang.reflect.*
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
-import javax.inject.Named
-import javax.inject.Provider
 
 /**
  * Injector that allows to inject instances that use `javax.inject.*` annotations.
  *
- * @property _kodein The kodein object to use to retrieve injections.
+ * @property kodein The kodein object to use to retrieve injections.
  */
-class JxInjector internal constructor(private val _kodein: Kodein, private val _container: JxInjectorContainer) {
+class JxInjector internal constructor(private val kodein: DKodein, private val container: JxInjectorContainer) {
 
     /**
      * Injects all fields and methods annotated with `@Inject` in `receiver`.
      *
      * @param receiver The object to inject.
      */
-    fun inject(receiver: Any) = _container.inject(_kodein, receiver)
+    fun inject(receiver: Any) = container.inject(kodein, receiver)
 
     /** @suppress */
     @JvmOverloads
-    fun <T: Any> newInstance(cls: Class<T>, injectFields: Boolean = true) = _container.newInstance(_kodein, cls, injectFields)
+    fun <T: Any> newInstance(cls: Class<T>, injectFields: Boolean = true) = container.newInstance(kodein, cls, injectFields)
 
     /**
      * Creates a new instance of the given type.

@@ -12,31 +12,33 @@ private abstract class TypeStringer {
      *
      * @param type The type to stringify.
      */
-    fun dispString(type: Type, skipStars: Boolean = false): String = when (type) {
-        is Class<*> -> dispName(type, skipStars)
-        is ParameterizedType -> {
-            val cls = type.rawType as Class<*>
-            val arguments = cls.typeParameters.mapIndexed { i, variable ->
-                val argument = type.actualTypeArguments[i]
-                if (argument is WildcardType && variable.bounds.any { it in argument.upperBounds })
-                    "*"
-                else
-                    dispString(argument)
+    fun dispString(type: Type, skipStars: Boolean = false): String {
+        val jvmType = type.jvmType
+        return when (jvmType) {
+            is Class<*> -> dispName(jvmType, skipStars)
+            is ParameterizedType -> {
+                val cls = jvmType.rawType as Class<*>
+                val arguments = cls.typeParameters.mapIndexed { i, variable ->
+                    val argument = jvmType.actualTypeArguments[i]
+                    if (argument is WildcardType && variable.bounds.any { it in argument.upperBounds })
+                        "*"
+                    else
+                        dispString(argument)
+                }
+                dispString(jvmType.rawType, true) + "<" + arguments.joinToString(", ") + ">"
             }
-            dispString(type.rawType, true) + "<" + arguments.joinToString(", ") + ">"
-        }
-        is KodeinWrappedType -> dispString(type.type)
-        is WildcardType -> when {
-            type.lowerBounds.isNotEmpty() -> "in " + dispString(type.lowerBounds[0])
-            type.upperBounds.isNotEmpty() -> when {
-                type.upperBounds[0] == Any::class.java -> "*"
-                else -> "out " + dispString(type.upperBounds[0])
+            is WildcardType -> when {
+                jvmType.lowerBounds.isNotEmpty() -> "in " + dispString(jvmType.lowerBounds[0])
+                jvmType.upperBounds.isNotEmpty() -> when {
+                    jvmType.upperBounds[0] == Any::class.java -> "*"
+                    else -> "out " + dispString(jvmType.upperBounds[0])
+                }
+                else -> "*"
             }
-            else -> "*"
+            is GenericArrayType -> "Array<" + dispString(jvmType.genericComponentType) + ">"
+            is TypeVariable<*> -> jvmType.name
+            else -> throw IllegalStateException("Unknown type $javaClass")
         }
-        is GenericArrayType -> "Array<" + dispString(type.genericComponentType) + ">"
-        is TypeVariable<*> -> type.name
-        else -> throw IllegalStateException("Unknown type $javaClass")
     }
 
     /**
@@ -136,24 +138,25 @@ fun Type.simpleDispString(): String = SimpleTypeStringer.dispString(this)
 fun Type.fullDispString(): String = FullTypeStringer.dispString(this)
 
 fun Type.simpleErasedName(): String {
-        return when (this) {
-            is Class<*> -> (this.enclosingClass?.simpleErasedName()?.plus(".") ?: "") + this.simpleName
-            is ParameterizedType -> this.rawType.simpleErasedName()
-            is GenericArrayType -> this.genericComponentType.simpleErasedName()
-            is KodeinWrappedType -> this.type.simpleErasedName()
-            is WildcardType -> "*"
-            is TypeVariable<*> -> this.name
-            else -> throw IllegalArgumentException("Unknown type $javaClass $this")
-        }
+    val jvmType = jvmType
+    return when (jvmType) {
+        is Class<*> -> (jvmType.enclosingClass?.simpleErasedName()?.plus(".") ?: "") + jvmType.simpleName
+        is ParameterizedType -> jvmType.rawType.simpleErasedName()
+        is GenericArrayType -> jvmType.genericComponentType.simpleErasedName()
+        is WildcardType -> "*"
+        is TypeVariable<*> -> jvmType.name
+        else -> throw IllegalArgumentException("Unknown type $javaClass $this")
+    }
 }
 
-fun Type.fullErasedName(): String =
-        when (this) {
-            is Class<*> -> this.canonicalName._magic()
-            is ParameterizedType -> this.rawType.fullErasedName()
-            is GenericArrayType -> this.genericComponentType.fullErasedName()
-            is KodeinWrappedType -> this.type.fullErasedName()
-            is WildcardType -> "*"
-            is TypeVariable<*> -> this.name
-            else -> throw IllegalArgumentException("Unknown type $javaClass $this")
-        }
+fun Type.fullErasedName(): String {
+    val jvmType = jvmType
+    return when (jvmType) {
+        is Class<*> -> jvmType.canonicalName._magic()
+        is ParameterizedType -> jvmType.rawType.fullErasedName()
+        is GenericArrayType -> jvmType.genericComponentType.fullErasedName()
+        is WildcardType -> "*"
+        is TypeVariable<*> -> jvmType.name
+        else -> throw IllegalArgumentException("Unknown type $javaClass $this")
+    }
+}

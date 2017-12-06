@@ -1,22 +1,22 @@
 package org.kodein.jxinject
 
 import org.kodein.*
-import org.kodein.bindings.BindingKodein
-import org.kodein.bindings.SingletonBinding
+import org.kodein.bindings.NoScope
+import org.kodein.bindings.Singleton
 import org.kodein.jxinject.internal.JxInjectorContainer
 
 /**
  * Module that must be imported in order to use [JxInjector].
  */
 val jxInjectorModule = Kodein.Module {
-    bind() from SingletonBinding(erased()) { JxInjectorContainer() }
+    bind() from Singleton(NoScope(), erased(), erased()) { JxInjectorContainer() }
 }
 
 /**
  * Utility function that eases the retrieval of a [JxInjector].
  */
-val Kodein.jx: JxInjector get() = JxInjector(kodein, direct.Instance(erased()))
-val DKodein.jx: JxInjector get() = JxInjector(kodein, Instance(erased()))
+val Kodein.jx: JxInjector get() = JxInjector(direct, direct.Instance(erased()))
+val DKodein.jx: JxInjector get() = JxInjector(this, Instance(erased()))
 
 /** @suppress */
 fun <T: Annotation> Kodein.Builder.jxQualifier(cls: Class<T>, tagProvider: (T) -> Any) {

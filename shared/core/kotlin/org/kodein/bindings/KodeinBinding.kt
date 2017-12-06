@@ -2,7 +2,7 @@ package org.kodein.bindings
 
 import org.kodein.*
 
-interface Binding<in A, T: Any> {
+interface Binding<C, A, T: Any> {
 
     /**
      * Get an instance of type `T` function argument `A`.
@@ -14,7 +14,7 @@ interface Binding<in A, T: Any> {
      * @param arg: The argument to use to get the instance.
      * @return The instance of the requested type.
      */
-    fun getFactory(kodein: BindingKodein, key: Kodein.Key<A, T>): (A) -> T
+    fun getFactory(kodein: FullBindingKodein<C>, key: Kodein.Key<C, A, T>): (A) -> T
 }
 
 /**
@@ -26,7 +26,7 @@ interface Binding<in A, T: Any> {
  * @param A The type of argument used to create or retrieve an instance.
  * @param T The type of instance this factory creates or retrieves.
  */
-interface KodeinBinding<A, T : Any> : Binding<A, T> {
+interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
 
     /**
      * The name of this factory, *used for debug print only*.
@@ -42,6 +42,10 @@ interface KodeinBinding<A, T : Any> : Binding<A, T> {
      */
     fun factoryFullName(): String = factoryName()
 
+    val scope: Scope<*>? get() = null
+
+    val contextType: TypeToken<in C>
+
     /**
      * The type of the argument this factory will function for.
      */
@@ -55,32 +59,26 @@ interface KodeinBinding<A, T : Any> : Binding<A, T> {
     /**
      * The description of this factory (using simple type names), *used for debug print only*.
      */
-    val description: String get() = "${factoryName()} { ${argType.simpleDispString()} -> ${createdType.simpleDispString()} } "
+    val description: String get() {
+        val arg = if (argType != UnitToken) "${argType.simpleDispString()} -> " else ""
+        val scope = if (scope is NoScope) null else scope
+        val context = scope?.let { "scoped(${TTOf(it).simpleDispString()})." } ?: if (contextType != AnyToken) "contexted<${contextType.simpleDispString()}>()." else ""
+        return "$context${factoryName()} { $arg${createdType.simpleDispString()} } "
+    }
 
     /**
      * The description of this factory (using full type names), *used for debug print only*.
      */
-    val fullDescription: String get() = "${factoryFullName()} { ${argType.fullDispString()} -> ${createdType.fullDispString()} } "
+    val fullDescription: String get() {
+        val arg = if (argType != UnitToken) "${argType.fullDispString()} -> " else ""
+        val scope = if (scope is NoScope) null else scope
+        val context = scope?.let { "scoped(${TTOf(it).fullDispString()})." } ?: if (contextType != AnyToken) "contexted<${contextType.fullDispString()}>()." else ""
+        return "$context${factoryFullName()} { $arg${createdType.fullDispString()} } "
+    }
 }
 
-interface NoArgBinding<T: Any> : Binding<Unit, T> {
-
-    /**
-     * Get an instance of type `T`.
-     *
-     * Whether it's a new instance or not entirely depends on implementation.
-     *
-     * @param kodein: A Kodein instance to use for transitive dependencies.
-     * @param bind: The key of the instance to get.
-     * @return an instance of `T`.
-     */
-    fun getProvider(kodein: NoArgBindingKodein, bind: Kodein.Bind<T>): () -> T
-
-    override fun getFactory(kodein: BindingKodein, key: Kodein.Key<Unit, T>): (Unit) -> T = getProvider(NoArgBindingKodeinWrap(kodein), key.bind).toUnitFactory()
-}
-
-inline fun <T: Any> simpleBindingProvider(crossinline f: NoArgBindingKodein.() -> T) = object : NoArgBinding<T> {
-    override fun getProvider(kodein: NoArgBindingKodein, bind: Kodein.Bind<T>): () -> T = { kodein.f() }
+inline fun <C, T: Any> simpleBindingProvider(crossinline f: NoArgBindingKodein.() -> T) = object : Binding<C, Unit, T> {
+    override fun getFactory(kodein: FullBindingKodein<C>, key: Kodein.Key<C, Unit, T>): (Unit) -> T = { NoArgFullBindingKodeinWrap(kodein).f() }
 }
 
 /**
@@ -88,12 +86,8 @@ inline fun <T: Any> simpleBindingProvider(crossinline f: NoArgBindingKodein.() -
  *
  * As a factory does need an argument, it uses `Unit` as its argument.
  */
-interface NoArgKodeinBinding<T: Any> : KodeinBinding<Unit, T>, NoArgBinding<T> {
+interface NoArgKodeinBinding<C, T: Any> : KodeinBinding<C, Unit, T>, Binding<C, Unit, T> {
 
     override val argType get() = UnitToken
-
-    override val description: String get() = "${factoryName()} { ${createdType.simpleDispString()} } "
-
-    override val fullDescription: String get() = "${factoryFullName()} { ${createdType.fullDispString()} } "
 
 }

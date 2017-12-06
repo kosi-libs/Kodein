@@ -161,5 +161,5 @@ class ConfigurableKodein : Kodein {
     override val container: KodeinContainer get() = getOrConstruct().container
 
     /** @suppress */
-    override val propMode: PropMode get() = getOrConstruct().propMode
+    override val kodeinPropertyMode: PropMode get() = getOrConstruct().kodeinPropertyMode
 }

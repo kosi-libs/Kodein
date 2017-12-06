@@ -10,7 +10,7 @@ import org.kodein.toProvider
 // Ie, this class can be generic if/when the following code becomes legal in Kotlin:
 //
 // class TestContext<in A, out T: Any>
-// inline fun <reified A, reified T: Any> testFactory(f: TestContext<A, T>.(A) -> T): T = TODO()
+// inline fun <reified A, reified T: Any> testFactory(f: TestContext<A, T>.(A) -> T): T = ...
 // fun test() { /* bind<String>() with */ testFactory { name: String -> "hello, $name!" } }
 
 /**
@@ -43,6 +43,13 @@ interface SimpleBindingKodein : DKodein {
 interface BindingKodein : SimpleBindingKodein {
     val receiver: Any?
 }
+
+interface ScopedBindingKodein<out C> : SimpleBindingKodein {
+    val context: C
+}
+
+interface FullBindingKodein<out C> : BindingKodein, ScopedBindingKodein<C>
+
 
 /**
  * Kodein interface to be passed to provider or instance scope methods.
@@ -91,8 +98,23 @@ interface NoArgBindingKodein : NoArgSimpleBindingKodein {
     val receiver: Any?
 }
 
+@PublishedApi
 internal class NoArgBindingKodeinWrap(private val _kodein: BindingKodein) : NoArgBindingKodein, DKodein by _kodein {
     override val receiver get() = _kodein.receiver
+    override fun overriddenProvider() = _kodein.overriddenFactory().toProvider { Unit }
+    override fun overriddenProviderOrNull() = _kodein.overriddenFactoryOrNull()?.toProvider { Unit }
+}
+
+interface NoArgScopedBindingKodein<out C> : NoArgSimpleBindingKodein {
+    val scopeContext: C
+}
+
+interface NoArgFullBindingKodein<out C> : NoArgBindingKodein, NoArgScopedBindingKodein<C>
+
+@PublishedApi
+internal class NoArgFullBindingKodeinWrap<out C>(private val _kodein: FullBindingKodein<C>) : NoArgFullBindingKodein<C>, DKodein by _kodein {
+    override val receiver get() = _kodein.receiver
+    override val scopeContext get() = _kodein.context
     override fun overriddenProvider() = _kodein.overriddenFactory().toProvider { Unit }
     override fun overriddenProviderOrNull() = _kodein.overriddenFactoryOrNull()?.toProvider { Unit }
 }

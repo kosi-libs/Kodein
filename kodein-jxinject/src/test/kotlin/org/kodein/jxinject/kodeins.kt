@@ -1,10 +1,7 @@
 package org.kodein.jxinject
 
 import org.kodein.*
-import org.kodein.bindings.FactoryBinding
-import org.kodein.bindings.InstanceBinding
-import org.kodein.bindings.ProviderBinding
-import org.kodein.bindings.SingletonBinding
+import org.kodein.bindings.*
 
 fun test0() = Kodein {
     import(jxInjectorModule)
@@ -20,19 +17,19 @@ fun test1() = Kodein {
 
     var count = 0
 
-    bind() from ProviderBinding(erased()) { "Salomon ${count++}" }
-    bind(tag = "lastname") from ProviderBinding(erased()) { "BRYS ${count++}" }
-    Bind<List<String>>(generic()) with ProviderBinding(generic()) { listOf("a", "b", "c") }
-    Bind<Set<String>>(erased()) with ProviderBinding(erased()) { setOf("a", "b", "c") }
+    bind() from Provider(AnyToken, erased()) { "Salomon ${count++}" }
+    bind(tag = "lastname") from Provider(AnyToken, erased()) { "BRYS ${count++}" }
+    Bind<List<String>>(generic()) with Provider(AnyToken, generic()) { listOf("a", "b", "c") }
+    Bind<Set<String>>(erased()) with Provider(AnyToken, erased()) { setOf("a", "b", "c") }
 }
 
 fun test2() = Kodein {
     import(jxInjectorModule)
 
-    bind() from FactoryBinding(erased(), erased()) { i: Int -> "Salomon $i" }
-    bind(tag = "lastname") from FactoryBinding(erased(), erased()) { i: Int -> "BRYS $i" }
-    Bind<List<String>>(generic()) with FactoryBinding(erased(), generic()) { i: Int -> listOf("a$i", "b$i", "c$i") }
-    Bind<Set<String>>(erased()) with FactoryBinding(erased(), erased()) { i: Int -> setOf("a$i", "b$i", "c$i") }
+    bind() from Factory(AnyToken, erased(), erased()) { i: Int -> "Salomon $i" }
+    bind(tag = "lastname") from Factory(AnyToken, erased(), erased()) { i: Int -> "BRYS $i" }
+    Bind<List<String>>(generic()) with Factory(AnyToken, erased(), generic()) { i: Int -> listOf("a$i", "b$i", "c$i") }
+    Bind<Set<String>>(erased()) with Factory(AnyToken, erased(), erased()) { i: Int -> setOf("a$i", "b$i", "c$i") }
 }
 
 fun test4() = Kodein {
@@ -52,6 +49,6 @@ class Test5BImpl(override val a: Test5A) : Test5B
 fun test5() = Kodein {
     import(jxInjectorModule)
 
-    Bind<Test5A>(generic()) with SingletonBinding(generic()) { jx.newInstance<Test5AImpl>() }
-    Bind<Test5B>(generic()) with SingletonBinding(generic()) { jx.newInstance<Test5BImpl>() }
+    Bind<Test5A>(generic()) with Singleton(NoScope(), AnyToken, generic()) { jx.newInstance<Test5AImpl>() }
+    Bind<Test5B>(generic()) with Singleton(NoScope(), AnyToken, generic()) { jx.newInstance<Test5BImpl>() }
 }

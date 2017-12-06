@@ -1,9 +1,9 @@
 include(
         ':kodein-core', ':kodein', ':kodein-erased', ':kodein-conf', ':kodein-jxinject', ':test-utils'
-        ,
-        ':kodein-android', ':demo-android'
-        ,
-        ':kodein-js', ':kodein-js-conf', ':demo-js', ':test-utils-js'
+//        ,
+//        ':kodein-android', ':demo-android'
+//        ,
+//        ':kodein-js', ':kodein-js-conf', ':demo-js', ':test-utils-js'
 //        ,
 //        ':kodein-native', ':demo-native'
 )

@@ -1,9 +1,7 @@
 package org.kodein
 
 import org.kodein.bindings.*
-import org.kodein.internal.BindingsMap
 import org.kodein.internal.KodeinImpl
-import kotlin.properties.Delegates
 
 /**
  * KOtlin DEpendency INjection.
@@ -19,7 +17,7 @@ import kotlin.properties.Delegates
  * }
  * ```
  */
-interface Kodein : KodeinAwareBase {
+interface Kodein : KodeinAware {
 
     /**
      * Exception thrown when there is a dependency loop.
@@ -34,7 +32,7 @@ interface Kodein : KodeinAwareBase {
      * @property key The key that was not found.
      * @param message The message of the exception.
      */
-    class NotFoundException(val key: Kodein.Key<*, *>, message: String)
+    class NotFoundException(val key: Kodein.Key<*, *, *>, message: String)
             : RuntimeException(message)
 
     /**
@@ -45,18 +43,20 @@ interface Kodein : KodeinAwareBase {
     class OverridingException(message: String) : RuntimeException(message)
 
     /**
-     * Defined only to conform to [KodeinAwareBase].
+     * Defined only to conform to [KodeinAware].
      */
     override val kodein: Kodein get() = this
 
     /**
-     * Part of a [Key] that represents the left part of a bind declaration.
+     * In Kodein, each [KodeinBinding] is bound to a Key. A Key holds all information necessary to retrieve a factory (and therefore an instance).
      *
-     * @property type The type that is bound.
-     * @property tag The optional tag.
+     * @property bind The left part of the bind declaration.
+     * @property argType The argument type of the associated factory (Will be `Unit` for a provider).
      */
     @Suppress("EqualsOrHashCode")
-    data class Bind<out T: Any>(
+    data class Key<in C, in A, out T: Any>(
+            val contextType: TypeToken<in C>,
+            val argType: TypeToken<in A>,
             val type: TypeToken<out T>,
             val tag: Any?
     ) {
@@ -69,50 +69,10 @@ interface Kodein : KodeinAwareBase {
         /** @suppress */
         override fun hashCode(): Int {
             if (_hashCode == 0) {
-                _hashCode = type.hashCode()
-                _hashCode = 31 * _hashCode + (tag?.hashCode() ?: 0)
-            }
-            return _hashCode
-        }
-
-        /**
-         * @return The [description]
-         */
-        override fun toString() = description
-
-        /**
-         * Description using simple type names. The description is as close as possible to the code used to create this bind.
-         */
-        val description: String get() = "bind<${type.simpleDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
-
-        /**
-         * Description using full type names. The description is as close as possible to the code used to create this bind.
-         */
-        val fullDescription: String get() = "bind<${type.fullDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
-    }
-
-    /**
-     * In Kodein, each [KodeinBinding] is bound to a Key. A Key holds all information necessary to retrieve a factory (and therefore an instance).
-     *
-     * @property bind The left part of the bind declaration.
-     * @property argType The argument type of the associated factory (Will be `Unit` for a provider).
-     */
-    @Suppress("EqualsOrHashCode")
-    data class Key<out A, out T: Any>(
-            val bind: Bind<T>,
-            val argType: TypeToken<out A>
-    ) {
-
-        /**
-         * Because this type is immutable, we can cache its hash to make it faster inside a HashMap.
-         */
-        private var _hashCode: Int = 0
-
-        /** @suppress */
-        override fun hashCode(): Int {
-            if (_hashCode == 0) {
-                _hashCode = bind.hashCode()
-                _hashCode = 29 * _hashCode + argType.hashCode()
+                _hashCode = contextType.hashCode()
+                _hashCode = 31 * _hashCode + argType.hashCode()
+                _hashCode = 29 * type.hashCode()
+                _hashCode = 23 * _hashCode + (tag?.hashCode() ?: 0)
             }
             return _hashCode
         }
@@ -128,7 +88,11 @@ interface Kodein : KodeinAwareBase {
          * @param dispString a function that gets the display string for a type. Can be [simpleDispString] or [fullDispString]
          */
         private fun StringBuilder._appendDescription(dispString: TypeToken<*>.() -> String) {
-            append(" with ? { ")
+            append(" with ")
+            if (contextType != UnitToken) {
+                append("?<${contextType.dispString()}>().")
+            }
+            append("? { ")
             if (argType != UnitToken) {
                 append(argType.dispString())
                 append(" -> ")
@@ -136,11 +100,22 @@ interface Kodein : KodeinAwareBase {
             append("? }")
         }
 
+
+        /**
+         * Description using simple type names. The description is as close as possible to the code used to create this bind.
+         */
+        val bindDescription: String get() = "bind<${type.simpleDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
+
+        /**
+         * Description using full type names. The description is as close as possible to the code used to create this bind.
+         */
+        val bindFullDescription: String get() = "bind<${type.fullDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
+
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this key.
          */
         val description: String get() = buildString {
-            append(bind.description)
+            append(bindDescription)
             _appendDescription(TypeToken<*>::simpleDispString)
         }
 
@@ -148,7 +123,7 @@ interface Kodein : KodeinAwareBase {
          * Description using full type names. The description is as close as possible to the code used to create this key.
          */
         val fullDescription: String get() = buildString {
-            append(bind.fullDescription)
+            append(bindFullDescription)
             _appendDescription(TypeToken<*>::fullDispString)
         }
     }
@@ -158,6 +133,17 @@ interface Kodein : KodeinAwareBase {
      */
     @DslMarker
     annotation class KodeinDsl
+
+    interface BindBuilder<C> {
+        val contextType: TypeToken<C>
+        interface Contexted<C> : BindBuilder<C> {
+            class Impl<C>(override val contextType: TypeToken<C>) : Contexted<C>
+        }
+        interface Scoped<C> : BindBuilder<C> {
+            val scope: Scope<C>
+            class Impl<C>(override val contextType: TypeToken<C>, override val scope: Scope<C>) : Scoped<C>
+        }
+    }
 
     /**
      * Allows for the DSL inside the block argument of the constructor of `Kodein` and `Kodein.Module`.
@@ -171,8 +157,12 @@ interface Kodein : KodeinAwareBase {
     open class Builder internal constructor(
             internal val containerBuilder: KodeinContainer.Builder,
             internal val _callbacks: MutableList<DKodein.() -> Unit>,
-            internal val _bindingCallbacks: MutableList<Pair<Key<*, *>, BindingKodein.() -> Unit>>
-    ) {
+            internal val _bindingCallbacks: MutableList<Pair<Key<Unit, *, *>, BindingKodein.() -> Unit>>
+    ) : BindBuilder.Contexted<Any?>, BindBuilder.Scoped<Any?> {
+
+        override val contextType = AnyToken
+
+        override val scope: Scope<Any?> get() = NoScope() // Recreating a new NoScope every-time *on purpose*!
 
         /**
          * Left part of the type-binding syntax (`bind(type, tag)`).
@@ -181,7 +171,7 @@ interface Kodein : KodeinAwareBase {
          * @param bind The type and tag object that will compose the key to bind.
          * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          */
-        inner class TypeBinder<T : Any> internal constructor(val bind: Kodein.Bind<T>, val overrides: Boolean?) {
+        inner class TypeBinder<T : Any> internal constructor(val type: TypeToken<out T>, val tag: Any?, val overrides: Boolean?) {
             internal val containerBuilder get() = this@Builder.containerBuilder
 
             /**
@@ -190,7 +180,7 @@ interface Kodein : KodeinAwareBase {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun with(binding: KodeinBinding<*, out T>) = containerBuilder.bindBind(bind, binding, overrides)
+            infix fun <C, A> with(binding: KodeinBinding<in C, in A, out T>) = containerBuilder.bind(Kodein.Key(binding.contextType, binding.argType, type, tag), binding, overrides)
         }
 
         /**
@@ -208,7 +198,7 @@ interface Kodein : KodeinAwareBase {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun from(binding: KodeinBinding<*, *>) = containerBuilder.bindBind(Kodein.Bind(binding.createdType, _tag), binding, _overrides)
+            infix fun <C, A, T: Any> from(binding: KodeinBinding<in C, in A, out T>) = containerBuilder.bind(Kodein.Key(binding.contextType, binding.argType, binding.createdType, _tag), binding, _overrides)
         }
 
         /**
@@ -226,7 +216,7 @@ interface Kodein : KodeinAwareBase {
              * @param valueType The type to bind the instance to.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            fun <T: Any> With(valueType: TypeToken<out T>, value: T) = containerBuilder.bindBind(Kodein.Bind(valueType, _tag), InstanceBinding(valueType, value), _overrides)
+            fun <T: Any> With(valueType: TypeToken<out T>, value: T) = bind(tag = _tag) from InstanceBinding(valueType, value)
         }
 
         /**
@@ -238,7 +228,7 @@ interface Kodein : KodeinAwareBase {
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          * @return The binder: call [TypeBinder.with]) on it to finish the binding syntax and register the binding.
          */
-        fun <T : Any> Bind(type: TypeToken<out T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(Kodein.Bind(type, tag), overrides)
+        fun <T : Any> Bind(type: TypeToken<out T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(type, tag, overrides)
 
         /**
          * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
@@ -292,22 +282,22 @@ interface Kodein : KodeinAwareBase {
          * @param cb The callback.
          */
         @Suppress("UNCHECKED_CAST")
-        fun <A, T: Any> onFactoryReady(key: Kodein.Key<A, T>, cb: BindingKodein.() -> Unit) {
+        fun onFactoryReady(key: Kodein.Key<Unit, *, *>, cb: BindingKodein.() -> Unit) {
             _bindingCallbacks += key to cb
         }
 
-        /**
-         * Adds a callback that will be called once the Kodein object is configured and instantiated.
-         *
-         * The callback will be able to access the overridden provider binding.
-         *
-         * @param key The key that defines the overridden provider access.
-         * @param cb The callback.
-         */
-        fun <T: Any> onProviderReady(bind: Kodein.Bind<T>, cb: NoArgBindingKodein.() -> Unit) = onFactoryReady(Kodein.Key(bind, UnitToken)) { cb(NoArgBindingKodeinWrap(this)) }
+//        /**
+//         * Adds a callback that will be called once the Kodein object is configured and instantiated.
+//         *
+//         * The callback will be able to access the overridden provider binding.
+//         *
+//         * @param key The key that defines the overridden provider access.
+//         * @param cb The callback.
+//         */
+//        fun <T: Any> onProviderReady(key: Kodein.Key<*, Unit, T>, cb: NoArgBindingKodein.() -> Unit) = onFactoryReady(key) { cb(NoArgBindingKodeinWrap(this)) }
     }
 
-    class MainBuilder(allowSilentOverride: Boolean) : Builder(KodeinContainer.Builder(true, allowSilentOverride, BindingsMap()), ArrayList(), ArrayList()) {
+    class MainBuilder(allowSilentOverride: Boolean) : Builder(KodeinContainer.Builder(true, allowSilentOverride, HashMap()), ArrayList(), ArrayList()) {
 
         var externalSource: ExternalSource? = null
 

@@ -4,7 +4,10 @@ interface DKodein {
 
     val kodein: Kodein
 
-    fun on(receiver: Any?): DKodein
+    val kodeinContext: KodeinContext<*>
+    val kodeinReceiver: Any?
+
+    fun on(context: KodeinContext<*> = kodeinContext, receiver: Any? = kodeinReceiver): DKodein
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag.
@@ -18,7 +21,7 @@ interface DKodein {
      * @throws Kodein.NotFoundException If no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> Factory(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null): (A) -> T
+    fun <A, T : Any> Factory(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null): (A) -> T
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag, or null if none is found.
@@ -31,7 +34,7 @@ interface DKodein {
      * @return A factory of `T`, or null if no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> FactoryOrNull(argType: TypeToken<out A>, type: TypeToken<T>, tag: Any? = null): ((A) -> T)?
+    fun <A, T : Any> FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null): ((A) -> T)?
 
     /**
      * Gets a provider of `T` for the given type and tag.
@@ -45,6 +48,8 @@ interface DKodein {
      */
     fun <T : Any> Provider(type: TypeToken<T>, tag: Any? = null): () -> T
 
+    fun <A, T : Any> Provider(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): () -> T
+
     /**
      * Gets a provider of `T` for the given type and tag, or null if none is found.
      *
@@ -55,6 +60,8 @@ interface DKodein {
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
     fun <T : Any> ProviderOrNull(type: TypeToken<T>, tag: Any? = null): (() -> T)?
+
+    fun <A, T : Any> ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): (() -> T)?
 
     /**
      * Gets an instance of `T` for the given type and tag.
@@ -68,6 +75,8 @@ interface DKodein {
      */
     fun <T : Any> Instance(type: TypeToken<T>, tag: Any? = null): T
 
+    fun <A, T : Any> Instance(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: A): T
+
     /**
      * Gets an instance of `T` for the given type and tag, or null if none is found.
      *
@@ -77,4 +86,6 @@ interface DKodein {
      * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
      */
     fun <T : Any> InstanceOrNull(type: TypeToken<T>, tag: Any? = null): T?
+
+    fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: A): T?
 }

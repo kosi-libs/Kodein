@@ -6,11 +6,8 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.kodein.*
-import org.kodein.bindings.ExternalSource
-import org.kodein.bindings.SingletonBinding
-import org.kodein.bindings.externalFactory
+import org.kodein.bindings.*
 import org.kodein.erased.*
-import kotlin.concurrent.thread
 import kotlin.reflect.KClass
 import kotlin.test.*
 
@@ -104,7 +101,7 @@ class ErasedTests {
 
         val p: Person by kodein.instance(arg = FullInfos("Salomon", "BRYS", 30))
 
-        assertEquals("Salomon BRYS", p.name)
+        assertFailsWith<Kodein.NotFoundException> { p.name }
     }
 
     @Test fun test00_09_withFactoryLambdaArgument() {
@@ -544,48 +541,55 @@ class ErasedTests {
         assertTrue(created)
     }
 
+    @Test fun test16_00_AnyScopeSingleton() {
+        val registry = MultiItemScopeRegistry()
+        val myScope = object : Scope<Any?> {
+            override fun getRegistry(receiver: Any?, context: Any?) = registry
+        }
+        val kodein = Kodein {
+            bind<Person>() with scoped(myScope).singleton { Person() }
+        }
 
-//    @Test fun test16_01_ScopedSingleton() {
-//
-//        val myScope = object : Scope<String> {
-//            val cache = HashMap<String, ScopeRegistry>()
-//            override fun getRegistry(context: String): ScopeRegistry = cache.getOrPut(context) { ScopeRegistry() }
-//        }
-//        val kodein = Kodein {
-//            bind<Person>() with scopedSingleton(myScope) { Person() }
-//        }
-//
-//        val factory = kodein.factory<String, Person>()
-//        val one = factory("one")
-//        val two = factory("two")
-//        assertSame(one, factory("one"))
-//        assertNotSame(one, factory("two"))
-//        assertSame(two, factory("two"))
-//
-//        myScope.cache.remove("one")
-//
-//        assertNotSame(one, factory("one"))
-//        assertSame(two, factory("two"))
-//    }
-//
-//    @Test fun test16_02_AutoScopedSingleton() {
-//        val myScope = object : AutoScope<Unit> {
-//            val registry = ScopeRegistry()
-//            override fun getRegistry(context: Unit) = registry
-//            override fun getContext() = Unit
-//        }
-//
-//        val kodein = Kodein {
-//            bind<Person>() with autoScopedSingleton(myScope) { Person() }
-//        }
-//
-//        val p = kodein.instance<Person>()
-//        assertSame(p, kodein.instance<Person>())
-//
-//        myScope.registry.clear()
-//
-//        assertNotSame(p, kodein.instance<Person>())
-//    }
+        val person: Person by kodein.instance()
+        assertSame(person, kodein.direct.instance())
+
+        registry.clear()
+
+        assertNotSame(person, kodein.direct.instance())
+    }
+
+    @Test fun test16_01_ScopeSingleton() {
+
+        val registries = mapOf("a" to SingleItemScopeRegistry(), "b" to SingleItemScopeRegistry())
+        val myScope = object : Scope<String> {
+            override fun getRegistry(receiver: Any?, context: String) = registries[context]!!
+        }
+        val kodein = Kodein {
+            bind<Person>() with scoped(myScope).singleton { Person() }
+        }
+
+        val a: Person by kodein.on(context("a")).instance()
+        val b: Person by kodein.on(context("b")).instance()
+        assertNotSame(a, b)
+        assertSame(a, kodein.direct.on(context("a")).instance())
+        assertSame(b, kodein.direct.on(context("b")).instance())
+
+        registries.values.forEach { it.clear() }
+
+        assertNotSame(a, kodein.direct.on(context("a")).instance())
+        assertNotSame(b, kodein.direct.on(context("b")).instance())
+    }
+
+    @Test fun test16_02_ScopeIgnoredSingleton() {
+
+        val kodein = Kodein {
+            bind<Person>() with singleton { Person() }
+        }
+
+        val a: Person by kodein.on(context("a")).instance()
+        val b: Person by kodein.on(context("b")).instance()
+        assertSame(a, b)
+    }
 
     @Test fun test17_00_ExplicitOverride() {
         val kodein = Kodein {
@@ -647,7 +651,7 @@ class ErasedTests {
 
         assertFailsWith<Kodein.DependencyLoopException> {
             @Suppress("UNUSED_VARIABLE")
-            val instance: String by kodein.mode(PropMode.DIRECT).instance(tag = "name")
+            val instance: String by kodein.on(mode = PropMode.DIRECT).instance(tag = "name")
         }
     }
 
@@ -726,7 +730,7 @@ class ErasedTests {
     }
 
     class Test22(kodein: Kodein) {
-        val name: String by kodein.mode(PropMode.DIRECT).instance(tag = "name")
+        val name: String by kodein.on(mode = PropMode.DIRECT).instance(tag = "name")
     }
 
     @Test fun test22_00_Now() {
@@ -753,65 +757,6 @@ class ErasedTests {
 
         assertEquals("Salomon", p1.name)
         assertEquals("Laila", p3.name)
-    }
-
-    @Test fun test23_01_threadMultiton() {
-        val kodein = Kodein { bind() from refMultiton(threadLocal) { name: String -> Person(name) } }
-
-        var tp1: Person? = null
-        var tp3: Person? = null
-
-        val t = thread {
-            tp1 = kodein.direct.instance(arg = "Salomon")
-            val tp2: Person by kodein.instance(arg = "Salomon")
-            tp3 = kodein.direct.instance(arg = "Laila")
-
-            assertSame(tp1, tp2)
-            assertNotEquals(tp1, tp3)
-        }
-
-        val p1: Person by kodein.instance(arg = "Salomon")
-        val p2: Person by kodein.instance(arg = "Salomon")
-        val p3: Person by kodein.instance(arg = "Laila")
-
-        assertSame(p1, p2)
-        assertNotEquals(p1, p3)
-
-        t.join()
-
-        assertNotSame(p1, tp1)
-        assertEquals(p1, tp1)
-        assertEquals("Salomon", p1.name)
-        assertNotSame(p3, tp3)
-        assertEquals(p3, tp3)
-        assertEquals("Laila", p3.name)
-    }
-
-    @Suppress("UNUSED_VALUE")
-    @Test fun test23_02_WeakMultiton() {
-        val kodein = Kodein { bind() from refMultiton(weakReference) { name: String -> Person(name) } }
-
-        var p1: Person? = kodein.direct.instance(arg = "Salomon")
-        var p2: Person? = kodein.direct.instance(arg = "Salomon")
-        var p3: Person? = kodein.direct.instance(arg = "Laila")
-        assertSame(p1, p2)
-        assertNotSame(p1, p3)
-        assertEquals("Salomon", p1?.name)
-        assertEquals("Laila", p3?.name)
-
-        val id1 = System.identityHashCode(p1)
-        val id3 = System.identityHashCode(p3)
-
-        p1 = null
-        p2 = null
-        p3 = null
-        System.gc()
-
-        p1 = kodein.direct.instance(arg = "Salomon")
-        p3 = kodein.direct.instance(arg = "Laila")
-
-        assertNotEquals(id1, System.identityHashCode(p1))
-        assertNotEquals(id3, System.identityHashCode(p3))
     }
 
     @Test fun test24_00_Callback() {
@@ -887,9 +832,9 @@ class ErasedTests {
             val laila = Person("Laila")
             externalSource = ExternalSource { key ->
                 @Suppress("UNUSED_PARAMETER")
-                when (key.bind.type.jvmType) {
+                when (key.type.jvmType) {
                     Person::class.java -> {
-                        when (key.bind.tag) {
+                        when (key.tag) {
                             "her" -> externalFactory { laila }
                             null -> externalFactory { Person("Anyone") }
                             else -> null
@@ -922,7 +867,7 @@ class ErasedTests {
         val resourceClass: Class<out Resource> = SubResource::class.java
 
         val kodein = Kodein {
-            Bind(TT(resourceClass)) with SingletonBinding(TT(resourceClass)) { resourceClass.getConstructor().newInstance() }
+            Bind(TT(resourceClass)) with Singleton(NoScope(), AnyToken, TT(resourceClass)) { resourceClass.getConstructor().newInstance() }
         }
 
         kodein.instance<SubResource>()

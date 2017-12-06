@@ -9,7 +9,6 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.kodein.bindings.*
-import org.kodein.conf.KodeinGlobalAware
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -146,8 +145,8 @@ class KodeinGlobalTests {
 
     @Test fun test05_00_Loop() {
         Test05.kodein.addConfig {
-            bind() from SingletonBinding(erased()) { "test" }
-            bind() from EagerSingletonBinding(this, erased()) { Test05.Loop() }
+            bind() from Singleton(NoScope(), AnyToken, erased()) { "test" }
+            bind() from EagerSingleton(this, erased()) { Test05.Loop() }
         }
 
         Test05.kodein.getOrConstruct()
@@ -160,7 +159,7 @@ class KodeinGlobalTests {
 
         kodein.addConfig {
             onReady {
-                bind() from SingletonBinding(erased()) { "test" }
+                bind() from Singleton(NoScope(), AnyToken, erased()) { "test" }
                 ready = true
             }
 
@@ -176,7 +175,7 @@ class KodeinGlobalTests {
         val kodein = ConfigurableKodein(mutable = true)
         kodein.addConfig {
             externalSource = ExternalSource { key ->
-                if (key.bind.type.jvmType == String::class.java && key.bind.tag == "foo")
+                if (key.type.jvmType == String::class.java && key.tag == "foo")
                     externalFactory { "bar" }
                 else
                     null
@@ -187,7 +186,7 @@ class KodeinGlobalTests {
         assertNull(kodein.direct.InstanceOrNull<String>(erased()))
 
         kodein.addConfig {
-            bind() from ProviderBinding(erased()) { "def" }
+            bind() from Provider(AnyToken, erased()) { "def" }
         }
 
         assertEquals("bar", kodein.direct.Instance<String>(erased(), tag = "foo"))
