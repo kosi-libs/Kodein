@@ -1094,10 +1094,10 @@ For these cases, the `kodein-conf` module proposes a static `Kodein.global` inst
 .Example creating, configuring and using the global one true Kodein.
 ----
 fun test() {
-    kodein.global.addModule(apiModule)
-    kodein.global.addModule(dbModule)
+    Kodein.global.addModule(apiModule)
+    Kodein.global.addModule(dbModule)
 
-    val ds: DataSource = kodein.global.instance()
+    val ds: DataSource = Kodein.global.instance()
 }
 ----
 
