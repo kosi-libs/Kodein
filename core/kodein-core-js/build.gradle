@@ -1,0 +1,16 @@
+apply plugin: 'kotlin-platform-js'
+
+dependencies {
+    expectedBy project(":core:kodein-core-common")
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+}
+
+compileKotlin2Js {
+    kotlinOptions.moduleKind = "umd"
+}
+
+ext {
+    pom_name = "Kodein Core"
+    pom_description = "Kotlin Dependency Injection Core"
+}
+apply from: "../../gradle/upload.gradle"

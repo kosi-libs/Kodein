@@ -1,0 +1,12 @@
+apply plugin: 'konan'
+
+apply from: '../../gradle/native-targets.gradle'
+
+konanArtifacts {
+    library("kodein-core") {
+        srcFiles fileTree("src/main/kotlin")
+        srcFiles fileTree("../kodein-core-common/src/main/kotlin")
+
+        extraOpts "-Xmulti-platform"
+    }
+}

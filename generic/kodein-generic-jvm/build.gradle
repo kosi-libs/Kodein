@@ -1,0 +1,16 @@
+apply plugin: 'kotlin'
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    compile project(':core:kodein-core-jvm')
+
+    testCompile project(':test-utils:test-utils-jvm')
+    testCompile 'com.google.inject:guice:4.1.0'
+}
+
+ext {
+    pom_name = "Kodein"
+    pom_description = "KOtlin DEpendency INjection"
+}
+apply from: "../../gradle/upload.gradle"

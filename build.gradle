@@ -3,48 +3,35 @@ buildscript {
     repositories {
         jcenter()
         google()
-        maven { url "https://dl.bintray.com/jetbrains/kotlin-native-dependencies" }
         maven { url "https://plugins.gradle.org/m2/" }
+
+//        maven { url "https://dl.bintray.com/jetbrains/kotlin-native-dependencies" }
     }
 
     ext.kotlin_version = '1.2.0'
     ext.junit_version = '4.12'
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
         //noinspection DifferentKotlinGradleVersion
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.15'
-        classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.3"
+
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+
         classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
+
+        classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.4"
     }
 }
 
 allprojects {
     repositories {
         jcenter()
-        maven { url 'https://maven.google.com' }
+        google()
     }
 
     group = 'org.kodein'
-    version = '4.1.0'
-}
-
-def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }
-def getAndroidClassPath(String p) { return project(p).android.getBootClasspath() +  project(p).android.libraryVariants.javaCompile.classpath.collect { it.collect { it.absolutePath } } .flatten() }
-
-task("classpath") {
-    doLast {
-        println((
-                getClassPath(':kodein')
-            +   getClassPath(':kodein-conf')
-            +   getClassPath(':kodein-core')
-            +   getClassPath(':kodein-erased')
-            +   getClassPath(':kodein-jxinject')
-            +   getAndroidClassPath(':kodein-android')
-        ).join(":"))
-    }
+    version = '5.0.0'
 }
 
 // used for Android builds on travis

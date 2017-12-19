@@ -1,9 +1,33 @@
+
+includeBuild '../../kotlin-native'
+
 include(
-        ':kodein-core', ':kodein', ':kodein-erased', ':kodein-conf', ':kodein-jxinject', ':test-utils'
-//        ,
-//        ':kodein-android', ':demo-android'
-//        ,
-//        ':kodein-js', ':kodein-js-conf', ':demo-js', ':test-utils-js'
-//        ,
-//        ':kodein-native', ':demo-native'
+        ':core:kodein-core-common',
+        ':core:kodein-core-jvm',
+        ':core:kodein-core-js',
+        ':core:kodein-core-native',
+
+        ':test-utils:test-utils-common',
+        ':test-utils:test-utils-jvm',
+        ':test-utils:test-utils-js',
+
+        ':generic:kodein-generic-jvm',
+
+        ':erased:kodein-erased-common',
+        ':erased:kodein-erased-jvm',
+        ':erased:kodein-erased-js',
+        ':erased:kodein-erased-native',
+
+        ':conf:kodein-conf-common',
+        ':conf:kodein-conf-jvm',
+        ':conf:kodein-conf-js',
+        ':conf:kodein-conf-native',
+
+        ':jx-inject:kodein-jx-inject-jvm',
+
+        ':framework:kodein-framework-android',
+
+        ':demo:demo-android',
+        ':demo:demo-js',
+        ':demo:demo-native',
 )

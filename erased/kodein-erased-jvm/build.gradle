@@ -1,0 +1,16 @@
+apply plugin: 'kotlin-platform-jvm'
+
+dependencies {
+    expectedBy project(":erased:kodein-erased-common")
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile project(":core:kodein-core-jvm")
+
+    testCompile project(':test-utils:test-utils-jvm')
+    testCompile 'com.google.inject:guice:4.1.0'
+}
+
+ext {
+    pom_name = "Kodein erased"
+    pom_description = "KOtlin DEpendency INjection using erased types by default (optimized, but error-prone)"
+}
+apply from: "../../gradle/upload.gradle"

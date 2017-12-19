@@ -1,0 +1,17 @@
+apply plugin: 'kotlin'
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    compile project(':core:kodein-core-jvm')
+
+    compile "javax.inject:javax.inject:1"
+
+    testCompile project(':test-utils:test-utils-jvm')
+}
+
+ext {
+    pom_name = "Kodein Jx Inject"
+    pom_description = "Kodein extension that enables to auto-inject with JSR 330 javax.inject annotations"
+}
+apply from: "../../gradle/upload.gradle"

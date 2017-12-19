@@ -1,0 +1,12 @@
+apply plugin: 'kotlin-platform-jvm'
+
+dependencies {
+    expectedBy project(":core:kodein-core-common")
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+
+ext {
+    pom_name = "Kodein Core"
+    pom_description = "Kotlin Dependency Injection Core"
+}
+apply from: "../../gradle/upload.gradle"

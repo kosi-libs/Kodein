@@ -1,0 +1,2 @@
+
+konan.targets = ['macbook', 'linux', 'mingw', 'iphone', 'android_arm32', 'android_arm64', 'wasm32', 'raspberrypi', 'linux_mips32', 'linux_mipsel32']

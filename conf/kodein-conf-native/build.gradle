@@ -1,0 +1,13 @@
+apply plugin: 'konan'
+
+apply from: '../../gradle/native-targets.gradle'
+
+konanArtifacts {
+    library("kodein-conf") {
+        srcFiles fileTree("../conf-common/src/main/kotlin")
+
+        libraries {
+            allLibrariesFrom project(':core:kodein-core-native')
+        }
+    }
+}

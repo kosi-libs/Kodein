@@ -1,0 +1,16 @@
+apply plugin: 'konan'
+
+apply from: '../../gradle/native-targets.gradle'
+
+konanArtifacts {
+    library("kodein-erased") {
+        srcFiles fileTree("src/main/kotlin")
+        srcFiles fileTree("../kodein-erased-common/src/main/kotlin")
+
+        extraOpts "-Xmulti-platform"
+
+        libraries {
+            allLibrariesFrom project(':core:kodein-core-native')
+        }
+    }
+}

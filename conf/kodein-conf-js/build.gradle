@@ -1,0 +1,21 @@
+apply plugin: 'kotlin-platform-js'
+
+dependencies {
+    expectedBy project(":conf:kodein-conf-common")
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    compile project(":core:kodein-core-js")
+
+    testCompile project(':test-utils:test-utils-js')
+}
+
+compileKotlin2Js {
+    kotlinOptions.moduleKind = "umd"
+}
+
+apply from: '../../gradle/js-test.gradle'
+
+ext {
+    pom_name = "Kodein erased JS"
+    pom_description = "KOtlin DEpendency INjection that can be configured / mutated"
+}
+apply from: "../../gradle/upload.gradle"
