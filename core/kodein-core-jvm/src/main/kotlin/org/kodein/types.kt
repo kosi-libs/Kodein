@@ -308,8 +308,7 @@ internal class GenericTypeToken<T>(val trueType: Type) : JVMTypeToken<T>() {
  * @param T The type to extract.
  * @see generic
  */
-@PublishedApi
-internal abstract class TypeReference<T> {
+abstract class TypeReference<T> {
 
     /**
      * Generic type, unwrapped.
@@ -324,7 +323,7 @@ internal abstract class TypeReference<T> {
  * @return The type object representing `T`.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T> generic(): TypeToken<T> = TT(((object : TypeReference<T>() {}).superType)) as TypeToken<T>
+inline fun <reified T> generic(): TypeToken<T> = TT((object : TypeReference<T>() {}))
 
 @PublishedApi
 internal class ClassTypeToken<T>(private val _type: Class<T>) : JVMTypeToken<T>() {
@@ -378,6 +377,8 @@ fun TT(type: Type): TypeToken<*> =
         ClassTypeToken(type)
     else
         GenericTypeToken<Any>(type)
+
+fun <T> TT(ref: TypeReference<T>): TypeToken<T> = TT(ref.superType) as TypeToken<T>
 
 /**
  * Gives a [TypeToken] representing the *erased* type of the given object.

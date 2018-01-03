@@ -7,15 +7,17 @@ import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 import kodein.demo.coffee.thermosiphonModule
 import org.kodein.*
-import org.kodein.android.appKodein
-import org.kodein.android.extend
+import org.kodein.android.closestKodein
+import org.kodein.android.retainedKodein
 
 class MainActivity : Activity(), KodeinAware {
 
     override val kodeinContext: KodeinContext<*> = kcontext(this)
 
-    override val kodein: Kodein by Kodein.Lazy {
-        extend(appKodein)
+    private val _parentKodein by closestKodein()
+
+    override val kodein: Kodein by retainedKodein {
+        extend(_parentKodein)
         import(thermosiphonModule)
     }
 

@@ -5,10 +5,10 @@ buildscript {
         google()
         maven { url "https://plugins.gradle.org/m2/" }
 
-//        maven { url "https://dl.bintray.com/jetbrains/kotlin-native-dependencies" }
+        maven { url "https://dl.bintray.com/jetbrains/kotlin-native-dependencies" }
     }
 
-    ext.kotlin_version = '1.2.0'
+    ext.kotlin_version = '1.2.10'
     ext.junit_version = '4.12'
 
     dependencies {
@@ -20,7 +20,7 @@ buildscript {
 
         classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
 
-        classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.4"
+        classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.5"
     }
 }
 

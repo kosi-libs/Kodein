@@ -157,15 +157,22 @@ class KodeinGlobalTests {
         var ready = false
 
         kodein.addConfig {
+            bind() from Singleton(NoScope(), AnyToken, erased()) { "test" }
+
             onReady {
-                bind() from Singleton(NoScope(), AnyToken, erased()) { "test" }
                 ready = true
             }
 
             assertFalse(ready)
         }
 
-        kodein.Instance<String>(erased())
+        assertFalse(ready)
+
+        val value by kodein.Instance<String>(erased(), null)
+
+        assertFalse(ready)
+
+        assertEquals("test", value)
 
         assertTrue(ready)
     }

@@ -48,6 +48,10 @@ interface SimpleBindingKodein<out C> : DKodein, WithContext<C> {
 
 interface BindingKodein<out C> : SimpleBindingKodein<C>, WithReceiver
 
+@Suppress("UNCHECKED_CAST")
+class BindingKodeinContextWrap<out C>(val base: BindingKodein<*>, override val context: C) : BindingKodein<C> by (base as BindingKodein<C>) {
+}
+
 /**
  * Kodein interface to be passed to provider or instance scope methods.
  *

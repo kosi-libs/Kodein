@@ -1,0 +1,158 @@
+= Global & Configurable Kodein
+Salomon BRYS <salomon.brys@gmail.com>
+:toc: left
+:toc-position: left
+:toclevels: 5
+
+:version: 5.0.0-beta1
+:branch: 5.0
+
+
+== Introduction
+
+The Configurable Kodein Plugin gives you :
+
+- A `ConfigurableKodein` class that you can pass around and have different sections of your code configure its bindings.
+- A `Kodein.global` instance that allows to have "one true" source.
+
+The Configurable Kodein Plugin is an extension that is not proposed  _by default_, this paradigm is in a separate module.
+
+NOTE: Using or not using this is a matter of taste and is neither recommended nor discouraged.
+
+
+== Install
+
+=== With Maven
+
+[source,xml,subs="attributes"]
+----
+&lt;dependency&gt;
+    &lt;groupId&gt;org.kodein&lt;/groupId&gt;
+    &lt;artifactId&gt;kodein-conf&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;
+&lt;/dependency&gt;
+----
+
+IMPORTANT: Do not remove the `kodein` (or `kodein-erased`) dependency.
+           Both dependencies must be declared.
+
+=== With Gradle
+
+[source,groovy,subs="attributes"]
+----
+compile 'org.kodein:kodein-conf:{version}'
+----
+
+IMPORTANT: Do not remove the `kodein` (or `kodein-erased`) dependency.
+           Both dependencies must be declared.
+
+
+== ConfigurableKodein
+
+=== Configuring
+
+You can import modules, extend kodein objects, or add bindings inside this `ConfigurableKodein` using `addImport`, `addExtend` and `addConfig`.
+
+[source, kotlin]
+.Example: adding a module inside the global Kodein
+----
+fun test() {
+    val kodein = ConfigurableKodein()
+
+    kodein.addModule(aModule)
+    kodein.addExtend(otherKodein)
+
+    kodein.addConfig {
+        bind<Dice>() with provider { RandomDice(0, 5) }
+        bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+    }
+}
+----
+
+CAUTION: The `Kodein` underlying instance will effectively be constructed on first retrieval.
+         Once it is constructed, trying to configure it will throw an `IllegalStateException`.
+
+
+=== Retrieving
+
+You can use a `ConfigurableKodein` object like any `Kodein` object.
+
+CAUTION: Once you have retrieved the first value with a `ConfigurableKodein`, trying to configure it will throw an `IllegalStateException`.
+
+
+=== Mutating
+
+A `ConfigurableKodein` can be mutable.
+
+[source, kotlin]
+.Example: Creating a mutable ConfigurableKodein
+----
+val kodein = ConfigurableKodein(mutable = true)
+----
+
+[WARNING]
+====
+Using a mutable `ConfigurableKodein` can lead to *very bad code practice* and *very difficult bugs*. +
+Therefore, using a mutable `ConfigurableKodein` *IS discouraged*. +
+Note that every time a `ConfigurableKodein` is mutated, its cache is entirely flushed, meaning that it has a real impact on performance! +
+Please use the mutating feature only if you truly need it, know what you're doing, and see no other way.
+====
+
+A mutable `ConfigurableKodein` can be configured even _after first retrieval_.
+
+[source, kotlin]
+.Example: mutating a mutable ConfigurableKodein
+----
+fun test() {
+    val kodein = ConfigurableKodein(mutable = true)
+
+    kodein.addModule(aModule)
+
+    val ds: DataSource = kodein.instance()
+
+    kodein.addModule(anotherModule) <1>
+}
+----
+<1> This would have failed if the ConfigurableKodein was not mutable.
+
+You can also use the `clear` method to remove all bindings.
+
+
+== The god complex: One True Kodein
+
+Sometimes, you want one static Kodein for your entire application.
+E.g. you don't want to have to hold & pass a Kodein instance throughout your application.
+
+For these cases, the `kodein-conf` module proposes a static `Kodein.global` instance.
+
+[source,kotlin]
+.Example creating, configuring and using the global one true Kodein.
+----
+fun test() {
+    kodein.global.addModule(apiModule)
+    kodein.global.addModule(dbModule)
+
+    val ds: DataSource = kodein.global.instance()
+}
+----
+
+[CAUTION]
+====
+Just like any `ConfigurableKodein`, `Kodein.global` must be configured *before* being used for retrieval, or an `IllegalStateException` will be thrown.
+It is possible to set `Kodein.global` to be mutable by setting `Kodein.global.mutable = true` but it *must* be set *before* any retrieval!
+====
+
+
+=== Being globally aware
+
+You can use the `GlobalKodeinAware` interface that needs no implementation to be aware of the global kodein.
+
+[source, kotlin]
+.Example: a KodeinGlobalAware class
+----
+class MyManager() : KodeinGlobalAware {
+    val ds: DataSource = instance()
+}
+----
+
+

@@ -11,7 +11,6 @@ interface Binding<C, A, T: Any> {
      *
      * @param kodein: A Kodein instance to use for transitive dependencies.
      * @param key: The key of the instance to get.
-     * @param arg: The argument to use to get the instance.
      * @return The instance of the requested type.
      */
     fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, A, T>): (A) -> T
@@ -42,7 +41,7 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
      */
     fun factoryFullName(): String = factoryName()
 
-    val scope: Scope<*>? get() = null
+    val scope: Scope<C, *>? get() = null
 
     val contextType: TypeToken<in C>
 

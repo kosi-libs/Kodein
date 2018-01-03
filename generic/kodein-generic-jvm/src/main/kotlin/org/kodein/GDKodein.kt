@@ -16,7 +16,7 @@ inline fun <reified A, reified T : Any> DKodein.factory(tag: Any? = null) = Fact
  * @return A factory, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodein.factoryOrNull(tag: Any? = null) = FactoryOrNull<A, T>(generic(), generic(), tag)
+inline fun <reified A, reified T : Any> DKodeinAware.factoryOrNull(tag: Any? = null) = dkodein.FactoryOrNull<A, T>(generic(), generic(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -32,11 +32,11 @@ inline fun <reified A, reified T : Any> DKodein.factoryOrNull(tag: Any? = null) 
  * @throws Kodein.NotFoundException if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodein.provider(tag: Any? = null) = Provider<T>(generic(), tag)
+inline fun <reified T : Any> DKodeinAware.provider(tag: Any? = null) = dkodein.Provider<T>(generic(), tag)
 
-inline fun <reified A, reified T : Any> DKodein.provider(tag: Any? = null, arg: A) = Factory<A, T>(generic(), generic(), tag).toProvider { arg }
+inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: A) = dkodein.Factory<A, T>(generic(), generic(), tag).toProvider { arg }
 
-inline fun <reified A, reified T : Any> DKodein.provider(tag: Any? = null, noinline fArg: () -> A) = Factory<A, T>(generic(), generic(), tag).toProvider(fArg)
+inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, noinline fArg: () -> A) = dkodein.Factory<A, T>(generic(), generic(), tag).toProvider(fArg)
 
 
 /**
@@ -53,11 +53,11 @@ inline fun <reified A, reified T : Any> DKodein.provider(tag: Any? = null, noinl
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : Any> DKodein.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(generic(), tag)
+inline fun <reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null) = dkodein.ProviderOrNull<T>(generic(), tag)
 
-inline fun <reified A, reified T : Any> DKodein.providerOrNull(tag: Any? = null, arg: A) = FactoryOrNull<A, T>(generic(), generic(), tag)?.toProvider { arg }
+inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, arg: A) = dkodein.FactoryOrNull<A, T>(generic(), generic(), tag)?.toProvider { arg }
 
-inline fun <reified A, reified T : Any> DKodein.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = FactoryOrNull<A, T>(generic(), generic(), tag)?.toProvider(fArg)
+inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = dkodein.FactoryOrNull<A, T>(generic(), generic(), tag)?.toProvider(fArg)
 
 
 /**
@@ -74,9 +74,9 @@ inline fun <reified A, reified T : Any> DKodein.providerOrNull(tag: Any? = null,
  * @throws Kodein.NotFoundException if no provider was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodein.instance(tag: Any? = null) = Instance<T>(generic(), tag)
+inline fun <reified T : Any> DKodeinAware.instance(tag: Any? = null) = dkodein.Instance<T>(generic(), tag)
 
-inline fun <reified A, reified T : Any> DKodein.instance(tag: Any? = null, arg: A) = Factory<A, T>(generic(), generic(), tag).invoke(arg)
+inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: A) = dkodein.Factory<A, T>(generic(), generic(), tag).invoke(arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -91,6 +91,10 @@ inline fun <reified A, reified T : Any> DKodein.instance(tag: Any? = null, arg: 
  * @return An instance, or null if no provider was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodein.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(generic(), tag)
+inline fun <reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null) = dkodein.InstanceOrNull<T>(generic(), tag)
 
-inline fun <reified A, reified T : Any> DKodein.instanceOrNull(tag: Any? = null, arg: A) = FactoryOrNull<A, T>(generic(), generic(), tag)?.invoke(arg)
+inline fun <reified A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: A) = dkodein.FactoryOrNull<A, T>(generic(), generic(), tag)?.invoke(arg)
+
+inline fun <reified C> DKodeinAware.on(context: C, receiver: Any? = DKodein.SAME_RECEIVER) = dkodein.On(kcontext(context), receiver)
+
+fun DKodeinAware.on(@Suppress("UNUSED_PARAMETER") _0: Nothing? = null, receiver: Any?) = dkodein.On(DKodein.SAME_CONTEXT, receiver)

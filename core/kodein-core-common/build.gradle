@@ -1,5 +1,7 @@
 apply plugin: 'kotlin-platform-common'
 
+sourceSets.main.kotlin.srcDirs += 'src/expect/kotlin'
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
 }

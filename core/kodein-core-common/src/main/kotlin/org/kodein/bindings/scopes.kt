@@ -76,7 +76,17 @@ class SingleItemScopeRegistry : ScopeRegistry, ScopeHolder {
     }
 }
 
-interface Scope<in C> {
+private fun <EC, BC> Scope<EC, BC>._defaultHolder(receiver: Any?, envContext: EC, bindContext: BC): ScopeHolder {
+    val key = Any()
+    val registry = getRegistry(receiver, envContext, bindContext)
+    return object : ScopeHolder {
+        override fun getOrCreate(creator: () -> Pair<Any, () -> Any?>) = registry.getOrCreate(key, creator)
+    }
+}
+
+interface Scope<in EC, BC> {
+
+    fun getBindingContext(envContext: EC): BC
 
     /**
      * Get a registry for a given context. Should always return the same registry for the same receiver / context.
@@ -84,21 +94,46 @@ interface Scope<in C> {
      * @param context The context associated with the returned registry.
      * @return The registry associated with the given context.
      */
-    fun getRegistry(receiver: Any?, context: C): ScopeRegistry
+    fun getRegistry(receiver: Any?, envContext: EC, bindContext: BC): ScopeRegistry
 
-    fun getHolder(receiver: Any?, context: C): ScopeHolder {
-        val key = Any()
-        val registry = getRegistry(receiver, context)
-        return object : ScopeHolder {
-            override fun getOrCreate(creator: () -> Pair<Any, () -> Any?>) = registry.getOrCreate(key, creator)
-        }
+    fun getHolder(receiver: Any?, envContext: EC, bindContext: BC): ScopeHolder = _defaultHolder(receiver, envContext, bindContext)
+}
+
+interface SimpleScope<C> : Scope<C, C> {
+    override fun getBindingContext(envContext: C) = envContext
+
+    fun getRegistry(receiver: Any?, context: C): ScopeRegistry
+    override fun getRegistry(receiver: Any?, envContext: C, bindContext: C) = getRegistry(receiver, envContext)
+
+    fun getHolder(receiver: Any?, context: C): ScopeHolder = _defaultHolder(receiver, context, context)
+    override fun getHolder(receiver: Any?, envContext: C, bindContext: C) = getHolder(receiver, envContext)
+}
+
+class Request(var userData: Any?) {
+    companion object {
+        val threadRequest: Request get() = TODO()
     }
 }
 
-class NoScope: Scope<Any?> {
+object requestScope : SimpleScope<Request> {
+    override fun getRegistry(receiver: Any?, context: Request): ScopeRegistry =
+            context.userData as? ScopeRegistry ?: MultiItemScopeRegistry().also { context.userData = it }
+}
+
+object treadRequestScope : Scope<Any?, Request> {
+    override fun getBindingContext(envContext: Any?): Request = Request.threadRequest
+
+    override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Request): ScopeRegistry =
+            bindContext.userData as? ScopeRegistry ?: MultiItemScopeRegistry().also { bindContext.userData = it }
+}
+
+class NoScope: Scope<Any?, Nothing?> {
+
+    override fun getBindingContext(envContext: Any?) = null
+
     val registry by lazy { MultiItemScopeRegistry() }
-    override fun getRegistry(receiver: Any?, context: Any?) = registry
+    override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Nothing?) = registry
 
     val holder by lazy { SingleItemScopeRegistry() }
-    override fun getHolder(receiver: Any?, context: Any?) = holder
+    override fun getHolder(receiver: Any?, envContext: Any?, bindContext: Nothing?) = holder
 }

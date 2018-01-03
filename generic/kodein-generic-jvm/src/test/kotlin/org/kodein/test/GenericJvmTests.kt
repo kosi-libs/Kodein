@@ -555,7 +555,7 @@ class GenericJvmTests {
     }
 
     class Test14_00(override val kodein: Kodein): KodeinAware {
-        override val injector = KodeinInjector()
+        override val kodeinInjector = KodeinInjector()
         val newPerson: () -> Person by provider()
         val salomon: Person by instance(tag = "named")
         val pFactory: (String) -> Person by factory(tag = "factory")
@@ -572,7 +572,7 @@ class GenericJvmTests {
 
         val injected = Test14_00(kodein)
 
-        injected.injector.inject()
+        injected.kodeinInjector.inject()
         assertNotSame(injected.newPerson(), injected.newPerson())
         assertEquals("Salomon", injected.salomon.name)
         assertSame(injected.salomon, injected.salomon)
@@ -585,7 +585,7 @@ class GenericJvmTests {
     }
 
     class Test14_01(override val kodein: Kodein): KodeinAware {
-        override val injector = KodeinInjector()
+        override val kodeinInjector = KodeinInjector()
         val person: Person by instance()
     }
 
@@ -598,13 +598,14 @@ class GenericJvmTests {
         val container = Test14_01(kodein)
 
         assertFalse(created)
-        container.injector.inject()
+        container.kodeinInjector.inject()
         assertTrue(created)
     }
 
-    object test15Scope : Scope<Unit> {
+    object test15Scope : Scope<Any?, Nothing?> {
         val registry = MultiItemScopeRegistry()
-        override fun getRegistry(receiver: Any?, context: Unit) = registry
+        override fun getBindingContext(envContext: Any?) = null
+        override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Nothing?) = registry
     }
 
     @Test fun test15_00_BindingsDescription() {
@@ -626,8 +627,8 @@ class GenericJvmTests {
         assertTrue("bind<IPerson>(tag = \"singleton\") with singleton { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"factory\") with factory { String -> Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"instance\") with instance ( Person )" in lines)
-        assertTrue("bind<Int>(tag = \"answer\") with instance ( Int )" in lines)
         assertTrue("bind<String>(tag = \"scoped\") with scoped(GenericJvmTests.test15Scope).singleton { String }" in lines)
+        assertTrue("bind<Int>(tag = \"answer\") with instance ( Int )" in lines)
     }
 
     @Test fun test15_01_BindingsFullDescription() {
@@ -649,8 +650,8 @@ class GenericJvmTests {
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"singleton\") with singleton { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"factory\") with factory { kotlin.String -> org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"instance\") with instance ( org.kodein.test.Person )" in lines)
-        assertTrue("bind<kotlin.Int>(tag = \"answer\") with instance ( kotlin.Int )" in lines)
         assertTrue("bind<kotlin.String>(tag = \"scoped\") with scoped(org.kodein.test.GenericJvmTests.test15Scope).singleton { kotlin.String }" in lines)
+        assertTrue("bind<kotlin.Int>(tag = \"answer\") with instance ( kotlin.Int )" in lines)
     }
 
     @Test fun test15_02_RegisteredBindings() {
@@ -676,8 +677,9 @@ class GenericJvmTests {
 
     @Test fun test16_00_AnyScopeSingleton() {
         val registry = MultiItemScopeRegistry()
-        val myScope = object : Scope<Any?> {
-            override fun getRegistry(receiver: Any?, context: Any?) = registry
+        val myScope = object : Scope<Any?, Nothing?> {
+            override fun getBindingContext(envContext: Any?) = null
+            override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Nothing?) = registry
         }
         val kodein = Kodein {
             bind<Person>() with scoped(myScope).singleton { Person() }
@@ -694,23 +696,23 @@ class GenericJvmTests {
     @Test fun test16_01_ScopeSingleton() {
 
         val registries = mapOf("a" to SingleItemScopeRegistry(), "b" to SingleItemScopeRegistry())
-        val myScope = object : Scope<String> {
+        val myScope = object : SimpleScope<String> {
             override fun getRegistry(receiver: Any?, context: String) = registries[context]!!
         }
         val kodein = Kodein {
             bind<Person>() with scoped(myScope).singleton { Person() }
         }
 
-        val a: Person by kodein.on(kcontext("a")).instance()
-        val b: Person by kodein.on(kcontext("b")).instance()
+        val a: Person by kodein.on(context = "a").instance()
+        val b: Person by kodein.on(context = "b").instance()
         assertNotSame(a, b)
-        assertSame(a, kodein.direct.on(kcontext("a")).instance())
-        assertSame(b, kodein.direct.on(kcontext("b")).instance())
+        assertSame(a, kodein.direct.on(context = "a").instance())
+        assertSame(b, kodein.direct.on(context = "b").instance())
 
         registries.values.forEach { it.clear() }
 
-        assertNotSame(a, kodein.direct.on(kcontext("a")).instance())
-        assertNotSame(b, kodein.direct.on(kcontext("b")).instance())
+        assertNotSame(a, kodein.direct.on(context = "a").instance())
+        assertNotSame(b, kodein.direct.on(context = "b").instance())
     }
 
     @Test fun test16_02_ScopeIgnoredSingleton() {
@@ -719,8 +721,8 @@ class GenericJvmTests {
             bind<Person>() with singleton { Person() }
         }
 
-        val a: Person by kodein.on(kcontext("a")).instance()
-        val b: Person by kodein.on(kcontext("b")).instance()
+        val a: Person by kodein.on(context = "a").instance()
+        val b: Person by kodein.on(context = "b").instance()
         assertSame(a, b)
     }
 
@@ -784,7 +786,7 @@ class GenericJvmTests {
 
         assertFailsWith<Kodein.DependencyLoopException> {
             @Suppress("UNUSED_VARIABLE")
-            val instance: String by kodein.on(mode = PropMode.DIRECT).instance(tag = "name")
+            kodein.direct.instance<String>(tag = "name")
         }
     }
 
@@ -901,7 +903,7 @@ class GenericJvmTests {
 
 
     class Test22(kodein: Kodein) {
-        val name: String by kodein.on(mode = PropMode.DIRECT).instance(tag = "name")
+        val name: String by kodein.instance(tag = "name")
     }
 
     @Test fun test22_00_Now() {
@@ -1011,7 +1013,7 @@ class GenericJvmTests {
             bind<Person>(tag = "Spouse") with singleton { Person("Laila") }
         }
 
-        val wedding = kodein.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }
+        val wedding by kodein.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }
         assertEquals("Salomon", wedding.him.name)
         assertEquals("Laila", wedding.her.name)
     }

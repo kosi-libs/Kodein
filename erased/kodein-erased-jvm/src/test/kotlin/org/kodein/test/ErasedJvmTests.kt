@@ -1,10 +1,7 @@
 package org.kodein.test
 
 import org.kodein.*
-import org.kodein.bindings.ExternalSource
-import org.kodein.bindings.NoScope
-import org.kodein.bindings.Singleton
-import org.kodein.bindings.externalFactory
+import org.kodein.bindings.*
 import org.kodein.erased.*
 import kotlin.concurrent.thread
 import kotlin.test.*
@@ -102,11 +99,11 @@ class ErasedJvmTests {
         assertNotEquals(id, System.identityHashCode(p))
     }
 
-//    object test15Scope : AutoScope<Unit> {
-//        val registry = ScopeRegistry()
-//        override fun getRegistry(context: Unit) = registry
-//        override fun getContext() = Unit
-//    }
+    object test15Scope : Scope<Any?, Nothing?> {
+        val registry = MultiItemScopeRegistry()
+        override fun getBindingContext(envContext: Any?) = null
+        override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Nothing?) = registry
+    }
 
     // Only the JVM supports precise description
     @Test fun test15_00_BindingsDescription() {
@@ -117,21 +114,19 @@ class ErasedJvmTests {
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
-//            bind<String>(tag = "scoped") with scopedSingleton(test15Scope) { "" }
-//            bind<String>(tag = "auto-scoped") with autoScopedSingleton(test15Scope) { "" }
+            bind<String>(tag = "scoped") with scoped(test15Scope).singleton { "" }
             constant(tag = "answer") with 42
         }
 
         val lines = kodein.container.bindings.description().trim().lineSequence().map(String::trim).toList()
-        assertEquals(6, lines.size)
+        assertEquals(7, lines.size)
         assertTrue("bind<IPerson>() with provider { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"thread-singleton\") with singleton(ref = threadLocal) { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"singleton\") with singleton { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"factory\") with factory { String -> Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"instance\") with instance ( Person )" in lines)
+        assertTrue("bind<String>(tag = \"scoped\") with scoped(ErasedJvmTests.test15Scope).singleton { String }" in lines)
         assertTrue("bind<Int>(tag = \"answer\") with instance ( Int )" in lines)
-//        assertTrue("bind<String>(tag = \"scoped\") with scopedSingleton(ErasedJvmTests.test15Scope) { Unit -> String }" in lines)
-//        assertTrue("bind<String>(tag = \"auto-scoped\") with autoScopedSingleton(ErasedJvmTests.test15Scope) { String }" in lines)
     }
 
     // Only the JVM supports precise description
@@ -143,21 +138,19 @@ class ErasedJvmTests {
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
-//            bind<String>(tag = "scoped") with scopedSingleton(test15Scope) { "" }
-//            bind<String>(tag = "auto-scoped") with autoScopedSingleton(test15Scope) { "" }
+            bind<String>(tag = "scoped") with scoped(test15Scope).singleton { "" }
             constant(tag = "answer") with 42
         }
 
         val lines = kodein.container.bindings.fullDescription().trim().lineSequence().map(String::trim).toList()
-        assertEquals(6, lines.size)
+        assertEquals(7, lines.size)
         assertTrue("bind<org.kodein.test.IPerson>() with provider { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"thread-singleton\") with singleton(ref = org.kodein.threadLocal) { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"singleton\") with singleton { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"factory\") with factory { kotlin.String -> org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"instance\") with instance ( org.kodein.test.Person )" in lines)
+        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scoped(org.kodein.test.ErasedJvmTests.test15Scope).singleton { kotlin.String }" in lines)
         assertTrue("bind<kotlin.Int>(tag = \"answer\") with instance ( kotlin.Int )" in lines)
-//        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scopedSingleton(ErasedJvmTests.test15Scope) { kotlin.Unit -> kotlin.String }" in lines)
-//        assertTrue("bind<kotlin.String>(tag = \"auto-scoped\") with autoScopedSingleton(ErasedJvmTests.test15Scope) { kotlin.String }" in lines)
     }
 
     // Only the JVM supports precise description

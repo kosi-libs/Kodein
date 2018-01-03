@@ -10,7 +10,7 @@ import org.kodein.direct
  * Kodein implementation.
  *
  * Contains almost nothing because the Kodein object itself contains very few logic.
- * Everything is delegated wither to [typed] or to [container].
+ * Everything is delegated wither to [container].
  */
 internal open class KodeinImpl internal constructor(private val _container: KodeinContainer) : Kodein {
 
@@ -76,12 +76,12 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
 
 @Suppress("UNCHECKED_CAST")
 internal open class BindingKodeinImpl<out C, out A, out T: Any> internal constructor(
-        val dkodein: DKodein,
+        override val dkodein: DKodein,
         private val _key: Kodein.Key<C, A, T>,
         override val context: C,
         override val receiver: Any?,
         private val _overrideLevel: Int
 ) : DKodein by dkodein, BindingKodein<C> {
-    override fun overriddenFactory(): (Any?) -> Any = kodein.container.factory(_key, context, receiver, _overrideLevel + 1) as (Any?) -> Any
-    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = kodein.container.factoryOrNull(_key, context, receiver, _overrideLevel + 1) as ((Any?) -> Any)?
+    override fun overriddenFactory(): (Any?) -> Any = container.factory(_key, context, receiver, _overrideLevel + 1) as (Any?) -> Any
+    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = container.factoryOrNull(_key, context, receiver, _overrideLevel + 1) as ((Any?) -> Any)?
 }

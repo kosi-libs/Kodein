@@ -1,4 +1,4 @@
-= KOtlin DEpendency INjection
+= KOtlin DEpendency INjection V3
 Salomon BRYS <salomon.brys@gmail.com>
 :toc: left
 :toc-position: left

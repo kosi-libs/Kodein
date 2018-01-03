@@ -19,6 +19,7 @@ Kodein works:
 - On the JVM.
 - On Android.
 - On Javascript (both in the browser and on Node.js).
+- On Native platforms (such as iOS).
 
 Kodein allows you to:
 
@@ -26,6 +27,10 @@ Kodein allows you to:
 - Stop caring about dependency initialization order
 - Easily bind classes or interfaces to their instance or provider
 - Easily debug your dependency bindings and recursions
+
+Kodein provides extensions to be integrable into:
+
+- Android
 
 An example is always better than a thousand words:
 
@@ -36,38 +41,41 @@ val kodein = Kodein {
 }
 
 class Controller(private kodein: Kodein) {
-    private val ds: DataSource = kodein.instance()
+    private val ds: DataSource by kodein.instance()
 }
 ```
 
 Kodein is a good choice because:
 
-- It is small, fast and optimized (makes extensive use of `inline`)
 - It proposes a very simple and readable declarative DSL
 - It is not subject to type erasure (as Java is)
 - It integrates nicely with Android
 - It proposes a very kotlin-esque idiomatic API
+- It is fast and optimized (makes extensive use of `inline`)
 - It can be used in plain Java
 
 
 Read more
 ---------
 
-Kodein version 4 is the current major version available:
-
-- **[Kodein 4 full documentation](https://salomonbrys.github.io/Kodein/)**
-- [Kodein 4 API reference](https://github.com/SalomonBrys/Kodein/blob/master/dokka/out/doc/index.md)
-
-If you are currently using a `javax.inject` compatible dependency injection library and whish to migrate to Kodein, [there is a guide for that](https://github.com/SalomonBrys/Kodein/blob/master/MIGRATION-JtoK.adoc).
-
-If you are still using version 3, you can access [version 3 documentation](https://github.com/SalomonBrys/Kodein/blob/master/DOCUMENTATION_V3.adoc).
+[The documentation is available here](https://salomonbrys.github.io/Kodein/).
 
 
 Support
 -------
 
-Support is held in the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/).
-You can get an invite to the Kotlin Slack [here](http://slack.kotlinlang.org/).
+Support is held in the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/)
+(you can get an invite to the Kotlin Slack [here](http://slack.kotlinlang.org/)).
+
+
+Future
+------
+
+The following frameworks will receive special love from Kodein:
+
+- TornadoFX
+- Cocoa-Touch (iOS)
+- Ktor
 
 
 &nbsp;

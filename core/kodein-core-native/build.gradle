@@ -7,6 +7,6 @@ konanArtifacts {
         srcFiles fileTree("src/main/kotlin")
         srcFiles fileTree("../kodein-core-common/src/main/kotlin")
 
-        extraOpts "-Xmulti-platform"
+//        extraOpts "-Xmulti-platform"
     }
 }

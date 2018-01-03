@@ -2,14 +2,16 @@ package org.kodein.bindings
 
 import java.util.*
 
-class WeakContextScope<in T> : Scope<T> {
+class WeakContextScope<C> : Scope<C, C> {
 
-    private val map = WeakHashMap<T, ScopeRegistry>()
+    private val map = WeakHashMap<C, ScopeRegistry>()
 
-    override fun getRegistry(receiver: Any?, context: T): ScopeRegistry {
-        map[context]?.let { return it }
+    override fun getBindingContext(envContext: C) = envContext
+
+    override fun getRegistry(receiver: Any?, envContext: C, bindContext: C): ScopeRegistry {
+        map[bindContext]?.let { return it }
         synchronized(map) {
-            return map.getOrPut(context) { MultiItemScopeRegistry() }
+            return map.getOrPut(bindContext) { MultiItemScopeRegistry() }
         }
     }
 

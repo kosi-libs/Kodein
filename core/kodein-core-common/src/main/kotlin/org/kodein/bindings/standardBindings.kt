@@ -28,7 +28,7 @@ class Factory<C, A, T: Any>(override val contextType: TypeToken<in C>, override 
  * @property createdType The type of the created object, *used for debug print only*.
  * @property creator The function that will be called the first time an instance is requested. Guaranteed to be called only once per argument. Should create a new instance.
  */
-class Multiton<C, A, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, private val creator: SimpleBindingKodein<C>.(A) -> T) : KodeinBinding<C, A, T> {
+class Multiton<EC, BC, A, T: Any>(override val scope: Scope<EC, BC>, override val contextType: TypeToken<in EC>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, private val creator: SimpleBindingKodein<BC>.(A) -> T) : KodeinBinding<EC, A, T> {
     private val _refMaker = refMaker ?: SingletonReference
 
     private fun _factoryName(params: List<String>) = buildString {
@@ -51,11 +51,12 @@ class Multiton<C, A, T: Any>(override val scope: Scope<C>, override val contextT
         return _factoryName(params)
     }
 
-    override fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, A, T>): (A) -> T {
-        val registry = scope.getRegistry(kodein.receiver, kodein.context)
+    override fun getFactory(kodein: BindingKodein<EC>, key: Kodein.Key<EC, A, T>): (A) -> T {
+        val bindContext = scope.getBindingContext(kodein.context)
+        val registry = scope.getRegistry(kodein.receiver, kodein.context, bindContext)
         return { arg ->
             @Suppress("UNCHECKED_CAST")
-            registry.getOrCreate(arg) { _refMaker.make { kodein.creator(arg) } } as T
+            registry.getOrCreate(arg) { _refMaker.make { BindingKodeinContextWrap(kodein, bindContext).creator(arg) } } as T
         }
     }
 }
@@ -82,7 +83,7 @@ class Provider<C, T: Any>(override val contextType: TypeToken<in C>, override va
  * @param createdType The type of the created object, *used for debug print only*.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
-class Singleton<C, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, val creator: NoArgSimpleBindingKodein<C>.() -> T) : NoArgKodeinBinding<C, T> {
+class Singleton<EC, BC, T: Any>(override val scope: Scope<EC, BC>, override val contextType: TypeToken<in EC>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, val creator: NoArgSimpleBindingKodein<BC>.() -> T) : NoArgKodeinBinding<EC, T> {
     @Suppress("UNCHECKED_CAST")
     private val _refMaker = refMaker ?: SingletonReference
     private val _scopeKey = Any()
@@ -107,11 +108,12 @@ class Singleton<C, T: Any>(override val scope: Scope<C>, override val contextTyp
         return _factoryName(params)
     }
 
-    override fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, Unit, T>): (Unit) -> T {
-        val registry = scope.getRegistry(kodein.receiver, kodein.context)
+    override fun getFactory(kodein: BindingKodein<EC>, key: Kodein.Key<EC, Unit, T>): (Unit) -> T {
+        val bindContext = scope.getBindingContext(kodein.context)
+        val registry = scope.getRegistry(kodein.receiver, kodein.context, bindContext)
         return {
             @Suppress("UNCHECKED_CAST")
-            registry.getOrCreate(_scopeKey) { _refMaker.make { NoArgBindingKodeinWrap(kodein).creator() } } as T
+            registry.getOrCreate(_scopeKey) { _refMaker.make { NoArgBindingKodeinWrap(BindingKodeinContextWrap(kodein, bindContext)).creator() } } as T
         }
     }
 }

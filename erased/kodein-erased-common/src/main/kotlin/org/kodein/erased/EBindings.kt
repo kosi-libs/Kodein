@@ -2,11 +2,12 @@
 
 package org.kodein.erased
 
-import org.kodein.*
+import org.kodein.Kodein
 import org.kodein.bindings.*
+import org.kodein.erased
 
-inline fun <reified C> Kodein.Builder.scoped(scope: Scope<C>) = Kodein.BindBuilder.Scoped.Impl(erased(), scope)
-inline fun <reified C> Kodein.Builder.contexted() = Kodein.BindBuilder.Contexted.Impl<C>(erased())
+inline fun <reified EC, BC> Kodein.Builder.scoped(scope: Scope<EC, BC>): Kodein.BindBuilder.Scoped<EC, BC> = Kodein.BindBuilder.Scoped.Impl(erased(), scope)
+inline fun <reified C> Kodein.Builder.contexted(): Kodein.BindBuilder.Contexted<C> = Kodein.BindBuilder.Contexted.Impl(erased())
 
 
 /**
@@ -43,7 +44,7 @@ inline fun <C, reified T: Any> Kodein.BindBuilder.Contexted<C>.provider(noinline
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  * @return A singleton ready to be bound.
  */
-inline fun <C, reified T: Any> Kodein.BindBuilder.Scoped<C>.singleton(ref: RefMaker? = null, noinline creator: NoArgSimpleBindingKodein<C>.() -> T) = Singleton<C, T>(scope, contextType, erased(), ref, creator)
+inline fun <EC, BC, reified T: Any> Kodein.BindBuilder.Scoped<EC, BC>.singleton(ref: RefMaker? = null, noinline creator: NoArgSimpleBindingKodein<BC>.() -> T) = Singleton<EC, BC, T>(scope, contextType, erased(), ref, creator)
 
 /**
  * Creates a multiton: will create an instance on first request for each different argument and will subsequently always return the same instance for the same argument.
@@ -55,7 +56,7 @@ inline fun <C, reified T: Any> Kodein.BindBuilder.Scoped<C>.singleton(ref: RefMa
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A multiton ready to be bound.
  */
-inline fun <C, reified A, reified T: Any> Kodein.BindBuilder.Scoped<C>.multiton(ref: RefMaker? = null, noinline creator: SimpleBindingKodein<C>.(A) -> T) = Multiton<C, A, T>(scope, contextType, erased(), erased(), ref, creator)
+inline fun <EC, BC, reified A, reified T: Any> Kodein.BindBuilder.Scoped<EC, BC>.multiton(ref: RefMaker? = null, noinline creator: SimpleBindingKodein<BC>.(A) -> T) = Multiton<EC, BC, A, T>(scope, contextType, erased(), erased(), ref, creator)
 
 /**
  * Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.

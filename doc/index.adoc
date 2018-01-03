@@ -1,0 +1,37 @@
+= KOtlin DEpendency INjection
+Salomon BRYS <salomon.brys@gmail.com>
+:version: 5.0.0-beta1
+:branch: 5.0
+
+image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]
+
+Kodein version {version} is the current major version available.
+
+== Getting started
+
+- On the JVM (TODO)
+- On Android (TODO)
+- On Javascript (TODO)
+- On Native (TODO)
+
+
+== https://salomonbrys.github.io/Kodein/#5.0/core[Full documentation]
+
+
+== Extensions
+
+- https://salomonbrys.github.io/Kodein/?{branch}/configurable[Configurable & global Kodein]
+- https://salomonbrys.github.io/Kodein/?{branch}/android[Kodein on Android]
+- https://salomonbrys.github.io/Kodein/?{branch}/jsr330[JSR-330 compatibility]
+
+
+== Migrations
+
+- https://salomonbrys.github.io/Kodein/?{branch}/migration-j2k[JSR-330 to Kodein]
+- Version 4 to version 5
+
+
+== Previous versions
+
+- https://salomonbrys.github.io/Kodein/?{branch}/old/v4[version 4]
+- https://salomonbrys.github.io/Kodein/?{branch}/old/v3[version 3].

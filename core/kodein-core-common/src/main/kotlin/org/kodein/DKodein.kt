@@ -1,13 +1,19 @@
 package org.kodein
 
-interface DKodein {
+interface DKodeinAware {
+    val dkodein: DKodein
+}
 
-    val kodein: Kodein
+interface DKodein : DKodeinAware {
+
+    val container: KodeinContainer
+
+    val lazy: Kodein
 
     object SAME_CONTEXT : KodeinContext<Unit>(UnitToken, Unit)
     object SAME_RECEIVER
 
-    fun on(context: KodeinContext<*> = SAME_CONTEXT, receiver: Any? = SAME_RECEIVER): DKodein
+    fun On(context: KodeinContext<*> = SAME_CONTEXT, receiver: Any? = SAME_RECEIVER): DKodein
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag.
@@ -73,9 +79,9 @@ interface DKodein {
      * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
      */
-    fun <T : Any> Instance(type: TypeToken<T>, tag: Any? /*/*= null*/*/): T
+    fun <T : Any> Instance(type: TypeToken<T>, tag: Any? /*= null*/): T
 
-    fun <A, T : Any> Instance(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*/*= null*/*/, arg: A): T
+    fun <A, T : Any> Instance(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: A): T
 
     /**
      * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -89,3 +95,7 @@ interface DKodein {
 
     fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: A): T?
 }
+
+inline fun <T> DKodeinAware.newInstance(creator: DKodein.() -> T): T = dkodein.run(creator)
+
+val DKodeinAware.lazy: Kodein get() = dkodein.lazy

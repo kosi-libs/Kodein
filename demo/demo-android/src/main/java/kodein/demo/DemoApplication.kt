@@ -11,7 +11,7 @@ import org.kodein.android.androidModule
 
 class DemoApplication : Application(), KodeinAware {
 
-    override val kodein = Kodein {
+    override val kodein by Kodein.lazy {
         import(androidModule(this@DemoApplication))
 
         bind<Logger>() with instance(Logger())

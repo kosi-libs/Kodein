@@ -2,7 +2,6 @@ package org.kodein.conf
 
 import org.kodein.Kodein
 import org.kodein.KodeinContainer
-import org.kodein.PropMode
 import org.kodein.internal.synchronizedIfNull
 
 /**
@@ -159,7 +158,4 @@ class ConfigurableKodein : Kodein {
 
     /** @suppress */
     override val container: KodeinContainer get() = getOrConstruct().container
-
-    /** @suppress */
-    override val kodeinPropertyMode: PropMode get() = getOrConstruct().kodeinPropertyMode
 }

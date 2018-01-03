@@ -1,0 +1,250 @@
+= Kodein on Android
+Salomon BRYS <salomon.brys@gmail.com>
+:toc: left
+:toc-position: left
+:toclevels: 5
+
+:version: 5.0.0-beta1
+:branch: 5.0
+
+You can use Kodein as-is in your Android project or use the util library `kodein-android`.
+
+NOTE: Kodein does work on Android as-is.
+      The `kodein-android` extension adds multiple android-specific utilities to Kodein. +
+      Using or not using this extension really depends on your needs.
+
+Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/demo-android[Android demo project]!
+
+
+== Install
+
+.How to use `kodein-android`:
+. Add this line in your `dependencies` block in your application `build.gradle` file:
++
+[subs="attributes"]
+----
+compile 'org.kodein:kodein-generic-jvm:{version}'
+compile 'org.kodein:kodein-android:{version}'
+----
++
+IMPORTANT: Both `kodein-generic-jvm` and `kodein-android` dependencies must be declared. +
++
+NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
+
+. Declare the dependency bindings in the Android `Application`, having it implements `KodeinAware`.
++
+[source, kotlin]
+.Example: an Android Application class that implements KodeinAware
+----
+class MyApp : Application(), KodeinAware {
+	override val kodein by Kodein.lazy { <1>
+	    /* bindings */
+	}
+}
+----
+<1> Using `Kodein.lazy` allows you to access the `Context` at binding time.
++
+TIP: Don't forget to declare the Application in the `AndroidManifest.xml` file!
+
+. In your Activities, Fragments, and other context aware android classes, retrieve the `Kodein` object with the `closestKodein` function.
+
+. Retrieve your dependencies!
+
+
+== Retrieving
+
+Injection does not work on Android classes that are reified by the system (`Activity`, `Fragment`, etc.) due the fact that... they are reified by the system!
+Therefore, on such classes, you need can either use retrieval, or if you want these classes to be independent of Kodein, use the <<dependency-holder,dependency holder pattern>>.
+
+
+=== Getting a Kodein object
+
+You can always get the `Kodein` object by using:
+
+- `closestKodein()` inside an Android class (such as `Context`, `Activity`, `Fragment`, etc.)
+- `closestKodein(context)` or `closestKodein(() -> context)` inside another class
+
+CAUTION: The `closestKodein` function will only work if your Android `Application` class implements the `KodeinAware` interface.
+
+TIP: The `closestKodein` result should be cached and not used multiple times in a row.
+
+
+=== Being KodeinAware
+
+It is very simple to have your Android classes be `KodeinAware`:
+
+[source, kotlin]
+.Example: a KodeinAware Android Activity
+----
+class MyActivity : Activity(), KodeinAware {
+    override val kodein by closestKodein()
+    val ds: DataSource by instance()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ds.connect() <1>
+        /* ... */
+    }
+}
+----
+<1> Because everything is lazy, the `kodein` AND `ds` instances will both be retrieved only when needed, which is at that time.
+
+
+=== Using an injector
+
+If you want all dependencies to be retrieved at `onCreate`, you can very easily use an injector:
+
+[source, kotlin]
+.Example: using an injector in a KodeinAware Android Activity
+----
+class MyActivity : Activity(), KodeinAware {
+    override val kodein by closestKodein()
+    override val kodeinInjector = KodeinInjector()
+    val ds: DataSource by instance()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        kodeinInjector.inject() <1>
+        /* ... */
+    }
+}
+----
+<1> The `kodein` AND all dependencies will both be retrieved at that time.
+
+NOTE: Using this approach has an important advantage: as all dependencies are retrieved in `onCreate`, you can be sure that all your dependencies have correctly been retrieved, meaning that there were no non-declared dependency. +
+      If you only use `instance` (no `provider` or `factory`), you can also be sure that there were no dependency loop.
+
+
+== Android module
+
+Kodein-Android proposes a `Module` that enables easy retrieval, of a lot of standard android services.
+
+NOTE: This module is absolutely *optional*, you are free to use it or leave it ;).
+
+[source, kotlin]
+.Example: importing the android module
+----
+class MyApplication : Application(), KodeinAware {
+    override val kodein by Kodein.lazy {
+        import(androidModule(this@MyApplication))
+	    /* bindings */
+    }
+}
+----
+
+You can see everything that this module proposes in the Kodein-Android https://github.com/SalomonBrys/Kodein/blob/{branch}/framework/kodein-framework-android/src/main/java/org/kodein/android/module.kt[module.kt] file.
+
+[source, kotlin]
+.Example: using kodein to retrieve a LayoutInflater
+----
+class MyActivity : Activity(), KodeinAware {
+    override val kodein by closestKodein()
+    val inflater: LayoutInflater by instance() <1>
+}
+----
+
+If you are retrieving these classes inside a non-Android class, you need to define an Android `Context` as a Kodein context:
+
+[source, kotlin]
+.Example: using kodein with a context to retrieve a LayoutInflater
+----
+val inflater: LayoutInflater by kodein.on(context = getActivity()).instance()
+----
+
+or
+
+[source, kotlin]
+.Example: using kodein with a class context to retrieve a LayoutInflater
+----
+class MyController(androidContext: Context) : KodeinAware {
+    override val kodein by androidContext.closestKodein()
+    override val kodeinContext = kcontext(androidContext)
+    val inflater: LayoutInflater by instance()
+}
+----
+
+
+== Layered dependencies
+
+=== Component based Kodein
+
+In Android, each component has its own lifecycle, much like a "mini application".
+You may need to have dependencies that are defined only inside a specific activity.
+Kodein allows you to create a `Kodein` instance that lives only insidce your own Activity:
+
+[source, kotlin]
+.Example: defining an Activity specific Kodein
+----
+class MyActivity : Activity(), KodeinAware {
+    private val _parentKodein by closestKodein() <1>
+    override val kodein: Kodein by Kodein {
+        extend(_parentKodein) <2>
+        /* activity specific bindings */
+    }
+}
+----
+<1> Get the "global" application kodein.
+<2> Extends the "global" application kodein, to be able to access, with this new `Kodein` object, all bindings defined at the application level.
+
+
+=== Activity Retained Kodein
+
+Kodein-Android provides `retainedKodein` for Activities.
+It creates a Kodein object that is *immune to activity restarts*.
+
+CAUTION: This means that you *should never access the containing activity* it may have been restarted and not valid anymore!
+
+[source, kotlin]
+.Example: defining an Activity specific Kodein
+----
+class MyActivity : Activity(), KodeinAware {
+    private val _parentKodein by closestKodein()
+    override val kodein: Kodein by retainedKodein { <1>
+        extend(_parentKodein)
+        /* activity specific bindings */
+    }
+}
+----
+<1> Using `retainedKodein` instead of `Kodein` ensures that the Kodein object is retained and not recreated between activity restarts.
+
+
+=== The Closest Kodein pattern
+
+Android components can be thought as layers.
+For example, a `View` defines a layer, on top of an `Activity` layer, itself on top of the `Application` layer.
+
+The `closestKodein` function will always return the kodein of the closest parent layer.
+In a `View` or a `Fragment`, for example, it will return the containing Activity's Kodein, if it defines one, else it will return the "global" Application Kodein.
+
+In the previous code example, if `MyActivity` contains Fragments, and that these fragments get their Kodein object via `closestKodein`, they will receive the `MyActivity` Kodein object, instead of the Application one.
+
+
+== Android scopes
+
+=== Component scopes
+
+Kodein-Android provides standard scope for any android component:
+
+[source, kotlin]
+.Example: using an Activity scope
+----
+val kodein = Kodein {
+    bind<Controller>() with scoped(androidScope<Activity>()).singleton { ControllerImpl(context) } <1>
+}
+----
+<1> `context` is of type `Activity` because we are using the `androidScope<Activity>()`.
+
+
+=== Activity retained scope
+
+Kodein-Android provides the `activityRetainedScope`, which is a scope that allows to get an activity-scoped singleton that's independent from the activity restart.
+
+This means that for the same activity, you'll get the same instance, even if the activity restarts.
+
+CAUTION: This means that you *should never retain the activity* passed at creation because it may have been restarted and not valid anymore!
+
+[source, kotlin]
+.Example: using an Activity retained scope
+----
+val kodein = Kodein {
+    bind<Controller>() with scoped(activityRetainedScope).singleton { ControllerImpl() } <1>
+}
+----

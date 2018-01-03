@@ -1,0 +1,1501 @@
+= KOtlin DEpendency INjection
+Salomon BRYS <salomon.brys@gmail.com>
+:toc: left
+:toc-position: left
+:toclevels: 5
+
+:version: 5.0.0-beta1
+:branch: 5.0
+
+image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]
+
+== Introduction
+
+=== Description
+
+[.lead]
+Kodein is a very useful dependency injection / retrieval container, it is very easy to use and configure.
+
+.Kodein allows you to:
+- Lazily instantiate your dependencies when needed.
+- Stop caring about dependency initialization order.
+- Easily bind classes or interfaces to their instance, provider or factory.
+- Easily debug your dependency bindings and recursions.
+
+.Kodein is a good choice because:
+- It is small, fast and optimized (makes extensive use of `inline`).
+- It proposes a very simple and readable declarative DSL.
+- It is not subject to type erasure (like Java).
+- It integrates nicely with Android.
+- It proposes a very kotlin-esque idiomatic API.
+- It can be used in plain Java.
+
+
+=== Example
+
+Kodein makes it very easy to bind a type to a scope:
+
+[source,kotlin]
+.Example bindings:
+----
+val kodein = Kodein {
+    bind<Dice>() with provider { RandomDice(0, 5) }
+    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+}
+----
+
+Once bindings are declared, Kodein allows you to either inject or retrieve the dependencies for a class.
+
+If you want your class to be unaware of dependency retrieval, then you can *inject* dependencies at construction:
+
+[source,kotlin]
+.Using Kodein's dependency injection via construction:
+----
+class Controller(private val ds: DataSource) {
+    /*...*/
+}
+val controller by kodein.newInstance { Controller(instance()) }
+----
+
+If you want your class to handle it's dependencies by itself, then you can have it easily *retrieve* them:
+
+[source,kotlin]
+.Using Kodein's dependency injection via construction:
+----
+class Controller(override val kodein: Kodein): KodeinAware {
+    private val ds: DataSource by instance()
+}
+----
+
+
+== Platform compatibility & Genericity
+
+Kodein is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
+
+On the JVM & compatible (Android), you need to choose to use either the `erased` or the `generic` version. +
+On the Javascript and Native targets, only the `erased` version is available.
+
+The difference is very simple: the `generic` version is *NOT* subject to type erasure while the `erased` version *IS*.
+
+Of course, it is a little bit more complicated! +
+To be able to circumvent the type erasure that's inherent to the JVM bytecode, the `generic` version uses a trix that makes heavy use of reflexivity.
+Because the `erased` version does not use that trix, handling generic types in Kodein are a lot more complex to use.
+
+[options="header"]
+|=======
+| &nbsp;    | Type erasure | Optimized | Non-generic bindings | Generic bindings
+| *generic* | *immune*     | no        | *simple*             | *simple*
+| *erased*  | subject      | *yes*     | *simple*             | complex
+|=======
+
+[WARNING]
+====
+Yes, #perfmatters. However, the humble opinion of the author is that:
+
+- There is a balance to be found between performance, readability, security and debuggability.
+- Optimisation is important *in critical path*, not _everywhere_.
+- Kodein is already pretty optimized ;)
+- In the vast majority of cases, using the erased version will result in **no significant performance change** to your application, as IoC happens once and is not a performance pitfall!
+
+Therefore, please make sure that, using the erased version is right for your use case, before blindly using it ;).
+*Do profile your code*!
+====
+
+On the JVM, you might prefer the erased version if:
+
+- You are confident you are not binding / injecting / retrieving generic types and you are sure *none of the libraries you are using are*.
+- You are not using <<set-bindings,set bindings>>.
+
+If you profile your code and find that injection is a performance pitfall, then it probably is instanciation: you are creating too many objects in critical paths.
+Reusing objects in critical paths will enhance performance both in dependency injection / retrieval and in GC!
+
+If you are using the erased version, either by choice on the JVM, or by default on JS & Native, you should read <<erased-version,erased version pitfalls>>.
+
+
+== Install
+
+=== JVM
+
+==== With Maven
+
+[source,xml,subs="attributes"]
+----
+&lt;dependency&gt;
+    &lt;groupId&gt;org.kodein&lt;/groupId&gt;
+    &lt;artifactId&gt;kodein-generic-jvm&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;
+&lt;/dependency&gt;
+----
+
+NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
+
+
+==== With Gradle
+
+[source,groovy,subs="attributes"]
+----
+compile 'org.kodein:kodein-generic-jvm:{version}'
+----
+
+NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
+
+
+=== JavaScript (gradle)
+
+Because Kodein for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
+
+* In a browser:
+** as an AMD module (for example with RequireJS) (See index.html in the demo project).
+** Directly in an HTML page with a `<script>` tag (See index2.html in the demo project).
+* In NodeJS, as a regular CJS module.
+
+
+==== With Maven
+
+[source,xml,subs="attributes"]
+----
+&lt;dependency&gt;
+    &lt;groupId&gt;org.kodein&lt;/groupId&gt;
+    &lt;artifactId&gt;kodein-js&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;
+&lt;/dependency&gt;
+----
+
+
+==== With Gradle
+
+[source,groovy,subs="attributes"]
+----
+compile 'org.kodein:kodein-js:{version}'
+----
+
+
+[source,groovy,subs="attributes"]
+----
+compile 'org.kodein:kodein-erased-js:{version}'
+----
+
+
+=== Native
+
+TODO!
+
+
+== Bindings: Declaring dependencies
+
+[source,kotlin]
+.Example: initialization of a Kodein variable
+----
+val kodein = Kodein {
+	/* Bindings */
+}
+----
+
+Bindings are declared inside a Kodein initialization block.
+
+NOTE: If you are using `kodein-generic-jvm`, Kodein *not* subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>`).
+
+CAUTION: This is *NOT* the case when using `kodein-erased-jvm`, `kodein-erased-js` or `kodein-erased-native`.
+         With the `erased` version by default, binding `List<Int>` and `List<String>` actually means binding `List<*>` twice.
+
+A binding always starts with `bind<TYPE>() with`.
+
+[.lead]
+There are different ways to declare bindings:
+
+
+[[tagged-bindings]]
+=== Tagged bindings
+
+All bindings can be tagged to allow you to bind different instances of the same type.
+
+[source,kotlin]
+.Example: different Dice bindings
+----
+val kodein = Kodein {
+    bind<Dice>() with ... // <1>
+    bind<Dice>(tag = "DnD10") with ... // <2>
+    bind<Dice>(tag = "DnD20") with ... // <2>
+}
+----
+<1> Default binding (with no tag)
+<2> Bindings with tags (`"DnD10"` and `"DnD20"`)
+
+TIP: The tag is of type `Any`, it does not have to be a `String`.
+
+TIP: Whether at define, at injection or at retrieval, `tag` should always be passed as a named argument.
+
+IMPORTANT: Tag objects must support equality & hashcode comparison.
+           It is therefore recommended to either use primitives (Strings, Ints, etc.) or data classes.
+
+
+=== Provider binding
+
+This binds a type to a provider function, which is a function that takes no arguments and returns an object of the bound type (eg. `() -> T`). +
+The provided function will be called *each time* you need an instance of the bound type.
+
+[source,kotlin]
+.Example: creates a new 6 sided Dice entry each time you need one
+----
+val kodein = Kodein {
+    bind<Dice>() with provider { RandomDice(6) }
+}
+----
+
+
+=== Singleton binding
+
+This binds a type to an instance of this type that will lazily be created at first use via a singleton function, which is a function that takes no arguments and returns an object of the bound type (eg. `() -> T`). +
+Therefore, the provided function will be called *only once*: the first time an instance is needed.
+
+[source,kotlin]
+.Example: creates a DataSource singleton that will be initialized on first access
+----
+val kodein = Kodein {
+    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+}
+----
+
+
+==== Eager singleton
+
+This is the same as a regular singleton, except that the provided function will be called as soon as the Kodein instance is created and all bindings are defined.
+
+[source,kotlin]
+.Example: creates a DataSource singleton that will be initialized as soon as the binding block ends
+----
+val kodein = Kodein {
+    // The SQLite connection will be opened as soon as the kodein instance is ready
+    bind<DataSource>() with eagerSingleton { SqliteDS.open("path/to/file") }
+}
+----
+
+
+=== Factory binding
+
+This binds a type to a factory function, which is a function that takes an argument of a defined type and that returns an object of the bound type (eg. `(A) -> T`). +
+The provided function will be called *each time* you need an instance of the bound type.
+
+[source,kotlin]
+.Example: creates a new Dice each time you need one, according to an Int representing the number of sides
+----
+val kodein = Kodein {
+    bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
+}
+----
+
+
+=== Multiton binding
+
+A multiton can be thought of a "singleton factory": it guarantees to always return the same object given the same argument.
+In other words, for a given argument, the first time a multiton is called with this argument, it will call the function to create an instance; and will always yield that same instance when called with the same argument.
+
+[source,kotlin]
+.Example: creates one random generator for each value
+----
+val kodein = Kodein {
+    bind<RandomGenerator>() with multiton { max: Int -> SecureRandomGenerator(max) }
+}
+----
+
+
+=== Referenced singleton or multiton binding
+
+A referenced singleton is an object that is guaranteed to be single as long as a reference object can return it.
+A referenced multiton is an object that is guaranteed to be single for the same argument as long as a reference object can return it.
+
+A referenced singleton or multiton needs a "reference maker" in addition to the classic construction function that determines the type of reference that will be used.
+
+[.lead]
+Kodein comes with three reference makers for the JVM:
+
+
+==== JVM: Soft & weak
+
+These are objects that are guaranteed to be single in the JVM at a given time, but not guaranteed to be single during the application lifetime.
+If there are no more strong references to the instances, they may be GC'd and later, re-created.
+
+Therefore, the provided function *may or may not* be called multiple times during the application lifetime.
+
+[source,kotlin]
+.Example: creates a Cache object that will exist only once at a given time
+----
+val kodein = Kodein {
+    bind<Map>() with refSingleton(ref = softReference) { WorldMap() } <1>
+    bind<Client>() with refSingleton(ref = weakReference) { id -> clientFromDB(id) } <2>
+}
+----
+<1> Because it's bound by a soft reference, the JVM will GC it before any `OutOfMemoryException` can occur.
+<2> Because it's bound by a weak reference, the JVM will GC it is no more referenced.
+
+Weak singletons use JVM's `WeakReference` while soft singletons use JVM's `SoftReference`.
+
+
+==== JVM: Thread local
+
+This is the same as the standard singleton binding, except that each thread gets a different instance.
+Therefore, the provided function will be called *once per thread* that needs the instance, the first time it is requested.
+
+[source,kotlin]
+.Example: creates a Cache object that will exist once per thread
+----
+val kodein = Kodein {
+    bind<Cache>() with refSingleton(threadLocal) { LRUCache(16 * 1024) }
+}
+----
+
+NOTE: Semantically, thread local singletons should use <<scoped-singletons>>, the reason it uses a referenced singleton is because Java's `ThreadLocal` acts like a reference.
+
+CAUTION: Thread locals are not available in JavaScript.
+
+
+=== Instance binding
+
+This binds a type to an instance that *already exist*.
+
+[source,kotlin]
+.Example: a DataSource binding to an already existing instance.
+----
+val kodein = Kodein {
+    bind<DataSource>() with instance(SqliteDataSource.open("path/to/file")) // <1>
+}
+----
+<1> Instance is used *with parenthesis*: it is not given a function, but an instance.
+
+
+==== Constant binding
+
+It is often useful to bind "configuration" constants.
+
+NOTE: Constants are always <<tagged-bindings,tagged>>.
+
+[source,kotlin]
+.Example: two constants
+----
+val kodein = Kodein {
+    constant(tag = "maxThread") with 8 // <1>
+    constant(tag = "serverURL") with "https://my.server.url" // <1>
+}
+----
+<1> Note the absence of curly braces: it is not given a function, but an instance.
+
+CAUTION: You should only use constant bindings for very simple types without inheritance or interface (e.g. primitive types and data classes).
+
+
+=== Direct binding
+
+Sometimes, it may seem overkill to specify the type to `bind` if you are binding the same type as you are creating.
+
+For this use case, you can transform any `bind<Type>() with ...` to `bind() from ...`.
+
+[source,kotlin]
+.Example: direct bindings
+----
+val kodein = Kodein {
+    bind() from singleton { RandomDice(6) }
+    bind("DnD20") from provider { RandomDice(20) }
+    bind() from instance(SqliteDataSource.open("path/to/file"))
+}
+----
+
+CAUTION: *This should be used with care* as binding a concrete class and, therefore, having concrete dependencies is an _anti-pattern_ that later prevents modularisation and mocking / testing.
+
+WARNING: When using `kodein-generic-*` and binding a generic type, the bound type will be the specialized type, +
+         e.g. `bind() from singleton { listOf(1, 2, 3, 4) }` registers the binding to `List<Int>`.
+
+
+=== Transitive dependencies
+
+With those lazily instantiated dependencies, a dependency (very) often needs another dependency.
+Such classes can have their dependencies passed to their constructor.
+Thanks to Kotlin's _killer_ type inference engine, Kodein makes retrieval of transitive dependencies really easy.
+
+[source, kotlin]
+.Example: a class that needs transitive dependencies
+----
+class Dice(private val random: Random, private val sides: Int) {
+/*...*/
+}
+----
+
+It is really easy to bind this `RandomDice` with its transitive dependencies, by simply using `instance()` or `instance(tag)`.
+
+[source, kotlin]
+.Example: bindings of Dice and of its transitive dependencies
+----
+val kodein = Kodein {
+    bind<Dice>() with singleton { Dice(instance(), instance(tag = "max")) } // <1>
+
+    bind<Random>() with provider { SecureRandom() } // <2>
+    constant(tag "max") with 5 // <2>
+}
+----
+<1> Binding of `Dice`. It gets its transitive dependencies by using `instance()` and `instance(tag)`.
+<2> Bindings of `Dice` transitive dependencies.
+
+NOTE: The order in which the bindings are declared has *no importance whatsoever*.
+
+The binding functions are in the same environment as the `newInstance` function described in the <<injection, dependency injection section>>.
+You can read it to learn more about the `instance`, `provider` and `factory` functions available to the function.
+
+
+==== Transitive factory dependencies
+
+Maybe you need a dependency to use one of its functions to create the bound type.
+
+[source, kotlin]
+.Example: using a DataSource to create a Connection.
+----
+val kodein = Kodein {
+    bind<DataSource>() with singleton { MySQLDataSource() }
+    bind<Connection>() with provider { instance<DataSource>().openConnection() } <1>
+}
+----
+<1> Using a `DataSource` as a transitive factory dependency.
+
+
+=== Being responsible for its own retrieval
+
+If the bound class is <<kodein-aware,KodeinAware>>, you can pass the `kodein` object to the class so it can itself use the Kodein container to retrieve its own dependencies.
+
+[source, kotlin]
+.Example: bindings of Manager that is responsible for retrieving its own dependencies
+----
+val kodein = Kodein {
+    bind<Manager>() with singleton { ManagerImpl(kodein) } // <1>
+}
+----
+<1> ManagerImpl is given a Kodein instance.
+
+
+== Creating from environment
+
+Binding functions have access to the environment where the bound type is retrieved to be able to create it accordingly.
+
+[.lead]
+A binding function has access to two types of environment variables: the receiver and the context.
+
+- The receiver is the object that will receive the dependency.
+- The context is an object that is explicitly defined by the programmer for this retrieval.
+
+
+=== Receiver
+
+The receiver is the object that will receive the dependency.
+It's type is `Any?`.
+It is non `null` only when using retrieval via property delegate (not using injection), e.g. when a <<kodein-aware,KodeinAware>> class retrieves its own dependencies.
+
+[source, kotlin]
+.Example: creating a controller from it's view
+----
+val kodein = Kodein {
+    bind<MainController>() with provider {
+        val view = receiver as? MainView ?: throw IllegalStateException("MainController needs a MainView receiver")
+        MainController(view)
+    }
+}
+----
+
+WARNING: The receiver is *not* accessible to binding functions of bindings that keep the created object (e.g. `singleton` and `multiton`).
+         Because the created objects may be re-used by a different receiver, the receiver _at the creation_ is not accessible.
+
+Note that it becomes really easy to create a `Logger` binding that uses the receiver class as the log tag:
+
+[source, kotlin]
+.Example: a Logger binding
+----
+val kodein = Kodein {
+    bind<Logger>() with provider {
+        val tag = receiver?.javaClass?.simpleName ?: throw IllegalStateException("A Logger needs a receiver")
+        LoggerFactory.newInstance(tag)
+    }
+}
+----
+
+
+=== Context
+
+The context is an object that is explicitly defined by the programmer for this retrieval.
+It's type is `C: Any?`.
+It is null by default unless explicitly defined by the user.
+
+There are two very important differences between a tag and a context:
+
+- The tag *instance* identifies the binding but can not be used in the binding function.
+- The context *type* identifies the binding and it's *instance* can be used in the binding function.
+
+There are also two very important differences between a factory argument and a context:
+
+- The context is defined _before_ retrieving the binding function while the factory argument is the last known variable.
+- A context is usually global to an entire class while a factory argument is local to a retrieval.
+
+TIP: When in doubt, use a factory with an argument instead of a provider with a context.
+
+[source, kotlin]
+.Example: binding in a context
+----
+val kodein = Kodein {
+    bind<Writer>() with contexted<Request>.provider { context.response.writer } <1>
+}
+----
+<1> note that `context` is already of type `Request`.
+
+
+=== Scope
+
+[NOTE]
+====
+Kodein does not provide scopes by default, but:
+
+- It is easy to create your own scopes.
+- All `kodein-framework-*` modules provide scopes that are specific to the target framework.
+====
+
+Scopes are derived from the context variable. They allow a singleton or multiton objects to exist multiple times in different contexts. +
+Think, for example, of a session object inside a web server.
+There can be only one Session per Request, so we can say that a Session is a singleton inside a Scope defined by a Request.
+Therefore, the provided function will be called *once per context*.
+
+[source, kotlin]
+.Example: binding the Session type in a Request context
+----
+val kodein = Kodein {
+    bind<Session>() with scoped(requestScope).singleton { context.openSession() } <1>
+}
+----
+<1> note that `requestScope` does not really exist, it is an example.
+
+In this example, `requestScope` is of type `Scope<Request, Request>`, so to access this binding, the user will have to explicitly define a `Request` context.
+
+
+==== Automatic scopes
+
+Some scopes are of type `Scope<Any?, *>`.
+Because the default context is of type `Any?`, these scopes need no explicit context, but are capable of finding the context by themselves (usually from a static env).
+
+In the previous example, `requestScope` could also be of type `Scope<Any?, Request>` (`Any?` being the request provided by the user to Kodein, `Request` being the context provided by Kodein to the binding function).
+The difference being that the user would *not* have to define an explicit context.
+
+
+==== JVM references in scopes
+
+Yes, you can...
+
+[source, kotlin]
+.Example:
+----
+val kodein = Kodein {
+    bind<User>() with scoped(requestScope).singleton(ref = weakReference) {
+        instance<DataSource>().createUser(context.session.id)
+    } <1>
+}
+----
+
+
+== Bindings separation
+
+=== Modules
+
+Kodein allows you to export your bindings in modules.
+It is very useful to have separate modules defining their own bindings instead of having only one central binding definition.
+A module is an object that you can construct the exact same way as you construct a Kodein instance.
+
+
+[source, kotlin]
+.Example: a simple module
+----
+val apiModule = Kodein.Module {
+    bind<API>() with singleton { APIImpl() }
+    /* other bindings */
+}
+----
+
+Then, in your Kodein binding block:
+
+[source, kotlin]
+.Example: imports the module
+----
+val kodein = Kodein {
+    import(apiModule)
+    /* other bindings */
+}
+----
+
+NOTE: Modules are *definitions*, they will re-declare their bindings in each Kodein instance you use.
+      If you create a module that defines a singleton and import that module into two different Kodein instances, then the singleton object will exist twice: once in each Kodein instance.
+
+
+=== Extension (composition)
+
+Kodein allows you to create a new Kodein instance by extending an existing one.
+
+[source, kotlin]
+.Example: extends an already existing Kodein instance
+----
+val subKodein = Kodein {
+    extend(appKodein)
+    /* other bindings */
+}
+----
+
+NOTE: This *preserves bindings*, meaning that a singleton in the parent Kodein will continue to exist only once.
+      Both parent and child Kodein objects will give the same instance.
+
+
+=== Overriding
+
+By default, overriding a binding is not allowed in Kodein.
+That is because accidentally binding twice the same (class,tag) to different instances/providers/factories can cause real headaches to debug.
+
+However, when intended, it can be really interesting to override a binding, especially when creating a testing environment.
+You can override an existing binding by specifying explicitly that it is an override.
+
+[source, kotlin]
+.Example: binds twice the same type, the second time explitly specifying an override
+----
+val kodein = Kodein {
+    bind<API>() with singleton { APIImpl() }
+    /* ... */
+    bind<API>(overrides = true) with singleton { OtherAPIImpl() }
+}
+----
+
+By default, *modules are not allowed to override, _even explicitly_*.
+You can allow a module to override some of your bindings when you import it (the same goes for extension):
+
+[source, kotlin]
+.Example: imports a module and giving it the right to override existing bindings.
+----
+val kodein = Kodein {
+    /* ... */
+    import(testEnvModule, allowOverride = true)
+}
+----
+
+WARNING: The bindings in the module still need to specify explicitly the overrides.
+
+Sometimes, you just want to define bindings without knowing if you are actually overriding a previous binding or defining a new.
+Those cases should be rare and you should know what you are doing.
+
+[source, kotlin]
+.Example: declaring a module in which each binding may or may not override existing bindings.
+----
+val testModule = Kodein.Module(allowSilentOverride = true) {
+    bind<EmailClient>() with singleton { MockEmailClient() } <1>
+}
+----
+<1> Maybe adding a new binding, maybe overriding an existing one, who knows?
+
+If you want to access an instance retrieved by the overridden binding, you can use overriddenInstance.
+This is useful if you want to "enhance" a binding (for example, using the decorator pattern).
+
+[source, kotlin]
+.Example: declaring a module in which each binding may or may not override existing bindings.
+----
+val testModule = Kodein.Module {
+    bind<Logger>(overrides = true) with singleton { FileLoggerWrapper("path/to/file", overriddenInstance()) } <1>
+}
+----
+<1> `overriddenInstance()` will return the `Logger` instance retrieved by the overridden binding.
+
+
+== Dependency injection & retrieval
+
+[source, kotlin]
+.Example bindings that are used throughout the chapter:
+----
+val kodein = Kodein {
+    bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
+    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+    bind<Random>() with provider { SecureRandom() }
+    constant("answer") with "fourty-two"
+}
+----
+
+
+=== Retrieval rules
+
+.When retrieving a dependency, the following rules apply:
+* A dependency bound with a `provider`, an `instance`, a `singleton`, an `eagerSingleton`, or a `constant` can be retrieved:
+** as a provider method: `() -> T`
+** as an instance: `T`
+* A dependency bound with a `factory` or a `multiton` can only be retrieved as a factory method: `(A) -> T`.
+** as a factory method: `(A) -> T`
+** as a provider method: `() -> T` _if the argument `A` is provided at retrieval_.
+** as an instance: `T` _if the argument `A` is provided at retrieval_.
+
+
+=== Injection & Retrieval
+
+When dependencies are *injected*, the class is _provided_ its dependencies at construction. +
+When dependencies are *retrieved*, the class is _responsible_ for getting its own dependencies.
+
+Using dependency *injection* is a bit more cumbersome, but your classes are "pure": they are unaware of the dependency container.
+Using dependency *retrieval* is easier (and allows more tooling), but it does binds your classes to the Kodein API.
+
+Finally, in retrieval, *everything is lazy by default*, while there can be no lazy-loading using injection.
+
+TIP: If you are developing a library, then you probably should use dependency *injection*, to avoid forcing the users of your library to use Kodein as well. +
+     If you are developing an application, then you should consider using dependency *retrieval*, as it is easier to use and provides more tooling.
+
+
+==== Base methods
+
+Whether you are using dependency injection or retrieval, the same 3 methods will be available with the same name and parameters (but not return type). +
+These methods are:
+
+- `instance()` if you need an instance: `T`.
+- `provider()` if you need a provider: `() -> T`.
+- `factory()` if you need an instance: `(A) -> T`.
+
+All three method can take a `tag` argument.
+
+[TIP]
+====
+The `tag` argument should always be named.
+
+[source, kotlin]
+.Example: Using the named tag argument.
+----
+instance(tag = "whatever").
+----
+====
+
+
+[[injection]]
+=== Injection
+
+To use dependency injection,
+
+1. Declare your dependencies in the constructor of your classes.
+2. Use Kodein's `newInstance` method to create an object of such class.
+
+
+==== Simple case
+
+[source, kotlin]
+.Example: a MainController class with a 2 dependencies constructor.
+----
+class MainController(val ds: DataSource, val rnd: Random) { /*...*/ }
+----
+
+[source, kotlin]
+.Example: Creating a MainController by injecting its dependencies.
+----
+val controller by kodein.newInstance { MainController(instance(), instance(tag = "whatever")) } <1>
+----
+<1> Note the use of the `instance` function that will inject the correct dependency.
+
+WARNING: When injecting a type that was not bound, a `Kodein.NotFoundException` will be thrown.
+
+If you are not sure (or simply do not know) if the type has been bound, you can use `*OrNull` methods.
+
+
+==== Currying factories
+
+You can retrieve a provider or an instance from a factory bound type by using the `arg` parameter (this is called _currying_).
+
+[source, kotlin]
+.Example: a DiceController class with a constructor dependency bound to a factory.
+----
+class RollController(val dice: Dice) { /*...*/ }
+----
+
+[source, kotlin]
+.Example: Creating a DiceController by injecting its dependency.
+----
+val controller by kodein.newInstance { DiceController(instance(arg = 6)) }
+----
+
+TIP: The `arg` argument should always be named.
+
+
+==== Defining context
+
+Whether you are using a scoped singleton/multiton or using a context in the target binding, you may need to specify a context.
+
+[source, kotlin]
+.Example: Getting a dice constructor dependency with a context.
+----
+val controller by kodein.newInstance { DiceController(on(context = myContext).instance(arg = 6)) }
+----
+
+If you inject multiple dependencies all using the same context, you can set a global context:
+
+[source, kotlin]
+.Example: Setting a global context.
+----
+val controller by kodein.on(context = myContext).newInstance { OtherController(instance(arg = 6), instance()) }
+----
+
+TIP: The `context` argument should always be named.
+
+NOTE: Using a global context does not forces you to use only bindings that are declared with this type of context.
+      Because the default context is `Any?`, all non-contexted bindings will still be available with a global context set.
+
+
+=== Retrieval: the Kodein container
+
+==== everything is lazy by default!
+
+In the next few sections, we will be describing dependency retrieval.
+As you might have guessed by the title of this section, everything, in dependency retrieval, is lazy by default.
+
+This allow:
+
+- Dependencies to be retrieved retrieved only when they are actually needed.
+- "Out of context" classes such as Android Activities to access their dependencies once their contexts have been initialized.
+
+If you want "direct" retrieval, well, there's a section named <<direct-retrieval,direct retrieval>>, how about that!
+
+
+==== Kodein methods
+
+You can retrieve a bound type via a Kodein instance.
+
+[source, kotlin]
+.Example: retrieving bindings
+----
+val diceFactory: (Int) -> Dice by kodein.factory()
+val dataSource: DataSource by kodein.instance()
+val randomProvider: () -> Random by kodein.provider()
+val answerConstant: String by kodein.instance(tag = "answer")
+----
+
+Note the use of the `by`.
+Kodein uses https://kotlinlang.org/docs/reference/delegated-properties.html::[delegated properties] to enable:
+
+- Lazy loading
+- Accessing the receiver
+
+NOTE: When using a provider function (`() -> T`), whether this function will give each time a new instance or the same depends on the binding.
+
+WARNING: When asking for a type that was not bound, a `Kodein.NotFoundException` will be thrown.
+
+If you are not sure (or simply do not know) if the type has been bound, you can use `*OrNull` methods.
+
+[source, kotlin]
+.Example: retrieving bindings that may not have been bound
+----
+val diceFactory: ((Int) -> Dice)? by kodein.factoryOrNull()
+val dataSource: DataSource? by kodein.instanceOrNull()
+val randomProvider: (() -> Random)? by kodein.providerOrNull()
+val answerConstant: String? by kodein.instanceOrNull(tag = "answer")
+----
+
+
+==== Currying factories
+
+You can retrieve a provider or an instance from a factory bound type by using the `arg` parameter (this is called _currying_).
+
+[source, kotlin]
+.Example: currying factories
+----
+val sixSideDiceProvider: () -> Dice by kodein.provider(arg = 6)
+val twentySideDice: Dice by kodein.instance(arg = 20)
+----
+
+TIP: The `arg` argument should always be named.
+
+
+==== Defining context
+
+Whether you are using a scoped singleton/multiton or using a context in the target binding, you may need to specify a context.
+
+[source, kotlin]
+.Example: Getting a Session after setting the Request context.
+----
+val session: Session by kodein.on(context = request).instance()
+----
+
+If you retrieve multiple dependencies all using the same context, you can create a new `Kodein` object with the context set:
+
+[source, kotlin]
+.Example: creating a Kodein object with the Request context.
+----
+val reqKodein = kodein.on(context = request)
+val session: Session by reqKodein.instance()
+----
+
+TIP: The `context` argument should always be named.
+
+NOTE: Using a global context does not forces you to use only bindings that are declared with this type of context.
+      Because the default context is `Any?`, all non-contexted bindings will still be available with a global context set.
+
+
+==== Using an Injector
+
+There is a mechanism that allows you to decide when dependencies are actually retrieved if you want them to be retrieved at a particular time and not at first access.
+This mechanism is called an Injector.
+
+[source, kotlin]
+.Example: using an injector.
+----
+val injector = KodeinInjector()
+val dice: Dice by kodein.on(injector = injector).instance()
+/*...*/
+injector.inject() <1>
+----
+<1> Retrieval happens now.
+
+You can, of course, assign multiple properties to the same injector.
+You can also create a Kodein object that has a given injector by default:
+
+[source, kotlin]
+.Example: creating a Kodein object with an injector.
+----
+val injector = KodeinInjector()
+val injectKodein = kodein.on(injector = injector)
+val dice: Dice by injectKodein.instance()
+/*...*/
+injector.inject()
+----
+
+TIP: The `injector` argument should always be named.
+
+NOTE: An injector allows you to "force" retrieval.
+      However, retrieval can still happen before `inject()` is called if the variable is accessed.
+
+
+==== Lazy access
+
+Kodein proposes a `LazyKodein` object that allows you to lazily access the Kodein object only when needed.
+This is useful if:
+
+- You need to defined a lazily retrieved dependency before having access to a Kodein container.
+- You don't know if you'll ever need to access a Kodein object.
+
+For this, you can use a `LazyKodein`:
+
+[source, kotlin]
+.Example: Using a LazyKodein.
+----
+val kodein = LazyKodein { /* access to a kodein instance */ }
+val ds: DataSource by kodeien.instance()
+/*...*/
+dice.roll() <1>
+----
+<1> Only then will the Kodein instance will itself be retrieved.
+
+Note that you can also lazily create a `Kodein` object so that the bindings definition function will only be called when the first retrieved property is needed:
+
+[source, kotlin]
+.Example: Using a lazy Kodein.
+----
+val kodein = Kodein.lazy {
+    bind<Env>() with instance(Env.getInstance())
+}
+val env: Env by kodeien.instance()
+/*...*/
+env.doSomething() <1>
+----
+<1> Only then will the Kodein instance will itself be created, and the bindings definition function ran.
+
+
+[[kodein-aware]]
+=== Retrieval: being KodeinAware
+
+==== Simple retrieval
+
+You can have classes that implement the interface `KodeinAware`. +
+Doing so has the benefit of getting a simpler syntax for retrieval.
+
+[source, kotlin]
+.Example: a KodeinAware class
+----
+class MyManager(override val kodein: Kodein) : KodeinAware {
+    private val diceFactory: ((Int) -> Dice)? by factoryOrNull()
+    private val dataSource: DataSource? by instanceOrNull()
+    private val randomProvider: (() -> Random)? by providerOrNull()
+    private val answerConstant: String? by instanceOrNull(tag = "answer")
+    private val sixSideDiceProvider: () -> Dice by kodein.provider(arg = 6)
+    private val twentySideDice: Dice by kodein.instance(arg = 20)
+}
+----
+
+All methods that are available to the Kodein container are available to a `KodeinAware` class.
+
+
+==== Class global context
+
+In a `KodeinAware` class, to define a context that's valid for the entire class, you can simply override the `kodeinContext` property:
+
+[source, kotlin]
+.Example: a KodeinAware class with a context
+----
+class MyManager(override val kodein: Kodein) : KodeinAware {
+    override val kodeinContext = kcontext(whatever) <1>
+    /*...*/
+}
+----
+<1> Note the use of the `kcontext` function that creates a `KodeinContext` with the given value.
+
+NOTE: Using a global context does not forces you to use only bindings that are declared with this type of context.
+      Because the default context is `Any?`, all non-contexted bindings will still be available with a global context set.
+
+
+==== Class global injector
+
+If you want to have all dependency properties retrieved at once, you can use a class global injector.
+Simply override the `kodeinInjector` property:
+
+[source, kotlin]
+.Example: a KodeinAware class with an injector
+----
+class MyManager(override val kodein: Kodein) : KodeinAware {
+    override val kodeinInjector = KodeinInjector()
+    val ds: DataSource by instance()
+    /*...*/
+    fun onReady() {
+        kodeinInjector.inject() <1>
+    }
+}
+----
+<1> Retrieval of all dependencies happens now.
+
+
+==== Lazy access
+
+Some classes (such as Android Activities) do not have access to a `Kodein` instance at the time of construction, but only later when they have been properly connected to their environment (Android context). +
+Because Kodein is lazy by default, this does not cause any issue: simply have the kodein property be lazy by itself:
+
+[source, kotlin]
+.Example: an Activity class with a lazy-loaded kodein
+----
+class MyActivity : Activity(), KodeinAware {
+    override val kodein by lazy { (applicationContext as MyApplication).kodein }
+    val ds: DataSource by instance() <1>
+}
+----
+<1> Because `ds` is lazily retrieved, access to the `kodein` property will only happen at first retrieval.
+
+NOTE: There is an official plugin to ease the use of Kodein in Android, you can read more about it on http://TODO[the dedicated document].
+
+
+=== Retrival: Direct
+
+If you don't want to use delegated properties, Kodein has you covered.
+Most of the features available to `Kodein` are available to `DKodein` (D is for Direct).
+`DKodein` allows you to directly get a new instance or dependency.
+
+However, because it is direct, `DKodein` does *NOT* feature:
+
+- Laziness: the instance/provider/factory is fetched at call time.
+- Receiver awareness: receiver is defined by the Kotlin's delegated properties mechanism.
+
+[source, kotlin]
+.Example: using a DKodein
+----
+val dk = kodein.direct
+
+val ds: Datasource = dk.instance()
+
+val controller = dk.newInstance { MainController(instance(), instance(tag = "whatever")) }
+----
+
+[TIP]
+====
+If you only plan to use direct access, you can define your main kodein object to be a `DKodein`:
+
+[source, kotlin]
+.Example: using a DKodein
+----
+val kodein = Kodein {
+        /* bindings */
+    }.direct <1>
+----
+<1>: Note the `.direct`.
+====
+
+
+==== Being DKodeinAware
+
+Much like `Kodein` offers `KodeinAware`, `DKodein` offers `DKodeinAware`
+
+[source, kotlin]
+.Example: a DKodeinAware class
+----
+class MyManager(override val dkodein: DKodein) : DKodeinAware {
+    private val diceFactory: ((Int) -> Dice)? = factoryOrNull()
+    private val dataSource: DataSource? = instanceOrNull()
+    private val randomProvider: (() -> Random)? = providerOrNull()
+    private val answerConstant: String? = instanceOrNull(tag = "answer")
+    private val sixSideDiceProvider: () -> Dice = kodein.provider(arg = 6)
+    private val twentySideDice: Dice = kodein.instance(arg = 20)
+}
+----
+
+
+==== In Java
+
+While Kodein does not allow you to declare modules or dependencies in Java, it does allow you to retrieve dependencies via `DKodein`.
+Simply give the DKodein instance to your Java classes, use Kodein in Java with the `TT` static function:
+
+[source, java]
+.Example: using Kodein in Java
+----
+import static org.kodein.TypesKt.TT;
+
+public class JavaClass {
+    private final Function1<Integer, Dice> diceFactory;
+    private final Datasource dataSource;
+    private final Function0<Random> randomProvider;
+    private final String answerConstant;
+
+    public JavaClass(DKodein kodein) {
+        diceFactory = kodein.Factory(TT(Integer.class), TT(Dice.class), null);
+        dataSource = kodein.Instance(TT(Datasource.class), null);
+        randomProvider = kodein.Provider(TT(Random.class), null);
+        answerConstant = kodein.Instance(TT(String.class), "answer");
+    }}
+----
+
+[WARNING]
+====
+Remember that Java is subject to type erasure.
+Therefore, if you registered a generic Class binding such as `bind<List<String>>()`, in order to retrieve it you have to use `TypeReference` to circumvent Java's type erasure.
+
+[source, java]
+.Example: using TypeReference in Java
+----
+class JavaClass {
+    private final List<String> list;
+
+    public JavaClass(TKodein kodein) {
+        list = kodein.Instance(TT(new TypeReference<List<String>>() {}), null);
+    }
+}
+----
+====
+
+
+== Multi-binding
+
+Kodein allows multi bindings via a binding set.
+
+
+=== In a Set
+
+==== Binding in a Set
+
+To have multiple bindings in a set, you need to:
+
+* Declare that you are using a set binding for a particular bound type.
+* Add bindings to the set.
+
+[source,kotlin]
+.Example creating a set of `Configuration` bindings.
+----
+val kodein = Kodein {
+    bind() from setBinding<Configuration>() <1>
+
+    bind<Configuration>().inSet() with provider { FooConfiguration() } <2>
+    bind<Configuration>().inSet() with singleton { BarConfiguration() } <2>
+}
+----
+<1> Creating a set binding of `Configuration`.
+<2> Binding multiple `Configuration` implementations.
+
+[NOTE]
+====
+You can:
+
+* Use different binding types (such as `provider` or `singleton`) in the same set.
+* Add bindings to the same set in different modules, provided that the set has been declared first.
+====
+
+You can also bind multiple bindings with arguments (such as `factory` or `multiton`) in a set *as long as all bindings share the same argument type*.
+
+[source,kotlin]
+.Example creating a set of `Result` bindings.
+----
+val kodein = Kodein {
+    bind() from argSetBinding<Query, Result>()
+
+    bind<Result>().inSet() with factory { q: Query -> Foo.query(q) }
+    bind<Result>().inSet() with multiton { q: Query -> Bar.query(q) }
+}
+----
+
+
+==== Retrieving from a Set
+
+Note that the type being bound is `Set<T>`, not `T`. +
+Therefore, you need to retrieve a `Set`:
+
+[source,kotlin]
+.Example retrieving set of `Configuration` with the generic version.
+----
+val configurations: Set<Configuration> by kodein.instance()
+----
+
+if you are using the `erased` version, you need to retrieve thusly:
+
+[source,kotlin]
+.Example retrieving set of `Configuration` with the erased version.
+----
+val configurations: Set<Configuration> by kodein.Instance(erasedSet())
+----
+
+
+=== In a map
+
+Kodein does not directly support map multi-binding.
+However, it is very easy to create a binding map by using a binding set.
+
+First, create the following primitive:
+
+[source,kotlin]
+.Example of the type alias for a map multi-binding as `Map<String, Configuration>`.
+----
+typealias ConfigurationEntry = Pair<String, Configuration>
+typealias ConfigurationEntries = Set<ConfigurationEntry>
+----
+
+Then, bind with keys:
+
+[source,kotlin]
+.Example binding as in a map multibinding.
+----
+val kodein = Kodein {
+    bind() from setBinding<ConfigurationEntry>()
+
+    bind<ConfigurationEntry>().inSet() with factory { "foo" to FooConfiguration() }
+    bind<ConfigurationEntry>().inSet() with multiton { "bar" to BarConfiguration() }
+}
+----
+
+Finally, retrieve the map:
+
+[source,kotlin]
+.Example retrieving a map multibinding.
+----
+val configurations by kodein.instance<ConfigurationEntries>().toMap()
+----
+
+
+ [[debugging]]
+== Debugging
+
+=== Print bindings
+
+You can easily print bindings with `println(kodein.container.bindings.description)`.
+
+Here's an example of what this prints:
+
+.An example of kodein.container.bindings.description:
+----
+        bind<Dice>() with factory { Int -> RandomDice }
+        bind<DataSource>() with singleton { SQLiteDataSource }
+        bind<Random>() with provider { SecureRandom }
+        bind<String>(tag = "answer") with instance ( Int )
+----
+
+As you can see, it's really easy to understand which type with which tag is bound to which implementation inside which scope.
+
+NOTE: Descriptions prints type names in a "kotlin-esque" way.
+      Because Kodein does not depends on `kotlin-reflect`, it uses java `Type` objects that do not contains nullability information.
+      As such, the type display does not include nullability. Still, it's easier to read `List<*>` than `List<? extends Object>`.
+
+
+=== Recursive dependency loop
+
+When it detects a recursive dependency, Kodein will throw a `Kodein.DependencyLoopException`.
+The message of the exception explains how the loop happened.
+
+.An example of recursive dependency loop:
+----
+Kodein$DependencyLoopException: Dependency recursion:
+     bind<Database>()
+    ╔╩>bind<User>()
+    ║  ╚>bind<Repository>(tag = "users")
+    ║    ╚>bind<Database>()
+    ╚══════╝
+----
+<1> `Database` depends on `User`
+<2> `User` depends on `Repository` with the tag "users"
+<3> `Repository` with the tag "users" depends on `Database`, *we have found the dependency loop!*.
+
+
+== Advanced use
+
+=== OnReady callbacks
+
+You can define callbacks to be called once the kodein instance is ready and all bindings are defined.
+This can be useful to do some "starting" jobs.
+
+[source, kotlin]
+.Example: registering a callback at binding time
+----
+val appModule = Kodein.Module {
+    import(engineModule)
+    onReady {
+        val engine = instance<Engine>()
+        instance<Logger>().info("Starting engine version ${engine.version}")
+        engine.start()
+    }
+}
+----
+
+
+=== Create your own scopes
+
+==== Scoped singletons
+
+Scoped singletons/multitons are singletons/multitons that are bound to a context and live while that context exists.
+
+To define a scope that can contain scoped singleton, you must define an object that implements the `Scope` interface.
+This object will be responsible for providing a `ScopeRegistry` according to a context.
+It should always return the same `ScopeRegistry` when given the same context object.
+A standard way of doing so is to use the `userData` property of the context, if it has one, or else to use a `WeakHashMap<C, ScopeRegistry>`.
+
+[source, kotlin]
+.Example: a simple request scope
+----
+object RequestScope : SimpleScope<Request> { <1>
+    override fun getRegistry(receiver: Any?, context: Request): ScopeRegistry =
+            context.userData as? ScopeRegistry
+                    ?: MultiItemScopeRegistry().also { context.userData = it } <2>
+}
+----
+<1> The scope's context type is `Request`.
+<2> Creates a `ScopeRegistry` in the context `Request` if there is none.
+
+==== Auto Scopes
+
+Scoped singletons are not always ideal since you need the context to retrieve any object.
+Sometimes, the context is static.
+For these times, you can use a scope that finds it context automatically.
+
+[source, kotlin]
+.Example: a simple request scope
+----
+object treadRequestScope : Scope<Any?, Request> { <1>
+    override fun getBindingContext(envContext: Any?): Request = Request.threadRequest <2>
+
+    override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Request): ScopeRegistry =
+            bindContext.userData as? ScopeRegistry ?: MultiItemScopeRegistry().also { bindContext.userData = it }
+}
+----
+<1> The scope's environment context type is `Any?`, which actually means "no context".
+<2> Returns the binding context, in this case: the Request.
+
+
+[[erased-version]]
+=== Erased version pitfalls
+
+==== The type erasure problem
+
+When using the `generic` JVM version on the, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
+Similarly, `kodein.instance<List<String>>()` and `kodein.instance<List<Int>>()` will yield two different list.
+
+To be erasure immune, the `generic` JVM version relies heavily on the `generic` function, which is known to be slow.
+
+To improve performance, you can use the `erased` JVM Kodein version, which is faster, but do suffer from type erasure!
+
+Furthermore, on Javascript and Native platforms, there's no choice: `erased` is the only version available!
+
+
+==== Using generic and erased function forms
+
+Each kodein function that handles a type exists in two form: as inline (lowercased first letter) and as regular function (uppercased first letter). +
+For example, the `kodein.instance` function also exists as `kodein.Instance`.
+
+The uppercase functions need `TypeToken` parameters that define the type being bound / retrieved and maybe the factory's argument. +
+You can easily use these functions with the `generic` or `erased` functions:
+
+[source, kotlin]
+.Example: using the `erased` function
+----
+val ds: DataSource by kodein.Instance(erased())
+----
+
+By default, all inline functions are aliases to their uppercase counterparts using the `generic` function. +
+For example, the `kodein.instance()` function is an alias to `kodein.Instance(generic())`
+
+So, when you know that you inject a type that is *not generic*, you can use `kodein.Instance(erased())`.
+
+
+==== Erased parameterized generic types
+
+When using the `erased` function or using erased by default (either by choice on the JVM or by necessity elsewhere), you cannot represent a generic type. +
+For example, `erased<Set<String>>` will yield a `TypeToken` representing `Set<*>`.
+
+Kodein provides a way to represent a generic type in an erased way:
+
+[source, kotlin]
+.Example: generic type tokens, using erased
+----
+erasedComp1<Set<String>, String>()                         // Represents a Set<String>
+erasedComp2<Map<Int, String>, Int, String>()               // Represents a Map<Int, String>
+erasedComp3<Triple<Int, String, Int>, Int, String, Int>()  // Represents a Triple<Int, String, Int>
+----
+
+NOTE: The type parameter themselves are erased, meaning that you cannot represent a multi-level generic type.
+      You can, however, construct your own `CompositeTypeToken` to represent such a type.
+
+
+=== Bind the same type to different factories
+
+Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are bound with different tags", I lied.
+Because each binding is actually a _factory_, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are bound as `([BindType], Unit, [Tag])`).
+This means that any combination of these three information can be bound to it's own factory, which in turns means that you can bind the same type without tagging to different factories.
+
+CAUTION: Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
+
+
+=== Hack the container!
+
+The KodeinContainer is the sacred Kodein object that contains all bindings and is responsible for retrieval.
+You can access it with `kodein.container`.
+In it, each `Binding` is bound to a `Kodein.Key`.
+
+In fact, all Kodein functions are proxies to this container API.
+
+When defining bindings, in the `Kodein.Builder`, you can access the `container` property to bind factories to a `Kodein.Key` or a `Kodein.Bind`.
+
+
+=== Tag vs context vs receiver vs argument
+
+[options="header"]
+|=======
+| &nbsp;     | Binding identification | accessible by the binding _itself_* | accessible by the binding function
+| *tag*      | instance               | no                                 | no
+| *context*  | type                   | yes                                | yes
+| *receiver* | no                     | yes                                | yes
+| *argument* | type                   | no                                 | yes
+|=======
+
+
+=== Explore bindings
+
+You can access a *copy* of the bindings map with `kodein.container.bindings`. +
+From this `Map<Kodein.Key, Factory<*, *>>`, you can explore all bindings, their keys and factories.
+
+TIP: The https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein/src/main/kotlin/com/github/salomonbrys/kodein/bindings.kt[bindings.kt] file exposes several extension functions to this map that can be useful for exploring it.
+
+
+=== Contribute
+
+Contributions are very welcome and greatly appreciated! The great majority of pull requests are eventually merged.
+
+To contribute, simply fork https://github.com/SalomonBrys/Kodein[the project on Github], fix whatever is iching you, and submit a pull request!
+
+I am sure that this documentation contains typos, inaccuracies and languages error (English is not my mother tongue).
+If you feel like enhancing this document, you can propose a pull request that modifies https://github.com/SalomonBrys/Kodein/blob/{branch}/README3.adoc[README3.adoc].
+(The documentation page is auto-generated from it).
+
+
+=== Let's talk!
+
+You've read so far?! *You're awesome!* +
+Why don't you drop by the https://kotlinlang.slack.com/messages/kodein/[Kodein Slack channel] on Kotlin's Slack group?
+
+
+=== Donate
+
+Kodein is free to use for both non-profit and commercial use and always will be.
+
+If you wish to show some support or appreciation to my work, you are free to *https://donorbox.org/donation-salomonbrys[donate]*!
+
+TIP: This would be (of course) greatly appreciated but is by no means necessary to receive help or support, which I'll be happy to provide for free!

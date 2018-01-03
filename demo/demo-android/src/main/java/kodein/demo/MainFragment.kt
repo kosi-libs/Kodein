@@ -9,10 +9,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
-import org.kodein.*
-import org.kodein.android.activityKodein
-import org.kodein.android.appKodein
-import org.kodein.android.extend
+import org.kodein.KodeinAware
+import org.kodein.KodeinContext
+import org.kodein.android.closestKodein
+import org.kodein.instance
+import org.kodein.kcontext
 
 // by implementing FragmentInjector we get the same behavior as KodeinFragment, but we have the flexibility to subclass whatever we want
 // All we need to do is override injector with a simple KodeinInjector() and call initializeInjector and destroyInjector when appropriate
@@ -20,7 +21,7 @@ class MainFragment : Fragment(), KodeinAware {
 
     override val kodeinContext: KodeinContext<*> get() = kcontext(activity)
 
-    override val kodein by activityKodein
+    override val kodein by closestKodein()
 
     // will be the same instance as the coffeeMaker in MainActivity
     val coffeeMaker: Kettle<Coffee> by instance()

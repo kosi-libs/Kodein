@@ -89,7 +89,7 @@ interface Kodein : KodeinAware {
          */
         private fun StringBuilder._appendDescription(dispString: TypeToken<*>.() -> String) {
             append(" with ")
-            if (contextType != UnitToken) {
+            if (contextType != AnyToken) {
                 append("?<${contextType.dispString()}>().")
             }
             append("? { ")
@@ -139,9 +139,9 @@ interface Kodein : KodeinAware {
         interface Contexted<C> : BindBuilder<C> {
             class Impl<C>(override val contextType: TypeToken<C>) : Contexted<C>
         }
-        interface Scoped<C> : BindBuilder<C> {
-            val scope: Scope<C>
-            class Impl<C>(override val contextType: TypeToken<C>, override val scope: Scope<C>) : Scoped<C>
+        interface Scoped<EC, BC> : BindBuilder<EC> {
+            val scope: Scope<EC, BC>
+            class Impl<EC, BC>(override val contextType: TypeToken<EC>, override val scope: Scope<EC, BC>) : Scoped<EC, BC>
         }
     }
 
@@ -159,11 +159,11 @@ interface Kodein : KodeinAware {
             internal val containerBuilder: KodeinContainer.Builder,
             internal val callbacks: MutableList<DKodein.() -> Unit>,
             internal val bindingCallbacks: MutableList<Pair<Key<Any?, *, *>, BindingKodein<Any?>.() -> Unit>>
-    ) : BindBuilder.Contexted<Any?>, BindBuilder.Scoped<Any?> {
+    ) : BindBuilder.Contexted<Any?>, BindBuilder.Scoped<Any?, Nothing?> {
 
         override val contextType = AnyToken
 
-        override val scope: Scope<Any?> get() = NoScope() // Recreating a new NoScope every-time *on purpose*!
+        override val scope: Scope<Any?, Nothing?> get() = NoScope() // Recreating a new NoScope every-time *on purpose*!
 
         /**
          * Left part of the type-binding syntax (`bind(type, tag)`).
@@ -353,7 +353,7 @@ interface Kodein : KodeinAware {
          */
         operator fun invoke(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Kodein = KodeinImpl(allowSilentOverride, init)
 
-        fun Lazy(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Lazy<Kodein> = lazy { KodeinImpl(allowSilentOverride, init) }
+        fun lazy(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Lazy<Kodein> = lazy { KodeinImpl(allowSilentOverride, init) }
 
         /**
          * Creates a Kodein object but without directly calling onReady callbacks.

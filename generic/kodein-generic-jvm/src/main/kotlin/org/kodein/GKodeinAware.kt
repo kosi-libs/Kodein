@@ -114,3 +114,7 @@ inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = n
 inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null, noinline fArg: () -> A) = InstanceOrNull<A, T>(generic(), generic(), tag, fArg)
 
 inline fun <reified C> kcontext(context: C) = KodeinContext(generic(), context)
+
+inline fun <reified C> KodeinAware.on(context: C, injector: KodeinInjector? = this.kodeinInjector) = On(kcontext(context), injector)
+
+fun KodeinAware.on(injector: KodeinInjector?) = On(kodeinContext, injector)

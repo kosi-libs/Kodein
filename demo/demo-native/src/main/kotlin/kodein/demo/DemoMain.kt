@@ -11,27 +11,23 @@ fun main(args: Array<String>) {
 class Application : KodeinAware {
 
     override val kodein = Kodein {
-//        import(thermosiphonModule)
-//        import(electricHeaterModule)
+        import(thermosiphonModule)
+        import(electricHeaterModule)
 
-//        bind<Coffee>() with provider { Coffee() }
+        bind<Coffee>() with provider { Coffee() }
 
-//        // this is bound in the scope of an activity so any retrieval using the same activity will return the same Kettle instance
-//        bind<Kettle<*>>() with singleton { Kettle<Coffee>(instance(), instance(), provider()) }
+        // this is bound in the scope of an activity so any retrieval using the same activity will return the same Kettle instance
+        bind<Kettle<*>>() with singleton { Kettle<Coffee>(instance(), instance(), provider()) }
 
-//        constant("author") with "Salomon BRYS"
-
-        bind<String>()
+        constant("author") with "Salomon BRYS"
     }
 
-//    private val _kettle: Kettle<Coffee> by instance()
+    private val _kettle: Kettle<Coffee> by instance()
 
     init {
-//        val author: String by instance("author")
-        val author = "Salomon BRYS"
+        val author: String by instance("author")
         println("Kodein 5 Demo by $author")
 
-//        _kettle.brew()
+        _kettle.brew()
     }
-
 }
