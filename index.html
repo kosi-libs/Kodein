@@ -68,9 +68,15 @@
         <script type="text/javascript">
             function asciidocify() {
                 var branch = "master";
-                if (location.search != "")
-                    branch = location.search.substr(1);
-                var url = "https://raw.githubusercontent.com/SalomonBrys/Kodein/" + branch + "/DOCUMENTATION.adoc";
+                var doc = "index";
+                if (location.search != "") {
+                  var slash = location.search.indexOf("/");
+                  branch = location.search.substr(1, slash != -1 ? slash - 1 : undefined);
+                  if (slash >= 0) {
+                    doc = location.search.substr(slash + 1)
+                  }
+                }
+                var url = "https://raw.githubusercontent.com/SalomonBrys/Kodein/" + branch + "/doc/" + doc + ".adoc";
                 $.get(url, function(data) {
                     var options = Opal.hash({
                         backend: 'html5',
@@ -111,7 +117,7 @@
 
                 })
                     .fail(function() {
-                        $('#loadingText').html("No doc for branch <b>" + branch + "</b>.");
+                        $('#loadingText').html("No document <b>" + doc + ".adoc</b> for branch <b>" + branch + "</b>.");
                     })
                 ;
             }
