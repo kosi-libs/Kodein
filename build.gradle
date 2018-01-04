@@ -21,6 +21,8 @@ buildscript {
         classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
 
         classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.5"
+
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
     }
 }
 

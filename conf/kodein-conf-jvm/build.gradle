@@ -15,7 +15,7 @@ test {
 }
 
 ext {
-    pom_name = "Kodein mutable"
-    pom_description = "KOtlin DEpendency INjection that can be configured / mutated"
+    pom_name = "Kodein-Conf-JVM"
+    pom_description = "KOtlin DEpendency INjection that can be configured / mutated for the JVM & Android"
 }
 apply from: "../../gradle/upload.gradle"

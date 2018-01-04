@@ -1,78 +1,44 @@
-apply plugin: 'maven'
-apply plugin: 'signing'
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-//    from dokka
+def sources
+if (project.ext.has('android_sourceSet') && android_sourceSet)
+    sources = android.sourceSets.main.java.sourceFiles
+else
+    sources = sourceSets.main.kotlin
+
+if (configurations.hasProperty("expectedBy")) {
+    def commonProject = configurations.expectedBy.dependencies[0].dependencyProject
+    evaluationDependsOn(commonProject.path)
+    sources += commonProject.sourceSets.main.kotlin
 }
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
-
-    if (project.ext.has('android_sourceSet') && android_sourceSet)
-        from android.sourceSets.main.java.sourceFiles
-    else
-        from sourceSets.main.allSource
+    duplicatesStrategy = "exclude"
+    from sources
 }
 
 artifacts {
-    archives javadocJar, sourcesJar
+//        archives dokkaJar
+    archives sourcesJar
 }
 
-signing {
-    required { gradle.taskGraph.hasTask(tasks.uploadArchives) }
-    sign configurations.archives
-}
+if (hasProperty('bintrayUsername') && hasProperty('bintrayApiKey')) {
 
-if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    apply plugin: 'com.jfrog.bintray'
+    bintray {
+        user = bintrayUsername
+        key = bintrayApiKey
 
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
+        pkg {
+            repo = 'kodein'
+            name = pom_name
+            licenses = ['MIT']
+            websiteUrl = 'http://kodein.org'
+            vcsUrl = 'https://github.com/SalomonBrys/Kodein.git'
+            desc = pom_description
 
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                pom.project {
-                    name pom_name
-//                    artifactId pom_artifactId
-                    packaging 'jar'
-                    description pom_description
-                    url 'https://github.com/SalomonBrys/Kodein'
-
-                    licenses {
-                        license {
-                            name 'MIT'
-                            url 'http://opensource.org/licenses/MIT'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id 'salomonbrys'
-                            name 'Salomon BRYS'
-                            email 'salomon.brys@gmail.com'
-                        }
-                    }
-
-                    scm {
-                        url 'https://github.com/SalomonBrys/Kodein'
-                        connection 'scm:git:https://github.com/SalomonBrys/Kodein.git'
-                        developerConnection 'scm:git:git@github.com:SalomonBrys/Kodein.git'
-                        tag 'HEAD'
-                    }
-
-                    issueManagement {
-                        system 'GitHub Issues'
-                        url 'https://github.com/SalomonBrys/Kodein/issues'
-                    }
-                }
-            }
+            configurations = ['archives']
         }
     }
+
 }

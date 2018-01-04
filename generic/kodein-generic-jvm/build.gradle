@@ -16,7 +16,7 @@ test {
 }
 
 ext {
-    pom_name = "Kodein"
-    pom_description = "KOtlin DEpendency INjection"
+    pom_name = "Kodein-Generic-JVM"
+    pom_description = "KOtlin DEpendency INjection compatible with generic types for the JVM & Android"
 }
 apply from: "../../gradle/upload.gradle"

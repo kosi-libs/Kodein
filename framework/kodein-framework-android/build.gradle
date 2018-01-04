@@ -28,7 +28,7 @@ dependencies {
 
 ext {
     android_sourceSet = true
-    pom_name = "Kodein Android"
+    pom_name = "Kodein-Framework-Android"
     pom_description = "Kodein Kotlin classes & extensions for Android"
 }
 apply from: "../../gradle/upload.gradle"

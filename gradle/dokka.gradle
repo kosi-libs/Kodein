@@ -14,3 +14,8 @@
 //        suffix = "#L"
 //    }
 //}
+//
+//task dokkaJar(type: Jar) {
+//    classifier = 'javadoc'
+//    from dokka
+//}
