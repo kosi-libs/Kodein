@@ -1,5 +1,5 @@
 
-includeBuild '../../kotlin-native'
+//includeBuild '../../kotlin-native'
 
 include(
         ':core:kodein-core-common',

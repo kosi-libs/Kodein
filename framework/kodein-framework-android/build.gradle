@@ -26,12 +26,6 @@ dependencies {
     testCompile "junit:junit:$junit_version"
 }
 
-test {
-    testLogging {
-        events "passed", "skipped", "failed", "standardOut", "standardError"
-    }
-}
-
 ext {
     android_sourceSet = true
     pom_name = "Kodein Android"
