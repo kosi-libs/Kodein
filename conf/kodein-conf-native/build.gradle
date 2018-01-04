@@ -4,7 +4,7 @@ apply from: '../../gradle/native-targets.gradle'
 
 konanArtifacts {
     library("kodein-conf") {
-        srcFiles fileTree("../conf-common/src/main/kotlin")
+        srcFiles fileTree("../kodein-conf-common/src/main/kotlin")
 
         libraries {
             allLibrariesFrom project(':core:kodein-core-native')
