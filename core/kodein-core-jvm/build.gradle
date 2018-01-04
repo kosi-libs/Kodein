@@ -5,6 +5,12 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
 ext {
     pom_name = "Kodein Core"
     pom_description = "Kotlin Dependency Injection Core"

@@ -28,7 +28,7 @@ Kodein version {version} is the current major version available.
 == Migrations
 
 - https://salomonbrys.github.io/Kodein/?{branch}/migration-j2k[JSR-330 to Kodein]
-- Version 4 to version 5
+- https://salomonbrys.github.io/Kodein/?{branch}/migration-4to5[Kodein version 4 to version 5]
 
 
 == Previous versions

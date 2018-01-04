@@ -24,7 +24,7 @@ CAUTION: Every-thing that is described here is *a lot less performant* than usin
          Kittens *will* die painfully if you do!
 
 
-[jxinject-install]
+[[install]]
 == Install
 
 === With Maven
@@ -33,29 +33,27 @@ CAUTION: Every-thing that is described here is *a lot less performant* than usin
 ----
 &lt;dependency&gt;
     &lt;groupId&gt;org.kodein&lt;/groupId&gt;
-    &lt;artifactId&gt;kodein-jxinject&lt;/artifactId&gt;
+    &lt;artifactId&gt;kodein-jx-inject-jvm&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
 ----
 
-IMPORTANT: Do not remove the "kodein" (or "kodein-erased") dependency.
+IMPORTANT: Do not remove the "kodein-generic-jvm" (or "kodein-erased-jvm") dependency.
            Both dependencies must be declared.
 
-Then, <<import-jxinject-module,import the module>>.
 
 === With Gradle
 
 [source,groovy,subs="attributes"]
 ----
-compile 'org.kodein:kodein-jxinject:{version}'
+compile 'org.kodein:kodein-jx-inject-jvm:{version}'
 ----
 
-IMPORTANT: Do not remove the "kodein" (or "kodein-erased") dependency.
+IMPORTANT: Do not remove the "kodein-generic-jvm" (or "kodein-erased-jvm") dependency.
            Both dependencies must be declared.
 
-Then, <<import-jxinject-module,import the module>>.
 
-[[import-jxinject-module]]
+[[import-module]]
 === Import the module.
 
 In your kodein binding configuration add the `jxInjectorModule`
@@ -146,7 +144,7 @@ Jx.of(kodein).inject(controller);
 WARNING: Method injection is supported to be compatible with Java injection libraries.
          It is, however, widely considered as the less semantic injection method.
 
-You can have `@Inject` annotated mehtod be called at injection.
+You can have `@Inject` annotated method be called at injection.
 
 .Example: Java class whose method will be automatically called on injection.
 [source, java]

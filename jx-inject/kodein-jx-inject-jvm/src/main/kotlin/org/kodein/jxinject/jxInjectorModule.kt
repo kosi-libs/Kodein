@@ -43,4 +43,10 @@ object Jx {
      */
     @JvmStatic
     fun of(kodein: Kodein) = kodein.jx
+
+    /**
+     * Utility function that eases the retrieval of a [JxInjector].
+     */
+    @JvmStatic
+    fun of(kodein: DKodein) = kodein.jx
 }

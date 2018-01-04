@@ -24,7 +24,7 @@ Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/demo-andr
 [subs="attributes"]
 ----
 compile 'org.kodein:kodein-generic-jvm:{version}'
-compile 'org.kodein:kodein-android:{version}'
+compile 'org.kodein:kodein-framework-android:{version}'
 ----
 +
 IMPORTANT: Both `kodein-generic-jvm` and `kodein-android` dependencies must be declared. +
@@ -89,20 +89,20 @@ class MyActivity : Activity(), KodeinAware {
 <1> Because everything is lazy, the `kodein` AND `ds` instances will both be retrieved only when needed, which is at that time.
 
 
-=== Using an injector
+=== Using a Trigger
 
-If you want all dependencies to be retrieved at `onCreate`, you can very easily use an injector:
+If you want all dependencies to be retrieved at `onCreate`, you can very easily use an trigger:
 
 [source, kotlin]
-.Example: using an injector in a KodeinAware Android Activity
+.Example: using an trigger in a KodeinAware Android Activity
 ----
 class MyActivity : Activity(), KodeinAware {
     override val kodein by closestKodein()
-    override val kodeinInjector = KodeinInjector()
+    override val kodeinTrigger = KodeinTrigger()
     val ds: DataSource by instance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        kodeinInjector.inject() <1>
+        kodeinTrigger.trigger() <1>
         /* ... */
     }
 }
@@ -248,3 +248,90 @@ val kodein = Kodein {
     bind<Controller>() with scoped(activityRetainedScope).singleton { ControllerImpl() } <1>
 }
 ----
+
+
+== Kodein in Android without the extension
+
+=== Being KodeinAware
+
+It is quite easy to have your Android components being KodeinAware (provided that your `Applicaion` class is `KodeinAware`).
+
+
+==== Using lazy
+
+[source, kotlin]
+.Example: a KodeinAware Activity
+----
+class MyActivity : Activity(), KodeinAware {
+    override val kodein: Kodein by lazy { (applicationContext as KodeinAware).kodein }
+}
+----
+
+
+==== Using lateinit
+
+[source, kotlin]
+.Example: a KodeinAware Activity
+----
+class MyActivity : Activity(), KodeinAware {
+    override lateinit val kodein: Kodein
+    override fun onCreate(savedInstanceState: Bundle?) {
+        kodein = (applicationContext as KodeinAware).kodein
+    }
+}
+----
+
+
+=== Using LateInitKodein
+
+If you don't want the component classes to be KodeinAware, you can use a `LateInitKodein`:
+
+[source, kotlin]
+.Example: an Activity with LateInitKodein
+----
+class MyActivity : Activity() {
+    val kodein = LateInitKodein()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        kodein.baseKodein = (applicationContext as KodeinAware).kodein
+    }
+}
+----
+
+
+[[dependency-holder]]
+=== The dependency holder pattern
+
+If you want your components to be Kodein-independent, you can use the dependency holder pattern:
+
+[source, kotlin]
+.Example: The dependency holder pattern
+----
+class MyActivity : Activity() {
+    class Deps(
+            val ds: DataSource,
+            val ctrl: controller
+    )
+    val deps by lazy { (applicationContext as MyApplication).creator.myActivity() }
+    val ds by lazy { deps.ds }
+    val ctrl by lazy { deps.ctrl }
+    /* ... */
+}
+
+class MyApplication : Application() {
+	interface Creator {
+	    fun myActivity(): MyActivity.Deps
+	}
+	val creator = KodeinCreator()
+        /* ... */
+}
+
+class KodeinCreator : MyApplication.Creator {
+    private val kodein = Kodein {
+        /* bindings */
+    }.direct
+    override fun myActivity() = kodein.newInstance { MyActivity.Deps(instance(), instance()) }
+}
+
+----
+
+

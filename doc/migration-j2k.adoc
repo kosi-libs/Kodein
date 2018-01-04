@@ -4,6 +4,7 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toclevels: 4
 :revdate: 2017-04-18
 
+
 == Introduction
 
 When migrating an existing project from Java to Kotlin, chances are the project is already using a dependency injection library.
@@ -18,12 +19,14 @@ You should definitely not use what is described here on Kotlin code and classes.
 This is for Java only!
 ====
 
+
 == Install
 
 . Remove the previous library dependency. Good riddance ;)
-. https://salomonbrys.github.io/Kodein/#_install[Add the Kodein dependency].
-. Replace the previous bindings with https://salomonbrys.github.io/Kodein/#_bindings_declaring_dependencies[Kodein's bindings].
-. https://salomonbrys.github.io/Kodein/#jxinject-install[Add the Kodein JxInject dependency] (don't forget to import the `jxInjectorModule`).
+. https://salomonbrys.github.io/Kodein/?/core#install[Add the Kodein dependency].
+. Replace the previous bindings with https://salomonbrys.github.io/Kodein/?/core#declaring-dependencies[Kodein's bindings].
+. https://salomonbrys.github.io/Kodein/?/jsr330#install[Add the Kodein JxInject dependency] (don't forget to https://salomonbrys.github.io/Kodein/?/jsr330#import-module[import the `jxInjectorModule`]).
+
 
 == Inject
 
@@ -67,6 +70,7 @@ Kodein-JxInject supports, out of the box:
 - Method injection
 - `javax.inject.Provider` injection
 
+
 === Constructors
 
 You can create a new instance of a given class, provided that:
@@ -102,6 +106,7 @@ val controller = kodein.jx.newInstance<MyJavaController>()
 MyJavaController controller = Jx.of(kodein).newInstance(MyJavaController.class);
 ----
 
+
 == Qualifiers
 
 JavaX dependency injection libraries use the concept of qualifier annotations while Kodein uses the very similar concept of https://salomonbrys.github.io/Kodein/#_tagged_bindings[tag].
@@ -122,6 +127,7 @@ val kodein = Kodein {
 }
 ----
 <1>: Transforms a `MyQualifier` qualifier annotation into a `MyTag` Kodein tag.
+
 
 == Use Kodein's Kotlin API
 

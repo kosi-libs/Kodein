@@ -8,6 +8,12 @@ dependencies {
     testCompile project(':test-utils:test-utils-jvm')
 }
 
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
 ext {
     pom_name = "Kodein mutable"
     pom_description = "KOtlin DEpendency INjection that can be configured / mutated"

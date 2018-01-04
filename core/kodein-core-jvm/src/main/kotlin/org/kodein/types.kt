@@ -378,6 +378,7 @@ fun TT(type: Type): TypeToken<*> =
     else
         GenericTypeToken<Any>(type)
 
+@Suppress("UNCHECKED_CAST")
 fun <T> TT(ref: TypeReference<T>): TypeToken<T> = TT(ref.superType) as TypeToken<T>
 
 /**

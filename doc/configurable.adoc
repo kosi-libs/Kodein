@@ -22,29 +22,47 @@ NOTE: Using or not using this is a matter of taste and is neither recommended no
 
 == Install
 
-=== With Maven
+=== JVM
+
+==== With Maven
 
 [source,xml,subs="attributes"]
 ----
 &lt;dependency&gt;
     &lt;groupId&gt;org.kodein&lt;/groupId&gt;
-    &lt;artifactId&gt;kodein-conf&lt;/artifactId&gt;
+    &lt;artifactId&gt;kodein-conf-jvm&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
 ----
 
-IMPORTANT: Do not remove the `kodein` (or `kodein-erased`) dependency.
+IMPORTANT: Do not remove the `kodein-generic-jvm` (or `kodein-erased-jvm`) dependency.
            Both dependencies must be declared.
 
-=== With Gradle
+==== With Gradle
 
 [source,groovy,subs="attributes"]
 ----
-compile 'org.kodein:kodein-conf:{version}'
+compile 'org.kodein:kodein-conf-jvm:{version}'
 ----
 
-IMPORTANT: Do not remove the `kodein` (or `kodein-erased`) dependency.
+IMPORTANT: Do not remove the `kodein-generic-jvm` (or `kodein-erased-jvm`) dependency.
            Both dependencies must be declared.
+
+
+=== Javascript (Gradle)
+
+[source,groovy,subs="attributes"]
+----
+compile 'org.kodein:kodein-conf-js:{version}'
+----
+
+IMPORTANT: Do not remove the `kodein-generic-js` (or `kodein-erased-js`) dependency.
+           Both dependencies must be declared.
+
+
+=== Native
+
+TODO!
 
 
 == ConfigurableKodein
@@ -108,7 +126,7 @@ fun test() {
 
     kodein.addModule(aModule)
 
-    val ds: DataSource = kodein.instance()
+    val ds: DataSource by kodein.instance()
 
     kodein.addModule(anotherModule) <1>
 }
@@ -132,7 +150,7 @@ fun test() {
     kodein.global.addModule(apiModule)
     kodein.global.addModule(dbModule)
 
-    val ds: DataSource = kodein.global.instance()
+    val ds: DataSource by kodein.global.instance()
 }
 ----
 
@@ -151,7 +169,7 @@ You can use the `GlobalKodeinAware` interface that needs no implementation to be
 .Example: a KodeinGlobalAware class
 ----
 class MyManager() : KodeinGlobalAware {
-    val ds: DataSource = instance()
+    val ds: DataSource by instance()
 }
 ----
 

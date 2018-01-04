@@ -27,22 +27,15 @@ interface KodeinAware {
 
     val kodeinContext: KodeinContext<*> get() = AnyKodeinContext
 
-    val kodeinInjector: KodeinInjector? get() = null
+    val kodeinTrigger: KodeinTrigger? get() = null
 }
-
-class LazyKodein(init: () -> Kodein): Lazy<Kodein> by lazy(init), KodeinAware {
-    override val kodein: Kodein = value
-}
-
-fun Kodein.Companion.lazy(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit) = LazyKodein { Kodein(allowSilentOverride, init) }
-
 
 class KodeinWrapper(
         private val _base: Kodein,
         override val kodeinContext: KodeinContext<*>,
-        override val kodeinInjector: KodeinInjector? = null
+        override val kodeinTrigger: KodeinTrigger? = null
 ) : Kodein {
-    constructor(base: KodeinAware, kodeinContext: KodeinContext<*> = base.kodeinContext, injector: KodeinInjector? = base.kodeinInjector) : this(base.kodein, kodeinContext, injector)
+    constructor(base: KodeinAware, kodeinContext: KodeinContext<*> = base.kodeinContext, trigger: KodeinTrigger? = base.kodeinTrigger) : this(base.kodein, kodeinContext, trigger)
 
     override val kodein: Kodein get() = this
 
@@ -62,7 +55,7 @@ class KodeinWrapper(
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 fun <A, T : Any> KodeinAware.Factory(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): KodeinProperty<(A) -> T> =
-        KodeinProperty(kodeinInjector) { receiver -> kodein.container.factory(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver) }
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factory(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver) }
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or null if none is found.
@@ -76,7 +69,7 @@ fun <A, T : Any> KodeinAware.Factory(argType: TypeToken<in A>, type: TypeToken<o
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 fun <A, T : Any> KodeinAware.FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): KodeinProperty<((A) -> T)?> =
-        KodeinProperty(kodeinInjector) { receiver -> kodein.container.factoryOrNull(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver) }
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factoryOrNull(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver) }
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -89,10 +82,10 @@ fun <A, T : Any> KodeinAware.FactoryOrNull(argType: TypeToken<in A>, type: TypeT
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 fun <T : Any> KodeinAware.Provider(type: TypeToken<out T>, tag: Any? = null): KodeinProperty<() -> T> =
-        KodeinProperty(kodeinInjector) { receiver -> kodein.container.provider(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver) }
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.provider(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver) }
 
 fun <A, T : Any> KodeinAware.Provider(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): KodeinProperty<() -> T> =
-        KodeinProperty(kodeinInjector) { receiver -> kodein.container.factory(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).toProvider(arg) }
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factory(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).toProvider(arg) }
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -104,10 +97,10 @@ fun <A, T : Any> KodeinAware.Provider(argType: TypeToken<in A>, type: TypeToken<
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 fun <T : Any> KodeinAware.ProviderOrNull(type: TypeToken<out T>, tag: Any? = null): KodeinProperty<(() -> T)?> =
-        KodeinProperty(kodeinInjector) { receiver -> kodein.container.providerOrNull(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver) }
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.providerOrNull(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver) }
 
 fun <A, T : Any> KodeinAware.ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): KodeinProperty<(() -> T)?> =
-        KodeinProperty(kodeinInjector) { receiver -> kodein.container.factoryOrNull(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver)?.toProvider(arg) }
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factoryOrNull(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver)?.toProvider(arg) }
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -120,10 +113,10 @@ fun <A, T : Any> KodeinAware.ProviderOrNull(argType: TypeToken<in A>, type: Type
  * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
  */
 fun <T : Any> KodeinAware.Instance(type: TypeToken<out T>, tag: Any? = null): KodeinProperty<T> =
-        KodeinProperty(kodeinInjector) { receiver -> kodein.container.provider(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver).invoke() }
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.provider(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver).invoke() }
 
 fun <A, T : Any> KodeinAware.Instance(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): KodeinProperty<T> =
-        KodeinProperty(kodeinInjector) { receiver -> kodein.container.factory(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).invoke(arg()) }
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factory(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).invoke(arg()) }
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -134,15 +127,15 @@ fun <A, T : Any> KodeinAware.Instance(argType: TypeToken<in A>, type: TypeToken<
  * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
  */
 fun <T : Any> KodeinAware.InstanceOrNull(type: TypeToken<out T>, tag: Any? = null): KodeinProperty<T?> =
-        KodeinProperty(kodeinInjector) { receiver -> kodein.container.providerOrNull(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver)?.invoke() }
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.providerOrNull(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver)?.invoke() }
 
 fun <A, T : Any> KodeinAware.InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): KodeinProperty<T> =
-        KodeinProperty(kodeinInjector) { receiver -> kodein.container.factory(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).invoke(arg()) }
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factory(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).invoke(arg()) }
 
 
 val KodeinAware.direct: DKodein get() = DKodeinImpl(kodein.container, kodeinContext, null)
 
-fun KodeinAware.On(context: KodeinContext<*> = this.kodeinContext, injector: KodeinInjector? = this.kodeinInjector): Kodein = KodeinWrapper(this, kodeinContext = context, injector = injector)
+fun KodeinAware.On(context: KodeinContext<*> = this.kodeinContext, trigger: KodeinTrigger? = this.kodeinTrigger): Kodein = KodeinWrapper(this, kodeinContext = context, trigger = trigger)
 
 /**
  * Allows to create a new instance of an unbound object with the same API as when bounding one.
@@ -150,7 +143,7 @@ fun KodeinAware.On(context: KodeinContext<*> = this.kodeinContext, injector: Kod
  * @param T The type of object to create.
  * @param creator A function that do create the object.
  */
-fun <T> KodeinAware.newInstance(creator: DKodein.() -> T): KodeinProperty<T> = KodeinProperty(kodeinInjector) { kodein.direct.run(creator) }
+fun <T> KodeinAware.newInstance(creator: DKodein.() -> T): KodeinProperty<T> = KodeinProperty(kodeinTrigger) { kodein.direct.run(creator) }
 
 
 ///**

@@ -1,0 +1,79 @@
+= Changes & Migration from Kodein 4 to Kodein 5
+Salomon BRYS <salomon.brys@gmail.com>
+:toc: left
+:toc-position: left
+:toclevels: 5
+
+:version: 5.0.0-beta1
+:branch: 5.0
+
+This guide will help you migrate from Kodein 4 to Kodein 5.
+
+- The first part explains the changes and their reasoning.
+- The second part gives steps to follow to port your code to Kodein 5.
+
+== Changes
+
+=== New package: org.kodein
+
+First and foremost, Kodein now has its dedicated domain name: http://kodein.org[kodein.org].
+
+Kodein is now located inside the package `org.kodein`.
+
+
+=== Lazyness
+
+The biggest change in Kodein 5 is that everything in Kodein 5 is lazy. +
+This is because:
+
+- You shouldn't know whether the instance you are asking for will be easy to reatrieve or hard to construct.
+- Some classes (such as Android or TornadoFX components) are created before being "attached" to their context.
+
+Furthermore, the use of Kotlin's delegated properties allows:
+- Factories to access context & receiver (very useful for TornadoFX & Android integration).
+- The use of a trigger (previously known as injector) a lot easier.
+
+IMPORTANT: The use of delegated properties does *not* significantly impact performance!
+
+However, if you don't want all those benefits and still want direct access, Kodein 5 provides `DKodein` and `DKodeinAware` (D is for Direct), which works exactly like Kodein 4's `Kodein` and `KodeinAware`.
+
+
+=== Currying via argument rather than method
+
+In Kodein 4, you would curry a factory into an instance by using `kodein.with(argument).instance()`, which is not really readable / understandable.
+
+In Kodein 5, you curry via the `arg` parameter: `kodein.instance(arg = argument)`.
+
+
+=== Injector -> Trigger & LateInit
+
+Kodein 5 radically changes the way the "injector" works.
+
+In version 4, you would create a `KodeinInjector` and use it to retrieve dependencies.
+
+In version 5, Kodein offers the `KodeinTrigger` and the `LateinitKodein` that each take a role of the previous `KodeinInjector`.
+
+- `KodeinTrigger` allows you to define when you want your dependencies to be retrieved (rather than at first access)
+- `LateInitKodein` allows you to use a Kodein-like shallow object and to define the location of a real Kodein object later.
+
+
+=== Context & receiver
+
+In Kodein 4, scopes used the factory argument as scope context.
+
+In Kodein 5, there are a few new variable that Kodein uses to find binding & call factories.
+Scopes now use a `context` value, which means that there can now be some scoped multiton (the scope uses the context while the multiton uses the argument).
+
+Also, Kodein 5 allow the binding factories to access the receiver of the property.
+This is very useful for framework integration such as Android & TornadoFX.
+
+
+=== RefSingleton & ScopedSingleton -> Singleton
+
+The `Singleton` binding is now supercharged.
+It handles scopes AND references, which means that it is now possible for weird stuff such as "weaked scoped singleton".
+
+By the way, multiton is the same!
+
+
+== Migration

@@ -555,7 +555,7 @@ class GenericJvmTests {
     }
 
     class Test14_00(override val kodein: Kodein): KodeinAware {
-        override val kodeinInjector = KodeinInjector()
+        override val kodeinTrigger = KodeinTrigger()
         val newPerson: () -> Person by provider()
         val salomon: Person by instance(tag = "named")
         val pFactory: (String) -> Person by factory(tag = "factory")
@@ -572,7 +572,7 @@ class GenericJvmTests {
 
         val injected = Test14_00(kodein)
 
-        injected.kodeinInjector.inject()
+        injected.kodeinTrigger.trigger()
         assertNotSame(injected.newPerson(), injected.newPerson())
         assertEquals("Salomon", injected.salomon.name)
         assertSame(injected.salomon, injected.salomon)
@@ -585,7 +585,7 @@ class GenericJvmTests {
     }
 
     class Test14_01(override val kodein: Kodein): KodeinAware {
-        override val kodeinInjector = KodeinInjector()
+        override val kodeinTrigger = KodeinTrigger()
         val person: Person by instance()
     }
 
@@ -598,7 +598,7 @@ class GenericJvmTests {
         val container = Test14_01(kodein)
 
         assertFalse(created)
-        container.kodeinInjector.inject()
+        container.kodeinTrigger.trigger()
         assertTrue(created)
     }
 
@@ -1127,6 +1127,56 @@ class GenericJvmTests {
         val test = Test29()
 
         assertFailsWith<UninitializedPropertyAccessException> { test.name }
+    }
+
+    @Test fun test29_02_LateLocal() {
+
+        val kodein = LateInitKodein()
+
+        val name: String by kodein.instance()
+
+        kodein.baseKodein = Kodein {
+            bind() from instance("Salomon")
+        }
+
+        assertEquals("Salomon", name)
+    }
+
+    @Test fun test29_03_LateLocalFail() {
+
+        val kodein = LateInitKodein()
+
+        val name: String by kodein.instance()
+
+        assertFailsWith<UninitializedPropertyAccessException> { name.length }
+    }
+
+    @Test fun test29_04_LateLocalTrigger() {
+
+        val trigger = KodeinTrigger()
+        val base = LateInitKodein()
+        val kodein = base.on(trigger = trigger)
+
+        val name: String by kodein.instance()
+
+        base.baseKodein = Kodein {
+            bind() from instance("Salomon")
+        }
+
+        trigger.trigger()
+
+        assertEquals("Salomon", name)
+    }
+
+    @Test fun test29_05_LateLocalTriggerFail() {
+
+        val trigger = KodeinTrigger()
+        val base = LateInitKodein()
+        val kodein = base.on(trigger = trigger)
+
+        val name: String by kodein.instance()
+
+        assertFailsWith<UninitializedPropertyAccessException> { trigger.trigger() }
     }
 
 }

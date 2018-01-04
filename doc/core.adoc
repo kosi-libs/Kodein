@@ -112,6 +112,7 @@ Reusing objects in critical paths will enhance performance both in dependency in
 If you are using the erased version, either by choice on the JVM, or by default on JS & Native, you should read <<erased-version,erased version pitfalls>>.
 
 
+[[install]]
 == Install
 
 === JVM
@@ -140,7 +141,7 @@ compile 'org.kodein:kodein-generic-jvm:{version}'
 NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
 
 
-=== JavaScript (gradle)
+=== JavaScript (Gradle)
 
 Because Kodein for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
 
@@ -148,27 +149,6 @@ Because Kodein for JavaScript is compiled as a https://github.com/umdjs/umd[UMD 
 ** as an AMD module (for example with RequireJS) (See index.html in the demo project).
 ** Directly in an HTML page with a `<script>` tag (See index2.html in the demo project).
 * In NodeJS, as a regular CJS module.
-
-
-==== With Maven
-
-[source,xml,subs="attributes"]
-----
-&lt;dependency&gt;
-    &lt;groupId&gt;org.kodein&lt;/groupId&gt;
-    &lt;artifactId&gt;kodein-js&lt;/artifactId&gt;
-    &lt;version&gt;{version}&lt;/version&gt;
-&lt;/dependency&gt;
-----
-
-
-==== With Gradle
-
-[source,groovy,subs="attributes"]
-----
-compile 'org.kodein:kodein-js:{version}'
-----
-
 
 [source,groovy,subs="attributes"]
 ----
@@ -181,6 +161,7 @@ compile 'org.kodein:kodein-erased-js:{version}'
 TODO!
 
 
+[[declaring-dependencies]]
 == Bindings: Declaring dependencies
 
 [source,kotlin]
@@ -923,37 +904,37 @@ NOTE: Using a global context does not forces you to use only bindings that are d
       Because the default context is `Any?`, all non-contexted bindings will still be available with a global context set.
 
 
-==== Using an Injector
+==== Using a Trigger
 
 There is a mechanism that allows you to decide when dependencies are actually retrieved if you want them to be retrieved at a particular time and not at first access.
-This mechanism is called an Injector.
+This mechanism is called a Trigger.
 
 [source, kotlin]
-.Example: using an injector.
+.Example: using a trigger.
 ----
-val injector = KodeinInjector()
-val dice: Dice by kodein.on(injector = injector).instance()
+val trigger = KodeinTrigger()
+val dice: Dice by kodein.on(trigger = trigger).instance()
 /*...*/
-injector.inject() <1>
+trigger.trigger() <1>
 ----
 <1> Retrieval happens now.
 
-You can, of course, assign multiple properties to the same injector.
-You can also create a Kodein object that has a given injector by default:
+You can, of course, assign multiple properties to the same trigger.
+You can also create a Kodein object that has a given trigger by default:
 
 [source, kotlin]
-.Example: creating a Kodein object with an injector.
+.Example: creating a Kodein object with a trigger.
 ----
-val injector = KodeinInjector()
-val injectKodein = kodein.on(injector = injector)
+val trigger = KodeinTrigger()
+val injectKodein = kodein.on(trigger = trigger)
 val dice: Dice by injectKodein.instance()
 /*...*/
-injector.inject()
+trigger.trigger()
 ----
 
-TIP: The `injector` argument should always be named.
+TIP: The `trigger` argument should always be named.
 
-NOTE: An injector allows you to "force" retrieval.
+NOTE: A trigger allows you to "force" retrieval.
       However, retrieval can still happen before `inject()` is called if the variable is accessed.
 
 
@@ -990,6 +971,25 @@ val env: Env by kodeien.instance()
 env.doSomething() <1>
 ----
 <1> Only then will the Kodein instance will itself be created, and the bindings definition function ran.
+
+
+==== Late init
+
+Kodein proposes a `LateInitKodein` that allows you to define a Kodein object _after_ some lazy retrieval:
+
+[source, kotlin]
+.Example: Using a LateInitKodein.
+----
+val kodein = LateInitKodein()
+val env: Env by kodein.instance()
+/*...*/
+kodein.baseKodein = /* access to a kodein instance */ <1>
+/*...*/
+env.doSomething() <2>
+----
+<1> Setting the real Kodein object.
+<2> If this was run before setting `kodein.baseKodein`, an `UninitializedPropertyAccessException` would be thrown.
+
 
 
 [[kodein-aware]]
@@ -1034,20 +1034,20 @@ NOTE: Using a global context does not forces you to use only bindings that are d
       Because the default context is `Any?`, all non-contexted bindings will still be available with a global context set.
 
 
-==== Class global injector
+==== Class global trigger
 
-If you want to have all dependency properties retrieved at once, you can use a class global injector.
-Simply override the `kodeinInjector` property:
+If you want to have all dependency properties retrieved at once, you can use a class global trigger.
+Simply override the `kodeinTrigger` property:
 
 [source, kotlin]
-.Example: a KodeinAware class with an injector
+.Example: a KodeinAware class with a trigger
 ----
 class MyManager(override val kodein: Kodein) : KodeinAware {
-    override val kodeinInjector = KodeinInjector()
+    override val kodeinTrigger = KodeinTrigger()
     val ds: DataSource by instance()
     /*...*/
     fun onReady() {
-        kodeinInjector.inject() <1>
+        kodeinTrigger.trigger() <1>
     }
 }
 ----
@@ -1070,6 +1070,25 @@ class MyActivity : Activity(), KodeinAware {
 <1> Because `ds` is lazily retrieved, access to the `kodein` property will only happen at first retrieval.
 
 NOTE: There is an official plugin to ease the use of Kodein in Android, you can read more about it on http://TODO[the dedicated document].
+
+
+==== Lateinit
+
+Because everything is lazy and, in a KodeinAware class, the Kodein object is not accessed until needed, you can easily declare the `kodein` field as lateinit.
+
+[source, kotlin]
+.Example: an Activity class with a lateinit kodein
+----
+class MyActivity : Activity(), KodeinAware {
+    override val lateinit kodein: Kodein
+    val ds: DataSource by instance() <1>
+    override fun onCreate(savedInstanceState: Bundle?) {
+        kodein = (applicationContext as MyApplication).kodein
+    }
+}
+----
+<1> Because `ds` is lazily retrieved, access to the `kodein` property will only happen at first retrieval.
+
 
 
 === Retrival: Direct

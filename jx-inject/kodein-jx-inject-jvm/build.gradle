@@ -10,6 +10,12 @@ dependencies {
     testCompile project(':test-utils:test-utils-jvm')
 }
 
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
 ext {
     pom_name = "Kodein Jx Inject"
     pom_description = "Kodein extension that enables to auto-inject with JSR 330 javax.inject annotations"
