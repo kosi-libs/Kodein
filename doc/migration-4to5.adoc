@@ -14,6 +14,33 @@ This guide will help you migrate from Kodein 4 to Kodein 5.
 
 == Changes
 
+=== New repository: JCenter
+
+Kodein has moved from MavenCentral to JCenter.
+
+The main reason for this move is that I need download statistics for professional reasons. +
+Also, JCenter is a CDN. +
+Also, JCenter allows me to manage a dedicated repo for beta releases.
+
+IMPORTANT: Kodein is an open-source product and will always remain so.
+           There will never be a "pro" paid version!
+           The statistics are just to give me an "argument" in my future projects ;)
+
+To you, it means that:
+
+- You need to add the JCenter repository to your build system (Gradle or Maven).
+- If you are using a beta version of Kodein, you need to add the Kodein specific repository.
+- That's all ;)
+
+
+=== New modules
+
+Also, the module name have changed to reflect:
+
+- The platform
+- The generic / erased choice
+
+
 === New package: org.kodein
 
 First and foremost, Kodein now has its dedicated domain name: http://kodein.org[kodein.org].
@@ -21,7 +48,7 @@ First and foremost, Kodein now has its dedicated domain name: http://kodein.org[
 Kodein is now located inside the package `org.kodein`.
 
 
-=== Lazyness
+=== laziness
 
 The biggest change in Kodein 5 is that everything in Kodein 5 is lazy. +
 This is because:
@@ -38,14 +65,14 @@ IMPORTANT: The use of delegated properties does *not* significantly impact perfo
 However, if you don't want all those benefits and still want direct access, Kodein 5 provides `DKodein` and `DKodeinAware` (D is for Direct), which works exactly like Kodein 4's `Kodein` and `KodeinAware`.
 
 
-=== Currying via argument rather than method
+=== Currying
 
 In Kodein 4, you would curry a factory into an instance by using `kodein.with(argument).instance()`, which is not really readable / understandable.
 
 In Kodein 5, you curry via the `arg` parameter: `kodein.instance(arg = argument)`.
 
 
-=== Injector -> Trigger & LateInit
+=== Injector
 
 Kodein 5 radically changes the way the "injector" works.
 
@@ -57,23 +84,428 @@ In version 5, Kodein offers the `KodeinTrigger` and the `LateinitKodein` that ea
 - `LateInitKodein` allows you to use a Kodein-like shallow object and to define the location of a real Kodein object later.
 
 
-=== Context & receiver
+=== Scope & contexts
 
 In Kodein 4, scopes used the factory argument as scope context.
 
 In Kodein 5, there are a few new variable that Kodein uses to find binding & call factories.
 Scopes now use a `context` value, which means that there can now be some scoped multiton (the scope uses the context while the multiton uses the argument).
 
-Also, Kodein 5 allow the binding factories to access the receiver of the property.
-This is very useful for framework integration such as Android & TornadoFX.
-
-
-=== RefSingleton & ScopedSingleton -> Singleton
+TIP: Kodein 5 also allows the binding factories to access the receiver of the property.
+     This is very useful for framework integration such as Android & TornadoFX.
 
 The `Singleton` binding is now supercharged.
 It handles scopes AND references, which means that it is now possible for weird stuff such as "weaked scoped singleton".
 
-By the way, multiton is the same!
+TIP: The `multiton` binding is the same!
+
+Finally, there are no more such things as "auto-scopes".
+They are replaced by scopes that do not need a particular provided context, e.g. `Scope<Any?, *>`.
+
+
+=== Android
+
+The Android specific scopes and types have been entirely rewritten to be lighter and less intrusive.
 
 
 == Migration
+
+=== New repository: JCenter
+
+You need to add the jcenter repository to your project (if it is not already).
+
+==== With Maven
+
+[source,xml,subs="attributes"]
+----
+&lt;repositories&gt;
+    &lt;repository&gt;
+      &lt;id&gt;jcenter&lt;/id&gt;
+      &lt;url&gt;https://jcenter.bintray.com&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
+----
+
+If you plan to use a beta version of Kodein, then you also need the Kodein specific repository:
+
+[source,xml,subs="attributes"]
+----
+&lt;repositories&gt;
+    &lt;repository&gt;
+      &lt;id&gt;kodein&lt;/id&gt;
+      &lt;url&gt;http://dl.bintray.com/salomonbrys/kodein&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
+----
+
+
+==== With Gradle
+
+Add the JCenter repository:
+
+[source,groovy,subs="attributes"]
+----
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+----
+
+If you plan to use a beta version of Kodein, then you also need the Kodein specific repository:
+
+[source,groovy,subs="attributes"]
+----
+buildscript {
+    repositories {
+        maven { url "http://dl.bintray.com/salomonbrys/kodein" }
+    }
+}
+----
+
+
+=== New modules
+
+Module names have changed:
+
+[options="header",width="60%"]
+|=======
+| Old name          | New name
+| `kodein`          | `kodein-generic-jvm`
+| `kodein-erased`   | `kodein-erased-jvm`
+| `kodein-conf`     | `kodein-conf-jvm`
+| `kodein-jxinject` | `kodein-jx-inject-jvm`
+| `kodein-android`  | `kodein-framework-android`
+| `kodein-js`       | `kodein-erased-js`
+| `kodein-conf-js`  | `kodein-conf-js`
+|=======
+
+
+=== New package: org.kodein
+
+Well, the new package is now `org.kodein`. So, you know, update the imports ;)
+
+
+=== Laziness
+
+This is by far the most important change in your migration.
+
+
+==== For JVM / Server
+
+You now have a choice : either you embrace this new laziness philosophy, or you fight it ;)
+In fact, both choice are pretty easy to make!
+
+NOTE: Injection, a.k.a. `kodein.newInstance { }`, is not impacted.
+      Only retrieval is.
+
+
+===== Lazy by default
+
+If you want to use laziness by default, as Kodein now does, simply replace all `=` with `by`.
+
+[source, kotlin]
+.Example: updating retrieval code to use Kodein's laziness
+----
+// Kodein 4
+val ds: DataSource = kodein.instance()
+
+// Kodein 5
+val ds: DataSource by kodein.instance()
+----
+
+However, if you don't want to use laziness, you need to update your code to
+
+
+===== Direct by default
+
+If you want to keep Kodein 4's direct retrieval by default, you simply need to:
+
+- handle `DKodein` objects instead of `Kodein`
+- have your classes being `DKodeinAware` instead of `KodeinAware`
+
+[source, kotlin]
+.Example: creating a `DKodein`
+----
+val kodein = Kodein {
+    /* bindings */
+}.direct <1>
+----
+<1> This `.direct` will return a `DKodein`
+
+[source, kotlin]
+.Example: a `DKodeinAware` class
+----
+class MyController(override val dkodein: DKodein) : DKodeinAware
+----
+
+
+==== For Android
+
+In Android, the laziness by default is actually a very good thing, as you don't need things like `KodeinInjector` or `LazyKodein`:
+
+Also, `appKodein()` is replaced by `closestKodein()`
+
+[source, kotlin]
+.Example: a `KodeinAware` Activity
+----
+class MyActivity() : Activity(), KodeinAware {
+    override val kodein by closestKodein()
+    private val usersManagers: UsersManagers by instance()
+}
+----
+
+NOTE: If you were using Android specific types (such as `KodeinActivity`), you should read the <<android,Android>> section.
+
+
+=== Currying
+
+There's a new currying syntax:
+
+[source, kotlin]
+.Example: new currying syntax
+----
+// Kodein 4
+val dice: Dice = kodein.with(6).instance()
+
+// Kodein 5
+val ds: DataSource by kodein.instance(arg = 6)
+----
+
+TIP: Much like the `tag` argument, the `arg` argument should always be named.
+
+
+=== Injector
+
+If you were using a `KodeinInjector`, you now need to use a `KodeinTrigger` and/or a `LateInitKodein`.
+
+
+==== Trigger
+
+The `KodeinTrigger` class allows you to define when the dependencies will be retrieved (as opposed to lazily when needed).
+
+
+===== By itself
+
+You can use the `on` function to create a `Kodein` object that is bound to a `KodeinTrigger`:
+
+[source, kotlin]
+.Example: a Kodein bound to a KodeinTrigger
+----
+val tk = kodein.on(trigger = KodeinTrigger())
+val ds: DataSource by tk.instance()
+tk.kodeinTrigger!!.trigger()
+----
+
+
+===== In KodeinAware
+
+It is really easy to use a `KodeinTrigger` in a KodeinAware class:
+
+[source, kotlin]
+.Example: a KodeinAware class with a trigger
+----
+class MyManager(override val kodein: Kodein) : KodeinAware {
+    override val kodeinTrigger = KodeinTrigger() <1>
+    val ds: DataSource by tk.instance()
+    init {
+        kodeinTrigger.trigger() <2>
+    }
+}
+----
+<1> The `kodeinTrigger` property of a KodeinAware class
+
+
+==== Late init
+
+===== In KodeinAware
+
+In a `KodeinAware` class, you can set the `kodein` value to be `late init`:
+
+[source, kotlin]
+.Example: a KodeinAware class with a late init kodein
+----
+class MyManager : KodeinAware {
+    override late init var kodein: Kodein <1>
+    val ds: DataSource by instance()
+    init {
+        kodein = applicationGlobals.kodein <2>
+    }
+}
+----
+<1> The `kodein` property is `late init`, which is not a problem as long as you set it before _accessing_ a dependency.
+<2> You can access dependencies after setting the `kodein` variable.
+
+
+===== By itself
+
+For classes that are _not_ `KodeinAware`, Kodein offers the `LateInitKodein` class, which acts very similarly:
+
+[source, kotlin]
+.Example: use of LateInitKodein
+----
+val lk = LateInitKodein()
+val ds: DataSource by lk.instance()
+lk.baseKodein = applicationGlobals.kodein
+----
+
+
+=== Scope contexts
+
+Scopes now use the `context` variable, instead of the factory argument `arg`.
+
+
+==== Binding with a scope
+
+The syntax to bind a scoped singleton has evolved:
+
+[source, kotlin]
+.Example: binding with a scope
+----
+val kodein = Kodein {
+    // Kodein 4
+    bind<Session>() with scopedSingleton(requestScope) { /* ... */ }
+
+    // Kodein 5
+    bind<Session>() with scoped(requestScope).singleton { /* ... */ }
+}
+----
+
+
+==== Getting a scoped singleton instance
+
+===== Retrieval context
+
+A scope is now defined function of a `context`, rather than of an `arg`:
+
+[source, kotlin]
+.Example: getting an instance of a scoped singleton
+----
+val kodein = Kodein {
+    // Kodein 4
+    val session by kodein.with(request).instance()
+
+    // Kodein 5
+    val session by kodein.on(context = request).instance()
+}
+----
+
+
+===== KodeinAware context
+
+You can define a context that works for an entire `KodeinAware` class.
+
+[source, kotlin]
+.Example: a context for the entire KodeinAware class
+----
+class MyController(request: Request) : KodeinAware {
+    override val kodeinContext = kcontext(request)
+    val session by instance()
+}
+----
+
+NOTE: Setting a `kodeinContext` still allows you to acces bindings without scopes!
+      The `kodeinContext` is the context _by default_, but will not be used if there is no need for a context.
+
+
+[[android]]
+=== Android
+
+The Kodein Android extension has radically changed.
+It is therefore advised to read https://salomonbrys.github.io/Kodein/?{branch}/android[the new Kodein on Android documentation].
+
+
+==== Laziness
+
+Because everything is lazy be default, it is now very easy to use `KodeinAware` with Android components (note that `closestKodein` replaces `appKodein`):
+
+[source, kotlin]
+.Example: a context for the entire KodeinAware class
+----
+class MyActivity : Activity(), KodeinAware {
+    override val kodein by closestKodein() <1>
+    val ds: DataSource by instance()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ds.connect() <2>
+        /* ... */
+    }
+}
+----
+<1> The `closestKodein` function replaces the `appKodein` v4 function.
+<2> Because everything is lazy, the kodein AND ds instances will both be retrieved only when needed, which is at that time.
+
+
+==== Layered dependencies
+
+The `KodeinActivity` class, `KodeinInjector` interface, and all their component equivalent are gone.
+what they did was:
+
+- Provide an injector, which is no longer needed since Kodein 5 is lazy by default.
+- Allowed to create a "sub-kodein" with some new or overriding bindings, which this guide explains how to do.
+- Provide a Kodein object that reflects those new or overriding bindings, which is what `closestKodein` does.
+
+To create a component that creates it's own Kodein object, simply override the `kodein` value, create a new Kodein object, and extend the parent kodein in it:
+
+[source, kotlin]
+.Example: a context for the entire KodeinAware class
+----
+class MyActivity : Activity(), KodeinAware {
+    private val _parentKodein by closestKodein()  <1>
+    override val kodein: Kodein by Kodein {
+        extend(_parentKodein)  <2>
+        /* activity specific bindings */
+    }
+}
+----
+<1> Get the "global" application kodein.
+<2> Extends the "global" application kodein, to be able to access, with this new Kodein object, all bindings defined at the application level.
+
+
+==== Scopes
+
+All android scopes are replaced by the `androidScope` function:
+
+[source, kotlin]
+.Example: binding with an activity scope
+----
+val kodein = Kodein {
+    // Kodein 4
+    bind<Whatever>() with scopedSingleton(activityScope) { /* ... */ }
+
+    // Kodein 5
+    bind<Whatever>() with scoped(androidScope<Activity>()).singleton { /* ... */ }
+}
+----
+
+
+==== Modules
+
+The `androidModule` still exists but now need the application context:
+
+[source, kotlin]
+.Example: importing the android module
+----
+class MyApplication : Application(), KodeinAware {
+    override val kodein by Kodein.lazy {
+        import(androidModule(this@MyApplication))
+	    /* bindings */
+    }
+}
+----
+
+[IMPORTANT]
+====
+The `autoAndroidModule` is gone and will not return!
+Its implementation was far too messy and leak-prone.
+To find the "closest" context, Kodein uses either the receiver or the context, which you must provide if the `KodeinAware` class is not an Android component:
+
+[source, kotlin]
+.Example: defining the android context as the kodein context
+----
+class MyController(override val kodein: Kodein, val context: Context) : KodeinAware {
+    override val kodeinContext = kcontext(context)
+    private val vibrator: Vibrator by instance()
+}
+----
+====

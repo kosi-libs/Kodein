@@ -119,13 +119,41 @@ If you are using the erased version, either by choice on the JVM, or by default 
 
 ==== With Maven
 
+Add the JCenter repository:
+
 [source,xml,subs="attributes"]
 ----
-&lt;dependency&gt;
-    &lt;groupId&gt;org.kodein&lt;/groupId&gt;
-    &lt;artifactId&gt;kodein-generic-jvm&lt;/artifactId&gt;
-    &lt;version&gt;{version}&lt;/version&gt;
-&lt;/dependency&gt;
+&lt;repositories&gt;
+    &lt;repository&gt;
+      &lt;id&gt;jcenter&lt;/id&gt;
+      &lt;url&gt;https://jcenter.bintray.com&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
+----
+
+If you plan to use a beta version of Kodein, then you also need the Kodein specific repository:
+
+[source,xml,subs="attributes"]
+----
+&lt;repositories&gt;
+    &lt;repository&gt;
+      &lt;id&gt;kodein&lt;/id&gt;
+      &lt;url&gt;http://dl.bintray.com/salomonbrys/kodein&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
+----
+
+Then add the dependency:
+
+[source,xml,subs="attributes"]
+----
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.kodein&lt;/groupId&gt;
+        &lt;artifactId&gt;kodein-generic-jvm&lt;/artifactId&gt;
+        &lt;version&gt;{version}&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
 ----
 
 NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
@@ -133,9 +161,35 @@ NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
 
 ==== With Gradle
 
+Add the JCenter repository:
+
 [source,groovy,subs="attributes"]
 ----
-compile 'org.kodein:kodein-generic-jvm:{version}'
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+----
+
+If you plan to use a beta version of Kodein, then you also need the Kodein specific repository:
+
+[source,groovy,subs="attributes"]
+----
+buildscript {
+    repositories {
+        maven { url "http://dl.bintray.com/salomonbrys/kodein" }
+    }
+}
+----
+
+Then add the dependency:
+
+[source,groovy,subs="attributes"]
+----
+dependencies {
+    implementation 'org.kodein:kodein-generic-jvm:{version}'
+}
 ----
 
 NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
@@ -150,9 +204,35 @@ Because Kodein for JavaScript is compiled as a https://github.com/umdjs/umd[UMD 
 ** Directly in an HTML page with a `<script>` tag (See index2.html in the demo project).
 * In NodeJS, as a regular CJS module.
 
+Add the JCenter repository:
+
 [source,groovy,subs="attributes"]
 ----
-compile 'org.kodein:kodein-erased-js:{version}'
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+----
+
+If you plan to use a beta version of Kodein, then you also need the Kodein specific repository:
+
+[source,groovy,subs="attributes"]
+----
+buildscript {
+    repositories {
+        maven { url "http://dl.bintray.com/salomonbrys/kodein" }
+    }
+}
+----
+
+Then add the dependency:
+
+[source,groovy,subs="attributes"]
+----
+dependencies {
+    compile 'org.kodein:kodein-erased-js:{version}'
+}
 ----
 
 
@@ -556,6 +636,14 @@ Because the default context is of type `Any?`, these scopes need no explicit con
 
 In the previous example, `requestScope` could also be of type `Scope<Any?, Request>` (`Any?` being the request provided by the user to Kodein, `Request` being the context provided by Kodein to the binding function).
 The difference being that the user would *not* have to define an explicit context.
+
+[TIP]
+====
+The `Scope` type has two type parameters:
+
+- The first is the type of the context provided by the retriever (your code) to the scope.
+- The second is the type of the context by the scope to the factory function.
+====
 
 
 ==== JVM references in scopes
