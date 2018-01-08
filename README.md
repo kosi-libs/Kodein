@@ -53,6 +53,8 @@ Kodein is a good choice because:
 Read more
 ---------
 
+[Kodein 5.0 is in Beta!](https://salomonbrys.github.io/Kodein/?5.0)
+
 Kodein version 4 is the current major version available:
 
 - **[Kodein 4 full documentation](https://salomonbrys.github.io/Kodein/)**
