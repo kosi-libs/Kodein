@@ -238,7 +238,12 @@ dependencies {
 
 === Native
 
-TODO!
+- https://bintray.com/salomonbrys/kodein/download_file?file_path=kodein-core-native-{version}.klib[Download the kodein-core-native-{version} klib].
+- https://bintray.com/salomonbrys/kodein/download_file?file_path=kodein-erased-native-{version}.klib[Download the kodein-erased-native-{version} klib].
+- Add *both* libraries to your project.
+
+NOTE: Kodein supports the following targets: +
+      linux, linux_mips32, linux_mipsel32, macbook, mingw, android_arm32, android_arm64, iphone, iphone_sim, wasm32, raspberrypi
 
 
 [[declaring-dependencies]]
