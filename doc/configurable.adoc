@@ -62,7 +62,7 @@ IMPORTANT: Do not remove the `kodein-generic-js` (or `kodein-erased-js`) depende
 
 === Native
 
-- https://bintray.com/salomonbrys/kodein/download_file?file_path=kodein-conf-native-{version}.klib[Download the kodein-conf-native-{version} klib].
+- https://dl.bintray.com/salomonbrys/kodein/native/kodein-{version}/kodein-conf-{version}.klib[Download kodein-conf-{version}.klib].
 - Add the library to your project.
 
 

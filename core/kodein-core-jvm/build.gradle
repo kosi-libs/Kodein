@@ -13,6 +13,6 @@ test {
 
 ext {
     pom_name = "Kodein-Core-JVM"
-    pom_description = "Kotlin Dependency Injection Core for the JVM & Android"
+    pom_description = "KOtlin DEpendency INjection Core for the JVM & Android"
 }
 apply from: "../../gradle/upload.gradle"

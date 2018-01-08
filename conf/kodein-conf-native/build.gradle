@@ -3,7 +3,7 @@ apply plugin: 'konan'
 apply from: '../../gradle/native-targets.gradle'
 
 konanArtifacts {
-    library("kodein-conf") {
+    library("kodein-conf-${project.version}") {
         srcFiles fileTree("../kodein-conf-common/src/main/kotlin")
 
         libraries {
@@ -11,3 +11,11 @@ konanArtifacts {
         }
     }
 }
+
+ext {
+    libName = "kodein-conf-${project.version}"
+    pom_name = "Kodein-Conf-Native"
+    pom_description = "KOtlin DEpendency INjection that can be configured / mutated for Native Platforms"
+}
+apply from: "../../gradle/klib.gradle"
+apply from: "../../gradle/klib-upload.gradle"

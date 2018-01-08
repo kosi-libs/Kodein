@@ -6,3 +6,9 @@ dependencies {
 
     testCompile project(":test-utils:test-utils-common")
 }
+
+ext {
+    pom_name = "Kodein-Conf-Common"
+    pom_description = "KOtlin DEpendency INjection that can be configured / mutated Commons"
+}
+apply from: "../../gradle/upload.gradle"

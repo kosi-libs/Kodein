@@ -3,7 +3,7 @@ apply plugin: 'konan'
 apply from: '../../gradle/native-targets.gradle'
 
 konanArtifacts {
-    library("kodein-erased") {
+    library("kodein-erased-${project.version}") {
         srcFiles fileTree("src/main/kotlin")
         srcFiles fileTree("../kodein-erased-common/src/main/kotlin")
 
@@ -14,3 +14,11 @@ konanArtifacts {
         }
     }
 }
+
+ext {
+    libName = "kodein-erased-${project.version}"
+    pom_name = "Kodein-Erased-Native"
+    pom_description = "KOtlin DEpendency INjection using erased types by default for Native Platforms (Native Platforms do NOT support genericity)"
+}
+apply from: "../../gradle/klib.gradle"
+apply from: "../../gradle/klib-upload.gradle"

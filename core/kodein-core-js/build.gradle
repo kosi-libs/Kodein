@@ -11,6 +11,6 @@ compileKotlin2Js {
 
 ext {
     pom_name = "Kodein-Core-JS"
-    pom_description = "Kotlin Dependency Injection Core for Javascript"
+    pom_description = "KOtlin DEpendency INjection Core for Javascript"
 }
 apply from: "../../gradle/upload.gradle"

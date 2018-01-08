@@ -6,3 +6,9 @@ dependencies {
 
     testCompile project(":test-utils:test-utils-common")
 }
+
+ext {
+    pom_name = "Kodein-Erased-Common"
+    pom_description = "KOtlin DEpendency INjection using erased types by default Commons"
+}
+apply from: "../../gradle/upload.gradle"

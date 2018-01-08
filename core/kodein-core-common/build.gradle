@@ -8,6 +8,6 @@ dependencies {
 
 ext {
     pom_name = "Kodein-Core-Common"
-    pom_description = "Kotlin Dependency Injection Core Commons"
+    pom_description = "KOtlin DEpendency INjection Core Commons"
 }
 apply from: "../../gradle/upload.gradle"

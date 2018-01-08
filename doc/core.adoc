@@ -238,8 +238,8 @@ dependencies {
 
 === Native
 
-- https://bintray.com/salomonbrys/kodein/download_file?file_path=kodein-core-native-{version}.klib[Download the kodein-core-native-{version} klib].
-- https://bintray.com/salomonbrys/kodein/download_file?file_path=kodein-erased-native-{version}.klib[Download the kodein-erased-native-{version} klib].
+- https://dl.bintray.com/salomonbrys/kodein/native/kodein-{version}/kodein-core-{version}.klib[Download kodein-core-{version}.klib].
+- https://dl.bintray.com/salomonbrys/kodein/native/kodein-{version}/kodein-erased-{version}.klib[Download kodein-erased-{version}.klib].
 - Add *both* libraries to your project.
 
 NOTE: Kodein supports the following targets: +
