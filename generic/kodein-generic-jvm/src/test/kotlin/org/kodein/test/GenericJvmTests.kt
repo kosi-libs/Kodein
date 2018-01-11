@@ -1020,18 +1020,18 @@ class GenericJvmTests {
 
     @Test fun test26_00_MultiSet() {
         val kodein = Kodein {
-            bind() from setBinding<Person>()
+            bind() from setBinding<IPerson>()
 
-            bind<Person>().inSet() with singleton { Person("Salomon") }
-            bind<Person>().inSet() with provider { Person("Laila") }
+            bind<IPerson>().inSet() with singleton { Person("Salomon") }
+            bind<IPerson>().inSet() with provider { Person("Laila") }
         }
 
-        val persons1: Set<Person> by kodein.instance()
+        val persons1: Set<IPerson> by kodein.instance()
 
         assertTrue(Person("Salomon") in persons1)
         assertTrue(Person("Laila") in persons1)
 
-        val persons2: Set<Person> by kodein.instance()
+        val persons2: Set<IPerson> by kodein.instance()
 
         val salomon1 = persons1.first { it.name == "Salomon" }
         val salomon2 = persons2.first { it.name == "Salomon" }

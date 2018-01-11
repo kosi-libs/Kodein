@@ -78,7 +78,7 @@ class TypeBinderInSet<T : Any, S: Any> internal constructor(private val _binder:
      * @param binding The binding to add in the set.
      */
     @Suppress("UNCHECKED_CAST")
-    infix fun <C> with(binding: KodeinBinding<C, *, T>) {
+    infix fun <C> with(binding: KodeinBinding<in C, *, out T>) {
         val setKey = Kodein.Key(binding.contextType, binding.argType, _colTypeToken, _binder.tag)
         val setBinding = _binder.containerBuilder.bindingsMap[setKey]?.first() ?: throw IllegalStateException("No set binding to $setKey")
 
