@@ -9,8 +9,10 @@ compileKotlin2Js {
     kotlinOptions.moduleKind = "umd"
 }
 
+apply from: "../../gradle/kotlin-publish.gradle"
+
 ext {
     pom_name = "Kodein-Core-JS"
     pom_description = "KOtlin DEpendency INjection Core for Javascript"
 }
-apply from: "../../gradle/upload.gradle"
+apply from: "../../gradle/publication-upload.gradle"

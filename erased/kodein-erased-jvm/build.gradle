@@ -15,8 +15,10 @@ test {
     }
 }
 
+apply from: "../../gradle/kotlin-publish.gradle"
+
 ext {
     pom_name = "Kodein-Erased-JVM"
     pom_description = "KOtlin DEpendency INjection using erased types by default for the JVM & Android (optimized, but error-prone)"
 }
-apply from: "../../gradle/upload.gradle"
+apply from: "../../gradle/publication-upload.gradle"

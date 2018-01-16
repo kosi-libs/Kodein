@@ -16,15 +16,10 @@ if (hasProperty('bintrayUsername') && hasProperty('bintrayApiKey')) {
             vcsUrl = 'https://github.com/SalomonBrys/Kodein.git'
             desc = pom_description
 
-            filesSpec {
-                from project.buildDir.path + "/klib/${libName}.klib"
-                into "native/kodein-${project.version}/"
-            }
+            publications = ['kodein']
+
+//            dryRun = true
         }
-
-//        dryRun = true
     }
-
-    bintrayUpload.dependsOn zipUniversalKLib
 
 }

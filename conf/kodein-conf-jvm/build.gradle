@@ -14,8 +14,10 @@ test {
     }
 }
 
+apply from: "../../gradle/kotlin-publish.gradle"
+
 ext {
     pom_name = "Kodein-Conf-JVM"
     pom_description = "KOtlin DEpendency INjection that can be configured / mutated for the JVM & Android"
 }
-apply from: "../../gradle/upload.gradle"
+apply from: "../../gradle/publication-upload.gradle"

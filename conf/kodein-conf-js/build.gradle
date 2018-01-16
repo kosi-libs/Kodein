@@ -14,8 +14,10 @@ compileKotlin2Js {
 
 apply from: '../../gradle/js-test.gradle'
 
+apply from: "../../gradle/kotlin-publish.gradle"
+
 ext {
     pom_name = "Kodein-Conf-JS"
     pom_description = "KOtlin DEpendency INjection that can be configured / mutated for Javascript"
 }
-apply from: "../../gradle/upload.gradle"
+apply from: "../../gradle/publication-upload.gradle"

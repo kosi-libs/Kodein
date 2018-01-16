@@ -20,5 +20,5 @@ ext {
     pom_name = "Kodein-Erased-Native"
     pom_description = "KOtlin DEpendency INjection using erased types by default for Native Platforms (Native Platforms do NOT support genericity)"
 }
-apply from: "../../gradle/klib.gradle"
+apply from: "../../gradle/klib-universal.gradle"
 apply from: "../../gradle/klib-upload.gradle"

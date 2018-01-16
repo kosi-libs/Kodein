@@ -17,5 +17,5 @@ ext {
     pom_name = "Kodein-Conf-Native"
     pom_description = "KOtlin DEpendency INjection that can be configured / mutated for Native Platforms"
 }
-apply from: "../../gradle/klib.gradle"
+apply from: "../../gradle/klib-universal.gradle"
 apply from: "../../gradle/klib-upload.gradle"

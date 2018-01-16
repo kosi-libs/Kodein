@@ -7,8 +7,10 @@ dependencies {
     testCompile project(":test-utils:test-utils-common")
 }
 
+apply from: "../../gradle/kotlin-publish.gradle"
+
 ext {
     pom_name = "Kodein-Conf-Common"
     pom_description = "KOtlin DEpendency INjection that can be configured / mutated Commons"
 }
-apply from: "../../gradle/upload.gradle"
+apply from: "../../gradle/publication-upload.gradle"

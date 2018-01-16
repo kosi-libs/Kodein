@@ -26,9 +26,11 @@ dependencies {
     testCompile "junit:junit:$junit_version"
 }
 
+apply from: "../../gradle/android-publish.gradle"
+
 ext {
     android_sourceSet = true
     pom_name = "Kodein-Framework-Android"
     pom_description = "Kodein Kotlin classes & extensions for Android"
 }
-apply from: "../../gradle/upload.gradle"
+apply from: "../../gradle/publication-upload.gradle"
