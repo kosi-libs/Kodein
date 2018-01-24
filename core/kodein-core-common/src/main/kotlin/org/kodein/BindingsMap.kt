@@ -2,16 +2,17 @@ package org.kodein
 
 import org.kodein.bindings.KodeinBinding
 
-open class KodeinDefinedBinding(val binding: KodeinBinding<*, *, *>, val fromModule: String?)
+open class KodeinDefining<C, A, T: Any>(val binding: KodeinBinding<C, A, T>, val fromModule: String?)
+class KodeinDefinition<C, A, T: Any>(binding: KodeinBinding<C, A, T>, fromModule: String?, val tree: KodeinTree) : KodeinDefining<C, A, T>(binding, fromModule)
 
 /**
  * A Map containing all bindings associated to their keys
  */
-typealias BindingsMap = Map<Kodein.Key<*, *, *>, List<KodeinDefinedBinding>>
+typealias BindingsMap = Map<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>
 
 private fun BindingsMap._description(withOverrides: Boolean, ident: Int, keyBindDisp: Kodein.Key<*, *, *>.() -> String, bindingDisp: KodeinBinding<*, *, *>.() -> String): String {
 
-    fun StringBuilder.appendBindings(ident: Int, entries: List<Map.Entry<Kodein.Key<*, *, *>, List<KodeinDefinedBinding>>>) =
+    fun StringBuilder.appendBindings(ident: Int, entries: List<Map.Entry<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>>) =
             entries.forEach {
                 val keyDescription = it.key.keyBindDisp()
                 append("${" ".repeat(ident)}$keyDescription with ${it.value.first().binding.bindingDisp()}")

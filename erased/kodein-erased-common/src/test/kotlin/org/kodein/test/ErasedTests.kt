@@ -449,6 +449,112 @@ class ErasedTests {
         assertNotNull(child.direct.instanceOrNull<Person>())
     }
 
+    @Test fun test12_02_KodeinExtendOverride() {
+
+        val parent = Kodein {
+            bind<String>() with singleton { "parent" }
+        }
+
+        val child = Kodein {
+            extend(parent)
+            bind<String>(overrides = true) with singleton { "child" }
+        }
+
+        assertEquals("parent", parent.direct.instance())
+        assertEquals("child", child.direct.instance())
+    }
+
+    @Test fun test12_03_KodeinExtendOverriddenInstance() {
+
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = Kodein {
+            bind<Foo>() with provider { Foo("rootFoo") }
+            bind<Bar>() with provider { Bar(instance()) }
+        }.direct
+
+        val sub = Kodein {
+            extend(root, allowOverride = true)
+            bind<Foo>(overrides = true) with provider { Foo("subFoo") }
+        }.direct
+
+        val subBar : Bar = sub.instance()
+        val rootBar : Bar = root.instance()
+
+        assertEquals("rootFoo", rootBar.foo.name)
+        assertEquals("rootFoo", subBar.foo.name)
+    }
+
+    @Test fun test12_04_KodeinExtendOverriddenInstanceCopy() {
+
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = Kodein {
+            bind<Foo>() with provider { Foo("rootFoo") }
+            bind<Bar>() with provider { Bar(instance()) }
+        }.direct
+
+        val sub = Kodein {
+            extend(root, allowOverride = true, copyAll = true)
+            bind<Foo>(overrides = true) with provider { Foo("subFoo") }
+        }.direct
+
+        val subBar : Bar = sub.instance()
+        val rootBar : Bar = root.instance()
+
+        assertEquals("rootFoo", rootBar.foo.name)
+        assertEquals("subFoo", subBar.foo.name)
+    }
+
+    @Test fun test12_05_KodeinExtendOverriddenSingletonSame() {
+
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = Kodein {
+            bind<Foo>() with provider { Foo("rootFoo") }
+            bind<Bar>() with singleton { Bar(instance()) }
+        }.direct
+
+        val sub = Kodein {
+            extend(root, allowOverride = true)
+            bind<Foo>(overrides = true) with provider { Foo("subFoo") }
+        }.direct
+
+        val subBar : Bar = sub.instance()
+        val rootBar : Bar = root.instance()
+
+        assertSame(rootBar, subBar)
+        assertEquals("rootFoo", rootBar.foo.name)
+    }
+
+    @Test fun test12_06_KodeinExtendOverriddenSingletonCopy() {
+
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = Kodein {
+            bind<Foo>() with provider { Foo("rootFoo") }
+            bind<Bar>() with singleton { Bar(instance()) }
+        }.direct
+
+        val sub = Kodein {
+            extend(root, allowOverride = true) {
+                copy all binding<Bar>()
+            }
+            bind<Foo>(overrides = true) with provider { Foo("subFoo") }
+        }.direct
+
+        val subBar : Bar = sub.instance()
+        val rootBar : Bar = root.instance()
+
+        assertNotSame(rootBar, subBar)
+        assertEquals("rootFoo", rootBar.foo.name)
+        assertEquals("subFoo", subBar.foo.name)
+    }
+
     @Suppress("unused")
     class Recurs0(val a: RecursA)
     @Suppress("unused")

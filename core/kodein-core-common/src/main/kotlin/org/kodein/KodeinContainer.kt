@@ -12,12 +12,9 @@ import org.kodein.internal.newLinkedList
  */
 interface KodeinContainer {
 
-    /**
-     * An immutable view of the bindings map. *For inspection & debug*.
-     */
-    val bindings: BindingsMap
+    val initCallbacks: (() -> Unit)?
 
-    val externalSource: ExternalSource?
+    val tree: KodeinTree
 
     /**
      * Retrieve a factory for the given key, or null if none is found.
@@ -66,7 +63,12 @@ interface KodeinContainer {
      * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
      * @property map The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
      */
-    open class Builder internal constructor(allowOverride: Boolean, silentOverride: Boolean, internal val bindingsMap: MutableMap<Kodein.Key<*, *, *>, MutableList<KodeinDefinedBinding>>) {
+    open class Builder internal constructor(
+            allowOverride: Boolean,
+            silentOverride: Boolean,
+            internal val bindingsMap: MutableMap<Kodein.Key<*, *, *>, MutableList<KodeinDefining<*, *, *>>>,
+            internal val callbacks: MutableList<DKodein.() -> Unit>
+    ) {
 
         /**
          * The override permission for a builder.
@@ -168,8 +170,8 @@ interface KodeinContainer {
             key.argType.checkIsReified(key)
             _checkOverrides(key, overrides)
 
-            val bindings = bindingsMap.getOrPut(key) { newLinkedList<KodeinDefinedBinding>() }
-            bindings.add(0, KodeinDefinedBinding(binding, fromModule))
+            val bindings = bindingsMap.getOrPut(key) { newLinkedList() }
+            bindings.add(0, KodeinDefining(binding, fromModule))
         }
 
         /**
@@ -195,13 +197,21 @@ interface KodeinContainer {
          * @throws Kodein.OverridingException If this kodein overrides an existing binding and is not allowed to
          *                                    OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(container: KodeinContainer, allowOverride: Boolean = false) {
+        fun extend(container: KodeinContainer, allowOverride: Boolean = false, copy: List<Kodein.Key<*, *, *>> = emptyList()) {
             _checkMatch(allowOverride)
 
-            container.bindings.forEach { (key, bindings) ->
+            container.tree.bindings.forEach { (key, bindings) ->
                 if (!allowOverride)
                     _checkOverrides(key, null)
-                bindingsMap[key] = newLinkedList(bindings)
+
+                val newBindings = if (key in copy) {
+                    newLinkedList<KodeinDefining<*, *, *>>().also { bindings.mapTo(it) { KodeinDefining(it.binding.copyReset(this@Builder), it.fromModule) } }
+                }
+                else {
+                    newLinkedList<KodeinDefining<*, *, *>>(bindings)
+                }
+
+                bindingsMap[key] = newBindings
             }
         }
 
@@ -213,9 +223,12 @@ interface KodeinContainer {
          */
         fun subBuilder(allowOverride: Boolean = false, silentOverride: Boolean = false): Builder {
             _checkMatch(allowOverride)
-            return Builder(allowOverride, silentOverride, bindingsMap)
+            return Builder(allowOverride, silentOverride, bindingsMap, callbacks)
         }
 
+        fun onReady(cb: DKodein.() -> Unit) {
+            callbacks += cb
+        }
     }
 
 }

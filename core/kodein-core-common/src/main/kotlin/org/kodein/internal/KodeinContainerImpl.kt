@@ -3,7 +3,6 @@ package org.kodein.internal
 import org.kodein.*
 import org.kodein.bindings.BindingKodein
 import org.kodein.bindings.ExternalSource
-import org.kodein.bindings.KodeinBinding
 
 /**
  * Container class where the bindings and their factories are stored.
@@ -15,15 +14,39 @@ import org.kodein.bindings.KodeinBinding
  * @property _node See [KodeinContainerImpl.Node]
  */
 internal class KodeinContainerImpl private constructor(
-        private val _tree: InternalTree,
-        override val externalSource: ExternalSource?,
+        override val tree: KodeinTree,
         private val _node: Node? = null
 ) : KodeinContainer {
 
+    @Volatile override var initCallbacks: (() -> Unit)? = null
+        private set
+
     /**
-     * A cache that is filled each time a key is not found directly into the [_bindings] but by modifying the key's [Kodein.Key.argType].
+     * "Main" constructor that uses the bindings map configured by a [KodeinContainer.Builder].
      */
-    private val _cache = HashMap<Kodein.Key<*, *, *>, KodeinBinding<*, *, *>>()
+    internal constructor(builder: KodeinContainer.Builder, externalSource: ExternalSource?, runCallbacks: Boolean) : this(KodeinTreeImpl(builder.bindingsMap, externalSource)) {
+        val init: () -> Unit = {
+            val direct = DKodeinImpl(this, AnyKodeinContext, null)
+            builder.callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }
+        }
+
+        if (runCallbacks)
+            init()
+        else {
+            val lock = Any()
+            initCallbacks = {
+                synchronizedIfNotNull(
+                        lock = lock,
+                        predicate = this::initCallbacks,
+                        ifNull = {},
+                        ifNotNull = {
+                            initCallbacks = null
+                            init()
+                        }
+                )
+            }
+        }
+    }
 
     /**
      * Class used to check for recursive dependencies, represents a node in the dependency tree.
@@ -93,29 +116,25 @@ internal class KodeinContainerImpl private constructor(
         }
     }
 
-    /**
-     * "Main" constructor that uses the bindings map configured by a [KodeinContainer.Builder].
-     */
-    internal constructor(builder: KodeinContainer.Builder, externalSource: ExternalSource?) : this(InternalTree(builder.bindingsMap), externalSource)
-
-    override val bindings: BindingsMap get() = _tree.map
-
-    private fun <C, A, T: Any> _bindingKodein(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int) : BindingKodein<C> {
-        val container = KodeinContainerImpl(_tree, externalSource, Node(key, overrideLevel, _node))
-        return BindingKodeinImpl(KodeinImpl(container).direct, key, context, receiver, overrideLevel)
+    private fun <C, A, T: Any> _bindingKodein(key: Kodein.Key<C, A, T>, context: KodeinContext<C>, receiver: Any?, tree: KodeinTree, overrideLevel: Int) : BindingKodein<C> {
+        val container = KodeinContainerImpl(tree, Node(key, overrideLevel, _node))
+        return BindingKodeinImpl(DKodeinImpl(container, context, receiver), key, context.value, receiver, overrideLevel)
     }
 
     override fun <C, A, T: Any> factoryOrNull(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int): ((A) -> T)? {
-        val bindingKodein = _bindingKodein(key, context, receiver, 0)
+        val kcontext = KodeinContext(key.contextType, context)
 
-        _tree.find(key, 0).let {
-            if (it.found != null) {
+        tree.find(key, 0).let {
+            if (it.size == 1) {
+                val (_, definition) = it[0]
                 _node?.check(key, 0)
-                return it.found.getFactory(bindingKodein, key)
+                val bindingKodein = _bindingKodein(key, kcontext, receiver, definition.tree, 0)
+                return definition.binding.getFactory(bindingKodein, key)
             }
         }
 
-        externalSource?.getFactory(bindingKodein, key)?.let {
+        val bindingKodein = _bindingKodein(key, kcontext, receiver, tree, 0)
+        tree.externalSource?.getFactory(bindingKodein, key)?.let {
             _node?.check(key, 0)
             @Suppress("UNCHECKED_CAST")
             return it as (A) -> T
@@ -125,16 +144,19 @@ internal class KodeinContainerImpl private constructor(
     }
 
     override fun <C, A, T: Any> factory(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int): (A) -> T {
-        val bindingKodein = _bindingKodein(key, context, receiver, overrideLevel)
+        val kcontext = KodeinContext(key.contextType, context)
 
-        val result = _tree.find(key, overrideLevel).also {
-            if (it.found != null) {
-                _node?.check(key, overrideLevel)
-                return it.found.getFactory(bindingKodein, key)
-            }
+        val result = tree.find(key, overrideLevel)
+
+        if (result.size == 1) {
+            val (_, definition) = result[0]
+            _node?.check(key, overrideLevel)
+            val bindingKodein = _bindingKodein(key, kcontext, receiver, definition.tree, overrideLevel)
+            return definition.binding.getFactory(bindingKodein, key)
         }
 
-        externalSource?.getFactory(bindingKodein, key)?.let {
+        val bindingKodein = _bindingKodein(key, kcontext, receiver, tree, overrideLevel)
+        tree.externalSource?.getFactory(bindingKodein, key)?.let {
             _node?.check(key, overrideLevel)
             @Suppress("UNCHECKED_CAST")
             return it as (A) -> T
@@ -142,14 +164,14 @@ internal class KodeinContainerImpl private constructor(
 
         val withOverrides = overrideLevel != 0
 
-        if (result.potentials == null) {
-            throw Kodein.NotFoundException(key, "No binding found for $key\nRegistered in Kodein:\n${bindings.description(withOverrides)}")
+        if (result.isEmpty()) {
+            throw Kodein.NotFoundException(key, "No binding found for $key\nRegistered in this Kodein container:\n${tree.bindings.description(withOverrides)}")
         }
 
-        val potentials: BindingsMap = result.potentials.associate { it to _tree[it]!! }
+        val potentials: BindingsMap = result.associate { it.first to tree[it.first]!! }
 //        val others: BindingsMap = bindings - potentials.keys
-        val others: BindingsMap = bindings.filter { (key, _) -> key !in potentials.keys } // Map.minus does not yet exist in Konan
-        throw Kodein.NotFoundException(key, "${result.potentials.size} bindings found that match $key:\n${potentials.description(withOverrides)}Other bindings registered in Kodein:\n${others.description(withOverrides)}")
+        val others: BindingsMap = tree.bindings.filter { (key, _) -> key !in potentials.keys } // Map.minus does not yet exist in Konan
+        throw Kodein.NotFoundException(key, "${potentials.size} bindings found that match $key:\n${potentials.description(withOverrides)}Other bindings registered in Kodein:\n${others.description(withOverrides)}")
     }
 
 //    @Suppress("UNCHECKED_CAST")

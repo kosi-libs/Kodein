@@ -345,6 +345,8 @@ internal class ClassTypeToken<T>(private val _type: Class<T>) : JVMTypeToken<T>(
     override fun getSuper() = (_type._getClassSuperTT()?.let { listOf(it) } ?: emptyList()) + _type.interfaces.map { TT(it) }
 
     override fun isAssignableFrom(typeToken: TypeToken<*>): Boolean {
+        if (this == typeToken)
+            return true
         val jvmType = typeToken.jvmType
         return when (jvmType) {
             is Class<*> -> _type.isAssignableFrom(jvmType)

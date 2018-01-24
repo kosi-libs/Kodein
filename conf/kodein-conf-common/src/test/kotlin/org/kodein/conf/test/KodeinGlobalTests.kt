@@ -145,7 +145,7 @@ class KodeinGlobalTests {
     @Test fun test05_00_Loop() {
         Test05.kodein.addConfig {
             bind() from Singleton(NoScope(), AnyToken, erased()) { "test" }
-            bind() from EagerSingleton(this, erased()) { Test05.Loop() }
+            bind() from EagerSingleton(containerBuilder, erased()) { Test05.Loop() }
         }
 
         Test05.kodein.getOrConstruct()

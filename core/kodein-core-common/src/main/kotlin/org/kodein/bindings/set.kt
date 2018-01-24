@@ -1,6 +1,7 @@
 package org.kodein.bindings
 
 import org.kodein.Kodein
+import org.kodein.KodeinContainer
 import org.kodein.TypeToken
 import org.kodein.UnitToken
 
@@ -41,6 +42,10 @@ class ArgSetBinding<C, A, T: Any>(override val contextType: TypeToken<in C>, ove
             factories.asSequence().map { it.invoke(arg) } .toSet()
         }
     }
+
+    override fun copyReset(builder: KodeinContainer.Builder) = ArgSetBinding(contextType, argType, elementType, createdType).also {
+        it.set.addAll(set.map { it.copyReset(builder) })
+    }
 }
 
 /**
@@ -63,6 +68,9 @@ class SetBinding<C, T: Any>(override val contextType: TypeToken<in C>, val eleme
         }
     }
 
+    override fun copyReset(builder: KodeinContainer.Builder) = SetBinding(contextType, elementType, createdType).also {
+        it.set.addAll(set.map { it.copyReset(builder) })
+    }
 }
 
 /**

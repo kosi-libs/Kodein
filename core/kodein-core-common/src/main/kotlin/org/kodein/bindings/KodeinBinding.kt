@@ -74,6 +74,8 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
         val context = scope?.let { "scoped(${TTOf(it).fullDispString()})." } ?: if (contextType != AnyToken) "contexted<${contextType.fullDispString()}>()." else ""
         return "$context${factoryFullName()} { $arg${createdType.fullDispString()} }"
     }
+
+    fun copyReset(builder: KodeinContainer.Builder): KodeinBinding<C, A, T> = this
 }
 
 inline fun <C, T: Any> simpleBindingProvider(crossinline f: NoArgBindingKodein<C>.() -> T) = object : Binding<C, Unit, T> {

@@ -1,6 +1,7 @@
 package org.kodein.bindings
 
 import org.kodein.*
+import org.kodein.internal.BindingKodeinImpl
 import org.kodein.internal.synchronizedIfNull
 
 /**
@@ -31,6 +32,10 @@ class Factory<C, A, T: Any>(override val contextType: TypeToken<in C>, override 
 class Multiton<EC, BC, A, T: Any>(override val scope: Scope<EC, BC>, override val contextType: TypeToken<in EC>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, private val creator: SimpleBindingKodein<BC>.(A) -> T) : KodeinBinding<EC, A, T> {
     private val _refMaker = refMaker ?: SingletonReference
 
+    private val _scopeKey = Any()
+
+    private data class Key(val scopeKey: Any, val arg: Any?)
+
     private fun _factoryName(params: List<String>) = buildString {
         append("multiton")
         if (params.isNotEmpty())
@@ -56,9 +61,11 @@ class Multiton<EC, BC, A, T: Any>(override val scope: Scope<EC, BC>, override va
         val registry = scope.getRegistry(kodein.receiver, kodein.context, bindContext)
         return { arg ->
             @Suppress("UNCHECKED_CAST")
-            registry.getOrCreate(arg) { _refMaker.make { BindingKodeinContextWrap(kodein, bindContext).creator(arg) } } as T
+            registry.getOrCreate(Key(_scopeKey, arg)) { _refMaker.make { BindingKodeinContextWrap(kodein, bindContext).creator(arg) } } as T
         }
     }
+
+    override fun copyReset(builder: KodeinContainer.Builder) = Multiton(scope, contextType, argType, createdType, _refMaker, creator)
 }
 
 /**
@@ -116,6 +123,8 @@ class Singleton<EC, BC, T: Any>(override val scope: Scope<EC, BC>, override val 
             registry.getOrCreate(_scopeKey) { _refMaker.make { NoArgBindingKodeinWrap(BindingKodeinContextWrap(kodein, bindContext)).creator() } } as T
         }
     }
+
+    override fun copyReset(builder: KodeinContainer.Builder) = Singleton(scope, contextType, createdType, _refMaker, creator)
 }
 
 /**
@@ -125,7 +134,7 @@ class Singleton<EC, BC, T: Any>(override val scope: Scope<EC, BC>, override val 
  * @param createdType The type of the created object.
  * @param creator The function that will be called as soon as Kodein is ready. Guaranteed to be called only once. Should create a new instance.
  */
-class EagerSingleton<T: Any>(builder: Kodein.Builder, override val createdType: TypeToken<out T>, val creator: NoArgSimpleBindingKodein<Any?>.() -> T) : NoArgKodeinBinding<Any?, T> {
+class EagerSingleton<T: Any>(builder: KodeinContainer.Builder, override val createdType: TypeToken<out T>, val creator: NoArgSimpleBindingKodein<Any?>.() -> T) : NoArgKodeinBinding<Any?, T> {
 
     override val contextType = AnyToken
 
@@ -151,8 +160,10 @@ class EagerSingleton<T: Any>(builder: Kodein.Builder, override val createdType: 
 
     init {
         val key = Kodein.Key(AnyToken, UnitToken, createdType, null)
-        builder.onFactoryReady(key) { _getFactory(this).invoke(Unit) }
+        builder.onReady { _getFactory(BindingKodeinImpl(this, key, null, null, 0)).invoke(Unit) }
     }
+
+    override fun copyReset(builder: KodeinContainer.Builder) = EagerSingleton(builder, createdType, creator)
 }
 
 /**

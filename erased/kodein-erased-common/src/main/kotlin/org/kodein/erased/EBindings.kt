@@ -67,7 +67,7 @@ inline fun <EC, BC, reified A, reified T: Any> Kodein.BindBuilder.Scoped<EC, BC>
  * @param creator The function that will be called as soon as Kodein is ready. Guaranteed to be called only once. Should create a new instance.
  * @return An eager singleton ready to be bound.
  */
-inline fun <reified T: Any> Kodein.Builder.eagerSingleton(noinline creator: NoArgSimpleBindingKodein<Any?>.() -> T) = EagerSingleton(this, erased(), creator)
+inline fun <reified T: Any> Kodein.Builder.eagerSingleton(noinline creator: NoArgSimpleBindingKodein<Any?>.() -> T) = EagerSingleton(containerBuilder, erased(), creator)
 
 /**
  * Creates an instance provider: will always return the given instance.

@@ -531,6 +531,112 @@ class GenericJvmTests {
         assertNotNull(child.direct.instanceOrNull<Person>())
     }
 
+    @Test fun test12_02_KodeinExtendOverride() {
+
+        val parent = Kodein {
+            bind<String>() with singleton { "parent" }
+        }
+
+        val child = Kodein {
+            extend(parent)
+            bind<String>(overrides = true) with singleton { "child" }
+        }
+
+        assertEquals("parent", parent.direct.instance())
+        assertEquals("child", child.direct.instance())
+    }
+
+    @Test fun test12_03_KodeinExtendOverriddenInstance() {
+
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = Kodein {
+            bind<Foo>() with provider { Foo("rootFoo") }
+            bind<Bar>() with provider { Bar(instance()) }
+        }.direct
+
+        val sub = Kodein {
+            extend(root, allowOverride = true)
+            bind<Foo>(overrides = true) with provider { Foo("subFoo") }
+        }.direct
+
+        val subBar : Bar = sub.instance()
+        val rootBar : Bar = root.instance()
+
+        assertEquals("rootFoo", rootBar.foo.name)
+        assertEquals("rootFoo", subBar.foo.name)
+    }
+
+    @Test fun test12_04_KodeinExtendOverriddenInstanceCopy() {
+
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = Kodein {
+            bind<Foo>() with provider { Foo("rootFoo") }
+            bind<Bar>() with provider { Bar(instance()) }
+        }.direct
+
+        val sub = Kodein {
+            extend(root, allowOverride = true, copyAll = true)
+            bind<Foo>(overrides = true) with provider { Foo("subFoo") }
+        }.direct
+
+        val subBar : Bar = sub.instance()
+        val rootBar : Bar = root.instance()
+
+        assertEquals("rootFoo", rootBar.foo.name)
+        assertEquals("subFoo", subBar.foo.name)
+    }
+
+    @Test fun test12_05_KodeinExtendOverriddenSingletonSame() {
+
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = Kodein {
+            bind<Foo>() with provider { Foo("rootFoo") }
+            bind<Bar>() with singleton { Bar(instance()) }
+        }.direct
+
+        val sub = Kodein {
+            extend(root, allowOverride = true)
+            bind<Foo>(overrides = true) with provider { Foo("subFoo") }
+        }.direct
+
+        val subBar : Bar = sub.instance()
+        val rootBar : Bar = root.instance()
+
+        assertSame(rootBar, subBar)
+        assertEquals("rootFoo", rootBar.foo.name)
+    }
+
+    @Test fun test12_06_KodeinExtendOverriddenSingletonCopy() {
+
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = Kodein {
+            bind<Foo>() with provider { Foo("rootFoo") }
+            bind<Bar>() with singleton { Bar(instance()) }
+        }.direct
+
+        val sub = Kodein {
+            extend(root, allowOverride = true) {
+                copy all binding<Bar>()
+            }
+            bind<Foo>(overrides = true) with provider { Foo("subFoo") }
+        }.direct
+
+        val subBar : Bar = sub.instance()
+        val rootBar : Bar = root.instance()
+
+        assertNotSame(rootBar, subBar)
+        assertEquals("rootFoo", rootBar.foo.name)
+        assertEquals("subFoo", subBar.foo.name)
+    }
+
     @Suppress("unused")
     class Recurs0(val a: RecursA)
     @Suppress("unused")
@@ -620,7 +726,7 @@ class GenericJvmTests {
             constant(tag = "answer") with 42
         }
 
-        val lines = kodein.container.bindings.description().trim().lineSequence().map(String::trim).toList()
+        val lines = kodein.container.tree.bindings.description().trim().lineSequence().map(String::trim).toList()
         assertEquals(7, lines.size)
         assertTrue("bind<IPerson>() with provider { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"thread-singleton\") with singleton(ref = threadLocal) { Person }" in lines)
@@ -643,7 +749,7 @@ class GenericJvmTests {
             constant(tag = "answer") with 42
         }
 
-        val lines = kodein.container.bindings.fullDescription().trim().lineSequence().map(String::trim).toList()
+        val lines = kodein.container.tree.bindings.fullDescription().trim().lineSequence().map(String::trim).toList()
         assertEquals(7, lines.size)
         assertTrue("bind<org.kodein.test.IPerson>() with provider { org.kodein.test.Person }" in lines)
         assertTrue("bind<org.kodein.test.IPerson>(tag = \"thread-singleton\") with singleton(ref = org.kodein.threadLocal) { org.kodein.test.Person }" in lines)
@@ -666,13 +772,13 @@ class GenericJvmTests {
 
         val UnitToken = generic<Unit>()
 
-        assertEquals(6, kodein.container.bindings.size)
-        assertEquals("provider", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().binding.factoryName())
-        assertEquals("singleton(ref = threadLocal)", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
-        assertEquals("singleton", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
-        assertEquals("factory", kodein.container.bindings[Kodein.Key(AnyToken, generic<String>(), generic<IPerson>(), "factory")]!!.first().binding.factoryName())
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "instance")]!!.first().binding.factoryName())
-        assertEquals("instance", kodein.container.bindings[Kodein.Key(AnyToken, UnitToken, generic<Int>(), "answer")]!!.first().binding.factoryName())
+        assertEquals(6, kodein.container.tree.bindings.size)
+        assertEquals("provider", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().binding.factoryName())
+        assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
+        assertEquals("singleton", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
+        assertEquals("factory", kodein.container.tree.bindings[Kodein.Key(AnyToken, generic<String>(), generic<IPerson>(), "factory")]!!.first().binding.factoryName())
+        assertEquals("instance", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "instance")]!!.first().binding.factoryName())
+        assertEquals("instance", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<Int>(), "answer")]!!.first().binding.factoryName())
     }
 
     @Test fun test16_00_AnyScopeSingleton() {
@@ -1174,6 +1280,7 @@ class GenericJvmTests {
         val base = LateInitKodein()
         val kodein = base.on(trigger = trigger)
 
+        @Suppress("UNUSED_VARIABLE")
         val name: String by kodein.instance()
 
         assertFailsWith<UninitializedPropertyAccessException> { trigger.trigger() }

@@ -1,6 +1,8 @@
 package org.kodein.erased
 
 import org.kodein.Kodein
+import org.kodein.SearchDSL
+import org.kodein.bindings.Scope
 import org.kodein.erased
 
 /**
@@ -24,3 +26,11 @@ inline fun <reified T : Any> Kodein.Builder.bind(tag: Any? = null, overrides: Bo
  * @param value The instance to bind.
  */
 infix inline fun <reified T : Any> Kodein.Builder.ConstantBinder.with(value: T) = With(erased(), value)
+
+inline fun <reified T : Any> SearchDSL.binding(tag: Any? = null) = SearchDSL.Binding(erased<T>(), tag)
+
+inline fun <reified T : Any> SearchDSL.context() = Context(erased<T>())
+
+inline fun <reified T : Any> SearchDSL.scope(@Suppress("UNUSED_PARAMETER") scope: Scope<T, *>) = Context(erased<T>())
+
+inline fun <reified T : Any> SearchDSL.argument() = Argument(erased<T>())

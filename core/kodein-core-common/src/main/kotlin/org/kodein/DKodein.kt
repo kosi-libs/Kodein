@@ -10,6 +10,9 @@ interface DKodein : DKodeinAware {
 
     val lazy: Kodein
 
+// TODO
+//    val context: KodeinContext<*>
+
     object SAME_CONTEXT : KodeinContext<Unit>(UnitToken, Unit)
     object SAME_RECEIVER
 

@@ -14,8 +14,6 @@ import org.kodein.direct
  */
 internal open class KodeinImpl internal constructor(private val _container: KodeinContainer) : Kodein {
 
-    private @Volatile var _init: (() -> Unit)? = null
-
     /**
      * Creates a Kodein object with a [Kodein.Builder]'s internal.
      *
@@ -25,32 +23,7 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
      * @param builder The builder to use.
      */
     @Suppress("unused")
-    private constructor(builder: Kodein.MainBuilder, runCallbacks: Boolean) : this(
-            KodeinContainerImpl(builder.containerBuilder, builder.externalSource)
-    ) {
-        val init: () -> Unit = {
-            val dkodein = KodeinImpl(container).direct
-            builder.callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }
-            builder.bindingCallbacks.forEach { it.second.invoke(BindingKodeinImpl(dkodein, it.first, Unit, null, 0)) }
-        }
-
-        if (runCallbacks)
-            init()
-        else {
-            val lock = Any()
-            _init = init@ {
-                synchronizedIfNotNull(
-                        lock = lock,
-                        predicate = this::_init,
-                        ifNull = {},
-                        ifNotNull = {
-                            _init = null
-                            init()
-                        }
-                )
-            }
-        }
-    }
+    private constructor(builder: Kodein.MainBuilder, runCallbacks: Boolean) : this(KodeinContainerImpl(builder.containerBuilder, builder.externalSource, runCallbacks))
 
     /**
      * "Main" constructor.
@@ -62,12 +35,12 @@ internal open class KodeinImpl internal constructor(private val _container: Kode
 
         fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Pair<Kodein, () -> Unit> {
             val kodein = KodeinImpl(_newBuilder(allowSilentOverride, init), false)
-            return kodein to { kodein._init?.invoke() ; Unit }
+            return kodein to { kodein._container.initCallbacks?.invoke() ; Unit }
         }
     }
 
     final override val container: KodeinContainer by lazy {
-        if (_init != null)
+        if (_container.initCallbacks != null)
             throw IllegalStateException("Kodein has not been initialized")
         _container
     }

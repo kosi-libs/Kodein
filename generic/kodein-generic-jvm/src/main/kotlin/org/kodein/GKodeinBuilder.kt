@@ -1,5 +1,7 @@
 package org.kodein
 
+import org.kodein.bindings.Scope
+
 /**
  * Starts the binding of a given type with a given tag.
  *
@@ -21,3 +23,11 @@ inline fun <reified T : Any> Kodein.Builder.bind(tag: Any? = null, overrides: Bo
  * @param value The instance to bind.
  */
 infix inline fun <reified T : Any> Kodein.Builder.ConstantBinder.with(value: T) = With(generic(), value)
+
+inline fun <reified T : Any> SearchDSL.binding(tag: Any? = null) = SearchDSL.Binding(generic<T>(), tag)
+
+inline fun <reified T : Any> SearchDSL.context() = Context(generic<T>())
+
+inline fun <reified T : Any> SearchDSL.scope(@Suppress("UNUSED_PARAMETER") scope: Scope<T, *>) = Context(generic<T>())
+
+inline fun <reified T : Any> SearchDSL.argument() = Argument(generic<T>())

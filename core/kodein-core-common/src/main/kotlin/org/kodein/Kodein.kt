@@ -35,6 +35,9 @@ interface Kodein : KodeinAware {
     class NotFoundException(val key: Kodein.Key<*, *, *>, message: String)
             : RuntimeException(message)
 
+    class NoResultException(val search: SearchSpecs, message: String)
+        : RuntimeException(message)
+
     /**
      * Exception thrown when there is an overriding error.
      *
@@ -156,9 +159,7 @@ interface Kodein : KodeinAware {
     @KodeinDsl
     open class Builder internal constructor(
             private val moduleName: String?,
-            internal val containerBuilder: KodeinContainer.Builder,
-            internal val callbacks: MutableList<DKodein.() -> Unit>,
-            internal val bindingCallbacks: MutableList<Pair<Key<Any?, *, *>, BindingKodein<Any?>.() -> Unit>>
+            val containerBuilder: KodeinContainer.Builder
     ) : BindBuilder.Contexted<Any?>, BindBuilder.Scoped<Any?, Nothing?> {
 
         override val contextType = AnyToken
@@ -262,7 +263,7 @@ interface Kodein : KodeinAware {
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
         fun import(module: Kodein.Module, allowOverride: Boolean = false) {
-            Builder(module.name, containerBuilder.subBuilder(allowOverride, module.allowSilentOverride), callbacks, bindingCallbacks).apply(module.init)
+            Builder(module.name, containerBuilder.subBuilder(allowOverride, module.allowSilentOverride)).apply(module.init)
         }
 
         /**
@@ -270,37 +271,40 @@ interface Kodein : KodeinAware {
          *
          * @param cb The callback.
          */
-        fun onReady(cb: DKodein.() -> Unit) {
-            callbacks += cb
-        }
-
-        /**
-         * Adds a callback that will be called once the Kodein object is configured and instantiated.
-         *
-         * The callback will be able to access the overridden factory binding.
-         *
-         * @param key The key that defines the overridden factory access.
-         * @param cb The callback.
-         */
-        @Suppress("UNCHECKED_CAST")
-        fun onFactoryReady(key: Kodein.Key<Any?, *, *>, cb: BindingKodein<Any?>.() -> Unit) {
-            bindingCallbacks += key to cb
-        }
-
-//        /**
-//         * Adds a callback that will be called once the Kodein object is configured and instantiated.
-//         *
-//         * The callback will be able to access the overridden provider binding.
-//         *
-//         * @param key The key that defines the overridden provider access.
-//         * @param cb The callback.
-//         */
-//        fun <T: Any> onProviderReady(key: Kodein.Key<*, Unit, T>, cb: NoArgBindingKodein.() -> Unit) = onFactoryReady(key) { cb(NoArgBindingKodeinWrap(this)) }
+        fun onReady(cb: DKodein.() -> Unit) = containerBuilder.onReady(cb)
     }
 
-    class MainBuilder(allowSilentOverride: Boolean) : Builder(null, KodeinContainer.Builder(true, allowSilentOverride, HashMap()), ArrayList(), ArrayList()) {
+    class MainBuilder(allowSilentOverride: Boolean) : Builder(null, KodeinContainer.Builder(true, allowSilentOverride, HashMap(), ArrayList())) {
 
         var externalSource: ExternalSource? = null
+
+        class CopySpecs(val all: Boolean) : SearchSpecs()
+
+        class CopyDSL : SearchDSL {
+            internal val specs = ArrayList<CopySpecs>()
+
+            inner class Copy {
+                infix fun the(binding: SearchDSL.Binding): SearchSpecs {
+                    return CopySpecs(false).also { binding.apply(it) ; specs += it }
+                }
+                infix fun all(spec: SearchDSL.Spec): SearchSpecs {
+                    return CopySpecs(true).also { spec.apply(it) ; specs += it }
+                }
+            }
+
+            val copy = Copy()
+
+            internal fun toKeysList(tree: KodeinTree) = specs.flatMap {
+                val list = tree.find(it)
+                if (list.isEmpty()) {
+                    throw Kodein.NoResultException(it, "No binding found that match this search: $it")
+                }
+                if (!it.all && list.size > 1) {
+                    throw Kodein.NoResultException(it, "There were ${list.size} matches for this search: $it\n${list.toMap().description(false)}")
+                }
+                list.map { it.first }
+            }
+        }
 
         /**
          * Imports all bindings defined in the given [Kodein] into this builder.
@@ -316,9 +320,28 @@ interface Kodein : KodeinAware {
          * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(kodein: Kodein, allowOverride: Boolean = false) {
-            containerBuilder.extend(kodein.container, allowOverride)
-            kodein.container.externalSource?.let { externalSource = it }
+        fun extend(kodein: Kodein, allowOverride: Boolean = false, copyAll: Boolean = false, copySpecs: CopyDSL.() -> Unit = {}) {
+            val keys = if (copyAll) {
+                kodein.container.tree.bindings.keys.toList()
+            }
+            else {
+                CopyDSL().apply(copySpecs).toKeysList(kodein.container.tree)
+            }
+
+            containerBuilder.extend(kodein.container, allowOverride, keys)
+            kodein.container.tree.externalSource?.let { externalSource = it }
+        }
+
+        fun extend(dkodein: DKodein, allowOverride: Boolean = false, copyAll: Boolean = false, copySpecs: CopyDSL.() -> Unit = {}) {
+            val keys = if (copyAll) {
+                dkodein.container.tree.bindings.keys.toList()
+            }
+            else {
+                CopyDSL().apply(copySpecs).toKeysList(dkodein.container.tree)
+            }
+
+            containerBuilder.extend(dkodein.container, allowOverride, keys)
+            dkodein.container.tree.externalSource?.let { externalSource = it }
         }
 
     }

@@ -52,7 +52,7 @@ class KodeinGlobalJvmTests {
         assertEquals("Salomon", kodein.direct.Factory<FullName, String>(erased(), erased(), null).invoke(FullName ("Salomon", "BRYS")))
 
         kodein.addConfig {
-            Bind<String>(erased()) with Factory(AnyToken, erased(), erased()) { n: FullName -> n.firstName + " " + n.lastName }
+            Bind<String>(erased(), overrides = true) with Factory(AnyToken, erased(), erased()) { n: FullName -> n.firstName + " " + n.lastName }
         }
 
         assertEquals("Salomon BRYS", kodein.direct.Factory<FullName, String>(erased(), erased(), null).invoke(FullName("Salomon", "BRYS")))
