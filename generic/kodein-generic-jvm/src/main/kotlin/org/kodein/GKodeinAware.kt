@@ -33,6 +33,8 @@ inline fun <reified A, reified T : Any> KodeinAware.factory(tag: Any? = null) = 
  */
 inline fun <reified A, reified T : Any> KodeinAware.factoryOrNull(tag: Any? = null) = FactoryOrNull<A, T>(generic(), generic(), tag)
 
+inline fun <reified A, reified T : Any> KodeinAware.allFactories(tag: Any? = null) = AllFactories<A, T>(generic(), generic(), tag)
+
 /**
  * Gets a provider of `T` for the given type and tag.
  *
@@ -73,6 +75,12 @@ inline fun <reified A, reified T : Any> KodeinAware.providerOrNull(tag: Any? = n
 
 inline fun <reified A, reified T : Any> KodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = ProviderOrNull<A, T>(generic(), generic(), tag, fArg)
 
+inline fun <reified T : Any> KodeinAware.allProviders(tag: Any? = null) = AllProviders<T>(generic(), tag)
+
+inline fun <reified A, reified T : Any> KodeinAware.allProviders(tag: Any? = null, arg: A) = AllProviders<A, T>(generic(), generic(), tag, { arg })
+
+inline fun <reified A, reified T : Any> KodeinAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = AllProviders<A, T>(generic(), generic(), tag, fArg)
+
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -112,6 +120,13 @@ inline fun <reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null) = Inst
 inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null, arg: A) = InstanceOrNull<A, T>(generic(), generic(), tag, { arg })
 
 inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null, noinline fArg: () -> A) = InstanceOrNull<A, T>(generic(), generic(), tag, fArg)
+
+inline fun <reified T : Any> KodeinAware.allInstances(tag: Any? = null) = AllInstances<T>(generic(), tag)
+
+inline fun <reified A, reified T : Any> KodeinAware.allInstances(tag: Any? = null, arg: A) = AllInstances<A, T>(generic(), generic(), tag, { arg })
+
+inline fun <reified A, reified T : Any> KodeinAware.allInstances(tag: Any? = null, noinline fArg: () -> A) = AllInstances<A, T>(generic(), generic(), tag, fArg)
+
 
 inline fun <reified C> kcontext(context: C) = KodeinContext(generic(), context)
 

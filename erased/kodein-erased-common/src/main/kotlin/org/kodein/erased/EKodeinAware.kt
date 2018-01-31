@@ -35,6 +35,8 @@ inline fun <reified A, reified T : Any> KodeinAware.factory(tag: Any? = null) = 
  */
 inline fun <reified A, reified T : Any> KodeinAware.factoryOrNull(tag: Any? = null) = FactoryOrNull<A, T>(erased(), erased(), tag)
 
+inline fun <reified A, reified T : Any> KodeinAware.factories(tag: Any? = null) = AllFactories<A, T>(erased(), erased(), tag)
+
 /**
  * Gets a provider of `T` for the given type and tag.
  *
@@ -74,6 +76,12 @@ inline fun <reified A, reified T : Any> KodeinAware.providerOrNull(tag: Any? = n
 
 inline fun <reified A, reified T : Any> KodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
 
+inline fun <reified T : Any> KodeinAware.allProviders(tag: Any? = null) = AllProviders<T>(erased(), tag)
+
+inline fun <reified A, reified T : Any> KodeinAware.allProviders(tag: Any? = null, arg: A) = AllProviders<A, T>(erased(), erased(), tag, { arg })
+
+inline fun <reified A, reified T : Any> KodeinAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = AllProviders<A, T>(erased(), erased(), tag, fArg)
+
 /**
  * Gets an instance of `T` for the given type and tag.
  *
@@ -112,6 +120,12 @@ inline fun <reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null) = Inst
 inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null, arg: A) = InstanceOrNull<A, T>(erased(), erased(), tag, { arg })
 
 inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null, noinline fArg: () -> A) = InstanceOrNull<A, T>(erased(), erased(), tag, fArg)
+
+inline fun <reified T : Any> KodeinAware.allInstances(tag: Any? = null) = AllInstances<T>(erased(), tag)
+
+inline fun <reified A, reified T : Any> KodeinAware.allInstances(tag: Any? = null, arg: A) = AllInstances<A, T>(erased(), erased(), tag, { arg })
+
+inline fun <reified A, reified T : Any> KodeinAware.allInstances(tag: Any? = null, noinline fArg: () -> A) = AllInstances<A, T>(erased(), erased(), tag, fArg)
 
 inline fun <reified C> kcontext(context: C) = KodeinContext(erased(), context)
 

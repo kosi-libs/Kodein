@@ -24,7 +24,7 @@ open class SearchSpecs(
 
 }
 
-interface SearchDSL {
+open class SearchDSL {
 
     interface Spec {
         fun apply(specs: SearchSpecs)

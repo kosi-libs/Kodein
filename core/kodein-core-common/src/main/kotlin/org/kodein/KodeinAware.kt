@@ -71,6 +71,9 @@ fun <A, T : Any> KodeinAware.Factory(argType: TypeToken<in A>, type: TypeToken<o
 fun <A, T : Any> KodeinAware.FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): KodeinProperty<((A) -> T)?> =
         KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factoryOrNull(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver) }
 
+fun <A, T : Any> KodeinAware.AllFactories(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): KodeinProperty<List<(A) -> T>> =
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.allFactories(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver) }
+
 /**
  * Gets a provider of `T` for the given type and tag.
  *
@@ -102,6 +105,12 @@ fun <T : Any> KodeinAware.ProviderOrNull(type: TypeToken<out T>, tag: Any? = nul
 fun <A, T : Any> KodeinAware.ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): KodeinProperty<(() -> T)?> =
         KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factoryOrNull(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver)?.toProvider(arg) }
 
+fun <T : Any> KodeinAware.AllProviders(type: TypeToken<out T>, tag: Any? = null): KodeinProperty<List<() -> T>> =
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.allProviders(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver) }
+
+fun <A, T : Any> KodeinAware.AllProviders(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): KodeinProperty<List<() -> T>> =
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.allFactories(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).map { it.toProvider(arg) } }
+
 /**
  * Gets an instance of `T` for the given type and tag.
  *
@@ -131,6 +140,12 @@ fun <T : Any> KodeinAware.InstanceOrNull(type: TypeToken<out T>, tag: Any? = nul
 
 fun <A, T : Any> KodeinAware.InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): KodeinProperty<T> =
         KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factory(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).invoke(arg()) }
+
+fun <T : Any> KodeinAware.AllInstances(type: TypeToken<out T>, tag: Any? = null): KodeinProperty<List<T>> =
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.allProviders(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver).map { it.invoke() } }
+
+fun <A, T : Any> KodeinAware.AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): KodeinProperty<List<T>> =
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.allFactories(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).map { it.invoke(arg()) } }
 
 
 val KodeinAware.direct: DKodein get() = DKodeinImpl(kodein.container, kodeinContext, null)

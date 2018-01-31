@@ -280,7 +280,7 @@ interface Kodein : KodeinAware {
 
         class CopySpecs(val all: Boolean) : SearchSpecs()
 
-        class CopyDSL : SearchDSL {
+        class CopyDSL : SearchDSL() {
             internal val specs = ArrayList<CopySpecs>()
 
             inner class Copy {

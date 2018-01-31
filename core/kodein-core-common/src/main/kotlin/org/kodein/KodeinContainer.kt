@@ -1,6 +1,5 @@
 package org.kodein
 
-import org.kodein.bindings.ExternalSource
 import org.kodein.bindings.KodeinBinding
 import org.kodein.internal.newLinkedList
 
@@ -35,6 +34,8 @@ interface KodeinContainer {
      */
     fun <C, A, T: Any> factory(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int = 0): (A) -> T
 
+    fun <C, A, T: Any> allFactories(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int = 0): List<(A) -> T>
+
     /**
      * Retrieve a provider for the given bind, or null if none is found.
      *
@@ -55,6 +56,9 @@ interface KodeinContainer {
      */
     fun <C, T: Any> provider(key: Kodein.Key<C, Unit, T>, context: C, receiver: Any?, overrideLevel: Int = 0): () -> T =
             factory(key, context, receiver).toProvider { Unit }
+
+    fun <C, T: Any> allProviders(key: Kodein.Key<C, Unit, T>, context: C, receiver: Any?, overrideLevel: Int = 0): List<() -> T> =
+            allFactories(key, context, receiver).map { it.toProvider { Unit } }
 
     /**
      * This is where you configure the bindings.

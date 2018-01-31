@@ -45,6 +45,8 @@ interface DKodein : DKodeinAware {
      */
     fun <A, T : Any> FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/): ((A) -> T)?
 
+    fun <A, T : Any> AllFactories(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/): List<(A) -> T>
+
     /**
      * Gets a provider of `T` for the given type and tag.
      *
@@ -72,6 +74,10 @@ interface DKodein : DKodeinAware {
 
     fun <A, T : Any> ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: () -> A): (() -> T)?
 
+    fun <T : Any> AllProviders(type: TypeToken<T>, tag: Any? /*= null*/): List<() -> T>
+
+    fun <A, T : Any> AllProviders(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: () -> A): List<() -> T>
+
     /**
      * Gets an instance of `T` for the given type and tag.
      *
@@ -97,6 +103,10 @@ interface DKodein : DKodeinAware {
     fun <T : Any> InstanceOrNull(type: TypeToken<T>, tag: Any? /*= null*/): T?
 
     fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: A): T?
+
+    fun <T : Any> AllInstances(type: TypeToken<T>, tag: Any? /*= null*/): List<T>
+
+    fun <A, T : Any> AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: A): List<T>
 }
 
 inline fun <T> DKodeinAware.newInstance(creator: DKodein.() -> T): T = dkodein.run(creator)

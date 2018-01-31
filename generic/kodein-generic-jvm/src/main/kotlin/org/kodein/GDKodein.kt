@@ -18,6 +18,8 @@ inline fun <reified A, reified T : Any> DKodein.factory(tag: Any? = null) = Fact
  */
 inline fun <reified A, reified T : Any> DKodeinAware.factoryOrNull(tag: Any? = null) = dkodein.FactoryOrNull<A, T>(generic(), generic(), tag)
 
+inline fun <reified A, reified T : Any> DKodein.allFactories(tag: Any? = null) = AllFactories<A, T>(generic(), generic(), tag)
+
 /**
  * Gets a provider of `T` for the given type and tag.
  *
@@ -59,6 +61,11 @@ inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = 
 
 inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = dkodein.FactoryOrNull<A, T>(generic(), generic(), tag)?.toProvider(fArg)
 
+inline fun <reified T : Any> DKodeinAware.allProviders(tag: Any? = null) = dkodein.AllProviders<T>(generic(), tag)
+
+inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, arg: A) = dkodein.AllFactories<A, T>(generic(), generic(), tag).map { it.toProvider { arg } }
+
+inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = dkodein.AllFactories<A, T>(generic(), generic(), tag).map { it.toProvider(fArg) }
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -94,6 +101,10 @@ inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, 
 inline fun <reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null) = dkodein.InstanceOrNull<T>(generic(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: A) = dkodein.FactoryOrNull<A, T>(generic(), generic(), tag)?.invoke(arg)
+
+inline fun <reified T : Any> DKodeinAware.allInstances(tag: Any? = null) = dkodein.AllInstances<T>(generic(), tag)
+
+inline fun <reified A, reified T : Any> DKodeinAware.allInstances(tag: Any? = null, arg: A) = dkodein.AllFactories<A, T>(generic(), generic(), tag).map { it.invoke(arg) }
 
 inline fun <reified C> DKodeinAware.on(context: C, receiver: Any? = DKodein.SAME_RECEIVER) = dkodein.On(kcontext(context), receiver)
 

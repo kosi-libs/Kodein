@@ -22,6 +22,8 @@ inline fun <reified A, reified T : Any> DKodeinAware.factory(tag: Any? = null) =
  */
 inline fun <reified A, reified T : Any> DKodeinAware.factoryOrNull(tag: Any? = null) = dkodein.FactoryOrNull<A, T>(erased(), erased(), tag)
 
+inline fun <reified A, reified T : Any> DKodeinAware.allFactories(tag: Any? = null) = dkodein.AllFactories<A, T>(erased(), erased(), tag)
+
 /**
  * Gets a provider of `T` for the given type and tag.
  *
@@ -39,6 +41,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.factoryOrNull(tag: Any? = n
 inline fun <reified T : Any> DKodeinAware.provider(tag: Any? = null) = dkodein.Provider<T>(erased(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: A) = dkodein.Factory<A, T>(erased(), erased(), tag).toProvider { arg }
+
 inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, noinline fArg: () -> A) = dkodein.Factory<A, T>(erased(), erased(), tag).toProvider(fArg)
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -57,7 +60,15 @@ inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, 
 inline fun <reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null) = dkodein.ProviderOrNull<T>(erased(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, arg: A) = dkodein.FactoryOrNull<A, T>(erased(), erased(), tag)?.toProvider { arg }
+
 inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = dkodein.FactoryOrNull<A, T>(erased(), erased(), tag)?.toProvider(fArg)
+
+inline fun <reified T : Any> DKodeinAware.allProviders(tag: Any? = null) = dkodein.AllProviders<T>(erased(), tag)
+
+inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, arg: A) = dkodein.AllFactories<A, T>(erased(), erased(), tag).map { it.toProvider { arg } }
+
+inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = dkodein.AllFactories<A, T>(erased(), erased(), tag).map { it.toProvider(fArg) }
+
 /**
  * Gets an instance of `T` for the given type and tag.
  *
@@ -75,6 +86,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = 
 inline fun <reified T : Any> DKodeinAware.instance(tag: Any? = null) = dkodein.Instance<T>(erased(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: A) = dkodein.Factory<A, T>(erased(), erased(), tag).invoke(arg)
+
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
  *
@@ -91,6 +103,10 @@ inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, 
 inline fun <reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null) = dkodein.InstanceOrNull<T>(erased(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: A) = dkodein.FactoryOrNull<A, T>(erased(), erased(), tag)?.invoke(arg)
+
+inline fun <reified T : Any> DKodeinAware.allInstances(tag: Any? = null) = dkodein.AllInstances<T>(erased(), tag)
+
+inline fun <reified A, reified T : Any> DKodeinAware.allInstances(tag: Any? = null, arg: A) = dkodein.AllFactories<A, T>(erased(), erased(), tag).map { it.invoke(arg) }
 
 inline fun <reified C> DKodeinAware.on(context: C, receiver: Any? = DKodein.SAME_RECEIVER) = dkodein.On(kcontext(context), receiver)
 

@@ -857,6 +857,8 @@ val child = Kodein {
     extends(parent, copyAll = true)
 }
 ----
+<1> Will copy all bindings for a `String`, with or without a context, scope, tag or argument.
+<2> Will copy all bindings that are scoped inside a `RequestScope`.
 
 
 == Dependency injection & retrieval
@@ -1170,6 +1172,17 @@ env.doSomething() <2>
 <2> If this was run before setting `kodein.baseKodein`, an `UninitializedPropertyAccessException` would be thrown.
 
 
+==== All matches
+
+Kodein allows you to retrieve all instances that matches a given type:
+
+[source, kotlin]
+.Example: all instances of Foo.
+----
+val instances: List<Foo> by kodein.allInstances() <1>
+----
+<1> Will return all instances that are for bindings of sub-classes of `Foo`
+
 
 [[kodein-aware]]
 === Retrieval: being KodeinAware
@@ -1268,6 +1281,17 @@ class MyActivity : Activity(), KodeinAware {
 ----
 <1> Because `ds` is lazily retrieved, access to the `kodein` property will only happen at first retrieval.
 
+
+==== All matches
+
+Kodein allows you to retrieve all instances that matches a given type:
+
+[source, kotlin]
+.Example: all instances of Foo.
+----
+val instances: List<Foo> = dkodein.allInstances() <1>
+----
+<1> Will return all instances that are for bindings of sub-classes of `Foo`
 
 
 === Retrival: Direct

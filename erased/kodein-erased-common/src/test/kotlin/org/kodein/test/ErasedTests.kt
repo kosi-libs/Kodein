@@ -985,4 +985,15 @@ class ErasedTests {
         assertFails { trigger.trigger() }
     }
 
+    @Test fun test30_00_allInstances() {
+        val kodein = Kodein {
+            bind<Person>() with provider { Person("Salomon") }
+            bind<String>() with provider { "Laila" }
+        }
+
+        val instances: List<Any> by kodein.allInstances()
+        assertTrue(Person("Salomon") in instances)
+        assertTrue("Laila" in instances)
+    }
+
 }
