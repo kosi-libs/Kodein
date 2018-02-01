@@ -2,6 +2,7 @@ package org.kodein.test
 
 import org.kodein.*
 import org.kodein.bindings.*
+import org.kodein.generic.*
 import kotlin.concurrent.thread
 import kotlin.test.*
 

@@ -1,6 +1,9 @@
-package org.kodein
+package org.kodein.generic
 
+import org.kodein.Kodein
+import org.kodein.SearchDSL
 import org.kodein.bindings.Scope
+import org.kodein.generic
 
 /**
  * Starts the binding of a given type with a given tag.

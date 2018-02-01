@@ -1,4 +1,6 @@
-package org.kodein
+package org.kodein.generic
+
+import org.kodein.*
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag.

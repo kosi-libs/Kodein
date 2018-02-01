@@ -1,10 +1,13 @@
 @file:Suppress("unused")
 
-package org.kodein
+package org.kodein.generic
 
+import org.kodein.AnyToken
+import org.kodein.Kodein
 import org.kodein.bindings.ArgSetBinding
 import org.kodein.bindings.InSet
 import org.kodein.bindings.SetBinding
+import org.kodein.generic
 
 /**
  * Creates a set: multiple bindings can be added in this set.

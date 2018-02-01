@@ -185,6 +185,20 @@ Module names have changed:
 
 Well, the new package is now `org.kodein`. So, you know, update the imports ;)
 
+[options="header",width="70%"]
+|=======
+| Old name          | New name
+| `com.github.salomonbrys.kodein` *        | `org.kodein`
+| `com.github.salomonbrys.kodein` *        | `org.kodein.generic`
+| `com.github.salomonbrys.kodein.erased`   | `org.kodein.erased`
+| `com.github.salomonbrys.kodein.conf`     | `org.kodein.conf`
+| `com.github.salomonbrys.kodein.jxinject` | `org.kodein.jxinject`
+| `com.github.salomonbrys.kodein.android`  | `org.kodein.android`
+|=======
+
+NOTE: The `com.github.salomonbrys.kodein` package has been split up between core and generic code.
+      This allows Kodein to be used with Java 9.
+
 
 === Laziness
 

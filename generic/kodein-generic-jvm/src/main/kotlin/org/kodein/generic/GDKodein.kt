@@ -1,4 +1,9 @@
-package org.kodein
+package org.kodein.generic
+
+import org.kodein.DKodein
+import org.kodein.DKodeinAware
+import org.kodein.generic
+import org.kodein.toProvider
 
 inline fun <reified A, reified T : Any> DKodein.factory(tag: Any? = null) = Factory<A, T>(generic(), generic(), tag)
 

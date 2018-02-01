@@ -1,8 +1,10 @@
 @file:Suppress("unused")
 
-package org.kodein
+package org.kodein.generic
 
+import org.kodein.Kodein
 import org.kodein.bindings.*
+import org.kodein.generic
 
 inline fun <reified EC, BC> Kodein.Builder.scoped(scope: Scope<EC, BC>): Kodein.BindBuilder.Scoped<EC, BC> = Kodein.BindBuilder.Scoped.Impl(generic(), scope)
 inline fun <reified C> Kodein.Builder.contexted(): Kodein.BindBuilder.Contexted<C> = Kodein.BindBuilder.Contexted.Impl(generic())

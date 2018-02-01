@@ -1183,6 +1183,8 @@ val instances: List<Foo> by kodein.allInstances() <1>
 ----
 <1> Will return all instances that are for bindings of sub-classes of `Foo`
 
+NOTE: Of course, `allProviders` and `allFactories` are also provided ;)
+
 
 [[kodein-aware]]
 === Retrieval: being KodeinAware
@@ -1292,6 +1294,8 @@ Kodein allows you to retrieve all instances that matches a given type:
 val instances: List<Foo> = dkodein.allInstances() <1>
 ----
 <1> Will return all instances that are for bindings of sub-classes of `Foo`
+
+NOTE: Of course, `allProviders` and `allFactories` are also provided ;)
 
 
 === Retrival: Direct
