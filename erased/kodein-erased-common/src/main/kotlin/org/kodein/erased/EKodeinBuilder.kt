@@ -15,7 +15,7 @@ import org.kodein.erased
  * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
  * @return The binder: call [Kodein.Builder.TypeBinder.with]) on it to finish the binding syntax and register the binding.
  */
-inline fun <reified T : Any> Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null) = Bind<T>(erased(), tag, overrides)
+inline fun <reified T : Any> Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null): Kodein.Builder.TypeBinder<T> = Bind<T>(erased(), tag, overrides)
 
 /**
  * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
@@ -24,8 +24,8 @@ inline fun <reified T : Any> Kodein.Builder.bind(tag: Any? = null, overrides: Bo
  * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
  * @return The binder: call [Kodein.Builder.DirectBinder.from]) on it to finish the binding syntax and register the binding.
  */
-@Suppress("NOTHING_TO_INLINE")
-inline fun Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null) = Bind(tag, overrides)
+//TODO: remove nativeBugFix once this bug is corrected from Kotlin/Native
+fun Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null, @Suppress("UNUSED_PARAMETER") nativeBugFix: Nothing? = null): Kodein.Builder.DirectBinder = Bind(tag, overrides)
 
 /**
  * Binds the previously given tag to the given instance.
