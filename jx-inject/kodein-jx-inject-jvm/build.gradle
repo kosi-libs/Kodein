@@ -8,6 +8,7 @@ dependencies {
     compile "javax.inject:javax.inject:1"
 
     testCompile project(':test-utils:test-utils-jvm')
+    testCompile project(':generic:kodein-generic-jvm')
 }
 
 test {

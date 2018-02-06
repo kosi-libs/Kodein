@@ -6,6 +6,7 @@ dependencies {
     compile project(":core:kodein-core-jvm")
 
     testCompile project(':test-utils:test-utils-jvm')
+    testCompile project(':erased:kodein-erased-jvm')
 }
 
 test {

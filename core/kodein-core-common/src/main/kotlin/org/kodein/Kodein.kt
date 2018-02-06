@@ -218,7 +218,7 @@ interface Kodein : KodeinAware {
              * @param valueType The type to bind the instance to.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            fun <T: Any> With(valueType: TypeToken<out T>, value: T) = bind(tag = _tag) from InstanceBinding(valueType, value)
+            fun <T: Any> With(valueType: TypeToken<out T>, value: T) = Bind(tag = _tag) from InstanceBinding(valueType, value)
         }
 
         /**
@@ -239,8 +239,7 @@ interface Kodein : KodeinAware {
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          * @return The binder: call [DirectBinder.from]) on it to finish the binding syntax and register the binding.
          */
-        @PublishedApi
-        internal fun bindDirect(tag: Any? = null, overrides: Boolean? = null): DirectBinder = DirectBinder(tag, overrides)
+        fun Bind(tag: Any? = null, overrides: Boolean? = null): DirectBinder = DirectBinder(tag, overrides)
 
         /**
          * Starts a constant binding.
@@ -390,13 +389,3 @@ interface Kodein : KodeinAware {
     }
 
 }
-
-/**
- * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
- *
- * @param tag The tag to bind.
- * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
- * @return The binder: call [Kodein.Builder.DirectBinder.from]) on it to finish the binding syntax and register the binding.
- */
-@Suppress("NOTHING_TO_INLINE")
-inline fun Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null) = bindDirect(tag, overrides)

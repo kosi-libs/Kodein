@@ -6,6 +6,7 @@ dependencies {
     compile project(":core:kodein-core-js")
 
     testCompile project(':test-utils:test-utils-js')
+    testCompile project(':erased:kodein-erased-js')
 }
 
 compileKotlin2Js {

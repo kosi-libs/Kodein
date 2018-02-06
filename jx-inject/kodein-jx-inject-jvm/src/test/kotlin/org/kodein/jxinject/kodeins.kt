@@ -1,15 +1,15 @@
 package org.kodein.jxinject
 
-import org.kodein.*
-import org.kodein.bindings.*
+import org.kodein.Kodein
+import org.kodein.generic.*
 
 fun test0() = Kodein {
     import(jxInjectorModule)
 
-    bind() from InstanceBinding(erased(), "Salomon")
-    bind(tag = "lastname") from InstanceBinding(erased(), "BRYS")
-    Bind<List<String>>(generic()) with InstanceBinding(generic(), listOf("a", "b", "c"))
-    Bind<Set<String>>(erased()) with InstanceBinding(erased(), setOf("a", "b", "c"))
+    bind() from instance("Salomon")
+    bind(tag = "lastname") from instance("BRYS")
+    bind<List<String>>() with instance(listOf("a", "b", "c"))
+    bind<Set<String>>() with instance(setOf("a", "b", "c"))
 }
 
 fun test1() = Kodein {
@@ -17,23 +17,23 @@ fun test1() = Kodein {
 
     var count = 0
 
-    bind() from Provider(AnyToken, erased()) { "Salomon ${count++}" }
-    bind(tag = "lastname") from Provider(AnyToken, erased()) { "BRYS ${count++}" }
-    Bind<List<String>>(generic()) with Provider(AnyToken, generic()) { listOf("a", "b", "c") }
-    Bind<Set<String>>(erased()) with Provider(AnyToken, erased()) { setOf("a", "b", "c") }
+    bind() from provider { "Salomon ${count++}" }
+    bind(tag = "lastname") from provider { "BRYS ${count++}" }
+    bind<List<String>>() with provider { listOf("a", "b", "c") }
+    bind<Set<String>>() with provider { setOf("a", "b", "c") }
 }
 
 fun test2() = Kodein {
     import(jxInjectorModule)
 
-    bind() from Factory(AnyToken, erased(), erased()) { i: Int -> "Salomon $i" }
-    bind(tag = "lastname") from Factory(AnyToken, erased(), erased()) { i: Int -> "BRYS $i" }
-    Bind<List<String>>(generic()) with Factory(AnyToken, erased(), generic()) { i: Int -> listOf("a$i", "b$i", "c$i") }
-    Bind<Set<String>>(erased()) with Factory(AnyToken, erased(), erased()) { i: Int -> setOf("a$i", "b$i", "c$i") }
+    bind() from factory { i: Int -> "Salomon $i" }
+    bind(tag = "lastname") from factory { i: Int -> "BRYS $i" }
+    bind<List<String>>() with factory { i: Int -> listOf("a$i", "b$i", "c$i") }
+    bind<Set<String>>() with factory { i: Int -> setOf("a$i", "b$i", "c$i") }
 }
 
 fun test4() = Kodein {
-    bind(tag = "universe:answer") from InstanceBinding(erased(), "fourty-two")
+    bind(tag = "universe:answer") from instance("fourty-two")
 
     import(jxInjectorModule)
 
@@ -49,6 +49,6 @@ class Test5BImpl(override val a: Test5A) : Test5B
 fun test5() = Kodein {
     import(jxInjectorModule)
 
-    Bind<Test5A>(generic()) with Singleton(NoScope(), AnyToken, generic()) { jx.newInstance<Test5AImpl>() }
-    Bind<Test5B>(generic()) with Singleton(NoScope(), AnyToken, generic()) { jx.newInstance<Test5BImpl>() }
+    bind<Test5A>() with singleton { jx.newInstance<Test5AImpl>() }
+    bind<Test5B>() with singleton { jx.newInstance<Test5BImpl>() }
 }

@@ -34,7 +34,7 @@ allprojects {
     }
 
     group = 'org.kodein'
-    version = '5.0.0-beta2'
+    version = '5.0.0-beta3'
 }
 
 // used for Android builds on travis

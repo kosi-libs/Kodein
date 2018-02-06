@@ -5,6 +5,7 @@ dependencies {
     compile project(":core:kodein-core-common")
 
     testCompile project(":test-utils:test-utils-common")
+    testCompile project(":erased:kodein-erased-common")
 }
 
 apply from: "../../gradle/kotlin-publish.gradle"

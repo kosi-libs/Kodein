@@ -3,15 +3,20 @@ package org.kodein.conf.test
 import org.kodein.*
 import org.kodein.bindings.ExternalSource
 import org.kodein.bindings.Factory
-import org.kodein.bindings.Provider
 import org.kodein.bindings.externalFactory
 import org.kodein.conf.ConfigurableKodein
+import org.kodein.erased.bind
+import org.kodein.erased.instance
+import org.kodein.erased.instanceOrNull
+import org.kodein.erased.provider
 import org.kodein.test.FixMethodOrder
 import org.kodein.test.MethodSorters
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class KodeinGlobalJvmTests {
+class KodeinConfJvmTests {
 
     private open class Name(val firstName: String) {
         override fun equals(other: Any?): Boolean{
@@ -38,24 +43,6 @@ class KodeinGlobalJvmTests {
         override fun hashCode(): Int{
             return 31 * super.hashCode() + lastName.hashCode()
         }
-    }
-
-    @Test
-    // Only the JVM supports up cast argument searching
-    fun test03_00_ChildOverride() {
-        val kodein = ConfigurableKodein(true)
-
-        kodein.addConfig {
-            Bind<String>(erased()) with Factory(AnyToken, erased(), erased()) { n: Name -> n.firstName }
-        }
-
-        assertEquals("Salomon", kodein.direct.Factory<FullName, String>(erased(), erased(), null).invoke(FullName ("Salomon", "BRYS")))
-
-        kodein.addConfig {
-            Bind<String>(erased(), overrides = true) with Factory(AnyToken, erased(), erased()) { n: FullName -> n.firstName + " " + n.lastName }
-        }
-
-        assertEquals("Salomon BRYS", kodein.direct.Factory<FullName, String>(erased(), erased(), null).invoke(FullName("Salomon", "BRYS")))
     }
 
     // Only the JVM supports generics
@@ -87,14 +74,14 @@ class KodeinGlobalJvmTests {
             }
         }
 
-        assertEquals("bar", kodein.direct.Instance<String>(erased(), tag = "foo"))
-        assertNull(kodein.direct.InstanceOrNull<String>(erased(), null))
+        assertEquals("bar", kodein.direct.instance(tag = "foo"))
+        assertNull(kodein.direct.instanceOrNull<String>())
 
         kodein.addConfig {
-            bind() from Provider(AnyToken, erased()) { "def" }
+            bind() from provider { "def" }
         }
 
-        assertEquals("bar", kodein.direct.Instance<String>(erased(), tag = "foo"))
-        assertEquals("def", kodein.direct.Instance<String>(erased(), null))
+        assertEquals("bar", kodein.direct.instance(tag = "foo"))
+        assertEquals("def", kodein.direct.instance())
     }
 }
