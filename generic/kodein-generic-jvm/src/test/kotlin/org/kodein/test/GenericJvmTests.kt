@@ -1172,12 +1172,13 @@ class GenericJvmTests {
             externalSource = ExternalSource { key ->
                 @Suppress("UNUSED_PARAMETER")
                 when (key.type.jvmType) {
-                    Person::class.java -> {
-                        when (key.tag) {
+                    Person::class.java -> when (key.argType.jvmType) {
+                        Unit::class.java -> when (key.tag) {
                             "her" -> externalFactory { laila }
                             null -> externalFactory { Person("Anyone") }
                             else -> null
                         }
+                        else -> null
                     }
                     else -> null
                 }
