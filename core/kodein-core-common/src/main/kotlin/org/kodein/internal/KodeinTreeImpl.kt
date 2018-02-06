@@ -19,6 +19,8 @@ internal class KodeinTreeImpl(
     private val _cache: MutableMap<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>> = HashMap()
     private val _typeTree: BoundTypeTree = HashMap()
 
+    override val bindings: BindingsMap
+
     init {
         map.forEach { (key, bindings) ->
             _cache[key] = bindings.map {
@@ -33,33 +35,8 @@ internal class KodeinTreeImpl(
             val tagTree = argumentTree.getOrPut(key.argType) { HashMap() }
             tagTree[key.tag] = key
         }
+        bindings = HashMap(_cache)
     }
-
-//    private fun _find(key: Kodein.Key<*, *, *>): List<Kodein.Key<*, *, *>> {
-////        val it0 = _typeTree.asIterable()
-////        val it1 = it0.filter { (boundType) -> key.type.isAssignableFrom(boundType) }
-////        val it2 = it1.flatMap { (_, contextTree) -> contextTree.asIterable() }
-////        val it3 = it2.filter { (contextType) -> contextType.isAssignableFrom(key.contextType) }
-////        val it4 = it3.flatMap { (_, argumentTree) -> argumentTree.asIterable() }
-////        val it5 = it4.filter { (argType) -> argType.isAssignableFrom(key.argType) }
-////        val it6 = it5.flatMap { (_, tagTree) -> tagTree.asIterable() }
-////        val it7 = it6.filter { (tag) -> tag == key.tag }
-////        val it8 = it7.map { (_, overrideQueue) -> overrideQueue }
-////        val list = it8.toList()
-//
-//
-//        return _typeTree
-//                .asSequence()
-//                .filter { (boundType) -> key.type.isAssignableFrom(boundType) }             // Filter keys that are for sub-types of this key type...
-//                .flatMap { (_, contextTree) -> contextTree.asSequence() }                   // ...Get all corresponding context types
-//                .filter { (contextType) -> contextType.isAssignableFrom(key.contextType) }  // Filter context types that are super-types of this key context type...
-//                .flatMap { (_, argumentTree) -> argumentTree.asSequence() }                 // ...Get all corresponding argument types
-//                .filter { (argType) -> argType.isAssignableFrom(key.argType) }              // Filter argument types that are super-types of this key argument type...
-//                .flatMap { (_, tagTree) -> tagTree.asSequence() }                           // ...Get all corresponding tags
-//                .filter { (tag) -> tag == key.tag }                                         // Filter tags that match this key tag...
-//                .map { (_, overrideQueue) -> overrideQueue }                                // ...Get all corresponding queues
-//                .toList()
-//    }
 
     private fun _find(specs: SearchSpecs): List<Kodein.Key<*, *, *>> {
         var bindSeq: Sequence<Map.Entry<TypeToken<*>, ContextTypeTree>> = _typeTree.asSequence()
@@ -122,7 +99,5 @@ internal class KodeinTreeImpl(
     @Suppress("UNCHECKED_CAST")
     override fun <C, A, T: Any> get(key: Kodein.Key<C, A, T>) = _cache[key] as? List<KodeinDefinition<C, A, T>>
 
-    inner class BindingsMapView : BindingsMap by _cache
-
-    override val bindings: BindingsMap get() = BindingsMapView()
+//    inner class BindingsMapView : BindingsMap by _cache
 }

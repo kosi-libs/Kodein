@@ -12,8 +12,8 @@ import kodein.demo.coffee.Kettle
 import org.kodein.KodeinAware
 import org.kodein.KodeinContext
 import org.kodein.android.closestKodein
-import org.kodein.instance
-import org.kodein.kcontext
+import org.kodein.generic.instance
+import org.kodein.generic.kcontext
 
 // by implementing FragmentInjector we get the same behavior as KodeinFragment, but we have the flexibility to subclass whatever we want
 // All we need to do is override injector with a simple KodeinInjector() and call initializeInjector and destroyInjector when appropriate

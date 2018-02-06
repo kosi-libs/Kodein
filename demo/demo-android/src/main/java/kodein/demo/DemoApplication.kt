@@ -5,15 +5,14 @@ import android.app.Application
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 import kodein.demo.coffee.electricHeaterModule
-import org.kodein.*
-import org.kodein.android.androidModule
+import org.kodein.Kodein
+import org.kodein.KodeinAware
 import org.kodein.android.androidScope
+import org.kodein.generic.*
 
 class DemoApplication : Application(), KodeinAware {
 
     override val kodein by Kodein.lazy {
-        import(androidModule(this@DemoApplication))
-
         bind<Logger>() with instance(Logger())
 
         import(electricHeaterModule)

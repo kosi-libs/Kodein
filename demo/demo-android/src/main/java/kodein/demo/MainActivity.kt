@@ -9,6 +9,9 @@ import kodein.demo.coffee.thermosiphonModule
 import org.kodein.*
 import org.kodein.android.closestKodein
 import org.kodein.android.retainedKodein
+import org.kodein.generic.binding
+import org.kodein.generic.instance
+import org.kodein.generic.kcontext
 
 class MainActivity : Activity(), KodeinAware {
 
@@ -17,7 +20,9 @@ class MainActivity : Activity(), KodeinAware {
     private val _parentKodein by closestKodein()
 
     override val kodein: Kodein by retainedKodein {
-        extend(_parentKodein)
+        extend(_parentKodein) {
+            copy the binding<Kettle<Coffee>>()
+        }
         import(thermosiphonModule)
     }
 
@@ -37,7 +42,7 @@ class MainActivity : Activity(), KodeinAware {
         }
 
         Log.i("Kodein", "=====================-BINDINGS-=====================")
-        Log.i("Kodein", kodein.container.bindings.description())
+        Log.i("Kodein", kodein.container.tree.bindings.description())
         Log.i("Kodein", "====================================================")
     }
 

@@ -376,7 +376,7 @@ interface Kodein : KodeinAware {
          */
         operator fun invoke(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Kodein = KodeinImpl(allowSilentOverride, init)
 
-        fun lazy(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Lazy<Kodein> = lazy { KodeinImpl(allowSilentOverride, init) }
+        fun lazy(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Lazy<Kodein> = kotlin.lazy { KodeinImpl(allowSilentOverride, init) }
 
         /**
          * Creates a Kodein object but without directly calling onReady callbacks.

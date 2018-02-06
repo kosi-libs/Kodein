@@ -1,10 +1,10 @@
 package kodein.demo.coffee
 
 import org.kodein.Kodein
-import org.kodein.bind
-import org.kodein.instance
-import org.kodein.singleton
 import kodein.demo.Logger
+import org.kodein.generic.bind
+import org.kodein.generic.instance
+import org.kodein.generic.singleton
 
 class ElectricHeater(private val log: Logger) : Heater {
     private var heating: Boolean = false

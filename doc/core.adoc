@@ -1505,11 +1505,11 @@ val configurations by kodein.instance<ConfigurationEntries>().toMap()
 
 === Print bindings
 
-You can easily print bindings with `println(kodein.container.bindings.description)`.
+You can easily print bindings with `println(kodein.container.tree.bindings.description)`.
 
 Here's an example of what this prints:
 
-.An example of kodein.container.bindings.description:
+.An example of kodein.container.tree.bindings.description:
 ----
         bind<Dice>() with factory { Int -> RandomDice }
         bind<DataSource>() with singleton { SQLiteDataSource }
