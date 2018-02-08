@@ -19,9 +19,11 @@ interface Copy {
 
     companion object {
         operator fun invoke(f: DSL.() -> Unit) = DSL().apply(f)
+
+        fun allBut(f: DSL.() -> Unit) = AllButDSL().apply(f)
     }
 
-    class DSL : SearchDSL(), Copy {
+    open class DSL : SearchDSL(), Copy {
         internal val specs = ArrayList<CopySpecs>()
 
         inner class Copy {
@@ -47,5 +49,9 @@ interface Copy {
                     list.map { it.first }
                 }
                 .toSet()
+    }
+
+    class AllButDSL : DSL() {
+        override fun keySet(tree: KodeinTree): Set<Kodein.Key<*, *, *>> = tree.bindings.keys.minus(super.keySet(tree))
     }
 }
