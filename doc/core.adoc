@@ -848,7 +848,7 @@ You can also copy all bindings that matches a particular definition :
 val child = Kodein {
     extends(parent, copy = Copy {
         copy all binding<String>() <1>
-        copy all scope(requestScope)
+        copy all scope(requestScope) <2>
     })
 }
 ----
