@@ -4,7 +4,7 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 5.0.0-beta3
+:version: 5.0.0-beta4
 :branch: 5.0
 
 image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]
@@ -469,6 +469,9 @@ CAUTION: *This should be used with care* as binding a concrete class and, theref
 WARNING: When using `kodein-generic-*` and binding a generic type, the bound type will be the specialized type, +
          e.g. `bind() from singleton { listOf(1, 2, 3, 4) }` registers the binding to `List<Int>`.
 
+NOTE: If you are using Kodein/Native, because of https://github.com/JetBrains/kotlin-native/issues/1290[this bug], you need to use the uppercase version: `Bind() from`.
+      This issue has been fixed and the `bind() from` syntax will be available to Kodein/Native as soon as Kotlin/Native 0.6 is released.
+
 
 === Transitive dependencies
 
@@ -794,25 +797,29 @@ val foo = child.instance<Bar>().foo
 ----
 
 In this example, the `foo` variable will be of type `Foo1`.
-Because the `Bar` binding is declared in the `parent` Kodein, it *does not have access to bindings declared in `child`.*
+Because the `Bar` binding is a `singleton` and is declared in the `parent` Kodein, it *does not have access to bindings declared in `child`.*
 In this example, both `parent.instance<Bar>().foo` and `child.instance<Bar>().foo` will yield a `Foo1` object.
 
-If you want the `Bar` binding to have access to the overridden `Foo` binding, you need to copy it into the `child` container:
+NOTE: This is because `Bar` is bound to a `singleton`, the first access would define the container used (`parent` or `child`).
+      If the singleton were initialized by `child`, then a subsequent access from `parent` would yeild a `Bar` with a reference to a `Foo2`, which is not supposed to exist in `parent`.
+
+IMPORTANT: By default, *all bindings that do not cache instances* (basically all bindings but `singleton` and `multiton`) *are copied by default into the new container*, and therefore have access to the bindings & overrides of this new container.
+
+If you want the `Bar` singleton to have access to the overridden `Foo` binding, you need to copy it into the `child` container.
 
 [source, kotlin]
 .Example: Copying the bar binding into the child container
 ----
 val child = Kodein {
-    extends(parent) {
+    extends(parent, copy = Copy {
         copy the binding<Bar>() <1>
-    }
+    })
     bind<Foo>(overrides = true) with provider { Foo2() }
 }
 ----
-<1> Because it is copied, the `Bar` singleton has an instance in `parent` AND in `child`
 
-CAUTION: Copying a binding means that the it will exists once more.
-         Therefore, a copied singleton will thereon have TWO instances, one managed by each binding (the original and the copied).
+CAUTION: Copying a binding means that it will exists once more.
+         Therefore, a copied singleton will *no longer be unique* and have TWO instances, one managed by each binding (the original and the copied).
 
 If the binding you need to copy is bound by a context (such as a scoped singleton), you need to specify it:
 
@@ -824,14 +831,14 @@ val parent = Kodein {
 }
 
 val child = Kodein {
-    extends(parent) {
+    extends(parent, copy = Copy {
         copy the binding<Session>() with scope(requestScope) and tag("req")
-    }
+    })
     bind<Foo>(overrides = true) with provider { Foo2() }
 }
 ----
 
-NOTE: You can use the `context<>()`, `scope()` and `tag` function to specialise your binding.
+NOTE: You can use the `context<>()`, `scope()` and `tag()` functions to specialise your binding copies.
 
 You can also copy all bindings that matches a particular definition :
 
@@ -839,10 +846,10 @@ You can also copy all bindings that matches a particular definition :
 .Example: Copying all that matches
 ----
 val child = Kodein {
-    extends(parent) {
+    extends(parent, copy = Copy {
         copy all binding<String>() <1>
         copy all scope(requestScope)
-    }
+    })
 }
 ----
 <1> Will copy all bindings for a `String`, with or without a context, scope, tag or argument.
@@ -854,11 +861,19 @@ Finally, you can simply copy *all* bindings:
 .Example: Copying all
 ----
 val child = Kodein {
-    extends(parent, copyAll = true)
+    extends(parent, copy = Copy.All)
 }
 ----
-<1> Will copy all bindings for a `String`, with or without a context, scope, tag or argument.
-<2> Will copy all bindings that are scoped inside a `RequestScope`.
+
+Or you can decide that none are copied (if you do want existing bindings to have access to new bindings):
+
+[source, kotlin]
+.Example: Copying none
+----
+val child = Kodein {
+    extends(parent, copy = Copy.None)
+}
+----
 
 
 == Dependency injection & retrieval

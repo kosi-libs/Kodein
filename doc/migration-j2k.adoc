@@ -2,7 +2,6 @@
 Salomon BRYS <salomon.brys@gmail.com>
 :toc:
 :toclevels: 4
-:revdate: 2017-04-18
 
 
 == Introduction
