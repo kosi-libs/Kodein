@@ -475,7 +475,7 @@ class ErasedTests {
         }.direct
 
         val sub = Kodein {
-            extend(root, allowOverride = true)
+            extend(root, allowOverride = true, copy = Copy.None)
             bind<Foo>(overrides = true) with provider { Foo("subFoo") }
         }.direct
 
@@ -497,7 +497,7 @@ class ErasedTests {
         }.direct
 
         val sub = Kodein {
-            extend(root, allowOverride = true, copyAll = true)
+            extend(root, allowOverride = true, copy = Copy.All)
             bind<Foo>(overrides = true) with provider { Foo("subFoo") }
         }.direct
 
@@ -541,9 +541,9 @@ class ErasedTests {
         }.direct
 
         val sub = Kodein {
-            extend(root, allowOverride = true) {
+            extend(root, allowOverride = true, copy = Copy {
                 copy all binding<Bar>()
-            }
+            })
             bind<Foo>(overrides = true) with provider { Foo("subFoo") }
         }.direct
 

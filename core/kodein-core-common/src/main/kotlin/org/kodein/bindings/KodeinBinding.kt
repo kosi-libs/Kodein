@@ -75,7 +75,17 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
         return "$context${factoryFullName()} { $arg${createdType.fullDispString()} }"
     }
 
-    fun copyReset(builder: KodeinContainer.Builder): KodeinBinding<C, A, T> = this
+    interface Copier<C, A, T: Any> {
+        fun copy(builder: KodeinContainer.Builder): KodeinBinding<C, A, T>
+
+        companion object {
+            operator fun <C, A, T: Any> invoke(f: (KodeinContainer.Builder) -> KodeinBinding<C, A, T>) = object : Copier<C, A, T> {
+                override fun copy(builder: KodeinContainer.Builder) = f(builder)
+            }
+        }
+    }
+
+    val copier: Copier<C, A, T>? get() = null
 }
 
 inline fun <C, T: Any> simpleBindingProvider(crossinline f: NoArgBindingKodein<C>.() -> T) = object : Binding<C, Unit, T> {

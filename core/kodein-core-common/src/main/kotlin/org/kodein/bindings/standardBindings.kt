@@ -65,7 +65,7 @@ class Multiton<EC, BC, A, T: Any>(override val scope: Scope<EC, BC>, override va
         }
     }
 
-    override fun copyReset(builder: KodeinContainer.Builder) = Multiton(scope, contextType, argType, createdType, _refMaker, creator)
+    override val copier = KodeinBinding.Copier { Multiton(scope, contextType, argType, createdType, _refMaker, creator) }
 }
 
 /**
@@ -124,7 +124,7 @@ class Singleton<EC, BC, T: Any>(override val scope: Scope<EC, BC>, override val 
         }
     }
 
-    override fun copyReset(builder: KodeinContainer.Builder) = Singleton(scope, contextType, createdType, _refMaker, creator)
+    override val copier = KodeinBinding.Copier { Singleton(scope, contextType, createdType, _refMaker, creator) }
 }
 
 /**
@@ -163,7 +163,7 @@ class EagerSingleton<T: Any>(builder: KodeinContainer.Builder, override val crea
         builder.onReady { _getFactory(BindingKodeinImpl(this, key, null, null, 0)).invoke(Unit) }
     }
 
-    override fun copyReset(builder: KodeinContainer.Builder) = EagerSingleton(builder, createdType, creator)
+    override val copier = KodeinBinding.Copier { builder -> EagerSingleton(builder, createdType, creator) }
 }
 
 /**

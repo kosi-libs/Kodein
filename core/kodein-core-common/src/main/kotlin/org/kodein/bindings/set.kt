@@ -43,8 +43,10 @@ class ArgSetBinding<C, A, T: Any>(override val contextType: TypeToken<in C>, ove
         }
     }
 
-    override fun copyReset(builder: KodeinContainer.Builder) = ArgSetBinding(contextType, argType, elementType, createdType).also {
-        it.set.addAll(set.map { it.copyReset(builder) })
+    override val copier = KodeinBinding.Copier { builder ->
+        ArgSetBinding(contextType, argType, elementType, createdType).also {
+            it.set.addAll(set.map { it.copier?.copy(builder) ?: it })
+        }
     }
 }
 
@@ -68,8 +70,10 @@ class SetBinding<C, T: Any>(override val contextType: TypeToken<in C>, val eleme
         }
     }
 
-    override fun copyReset(builder: KodeinContainer.Builder) = SetBinding(contextType, elementType, createdType).also {
-        it.set.addAll(set.map { it.copyReset(builder) })
+    override val copier = KodeinBinding.Copier { builder ->
+        SetBinding(contextType, elementType, createdType).also {
+            it.set.addAll(set.map { it.copier?.copy(builder) ?: it })
+        }
     }
 }
 

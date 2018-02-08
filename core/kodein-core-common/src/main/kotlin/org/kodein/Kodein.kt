@@ -277,34 +277,6 @@ interface Kodein : KodeinAware {
 
         var externalSource: ExternalSource? = null
 
-        class CopySpecs(val all: Boolean) : SearchSpecs()
-
-        class CopyDSL : SearchDSL() {
-            internal val specs = ArrayList<CopySpecs>()
-
-            inner class Copy {
-                infix fun the(binding: SearchDSL.Binding): SearchSpecs {
-                    return CopySpecs(false).also { binding.apply(it) ; specs += it }
-                }
-                infix fun all(spec: SearchDSL.Spec): SearchSpecs {
-                    return CopySpecs(true).also { spec.apply(it) ; specs += it }
-                }
-            }
-
-            val copy = Copy()
-
-            internal fun toKeysList(tree: KodeinTree) = specs.flatMap {
-                val list = tree.find(it)
-                if (list.isEmpty()) {
-                    throw Kodein.NoResultException(it, "No binding found that match this search: $it")
-                }
-                if (!it.all && list.size > 1) {
-                    throw Kodein.NoResultException(it, "There were ${list.size} matches for this search: $it\n${list.toMap().description(false)}")
-                }
-                list.map { it.first }
-            }
-        }
-
         /**
          * Imports all bindings defined in the given [Kodein] into this builder.
          *
@@ -319,25 +291,15 @@ interface Kodein : KodeinAware {
          * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(kodein: Kodein, allowOverride: Boolean = false, copyAll: Boolean = false, copySpecs: CopyDSL.() -> Unit = {}) {
-            val keys = if (copyAll) {
-                kodein.container.tree.bindings.keys.toList()
-            }
-            else {
-                CopyDSL().apply(copySpecs).toKeysList(kodein.container.tree)
-            }
+        fun extend(kodein: Kodein, allowOverride: Boolean = false, copy: Copy = Copy.NonCached) {
+            val keys = copy.keySet(kodein.container.tree)
 
             containerBuilder.extend(kodein.container, allowOverride, keys)
             kodein.container.tree.externalSource?.let { externalSource = it }
         }
 
-        fun extend(dkodein: DKodein, allowOverride: Boolean = false, copyAll: Boolean = false, copySpecs: CopyDSL.() -> Unit = {}) {
-            val keys = if (copyAll) {
-                dkodein.container.tree.bindings.keys.toList()
-            }
-            else {
-                CopyDSL().apply(copySpecs).toKeysList(dkodein.container.tree)
-            }
+        fun extend(dkodein: DKodein, allowOverride: Boolean = false, copy: Copy = Copy.NonCached) {
+            val keys = copy.keySet(dkodein.container.tree)
 
             containerBuilder.extend(dkodein.container, allowOverride, keys)
             dkodein.container.tree.externalSource?.let { externalSource = it }

@@ -20,9 +20,7 @@ class MainActivity : Activity(), KodeinAware {
     private val _parentKodein by closestKodein()
 
     override val kodein: Kodein by retainedKodein {
-        extend(_parentKodein) {
-            copy the binding<Kettle<Coffee>>()
-        }
+        extend(_parentKodein)
         import(thermosiphonModule)
     }
 

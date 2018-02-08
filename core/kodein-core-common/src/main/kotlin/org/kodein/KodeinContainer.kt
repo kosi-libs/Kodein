@@ -201,7 +201,7 @@ interface KodeinContainer {
          * @throws Kodein.OverridingException If this kodein overrides an existing binding and is not allowed to
          *                                    OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(container: KodeinContainer, allowOverride: Boolean = false, copy: List<Kodein.Key<*, *, *>> = emptyList()) {
+        fun extend(container: KodeinContainer, allowOverride: Boolean = false, copy: Set<Kodein.Key<*, *, *>> = emptySet()) {
             _checkMatch(allowOverride)
 
             container.tree.bindings.forEach { (key, bindings) ->
@@ -209,7 +209,7 @@ interface KodeinContainer {
                     _checkOverrides(key, null)
 
                 val newBindings = if (key in copy) {
-                    newLinkedList<KodeinDefining<*, *, *>>().also { bindings.mapTo(it) { KodeinDefining(it.binding.copyReset(this@Builder), it.fromModule) } }
+                    newLinkedList<KodeinDefining<*, *, *>>().also { bindings.mapTo(it) { KodeinDefining(it.binding.copier?.copy(this@Builder) ?: it.binding, it.fromModule) } }
                 }
                 else {
                     newLinkedList<KodeinDefining<*, *, *>>(bindings)
