@@ -44,7 +44,7 @@ internal class NativeTypeToken<T>(val type: KClass<*>) : TypeToken<T> {
  * @return The type object representing `T`.
  */
 @Suppress("UNCHECKED_CAST", "UNCHECKED_CAST_TO_NATIVE_INTERFACE")
-inline fun <reified T> erased(): TypeToken<T> = NativeTypeToken(T::class)
+actual inline fun <reified T> erased(): TypeToken<T> = NativeTypeToken(T::class)
 
 /**
  * Gives a [TypeToken] representing the given class.
@@ -54,4 +54,4 @@ fun <T: Any> TT(cls: KClass<T>): TypeToken<T> = NativeTypeToken(cls)
 /**
  * Gives a [TypeToken] representing the *erased* type of the given object.
  */
-fun <T: Any> TTOf(obj: T): TypeToken<out T> = NativeTypeToken(obj::class)
+actual fun <T: Any> TTOf(obj: T): TypeToken<out T> = NativeTypeToken(obj::class)

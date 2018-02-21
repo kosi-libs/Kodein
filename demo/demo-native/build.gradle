@@ -2,8 +2,6 @@ apply plugin: 'konan'
 
 konanArtifacts {
     program('demo') {
-        srcFiles fileTree("src/main/kotlin")
-
         libraries {
             allLibrariesFrom project(':erased:kodein-erased-native')
         }

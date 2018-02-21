@@ -4,11 +4,12 @@ apply from: '../../gradle/native-targets.gradle'
 
 konanArtifacts {
     library("kodein-core-${project.version}") {
-        srcFiles fileTree("src/main/kotlin")
-        srcFiles fileTree("../kodein-core-common/src/main/kotlin")
-
-//        extraOpts "-Xmulti-platform"
+        enableMultiplatform true
     }
+}
+
+dependencies {
+    expectedBy project(":core:kodein-core-common")
 }
 
 ext {

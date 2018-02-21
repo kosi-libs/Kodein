@@ -1,7 +1,5 @@
 apply plugin: 'kotlin-platform-common'
 
-sourceSets.main.kotlin.srcDirs += 'src/nonNative/kotlin'
-
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
     compile project(":core:kodein-core-common")
