@@ -8,7 +8,12 @@ package org.kodein
  * @param T The main type represented by this type token.
  * @param A1 The type parameter of the main type.
  */
-inline fun <reified T, reified A1> erasedComp1() = CompositeTypeToken(erased<T>(), erased<A1>())
+//inline fun <reified T, reified A1> erasedComp1() = CompositeTypeToken(erased<T>(), erased<A1>())
+inline fun <reified T, reified A1> erasedComp1(): CompositeTypeToken<T> {
+    val paramsList = ArrayList<TypeToken<*>>(1)
+    paramsList.add(erased<A1>())
+    return CompositeTypeToken(erased(), paramsList.toTypedArray())
+}
 
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
@@ -19,7 +24,12 @@ inline fun <reified T, reified A1> erasedComp1() = CompositeTypeToken(erased<T>(
  * @param A1 The first type parameter of the main type.
  * @param A2 The second type parameter of the main type.
  */
-inline fun <reified T, reified A1, reified A2> erasedComp2() = CompositeTypeToken(erased<T>(), erased<A1>(), erased<A2>())
+inline fun <reified T, reified A1, reified A2> erasedComp2(): CompositeTypeToken<T> {
+    val paramsList = ArrayList<TypeToken<*>>(1)
+    paramsList.add(erased<A1>())
+    paramsList.add(erased<A2>())
+    return CompositeTypeToken(erased(), paramsList.toTypedArray())
+}
 
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
@@ -31,7 +41,13 @@ inline fun <reified T, reified A1, reified A2> erasedComp2() = CompositeTypeToke
  * @param A2 The second type parameter of the main type.
  * @param A3 The third type parameter of the main type.
  */
-inline fun <reified T, reified A1, reified A2, reified A3> erasedComp3() = CompositeTypeToken(erased<T>(), erased<A1>(), erased<A2>(), erased<A3>())
+inline fun <reified T, reified A1, reified A2, reified A3> erasedComp3(): CompositeTypeToken<T> {
+    val paramsList = ArrayList<TypeToken<*>>(1)
+    paramsList.add(erased<A1>())
+    paramsList.add(erased<A2>())
+    paramsList.add(erased<A3>())
+    return CompositeTypeToken(erased(), paramsList.toTypedArray())
+}
 
 /**
  * Creates a [CompositeTypeToken] that defines a `Set<T>`.

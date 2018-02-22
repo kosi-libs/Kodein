@@ -3,13 +3,16 @@
 package org.kodein.test
 
 import org.kodein.*
-import org.kodein.bindings.*
+import org.kodein.bindings.MultiItemScopeRegistry
+import org.kodein.bindings.Scope
+import org.kodein.bindings.SimpleScope
+import org.kodein.bindings.SingleItemScopeRegistry
 import org.kodein.erased.*
 import kotlin.reflect.KClass
 import kotlin.test.*
 
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ErasedTests {
 
     @Test fun test00_00_ProviderBindingGetInstance() {
@@ -980,6 +983,7 @@ class ErasedTests {
         val base = LateInitKodein()
         val kodein = base.on(trigger = trigger)
 
+        @Suppress("UNUSED_VARIABLE")
         val name: String by kodein.instance()
 
         assertFails { trigger.trigger() }

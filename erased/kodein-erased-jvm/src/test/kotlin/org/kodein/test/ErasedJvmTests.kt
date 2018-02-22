@@ -7,7 +7,7 @@ import kotlin.concurrent.thread
 import kotlin.test.*
 
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ErasedJvmTests {
 
     // Only the JVM supports up-casting

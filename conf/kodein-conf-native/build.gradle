@@ -1,20 +1,30 @@
 apply plugin: 'konan'
 
-apply from: '../../gradle/native-targets.gradle'
-
 konanArtifacts {
-    library("kodein-conf-${project.version}") {
+    library("kodein-conf-${project.version}", targets: konanTargets) {
         enableMultiplatform true
 
         libraries {
             allLibrariesFrom project(':core:kodein-core-native')
         }
     }
+
+    program("tests") {
+        commonSourceSet 'test'
+        libraries {
+            allLibrariesFrom project(':test-utils:test-utils-native')
+            allLibrariesFrom project(':erased:kodein-erased-native')
+            artifact "kodein-conf-${project.version}"
+        }
+        extraOpts '-tr'
+    }
 }
 
 dependencies {
     expectedBy project(":conf:kodein-conf-common")
 }
+
+task test(dependsOn: run)
 
 ext {
     libName = "kodein-conf-${project.version}"

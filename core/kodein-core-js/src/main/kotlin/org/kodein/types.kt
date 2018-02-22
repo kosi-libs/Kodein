@@ -46,6 +46,7 @@ internal class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
 @Suppress("UNCHECKED_CAST", "UNCHECKED_CAST_TO_NATIVE_INTERFACE")
 actual inline fun <reified T> erased(): TypeToken<T> {
     try {
+        @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         return JSTypeToken((T::class as KClass<*>).js as JsClass<*>)
     }
     catch (ex: Throwable) {

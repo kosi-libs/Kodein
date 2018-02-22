@@ -1,9 +1,7 @@
 apply plugin: 'konan'
 
-apply from: '../../gradle/native-targets.gradle'
-
 konanArtifacts {
-    library("kodein-core-${project.version}") {
+    library("kodein-core-${project.version}", targets: konanTargets) {
         enableMultiplatform true
     }
 }

@@ -10,6 +10,7 @@ include(
         ':test-utils:test-utils-common',
         ':test-utils:test-utils-jvm',
         ':test-utils:test-utils-js',
+        ':test-utils:test-utils-native',
 
         ':generic:kodein-generic-jvm',
 

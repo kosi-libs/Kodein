@@ -8,8 +8,10 @@ buildscript {
         maven { url "https://dl.bintray.com/jetbrains/kotlin-native-dependencies" }
     }
 
-    ext.kotlin_version = '1.2.21'
-    ext.junit_version = '4.12'
+    ext {
+        kotlin_version = '1.2.21'
+        junit_version = '4.12'
+    }
 
     dependencies {
         //noinspection DifferentKotlinGradleVersion
@@ -34,12 +36,22 @@ allprojects {
     }
 
     group = 'org.kodein'
-    version = '5.0.0-beta4'
+    version = '5.0.0-beta5'
 }
 
-// used for Android builds on travis
 ext {
+    // used for Android builds on travis
     travisBuild = System.getenv("TRAVIS") == "true"
     // allows for -Dpre-dex=false to be set
     preDexEnabled = System.getProperty("pre-dex", "true") == "true"
+
+    konanTargets = [
+            'macbook', 'linux', 'mingw',
+            'android_arm32', 'android_arm64',
+            'iphone', 'iphone_sim',
+            'wasm32',
+            'raspberrypi',
+            'linux_mips32', 'linux_mipsel32',
+            'zephyr_stm32f4_disco',
+    ]
 }
