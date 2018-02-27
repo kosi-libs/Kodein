@@ -41,6 +41,8 @@ interface TypeToken<T> {
      */
     fun isGeneric(): Boolean
 
+    fun getGenericParameters(): Array<TypeToken<*>>
+
     /**
      * Returns whether the type represented by this TypeToken is generic and is entirely wildcard.
      *
@@ -62,7 +64,25 @@ interface TypeToken<T> {
      */
     fun getSuper(): List<TypeToken<*>>
 
-    fun isAssignableFrom(typeToken: TypeToken<*>): Boolean
+    fun isAssignableFrom(typeToken: TypeToken<*>): Boolean {
+        if (this == typeToken)
+            return true
+
+        if (getRaw() == typeToken.getRaw()) {
+            val thisParams = getGenericParameters()
+            if (thisParams.isEmpty())
+                return true
+            val tokenParams = typeToken.getGenericParameters()
+            thisParams.forEachIndexed { index, thisParam ->
+                val tokenParam = tokenParams[index]
+                if (!thisParam.isAssignableFrom(tokenParam))
+                    return false
+            }
+            return true
+        }
+
+        return typeToken.getSuper().any { isAssignableFrom(it) }
+    }
 }
 
 /**
@@ -108,7 +128,9 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, val params: Array<TypeToken<
 
     override fun getSuper() = main.getSuper()
 
-    override fun isAssignableFrom(typeToken: TypeToken<*>) = main.isAssignableFrom(typeToken)
+    override fun getGenericParameters() = params
+
+//    override fun isAssignableFrom(typeToken: TypeToken<*>) = main.isAssignableFrom(typeToken)
 
     /** @suppress */
     override fun equals(other: Any?): Boolean {

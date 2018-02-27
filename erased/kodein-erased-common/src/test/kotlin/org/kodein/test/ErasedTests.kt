@@ -1000,4 +1000,32 @@ class ErasedTests {
         assertTrue("Laila" in instances)
     }
 
+    @Test fun test31_00_multiArgumentsFactory() {
+        val kodein = Kodein {
+            bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
+        }
+
+        val fullName: FullName by kodein.instance(arg = M("Salomon", "BRYS"))
+        assertEquals(FullName("Salomon", "BRYS"), fullName)
+    }
+
+    @Test fun test31_01_multiArgumentsMultiton() {
+        val kodein = Kodein {
+            bind<FullName>() with multiton { firstName: String, lastName: String -> FullName(firstName, lastName) }
+        }
+
+        val fullName: FullName by kodein.instance(arg = M("Salomon", "BRYS"))
+        assertEquals(FullName("Salomon", "BRYS"), fullName)
+    }
+
+    @Test fun test31_02_multiArgumentsFactoryBadType() {
+        val kodein = Kodein {
+            bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
+        }
+
+        assertFailsWith<Kodein.NotFoundException> {
+            @Suppress("UNUSED_VARIABLE")
+            val fullName: FullName = kodein.direct.instance(arg = M("Salomon", 42))
+        }
+    }
 }

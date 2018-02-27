@@ -13,7 +13,7 @@ private abstract class TypeStringer {
      * @param type The type to stringify.
      */
     fun dispString(type: Type, skipStars: Boolean = false): String {
-        val jvmType = type.jvmType
+        val jvmType = type.javaType
         return when (jvmType) {
             is Class<*> -> dispName(jvmType, skipStars)
             is ParameterizedType -> {
@@ -138,7 +138,7 @@ fun Type.simpleDispString(): String = SimpleTypeStringer.dispString(this)
 fun Type.fullDispString(): String = FullTypeStringer.dispString(this)
 
 fun Type.simpleErasedName(): String {
-    val jvmType = jvmType
+    val jvmType = javaType
     return when (jvmType) {
         is Class<*> -> (jvmType.enclosingClass?.simpleErasedName()?.plus(".") ?: "") + jvmType.simpleName
         is ParameterizedType -> jvmType.rawType.simpleErasedName()
@@ -150,7 +150,7 @@ fun Type.simpleErasedName(): String {
 }
 
 fun Type.fullErasedName(): String {
-    val jvmType = jvmType
+    val jvmType = javaType
     return when (jvmType) {
         is Class<*> -> jvmType.canonicalName._magic()
         is ParameterizedType -> jvmType.rawType.fullErasedName()

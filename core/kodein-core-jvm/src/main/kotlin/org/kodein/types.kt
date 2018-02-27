@@ -1,7 +1,6 @@
 package org.kodein
 
 import java.lang.reflect.*
-import java.util.*
 import kotlin.reflect.KClass
 
 
@@ -116,8 +115,8 @@ class KodeinWrappedType(val type: Type) : Type {
          * @return Whether the two given types are equal.
          */
         fun Equals(l: Type, r: Type): Boolean {
-            val left = l.jvmType
-            val right = r.jvmType
+            val left = l.javaType
+            val right = r.javaType
 
             if (left.javaClass != right.javaClass)
                 return false
@@ -155,47 +154,34 @@ class KodeinWrappedType(val type: Type) : Type {
     }
 }
 
-val TypeToken<*>.jvmType: Type get() = (this as? JVMTypeToken<*>)?.type()?.jvmType ?: throw IllegalStateException("Not a JVM Type Token")
-val Type.jvmType: Type get() = (this as? KodeinWrappedType)?.jvmType ?: this
-
-
-private fun TypeToken<*>._genericIsAssignableFrom(typeToken: TypeToken<*>): Boolean {
-    if (this == typeToken)
-        return true
-
-    if (getRaw() == typeToken.getRaw()) {
-        val thisParams = (this as JVMTypeToken).getGenericParameters()
-        val tokenParams = (typeToken as JVMTypeToken).getGenericParameters()
-        thisParams.forEachIndexed { index, thisParam ->
-            val tokenParam = tokenParams[index]
-            if (!thisParam.isAssignableFrom(tokenParam))
-                return false
+val TypeToken<*>.jvmType: Type get() =
+        when (this) {
+            is JVMTypeToken -> jvmType.javaType
+            is CompositeTypeToken -> main.jvmType
+            else -> throw IllegalStateException("${javaClass.simpleName} is not a JVM Type Token")
         }
-        return true
-    }
 
-    return typeToken.getSuper().any { isAssignableFrom(it) }
-}
+val Type.javaType: Type get() = (this as? KodeinWrappedType)?.javaType ?: this
+
 
 internal abstract class JVMTypeToken<T> : TypeToken<T> {
 
-    abstract fun type(): Type
-    abstract fun getGenericParameters(): List<TypeToken<*>>
+    abstract val jvmType: Type
 
-    override fun simpleDispString() = type().simpleDispString()
-    override fun fullDispString() = type().fullDispString()
+    override fun simpleDispString() = jvmType.simpleDispString()
+    override fun fullDispString() = jvmType.fullDispString()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is JVMTypeToken<*>) return false
 
-        if (type() != other.type()) return false
+        if (jvmType != other.jvmType) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return type().hashCode()
+        return jvmType.hashCode()
     }
 }
 
@@ -205,7 +191,7 @@ private fun <T> Class<T>._getClassSuperTT(): TypeToken<in T>? {
     return TT(parent) as TypeToken<in T>
 }
 
-internal class GenericTypeToken<T>(val trueType: Type) : JVMTypeToken<T>() {
+internal class ParameterizedTypeToken<T>(val trueType: Type) : JVMTypeToken<T>() {
     private var _type: Type? = null
 
     override fun simpleErasedDispString() = trueType.simpleErasedName()
@@ -214,17 +200,17 @@ internal class GenericTypeToken<T>(val trueType: Type) : JVMTypeToken<T>() {
 
     private val rawType: Class<*> get() = ((trueType as? ParameterizedType)?.rawType ?: trueType) as Class<*>
 
-    override fun getGenericParameters(): List<TypeToken<*>> {
-        val type = _type as? ParameterizedType ?: return rawType.typeParameters.map { TT(it.bounds[0]) }
+    override fun getGenericParameters(): Array<TypeToken<*>> {
+        val type = _type as? ParameterizedType ?: return rawType.typeParameters.map { TT(it.bounds[0]) } .toTypedArray()
         return type.actualTypeArguments.map {
             if (it is WildcardType)
                 TT(it.upperBounds[0])
             else
                 TT(it)
-        }
+        }.toTypedArray()
     }
 
-    override fun type(): Type = _type ?: run {
+    override val jvmType: Type = _type ?: run {
         // TypeReference cannot create WildcardTypes nor TypeVariables
         when {
             !_needPTWrapper && !_needGATWrapper -> trueType
@@ -250,7 +236,7 @@ internal class GenericTypeToken<T>(val trueType: Type) : JVMTypeToken<T>() {
      * @throws IllegalArgumentException If the type does contain a [TypeVariable].
      */
     private fun Type._checkIsReified(disp: Any) {
-        val jvmType = jvmType
+        val jvmType = javaType
         when (jvmType) {
             is Class<*> -> {}
             is ParameterizedType -> for (arg in jvmType.actualTypeArguments) arg._checkIsReified(disp)
@@ -266,7 +252,7 @@ internal class GenericTypeToken<T>(val trueType: Type) : JVMTypeToken<T>() {
         }
     }
 
-    override fun checkIsReified(disp: Any) = type()._checkIsReified(disp)
+    override fun checkIsReified(disp: Any) = jvmType._checkIsReified(disp)
 
     @Suppress("UNCHECKED_CAST")
     override fun isWildcard(): Boolean {
@@ -298,8 +284,6 @@ internal class GenericTypeToken<T>(val trueType: Type) : JVMTypeToken<T>() {
         val implements = rawType.interfaces.map { TT(it) }
         return (extends?.let { listOf(it) } ?: emptyList()) + implements
     }
-
-    override fun isAssignableFrom(typeToken: TypeToken<*>) = _genericIsAssignableFrom(typeToken)
 }
 
 /**
@@ -326,32 +310,27 @@ abstract class TypeReference<T> {
 inline fun <reified T> generic(): TypeToken<T> = TT((object : TypeReference<T>() {}))
 
 @PublishedApi
-internal class ClassTypeToken<T>(private val _type: Class<T>) : JVMTypeToken<T>() {
+internal class ClassTypeToken<T>(override val jvmType: Class<T>) : JVMTypeToken<T>() {
 
-    override fun type() = _type
-
-    override fun simpleErasedDispString() = type().simpleErasedName()
-    override fun fullErasedDispString() = type().fullErasedName()
+    override fun simpleErasedDispString() = jvmType.simpleErasedName()
+    override fun fullErasedDispString() = jvmType.fullErasedName()
 
     override fun getRaw() = this
 
-    override fun getGenericParameters(): List<TypeToken<*>> = _type.typeParameters.map { TT(it.bounds[0]) }
+    override fun getGenericParameters(): Array<TypeToken<*>> = jvmType.typeParameters.map { TT(it.bounds[0]) } .toTypedArray()
 
     override fun isGeneric() = false
     override fun isWildcard() = false
 
     override fun checkIsReified(disp: Any) {}
 
-    override fun getSuper() = (_type._getClassSuperTT()?.let { listOf(it) } ?: emptyList()) + _type.interfaces.map { TT(it) }
+    override fun getSuper() = (jvmType._getClassSuperTT()?.let { listOf(it) } ?: emptyList()) + jvmType.interfaces.map { TT(it) }
 
     override fun isAssignableFrom(typeToken: TypeToken<*>): Boolean {
-        if (this == typeToken)
-            return true
-        val jvmType = typeToken.jvmType
-        return when (jvmType) {
-            is Class<*> -> _type.isAssignableFrom(jvmType)
-            else -> _genericIsAssignableFrom(typeToken)
-        }
+        return if (typeToken is ClassTypeToken)
+            jvmType.isAssignableFrom(typeToken.jvmType)
+        else
+            super.isAssignableFrom(typeToken)
     }
 }
 
@@ -378,7 +357,7 @@ fun TT(type: Type): TypeToken<*> =
     if (type is Class<*>)
         ClassTypeToken(type)
     else
-        GenericTypeToken<Any>(type)
+        ParameterizedTypeToken<Any>(type)
 
 @Suppress("UNCHECKED_CAST")
 fun <T> TT(ref: TypeReference<T>): TypeToken<T> = TT(ref.superType) as TypeToken<T>

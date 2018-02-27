@@ -350,6 +350,17 @@ val kodein = Kodein {
 }
 ----
 
+A factory can take multiple (up to 5) arguments:
+
+[source,kotlin]
+.Example: creates a new Dice each time you need one, according to an Int representing the number of sides
+----
+val kodein = Kodein {
+    bind<Dice>() with factory { startNumber: Int, sides: Int -> RandomDice(sides) }
+}
+----
+
+
 
 === Multiton binding
 
@@ -363,6 +374,8 @@ val kodein = Kodein {
     bind<RandomGenerator>() with multiton { max: Int -> SecureRandomGenerator(max) }
 }
 ----
+
+Just like a factory, a multiton can take multiple (up to 5) arguments.
 
 
 === Referenced singleton or multiton binding
@@ -984,6 +997,14 @@ class RollController(val dice: Dice) { /*...*/ }
 val controller by kodein.newInstance { DiceController(instance(arg = 6)) }
 ----
 
+Note that if you bound a factory with multiple argument, you need to use the `M` function to pass multiple arguments:
+
+[source, kotlin]
+.Example: Creating a multi-argument DiceController by injecting its dependency.
+----
+val controller by kodein.newInstance { DiceController(instance(arg = M(60, 6))) }
+----
+
 TIP: The `arg` argument should always be named.
 
 
@@ -1071,6 +1092,15 @@ You can retrieve a provider or an instance from a factory bound type by using th
 val sixSideDiceProvider: () -> Dice by kodein.provider(arg = 6)
 val twentySideDice: Dice by kodein.instance(arg = 20)
 ----
+
+Note that if you bound a factory with multiple argument, you need to use the `M` function to pass multiple arguments:
+
+[source, kotlin]
+.Example: Creating a multi-argument DiceController by injecting its dependency.
+----
+val sixtyToSixtySixDice: () -> Dice { DiceController(instance(arg = M(60, 6))) } <1>
+----
+<1> Bonus points if you can say the variable name 5 times in less than 5 seconds ;)
 
 TIP: The `arg` argument should always be named.
 

@@ -54,6 +54,7 @@ inline fun <reified A, reified T : Any> KodeinAware.factories(tag: Any? = null) 
 inline fun <reified T : Any> KodeinAware.provider(tag: Any? = null) = Provider<T>(erased(), tag)
 
 inline fun <reified A, reified T : Any> KodeinAware.provider(tag: Any? = null, arg: A) = Provider<A, T>(erased(), erased(), tag, { arg })
+inline fun <A, reified T : Any> KodeinAware.provider(tag: Any? = null, arg: Typed<A>) = Provider<A, T>(arg.type, erased(), tag, { arg.value })
 
 inline fun <reified A, reified T : Any> KodeinAware.provider(tag: Any? = null, noinline fArg: () -> A) = Provider<A, T>(erased(), erased(), tag, fArg)
 
@@ -73,12 +74,14 @@ inline fun <reified A, reified T : Any> KodeinAware.provider(tag: Any? = null, n
 inline fun <reified T : Any> KodeinAware.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(erased(), tag)
 
 inline fun <reified A, reified T : Any> KodeinAware.providerOrNull(tag: Any? = null, arg: A) = ProviderOrNull<A, T>(erased(), erased(), tag, { arg })
+inline fun <A, reified T : Any> KodeinAware.providerOrNull(tag: Any? = null, arg: Typed<A>) = ProviderOrNull<A, T>(arg.type, erased(), tag, { arg.value })
 
 inline fun <reified A, reified T : Any> KodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
 
 inline fun <reified T : Any> KodeinAware.allProviders(tag: Any? = null) = AllProviders<T>(erased(), tag)
 
 inline fun <reified A, reified T : Any> KodeinAware.allProviders(tag: Any? = null, arg: A) = AllProviders<A, T>(erased(), erased(), tag, { arg })
+inline fun <A, reified T : Any> KodeinAware.allProviders(tag: Any? = null, arg: Typed<A>) = AllProviders<A, T>(arg.type, erased(), tag, { arg.value })
 
 inline fun <reified A, reified T : Any> KodeinAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = AllProviders<A, T>(erased(), erased(), tag, fArg)
 
@@ -99,6 +102,7 @@ inline fun <reified A, reified T : Any> KodeinAware.allProviders(tag: Any? = nul
 inline fun <reified T : Any> KodeinAware.instance(tag: Any? = null) = Instance<T>(erased(), tag)
 
 inline fun <reified A, reified T : Any> KodeinAware.instance(tag: Any? = null, arg: A) = Instance<A, T>(erased(), erased(), tag, { arg })
+inline fun <A, reified T : Any> KodeinAware.instance(tag: Any? = null, arg: Typed<A>) = Instance<A, T>(arg.type, erased(), tag, { arg.value })
 
 inline fun <reified A, reified T : Any> KodeinAware.instance(tag: Any? = null, noinline fArg: () -> A) = Instance<A, T>(erased(), erased(), tag, fArg)
 
@@ -118,12 +122,14 @@ inline fun <reified A, reified T : Any> KodeinAware.instance(tag: Any? = null, n
 inline fun <reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(erased(), tag)
 
 inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null, arg: A) = InstanceOrNull<A, T>(erased(), erased(), tag, { arg })
+inline fun <A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null, arg: Typed<A>) = InstanceOrNull<A, T>(arg.type, erased(), tag, { arg.value })
 
 inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = null, noinline fArg: () -> A) = InstanceOrNull<A, T>(erased(), erased(), tag, fArg)
 
 inline fun <reified T : Any> KodeinAware.allInstances(tag: Any? = null) = AllInstances<T>(erased(), tag)
 
 inline fun <reified A, reified T : Any> KodeinAware.allInstances(tag: Any? = null, arg: A) = AllInstances<A, T>(erased(), erased(), tag, { arg })
+inline fun <A, reified T : Any> KodeinAware.allInstances(tag: Any? = null, arg: Typed<A>) = AllInstances<A, T>(arg.type, erased(), tag, { arg.value })
 
 inline fun <reified A, reified T : Any> KodeinAware.allInstances(tag: Any? = null, noinline fArg: () -> A) = AllInstances<A, T>(erased(), erased(), tag, fArg)
 

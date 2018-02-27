@@ -15,6 +15,7 @@ internal class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
     override fun isGeneric() = false
     override fun isWildcard() = false
     override fun getSuper() = emptyList<TypeToken<*>>()
+    override fun getGenericParameters() = emptyArray<TypeToken<*>>()
     override fun isAssignableFrom(typeToken: TypeToken<*>): Boolean {
         if (this == typeToken)
             return true

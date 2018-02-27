@@ -1,9 +1,6 @@
 package org.kodein.generic
 
-import org.kodein.DKodein
-import org.kodein.DKodeinAware
-import org.kodein.generic
-import org.kodein.toProvider
+import org.kodein.*
 
 inline fun <reified A, reified T : Any> DKodein.factory(tag: Any? = null) = Factory<A, T>(generic(), generic(), tag)
 
@@ -42,6 +39,7 @@ inline fun <reified A, reified T : Any> DKodein.allFactories(tag: Any? = null) =
 inline fun <reified T : Any> DKodeinAware.provider(tag: Any? = null) = dkodein.Provider<T>(generic(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: A) = dkodein.Factory<A, T>(generic(), generic(), tag).toProvider { arg }
+inline fun <A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: Typed<A>) = dkodein.Factory<A, T>(arg.type, generic(), tag).toProvider { arg.value }
 
 inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, noinline fArg: () -> A) = dkodein.Factory<A, T>(generic(), generic(), tag).toProvider(fArg)
 
@@ -63,12 +61,14 @@ inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, 
 inline fun <reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null) = dkodein.ProviderOrNull<T>(generic(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, arg: A) = dkodein.FactoryOrNull<A, T>(generic(), generic(), tag)?.toProvider { arg }
+inline fun <A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, arg: Typed<A>) = dkodein.FactoryOrNull<A, T>(arg.type, generic(), tag)?.toProvider { arg.value }
 
 inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = dkodein.FactoryOrNull<A, T>(generic(), generic(), tag)?.toProvider(fArg)
 
 inline fun <reified T : Any> DKodeinAware.allProviders(tag: Any? = null) = dkodein.AllProviders<T>(generic(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, arg: A) = dkodein.AllFactories<A, T>(generic(), generic(), tag).map { it.toProvider { arg } }
+inline fun <A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, arg: Typed<A>) = dkodein.AllFactories<A, T>(arg.type, generic(), tag).map { it.toProvider { arg.value } }
 
 inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = dkodein.AllFactories<A, T>(generic(), generic(), tag).map { it.toProvider(fArg) }
 
@@ -89,6 +89,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = nu
 inline fun <reified T : Any> DKodeinAware.instance(tag: Any? = null) = dkodein.Instance<T>(generic(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: A) = dkodein.Factory<A, T>(generic(), generic(), tag).invoke(arg)
+inline fun <A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: Typed<A>) = dkodein.Factory<A, T>(arg.type, generic(), tag).invoke(arg.value)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -106,10 +107,12 @@ inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, 
 inline fun <reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null) = dkodein.InstanceOrNull<T>(generic(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: A) = dkodein.FactoryOrNull<A, T>(generic(), generic(), tag)?.invoke(arg)
+inline fun <A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: Typed<A>) = dkodein.FactoryOrNull<A, T>(arg.type, generic(), tag)?.invoke(arg.value)
 
 inline fun <reified T : Any> DKodeinAware.allInstances(tag: Any? = null) = dkodein.AllInstances<T>(generic(), tag)
 
 inline fun <reified A, reified T : Any> DKodeinAware.allInstances(tag: Any? = null, arg: A) = dkodein.AllFactories<A, T>(generic(), generic(), tag).map { it.invoke(arg) }
+inline fun <A, reified T : Any> DKodeinAware.allInstances(tag: Any? = null, arg: Typed<A>) = dkodein.AllFactories<A, T>(arg.type, generic(), tag).map { it.invoke(arg.value) }
 
 inline fun <reified C> DKodeinAware.on(context: C, receiver: Any? = DKodein.SAME_RECEIVER) = dkodein.On(kcontext(context), receiver)
 
