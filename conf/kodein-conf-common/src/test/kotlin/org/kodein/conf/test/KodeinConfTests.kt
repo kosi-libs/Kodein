@@ -7,10 +7,12 @@ import org.kodein.conf.ConfigurableKodein
 import org.kodein.conf.global
 import org.kodein.direct
 import org.kodein.erased.*
+import org.kodein.test.FixMethodOrder
 import org.kodein.test.FullName
+import org.kodein.test.MethodSorters
 import kotlin.test.*
 
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KodeinConfTests {
 
     @Test fun test00_00_Configurable() {

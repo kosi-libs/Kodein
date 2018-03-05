@@ -41,7 +41,7 @@ interface TypeToken<T> {
      */
     fun isGeneric(): Boolean
 
-    fun getGenericParameters(): Array<TypeToken<*>>
+    fun getGenericParameters(): Array<out TypeToken<*>>
 
     /**
      * Returns whether the type represented by this TypeToken is generic and is entirely wildcard.
@@ -100,7 +100,7 @@ interface TypeToken<T> {
  * @property main The main type represented by this type token.
  * @property params The type parameters of the main type.
  */
-class CompositeTypeToken<T>(val main: TypeToken<T>, val params: Array<TypeToken<*>>) : TypeToken<T> {
+class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken<*>) : TypeToken<T> {
 
     init {
         if (params.isEmpty())

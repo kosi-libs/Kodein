@@ -9,11 +9,13 @@ import org.kodein.erased.bind
 import org.kodein.erased.instance
 import org.kodein.erased.instanceOrNull
 import org.kodein.erased.provider
+import org.kodein.test.FixMethodOrder
+import org.kodein.test.MethodSorters
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KodeinConfJvmTests {
 
     private open class Name(val firstName: String) {

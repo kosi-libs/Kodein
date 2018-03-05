@@ -8,12 +8,7 @@ package org.kodein
  * @param T The main type represented by this type token.
  * @param A1 The type parameter of the main type.
  */
-//inline fun <reified T, reified A1> erasedComp1() = CompositeTypeToken(erased<T>(), erased<A1>())
-inline fun <reified T, reified A1> erasedComp1(): CompositeTypeToken<T> {
-    val paramsList = ArrayList<TypeToken<*>>(1)
-    paramsList.add(erased<A1>())
-    return CompositeTypeToken(erased(), paramsList.toTypedArray())
-}
+inline fun <reified T, reified A1> erasedComp1() = CompositeTypeToken(erased<T>(), erased<A1>())
 
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
@@ -24,12 +19,7 @@ inline fun <reified T, reified A1> erasedComp1(): CompositeTypeToken<T> {
  * @param A1 The first type parameter of the main type.
  * @param A2 The second type parameter of the main type.
  */
-inline fun <reified T, reified A1, reified A2> erasedComp2(): CompositeTypeToken<T> {
-    val paramsList = ArrayList<TypeToken<*>>(2)
-    paramsList.add(erased<A1>())
-    paramsList.add(erased<A2>())
-    return CompositeTypeToken(erased(), paramsList.toTypedArray())
-}
+inline fun <reified T, reified A1, reified A2> erasedComp2() = CompositeTypeToken(erased<T>(), erased<A1>(), erased<A2>())
 
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
@@ -41,13 +31,7 @@ inline fun <reified T, reified A1, reified A2> erasedComp2(): CompositeTypeToken
  * @param A2 The second type parameter of the main type.
  * @param A3 The third type parameter of the main type.
  */
-inline fun <reified T, reified A1, reified A2, reified A3> erasedComp3(): CompositeTypeToken<T> {
-    val paramsList = ArrayList<TypeToken<*>>(3)
-    paramsList.add(erased<A1>())
-    paramsList.add(erased<A2>())
-    paramsList.add(erased<A3>())
-    return CompositeTypeToken(erased(), paramsList.toTypedArray())
-}
+inline fun <reified T, reified A1, reified A2, reified A3> erasedComp3() = CompositeTypeToken(erased<T>(), erased<A1>(), erased<A2>(), erased<A3>())
 
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
@@ -58,16 +42,9 @@ inline fun <reified T, reified A1, reified A2, reified A3> erasedComp3(): Compos
  * @param A1 The type parameter of the main type.
  * @param A2 The second type parameter of the main type.
  * @param A3 The third type parameter of the main type.
- * @param A3 The fourth type parameter of the main type.
+ * @param A4 The fourth type parameter of the main type.
  */
-inline fun <reified T, reified A1, reified A2, reified A3, reified A4> erasedComp4(): CompositeTypeToken<T> {
-    val paramsList = ArrayList<TypeToken<*>>(4)
-    paramsList.add(erased<A1>())
-    paramsList.add(erased<A2>())
-    paramsList.add(erased<A3>())
-    paramsList.add(erased<A4>())
-    return CompositeTypeToken(erased(), paramsList.toTypedArray())
-}
+inline fun <reified T, reified A1, reified A2, reified A3, reified A4> erasedComp4() = CompositeTypeToken(erased<T>(), erased<A1>(), erased<A2>(), erased<A3>(), erased<A4>())
 
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
@@ -78,17 +55,9 @@ inline fun <reified T, reified A1, reified A2, reified A3, reified A4> erasedCom
  * @param A1 The type parameter of the main type.
  * @param A2 The second type parameter of the main type.
  * @param A3 The third type parameter of the main type.
- * @param A3 The fourth type parameter of the main type.
+ * @param A4 The fourth type parameter of the main type.
  */
-inline fun <reified T, reified A1, reified A2, reified A3, reified A4, reified A5> erasedComp5(): CompositeTypeToken<T> {
-    val paramsList = ArrayList<TypeToken<*>>(5)
-    paramsList.add(erased<A1>())
-    paramsList.add(erased<A2>())
-    paramsList.add(erased<A3>())
-    paramsList.add(erased<A4>())
-    paramsList.add(erased<A5>())
-    return CompositeTypeToken(erased(), paramsList.toTypedArray())
-}
+inline fun <reified T, reified A1, reified A2, reified A3, reified A4, reified A5> erasedComp5() = CompositeTypeToken(erased<T>(), erased<A1>(), erased<A2>(), erased<A3>(), erased<A4>(), erased<A5>())
 
 /**
  * Creates a [CompositeTypeToken] that defines a `Set<T>`.
@@ -96,3 +65,7 @@ inline fun <reified T, reified A1, reified A2, reified A3, reified A4, reified A
  * @param T The parameter type of the set.
  */
 inline fun <reified T> erasedSet() = erasedComp1<Set<T>, T>()
+
+inline fun <reified T> erasedList() = erasedComp1<List<T>, T>()
+
+inline fun <reified K, reified V> erasedMap() = erasedComp2<Map<K, V>, K, V>()

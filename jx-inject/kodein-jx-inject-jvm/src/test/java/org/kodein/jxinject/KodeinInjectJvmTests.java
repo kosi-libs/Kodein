@@ -3,7 +3,9 @@ package org.kodein.jxinject;
 import kotlin.Lazy;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 
 import static org.junit.Assert.*;
 
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class KodeinInjectJvmTests {
 
     public static class Test00_00 {

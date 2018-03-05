@@ -109,24 +109,6 @@ interface SimpleScope<C> : Scope<C, C> {
     override fun getHolder(receiver: Any?, envContext: C, bindContext: C) = getHolder(receiver, envContext)
 }
 
-class Request(var userData: Any?) {
-    companion object {
-        val threadRequest: Request get() = TODO()
-    }
-}
-
-object requestScope : SimpleScope<Request> {
-    override fun getRegistry(receiver: Any?, context: Request): ScopeRegistry =
-            context.userData as? ScopeRegistry ?: MultiItemScopeRegistry().also { context.userData = it }
-}
-
-object treadRequestScope : Scope<Any?, Request> {
-    override fun getBindingContext(envContext: Any?): Request = Request.threadRequest
-
-    override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Request): ScopeRegistry =
-            bindContext.userData as? ScopeRegistry ?: MultiItemScopeRegistry().also { bindContext.userData = it }
-}
-
 class NoScope: Scope<Any?, Nothing?> {
 
     override fun getBindingContext(envContext: Any?) = null

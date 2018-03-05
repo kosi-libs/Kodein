@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 import kotlin.test.*
 
 
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ErasedTests {
 
     @Test fun test00_00_ProviderBindingGetInstance() {
