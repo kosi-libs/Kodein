@@ -4,16 +4,13 @@ import org.kodein.Kodein
 import org.kodein.KodeinAware
 
 
-/**
- * A global One True Kodein.
- */
-private var _global = ConfigurableKodein()
+private var oneTrueKodein = ConfigurableKodein()
 
 /**
  * A global One True Kodein.
  */
 @Suppress("unused")
-val Kodein.Companion.global: ConfigurableKodein get() = _global
+val Kodein.Companion.global: ConfigurableKodein get() = oneTrueKodein
 
 /**
  * A `KodeinAware` class that needs no implementation because the kodein used will be the [global] One True Kodein.

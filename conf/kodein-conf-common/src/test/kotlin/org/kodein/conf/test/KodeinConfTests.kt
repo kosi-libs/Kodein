@@ -4,6 +4,7 @@ package org.kodein.conf.test
 
 import org.kodein.Kodein
 import org.kodein.conf.ConfigurableKodein
+import org.kodein.conf.KodeinGlobalAware
 import org.kodein.conf.global
 import org.kodein.direct
 import org.kodein.erased.*
@@ -22,17 +23,21 @@ class KodeinConfTests {
             constant(tag = "answer") with 42
         }
 
+        assertTrue(kodein.canConfigure)
+
         val answer: Int by kodein.instance(tag = "answer")
 
         assertEquals(42, answer)
+
+        assertFalse(kodein.canConfigure)
     }
 
     @Test fun test01_04_Clear() {
         val kodein = ConfigurableKodein(true)
 
-        kodein.addConfig {
+        kodein.addImport(Kodein.Module {
             constant(tag = "answer") with 21
-        }
+        })
 
         assertEquals(21, kodein.direct.instance(tag = "answer"))
 
@@ -48,9 +53,9 @@ class KodeinConfTests {
     @Test fun test01_02_Mutate() {
         val kodein = ConfigurableKodein(true)
 
-        kodein.addConfig {
+        kodein.addExtend(Kodein {
             constant(tag = "half") with 21
-        }
+        })
 
         assertEquals(21, kodein.direct.instance(tag = "half"))
 
@@ -138,6 +143,10 @@ class KodeinConfTests {
         assertEquals("Salomon BRYS", kodein.direct.factory<FullName, String>().invoke(FullName("Salomon", "BRYS")))
     }
 
+    class Test04 : KodeinGlobalAware {
+        val answer: Int by instance(tag = "full")
+    }
+
     @Test fun test04_00_Global() {
         Kodein.global.mutable = true
 
@@ -152,7 +161,7 @@ class KodeinConfTests {
         }
 
         assertEquals(21, Kodein.global.direct.instance(tag = "half"))
-        assertEquals(42, Kodein.global.direct.instance(tag = "full"))
+        assertEquals(42, Test04().answer)
     }
 
     private object Test05 {
@@ -195,5 +204,6 @@ class KodeinConfTests {
 
         assertTrue(ready)
     }
+
 
 }
