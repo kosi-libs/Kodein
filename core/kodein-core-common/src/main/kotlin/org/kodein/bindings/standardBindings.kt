@@ -5,7 +5,7 @@ import org.kodein.internal.BindingKodeinImpl
 import org.kodein.internal.synchronizedIfNull
 
 /**
- * Concrete factory: each time an instance is needed, the function [creator] function will be called.
+ * Concrete factory: each time an instance is needed, the function creator function will be called.
  *
  * @param A The argument type.
  * @param T The created type.
@@ -20,6 +20,9 @@ class Factory<C, A, T: Any>(override val contextType: TypeToken<in C>, override 
     override fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, A, T>): (A) -> T = { arg -> this.creator(kodein, arg) }
 }
 
+@Suppress("UNCHECKED_CAST")
+private class BindingKodeinContextWrap<out C>(val base: BindingKodein<*>, override val context: C) : BindingKodein<C> by (base as BindingKodein<C>)
+
 /**
  * Concrete multiton: will create one and only one instance for each argument.
  * Will create the instance on first time a given argument is used and will subsequently always return the same instance for the same argument.
@@ -29,14 +32,14 @@ class Factory<C, A, T: Any>(override val contextType: TypeToken<in C>, override 
  * @property createdType The type of the created object, *used for debug print only*.
  * @property creator The function that will be called the first time an instance is requested. Guaranteed to be called only once per argument. Should create a new instance.
  */
-class Multiton<EC, BC, A, T: Any>(override val scope: Scope<EC, BC>, override val contextType: TypeToken<in EC>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, private val creator: SimpleBindingKodein<BC>.(A) -> T) : KodeinBinding<EC, A, T> {
+class Multiton<EC, out BC, A, T: Any>(override val scope: Scope<EC, BC>, override val contextType: TypeToken<in EC>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, private val creator: SimpleBindingKodein<BC>.(A) -> T) : KodeinBinding<EC, A, T> {
     private val _refMaker = refMaker ?: SingletonReference
 
     private val _scopeKey = Any()
 
     private data class Key(val scopeKey: Any, val arg: Any?)
 
-    private fun _factoryName(params: List<String>) = buildString {
+    private fun factoryName(params: List<String>) = buildString {
         append("multiton")
         if (params.isNotEmpty())
             append(params.joinToString(prefix = "(", separator = ", ", postfix = ")"))
@@ -44,22 +47,22 @@ class Multiton<EC, BC, A, T: Any>(override val scope: Scope<EC, BC>, override va
 
     override fun factoryName(): String {
         val params = ArrayList<String>(2)
-        if (_refMaker !is SingletonReference)
+        if (_refMaker != SingletonReference)
             params.add("ref = ${TTOf(_refMaker).simpleDispString()}")
-        return _factoryName(params)
+        return factoryName(params)
     }
 
     override fun factoryFullName(): String {
         val params = ArrayList<String>(2)
-        if (_refMaker !is SingletonReference)
+        if (_refMaker != SingletonReference)
             params.add("ref = ${TTOf(_refMaker).fullDispString()}")
-        return _factoryName(params)
+        return factoryName(params)
     }
 
     override fun getFactory(kodein: BindingKodein<EC>, key: Kodein.Key<EC, A, T>): (A) -> T {
-        val bindContext = scope.getBindingContext(kodein.context)
-        val registry = scope.getRegistry(kodein.receiver, kodein.context, bindContext)
+        val registry = scope.getRegistry(kodein.receiver, kodein.context)
         return { arg ->
+            val bindContext = scope.getBindingContext(kodein.context)
             @Suppress("UNCHECKED_CAST")
             registry.getOrCreate(Key(_scopeKey, arg)) { _refMaker.make { BindingKodeinContextWrap(kodein, bindContext).creator(arg) } } as T
         }
@@ -80,6 +83,9 @@ class Multiton<EC, BC, A, T: Any>(override val scope: Scope<EC, BC>, override va
 class Provider<C, T: Any>(override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, val creator: NoArgBindingKodein<C>.() -> T) : NoArgKodeinBinding<C, T> {
     override fun factoryName() = "provider"
 
+    /**
+     * @see [KodeinBinding.getFactory]
+     */
     override fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, Unit, T>): (Unit) -> T = { NoArgBindingKodeinWrap(kodein).creator() }
 }
 
@@ -95,7 +101,7 @@ class Singleton<EC, BC, T: Any>(override val scope: Scope<EC, BC>, override val 
     private val _refMaker = refMaker ?: SingletonReference
     private val _scopeKey = Any()
 
-    private fun _factoryName(params: List<String>) = buildString {
+    private fun factoryName(params: List<String>) = buildString {
         append("singleton")
         if (params.isNotEmpty())
             append(params.joinToString(prefix = "(", separator = ", ", postfix = ")"))
@@ -103,22 +109,25 @@ class Singleton<EC, BC, T: Any>(override val scope: Scope<EC, BC>, override val 
 
     override fun factoryName(): String {
         val params = ArrayList<String>(2)
-        if (_refMaker !is SingletonReference)
+        if (_refMaker != SingletonReference)
             params.add("ref = ${TTOf(_refMaker).simpleDispString()}")
-        return _factoryName(params)
+        return factoryName(params)
     }
 
     override fun factoryFullName(): String {
         val params = ArrayList<String>(2)
-        if (_refMaker !is SingletonReference)
+        if (_refMaker != SingletonReference)
             params.add("ref = ${TTOf(_refMaker).fullDispString()}")
-        return _factoryName(params)
+        return factoryName(params)
     }
 
+    /**
+     * @see [KodeinBinding.getFactory]
+     */
     override fun getFactory(kodein: BindingKodein<EC>, key: Kodein.Key<EC, Unit, T>): (Unit) -> T {
-        val bindContext = scope.getBindingContext(kodein.context)
-        val registry = scope.getRegistry(kodein.receiver, kodein.context, bindContext)
+        val registry = scope.getRegistry(kodein.receiver, kodein.context)
         return {
+            val bindContext = scope.getBindingContext(kodein.context)
             @Suppress("UNCHECKED_CAST")
             registry.getOrCreate(_scopeKey) { _refMaker.make { NoArgBindingKodeinWrap(BindingKodeinContextWrap(kodein, bindContext)).creator() } } as T
         }
@@ -138,10 +147,10 @@ class EagerSingleton<T: Any>(builder: KodeinContainer.Builder, override val crea
 
     override val contextType = AnyToken
 
-    private @Volatile var _instance: T? = null
+    @Volatile private var _instance: T? = null
     private val _lock = Any()
 
-    private fun _getFactory(kodein: BindingKodein<Any?>): (Unit) -> T {
+    private fun getFactory(kodein: BindingKodein<Any?>): (Unit) -> T {
         return {
             synchronizedIfNull(
                     lock = _lock,
@@ -154,13 +163,16 @@ class EagerSingleton<T: Any>(builder: KodeinContainer.Builder, override val crea
         }
     }
 
-    override fun getFactory(kodein: BindingKodein<Any?>, key: Kodein.Key<Any?, Unit, T>) = _getFactory(kodein)
+    /**
+     * @see [KodeinBinding.getFactory]
+     */
+    override fun getFactory(kodein: BindingKodein<Any?>, key: Kodein.Key<Any?, Unit, T>) = getFactory(kodein)
 
     override fun factoryName() = "eagerSingleton"
 
     init {
         val key = Kodein.Key(AnyToken, UnitToken, createdType, null)
-        builder.onReady { _getFactory(BindingKodeinImpl(this, key, null, null, 0)).invoke(Unit) }
+        builder.onReady { getFactory(BindingKodeinImpl(this, key, null, null, 0)).invoke(Unit) }
     }
 
     override val copier = KodeinBinding.Copier { builder -> EagerSingleton(builder, createdType, creator) }
@@ -177,6 +189,9 @@ class InstanceBinding<T: Any>(override val createdType: TypeToken<out T>, val in
     override fun factoryName() = "instance"
     override val contextType = AnyToken
 
+    /**
+     * @see [KodeinBinding.getFactory]
+     */
     override fun getFactory(kodein: BindingKodein<Any?>, key: Kodein.Key<Any?, Unit, T>): (Unit) -> T = { this.instance }
 
     override val description: String get() = "${factoryName()} ( ${createdType.simpleDispString()} ) "

@@ -380,9 +380,19 @@ class GenericJvmTests {
             bind<C>() with singleton { C(instance()) }
         }
 
-        assertFailsWith<Kodein.DependencyLoopException> {
+        val ex = assertFailsWith<Kodein.DependencyLoopException> {
             kodein.direct.instance<A>()
         }
+
+        assertEquals("""
+Dependency recursion:
+     bind<A>()
+    ╔╩>bind<B>()
+    ║  ╚>bind<C>()
+    ║    ╚>bind<A>()
+    ╚══════╝
+            """.trim(), ex.message
+        )
     }
 
     @Test fun test09_01_NoDependencyLoop() {
@@ -400,7 +410,7 @@ class GenericJvmTests {
 
     @Test fun test09_02_TypeNotFound() {
 
-        val kodein = Kodein {} .direct
+        val kodein = Kodein.direct {}
 
         assertFailsWith<Kodein.NotFoundException> {
             kodein.instance<Person>()
@@ -421,10 +431,10 @@ class GenericJvmTests {
 
     @Test fun test09_03_NameNotFound() {
 
-        val kodein = Kodein {
+        val kodein = Kodein.direct {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with provider { Person("Salomon") }
-        } .direct
+        }
 
         assertFailsWith<Kodein.NotFoundException> {
             kodein.instance<Person>(tag = "schtroumpf")
@@ -433,9 +443,9 @@ class GenericJvmTests {
 
     @Test fun test09_04_FactoryIsNotProvider() {
 
-        val kodein = Kodein {
+        val kodein = Kodein.direct {
             bind<Person>() with factory { name: String -> Person(name) }
-        } .direct
+        }
 
         assertFailsWith<Kodein.NotFoundException> {
             kodein.provider<Person>()
@@ -444,9 +454,9 @@ class GenericJvmTests {
 
     @Test fun test09_05_ProviderIsNotFactory() {
 
-        val kodein = Kodein {
+        val kodein = Kodein.direct {
             bind<Person>() with provider { Person() }
-        } .direct
+        }
 
         assertFailsWith<Kodein.NotFoundException> {
             kodein.factory<Int, Person>()
@@ -552,15 +562,15 @@ class GenericJvmTests {
         data class Foo(val name: String)
         data class Bar(val foo: Foo)
 
-        val root = Kodein {
+        val root = Kodein.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
             bind<Bar>() with provider { Bar(instance()) }
-        }.direct
+        }
 
-        val sub = Kodein {
+        val sub = Kodein.direct {
             extend(root, allowOverride = true, copy = Copy.None)
             bind<Foo>(overrides = true) with provider { Foo("subFoo") }
-        }.direct
+        }
 
         val subBar : Bar = sub.instance()
         val rootBar : Bar = root.instance()
@@ -574,15 +584,15 @@ class GenericJvmTests {
         data class Foo(val name: String)
         data class Bar(val foo: Foo)
 
-        val root = Kodein {
+        val root = Kodein.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
             bind<Bar>() with provider { Bar(instance()) }
-        }.direct
+        }
 
-        val sub = Kodein {
+        val sub = Kodein.direct {
             extend(root, allowOverride = true, copy = Copy.All)
             bind<Foo>(overrides = true) with provider { Foo("subFoo") }
-        }.direct
+        }
 
         val subBar : Bar = sub.instance()
         val rootBar : Bar = root.instance()
@@ -596,15 +606,15 @@ class GenericJvmTests {
         data class Foo(val name: String)
         data class Bar(val foo: Foo)
 
-        val root = Kodein {
+        val root = Kodein.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
             bind<Bar>() with singleton { Bar(instance()) }
-        }.direct
+        }
 
-        val sub = Kodein {
+        val sub = Kodein.direct {
             extend(root, allowOverride = true)
             bind<Foo>(overrides = true) with provider { Foo("subFoo") }
-        }.direct
+        }
 
         val subBar : Bar = sub.instance()
         val rootBar : Bar = root.instance()
@@ -614,21 +624,20 @@ class GenericJvmTests {
     }
 
     @Test fun test12_06_KodeinExtendOverriddenSingletonCopy() {
-
         data class Foo(val name: String)
         data class Bar(val foo: Foo)
 
-        val root = Kodein {
+        val root = Kodein.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
             bind<Bar>() with singleton { Bar(instance()) }
-        }.direct
+        }
 
-        val sub = Kodein {
+        val sub = Kodein.direct {
             extend(root, allowOverride = true, copy = Copy {
                 copy all binding<Bar>()
             })
             bind<Foo>(overrides = true) with provider { Foo("subFoo") }
-        }.direct
+        }
 
         val subBar : Bar = sub.instance()
         val rootBar : Bar = root.instance()
@@ -636,6 +645,29 @@ class GenericJvmTests {
         assertNotSame(rootBar, subBar)
         assertEquals("rootFoo", rootBar.foo.name)
         assertEquals("subFoo", subBar.foo.name)
+    }
+
+    @Test fun test12_07_KodeinExtendCopyAllBut() {
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = Kodein.direct {
+            bind<Foo>() with provider { Foo("rootFoo") }
+            bind<Bar>() with singleton { Bar(instance()) }
+        }
+
+        val sub = Kodein.direct {
+            extend(root, allowOverride = true, copy = Copy.allBut {
+                ignore all binding<Bar>()
+            })
+            bind<Foo>(overrides = true) with provider { Foo("subFoo") }
+        }
+
+        val subBar : Bar = sub.instance()
+        val rootBar : Bar = root.instance()
+
+        assertSame(rootBar, subBar)
+        assertEquals("rootFoo", rootBar.foo.name)
     }
 
     @Suppress("unused")
@@ -712,7 +744,7 @@ class GenericJvmTests {
     object test15Scope : Scope<Any?, Nothing?> {
         val registry = MultiItemScopeRegistry()
         override fun getBindingContext(envContext: Any?) = null
-        override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Nothing?) = registry
+        override fun getRegistry(receiver: Any?, context: Any?) = registry
     }
 
     @Test fun test15_00_BindingsDescription() {
@@ -786,16 +818,22 @@ class GenericJvmTests {
         val registry = MultiItemScopeRegistry()
         val myScope = object : Scope<Any?, Nothing?> {
             override fun getBindingContext(envContext: Any?) = null
-            override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Nothing?) = registry
+            override fun getRegistry(receiver: Any?, context: Any?) = registry
         }
         val kodein = Kodein {
             bind<Person>() with scoped(myScope).singleton { Person() }
         }
 
+        assertTrue(registry.isEmpty())
+
         val person: Person by kodein.instance()
         assertSame(person, kodein.direct.instance())
 
+        assertFalse(registry.isEmpty())
+
         registry.clear()
+
+        assertTrue(registry.isEmpty())
 
         assertNotSame(person, kodein.direct.instance())
     }
@@ -810,13 +848,19 @@ class GenericJvmTests {
             bind<Person>() with scoped(myScope).singleton { Person() }
         }
 
+        assertTrue(registries["a"]!!.isEmpty())
+
         val a: Person by kodein.on(context = "a").instance()
         val b: Person by kodein.on(context = "b").instance()
         assertNotSame(a, b)
         assertSame(a, kodein.direct.on(context = "a").instance())
         assertSame(b, kodein.direct.on(context = "b").instance())
 
+        assertFalse(registries["a"]!!.isEmpty())
+
         registries.values.forEach { it.clear() }
+
+        assertTrue(registries["a"]!!.isEmpty())
 
         assertNotSame(a, kodein.direct.on(context = "a").instance())
         assertNotSame(b, kodein.direct.on(context = "b").instance())
@@ -1125,12 +1169,25 @@ class GenericJvmTests {
         assertEquals("Laila", wedding.her.name)
     }
 
+    @Test fun test25_01_DirectNewInstance() {
+        val kodein = Kodein.direct {
+            bind<Person>(tag = "Author") with singleton { Person("Salomon") }
+            bind<Person>(tag = "Spouse") with singleton { Person("Laila") }
+        }
+
+        val wedding = kodein.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }
+        assertEquals("Salomon", wedding.him.name)
+        assertEquals("Laila", wedding.her.name)
+    }
+
     @Test fun test26_00_MultiSet() {
         val kodein = Kodein {
             bind() from setBinding<IPerson>()
 
             bind<IPerson>().inSet() with singleton { Person("Salomon") }
             bind<IPerson>().inSet() with provider { Person("Laila") }
+
+            bind<List<IPerson>>() with provider { instance<Set<IPerson>>().toList() }
         }
 
         val persons1: Set<IPerson> by kodein.instance()
@@ -1148,6 +1205,9 @@ class GenericJvmTests {
 
         assertSame(salomon1, salomon2)
         assertNotSame(laila1, laila2)
+
+        val list: List<IPerson> by kodein.instance()
+        assertEquals(persons1.toList(), list)
     }
 
     @Test fun test26_01_MultiMap() {
@@ -1156,16 +1216,18 @@ class GenericJvmTests {
 
             bind<PersonEntry>().inSet() with singleton { "so" to Person("Salomon") }
             bind<PersonEntry>().inSet() with provider { "loulou" to Person("Laila") }
+
+            bind<Map<String, Person>>() with provider { instance<PersonEntries>().toMap() }
         }
 
-        val persons = kodein.direct.instance<PersonEntries>().toMap()
+        val persons: Map<String, Person> = kodein.direct.instance()
 
         assertEquals(Person("Salomon"), persons["so"])
         assertEquals(Person("Laila"), persons["loulou"])
     }
 
     @Test fun test27_00_ExternalSource() {
-        val kodein = Kodein {
+        val kodein = Kodein.direct {
             bind(tag = "him") from singleton { Person("Salomon") }
 
             val laila = Person("Laila")
@@ -1183,7 +1245,7 @@ class GenericJvmTests {
                     else -> null
                 }
             }
-        } .direct
+        }
 
         assertNotNull(kodein.instanceOrNull<Person>())
 
@@ -1328,5 +1390,51 @@ class GenericJvmTests {
         }
     }
 
+    @Test fun test32_00_simpleKeySimpleDescription() {
+        val key = Kodein.Key(
+                contextType = generic<Any>(),
+                argType = generic<Unit>(),
+                type = generic<String>(),
+                tag = null
+        )
 
+        assertEquals("bind<String>()", key.bindDescription)
+        assertEquals("bind<String>() with ? { ? }", key.description)
+    }
+
+    @Test fun test32_01_simpleKeyFullDescription() {
+        val key = Kodein.Key(
+                contextType = generic<Any>(),
+                argType = generic<Unit>(),
+                type = generic<String>(),
+                tag = null
+        )
+
+        assertEquals("bind<kotlin.String>()", key.bindFullDescription)
+        assertEquals("bind<kotlin.String>() with ? { ? }", key.fullDescription)
+    }
+
+    @Test fun test32_02_complexKeySimpleDescription() {
+        val key = Kodein.Key(
+                contextType = generic<String>(),
+                argType = generic<Multi2<String, String>>(),
+                type = generic<IntRange>(),
+                tag = "tag"
+        )
+
+        assertEquals("bind<IntRange>(tag = \"tag\")", key.bindDescription)
+        assertEquals("bind<IntRange>(tag = \"tag\") with ?<String>().? { Multi2<String, String> -> ? }", key.description)
+    }
+
+    @Test fun test32_03_complexKeyFullDescription() {
+        val key = Kodein.Key(
+                contextType = generic<String>(),
+                argType = generic<Multi2<String, String>>(),
+                type = generic<IntRange>(),
+                tag = "tag"
+        )
+
+        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\")", key.bindFullDescription)
+        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") with ?<kotlin.String>().? { org.kodein.Multi2<kotlin.String, kotlin.String> -> ? }", key.fullDescription)
+    }
 }

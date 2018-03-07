@@ -4,30 +4,17 @@ import java.lang.reflect.*
 import kotlin.reflect.KClass
 
 
-/**
- * Internal class used ONLY to test if wrapping is needed
- */
 @Suppress("unused")
 private abstract class WrappingTest<T> {
     val type: Type get() = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0]
 }
 
-/**
- * Whether or not the running JVM needs [ParameterizedType] to be wrapped.
- *
- * @see KodeinWrappedType
- */
 private val _needPTWrapper: Boolean by lazy {
     val t1 = (object : WrappingTest<List<String>>() {}).type as ParameterizedType
     val t2 = (object : WrappingTest<List<String>>() {}).type as ParameterizedType
     t1 != t2
 }
 
-/**
- * Whether or not the running JVM needs [GenericArrayType] to be wrapped.
- *
- * @see KodeinWrappedType
- */
 private val _needGATWrapper: Boolean by lazy {
     val t1 = (object : WrappingTest<Array<List<String>>>() {}).type as GenericArrayType
     val t2 = (object : WrappingTest<Array<List<String>>>() {}).type as GenericArrayType
@@ -44,9 +31,6 @@ private val _needGATWrapper: Boolean by lazy {
  */
 class KodeinWrappedType(val type: Type) : Type {
 
-    /**
-     * Hash code cash, so that it is computed only once.
-     */
     private var _hashCode: Int = 0
 
     /** @suppress */
@@ -67,24 +51,13 @@ class KodeinWrappedType(val type: Type) : Type {
         return Func.Equals(type, other)
     }
 
-    /**
-     * Stringify.
-     */
+    /** @suppress */
     override fun toString(): String {
         return "KodeinWrappedType{$type}"
     }
 
-    /**
-     * Static private functions
-     */
     private object Func {
 
-        /**
-         * Computes the hash code of a type object.
-         *
-         * @param type The type whose hash needs to be computed.
-         * @return The computed hash code.
-         */
         fun HashCode(type: Type): Int = when(type) {
             is Class<*> -> type.hashCode()
             is ParameterizedType -> {
@@ -111,9 +84,6 @@ class KodeinWrappedType(val type: Type) : Type {
             else -> type.hashCode()
         }
 
-        /**
-         * @return Whether the two given types are equal.
-         */
         fun Equals(l: Type, r: Type): Boolean {
             val left = l.javaType
             val right = r.javaType
@@ -143,9 +113,6 @@ class KodeinWrappedType(val type: Type) : Type {
             }
         }
 
-        /**
-         * @return Whether the two given arrays of types are equals.
-         */
         fun Equals(left: Array<Type>, right: Array<Type>): Boolean {
             if (left.size != right.size)
                 return false
@@ -154,6 +121,12 @@ class KodeinWrappedType(val type: Type) : Type {
     }
 }
 
+/**
+ * The JVM type that is wrapped by a TypeToken.
+ *
+ * Note that this function may return a [KodeinWrappedType].
+ * If you only want Java types, you should call [javaType] on the result.
+ */
 val TypeToken<*>.jvmType: Type get() =
         when (this) {
             is JVMTypeToken -> jvmType.javaType
@@ -161,6 +134,9 @@ val TypeToken<*>.jvmType: Type get() =
             else -> throw IllegalStateException("${javaClass.simpleName} is not a JVM Type Token")
         }
 
+/**
+ * The true Java `Type` if this is a [KodeinWrappedType], or itself if this is already a true Java `Type`.
+ */
 val Type.javaType: Type get() = (this as? KodeinWrappedType)?.javaType ?: this
 
 
@@ -228,13 +204,6 @@ internal class ParameterizedTypeToken<T>(val trueType: Type) : JVMTypeToken<T>()
 
     override fun isGeneric() = true
 
-    /**
-     * Checks that a type is reified. Meaning that it is not or does not reference a [TypeVariable].
-     *
-     * @param disp An object to print if the check fails. *For debug print only*.
-     * @param type The type to check.
-     * @throws IllegalArgumentException If the type does contain a [TypeVariable].
-     */
     private fun Type._checkIsReified(disp: Any) {
         val jvmType = javaType
         when (jvmType) {
@@ -334,20 +303,17 @@ internal class ClassTypeToken<T>(override val jvmType: Class<T>) : JVMTypeToken<
     }
 }
 
-/**
- * Function used to get a TypeToken representing the provided type **being erased**.
- *
- * @param T The type to get.
- * @return The type object representing `T`.
- */
 @Suppress("UNCHECKED_CAST")
 actual inline fun <reified T> erased(): TypeToken<T> = ClassTypeToken((T::class as KClass<*>).java as Class<T>)
 
 /**
- * Gives a [TypeToken] representing the given class.
+ * Gives a [TypeToken] representing the given `Class`.
  */
 fun <T> TT(cls: Class<T>): TypeToken<T> = ClassTypeToken(cls)
 
+/**
+ * Gives a [TypeToken] representing the given `KClass`.
+ */
 fun <T: Any> TT(cls: KClass<T>): TypeToken<T> = TT(cls.java)
 
 /**
@@ -359,10 +325,10 @@ fun TT(type: Type): TypeToken<*> =
     else
         ParameterizedTypeToken<Any>(type)
 
+/**
+ * Gives a [TypeToken] representing the given [TypeReference].
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T> TT(ref: TypeReference<T>): TypeToken<T> = TT(ref.superType) as TypeToken<T>
 
-/**
- * Gives a [TypeToken] representing the *erased* type of the given object.
- */
 actual fun <T: Any> TTOf(obj: T): TypeToken<out T> = ClassTypeToken(obj.javaClass)

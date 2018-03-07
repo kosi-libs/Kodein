@@ -38,12 +38,6 @@ internal class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
     }
 }
 
-/**
- * Function used to get a TypeToken representing the provided type **being erased**.
- *
- * @param T The type to get.
- * @return The type object representing `T`.
- */
 @Suppress("UNCHECKED_CAST", "UNCHECKED_CAST_TO_NATIVE_INTERFACE")
 actual inline fun <reified T> erased(): TypeToken<T> {
     try {
@@ -56,13 +50,13 @@ actual inline fun <reified T> erased(): TypeToken<T> {
 }
 
 /**
- * Gives a [TypeToken] representing the given class.
+ * Gives a [TypeToken] representing the given `Class`.
  */
 fun <T: Any> TT(cls: JsClass<T>): TypeToken<T> = JSTypeToken(cls)
 
+/**
+ * Gives a [TypeToken] representing the given `KClass`.
+ */
 fun <T: Any> TT(cls: KClass<T>): TypeToken<T> = TT(cls.js)
 
-/**
- * Gives a [TypeToken] representing the *erased* type of the given object.
- */
 actual fun <T: Any> TTOf(obj: T): TypeToken<out T> = JSTypeToken(obj::class.js)

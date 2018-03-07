@@ -12,7 +12,7 @@ import org.kodein.generic.*
 
 class DemoApplication : Application(), KodeinAware {
 
-    override val kodein by Kodein.lazy {
+    override val kodein = Kodein.lazy {
         bind<Logger>() with instance(Logger())
 
         import(electricHeaterModule)

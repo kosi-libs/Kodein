@@ -2,11 +2,12 @@ package org.kodein.internal
 
 import org.kodein.*
 
+@Suppress("FunctionName")
 internal class DKodeinImpl(override val container: KodeinContainer, val context: KodeinContext<*>, val receiver: Any?) : DKodein {
 
     override val dkodein: DKodein get() = this
 
-    override val lazy: Kodein get() = KodeinImpl(container).On(context = context)
+    override val lazy: Kodein get() = KodeinImpl(container as KodeinContainerImpl).On(context = context)
 
     override fun On(context: KodeinContext<*>, receiver: Any?): DKodein {
         val newContext = if (context == DKodein.SAME_CONTEXT) this.context else context

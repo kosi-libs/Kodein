@@ -2,16 +2,8 @@ package org.kodein
 
 import java.lang.reflect.*
 
-/**
- * Base class whose role is to get a string representing a type in a Kotlin-esque fashion.
- */
 private abstract class TypeStringer {
 
-    /**
-     * get a string representing a type in a Kotlin-esque fashion.
-     *
-     * @param type The type to stringify.
-     */
     fun dispString(type: Type, skipStars: Boolean = false): String {
         val jvmType = type.javaType
         return when (jvmType) {
@@ -41,17 +33,9 @@ private abstract class TypeStringer {
         }
     }
 
-    /**
-     * Returns a type name, either its simple name, or its full name.
-     *
-     * @param cls The class whose name to get.
-     */
     abstract fun dispName(cls: Class<*>, skipStars: Boolean = false): String
 }
 
-/**
- * Type stringer that displays simple type names.
- */
 private object SimpleTypeStringer : TypeStringer() {
     override fun dispName(cls: Class<*>, skipStars: Boolean): String = when {
         cls.isArray -> "Array<" + dispString(cls.componentType) + ">"
@@ -81,9 +65,6 @@ private val Class<*>.primitiveName: String?
         else -> null
     }
 
-/**
- * Type stringer that displays full type names.
- */
 private object FullTypeStringer : TypeStringer() {
     override fun dispName(cls: Class<*>, skipStars: Boolean) = when {
         cls.isArray -> "kotlin.Array<" + dispString(cls.componentType) + ">"
@@ -137,6 +118,9 @@ fun Type.simpleDispString(): String = SimpleTypeStringer.dispString(this)
  */
 fun Type.fullDispString(): String = FullTypeStringer.dispString(this)
 
+/**
+ * Returns the erased name of a type (e.g. the type name without it's generic parameters).
+ */
 fun Type.simpleErasedName(): String {
     val jvmType = javaType
     return when (jvmType) {
@@ -149,6 +133,9 @@ fun Type.simpleErasedName(): String {
     }
 }
 
+/**
+ * Returns the fully qualified erased name of a type (e.g. the type name without it's generic parameters).
+ */
 fun Type.fullErasedName(): String {
     val jvmType = javaType
     return when (jvmType) {

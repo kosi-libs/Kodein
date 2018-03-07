@@ -102,7 +102,7 @@ class ErasedJvmTests {
     object test15Scope : Scope<Any?, Nothing?> {
         val registry = MultiItemScopeRegistry()
         override fun getBindingContext(envContext: Any?) = null
-        override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Nothing?) = registry
+        override fun getRegistry(receiver: Any?, context: Any?) = registry
     }
 
     // Only the JVM supports precise description
@@ -279,7 +279,7 @@ class ErasedJvmTests {
 
     // Only the JVM supports class.java
     @Test fun test27_00_ExternalSource() {
-        val kodein = Kodein {
+        val kodein = Kodein.direct {
             bind(tag = "him") from singleton { Person("Salomon") }
 
             val laila = Person("Laila")
@@ -296,7 +296,7 @@ class ErasedJvmTests {
                     else -> null
                 }
             }
-        } .direct
+        }
 
         assertNotNull(kodein.instanceOrNull<Person>())
 
@@ -327,5 +327,29 @@ class ErasedJvmTests {
         kodein.instance<SubResource>()
     }
 
+
+    @Test fun test32_01_simpleKeyFullDescription() {
+        val key = Kodein.Key(
+                contextType = erased<Any>(),
+                argType = erased<Unit>(),
+                type = erased<String>(),
+                tag = null
+        )
+
+        assertEquals("bind<kotlin.String>()", key.bindFullDescription)
+        assertEquals("bind<kotlin.String>() with ? { ? }", key.fullDescription)
+    }
+
+    @Test fun test32_03_complexKeyFullDescription() {
+        val key = Kodein.Key(
+                contextType = erased<String>(),
+                argType = erasedComp2<Multi2<String, String>, String, String>(),
+                type = erased<IntRange>(),
+                tag = "tag"
+        )
+
+        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\")", key.bindFullDescription)
+        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") with ?<kotlin.String>().? { org.kodein.Multi2<kotlin.String, kotlin.String> -> ? }", key.fullDescription)
+    }
 
 }

@@ -2,12 +2,16 @@ apply plugin: 'kotlin-platform-js'
 
 dependencies {
     expectedBy project(":core:kodein-core-common")
+    //noinspection DifferentStdlibGradleVersion
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
 }
 
 compileKotlin2Js {
     kotlinOptions.moduleKind = "umd"
 }
+
+//
+//apply from: "../../gradle/dokka.gradle"
 
 apply from: "../../gradle/kotlin-publish.gradle"
 

@@ -11,6 +11,8 @@ test {
     }
 }
 
+apply from: "../../gradle/dokka.gradle"
+
 apply from: "../../gradle/kotlin-publish.gradle"
 
 ext {

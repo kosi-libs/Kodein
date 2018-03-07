@@ -2,16 +2,19 @@ package org.kodein.bindings
 
 import java.util.*
 
-class WeakContextScope<C> : Scope<C, C> {
+/**
+ * Scope that map [scope registries][ScopeRegistry] associated to weak contexts.
+ *
+ * In essence, the context is weak, and for a given context, its registry will be GC'd when it is itself GC'd.
+ */
+class WeakContextScope<C> : SimpleScope<C> {
 
     private val map = WeakHashMap<C, ScopeRegistry>()
 
-    override fun getBindingContext(envContext: C) = envContext
-
-    override fun getRegistry(receiver: Any?, envContext: C, bindContext: C): ScopeRegistry {
-        map[bindContext]?.let { return it }
+    override fun getRegistry(receiver: Any?, context: C): ScopeRegistry {
+        map[context]?.let { return it }
         synchronized(map) {
-            return map.getOrPut(bindContext) { MultiItemScopeRegistry() }
+            return map.getOrPut(context) { MultiItemScopeRegistry() }
         }
     }
 

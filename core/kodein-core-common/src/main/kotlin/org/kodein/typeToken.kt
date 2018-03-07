@@ -8,17 +8,23 @@ package org.kodein
 interface TypeToken<T> {
 
     /**
-     * The simple (a.k.a. not fully qualified) name of the type represented by this TypeToken.
+     * @return The simple (a.k.a. not fully qualified) name of the type represented by this TypeToken.
      */
     fun simpleDispString(): String
 
+    /**
+     * @return The simple (a.k.a. not fully qualified) erased (a.k.a without generic parameters) name of the type represented by this TypeToken.
+     */
     fun simpleErasedDispString(): String
 
     /**
-     * The fully qualified name of the type represented by this TypeToken.
+     * @return The fully qualified name of the type represented by this TypeToken.
      */
     fun fullDispString(): String
 
+    /**
+     * @return The fully qualified erased (a.k.a without generic parameters) name of the type represented by this TypeToken.
+     */
     fun fullErasedDispString(): String
 
     /**
@@ -30,17 +36,19 @@ interface TypeToken<T> {
     fun checkIsReified(disp: Any)
 
     /**
-     * Returns the raw type represented by this type.
-     *
-     * If this type is not generic, than it's raw type is itself.
+     * @return the raw type represented by this type.
+     *   If this type is not generic, than it's raw type is itself.
      */
     fun getRaw(): TypeToken<T>
 
     /**
-     * Returns whether the type represented by this TypeToken is generic.
+     * @return Whether the type represented by this TypeToken is generic.
      */
     fun isGeneric(): Boolean
 
+    /**
+     * @return A list of generic parameters (empty if this types does not have generic parameters).
+     */
     fun getGenericParameters(): Array<out TypeToken<*>>
 
     /**
@@ -55,7 +63,7 @@ interface TypeToken<T> {
      * - `Map<*, String>`: false
      * - `Map<String, String>`: very false!
      *
-     * @return whether the type represented by this TypeToken is generic and is entirely wildcard, otherwise null.
+     * @return Whether the type represented by this TypeToken is generic and is entirely wildcard, otherwise null.
      */
     fun isWildcard(): Boolean
 
@@ -64,6 +72,9 @@ interface TypeToken<T> {
      */
     fun getSuper(): List<TypeToken<*>>
 
+    /**
+     * Determines if the type represented by this type object is either the same as, or is a superclass or superinterface of, the type represented by the specified type parameter.
+     */
     fun isAssignableFrom(typeToken: TypeToken<*>): Boolean {
         if (this == typeToken)
             return true
@@ -130,8 +141,6 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
 
     override fun getGenericParameters() = params
 
-//    override fun isAssignableFrom(typeToken: TypeToken<*>) = main.isAssignableFrom(typeToken)
-
     /** @suppress */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -145,5 +154,12 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
     override fun hashCode() = 31 * main.hashCode() + params.contentHashCode()
 }
 
+/**
+ * A simple type token that represents the type `Unit`.
+ */
 val UnitToken = erased<Unit>()
+
+/**
+ * A simple type token that represents the type `Any?`.
+ */
 val AnyToken = erased<Any?>()

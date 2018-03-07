@@ -35,6 +35,12 @@ interface Kodein : KodeinAware {
     class NotFoundException(val key: Kodein.Key<*, *, *>, message: String)
             : RuntimeException(message)
 
+    /**
+     * Exception thrown when searching for bindings and none could be found.
+     *
+     * @property search The specs that lead to no result.
+     * @param message The message of the exception.
+     */
     class NoResultException(val search: SearchSpecs, message: String)
         : RuntimeException(message)
 
@@ -45,16 +51,21 @@ interface Kodein : KodeinAware {
      */
     class OverridingException(message: String) : RuntimeException(message)
 
-    /**
-     * Defined only to conform to [KodeinAware].
-     */
     override val kodein: Kodein get() = this
 
     /**
      * In Kodein, each [KodeinBinding] is bound to a Key. A Key holds all information necessary to retrieve a factory (and therefore an instance).
      *
-     * @property bind The left part of the bind declaration.
-     * @property argType The argument type of the associated factory (Will be `Unit` for a provider).
+     * A key contains many types & a tag.
+     * It defines the types of the values that will be passed to and retrieved from Kodein, not the values themselves.
+     *
+     * @param C The in context type.
+     * @param A The in argument type (`Unit` for a provider).
+     * @param T The out type.
+     * @property contextType The in context type.
+     * @property argType The in argument type (`Unit` for a provider).
+     * @property type The out type.
+     * @property tag The associated tag.
      */
     @Suppress("EqualsOrHashCode")
     data class Key<in C, in A, out T: Any>(
@@ -88,9 +99,9 @@ interface Kodein : KodeinAware {
         /**
          * Right part of the description string.
          *
-         * @param dispString a function that gets the display string for a type. Can be [simpleDispString] or [fullDispString]
+         * @param dispString a function that gets the display string for a type.
          */
-        private fun StringBuilder._appendDescription(dispString: TypeToken<*>.() -> String) {
+        private fun StringBuilder.appendDescription(dispString: TypeToken<*>.() -> String) {
             append(" with ")
             if (contextType != AnyToken) {
                 append("?<${contextType.dispString()}>().")
@@ -119,7 +130,7 @@ interface Kodein : KodeinAware {
          */
         val description: String get() = buildString {
             append(bindDescription)
-            _appendDescription(TypeToken<*>::simpleDispString)
+            appendDescription(TypeToken<*>::simpleDispString)
         }
 
         /**
@@ -127,7 +138,7 @@ interface Kodein : KodeinAware {
          */
         val fullDescription: String get() = buildString {
             append(bindFullDescription)
-            _appendDescription(TypeToken<*>::fullDispString)
+            appendDescription(TypeToken<*>::fullDispString)
         }
     }
 
@@ -137,14 +148,40 @@ interface Kodein : KodeinAware {
     @DslMarker
     annotation class KodeinDsl
 
+    /**
+     * Base builder DSL interface that allows to define scoped and context bindings.
+     *
+     * @param C The context type.
+     */
     interface BindBuilder<C> {
+        /**
+         * The context type that will be used by all bindings that are defined in this DSL context.
+         */
         val contextType: TypeToken<C>
-        interface Contexted<C> : BindBuilder<C> {
-            class Impl<C>(override val contextType: TypeToken<C>) : Contexted<C>
+
+        /**
+         * Used to define bindings with a context.
+         *
+         * @param C The context type.
+         */
+        interface WithContext<C> : BindBuilder<C> {
+            /** @suppress */
+            class Impl<C>(override val contextType: TypeToken<C>) : WithContext<C>
         }
-        interface Scoped<EC, BC> : BindBuilder<EC> {
+
+        /**
+         * Used to define bindings with a scope.
+         *
+         * @param EC The scope's Environment Context.
+         * @param BC The scope's Binding Context.
+         */
+        interface WithScope<EC, out BC> : BindBuilder<EC> {
+            /**
+             * The scope that will be used by all bindings that are defined in this DSL context.
+             */
             val scope: Scope<EC, BC>
-            class Impl<EC, BC>(override val contextType: TypeToken<EC>, override val scope: Scope<EC, BC>) : Scoped<EC, BC>
+            /** @suppress */
+            class Impl<EC, out BC>(override val contextType: TypeToken<EC>, override val scope: Scope<EC, BC>) : WithScope<EC, BC>
         }
     }
 
@@ -154,13 +191,12 @@ interface Kodein : KodeinAware {
      * Methods of this classes are really just proxies to the [KodeinContainer.Builder] methods.
      *
      * @property containerBuilder Every methods eventually ends up to a call to this builder.
-     * @property callbacks A list of callbacks that will be called once the [Kodein] object is constructed.
      */
     @KodeinDsl
     open class Builder internal constructor(
             private val moduleName: String?,
             val containerBuilder: KodeinContainer.Builder
-    ) : BindBuilder.Contexted<Any?>, BindBuilder.Scoped<Any?, Nothing?> {
+    ) : BindBuilder.WithContext<Any?>, BindBuilder.WithScope<Any?, Nothing?> {
 
         override val contextType = AnyToken
 
@@ -170,8 +206,9 @@ interface Kodein : KodeinAware {
          * Left part of the type-binding syntax (`bind(type, tag)`).
          *
          * @param T The type to bind.
-         * @param bind The type and tag object that will compose the key to bind.
-         * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
+         * @property type The type that will compose the key to bind.
+         * @property tag The tag that will compose the key to bind.
+         * @property overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          */
         inner class TypeBinder<T : Any> internal constructor(val type: TypeToken<out T>, val tag: Any?, val overrides: Boolean?) {
             internal val containerBuilder get() = this@Builder.containerBuilder
@@ -187,9 +224,6 @@ interface Kodein : KodeinAware {
 
         /**
          * Left part of the direct-binding syntax (`bind(tag)`).
-         *
-         * @property _tag The tag that is being bound.
-         * @property _overrides Whether this bind **must**, **may** or **must not** override an existing binding.
          */
         inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) {
             /**
@@ -218,6 +252,7 @@ interface Kodein : KodeinAware {
              * @param valueType The type to bind the instance to.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
+            @Suppress("FunctionName")
             fun <T: Any> With(valueType: TypeToken<out T>, value: T) = Bind(tag = _tag) from InstanceBinding(valueType, value)
         }
 
@@ -230,6 +265,7 @@ interface Kodein : KodeinAware {
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          * @return The binder: call [TypeBinder.with]) on it to finish the binding syntax and register the binding.
          */
+        @Suppress("FunctionName")
         fun <T : Any> Bind(type: TypeToken<out T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(type, tag, overrides)
 
         /**
@@ -239,6 +275,7 @@ interface Kodein : KodeinAware {
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          * @return The binder: call [DirectBinder.from]) on it to finish the binding syntax and register the binding.
          */
+        @Suppress("FunctionName")
         fun Bind(tag: Any? = null, overrides: Boolean? = null): DirectBinder = DirectBinder(tag, overrides)
 
         /**
@@ -273,8 +310,16 @@ interface Kodein : KodeinAware {
         fun onReady(cb: DKodein.() -> Unit) = containerBuilder.onReady(cb)
     }
 
+    /**
+     * Builder to create a [Kodein] object.
+     *
+     * @param allowSilentOverride Whether non-explicit overrides is allowed in this builder.
+     */
     class MainBuilder(allowSilentOverride: Boolean) : Builder(null, KodeinContainer.Builder(true, allowSilentOverride, HashMap(), ArrayList())) {
 
+        /**
+         * The external source is repsonsible for fetching / creating a value when Kodein cannot find a matching binding.
+         */
         var externalSource: ExternalSource? = null
 
         /**
@@ -287,9 +332,12 @@ interface Kodein : KodeinAware {
          *
          * @param kodein The kodein object to import.
          * @param allowOverride Whether this module is allowed to override existing bindings.
-         *                      If it is not, overrides (even explicit) will throw an [OverridingException].
+         *   If it is not, overrides (even explicit) will throw an [OverridingException].
+         * @param copy The copy specifications, that defines which bindings will be copied to the new container.
+         *   All bindings from the extended container will be accessible in the new container, but only the copied bindings are able to access overridden bindings in this new container.
+         *   By default, all bindings that do not hold references (e.g. not singleton or multiton) are copied.
          * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
-         *                             OR [allowOverride] is true while YOU don't have the permission to override.
+         *   OR [allowOverride] is true while YOU don't have the permission to override.
          */
         fun extend(kodein: Kodein, allowOverride: Boolean = false, copy: Copy = Copy.NonCached) {
             val keys = copy.keySet(kodein.container.tree)
@@ -298,6 +346,23 @@ interface Kodein : KodeinAware {
             kodein.container.tree.externalSource?.let { externalSource = it }
         }
 
+        /**
+         * Imports all bindings defined in the given [Kodein] into this builder.
+         *
+         * Note that this preserves scopes, meaning that a singleton-bound in the kodein argument will continue to exist only once.
+         * Both kodein objects will share the same instance.
+         *
+         * Note that externalSource **will be overeridden** if defined in the extended Kodein.
+         *
+         * @param dkodein The direct kodein object to import.
+         * @param allowOverride Whether this module is allowed to override existing bindings.
+         *   If it is not, overrides (even explicit) will throw an [OverridingException].
+         * @param copy The copy specifications, that defines which bindings will be copied to the new container.
+         *   All bindings from the extended container will be accessible in the new container, but only the copied bindings are able to access overridden bindings in this new container.
+         *   By default, all bindings that do not hold references (e.g. not singleton or multiton) are copied.
+         * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
+         *   OR [allowOverride] is true while YOU don't have the permission to override.
+         */
         fun extend(dkodein: DKodein, allowOverride: Boolean = false, copy: Copy = Copy.NonCached) {
             val keys = copy.keySet(dkodein.container.tree)
 
@@ -316,6 +381,7 @@ interface Kodein : KodeinAware {
      * }
      * ```
      *
+     * @property name The name of this module (for debug).
      * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
      * @property init The block of configuration for this module.
      */
@@ -337,7 +403,23 @@ interface Kodein : KodeinAware {
          */
         operator fun invoke(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Kodein = KodeinImpl(allowSilentOverride, init)
 
-        fun lazy(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Lazy<Kodein> = kotlin.lazy { KodeinImpl(allowSilentOverride, init) }
+        /**
+         * Creates a [Kodein] instance that will be lazily created upon first access.
+         *
+         * @param allowSilentOverride Whether the configuration block is allowed to non-explicit overrides.
+         * @param init The block of configuration.
+         * @return A lazy property that will yield, when accessed, the new Kodein object, freshly created, and ready for hard work!
+         */
+        fun lazy(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): LazyKodein = LazyKodein { KodeinImpl(allowSilentOverride, init) }
+
+        /**
+         * Creates a direct [DKodein] instance that will be lazily created upon first access.
+         *
+         * @param allowSilentOverride Whether the configuration block is allowed to non-explicit overrides.
+         * @param init The block of configuration.
+         * @return The new DKodein object, freshly created, and ready for hard work!
+         */
+        fun direct(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): DKodein = KodeinImpl(allowSilentOverride, init).direct
 
         /**
          * Creates a Kodein object but without directly calling onReady callbacks.
@@ -345,7 +427,12 @@ interface Kodein : KodeinAware {
          * Instead, returns both the kodein instance and the callbacks.
          * Note that the returned kodein object should not be used before calling the callbacks.
          *
-         * This is an internal function that exists primarily to prevent Kodein.global recursion.
+         * This is an **internal** function that exists primarily to prevent Kodein.global recursion.
+         *
+         * @param allowSilentOverride Whether the configuration block is allowed to non-explicit overrides.
+         * @param init The block of configuration.
+         * @return a Pair with the Kodein object, and the callbacks function to call.
+         *   Note that you *should not* use the Kodein object before calling the callbacks function.
          */
         fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Pair<Kodein, () -> Unit> = KodeinImpl.withDelayedCallbacks(allowSilentOverride, init)
     }

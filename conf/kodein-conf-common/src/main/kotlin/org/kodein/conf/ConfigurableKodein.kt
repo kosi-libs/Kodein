@@ -2,6 +2,7 @@ package org.kodein.conf
 
 import org.kodein.Kodein
 import org.kodein.KodeinContainer
+import org.kodein.Volatile
 import org.kodein.internal.synchronizedIfNull
 
 /**
@@ -57,7 +58,7 @@ class ConfigurableKodein : Kodein {
     /**
      * Kodein instance. If it is not null, than it cannot be configured anymore.
      */
-    private @Volatile var _instance: Kodein? = null
+    @Volatile private var _instance: Kodein? = null
 
     /**
      * Get the kodein instance if it has already been constructed, or construct it if not.

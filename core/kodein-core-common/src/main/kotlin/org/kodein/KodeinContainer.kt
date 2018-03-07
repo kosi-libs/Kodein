@@ -4,52 +4,74 @@ import org.kodein.bindings.KodeinBinding
 import org.kodein.internal.newLinkedList
 
 /**
- * Container class where the bindings and their factories are stored.
+ * The Container is the entry point for retrieval without Kodein's inline & reified shenanigans.
  *
- * In kodein, every binding is stored as a factory (that's why a scope is a function creating a factory).
+ * In kodein, every binding is stored as a factory.
  * Providers are special classes of factories that take Unit as parameter.
  */
 interface KodeinContainer {
 
-    val initCallbacks: (() -> Unit)?
-
-    val tree: KodeinTree
-
     /**
-     * Retrieve a factory for the given key, or null if none is found.
-     *
-     * @param key The key to look for.
-     * @return The found factory, or null if no factory was found.
-     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     * The tree that contains all bindings.
      */
-    fun <C, A, T: Any> factoryOrNull(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int = 0): ((A) -> T)?
+    val tree: KodeinTree
 
     /**
      * Retrieve a factory for the given key.
      *
+     * @param C The key context type.
+     * @param A The key argument type.
+     * @param T The key return type.
      * @param key The key to look for.
+     * @param context The context to pass to the binding.
+     * @param receiver The object that shall receive the value.
+     * @param overrideLevel 0 if looking for a regular binding, 1 or more if looking for a binding that has been overridden.
      * @return The found factory.
      * @throws Kodein.NotFoundException If no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
     fun <C, A, T: Any> factory(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int = 0): (A) -> T
 
+    /**
+     * Retrieve a factory for the given key, or null if none is found.
+     *
+     * @param C The key context type.
+     * @param A The key argument type.
+     * @param T The key return type.
+     * @param key The key to look for.
+     * @param context The context to pass to the binding.
+     * @param receiver The object that shall receive the value.
+     * @param overrideLevel 0 if looking for the regular binding, 1 or more if looking for a binding that has been overridden.
+     * @return The found factory, or null if no factory was found.
+     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     */
+    fun <C, A, T: Any> factoryOrNull(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int = 0): ((A) -> T)?
+
+    /**
+     * Retrieve all factories that match the given key.
+     *
+     * @param C The key context type.
+     * @param A The key argument type.
+     * @param T The key return type.
+     * @param key The key to look for.
+     * @param context The context to pass to the bindings.
+     * @param receiver The object that shall receive the values.
+     * @param overrideLevel 0 if looking for regular bindings, 1 or more if looking for bindings that have been overridden.
+     * @return A list of matching factories.
+     * @throws Kodein.NotFoundException If no factory was found.
+     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     */
     fun <C, A, T: Any> allFactories(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int = 0): List<(A) -> T>
 
     /**
-     * Retrieve a provider for the given bind, or null if none is found.
+     * Retrieve a provider for the given key.
      *
-     * @param bind The bind (type and tag) to look for.
-     * @return The found provider, or null if no provider was found.
-     * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
-     */
-    fun <C, T: Any> providerOrNull(key: Kodein.Key<C, Unit, T>, context: C, receiver: Any?, overrideLevel: Int = 0): (() -> T)? =
-            factoryOrNull(key, context, receiver)?.toProvider { Unit }
-
-    /**
-     * Retrieve a provider for the given bind.
-     *
-     * @param bind The bind (type and tag) to look for.
+     * @param C The key context type.
+     * @param T The key return type.
+     * @param key The key to look for.
+     * @param context The context to pass to the binding.
+     * @param receiver The object that shall receive the value.
+     * @param overrideLevel 0 if looking for the regular binding, 1 or more if looking for a binding that has been overridden.
      * @return The found provider.
      * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
@@ -57,6 +79,34 @@ interface KodeinContainer {
     fun <C, T: Any> provider(key: Kodein.Key<C, Unit, T>, context: C, receiver: Any?, overrideLevel: Int = 0): () -> T =
             factory(key, context, receiver).toProvider { Unit }
 
+    /**
+     * Retrieve a provider for the given key, or null if none is found.
+     *
+     * @param C The key context type.
+     * @param T The key return type.
+     * @param key The key to look for.
+     * @param context The context to pass to the binding.
+     * @param receiver The object that shall receive the value.
+     * @param overrideLevel 0 if looking for the regular binding, 1 or more if looking for a binding that has been overridden.
+     * @return The found provider, or null if no provider was found.
+     * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     */
+    fun <C, T: Any> providerOrNull(key: Kodein.Key<C, Unit, T>, context: C, receiver: Any?, overrideLevel: Int = 0): (() -> T)? =
+            factoryOrNull(key, context, receiver)?.toProvider { Unit }
+
+    /**
+     * Retrieve all providers that match the given key.
+     *
+     * @param C The key context type.
+     * @param T The key return type.
+     * @param key The key to look for.
+     * @param context The context to pass to the bindings.
+     * @param receiver The object that shall receive the values.
+     * @param overrideLevel 0 if looking for regular bindings, 1 or more if looking for bindings that have been overridden.
+     * @return A list of matching providers.
+     * @throws Kodein.NotFoundException If no factory was found.
+     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     */
     fun <C, T: Any> allProviders(key: Kodein.Key<C, Unit, T>, context: C, receiver: Any?, overrideLevel: Int = 0): List<() -> T> =
             allFactories(key, context, receiver).map { it.toProvider { Unit } }
 
@@ -65,7 +115,7 @@ interface KodeinContainer {
      *
      * @param allowOverride Whether or not the bindings defined by this builder or its imports are allowed to **explicitly** override existing bindings.
      * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
-     * @property map The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
+     * @param bindingsMap The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
      */
     open class Builder internal constructor(
             allowOverride: Boolean,
@@ -150,7 +200,7 @@ interface KodeinContainer {
          * @throws Kodein.OverridingException If overrides is `null` or `true` but the permission to override is not granted,
          *                                    or if the binding is allowed to override, but does not conforms to it's overriding declaration.
          */
-        private fun _checkOverrides(key: Kodein.Key<*, *, *>, overrides: Boolean?) {
+        private fun checkOverrides(key: Kodein.Key<*, *, *>, overrides: Boolean?) {
             val mustOverride = _overrideMode.must(overrides)
 
             if (mustOverride != null) {
@@ -172,7 +222,7 @@ interface KodeinContainer {
         fun <C, A, T: Any> bind(key: Kodein.Key<C, A, T>, binding: KodeinBinding<in C, in A, out T>, fromModule: String? = null, overrides: Boolean? = null) {
             key.type.checkIsReified(key)
             key.argType.checkIsReified(key)
-            _checkOverrides(key, overrides)
+            checkOverrides(key, overrides)
 
             val bindings = bindingsMap.getOrPut(key) { newLinkedList() }
             bindings.add(0, KodeinDefining(binding, fromModule))
@@ -184,7 +234,7 @@ interface KodeinContainer {
          * @param allowOverride The overriding declaration.
          * @throws Kodein.OverridingException If it is not allowed to bind.
          */
-        private fun _checkMatch(allowOverride: Boolean) {
+        private fun checkMatch(allowOverride: Boolean) {
             if (!_overrideMode.isAllowed && allowOverride)
                 throw Kodein.OverridingException("Overriding has been forbidden")
         }
@@ -202,11 +252,11 @@ interface KodeinContainer {
          *                                    OR [allowOverride] is true while YOU don't have the permission to override.
          */
         fun extend(container: KodeinContainer, allowOverride: Boolean = false, copy: Set<Kodein.Key<*, *, *>> = emptySet()) {
-            _checkMatch(allowOverride)
+            checkMatch(allowOverride)
 
             container.tree.bindings.forEach { (key, bindings) ->
                 if (!allowOverride)
-                    _checkOverrides(key, null)
+                    checkOverrides(key, null)
 
                 val newBindings = if (key in copy) {
                     newLinkedList<KodeinDefining<*, *, *>>().also { bindings.mapTo(it) { KodeinDefining(it.binding.copier?.copy(this@Builder) ?: it.binding, it.fromModule) } }
@@ -226,10 +276,15 @@ interface KodeinContainer {
          * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
          */
         fun subBuilder(allowOverride: Boolean = false, silentOverride: Boolean = false): Builder {
-            _checkMatch(allowOverride)
+            checkMatch(allowOverride)
             return Builder(allowOverride, silentOverride, bindingsMap, callbacks)
         }
 
+        /**
+         * Adds a callback that will be called once the Kodein object has been initialized.
+         *
+         * @param cb A callback.
+         */
         fun onReady(cb: DKodein.() -> Unit) {
             callbacks += cb
         }

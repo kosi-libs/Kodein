@@ -1,6 +1,7 @@
 package org.kodein
 
 import org.kodein.bindings.RefMaker
+import org.kodein.bindings.Reference
 import java.lang.ref.SoftReference
 import java.lang.ref.WeakReference
 
@@ -11,10 +12,11 @@ import java.lang.ref.WeakReference
  *
  * A thread local singleton is guaranteed to be unique inside a thread.
  */
+@Suppress("ClassName")
 object threadLocal : RefMaker {
-    override fun <T: Any> make(creator: () -> T): Pair<T, () -> T?> {
+    override fun <T: Any> make(creator: () -> T): Reference<T> {
         val threadLocal = object : ThreadLocal<T>() { override fun initialValue() = creator() }
-        return threadLocal.get() to { threadLocal.get() }
+        return Reference(threadLocal.get()) { threadLocal.get() }
     }
 }
 
@@ -26,11 +28,12 @@ object threadLocal : RefMaker {
  * A soft singleton is guaranteed to be unique inside the JVM but not during the application lifetime.
  * It **may** be GC'd if there are no strong references to it and therefore may be re-created later.
  */
+@Suppress("ClassName", "unused") // There is no way to "cleanly" test soft references.
 object softReference : RefMaker {
-    override fun <T: Any> make(creator: () -> T): Pair<T, () -> T?> {
+    override fun <T: Any> make(creator: () -> T): Reference<T> {
         val value = creator()
         val softRef = SoftReference(value)
-        return value to { softRef.get() }
+        return Reference(value) { softRef.get() }
     }
 }
 
@@ -42,10 +45,11 @@ object softReference : RefMaker {
  * A weak singleton is guaranteed to be unique inside the JVM but not during the application lifetime.
  * It **will** be GC'd if there are no strong references to it and therefore may be re-created later.
  */
+@Suppress("ClassName")
 object weakReference : RefMaker {
-    override fun <T: Any> make(creator: () -> T): Pair<T, () -> T?> {
+    override fun <T: Any> make(creator: () -> T): Reference<T> {
         val value = creator()
         val weakRef = WeakReference(value)
-        return value to { weakRef.get() }
+        return Reference(value) { weakRef.get() }
     }
 }

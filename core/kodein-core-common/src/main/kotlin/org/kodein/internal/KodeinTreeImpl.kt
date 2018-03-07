@@ -38,7 +38,7 @@ internal class KodeinTreeImpl(
         bindings = HashMap(_cache)
     }
 
-    private fun _find(specs: SearchSpecs): List<Kodein.Key<*, *, *>> {
+    private fun findBySpecs(specs: SearchSpecs): List<Kodein.Key<*, *, *>> {
         var bindSeq: Sequence<Map.Entry<TypeToken<*>, ContextTypeTree>> = _typeTree.asSequence()
         val specsBindType = specs.type
         if (specsBindType != null && specsBindType != AnyToken) {
@@ -80,7 +80,7 @@ internal class KodeinTreeImpl(
             }
         }
 
-        val keys = _find(SearchSpecs(key.contextType, key.argType, key.type, key.tag))
+        val keys = findBySpecs(SearchSpecs(key.contextType, key.argType, key.type, key.tag))
         if (keys.size == 1) {
             val realKey = keys.first()
             _cache[key] = _cache[realKey] ?: throw IllegalStateException("The tree contains a key that is not in the map.")
@@ -92,12 +92,11 @@ internal class KodeinTreeImpl(
 
     @Suppress("UNCHECKED_CAST")
     override fun find(search: SearchSpecs): List<Pair<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>> {
-        val keys = _find(search)
+        val keys = findBySpecs(search)
         return keys.map { realKey -> realKey to _cache[realKey]!! }
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun <C, A, T: Any> get(key: Kodein.Key<C, A, T>) = _cache[key] as? List<KodeinDefinition<C, A, T>>
 
-//    inner class BindingsMapView : BindingsMap by _cache
 }

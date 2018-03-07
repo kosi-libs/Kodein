@@ -2,14 +2,25 @@ package org.kodein.bindings
 
 import org.kodein.*
 
+/**
+ * Base class that knows how to get an instance.
+ *
+ * All bindings are bound to a Binding.
+ * Whether this factory creates a new instance at each call or not is left to implementation.
+ *
+ * @param C The type of the context used by the retriever.
+ * @param A The type of argument used to create or retrieve an instance.
+ * @param T The type of instance this factory creates or retrieves.
+ */
 interface Binding<C, A, T: Any> {
 
     /**
-     * Get an instance of type `T` function argument `A`.
+     * Returns a factory for the given key.
+     * A factory is a function that returns an instance of type `T` function argument `A`.
      *
      * Whether it's a new instance or not entirely depends on implementation.
      *
-     * @param kodein: A Kodein instance to use for transitive dependencies.
+     * @param kodein: A Kodein instance (augmented for the binding) to use for transitive dependencies.
      * @param key: The key of the instance to get.
      * @return The instance of the requested type.
      */
@@ -17,11 +28,11 @@ interface Binding<C, A, T: Any> {
 }
 
 /**
- * Base class that knows how to get an instance.
+ * Binding that is registered inside a Kodein object.
  *
- * All bindings are bound to a Binding.
- * Whether this factory creates a new instance at each call or not is left to implementation.
+ * It is augmented to allow scoping, contextualizing, debugging, etc.
  *
+ * @param C The type of the context used by the retriever.
  * @param A The type of argument used to create or retrieve an instance.
  * @param T The type of instance this factory creates or retrieves.
  */
@@ -41,8 +52,14 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
      */
     fun factoryFullName(): String = factoryName()
 
+    /**
+     * The scope used by this factory, if any
+     */
     val scope: Scope<C, *>? get() = null
 
+    /**
+     * The type of contexts that are to be set when using this factory.
+     */
     val contextType: TypeToken<in C>
 
     /**
@@ -75,21 +92,38 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
         return "$context${factoryFullName()} { $arg${createdType.fullDispString()} }"
     }
 
+    /**
+     * An interface capable of copying a binding.
+     *
+     * Note that the copy **must** "reset" any reference or status of the binding.
+     */
     interface Copier<C, A, T: Any> {
+        /**
+         * Copy the binding this Copier is attached to.
+         *
+         * @param builder The builder used when copying, can be used to register hooks.
+         * @return A copy of the binding.
+         */
         fun copy(builder: KodeinContainer.Builder): KodeinBinding<C, A, T>
 
         companion object {
+            /**
+             * Util method to create a Copier.
+             *
+             * @param f The [Copier.copy] implementation.
+             * @return A copier with the given implementation.
+             */
             operator fun <C, A, T: Any> invoke(f: (KodeinContainer.Builder) -> KodeinBinding<C, A, T>) = object : Copier<C, A, T> {
                 override fun copy(builder: KodeinContainer.Builder) = f(builder)
             }
         }
     }
 
+    /**
+     * A copier that is responsible for copying / resetting the binding.
+     * If null, it means that the binding **do not hold any reference or status** and need not be copied.
+     */
     val copier: Copier<C, A, T>? get() = null
-}
-
-inline fun <C, T: Any> simpleBindingProvider(crossinline f: NoArgBindingKodein<C>.() -> T) = object : Binding<C, Unit, T> {
-    override fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, Unit, T>): (Unit) -> T = { NoArgBindingKodeinWrap(kodein).f() }
 }
 
 /**

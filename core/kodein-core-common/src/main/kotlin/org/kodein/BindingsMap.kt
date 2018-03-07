@@ -2,7 +2,23 @@ package org.kodein
 
 import org.kodein.bindings.KodeinBinding
 
+/**
+ * A binding that is being defined inside a [Kodein.Builder] bloc.
+ *
+ * The associated [KodeinTree] has not be created yet.
+ *
+ * @property binding The binding
+ * @property fromModule The module name that defined the binding (for debug)
+ */
 open class KodeinDefining<C, A, T: Any>(val binding: KodeinBinding<C, A, T>, val fromModule: String?)
+
+/**
+ * A definition is a binding that is associated to a [KodeinTree].
+ *
+ * @property binding The binding
+ * @property fromModule The module name that defined the binding (for debug)
+ * @property tree The tree that this binding relates to.
+ */
 class KodeinDefinition<C, A, T: Any>(binding: KodeinBinding<C, A, T>, fromModule: String?, val tree: KodeinTree) : KodeinDefining<C, A, T>(binding, fromModule)
 
 /**
@@ -10,7 +26,7 @@ class KodeinDefinition<C, A, T: Any>(binding: KodeinBinding<C, A, T>, fromModule
  */
 typealias BindingsMap = Map<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>
 
-private fun BindingsMap._description(withOverrides: Boolean, ident: Int, keyBindDisp: Kodein.Key<*, *, *>.() -> String, bindingDisp: KodeinBinding<*, *, *>.() -> String): String {
+private fun BindingsMap.descriptionImpl(withOverrides: Boolean, ident: Int, keyBindDisp: Kodein.Key<*, *, *>.() -> String, bindingDisp: KodeinBinding<*, *, *>.() -> String): String {
 
     fun StringBuilder.appendBindings(ident: Int, entries: List<Map.Entry<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>>) =
             entries.forEach {
@@ -43,13 +59,13 @@ private fun BindingsMap._description(withOverrides: Boolean, ident: Int, keyBind
 /**
  * The description of all bindings in this map, using type simple display names.
  *
- * @receiver The bindings map, obtained with [KodeinContainer.bindings].
+ * @receiver The bindings map.
  */
-fun BindingsMap.description(withOverrides: Boolean = false, ident: Int = 8): String = _description(withOverrides, ident, Kodein.Key<*, *, *>::bindDescription, KodeinBinding<*, *, *>::description)
+fun BindingsMap.description(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, Kodein.Key<*, *, *>::bindDescription, KodeinBinding<*, *, *>::description)
 
 /**
  * The description of all bindings in this map, using type full display names.
  *
- * @receiver The bindings map, obtained with [KodeinContainer.bindings].
+ * @receiver The bindings map.
  */
-fun BindingsMap.fullDescription(withOverrides: Boolean = false, ident: Int = 8): String = _description(withOverrides, ident, Kodein.Key<*, *, *>::bindFullDescription, KodeinBinding<*, *, *>::fullDescription)
+fun BindingsMap.fullDescription(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, Kodein.Key<*, *, *>::bindFullDescription, KodeinBinding<*, *, *>::fullDescription)
