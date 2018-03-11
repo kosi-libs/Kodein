@@ -57,7 +57,7 @@ interface DKodein : DKodeinAware {
      * @throws Kodein.NotFoundException If no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> Factory(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/): (A) -> T
+    fun <A, T : Any> Factory(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null): (A) -> T
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag, or null if none is found.
@@ -70,7 +70,7 @@ interface DKodein : DKodeinAware {
      * @return A factory of `T`, or null if no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/): ((A) -> T)?
+    fun <A, T : Any> FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null): ((A) -> T)?
 
     /**
      * Gets all factories that can return a `T` for the given argument type, return type and tag.
@@ -83,7 +83,7 @@ interface DKodein : DKodeinAware {
      * @return A list of matching factories of `T`.
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> AllFactories(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/): List<(A) -> T>
+    fun <A, T : Any> AllFactories(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null): List<(A) -> T>
 
     /**
      * Gets a provider of `T` for the given type and tag.
@@ -95,7 +95,7 @@ interface DKodein : DKodeinAware {
      * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <T : Any> Provider(type: TypeToken<T>, tag: Any? /*= null*/): () -> T
+    fun <T : Any> Provider(type: TypeToken<T>, tag: Any? = null): () -> T
 
     /**
      * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument type.
@@ -109,7 +109,7 @@ interface DKodein : DKodeinAware {
      * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> Provider(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: () -> A): () -> T
+    fun <A, T : Any> Provider(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): () -> T
 
     /**
      * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -120,7 +120,7 @@ interface DKodein : DKodeinAware {
      * @return A provider of `T`, or null if no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <T : Any> ProviderOrNull(type: TypeToken<T>, tag: Any? /*= null*/): (() -> T)?
+    fun <T : Any> ProviderOrNull(type: TypeToken<T>, tag: Any? = null): (() -> T)?
 
     /**
      * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument type, or null if none is found.
@@ -133,7 +133,7 @@ interface DKodein : DKodeinAware {
      * @return A provider of `T`, or null if no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: () -> A): (() -> T)?
+    fun <A, T : Any> ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): (() -> T)?
 
     /**
      * Gets all providers that can return a `T` for the given type and tag.
@@ -144,7 +144,7 @@ interface DKodein : DKodeinAware {
      * @return A list of matching providers of `T`.
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <T : Any> AllProviders(type: TypeToken<T>, tag: Any? /*= null*/): List<() -> T>
+    fun <T : Any> AllProviders(type: TypeToken<T>, tag: Any? = null): List<() -> T>
 
     /**
      * Gets all providers that can return a `T` for the given type and tag, curried from factories for the given argument type.
@@ -158,7 +158,7 @@ interface DKodein : DKodeinAware {
      * @return A list of matching providers of `T`.
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> AllProviders(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: () -> A): List<() -> T>
+    fun <A, T : Any> AllProviders(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): List<() -> T>
 
     /**
      * Gets an instance of `T` for the given type and tag.
@@ -170,7 +170,7 @@ interface DKodein : DKodeinAware {
      * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
      */
-    fun <T : Any> Instance(type: TypeToken<T>, tag: Any? /*= null*/): T
+    fun <T : Any> Instance(type: TypeToken<T>, tag: Any? = null): T
 
     /**
      * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument type.
@@ -179,12 +179,12 @@ interface DKodein : DKodeinAware {
      * @param T The type of object to retrieve with the returned provider.
      * @param type The type of object to retrieve with the returned provider.
      * @param tag The bound tag, if any.
-     * @param arg A The argument that will be given to the factory when curried.
+     * @param arg The argument that will be given to the factory when curried.
      * @return An instance of `T`.
      * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> Instance(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: A): T
+    fun <A, T : Any> Instance(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: A): T
 
     /**
      * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -194,7 +194,7 @@ interface DKodein : DKodeinAware {
      * @return An instance of `T`, or null if no provider was found.
      * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
      */
-    fun <T : Any> InstanceOrNull(type: TypeToken<T>, tag: Any? /*= null*/): T?
+    fun <T : Any> InstanceOrNull(type: TypeToken<T>, tag: Any? = null): T?
 
     /**
      * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument type, or null if none is found.
@@ -208,7 +208,7 @@ interface DKodein : DKodeinAware {
      * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: A): T?
+    fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: A): T?
 
     /**
      * Gets all instances that can return a `T` for the given type and tag.
@@ -219,7 +219,7 @@ interface DKodein : DKodeinAware {
      * @return A list of matching instances of `T`.
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <T : Any> AllInstances(type: TypeToken<T>, tag: Any? /*= null*/): List<T>
+    fun <T : Any> AllInstances(type: TypeToken<T>, tag: Any? = null): List<T>
 
     /**
      * Gets all instances that can return a `T` for the given type and tag, curried from factories for the given argument type.
@@ -233,7 +233,7 @@ interface DKodein : DKodeinAware {
      * @return A list of matching instances of `T`.
      * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? /*= null*/, arg: A): List<T>
+    fun <A, T : Any> AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: A): List<T>
 }
 
 /**

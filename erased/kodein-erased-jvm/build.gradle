@@ -7,6 +7,7 @@ dependencies {
 
     testCompile project(':test-utils:test-utils-jvm')
     testCompile 'com.google.inject:guice:4.1.0'
+    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }
 
 test {
@@ -14,6 +15,8 @@ test {
         events "passed", "skipped", "failed", "standardOut", "standardError"
     }
 }
+
+apply from: "../../gradle/dokka.gradle"
 
 apply from: "../../gradle/kotlin-publish.gradle"
 

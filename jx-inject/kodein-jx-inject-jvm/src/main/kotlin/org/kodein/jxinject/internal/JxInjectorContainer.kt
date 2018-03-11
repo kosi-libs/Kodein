@@ -21,12 +21,12 @@ internal class JxInjectorContainer {
         registerQualifier(Named::class.java) { it.value }
     }
 
+    @Suppress("UNCHECKED_CAST")
     internal fun <T: Annotation> registerQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
-        @Suppress("UNCHECKED_CAST")
-        _qualifiers.put(cls, tagProvider as (Annotation) -> Any)
+        _qualifiers[cls] = tagProvider as (Annotation) -> Any
     }
 
-    private fun _getTagFromQualifier(el: AnnotatedElement): Any? {
+    private fun getTagFromQualifier(el: AnnotatedElement): Any? {
         _qualifiers.forEach {
             val qualifier = el.getAnnotation(it.key)
             if (qualifier != null)
@@ -45,8 +45,8 @@ internal class JxInjectorContainer {
         override fun toString(): String
     }
 
-    private fun _getter(element: Element): DKodein.() -> Any? {
-        val tag = _getTagFromQualifier(element)
+    private fun getter(element: Element): DKodein.() -> Any? {
+        val tag = getTagFromQualifier(element)
 
         val shouldErase = element.isAnnotationPresent(ErasedBinding::class.java)
 
@@ -68,7 +68,7 @@ internal class JxInjectorContainer {
                     override val genericType: Type get() = boundType
                     override fun toString() = element.toString()
                 }
-                val getter = _getter(LazyElement())
+                val getter = getter(LazyElement())
 
                 getterFunction { lazy { getter() } }
             }
@@ -114,7 +114,7 @@ internal class JxInjectorContainer {
         }
     }
 
-    private fun <M: AccessibleObject> _fillSetters(
+    private fun <M: AccessibleObject> fillSetters(
         members: Array<M>,
         elements: M.() -> Array<Element>,
         call: M.(Any, Array<Any?>) -> Unit,
@@ -124,7 +124,7 @@ internal class JxInjectorContainer {
             .filter { it.isAnnotationPresent(Inject::class.java) }
             .map { member ->
                 val getters = member.elements()
-                    .map { _getter(it) }
+                    .map { getter(it) }
                     .toTypedArray()
 
                 @Suppress("DEPRECATION")
@@ -145,7 +145,7 @@ internal class JxInjectorContainer {
             }
     }
 
-    private tailrec fun _fillMembersSetters(cls: Class<*>, setters: MutableList<DKodein.(Any) -> Any>) {
+    private tailrec fun fillMembersSetters(cls: Class<*>, setters: MutableList<DKodein.(Any) -> Any>) {
         if (cls == Any::class.java)
             return
 
@@ -161,7 +161,7 @@ internal class JxInjectorContainer {
             override fun toString() = _field.toString()
         }
 
-        _fillSetters(
+        fillSetters(
             members = cls.declaredFields,
             elements = { arrayOf(FieldElement(this)) },
             call = { receiver, values -> set(receiver, values[0]) },
@@ -175,29 +175,29 @@ internal class JxInjectorContainer {
             override fun toString() = "Parameter ${_index + 1} of $_method"
         }
 
-        _fillSetters(
+        fillSetters(
             members = cls.declaredMethods,
             elements = { (0 until parameterTypes.size).map { ParameterElement(this, it) }.toTypedArray() },
             call = { receiver, values -> invoke(receiver, *values) },
             setters = setters
         )
 
-        return _fillMembersSetters(cls.superclass, setters)
+        return fillMembersSetters(cls.superclass, setters)
     }
 
-    private fun _createSetters(cls: Class<*>): List<DKodein.(Any) -> Any> {
+    private fun createSetters(cls: Class<*>): List<DKodein.(Any) -> Any> {
         val setters = ArrayList<DKodein.(Any) -> Any>()
-        _fillMembersSetters(cls, setters)
+        fillMembersSetters(cls, setters)
         return setters
     }
 
-    private fun _findSetters(cls: Class<*>): List<DKodein.(Any) -> Any> = _setters.getOrPut(cls) { _createSetters(cls) }
+    private fun findSetters(cls: Class<*>): List<DKodein.(Any) -> Any> = _setters.getOrPut(cls) { createSetters(cls) }
 
     internal fun inject(kodein: DKodein, receiver: Any) {
-        _findSetters(receiver.javaClass).forEach { kodein.it(receiver) }
+        findSetters(receiver.javaClass).forEach { kodein.it(receiver) }
     }
 
-    private fun _createConstructor(cls: Class<*>): DKodein.() -> Any {
+    private fun createConstructor(cls: Class<*>): DKodein.() -> Any {
         val constructor = cls.declaredConstructors.firstOrNull { it.isAnnotationPresent(Inject::class.java) }
                           ?:  if (cls.declaredConstructors.size == 1) cls.declaredConstructors[0]
                           else throw IllegalArgumentException("Class ${cls.name} must either have only one constructor or an @Inject annotated constructor")
@@ -209,7 +209,7 @@ internal class JxInjectorContainer {
             override fun toString() = "Parameter ${_index + 1} of $constructor"
         }
 
-        val getters = (0 until constructor.parameterTypes.size).map { _getter(ConstructorElement(it)) }
+        val getters = (0 until constructor.parameterTypes.size).map { getter(ConstructorElement(it)) }
 
         @Suppress("DEPRECATION")
         val isAccessible = constructor.isAccessible
@@ -228,12 +228,12 @@ internal class JxInjectorContainer {
         }
     }
 
-    private fun _findConstructor(cls: Class<*>) = _constructors.getOrPut(cls) { _createConstructor(cls) }
+    private fun findConstructor(cls: Class<*>) = _constructors.getOrPut(cls) { createConstructor(cls) }
 
     /** @suppress */
     @JvmOverloads
     internal fun <T: Any> newInstance(kodein: DKodein, cls: Class<T>, injectFields: Boolean = true): T {
-        val constructor = _findConstructor(cls)
+        val constructor = findConstructor(cls)
 
         @Suppress("UNCHECKED_CAST")
         val instance = kodein.constructor() as T

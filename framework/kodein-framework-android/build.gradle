@@ -21,10 +21,12 @@ dependencies {
 
     compile project(':core:kodein-core-jvm')
 
-    compile 'com.android.support:appcompat-v7:27.0.2'
+    compile 'com.android.support:appcompat-v7:27.1.0'
 
     testCompile "junit:junit:$junit_version"
 }
+
+apply from: "../../gradle/dokka.gradle"
 
 apply from: "../../gradle/android-publish.gradle"
 

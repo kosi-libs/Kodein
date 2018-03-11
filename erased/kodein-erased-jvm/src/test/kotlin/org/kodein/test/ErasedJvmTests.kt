@@ -100,7 +100,7 @@ class ErasedJvmTests {
     }
 
     object test15Scope : Scope<Any?, Nothing?> {
-        val registry = MultiItemScopeRegistry()
+        private val registry = MultiItemScopeRegistry()
         override fun getBindingContext(envContext: Any?) = null
         override fun getRegistry(receiver: Any?, context: Any?) = registry
     }
@@ -163,8 +163,6 @@ class ErasedJvmTests {
             bind<IPerson>(tag = "instance") with instance(Person("i"))
             constant(tag = "answer") with 42
         }
-
-        val UnitToken = erased<Unit>()
 
         assertEquals(6, kodein.container.tree.bindings.size)
         assertEquals("provider", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().binding.factoryName())
@@ -327,7 +325,36 @@ class ErasedJvmTests {
         kodein.instance<SubResource>()
     }
 
+    // Only the JVM supports reflection
+    @Test fun test31_03_MultipleMultiArgumentsAllFactories() {
+        val kodein = Kodein {
+            bind<Name>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
+            bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
+            bind<Name>() with factory { name: String, age: Int -> FullInfos(name, "BRYS", age) }
+            bind<String>() with factory { firstName: String, lastName: String -> "Mr $firstName $lastName" }
+        }
 
+        val f by kodein.AllFactories<Multi2<String, String>, Name>(Multi2.erased(), erased())
+        val df = kodein.direct.AllFactories<Multi2<String, String>, Name>(Multi2.erased(), erased())
+        val p by kodein.allProviders<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val dp = kodein.direct.allProviders<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val i by kodein.allInstances<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val di = kodein.direct.allInstances<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+
+        assertAllEqual(2, f.size, df.size, p.size, dp.size, i.size, di.size)
+
+        val values =
+                f.map { it(M("Salomon", "BRYS")) } +
+                        df.map { it(M("Salomon", "BRYS")) } +
+                        p.map { it() } +
+                        dp.map { it() } +
+                        i +
+                        di
+
+        assertAllEqual(FullName("Salomon", "BRYS"), *values.toTypedArray())
+    }
+
+    // Only the JVM supports precise description
     @Test fun test32_01_simpleKeyFullDescription() {
         val key = Kodein.Key(
                 contextType = erased<Any>(),
@@ -340,6 +367,7 @@ class ErasedJvmTests {
         assertEquals("bind<kotlin.String>() with ? { ? }", key.fullDescription)
     }
 
+    // Only the JVM supports precise description
     @Test fun test32_03_complexKeyFullDescription() {
         val key = Kodein.Key(
                 contextType = erased<String>(),
@@ -350,6 +378,85 @@ class ErasedJvmTests {
 
         assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\")", key.bindFullDescription)
         assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") with ?<kotlin.String>().? { org.kodein.Multi2<kotlin.String, kotlin.String> -> ? }", key.fullDescription)
+    }
+
+    @Test fun test33_00_AllFactories() {
+        val kodein = Kodein {
+            bind<Name>() with factory { name: String -> Name(name) }
+            bind<FullName>() with factory { name: String -> FullName(name, "BRYS") }
+            bind<String>() with factory { name: String -> "Mr $name BRYS" }
+        }
+
+        val f by kodein.allFactories<String, Name>()
+        val df = kodein.direct.allFactories<String, Name>()
+        val p by kodein.allProviders<String, Name>(arg = "Salomon")
+        val dp = kodein.direct.allProviders<String, Name>(arg = "Salomon")
+        val fp by kodein.allProviders<String, Name>(fArg = { "Salomon" })
+        val dfp = kodein.direct.allProviders<String, Name>(fArg = { "Salomon" })
+        val i by kodein.allInstances<String, Name>(arg = "Salomon")
+        val di = kodein.direct.allInstances<String, Name>(arg = "Salomon")
+        val fi by kodein.allInstances<String, Name>(fArg = { "Salomon" })
+
+        assertAllEqual(2, f.size, df.size, p.size, dp.size, fp.size, dfp.size, i.size, di.size, fi.size)
+
+        arrayOf(
+                f.map { it("Salomon") },
+                df.map { it("Salomon") },
+                p.map { it() },
+                dp.map { it() },
+                fp.map { it() },
+                dfp.map { it() },
+                i,
+                di,
+                fi
+        ).forEach {
+            assertTrue(Name("Salomon") in it)
+            assertTrue(FullName("Salomon", "BRYS") in it)
+        }
+    }
+
+    @Test fun test33_01_AllProviders() {
+        val kodein = Kodein {
+            bind<Name>() with provider { Name("Salomon") }
+            bind<FullName>() with provider { FullName("Salomon", "BRYS") }
+            bind<String>() with provider { "Mr Salomon BRYS" }
+        }
+
+        val providers by kodein.allProviders<IName>()
+
+        assertEquals(2, providers.size)
+
+        val values = providers.map { it() }
+
+        assertTrue(Name("Salomon") in values)
+        assertTrue(FullName("Salomon", "BRYS") in values)
+
+        val dProviders = kodein.direct.allProviders<IName>()
+
+        assertEquals(2, providers.size)
+
+        val dValues = dProviders.map { it() }
+
+        assertTrue(Name("Salomon") in dValues)
+        assertTrue(FullName("Salomon", "BRYS") in dValues)
+    }
+
+    @Test fun test33_02_AllInstances() {
+        val kodein = Kodein {
+            bind<Name>() with provider { Name("Salomon") }
+            bind<FullName>() with provider { FullName("Salomon", "BRYS") }
+            bind<String>() with provider { "Mr Salomon BRYS" }
+        }
+
+        val values by kodein.allInstances<IName>()
+
+        assertTrue(Name("Salomon") in values)
+        assertTrue(FullName("Salomon", "BRYS") in values)
+
+        val dValues = kodein.direct.allInstances<IName>()
+
+        assertTrue(Name("Salomon") in dValues)
+        assertTrue(FullName("Salomon", "BRYS") in dValues)
     }
 
 }

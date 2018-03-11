@@ -5,6 +5,8 @@ dokka {
     outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
 
+    reportUndocumented = true
+
 //    includes = ['dokka-module.md', 'dokka-package.md']
 
     linkMapping {

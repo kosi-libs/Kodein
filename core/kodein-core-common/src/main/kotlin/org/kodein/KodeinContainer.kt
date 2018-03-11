@@ -1,5 +1,6 @@
 package org.kodein
 
+import org.kodein.bindings.Binding
 import org.kodein.bindings.KodeinBinding
 import org.kodein.internal.newLinkedList
 

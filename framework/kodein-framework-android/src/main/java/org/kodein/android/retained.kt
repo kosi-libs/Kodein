@@ -19,6 +19,12 @@ private class KodeinFragment(val kodein: Kodein) : Fragment() {
 
 private const val _kodeinFragmentTag = "org.kodein.android.KodeinFragment"
 
+/**
+ * A Kodein instance that will be retained between activity changes.
+ *
+ * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
+ * @property init The block of configuration for this module.
+ */
 fun Activity.retainedKodein(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Lazy<Kodein> = lazy {
     (fragmentManager.findFragmentByTag(_kodeinFragmentTag) as? KodeinFragment)?.let { return@lazy it.kodein }
 

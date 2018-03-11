@@ -1,5 +1,9 @@
 package org.kodein
 
+import org.kodein.bindings.KodeinBinding
+import org.kodein.internal.BindingKodeinImpl
+import org.kodein.internal.DKodeinImpl
+
 /**
  * Defines the specs to search bindings from (in)complete data with [CopySpecs] or [KodeinTree.find].
  *
@@ -101,4 +105,38 @@ open class SearchDSL {
      * @param tag The tag constraint.
      */
     fun tag(tag: Any?) = Spec { this.tag = tag }
+}
+
+/**
+ * DSL to find bindings.
+ *
+ * Can be used as such (with [findAllBindings]):
+ *
+ * ```
+ * val bindings = kodein.container.tree.findAllBindings {
+ *     +binding<Whatever>()
+ *     +tag("my-tag")
+ * }
+ * ```
+ */
+class FindDSL : SearchDSL() {
+    internal val specs = SearchSpecs()
+
+    /**
+     * Register a spec.
+     *
+     * @receiver The spec to register in this search.
+     */
+    operator fun Spec.unaryPlus() {
+        apply(specs)
+    }
+}
+
+/**
+ * Used to find bindings that match a particular [SearchSpecs].
+ */
+fun KodeinTree.findAllBindings(f: FindDSL.() -> Unit): List<Pair<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>> {
+    val dsl = FindDSL()
+    dsl.f()
+    return find(dsl.specs)
 }

@@ -53,7 +53,10 @@ import org.kodein.bindings.*
 import java.io.File
 
 /**
- * Defines the [androidModule]
+ * Android `Kodein.Module` that defines a lot of platform bindings.
+ *
+ * @param app The application object, used for context.
+ * @return An Android `Kodein.Module` that defines a lot of platform bindings.
  */
 @SuppressLint("NewApi")
 fun androidModule(app: Application) = Kodein.Module(name = "\u2063androidModule") {

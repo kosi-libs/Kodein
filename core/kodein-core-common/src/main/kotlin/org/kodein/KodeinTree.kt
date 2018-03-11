@@ -20,6 +20,8 @@ interface KodeinTree {
     /**
      * Finds all keys and definitions that match the given key.
      *
+     * If a "perfect" match is found (a definition that exactly matches the given key), only that definition is returned, unless [all] is true.
+     *
      * @param C The key context type.
      * @param A The key argument type.
      * @param T The key return type.
@@ -27,7 +29,7 @@ interface KodeinTree {
      * @param overrideLevel 0 if looking for regular bindings, 1 or more if looking for bindings that have been overridden.
      * @return A list of keys and their definition.
      */
-    fun <C, A, T : Any> find(key: Kodein.Key<C, A, T>, overrideLevel: Int = 0): List<Pair<Kodein.Key<C, A, T>, KodeinDefinition<C, A, T>>>
+    fun <C, A, T : Any> find(key: Kodein.Key<C, A, T>, overrideLevel: Int = 0, all: Boolean = false): List<Pair<Kodein.Key<C, A, T>, KodeinDefinition<C, A, T>>>
 
     /**
      * Finds all keys and definitions that match the given specs.

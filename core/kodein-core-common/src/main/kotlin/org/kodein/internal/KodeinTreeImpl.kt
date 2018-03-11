@@ -68,15 +68,17 @@ internal class KodeinTreeImpl(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C, A, T : Any> find(key: Kodein.Key<C, A, T>, overrideLevel: Int): List<Pair<Kodein.Key<C, A, T>, KodeinDefinition<C, A, T>>> {
+    override fun <C, A, T : Any> find(key: Kodein.Key<C, A, T>, overrideLevel: Int, all: Boolean): List<Pair<Kodein.Key<C, A, T>, KodeinDefinition<C, A, T>>> {
 
-        _cache[key]?.let { return it.getOrNull(overrideLevel)?.let { listOf(key to it as KodeinDefinition<C, A, T>) } ?: emptyList() }
+        if (!all) {
+            _cache[key]?.let { return it.getOrNull(overrideLevel)?.let { listOf(key to it as KodeinDefinition<C, A, T>) } ?: emptyList() }
 
-        if (key.contextType != AnyToken) {
-            val anyContextKey = key.copy(contextType = AnyToken)
-            _cache[anyContextKey]?.let {
-                _cache[key] = it
-                return it.getOrNull(overrideLevel)?.let { listOf(key to it as KodeinDefinition<C, A, T>) } ?: emptyList()
+            if (key.contextType != AnyToken) {
+                val anyContextKey = key.copy(contextType = AnyToken)
+                _cache[anyContextKey]?.let {
+                    _cache[key] = it
+                    return it.getOrNull(overrideLevel)?.let { listOf(key to it as KodeinDefinition<C, A, T>) } ?: emptyList()
+                }
             }
         }
 

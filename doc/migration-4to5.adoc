@@ -57,6 +57,7 @@ This is because:
 - Some classes (such as Android or TornadoFX components) are created before being "attached" to their context.
 
 Furthermore, the use of Kotlin's delegated properties allows:
+
 - Factories to access context & receiver (very useful for TornadoFX & Android integration).
 - The use of a trigger (previously known as injector) a lot easier.
 
@@ -82,6 +83,9 @@ In version 5, Kodein offers the `KodeinTrigger` and the `LateinitKodein` that ea
 
 - `KodeinTrigger` allows you to define when you want your dependencies to be retrieved (rather than at first access)
 - `LateInitKodein` allows you to use a Kodein-like shallow object and to define the location of a real Kodein object later.
+
+TIP: In most cases, you won't need either of these classes, even if you were using a `KodeinInjector`.
+     Because Kodein 5 is lazy by default, it eliminates most of the injector needs.
 
 
 === Scope & contexts
@@ -241,9 +245,9 @@ If you want to keep Kodein 4's direct retrieval by default, you simply need to:
 [source, kotlin]
 .Example: creating a `DKodein`
 ----
-val kodein = Kodein {
+val kodein = Kodein.direct { <1>
     /* bindings */
-}.direct <1>
+}
 ----
 <1> This `.direct` will return a `DKodein`
 

@@ -14,6 +14,8 @@ data class Multi2<A1, A2>(
         override val type: TypeToken<Multi2<A1, A2>>
 ) : Typed<Multi2<A1, A2>> {
     override val value: Multi2<A1, A2> get() = this
+
+    companion object
 }
 
 /**
@@ -33,6 +35,8 @@ data class Multi3<A1, A2, A3>(
         override val type: TypeToken<Multi3<A1, A2, A3>>
 ) : Typed<Multi3<A1, A2, A3>> {
     override val value: Multi3<A1, A2, A3> get() = this
+
+    companion object
 }
 
 /**
@@ -55,6 +59,8 @@ data class Multi4<A1, A2, A3, A4>(
         override val type: TypeToken<Multi4<A1, A2, A3, A4>>
 ) : Typed<Multi4<A1, A2, A3, A4>> {
     override val value: Multi4<A1, A2, A3, A4> get() = this
+
+    companion object
 }
 
 /**
@@ -83,4 +89,6 @@ data class Multi5<A1, A2, A3, A4, A5>(
         override val type: TypeToken<Multi5<A1, A2, A3, A4, A5>>
 ) : Typed<Multi5<A1, A2, A3, A4, A5>> {
     override val value: Multi5<A1, A2, A3, A4, A5> get() = this
+
+    companion object
 }

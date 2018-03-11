@@ -2,7 +2,6 @@ package org.kodein.generic
 
 import org.kodein.Kodein
 import org.kodein.SearchDSL
-import org.kodein.bindings.Scope
 import org.kodein.generic
 
 /**
@@ -35,12 +34,22 @@ inline fun Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null) = B
  * @param T The type of value to bind.
  * @param value The instance to bind.
  */
-infix inline fun <reified T : Any> Kodein.Builder.ConstantBinder.with(value: T) = With(generic(), value)
+inline infix fun <reified T: Any> Kodein.Builder.ConstantBinder.with(value: T) = With(generic(), value)
 
-inline fun <reified T : Any> SearchDSL.binding(tag: Any? = null) = SearchDSL.Binding(generic<T>(), tag)
+/**
+ * Creates a return type constrained spec.
+ *
+ * @property tag An optional tag constraint.
+ */
+@Suppress("unused")
+inline fun <reified T: Any> SearchDSL.binding(tag: Any? = null) = SearchDSL.Binding(generic<T>(), tag)
 
-inline fun <reified T : Any> SearchDSL.context() = Context(generic<T>())
+/**
+ * Creates a context constrained spec.
+ */
+inline fun <reified T> SearchDSL.context() = Context(generic<T>())
 
-inline fun <reified T : Any> SearchDSL.scope(@Suppress("UNUSED_PARAMETER") scope: Scope<T, *>) = Context(generic<T>())
-
-inline fun <reified T : Any> SearchDSL.argument() = Argument(generic<T>())
+/**
+ * Creates an argument constrained spec.
+ */
+inline fun <reified T> SearchDSL.argument() = Argument(generic<T>())

@@ -6,7 +6,19 @@ import org.kodein.Kodein
 import org.kodein.bindings.*
 import org.kodein.generic
 
+/**
+ * Used to define bindings with a scope: `bind<MyType>() with scoped(myScope).singleton { /*...*/ }`
+ *
+ * @param EC The scope's environment context type.
+ * @param BC The scope's Binding context type.
+ */
 inline fun <reified EC, BC> Kodein.Builder.scoped(scope: Scope<EC, BC>): Kodein.BindBuilder.WithScope<EC, BC> = Kodein.BindBuilder.WithScope.Impl(generic(), scope)
+
+/**
+ * Used to define bindings with a context: `bind<MyType>() with contexted<MyContext>().provider { /*...*/ }`
+ *
+ * @param C The context type.
+ */
 inline fun <reified C> Kodein.Builder.contexted(): Kodein.BindBuilder.WithContext<C> = Kodein.BindBuilder.WithContext.Impl(generic())
 
 
@@ -44,7 +56,7 @@ inline fun <C, reified T: Any> Kodein.BindBuilder.WithContext<C>.provider(noinli
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  * @return A singleton ready to be bound.
  */
-inline fun <EC, BC, reified T: Any> Kodein.BindBuilder.WithScope<EC, BC>.singleton(ref: RefMaker? = null, noinline creator: NoArgSimpleBindingKodein<BC>.() -> T) = Singleton<EC, BC, T>(scope, contextType, generic(), ref, creator)
+inline fun <EC, BC, reified T: Any> Kodein.BindBuilder.WithScope<EC, BC>.singleton(ref: RefMaker? = null, noinline creator: NoArgSimpleBindingKodein<BC>.() -> T) = Singleton(scope, contextType, generic(), ref, creator)
 
 /**
  * Creates a multiton: will create an instance on first request for each different argument and will subsequently always return the same instance for the same argument.

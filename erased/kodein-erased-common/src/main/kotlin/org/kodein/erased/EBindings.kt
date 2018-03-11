@@ -6,14 +6,26 @@ import org.kodein.Kodein
 import org.kodein.bindings.*
 import org.kodein.erased
 
+/**
+ * Used to define bindings with a scope: `bind<MyType>() with scoped(myScope).singleton { /*...*/ }`
+ *
+ * @param EC The scope's environment context type.
+ * @param BC The scope's Binding context type.
+ */
 inline fun <reified EC, BC> Kodein.Builder.scoped(scope: Scope<EC, BC>): Kodein.BindBuilder.WithScope<EC, BC> = Kodein.BindBuilder.WithScope.Impl(erased(), scope)
+
+/**
+ * Used to define bindings with a context: `bind<MyType>() with contexted<MyContext>().provider { /*...*/ }`
+ *
+ * @param C The context type.
+ */
 inline fun <reified C> Kodein.Builder.contexted(): Kodein.BindBuilder.WithContext<C> = Kodein.BindBuilder.WithContext.Impl(erased())
 
 
 /**
  * Creates a factory: each time an instance is needed, the function [creator] function will be called.
  *
- * A & T eraseds will be kept.
+ * A & T generics will be erased!
  *
  * @param A The argument type.
  * @param T The created type.
@@ -25,7 +37,7 @@ inline fun <C, reified A, reified T: Any> Kodein.BindBuilder.WithContext<C>.fact
 /**
  * Creates a factory: each time an instance is needed, the function [creator] function will be called.
  *
- * T eraseds will be kept.
+ * T generics will be erased!
  *
  * A provider is like a [factory], but without argument.
  *
@@ -38,18 +50,18 @@ inline fun <C, reified T: Any> Kodein.BindBuilder.WithContext<C>.provider(noinli
 /**
  * Creates a singleton: will create an instance on first request and will subsequently always return the same instance.
  *
- * T eraseds will be kept.
+ * T generics will be erased!
  *
  * @param T The created type.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  * @return A singleton ready to be bound.
  */
-inline fun <EC, BC, reified T: Any> Kodein.BindBuilder.WithScope<EC, BC>.singleton(ref: RefMaker? = null, noinline creator: NoArgSimpleBindingKodein<BC>.() -> T) = Singleton<EC, BC, T>(scope, contextType, erased(), ref, creator)
+inline fun <EC, BC, reified T: Any> Kodein.BindBuilder.WithScope<EC, BC>.singleton(ref: RefMaker? = null, noinline creator: NoArgSimpleBindingKodein<BC>.() -> T) = Singleton(scope, contextType, erased(), ref, creator)
 
 /**
  * Creates a multiton: will create an instance on first request for each different argument and will subsequently always return the same instance for the same argument.
  *
- * A & T eraseds will be kept.
+ * A & T generics will be erased!
  *
  * @param A The argument type.
  * @param T The created type.
@@ -61,7 +73,7 @@ inline fun <EC, BC, reified A, reified T: Any> Kodein.BindBuilder.WithScope<EC, 
 /**
  * Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.
  *
- * T eraseds will be kept.
+ * T generics will be erased!
  *
  * @param T The created type.
  * @param creator The function that will be called as soon as Kodein is ready. Guaranteed to be called only once. Should create a new instance.
@@ -72,7 +84,7 @@ inline fun <reified T: Any> Kodein.Builder.eagerSingleton(noinline creator: NoAr
 /**
  * Creates an instance provider: will always return the given instance.
  *
- * T eraseds will be kept.
+ * T generics will be erased!
  *
  * @param T The type of the instance.
  * @param instance The object that will always be returned.

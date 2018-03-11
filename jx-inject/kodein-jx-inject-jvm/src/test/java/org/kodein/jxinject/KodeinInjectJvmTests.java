@@ -65,6 +65,7 @@ public class KodeinInjectJvmTests {
 
     public static class Test00_03 {
         boolean passed = false;
+        @SuppressWarnings("unused")
         @Inject void inject(
                 String firstname,
                 @Named("lastname") String lastname,
@@ -184,6 +185,7 @@ public class KodeinInjectJvmTests {
 
     public static class Test01_06 {
         boolean passed = false;
+        @SuppressWarnings("unused")
         @Inject void inject(
                 @ProviderFun Function0<String> firstname,
                 @Named("lastname") @ProviderFun Function0<String> lastname,
@@ -213,6 +215,7 @@ public class KodeinInjectJvmTests {
 
     public static class Test01_07 {
         boolean passed = false;
+        @SuppressWarnings("unused")
         @Inject void inject(
                 Provider<String> firstname,
                 @Named("lastname") Provider<String> lastname,
@@ -269,6 +272,7 @@ public class KodeinInjectJvmTests {
 
     public static class Test02_02 {
         boolean passed = false;
+        @SuppressWarnings("unused")
         @Inject void inject(
                 @FactoryFun Function1<Integer, String> firstname,
                 @Named("lastname") @FactoryFun Function1<Integer, String> lastname,
@@ -435,14 +439,5 @@ public class KodeinInjectJvmTests {
 
         assertEquals("fourty-two", test.answer);
     }
-
-//    @Test
-//    public void test05_00_BindWithJX() {
-//        Kodein kodein = KodeinsKt.test5();
-//
-//        Test5B b = KodeinKt.Instance(kodein, TT(Test5B.class), null, null);
-////        Test5B b = kodein.Instanc(TT(Test5B.class), null);
-//        assertNotNull(b.getA());
-//    }
 
 }

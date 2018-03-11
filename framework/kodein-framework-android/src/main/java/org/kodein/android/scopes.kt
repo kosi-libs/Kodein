@@ -2,20 +2,26 @@ package org.kodein.android
 
 import android.app.Activity
 import android.app.Fragment
-import android.app.Service
-import android.content.BroadcastReceiver
 import android.os.Bundle
 import org.kodein.bindings.*
 import android.support.v4.app.Fragment as SupportFragment
 
-private val _androidScope = WeakContextScope<Any>()
+private object AndroidComponentsWeakScope : WeakContextScope<Any>()
 
-fun <T> androidScope() = _androidScope as Scope<T, T>
+/**
+ * A scope for Android components.
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T: Any> androidScope() = AndroidComponentsWeakScope as SimpleScope<T>
 
 private const val SCOPE_FRAGMENT_TAG = "org.kodein.android.ActivityRetainedScope.RetainedScopeFragment"
 
+/**
+ * A scope that allows to get an activity-scoped singleton that's independent from the activity restart.
+ */
 object activityRetainedScope : SimpleScope<Activity> {
 
+    /** @suppress */
     class RetainedScopeFragment: Fragment() {
         val registry = MultiItemScopeRegistry()
 

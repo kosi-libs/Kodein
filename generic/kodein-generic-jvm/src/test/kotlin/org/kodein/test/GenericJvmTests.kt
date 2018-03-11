@@ -7,6 +7,7 @@ import kotlin.concurrent.thread
 import kotlin.test.*
 
 
+@Suppress("ClassName")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class GenericJvmTests {
 
@@ -47,8 +48,14 @@ class GenericJvmTests {
         val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
 
         val p: () -> Person by kodein.provider(arg = "Salomon")
+        val dp: () -> Person = kodein.direct.provider(arg = "Salomon")
 
-        assertEquals("Salomon", p().name)
+        assertAllEqual("Salomon", p().name, dp().name)
+
+        val fp: () -> Person by kodein.provider(fArg = { "Salomon" })
+        val dfp: () -> Person = kodein.direct.provider(fArg = { "Salomon" })
+
+        assertAllEqual("Salomon", fp().name, dfp().name)
     }
 
     @Test fun test00_04_WithFactoryGetInstance() {
@@ -58,6 +65,10 @@ class GenericJvmTests {
         val p: Person by kodein.instance(arg = "Salomon")
 
         assertEquals("Salomon", p.name)
+
+        val fp: Person by kodein.instance(fArg = { "Salomon" })
+
+        assertEquals("Salomon", fp.name)
     }
 
     @Test fun test00_05_WithSubFactoryGetInstance() {
@@ -226,31 +237,69 @@ class GenericJvmTests {
         assertSame(p2(), p)
     }
 
-    @Test fun test04_00_NullBindingGetInstance() {
+    @Test fun test04_00_NullBindingProviderAndInstance() {
 
         val kodein = Kodein {}
 
-        val p: Person? by kodein.instanceOrNull()
-
-        assertNull(p)
-    }
-
-    @Test fun test04_01_NullBindingGetProvider() {
-
-        val kodein = Kodein {}
-
+        val i: Person? by kodein.instanceOrNull()
+        val di: Person? = kodein.direct.instanceOrNull()
         val p: (() -> Person)? by kodein.providerOrNull()
+        val dp: (() -> Person)? = kodein.direct.providerOrNull()
 
-        assertNull(p)
+        assertAllNull(i, di, p, dp)
     }
 
-    @Test fun test04_02_NullBindingGetFactory() {
+    @Test fun test04_01_NullBindingGetFactory() {
 
         val kodein = Kodein {}
 
-        val p: ((String) -> Person)? by kodein.factoryOrNull()
+        val f: ((String) -> Person)? by kodein.factoryOrNull()
+        val df: ((String) -> Person)? = kodein.direct.factoryOrNull()
+        val p: (() -> Person)? by kodein.providerOrNull(arg = "Salomon")
+        val dp: (() -> Person)? = kodein.direct.providerOrNull(arg = "Salomon")
+        val fp: (() -> Person)? by kodein.providerOrNull(fArg = { "Salomon" })
+        val dfp: (() -> Person)? = kodein.direct.providerOrNull(fArg = { "Salomon" })
+        val i: Person? by kodein.instanceOrNull(arg = "Salomon")
+        val di: Person? = kodein.direct.instanceOrNull(arg = "Salomon")
+        val fi: Person? by kodein.instanceOrNull(fArg = { "Salomon" })
 
-        assertNull(p)
+        assertAllNull(f, df, p, dp, fp, dfp, i, di, fi)
+    }
+
+    @Test fun test04_02_NonNullBindingProviderAndInstance() {
+
+        val kodein = Kodein {
+            bind<String>() with provider { "Salomon" }
+        }
+
+        val i: String? by kodein.instanceOrNull()
+        val di: String? = kodein.direct.instanceOrNull()
+        val p: (() -> String)? by kodein.providerOrNull()
+        val dp: (() -> String)? = kodein.direct.providerOrNull()
+
+        assertAllNotNull(i, di, p, dp)
+        assertAllEqual("Salomon", i!!, di!!, p!!.invoke(), dp!!.invoke())
+    }
+
+    @Test fun test04_03_NonNullBindingGetFactory() {
+
+        val kodein = Kodein {
+            bind<String>() with factory { name: String -> "$name BRYS" }
+        }
+
+        val f: ((String) -> String)? by kodein.factoryOrNull()
+        val df: ((String) -> String)? = kodein.direct.factoryOrNull()
+        val p: (() -> String)? by kodein.providerOrNull(arg = "Salomon")
+        val dp: (() -> String)? = kodein.direct.providerOrNull(arg = "Salomon")
+        val fp: (() -> String)? by kodein.providerOrNull(fArg = { "Salomon" })
+        val dfp: (() -> String)? = kodein.direct.providerOrNull(fArg = { "Salomon" })
+        val i: String? by kodein.instanceOrNull(arg = "Salomon")
+        val di: String? = kodein.direct.instanceOrNull(arg = "Salomon")
+        val fi: String? by kodein.instanceOrNull(fArg = { "Salomon" })
+
+        assertAllNotNull(f, df, p, dp, fp, dfp, i, di, fi)
+
+        assertAllEqual("Salomon BRYS", f!!.invoke("Salomon"), df!!.invoke("Salomon"), p!!.invoke(), dp!!.invoke(), fp!!.invoke(), dfp!!.invoke(), i!!, di!!, fi!!)
     }
 
     @Test fun test05_00_NamedProviderBindingGetInstance() {
@@ -356,7 +405,7 @@ class GenericJvmTests {
             constant(tag = "answer") with 42
         }
 
-        val c: () -> Int by kodein.provider<Int>(tag = "answer")
+        val c: () -> Int by kodein.provider(tag = "answer")
 
         assertEquals(42, c())
     }
@@ -473,8 +522,8 @@ Dependency recursion:
             bind<List<B>>() with instance( lb )
         }
 
-        assertSame(kodein.direct.instance<List<A>>(), la)
-        assertSame(kodein.direct.instance<List<B>>(), lb)
+        assertSame(kodein.direct.instance(), la)
+        assertSame(kodein.direct.instance(), lb)
     }
 
     class PersonContainer(kodein: Kodein) {
@@ -521,9 +570,9 @@ Dependency recursion:
             import(personModule)
         }
 
-        assertSame(kodein.direct.instance<Person>(tag = "named"), kodein.direct.instance<Person>(tag = "named"))
-        assertSame(kodein2.direct.instance<Person>(tag = "named"), kodein2.direct.instance<Person>(tag = "named"))
-        assertNotSame(kodein.direct.instance<Person>(tag = "named"), kodein2.direct.instance<Person>(tag = "named"))
+        assertSame(kodein.direct.instance(tag = "named"), kodein.direct.instance<Person>(tag = "named"))
+        assertSame(kodein2.direct.instance(tag = "named"), kodein2.direct.instance<Person>(tag = "named"))
+        assertNotSame(kodein.direct.instance(tag = "named"), kodein2.direct.instance<Person>(tag = "named"))
     }
 
     @Test fun test12_01_KodeinExtend() {
@@ -537,7 +586,7 @@ Dependency recursion:
             bind<Person>() with provider { Person() }
         }
 
-        assertSame(parent.direct.instance<Person>(tag = "named"), child.direct.instance<Person>(tag = "named"))
+        assertSame(parent.direct.instance<Person>(tag = "named"), child.direct.instance(tag = "named"))
         assertNull(parent.direct.instanceOrNull<Person>())
         assertNotNull(child.direct.instanceOrNull<Person>())
     }
@@ -725,6 +774,7 @@ Dependency recursion:
 
     class Test14_01(override val kodein: Kodein): KodeinAware {
         override val kodeinTrigger = KodeinTrigger()
+        @Suppress("unused")
         val person: Person by instance()
     }
 
@@ -742,8 +792,8 @@ Dependency recursion:
     }
 
     object test15Scope : Scope<Any?, Nothing?> {
-        val registry = MultiItemScopeRegistry()
-        override fun getBindingContext(envContext: Any?) = null
+        private val registry = MultiItemScopeRegistry()
+        override fun getBindingContext(envContext: Any?): Nothing? = null
         override fun getRegistry(receiver: Any?, context: Any?) = registry
     }
 
@@ -803,8 +853,6 @@ Dependency recursion:
             constant(tag = "answer") with 42
         }
 
-        val UnitToken = generic<Unit>()
-
         assertEquals(6, kodein.container.tree.bindings.size)
         assertEquals("provider", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().binding.factoryName())
         assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
@@ -817,7 +865,7 @@ Dependency recursion:
     @Test fun test16_00_AnyScopeSingleton() {
         val registry = MultiItemScopeRegistry()
         val myScope = object : Scope<Any?, Nothing?> {
-            override fun getBindingContext(envContext: Any?) = null
+            override fun getBindingContext(envContext: Any?): Nothing? = null
             override fun getRegistry(receiver: Any?, context: Any?) = registry
         }
         val kodein = Kodein {
@@ -883,7 +931,7 @@ Dependency recursion:
             bind<String>(tag = "name", overrides = true) with instance("Salomon")
         }
 
-        assertEquals("Salomon", kodein.direct.instance<String>(tag = "name"))
+        assertEquals("Salomon", kodein.direct.instance(tag = "name"))
     }
 
     @Test fun test17_01_SilentOverride() {
@@ -892,7 +940,7 @@ Dependency recursion:
             bind<String>(tag = "name") with instance("Salomon")
         }
 
-        assertEquals("Salomon", kodein.direct.instance<String>(tag = "name"))
+        assertEquals("Salomon", kodein.direct.instance(tag = "name"))
     }
 
     @Test fun test17_02_SilentOverrideNotAllowed() {
@@ -922,7 +970,7 @@ Dependency recursion:
             bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " the great" } // just kidding!
         }
 
-        assertEquals("Salomon BRYS the great", kodein.direct.instance<String>("name"))
+        assertEquals("Salomon BRYS the great", kodein.direct.instance("name"))
     }
 
     @Test fun test17_05_DependencyLoopWithOverrides() {
@@ -951,7 +999,7 @@ Dependency recursion:
             import(module, allowOverride = true)
         }
 
-        assertEquals("Salomon", kodein.direct.instance<String>(tag = "name"))
+        assertEquals("Salomon", kodein.direct.instance(tag = "name"))
     }
 
     @Test fun test18_01_ModuleForbiddenOverride() {
@@ -1070,9 +1118,9 @@ Dependency recursion:
         val kodein = Kodein { bind() from multiton { name: String -> Person(name) } }
 
         val p1: Person by kodein.instance(arg = "Salomon")
-        val p2: Person by kodein.instance(arg = "Salomon")
+        val p2: Person by kodein.instance(fArg = { "Salomon" })
         val p3: Person by kodein.instance(arg = "Laila")
-        val p4: Person by kodein.instance(arg = "Laila")
+        val p4: Person by kodein.instance(fArg = { "Laila" })
 
         assertSame(p1, p2)
         assertSame(p3, p4)
@@ -1252,13 +1300,13 @@ Dependency recursion:
         assertNull(kodein.instanceOrNull<Person>(tag = "no-one"))
 
         assertNotNull(kodein.instanceOrNull<Person>(tag = "him"))
-        assertSame(kodein.instanceOrNull<Person>(tag = "him"), kodein.instanceOrNull<Person>(tag = "him"))
+        assertSame(kodein.instanceOrNull<Person>(tag = "him"), kodein.instanceOrNull(tag = "him"))
 
         assertNotNull(kodein.instanceOrNull<Person>(tag = "her"))
-        assertSame(kodein.instanceOrNull<Person>(tag = "her"), kodein.instanceOrNull<Person>(tag = "her"))
+        assertSame(kodein.instanceOrNull<Person>(tag = "her"), kodein.instanceOrNull(tag = "her"))
 
-        assertNotSame(kodein.instanceOrNull<Person>(), kodein.instanceOrNull<Person>())
-        assertEquals(kodein.instanceOrNull<Person>(), kodein.instanceOrNull<Person>())
+        assertNotSame(kodein.instanceOrNull<Person>(), kodein.instanceOrNull())
+        assertEquals(kodein.instanceOrNull<Person>(), kodein.instanceOrNull())
     }
 
     @Test fun test28_00_ManualTyping() {
@@ -1366,8 +1414,23 @@ Dependency recursion:
             bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
         }
 
-        val fullName: FullName by kodein.instance(arg = M("Salomon", "BRYS"))
-        assertEquals(FullName("Salomon", "BRYS"), fullName)
+        val i: FullName by kodein.instance(arg = M("Salomon", "BRYS"))
+        val ni: FullName? by kodein.instanceOrNull(arg = M("Salomon", 42))
+        val nni: FullName? by kodein.instanceOrNull(arg = M("Salomon", "BRYS"))
+        val di: FullName = kodein.direct.instance(arg = M("Salomon", "BRYS"))
+        val dni: FullName? = kodein.direct.instanceOrNull(arg = M("Salomon", 42))
+        val dnni: FullName? = kodein.direct.instanceOrNull(arg = M("Salomon", "BRYS"))
+        val p: () -> FullName by kodein.provider(arg = M("Salomon", "BRYS"))
+        val np: (() -> FullName)? by kodein.providerOrNull(arg = M("Salomon", 42))
+        val nnp: (() -> FullName)? by kodein.providerOrNull(arg = M("Salomon", "BRYS"))
+        val dp: () -> FullName = kodein.direct.provider(arg = M("Salomon", "BRYS"))
+        val dnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = M("Salomon", 42))
+        val dnnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = M("Salomon", "BRYS"))
+
+        assertAllNull(ni, dni, np, dnp)
+        assertAllNotNull(nni, dnni, nnp, dnnp)
+
+        assertAllEqual(FullName("Salomon", "BRYS"), i, nni!!, di, dnni, p(), nnp!!(), dp(), dnnp!!())
     }
 
     @Test fun test31_01_multiArgumentsMultiton() {
@@ -1375,8 +1438,23 @@ Dependency recursion:
             bind<FullName>() with multiton { firstName: String, lastName: String -> FullName(firstName, lastName) }
         }
 
-        val fullName: FullName by kodein.instance(arg = M("Salomon", "BRYS"))
-        assertEquals(FullName("Salomon", "BRYS"), fullName)
+        val i: FullName by kodein.instance(arg = M("Salomon", "BRYS"))
+        val ni: FullName? by kodein.instanceOrNull(arg = M("Salomon", 42))
+        val nni: FullName? by kodein.instanceOrNull(arg = M("Salomon", "BRYS"))
+        val di: FullName = kodein.direct.instance(arg = M("Salomon", "BRYS"))
+        val dni: FullName? = kodein.direct.instanceOrNull(arg = M("Salomon", 42))
+        val dnni: FullName? = kodein.direct.instanceOrNull(arg = M("Salomon", "BRYS"))
+        val p: () -> FullName by kodein.provider(arg = M("Salomon", "BRYS"))
+        val np: (() -> FullName)? by kodein.providerOrNull(arg = M("Salomon", 42))
+        val nnp: (() -> FullName)? by kodein.providerOrNull(arg = M("Salomon", "BRYS"))
+        val dp: () -> FullName = kodein.direct.provider(arg = M("Salomon", "BRYS"))
+        val dnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = M("Salomon", 42))
+        val dnnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = M("Salomon", "BRYS"))
+
+        assertAllNull(ni, dni, np, dnp)
+        assertAllNotNull(nni, dnni, nnp, dnnp)
+
+        assertAllEqual(FullName("Salomon", "BRYS"), i, nni!!, di, dnni, p(), nnp!!(), dp(), dnnp!!())
     }
 
     @Test fun test31_02_multiArgumentsFactoryBadType() {
@@ -1388,6 +1466,50 @@ Dependency recursion:
             @Suppress("UNUSED_VARIABLE")
             val fullName: FullName = kodein.direct.instance(arg = M("Salomon", 42))
         }
+    }
+
+    @Test fun test31_03_multipleMultiArgumentsFactories() {
+        val kodein = Kodein {
+            bind<Name>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
+            bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
+            bind<Name>() with factory { name: String, age: Int -> FullInfos(name, "BRYS", age) }
+            bind<String>() with factory { firstName: String, lastName: String -> "Mr $firstName $lastName" }
+        }
+
+        val f by kodein.allFactories<Multi2<String, String>, Name>()
+        val df = kodein.direct.allFactories<Multi2<String, String>, Name>()
+        val p by kodein.allProviders<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val dp = kodein.direct.allProviders<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val i by kodein.allInstances<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val di = kodein.direct.allInstances<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+
+        assertAllEqual(2, f.size, df.size, p.size, dp.size, i.size, di.size)
+
+        val values =
+                f.map { it(M("Salomon", "BRYS")) } +
+                        df.map { it(M("Salomon", "BRYS")) } +
+                        p.map { it() } +
+                        dp.map { it() } +
+                        i +
+                        di
+
+        assertAllEqual(FullName("Salomon", "BRYS"), *values.toTypedArray())
+    }
+
+    @Test fun test31_04_BigMultiArgumentsFactories() {
+        val kodein = Kodein {
+            bind<String>() with factory { a: String -> "Mr $a" }
+            bind<String>() with factory { a: String, b: String -> "Mr $a $b" }
+            bind<String>() with factory { a: String, b: String, c: String -> "Mr $a $b of $c" }
+            bind<String>() with factory { a: String, b: String, c: String, d: String -> "Mr $a $b of $c, $d" }
+            bind<String>() with factory { a: String, b: String, c: String, d: String, e: String -> "Mr $a $b of $c, $d in $e" }
+        }
+
+        assertEquals("Mr Salomon", kodein.direct.instance(arg = "Salomon"))
+        assertEquals("Mr Salomon BRYS", kodein.direct.instance(arg = M("Salomon", "BRYS")))
+        assertEquals("Mr Salomon BRYS of Paris", kodein.direct.instance(arg = M("Salomon", "BRYS", "Paris")))
+        assertEquals("Mr Salomon BRYS of Paris, France", kodein.direct.instance(arg = M("Salomon", "BRYS", "Paris", "France")))
+        assertEquals("Mr Salomon BRYS of Paris, France in Europe", kodein.direct.instance(arg = M("Salomon", "BRYS", "Paris", "France", "Europe")))
     }
 
     @Test fun test32_00_simpleKeySimpleDescription() {
@@ -1436,5 +1558,174 @@ Dependency recursion:
 
         assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\")", key.bindFullDescription)
         assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") with ?<kotlin.String>().? { org.kodein.Multi2<kotlin.String, kotlin.String> -> ? }", key.fullDescription)
+    }
+
+    @Test fun test33_00_allFactories() {
+        val kodein = Kodein {
+            bind<Name>() with factory { name: String -> Name(name) }
+            bind<FullName>() with factory { name: String -> FullName(name, "BRYS") }
+            bind<String>() with factory { name: String -> "Mr $name BRYS" }
+        }
+
+        val f by kodein.allFactories<String, Name>()
+        val df = kodein.direct.allFactories<String, Name>()
+        val p by kodein.allProviders<String, Name>(arg = "Salomon")
+        val dp = kodein.direct.allProviders<String, Name>(arg = "Salomon")
+        val fp by kodein.allProviders<String, Name>(fArg = { "Salomon" })
+        val dfp = kodein.direct.allProviders<String, Name>(fArg = { "Salomon" })
+        val i by kodein.allInstances<String, Name>(arg = "Salomon")
+        val di = kodein.direct.allInstances<String, Name>(arg = "Salomon")
+        val fi by kodein.allInstances<String, Name>(fArg = { "Salomon" })
+
+        assertAllEqual(2, f.size, df.size, p.size, dp.size, fp.size, dfp.size, i.size, di.size, fi.size)
+
+        arrayOf(
+                f.map { it("Salomon") },
+                df.map { it("Salomon") },
+                p.map { it() },
+                dp.map { it() },
+                fp.map { it() },
+                dfp.map { it() },
+                i,
+                di,
+                fi
+        ).forEach {
+            assertTrue(Name("Salomon") in it)
+            assertTrue(FullName("Salomon", "BRYS") in it)
+        }
+    }
+
+    @Test fun test33_01_allProviders() {
+        val kodein = Kodein {
+            bind<Name>() with provider { Name("Salomon") }
+            bind<FullName>() with provider { FullName("Salomon", "BRYS") }
+            bind<String>() with provider { "Mr Salomon BRYS" }
+        }
+
+        val providers by kodein.allProviders<IName>()
+
+        assertEquals(2, providers.size)
+
+        val values = providers.map { it() }
+
+        assertTrue(Name("Salomon") in values)
+        assertTrue(FullName("Salomon", "BRYS") in values)
+
+        val dProviders = kodein.direct.allProviders<IName>()
+
+        assertEquals(2, providers.size)
+
+        val dValues = dProviders.map { it() }
+
+        assertTrue(Name("Salomon") in dValues)
+        assertTrue(FullName("Salomon", "BRYS") in dValues)
+    }
+
+    @Test fun test33_02_allInstances() {
+        val kodein = Kodein {
+            bind<Name>() with provider { Name("Salomon") }
+            bind<FullName>() with provider { FullName("Salomon", "BRYS") }
+            bind<String>() with provider { "Mr Salomon BRYS" }
+        }
+
+        val values by kodein.allInstances<IName>()
+
+        assertTrue(Name("Salomon") in values)
+        assertTrue(FullName("Salomon", "BRYS") in values)
+
+        val dValues = kodein.direct.allInstances<IName>()
+
+        assertTrue(Name("Salomon") in dValues)
+        assertTrue(FullName("Salomon", "BRYS") in dValues)
+    }
+
+    class Test_34(override val kodein: Kodein) : KodeinAware {
+        val name: String by instance()
+    }
+
+    class Test_34_D(dkodein: DKodein) : DKodeinAware {
+        override val dkodein: DKodein = dkodein.on(receiver = this)
+        val name: String = instance()
+    }
+
+    @Test fun test34_00_Receiver() {
+        val kodein = Kodein {
+            bind<String>() with provider { if (receiver == null) "null" else receiver!!::class.simpleName!! }
+        }
+
+        val test = Test_34(kodein)
+        assertEquals("Test_34", test.name)
+
+        val testD = Test_34_D(kodein.direct)
+        assertEquals("Test_34_D", testD.name)
+    }
+
+    @Test fun test35_00_SearchTagged() {
+        val kodein = Kodein {
+            bind<String>(tag = "foo") with provider { "String-foo" }
+            bind<String>(tag = "bar") with provider { "String-bar" }
+            bind<Int>(tag = "foo") with provider { 42 }
+            bind<Int>(tag = "bar") with provider { 21 }
+        }
+
+        val bindings = kodein.container.tree.findAllBindings {
+            +tag("foo")
+        }
+
+        assertEquals(2, bindings.size)
+
+        val values = bindings.map { (key, _) ->
+            @Suppress("UNCHECKED_CAST")
+            kodein.container.factory(key as Kodein.Key<Any?, Any?, Any>, null, null).invoke(Unit)
+        }
+
+        assertTrue("String-foo" in values)
+        assertTrue(42 in values)
+    }
+
+    @Test fun test35_01_SearchArgument() {
+        val kodein = Kodein {
+            bind<String>() with provider { "String-foo" }
+            bind<String>() with factory { name: String -> "String-$name" }
+            bind<Int>() with provider { 42 }
+            bind<Int>() with factory { i: Int -> 21 + i }
+        }
+
+        val bindings = kodein.container.tree.findAllBindings {
+            +argument<Unit>()
+        }
+
+        assertEquals(2, bindings.size)
+
+        val values = bindings.map { (key, _) ->
+            @Suppress("UNCHECKED_CAST")
+            kodein.container.factory(key as Kodein.Key<Any?, Unit, Any>, null, null).invoke(Unit)
+        }
+
+        assertTrue("String-foo" in values)
+        assertTrue(42 in values)
+    }
+
+    @Test fun test35_02_SearchContext() {
+        val kodein = Kodein {
+            bind<String>() with provider { "String-foo" }
+            bind<String>() with contexted<String>().provider { "String-$context" }
+            bind<Int>() with provider { 42 }
+            bind<Int>() with contexted<String>().provider { 21 + context.length }
+        }
+
+        val bindings = kodein.container.tree.findAllBindings {
+            +context<Any?>()
+        }
+
+        assertEquals(2, bindings.size)
+
+        val values = bindings.map { (key, _) ->
+            @Suppress("UNCHECKED_CAST")
+            kodein.container.factory(key as Kodein.Key<Any?, Any?, Any>, null, null).invoke(Unit)
+        }
+
+        assertTrue("String-foo" in values)
+        assertTrue(42 in values)
     }
 }

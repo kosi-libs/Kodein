@@ -12,7 +12,7 @@ fun test0() = Kodein {
     bind<Set<String>>() with instance(setOf("a", "b", "c"))
 }
 
-fun test1() = Kodein {
+fun test1() = Kodein.direct {
     import(jxInjectorModule)
 
     var count = 0
@@ -32,23 +32,10 @@ fun test2() = Kodein {
     bind<Set<String>>() with factory { i: Int -> setOf("a$i", "b$i", "c$i") }
 }
 
-fun test4() = Kodein {
+fun test4() = Kodein.direct {
     bind(tag = "universe:answer") from instance("fourty-two")
 
     import(jxInjectorModule)
 
     jxQualifier<KodeinInjectJvmTests.Test04_00_UniversePrefix> { "universe:" + it.value }
-}
-
-interface Test5A
-interface Test5B { val a: Test5A }
-
-class Test5AImpl : Test5A
-class Test5BImpl(override val a: Test5A) : Test5B
-
-fun test5() = Kodein {
-    import(jxInjectorModule)
-
-    bind<Test5A>() with singleton { jx.newInstance<Test5AImpl>() }
-    bind<Test5B>() with singleton { jx.newInstance<Test5BImpl>() }
 }

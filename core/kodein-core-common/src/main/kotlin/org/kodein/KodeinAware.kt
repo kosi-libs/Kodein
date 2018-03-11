@@ -117,6 +117,7 @@ fun <T : Any> KodeinAware.Provider(type: TypeToken<out T>, tag: Any? = null): Ko
  * @param argType The type of argument the curried factory takes.
  * @param type The type of object to retrieve with the returned provider.
  * @param tag The bound tag, if any.
+ * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return A provider of [T].
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
@@ -144,6 +145,7 @@ fun <T : Any> KodeinAware.ProviderOrNull(type: TypeToken<out T>, tag: Any? = nul
  * @param argType The type of argument the curried factory takes.
  * @param type The type of object to retrieve with the returned provider.
  * @param tag The bound tag, if any.
+ * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return A provider of [T], or null if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
@@ -170,6 +172,7 @@ fun <T : Any> KodeinAware.AllProviders(type: TypeToken<out T>, tag: Any? = null)
  * @param argType The type of argument the curried factories take.
  * @param type The type of object to retrieve with the providers.
  * @param tag The bound tag, if any.
+ * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return A list of providers of [T].
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
@@ -197,6 +200,7 @@ fun <T : Any> KodeinAware.Instance(type: TypeToken<out T>, tag: Any? = null): Ko
  * @param argType The type of argument the curried factory takes.
  * @param type The type of object to retrieve.
  * @param tag The bound tag, if any.
+ * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return An instance of [T].
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
@@ -222,11 +226,12 @@ fun <T : Any> KodeinAware.InstanceOrNull(type: TypeToken<out T>, tag: Any? = nul
  * @param T The type of object to retrieve.
  * @param type The type of object to retrieve.
  * @param tag The bound tag, if any.
+ * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return An instance of [T], or null if no factory was found.
  * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
  */
-fun <A, T : Any> KodeinAware.InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): KodeinProperty<T> =
-        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factory(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).invoke(arg()) }
+fun <A, T : Any> KodeinAware.InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): KodeinProperty<T?> =
+        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.factoryOrNull(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver)?.invoke(arg()) }
 
 /**
  * Gets all instances from providers that match the the given return type and tag.
@@ -248,6 +253,7 @@ fun <T : Any> KodeinAware.AllInstances(type: TypeToken<out T>, tag: Any? = null)
  * @param argType The type of argument the curried factories take.
  * @param type The type of object to retrieve with the providers.
  * @param tag The bound tag, if any.
+ * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return A list of [T] instances.
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */

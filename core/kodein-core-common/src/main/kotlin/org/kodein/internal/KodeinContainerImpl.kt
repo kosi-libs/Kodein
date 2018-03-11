@@ -182,7 +182,7 @@ internal class KodeinContainerImpl private constructor(
     override fun <C, A, T: Any> allFactories(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int): List<(A) -> T> {
         val kContext = KodeinContext(key.contextType, context)
 
-        val result = tree.find(key, overrideLevel)
+        val result = tree.find(key, overrideLevel, all = true)
 
         return result.map { (_, definition) ->
             node?.check(key, overrideLevel)

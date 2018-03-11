@@ -13,9 +13,13 @@ val jxInjectorModule = Kodein.Module {
 }
 
 /**
- * Utility function that eases the retrieval of a [JxInjector].
+ * Utility function to retrieve a [JxInjector].
  */
 val Kodein.jx: JxInjector get() = JxInjector(direct, direct.Instance(erased(), null))
+
+/**
+ * Utility function to retrieve a [JxInjector].
+ */
 val DKodein.jx: JxInjector get() = JxInjector(this, Instance(erased(), null))
 
 /** @suppress */

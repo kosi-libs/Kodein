@@ -175,7 +175,7 @@ Kodein allows you to create a `Kodein` instance that lives only insidce your own
 ----
 class MyActivity : Activity(), KodeinAware {
     private val _parentKodein by closestKodein() <1>
-    override val kodein: Kodein by Kodein {
+    override val kodein: Kodein = Kodein {
         extend(_parentKodein) <2>
         /* activity specific bindings */
     }

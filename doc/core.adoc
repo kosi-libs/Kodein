@@ -1371,9 +1371,9 @@ If you only plan to use direct access, you can define your main kodein object to
 [source, kotlin]
 .Example: using a DKodein
 ----
-val kodein = Kodein {
+val kodein = Kodein.direct { <1>
         /* bindings */
-    }.direct <1>
+    }
 ----
 <1>: Note the `.direct`.
 ====
