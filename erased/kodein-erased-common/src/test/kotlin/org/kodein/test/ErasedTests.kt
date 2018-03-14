@@ -1098,17 +1098,6 @@ Dependency recursion:
         assertFails { trigger.trigger() }
     }
 
-    @Test fun test30_00_AllInstances() {
-        val kodein = Kodein {
-            bind<Person>() with provider { Person("Salomon") }
-            bind<String>() with provider { "Laila" }
-        }
-
-        val instances: List<Any> by kodein.allInstances()
-        assertTrue(Person("Salomon") in instances)
-        assertTrue("Laila" in instances)
-    }
-
     @Test fun test31_00_MultiArgumentsFactory() {
         val kodein = Kodein {
             bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }

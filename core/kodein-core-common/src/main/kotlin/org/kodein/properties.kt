@@ -29,7 +29,7 @@ class KodeinTrigger {
  *
  * In essence, the Kodein object is accessed only upon retrieving.
  */
-class KodeinProperty<out V> internal constructor(internal val trigger: KodeinTrigger?, @PublishedApi internal val get: (Any?) -> V) {
+class KodeinProperty<out V>(internal val trigger: KodeinTrigger?, @PublishedApi internal val get: (Any?) -> V) {
 
     /** @suppress */
     operator fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy { get(receiver) } .also { trigger?.properties?.add(it) }
