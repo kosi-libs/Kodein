@@ -124,6 +124,8 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
      * If null, it means that the binding **do not hold any reference or status** and need not be copied.
      */
     val copier: Copier<C, A, T>? get() = null
+
+    val supportSubTypes: Boolean get() = false
 }
 
 /**

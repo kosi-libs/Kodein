@@ -4,11 +4,24 @@ import org.kodein.*
 import org.kodein.bindings.ExternalSource
 
 
-private typealias BoundTypeTree = MutableMap<TypeToken<*>, ContextTypeTree>
+private sealed class TypeChecker {
+    abstract val type: TypeToken<*>
+    abstract fun check(other: TypeToken<*>): Boolean
 
-private typealias ContextTypeTree = MutableMap<TypeToken<*>, ArgumentTypeTree>
+    data class Down(override val type: TypeToken<*>) : TypeChecker() {
+        override fun check(other: TypeToken<*>) = type == AnyToken || type.isAssignableFrom(other)
+    }
 
-private typealias ArgumentTypeTree = MutableMap<TypeToken<*>, TagTree>
+    data class Up(override val type: TypeToken<*>) : TypeChecker() {
+        override fun check(other: TypeToken<*>) = other == AnyToken || other.isAssignableFrom(type)
+    }
+}
+
+private typealias BoundTypeTree = MutableMap<TypeChecker, ContextTypeTree>
+
+private typealias ContextTypeTree = MutableMap<TypeChecker.Down, ArgumentTypeTree>
+
+private typealias ArgumentTypeTree = MutableMap<TypeChecker.Down, TagTree>
 
 private typealias TagTree = MutableMap<Any?, Kodein.Key<*, *, *>>
 
@@ -30,31 +43,32 @@ internal class KodeinTreeImpl(
                 }
             }
 
-            val contextTree = _typeTree.getOrPut(key.type) { HashMap() }
-            val argumentTree = contextTree.getOrPut(key.contextType) { HashMap() }
-            val tagTree = argumentTree.getOrPut(key.argType) { HashMap() }
+            val typeChecker = if (bindings.first().binding.supportSubTypes) TypeChecker.Down(key.type) else TypeChecker.Up(key.type)
+            val contextTree = _typeTree.getOrPut(typeChecker) { HashMap() }
+            val argumentTree = contextTree.getOrPut(TypeChecker.Down(key.contextType)) { HashMap() }
+            val tagTree = argumentTree.getOrPut(TypeChecker.Down(key.argType)) { HashMap() }
             tagTree[key.tag] = key
         }
         bindings = HashMap(_cache)
     }
 
     private fun findBySpecs(specs: SearchSpecs): List<Kodein.Key<*, *, *>> {
-        var bindSeq: Sequence<Map.Entry<TypeToken<*>, ContextTypeTree>> = _typeTree.asSequence()
+        var bindSeq: Sequence<Map.Entry<TypeChecker, ContextTypeTree>> = _typeTree.asSequence()
         val specsBindType = specs.type
         if (specsBindType != null && specsBindType != AnyToken) {
-            bindSeq = bindSeq.filter { (bindType) -> specsBindType.isAssignableFrom(bindType) } // Filter keys that are for sub-types of this specs bind type
+            bindSeq = bindSeq.filter { (bindType) -> bindType.check(specsBindType) } // Filter keys that are for sub-types of this specs bind type
         }
 
         var contextSeq = bindSeq.flatMap { (_, contextTree) -> contextTree.asSequence() } // Get all matched context types
         val specsContextType = specs.contextType
         if (specsContextType != null) {
-            contextSeq = contextSeq.filter { (contextType) -> contextType == AnyToken || contextType.isAssignableFrom(specsContextType) } // Filter context types that are super-types of this specs context type
+            contextSeq = contextSeq.filter { (contextType) -> contextType.check(specsContextType) } // Filter context types that are super-types of this specs context type
         }
 
         var argSeq = contextSeq.flatMap { (_, argumentTree) -> argumentTree.asSequence() } // Get all corresponding argument types
         val specsArgType = specs.argType
         if (specsArgType != null) {
-            argSeq = argSeq.filter { (argType) -> argType == AnyToken || argType.isAssignableFrom(specsArgType) } // Filter argument types that are super-types of this specs argument type
+            argSeq = argSeq.filter { (argType) -> argType.check(specsArgType) } // Filter argument types that are super-types of this specs argument type
         }
 
         var tagSeq = argSeq.flatMap { (_, tagTree) -> tagTree.asSequence() } // Get all corresponding tags

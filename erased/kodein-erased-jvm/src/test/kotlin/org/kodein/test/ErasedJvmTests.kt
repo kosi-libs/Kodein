@@ -470,4 +470,24 @@ class ErasedJvmTests {
         assertTrue(FullName("Salomon", "BRYS") in dValues)
     }
 
+    @Test fun test36_00_subTypeFactory() {
+        val kodein = Kodein.direct {
+            bind<IName>().subTypes() with { type ->
+                when (type.jvmType) {
+                    FullName::class.java -> singleton { FullName("Salomon", "BRYS") }
+                    Name::class.java -> factory { u: Unit -> Name("Salomon") }
+                    else -> throw IllegalStateException()
+                }
+            }
+        }
+
+        assertEquals(FullName::class.java, kodein.instance<FullName>().javaClass)
+        assertEquals(FullName("Salomon", "BRYS"), kodein.instance())
+        assertEquals<FullName>(kodein.instance(), kodein.instance())
+
+        assertEquals(Name::class.java, kodein.instance<Name>().javaClass)
+        assertEquals(Name("Salomon"), kodein.instance())
+        assertEquals<Name>(kodein.instance(), kodein.instance())
+    }
+
 }
