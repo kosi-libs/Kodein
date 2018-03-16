@@ -486,6 +486,28 @@ NOTE: If you are using Kodein/Native, because of https://github.com/JetBrains/ko
       This issue has been fixed and the `bind() from` syntax will be available to Kodein/Native as soon as Kotlin/Native 0.6 is released.
 
 
+=== Subtypes bindings
+
+Kodein allows you register a "subtype bindings factory".
+These are big words for a simple concept that's best explained with an example:
+
+[source,kotlin]
+.Example: direct bindings
+----
+val kodein = Kodein {
+    bind<Controller>().subtypes() with { type ->
+        when (type.jvmType) { <1>
+            is MySpecialController::class.java -> singleton { MySpecialController() }
+            else -> provider { myControllerSystem.getController(type.jvmType) }
+        }
+    }
+}
+----
+<1> As `type` is a `TypeToken<*>`, you can use `.jvmType` to get the JVM type (e.g. `Class` or `ParameterizedType`).
+
+In essence, `bind<Whatever>().subtypes() with { type -> binding }` allows you to register, in Kodein, a binding factory that will be called for subtypes of the provided type.
+
+
 === Transitive dependencies
 
 With those lazily instantiated dependencies, a dependency (very) often needs another dependency.

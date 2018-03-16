@@ -13,11 +13,11 @@ import org.kodein.TypeToken
  */
 class SubTypes<C, A, T : Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val block: (TypeToken<out T>) -> KodeinBinding<in C, in A, out T>): KodeinBinding<C, A, T> {
 
-    val bindings = HashMap<Kodein.Key<C, A, T>, KodeinBinding<in C, in A, out T>>()
+    val bindings = HashMap<TypeToken<out T>, KodeinBinding<in C, in A, out T>>()
 
     override fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, A, T>): (A) -> T {
         @Suppress("UNCHECKED_CAST")
-        val binding = bindings.getOrPut(key) { block(key.type) } as Binding<C, A, T>
+        val binding = bindings.getOrPut(key.type) { block(key.type) } as Binding<C, A, T>
         return binding.getFactory(kodein, key)
     }
 
@@ -39,7 +39,7 @@ class TypeBinderSubTypes<T: Any> internal constructor(private val _binder: Kodei
      * @param C The context type of the binding.
      * @param binding The binding to add in the set.
      */
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "FunctionName")
     fun <C, A> With(contextType: TypeToken<in C>, argType: TypeToken<in A>, createdType: TypeToken<out T>, block: (TypeToken<out T>) -> KodeinBinding<in C, in A, out T>) {
         _binder with SubTypes(contextType, argType, createdType, block)
     }
