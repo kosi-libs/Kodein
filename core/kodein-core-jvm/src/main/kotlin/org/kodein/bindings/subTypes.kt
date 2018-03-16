@@ -13,7 +13,7 @@ import org.kodein.TypeToken
  */
 class SubTypes<C, A, T : Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val block: (TypeToken<out T>) -> KodeinBinding<in C, in A, out T>): KodeinBinding<C, A, T> {
 
-    val bindings = HashMap<TypeToken<out T>, KodeinBinding<in C, in A, out T>>()
+    private val bindings = HashMap<TypeToken<out T>, KodeinBinding<in C, in A, out T>>()
 
     override fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, A, T>): (A) -> T {
         @Suppress("UNCHECKED_CAST")

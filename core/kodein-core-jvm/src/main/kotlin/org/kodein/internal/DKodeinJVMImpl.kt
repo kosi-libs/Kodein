@@ -6,7 +6,7 @@ import org.kodein.*
 private val KodeinContext<*>.anyType get() = type as TypeToken<in Any?>
 
 @Suppress("FunctionName")
-actual class DKodeinImpl actual constructor(container: KodeinContainer, context: KodeinContext<*>, receiver: Any?) : DKodeinBaseImpl(container, context, receiver), DKodein {
+internal actual class DKodeinImpl actual constructor(container: KodeinContainer, context: KodeinContext<*>, receiver: Any?) : DKodeinBaseImpl(container, context, receiver), DKodein {
 
     override fun <A, T : Any> AllFactories(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?): List<(A) -> T> = container.allFactories(Kodein.Key(context.anyType, argType, type, tag), context.value, receiver)
 

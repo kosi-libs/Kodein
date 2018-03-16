@@ -6,7 +6,7 @@ import org.kodein.*
 private val KodeinContext<*>.anyType get() = type as TypeToken<in Any?>
 
 @Suppress("FunctionName")
-abstract class DKodeinBaseImpl protected constructor(override val container: KodeinContainer, val context: KodeinContext<*>, val receiver: Any?) : DKodein {
+internal abstract class DKodeinBaseImpl protected constructor(override val container: KodeinContainer, val context: KodeinContext<*>, val receiver: Any?) : DKodein {
 
     override val dkodein: DKodein get() = this
 
@@ -39,4 +39,4 @@ abstract class DKodeinBaseImpl protected constructor(override val container: Kod
     override fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?, arg: A): T? = container.factoryOrNull(Kodein.Key(context.anyType, argType, type, tag), context.value, receiver)?.invoke(arg)
 }
 
-expect class DKodeinImpl(container: KodeinContainer, context: KodeinContext<*>, receiver: Any?) : DKodein
+internal expect class DKodeinImpl(container: KodeinContainer, context: KodeinContext<*>, receiver: Any?) : DKodein

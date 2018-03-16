@@ -125,6 +125,9 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
      */
     val copier: Copier<C, A, T>? get() = null
 
+    /**
+     * Whether this bindings supports subtype handling.
+     */
     val supportSubTypes: Boolean get() = false
 }
 

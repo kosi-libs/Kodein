@@ -10,15 +10,10 @@ interface DKodeinAware {
     val dkodein: DKodein
 }
 
-@Suppress("FunctionName", "ClassName")
 /**
- * D stands for Direct. Direct Kodein!
- *
- * Acts like a [Kodein] object but returns factories, providers and instances instead of returning property delegates.
- * In essence, a DKodein is used with `=` instead of with `by`.
- *
- * Note that `DKodein` is engineered to also work with Java code.
+ * @see [DKodein]
  */
+@Suppress("FunctionName", "ClassName")
 interface DKodeinBase : DKodeinAware {
 
     /**
@@ -173,6 +168,14 @@ interface DKodeinBase : DKodeinAware {
     fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: A): T?
 }
 
+/**
+ * D stands for Direct. Direct Kodein!
+ *
+ * Acts like a [Kodein] object but returns factories, providers and instances instead of returning property delegates.
+ * In essence, a DKodein is used with `=` instead of with `by`.
+ *
+ * Note that `DKodein` is engineered to also work with Java code.
+ */
 expect interface DKodein : DKodeinBase
 
 /**
