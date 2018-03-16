@@ -15,8 +15,6 @@ import org.kodein.android.closestKodein
 import org.kodein.generic.instance
 import org.kodein.generic.kcontext
 
-// by implementing FragmentInjector we get the same behavior as KodeinFragment, but we have the flexibility to subclass whatever we want
-// All we need to do is override injector with a simple KodeinInjector() and call initializeInjector and destroyInjector when appropriate
 class MainFragment : Fragment(), KodeinAware {
 
     override val kodeinContext: KodeinContext<*> get() = kcontext(activity)

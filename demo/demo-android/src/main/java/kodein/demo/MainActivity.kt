@@ -20,7 +20,7 @@ class MainActivity : Activity(), KodeinAware {
     private val _parentKodein by closestKodein()
 
     override val kodein: Kodein by retainedKodein {
-        extend(_parentKodein)
+        extend(_parentKodein, copy = Copy.All)
         import(thermosiphonModule)
     }
 

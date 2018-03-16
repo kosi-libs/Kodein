@@ -1,13 +1,14 @@
 package org.kodein.android
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Fragment
 import android.os.Bundle
 import org.kodein.Kodein
 
-@SuppressLint("ValidFragment")
-private class KodeinFragment(val kodein: Kodein) : Fragment() {
+/** @suppress */
+class RetainedKodeinFragment : Fragment() {
+
+    var kodein: Kodein? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +18,7 @@ private class KodeinFragment(val kodein: Kodein) : Fragment() {
 
 }
 
-private const val _kodeinFragmentTag = "org.kodein.android.KodeinFragment"
+private const val kodeinRetainedFragmentTag = "org.kodein.android.RetainedKodeinFragment"
 
 /**
  * A Kodein instance that will be retained between activity changes.
@@ -26,10 +27,12 @@ private const val _kodeinFragmentTag = "org.kodein.android.KodeinFragment"
  * @property init The block of configuration for this module.
  */
 fun Activity.retainedKodein(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Lazy<Kodein> = lazy {
-    (fragmentManager.findFragmentByTag(_kodeinFragmentTag) as? KodeinFragment)?.let { return@lazy it.kodein }
+    (fragmentManager.findFragmentByTag(kodeinRetainedFragmentTag) as? RetainedKodeinFragment)?.kodein?.let { return@lazy it }
 
-    val fragment = KodeinFragment(Kodein(allowSilentOverride, init))
-    fragmentManager.beginTransaction().add(fragment, _kodeinFragmentTag).commit()
+    val kodein = Kodein(allowSilentOverride, init)
+    val fragment = RetainedKodeinFragment()
+    fragment.kodein = kodein
+    fragmentManager.beginTransaction().add(fragment, kodeinRetainedFragmentTag).commit()
 
-    return@lazy fragment.kodein
+    return@lazy kodein
 }
