@@ -4,8 +4,8 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-25.0.3
-    - android-25
+    - build-tools-27.0.3
+    - android-27
     - extra-google-m2repository
     - extra-android-m2repository
 
@@ -16,3 +16,6 @@ licenses:
 
 jdk:
   - oraclejdk8
+
+script:
+  - ./gradlew test

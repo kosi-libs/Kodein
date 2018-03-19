@@ -1,0 +1,25 @@
+
+if (hasProperty('bintrayUsername') && hasProperty('bintrayApiKey')) {
+
+    apply plugin: 'com.jfrog.bintray'
+
+    bintray {
+        user = bintrayUsername
+        key = bintrayApiKey
+
+        pkg {
+            repo = 'kodein'
+            name = pom_name
+            licenses = ['MIT']
+            websiteUrl = 'http://kodein.org'
+            issueTrackerUrl = 'https://github.com/SalomonBrys/Kodein/issues'
+            vcsUrl = 'https://github.com/SalomonBrys/Kodein.git'
+            desc = pom_description
+
+            publications = ['kodein']
+
+//            dryRun = true
+        }
+    }
+
+}

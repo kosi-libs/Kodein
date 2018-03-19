@@ -159,7 +159,7 @@ No changes from `3.2.0-beta3`
 ### 3.0.0-beta5 (12-07-2016)
 
  - FEATURES
-   * Kodein's source code & API is now [fully documented](https://salomonbrys.github.io/Kodein/kodein-dokka/kodein/com.github.salomonbrys.kodein/index.html)!
+   * Kodein's source code & API is now [fully documented](https://salomonbrys.github.io/Kodein/kodein-dokka/kodein/org.kodein/index.html)!
    * You can now bind a `Kodein.Bind` directly with `container.bind(bind)`.
    * `lazyKodein {...}` now returns a `LazyKodein` object, which can be used either as a lazy property or to inject lazy
      properties.
@@ -268,7 +268,7 @@ No changes from `3.2.0-beta3`
      functions can be used without parameter on a `KodeinAware` or `KodeinInjected` class (which is where they reach
      their full potential!).
    * Introducing `Kodein.global` which is a global Kodein instance for all. It is on its module and is not proposed by
-     default. To use it, you must declare the dependency `com.github.salomonbrys.kodein:kodein-global:3.0.+`. You can
+     default. To use it, you must declare the dependency `org.kodein:kodein-global:3.0.+`. You can
      add modules to it with `Kodein.global.addImport(module)`. After that, you can use `Kodein.global` as a regular
      Kodein object. Be aware that once you have injected / retrieved the first value with `Kodein.global`, then adding
      modules to it will throw an exception.

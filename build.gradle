@@ -3,51 +3,60 @@ buildscript {
     repositories {
         jcenter()
         google()
+        maven { url "https://plugins.gradle.org/m2/" }
+
         maven { url "https://dl.bintray.com/jetbrains/kotlin-native-dependencies" }
     }
 
-    ext.kotlin_version = '1.1.3-2'
-    ext.junit_version = '4.12'
+    ext {
+        kotlin_version = '1.2.30'
+        junit_version = '4.12'
+    }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
         //noinspection DifferentKotlinGradleVersion
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.14'
-        classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.3"
+
+        classpath 'com.android.tools.build:gradle:3.0.1'
+
+        classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
+
+        classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.6.1"
+
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
+
+        classpath 'digital.wup:android-maven-publish:3.3.0'
+
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.16'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
-        maven { url 'https://maven.google.com' }
+        google()
     }
 
-    group = 'com.github.salomonbrys.kodein'
-    version = '4.1.0'
+    group = 'org.kodein'
+    version = '5.0.0'
 }
 
-def getClassPath(String p) { return project(p).sourceSets.main.compileClasspath.collect { it.absolutePath } }
-def getAndroidClassPath(String p) { return project(p).android.getBootClasspath() +  project(p).android.libraryVariants.javaCompile.classpath.collect { it.collect { it.absolutePath } } .flatten() }
-
-task("classpath") {
-    doLast {
-        println((
-                getClassPath(':kodein')
-            +   getClassPath(':kodein-conf')
-            +   getClassPath(':kodein-core')
-            +   getClassPath(':kodein-erased')
-            +   getClassPath(':kodein-jxinject')
-            +   getAndroidClassPath(':kodein-android')
-        ).join(":"))
-    }
-}
-
-// used for Android builds on travis
 ext {
+    // used for Android builds on travis
     travisBuild = System.getenv("TRAVIS") == "true"
     // allows for -Dpre-dex=false to be set
     preDexEnabled = System.getProperty("pre-dex", "true") == "true"
+
+    if (travisBuild)
+        konanTargets = [ 'linux' ]
+    else
+        konanTargets = [
+                'macbook', 'linux', 'mingw',
+                'android_arm32', 'android_arm64',
+                'iphone', 'iphone_sim',
+                'wasm32',
+                'raspberrypi',
+                'linux_mips32', 'linux_mipsel32',
+//                'zephyr_stm32f4_disco',
+        ]
 }

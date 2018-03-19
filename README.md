@@ -1,10 +1,10 @@
 <img alt="KODEIN" src="https://raw.githubusercontent.com/SalomonBrys/Kodein/master/Kodein-logo.png" width="700">
 
-[![Kotlin 1.1.3-2](https://img.shields.io/badge/Kotlin-1.1-blue.svg)](http://kotlinlang.org)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.salomonbrys.kodein/kodein.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.salomonbrys.kodein%22)
-[![Travis](https://img.shields.io/travis/SalomonBrys/Kodein.svg)](https://travis-ci.org/SalomonBrys/Kodein/builds)
-[![MIT License](https://img.shields.io/github/license/salomonbrys/kodein.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
-[![GitHub issues](https://img.shields.io/github/issues/SalomonBrys/Kodein.svg)](https://github.com/SalomonBrys/Kodein/issues)
+[![Kotlin 1.2.30](https://img.shields.io/badge/Kotlin-1.2.30-blue.svg)](http://kotlinlang.org)
+[![Konan 0.6.1](https://img.shields.io/badge/Konan-0.6.1-blue.svg)](https://github.com/JetBrains/kotlin-native)
+[![JCenter](https://api.bintray.com/packages/salomonbrys/kodein/Kodein-Core-JVM/images/download.svg)](https://bintray.com/salomonbrys/kodein)
+[![Travis](https://api.travis-ci.org/SalomonBrys/Kodein.svg?branch=5.0)](https://travis-ci.org/SalomonBrys/Kodein/builds)
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg)](https://kotlinlang.slack.com/messages/kodein/)
 [![Donate](https://img.shields.io/badge/Backing-Donate-orange.svg)](https://salomonbrys.github.io/Kodein/#_donate)
 
@@ -19,6 +19,7 @@ Kodein works:
 - On the JVM.
 - On Android.
 - On Javascript (both in the browser and on Node.js).
+- On Native platforms (such as iOS).
 
 Kodein allows you to:
 
@@ -26,6 +27,10 @@ Kodein allows you to:
 - Stop caring about dependency initialization order
 - Easily bind classes or interfaces to their instance or provider
 - Easily debug your dependency bindings and recursions
+
+Kodein provides extensions to be integrable into:
+
+- Android
 
 An example is always better than a thousand words:
 
@@ -36,40 +41,44 @@ val kodein = Kodein {
 }
 
 class Controller(private kodein: Kodein) {
-    private val ds: DataSource = kodein.instance()
+    private val ds: DataSource by kodein.instance()
 }
 ```
 
 Kodein is a good choice because:
 
-- It is small, fast and optimized (makes extensive use of `inline`)
 - It proposes a very simple and readable declarative DSL
 - It is not subject to type erasure (as Java is)
 - It integrates nicely with Android
 - It proposes a very kotlin-esque idiomatic API
+- It is fast and optimized (makes extensive use of `inline`)
 - It can be used in plain Java
 
 
 Read more
 ---------
 
-[Kodein 5.0 is in Beta!](https://salomonbrys.github.io/Kodein/?5.0)
+Kodein 5 is the current major version, but documentation is available for previous versions.
 
-Kodein version 4 is the current major version available:
-
-- **[Kodein 4 full documentation](https://salomonbrys.github.io/Kodein/)**
-- [Kodein 4 API reference](https://github.com/SalomonBrys/Kodein/blob/master/dokka/out/doc/index.md)
-
-If you are currently using a `javax.inject` compatible dependency injection library and whish to migrate to Kodein, [there is a guide for that](https://github.com/SalomonBrys/Kodein/blob/master/MIGRATION-JtoK.adoc).
-
-If you are still using version 3, you can access [version 3 documentation](https://github.com/SalomonBrys/Kodein/blob/master/DOCUMENTATION_V3.adoc).
+**[Kodein documentation](https://salomonbrys.github.io/Kodein/)**
 
 
 Support
 -------
 
-Support is held in the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/).
-You can get an invite to the Kotlin Slack [here](http://slack.kotlinlang.org/).
+Support is held in the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/)
+(you can get an invite to the Kotlin Slack [here](http://slack.kotlinlang.org/)).
+
+
+Future
+------
+
+The following frameworks will receive special love from Kodein:
+
+- Android
+- TornadoFX, TODO
+- Cocoa-Touch (iOS), TODO
+- Ktor, TODO
 
 
 &nbsp;

@@ -1,0 +1,366 @@
+= Getting started with Kodein
+Salomon BRYS <salomon.brys@gmail.com>
+:toc: left
+:toc-position: left
+:toclevels: 5
+
+:version: 5.0.0-beta5
+:branch: 5.0
+
+Kodein (for KOtlin DEpendency INjection) is a DI framework.
+It allows you to bind your business unit interfaces with their implementation and thus having each business unit being independent.
+
+NOTE: This guide assumes a JVM target.
+      Kodein works exactly the same on all targets that are supported by Kotlin (JVM, Android, JS, Native).
+
+== Choose & Install
+
+=== Flavour
+
+==== The type erasure problem
+
+Type erasure is the process in which all generic parameters are suppressed when compiled to bytecode.
+In essence, in JVM bytecode, `List<String>` & `List<Date>` are the same object: `List`.
+Generic parameters are for type safety only, they only exist at the source code level and their purpose is to make sure that you are not putting a `Date` in a `List<String>`.
+As this verification is done at compile time, all generic information is removed.
+This means that you cannot have `List<String>::class`, only `List<*>::class`.
+
+NOTE: For feature parity and simplicity, Kotlin/JS & Kotlin/Native work the same way.
+
+This leads to a problem, if you are using generic types in the DI container, because the compiler erases generic type information when using Kodein api.
+
+
+==== Kodein flavours
+
+Now, I may have lied a bit: not _all_ generic information is lost, most of it.
+There is still a way to access generic type information, but it is costly, and it only works on the JVM & Android.
+
+Kodein offers two different flavours: `kodein-generic` & `kodein-erased`.
+
+[options="header"]
+|=======
+| &nbsp;    | Type erasure | Optimized | Non-generic bindings | Generic bindings
+| *generic* | *immune*     | no        | *simple*             | *simple*
+| *erased*  | subject      | *yes*     | *simple*             | complex
+|=======
+
+Which to use should, of course, be selected for your needs.
+However, here is a simple decision tree that I believe should help:
+
+* Will the application target other platform then the JVM?
+** Yes -> Use `kodein-erased` as it is the only option available for non-JVM platforms & multi-platform.
+** No, only the JVM -> Will object creation & DI be performance critical?
+*** No, standard stuff -> use `kodein-generic` as it allows for easier and more consistent code.
+*** Yes -> use `kodein-erased`, but be aware that your experience might be degraded ;)
+
+TIP: Keep in mind that it should be quite rare for DI to be performance critical.
+     DI happens only once per injected object, so to measure how critical DI is, ask yourself how much time injected objects will be created, and if these creations are themselves performance critical.
+
+
+=== Install
+
+==== With Maven
+
+Add the JCenter repository:
+
+[source,xml,subs="attributes"]
+----
+&lt;repositories&gt;
+    &lt;repository&gt;
+      &lt;id&gt;jcenter&lt;/id&gt;
+      &lt;url&gt;https://jcenter.bintray.com&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
+----
+
+If you plan to use a beta version of Kodein, then you also need the Kodein specific repository:
+
+[source,xml,subs="attributes"]
+----
+&lt;repositories&gt;
+    &lt;repository&gt;
+      &lt;id&gt;kodein&lt;/id&gt;
+      &lt;url&gt;http://dl.bintray.com/salomonbrys/kodein&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
+----
+
+Then add the dependency:
+
+[source,xml,subs="attributes"]
+----
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.kodein&lt;/groupId&gt;
+        &lt;artifactId&gt;kodein-generic-jvm&lt;/artifactId&gt;
+        &lt;version&gt;{version}&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+----
+
+NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
+
+
+==== With Gradle
+
+Add the JCenter repository:
+
+[source,groovy,subs="attributes"]
+----
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+----
+
+If you plan to use a beta version of Kodein, then you also need the Kodein specific repository:
+
+[source,groovy,subs="attributes"]
+----
+buildscript {
+    repositories {
+        maven { url "http://dl.bintray.com/salomonbrys/kodein" }
+    }
+}
+----
+
+Then add the dependency:
+
+[source,groovy,subs="attributes"]
+----
+dependencies {
+    implementation 'org.kodein:kodein-generic-jvm:{version}'
+}
+----
+
+NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
+
+
+== Bindings
+
+=== Definition
+
+In DI, each business unit will have dependencies.
+Those dependencies should (nearly almost) always be interfaces.
+This allows:
+
+* Loose coupling: the business unit knows what it needs, not how those needs are fulfilled.
+* Unit testing: You can unit test the business unit by mocking its dependencies.
+* Separation: Different people can work on different units / dependencies.
+
+TIP: Business units are very often themselves dependencies to other business units.
+
+Each business unit and dependency need to be managed.
+Some dependencies need to be created on demand, while other will need to exist only once.
+For example, a `Random` object may needs to be re-created every time one is needed, while a `Database` object should exist only once in the application.
+
+Have a look at these two sentences:
+
+* "I want to *bind* the `Random` type to a *provider* that creates a `SecureRandom` *implementation*.
+* "I want to *bind* the `Database` type to a *singleton* that contains a `SQLiteDatabase`" *implementation*.
+
+In DI, you *bind* a type (often an interface) to a *binding* that manages an *implementation*.
+A binding is responsible for returning the implementation when asked.
+In this example, we have seen to different bindings:
+
+* The *provider* always return a new implementation instance.
+* The *singleton* creates only on implementation instance, and always return that same instance.
+
+
+=== Declaration
+
+In Kodein, bindings are *declared* in a Kodein Block.
+The syntax is quite simple:
+
+[source,kotlin]
+.Example: initialization of a Kodein container
+----
+val kodein = Kodein {
+    bind<Random>() with provider { SecureRandom() }
+    bind<Database>() with singleton { SQLiteDatabase() }
+}
+----
+
+As you can see, Kodein offers a DSL (Domain Specific Language) that allows to very easily declare a binding.
+Kodein offers many bindings that can manage implementations: `provider`, `singleton`, `factory`, `multiton`, `instance`, and more, wich you can read about in the https://salomonbrys.github.io/Kodein/?{branch}/core#declaring-dependencies[bindings section of the core documentation].
+
+Most of the time, the type of the interface of the dependency is enough to identify it.
+There is only one `Database` in the application, so if I'm asking for a `Database`, there is no question of _which_ `Database` I need: I need _the_ database. +
+Same goes for `Random`. There is only one `Random` implementation that I am going to use.
+If I am asking for a `Random` implementation, I always want the same type of random: `SecureRandom`. +
+There are times, however, where the type of the dependency is _not_ enough to identify it.
+For example, you may have two `Database` in a mobile application: one being local, and another being a proxy to a distant Database.
+For cases like this, Kodein allows you to "tag" a binding: add an additional information to tag it.
+
+[source,kotlin]
+.Example: tagged bindings
+----
+val kodein = Kodein {
+    bind<Database>(tag = "local") with singleton { SQLiteDatabase() }
+    bind<Database>(tag = "remote") with provider { DatabaseProxy() }
+}
+----
+
+
+=== Separation
+
+When building large applications, there are often different modules, built by their own team, each defining their own business units.
+
+Kodein allows you to define binding modules that can later be imported in a Kodein container:
+
+[source,kotlin]
+.Example: A Kodein module
+----
+val module = Kodein.Module {
+    bind<Database>(tag = "local") with singleton { SQLiteDatabase() }
+    bind<Database>(tag = "remote") with provider { DatabaseProxy() }
+}
+----
+
+[source,kotlin]
+.Example: Importing a Kodein module
+----
+val kodein = Kodein {
+    import(module)
+}
+----
+
+
+
+
+== Injection & Retieval
+
+=== The container
+
+All declarations are made in the constructor of a Kodein *container*.
+Think of the Kodein container as the glue that allows you to ask for dependency.
+Whatever dependency you need, if it was declared in the Kodein container constructor, you can get it by asking Kodein.
+This means that you always need to be within reach of the `Kodein` object.
+There are multiple ways of doing so:
+
+* You can pass the `Kodein` object around, as a parameter to created objects.
+* You can have the `Kodein` object being statically available (in Android, for example, it is common to use a property of the `Application` object)
+
+
+=== Injection vs Retieval
+
+Kodein supports two different methods to allow a business unit to access its dependencies: *injection* and *retrieval*.
+
+* When dependencies are *injected*, the class is *provided* its dependencies at *construction*.
+* When dependencies are *retrieved*, the class is *responsible* for *getting* its own dependencies.
+
+Dependency injection is more pure in the sense that an injected class will have its dependency passed at construction and therefore not know anything about Kodein.
+It is however more cumbersome, and does not provide a lot of features. +
+At contrario, dependency retrieval is easier and feature full, but it requires the class to know about Kodein.
+
+In the end, it boils down to that question: *Do you need this class to be Kodein independant?*
+If you are building a library that will be used in multiple architecture, you probably do.
+If you are building an application, you probably don't.
+
+
+=== Injection
+
+If you want your class to be _injected_, then you need to declare its dependencies at construction:
+
+[source,kotlin]
+.Example: a class with dependencies at construction
+----
+class Presenter(private val db: Database, private val rnd: Random) {
+}
+----
+
+Now you need to be able to create a new instance of this `Presenter` class.
+With Kodein, this is very easy:
+
+[source,kotlin]
+.Example: creating an object of an injected class
+----
+val presenter = kodein.newInstance { Presenter(instance(), instance()) }
+----
+
+For each argument of the `Presenter` constructor, you can simply use the `instance()` function, and Kodein will actually pass the correct dependency.
+
+
+=== Retrieval
+
+When using retrieval, the class needs to be available to access a Kodein instance, either statically or by argument.
+In these examples, we'll use the argument.
+
+[source,kotlin]
+.Example: a class which retrieves its own dependencies
+----
+class Presenter(val kodein: Kodein) {
+    private val db: Database by kodein.instance()
+    private val rnd: Random by kodein.instance()
+}
+----
+
+Note the usage of the `by` keyword.
+When using dependency retrieval, *properties are retrieved lazily*.
+
+You can go a bit further and use the `KodeinAware` interface, which unlocks a lot of features:
+
+[source,kotlin]
+.Example: a KodeinAware class
+----
+class Presenter(override val kodein: Kodein): KodeinAware {
+    private val db: Database by instance()
+    private val rnd: Random by instance()
+}
+----
+
+Note that because everything is lazy by default, the access to the `Kodein` object in a `KodeinAware` class can itself be lazy:
+
+[source,kotlin]
+.Example: a KodeinAware class with lazy Kodein
+----
+class Presenter(): KodeinAware {
+    override val kodein by lazy { getApplicationContext().kodein }
+
+    private val db: Database by instance()
+    private val rnd: Random by instance()
+}
+----
+
+
+=== Direct
+
+If you don't want everything to be lazy (as it is by default), Kodein has you covered.
+Head to the https://salomonbrys.github.io/Kodein/?5.0/core#direct-rectrieval[Retrival: Direct] section of the core documentation.
+
+
+== Transitive dependencies
+
+Let's say we want to declare the `Provider` in a binding.
+It has its own dependencies.
+Dependencies of dependencies are transitive dependencies.
+Handling those dependencies is actually very easy.
+
+If you are using injection, you can pass the argument the exact same way:
+
+[source,kotlin]
+.Example: binding the Presenter class with injection
+----
+val kodein = Kodein {
+    bind<Presenter>() with singleton { Presenter(instance(), inetance()) }
+}
+----
+
+If you are using retrieval, simply pass the kodein property:
+
+[source,kotlin]
+.Example: binding the Presenter class with injection
+----
+val kodein = Kodein {
+    bind<Presenter>() with singleton { Presenter(kodein) }
+}
+----
+
+
+== Where to go next
+
+Kodein offers a lot of features.
+All of them are documented, you can find them here: *https://salomonbrys.github.io/Kodein/?{branch}*.
+
+If you are using Kodein on Android, you should read the https://salomonbrys.github.io/Kodein/?5.0/android[Kodein on Android] documentation.

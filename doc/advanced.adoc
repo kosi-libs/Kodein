@@ -1,0 +1,211 @@
+= Kodein Advanced Usage
+Salomon BRYS <salomon.brys@gmail.com>
+:toc: left
+:toc-position: left
+:toclevels: 5
+
+:version: 5.0.0-beta5
+:branch: 5.0
+
+== OnReady callbacks
+
+You can define callbacks to be called once the kodein instance is ready and all bindings are defined.
+This can be useful to do some "starting" jobs.
+
+[source, kotlin]
+.Example: registering a callback at binding time
+----
+val appModule = Kodein.Module {
+    import(engineModule)
+    onReady {
+        val engine = instance<Engine>()
+        instance<Logger>().info("Starting engine version ${engine.version}")
+        engine.start()
+    }
+}
+----
+
+
+== Create your own scopes
+
+=== Scoped singletons
+
+Scoped singletons/multitons are singletons/multitons that are bound to a context and live while that context exists.
+
+To define a scope that can contain scoped singleton, you must define an object that implements the `Scope` interface.
+This object will be responsible for providing a `ScopeRegistry` according to a context.
+It should always return the same `ScopeRegistry` when given the same context object.
+A standard way of doing so is to use the `userData` property of the context, if it has one, or else to use a `WeakHashMap<C, ScopeRegistry>`.
+
+[source, kotlin]
+.Example: a simple request scope
+----
+object RequestScope : SimpleScope<Request> { <1>
+    override fun getRegistry(receiver: Any?, context: Request): ScopeRegistry =
+            context.userData as? ScopeRegistry
+                    ?: MultiItemScopeRegistry().also { context.userData = it } <2>
+}
+----
+<1> The scope's context type is `Request`.
+<2> Creates a `ScopeRegistry` in the context `Request` if there is none.
+
+=== Auto Scopes
+
+Scoped singletons are not always ideal since you need the context to retrieve any object.
+Sometimes, the context is static.
+For these times, you can use a scope that finds it context automatically.
+
+[source, kotlin]
+.Example: a simple request scope
+----
+object treadRequestScope : Scope<Any?, Request> { <1>
+    override fun getBindingContext(envContext: Any?): Request = Request.threadRequest <2>
+
+    override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Request): ScopeRegistry =
+            bindContext.userData as? ScopeRegistry ?: MultiItemScopeRegistry().also { bindContext.userData = it }
+}
+----
+<1> The scope's environment context type is `Any?`, which actually means "no context".
+<2> Returns the binding context, in this case: the Request.
+
+
+== Add an External Source
+
+An external source is responsible for providing an answer when Kodein cannot find one.
+
+When Kodein cannot find a binding for the required type/argument/context, then it calls the external source.
+
+[source, kotlin]
+.Example: an external source
+----
+val kodein = Kodein {
+    externalSource = ExternalSource { key ->
+        when (key.type.jvmType) { <1>
+            Whatever::class.java -> when (key.argType.jvmType) { <2>
+                Unit::class.java -> when (key.tag) { <3>
+                    "user" -> externalFactory { existingInstance } <4>
+                    null -> externalFactory { Whatever("default-value") } <4>
+                    else -> null <6>
+                }
+                String::class.java -> when (key.tag) { <3>
+                    null -> externalFactory { Whatever(it as String) } <5>
+                    else -> null <6>
+                }
+                else -> null <6>
+            }
+            else -> null <6>
+        }
+    }
+}
+----
+<1> The type that is required
+<2> The argument type (Unit if no argument)
+<3> The tag (null if no tag)
+<4> You can return an existing instance or a new one
+<5> The argument has been checked to be a String, so it can be safely casted
+<6> Return null if the external source has no answer
+
+
+[[erased-version]]
+== Erased version pitfalls
+
+=== The type erasure problem
+
+When using the `generic` JVM version on the, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
+Similarly, `kodein.instance<List<String>>()` and `kodein.instance<List<Int>>()` will yield two different list.
+
+To be erasure immune, the `generic` JVM version relies heavily on the `generic` function, which is known to be slow.
+
+To improve performance, you can use the `erased` JVM Kodein version, which is faster, but do suffer from type erasure!
+
+Furthermore, on Javascript and Native platforms, there's no choice: `erased` is the only version available!
+
+
+=== Using generic and erased function forms
+
+Each kodein function that handles a type exists in two form: as inline (lowercased first letter) and as regular function (uppercased first letter). +
+For example, the `kodein.instance` function also exists as `kodein.Instance`.
+
+The uppercase functions need `TypeToken` parameters that define the type being bound / retrieved and maybe the factory's argument. +
+You can easily use these functions with the `generic` or `erased` functions:
+
+[source, kotlin]
+.Example: using the `erased` function
+----
+val ds: DataSource by kodein.Instance(erased())
+----
+
+By default, all inline functions are aliases to their uppercase counterparts using the `generic` function. +
+For example, the `kodein.instance()` function is an alias to `kodein.Instance(generic())`
+
+So, when you know that you inject a type that is *not generic*, you can use `kodein.Instance(erased())`.
+
+
+=== Erased parameterized generic types
+
+When using the `erased` function or using erased by default (either by choice on the JVM or by necessity elsewhere), you cannot represent a generic type. +
+For example, `erased<Set<String>>` will yield a `TypeToken` representing `Set<*>`.
+
+Kodein provides a way to represent a generic type in an erased way:
+
+[source, kotlin]
+.Example: generic type tokens, using erased
+----
+erasedComp1<Set<String>, String>()                         // Represents a Set<String>
+erasedComp2<Map<Int, String>, Int, String>()               // Represents a Map<Int, String>
+erasedComp3<Triple<Int, String, Int>, Int, String, Int>()  // Represents a Triple<Int, String, Int>
+----
+
+NOTE: The type parameter themselves are erased, meaning that you cannot represent a multi-level generic type.
+      You can, however, construct your own `CompositeTypeToken` to represent such a type.
+
+
+== Bind the same type to different factories
+
+Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are bound with different tags", I lied.
+Because each binding is actually a _factory_, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are bound as `([BindType], Unit, [Tag])`).
+This means that any combination of these three information can be bound to it's own factory, which in turns means that you can bind the same type without tagging to different factories.
+
+CAUTION: Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
+
+
+== Hack the container!
+
+The KodeinContainer is the sacred Kodein object that contains all bindings and is responsible for retrieval.
+You can access it with `kodein.container`.
+In it, each `Binding` is bound to a `Kodein.Key`.
+
+In fact, all Kodein functions are proxies to this container API.
+
+When defining bindings, in the `Kodein.Builder`, you can access the `container` property to bind factories to a `Kodein.Key` or a `Kodein.Bind`.
+
+
+== Tag vs context vs receiver vs argument
+
+[options="header"]
+|=======
+| &nbsp;     | Binding identification | accessible by the binding _itself_* | accessible by the binding function
+| *tag*      | instance               | no                                 | no
+| *context*  | type                   | yes                                | yes
+| *receiver* | no                     | yes                                | yes
+| *argument* | type                   | no                                 | yes
+|=======
+
+
+== Explore bindings
+
+You can access a *copy* of the bindings map with `kodein.container.bindings`. +
+From this `Map<Kodein.Key, Factory<*, *>>`, you can explore all bindings, their keys and factories.
+
+TIP: The https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein/src/main/kotlin/com/github/salomonbrys/kodein/bindings.kt[bindings.kt] file exposes several extension functions to this map that can be useful for exploring it.
+
+
+== Contribute
+
+Contributions are very welcome and greatly appreciated! The great majority of pull requests are eventually merged.
+
+To contribute, simply fork https://github.com/SalomonBrys/Kodein[the project on Github], fix whatever is iching you, and submit a pull request!
+
+I am sure that this documentation contains typos, inaccuracies and languages error (English is not my mother tongue).
+If you feel like enhancing this document, you can propose a pull request that modifies https://github.com/SalomonBrys/Kodein/blob/{branch}/README3.adoc[README3.adoc].
+(The documentation page is auto-generated from it).
