@@ -250,7 +250,7 @@ NOTE: Kodein supports the following targets: +
 == Bindings: Declaring dependencies
 
 [source,kotlin]
-.Example: initialization of a Kodein variable
+.Example: initialization of a Kodein container
 ----
 val kodein = Kodein {
 	/* Bindings */
@@ -1365,7 +1365,8 @@ val instances: List<Foo> = dkodein.allInstances() <1>
 NOTE: Of course, `allProviders` and `allFactories` are also provided ;)
 
 
-=== Retrival: Direct
+[[direct-retrieval]]
+=== Retrieval: Direct
 
 If you don't want to use delegated properties, Kodein has you covered.
 Most of the features available to `Kodein` are available to `DKodein` (D is for Direct).

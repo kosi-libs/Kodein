@@ -7,13 +7,12 @@ image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo
 
 == Getting started
 
-- On the JVM (TODO)
-- On Android (TODO)
-- On Javascript (TODO)
-- On Native (TODO)
+- https://salomonbrys.github.io/Kodein/?{branch}/getting-started[Guide to getting started with Kodein]
 
 
-== https://salomonbrys.github.io/Kodein/?5.0/core[Full documentation]
+== Core documentation
+
+- *https://salomonbrys.github.io/Kodein/?5.0/core[FULL CORE DOCUMENTATION]*
 
 
 == Extensions

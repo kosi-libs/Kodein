@@ -26,6 +26,11 @@ interface DKodeinBase : DKodeinAware {
      */
     val lazy: Kodein
 
+    /**
+     * Returns a regular [Kodein] instance (Kodein is lazy by default).
+     */
+    val kodein: Kodein get() = lazy
+
     /** @suppress */
     object SAME_CONTEXT : KodeinContext<Unit>(UnitToken, Unit)
 
