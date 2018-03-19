@@ -2,10 +2,9 @@
 
 [![Kotlin 1.2.30](https://img.shields.io/badge/Kotlin-1.2.30-blue.svg)](http://kotlinlang.org)
 [![Konan 0.6.1](https://img.shields.io/badge/Konan-0.6.1-blue.svg)](https://github.com/JetBrains/kotlin-native)
-[![JCenter](https://img.shields.io/badge/JCenter-5.0--beta5-brightgreen.svg)](https://bintray.com/salomonbrys/kodein)
-[![Travis](https://img.shields.io/travis/SalomonBrys/Kodein.svg)](https://travis-ci.org/SalomonBrys/Kodein/builds)
-[![MIT License](https://img.shields.io/github/license/salomonbrys/kodein.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
-[![GitHub issues](https://img.shields.io/github/issues/SalomonBrys/Kodein.svg)](https://github.com/SalomonBrys/Kodein/issues)
+[![JCenter](https://api.bintray.com/packages/salomonbrys/kodein/Kodein-Core-JVM/images/download.svg)](https://bintray.com/salomonbrys/kodein)
+[![Travis](https://api.travis-ci.org/SalomonBrys/Kodein.svg?branch=5.0)](https://travis-ci.org/SalomonBrys/Kodein/builds)
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg)](https://kotlinlang.slack.com/messages/kodein/)
 [![Donate](https://img.shields.io/badge/Backing-Donate-orange.svg)](https://salomonbrys.github.io/Kodein/#_donate)
 
