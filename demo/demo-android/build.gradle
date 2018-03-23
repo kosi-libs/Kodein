@@ -23,6 +23,6 @@ dependencies {
 
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-  compile project(':generic:kodein-generic-jvm')
-  compile project(':framework:kodein-framework-android')
+  compile project(':generic:kodein-di-generic-jvm')
+  compile project(':framework:kodein-di-framework-android')
 }

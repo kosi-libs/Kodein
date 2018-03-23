@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
-import org.kodein.KodeinAware
-import org.kodein.KodeinContext
-import org.kodein.android.closestKodein
-import org.kodein.generic.instance
-import org.kodein.generic.kcontext
+import org.kodein.di.KodeinAware
+import org.kodein.di.KodeinContext
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.kcontext
 
 class MainFragment : Fragment(), KodeinAware {
 

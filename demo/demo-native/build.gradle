@@ -3,7 +3,7 @@ apply plugin: 'konan'
 konanArtifacts {
     program('demo') {
         libraries {
-            allLibrariesFrom project(':erased:kodein-erased-native')
+            allLibrariesFrom project(':erased:kodein-di-erased-native')
         }
     }
 }

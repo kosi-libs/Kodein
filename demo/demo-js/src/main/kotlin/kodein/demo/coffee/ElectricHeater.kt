@@ -1,8 +1,8 @@
 package kodein.demo.coffee
 
-import org.kodein.Kodein
-import org.kodein.erased.bind
-import org.kodein.erased.singleton
+import org.kodein.di.Kodein
+import org.kodein.di.erased.bind
+import org.kodein.di.erased.singleton
 
 class ElectricHeater : Heater {
     private var heating: Boolean = false

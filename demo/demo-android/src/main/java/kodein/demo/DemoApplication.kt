@@ -5,10 +5,10 @@ import android.app.Application
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 import kodein.demo.coffee.electricHeaterModule
-import org.kodein.Kodein
-import org.kodein.KodeinAware
-import org.kodein.android.androidScope
-import org.kodein.generic.*
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.androidScope
+import org.kodein.di.generic.*
 
 class DemoApplication : Application(), KodeinAware {
 

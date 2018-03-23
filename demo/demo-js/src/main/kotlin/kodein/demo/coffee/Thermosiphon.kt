@@ -1,9 +1,9 @@
 package kodein.demo.coffee
 
-import org.kodein.Kodein
-import org.kodein.erased.bind
-import org.kodein.erased.instance
-import org.kodein.erased.singleton
+import org.kodein.di.Kodein
+import org.kodein.di.erased.bind
+import org.kodein.di.erased.instance
+import org.kodein.di.erased.singleton
 
 class Thermosiphon(private val heater: Heater) : Pump {
 

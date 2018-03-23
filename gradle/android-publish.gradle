@@ -8,7 +8,7 @@ task sourcesJar(type: Jar) {
 
 publishing {
     publications {
-        kodein(MavenPublication) {
+        KodeinDI(MavenPublication) {
             from components.android
             artifact sourcesJar
         }

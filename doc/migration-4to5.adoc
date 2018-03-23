@@ -41,11 +41,11 @@ Also, the module name have changed to reflect:
 - The generic / erased choice
 
 
-=== New package: org.kodein
+=== New package: org.kodein.di
 
 First and foremost, Kodein now has its dedicated domain name: http://kodein.org[kodein.org].
 
-Kodein is now located inside the package `org.kodein`.
+Kodein is now located inside the package `org.kodein.di`.
 
 
 === laziness
@@ -130,19 +130,6 @@ You need to add the jcenter repository to your project (if it is not already).
 &lt;/repositories&gt;
 ----
 
-If you plan to use a beta version of Kodein, then you also need the Kodein specific repository:
-
-[source,xml,subs="attributes"]
-----
-&lt;repositories&gt;
-    &lt;repository&gt;
-      &lt;id&gt;kodein&lt;/id&gt;
-      &lt;url&gt;http://dl.bintray.com/salomonbrys/kodein&lt;/url&gt;
-    &lt;/repository&gt;
-&lt;/repositories&gt;
-----
-
-
 ==== With Gradle
 
 Add the JCenter repository:
@@ -156,18 +143,6 @@ buildscript {
 }
 ----
 
-If you plan to use a beta version of Kodein, then you also need the Kodein specific repository:
-
-[source,groovy,subs="attributes"]
-----
-buildscript {
-    repositories {
-        maven { url "http://dl.bintray.com/salomonbrys/kodein" }
-    }
-}
-----
-
-
 === New modules
 
 Module names have changed:
@@ -175,29 +150,29 @@ Module names have changed:
 [options="header",width="60%"]
 |=======
 | Old name          | New name
-| `kodein`          | `kodein-generic-jvm`
-| `kodein-erased`   | `kodein-erased-jvm`
-| `kodein-conf`     | `kodein-conf-jvm`
-| `kodein-jxinject` | `kodein-jx-inject-jvm`
-| `kodein-android`  | `kodein-framework-android`
-| `kodein-js`       | `kodein-erased-js`
-| `kodein-conf-js`  | `kodein-conf-js`
+| `kodein`          | `kodein-di-generic-jvm`
+| `kodein-erased`   | `kodein-di-erased-jvm`
+| `kodein-conf`     | `kodein-di-conf-jvm`
+| `kodein-jxinject` | `kodein-di-jx-inject-jvm`
+| `kodein-android`  | `kodein-di-framework-android`
+| `kodein-js`       | `kodein-di-erased-js`
+| `kodein-conf-js`  | `kodein-di-conf-js`
 |=======
 
 
-=== New package: org.kodein
+=== New package: org.kodein.di
 
-Well, the new package is now `org.kodein`. So, you know, update the imports ;)
+Well, the new package is now `org.kodein.di`. So, you know, update the imports ;)
 
 [options="header",width="70%"]
 |=======
-| Old name          | New name
-| `com.github.salomonbrys.kodein` *        | `org.kodein`
-| `com.github.salomonbrys.kodein` *        | `org.kodein.generic`
-| `com.github.salomonbrys.kodein.erased`   | `org.kodein.erased`
-| `com.github.salomonbrys.kodein.conf`     | `org.kodein.conf`
-| `com.github.salomonbrys.kodein.jxinject` | `org.kodein.jxinject`
-| `com.github.salomonbrys.kodein.android`  | `org.kodein.android`
+| Old name                                 | New name
+| `com.github.salomonbrys.kodein` *        | `org.kodein.di`
+| `com.github.salomonbrys.kodein` *        | `org.kodein.di.generic`
+| `com.github.salomonbrys.kodein.erased`   | `org.kodein.di.erased`
+| `com.github.salomonbrys.kodein.conf`     | `org.kodein.di.conf`
+| `com.github.salomonbrys.kodein.jxinject` | `org.kodein.di.jxinject`
+| `com.github.salomonbrys.kodein.android`  | `org.kodein.di.android`
 |=======
 
 _The `com.github.salomonbrys.kodein` package has been split up between core and generic code.

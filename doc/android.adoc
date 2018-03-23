@@ -23,8 +23,8 @@ Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/demo-andr
 +
 [subs="attributes"]
 ----
-compile 'org.kodein:kodein-generic-jvm:{version}'
-compile 'org.kodein:kodein-framework-android:{version}'
+compile 'org.kodein.di:kodein-di-generic-jvm:{version}'
+compile 'org.kodein.di:kodein-di-framework-android:{version}'
 ----
 +
 IMPORTANT: Both `kodein-generic-jvm` and `kodein-android` dependencies must be declared. +

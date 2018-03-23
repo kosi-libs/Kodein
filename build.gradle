@@ -37,7 +37,7 @@ allprojects {
         google()
     }
 
-    group = 'org.kodein'
+    group = 'org.kodein.di'
     version = '5.0.0'
 }
 

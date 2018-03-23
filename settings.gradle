@@ -2,31 +2,31 @@
 //includeBuild '../../kotlin-native'
 
 include(
-        ':core:kodein-core-common',
-        ':core:kodein-core-jvm',
-        ':core:kodein-core-js',
-        ':core:kodein-core-native',
+        ':core:kodein-di-core-common',
+        ':core:kodein-di-core-jvm',
+        ':core:kodein-di-core-js',
+        ':core:kodein-di-core-native',
 
         ':test-utils:test-utils-common',
         ':test-utils:test-utils-jvm',
         ':test-utils:test-utils-js',
         ':test-utils:test-utils-native',
 
-        ':generic:kodein-generic-jvm',
+        ':generic:kodein-di-generic-jvm',
 
-        ':erased:kodein-erased-common',
-        ':erased:kodein-erased-jvm',
-        ':erased:kodein-erased-js',
-        ':erased:kodein-erased-native',
+        ':erased:kodein-di-erased-common',
+        ':erased:kodein-di-erased-jvm',
+        ':erased:kodein-di-erased-js',
+        ':erased:kodein-di-erased-native',
 
-        ':conf:kodein-conf-common',
-        ':conf:kodein-conf-jvm',
-        ':conf:kodein-conf-js',
-        ':conf:kodein-conf-native',
+        ':conf:kodein-di-conf-common',
+        ':conf:kodein-di-conf-jvm',
+        ':conf:kodein-di-conf-js',
+        ':conf:kodein-di-conf-native',
 
-        ':jx-inject:kodein-jx-inject-jvm',
+        ':jx-inject:kodein-di-jx-inject-jvm',
 
-        ':framework:kodein-framework-android',
+        ':framework:kodein-di-framework-android',
 
         ':demo:demo-android',
         ':demo:demo-js',

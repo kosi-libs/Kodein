@@ -8,15 +8,16 @@ if (hasProperty('bintrayUsername') && hasProperty('bintrayApiKey')) {
         key = bintrayApiKey
 
         pkg {
-            repo = 'kodein'
+            userOrg = 'kodein-framework'
+            repo = 'kodein-DI'
             name = pom_name
             licenses = ['MIT']
-            websiteUrl = 'http://kodein.org'
-            issueTrackerUrl = 'https://github.com/SalomonBrys/Kodein/issues'
-            vcsUrl = 'https://github.com/SalomonBrys/Kodein.git'
+            websiteUrl = 'https://kodein.org'
+            issueTrackerUrl = 'https://github.com/Kodein-Framework/Kodein-DI/issues'
+            vcsUrl = 'https://github.com/Kodein-Framework/Kodein-DI.git'
             desc = pom_description
 
-            publications = ['kodein']
+            publications = ['KodeinDI']
 
 //            dryRun = true
         }

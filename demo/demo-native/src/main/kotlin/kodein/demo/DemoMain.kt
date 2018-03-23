@@ -1,7 +1,7 @@
 package kodein.demo
 
-import org.kodein.*
-import org.kodein.erased.*
+import org.kodein.di.*
+import org.kodein.di.erased.*
 import kodein.demo.coffee.*
 
 fun main(args: Array<String>) {

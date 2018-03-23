@@ -1,7 +1,7 @@
 apply plugin: 'kotlin-platform-js'
 
 dependencies {
-    compile project(":erased:kodein-erased-js")
+    compile project(":erased:kodein-di-erased-js")
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
 }
 

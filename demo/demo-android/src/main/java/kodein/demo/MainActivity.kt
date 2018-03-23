@@ -6,12 +6,11 @@ import android.util.Log
 import kodein.demo.coffee.Coffee
 import kodein.demo.coffee.Kettle
 import kodein.demo.coffee.thermosiphonModule
-import org.kodein.*
-import org.kodein.android.closestKodein
-import org.kodein.android.retainedKodein
-import org.kodein.generic.binding
-import org.kodein.generic.instance
-import org.kodein.generic.kcontext
+import org.kodein.di.android.closestKodein
+import org.kodein.di.android.retainedKodein
+import org.kodein.di.*
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.kcontext
 
 class MainActivity : Activity(), KodeinAware {
 
