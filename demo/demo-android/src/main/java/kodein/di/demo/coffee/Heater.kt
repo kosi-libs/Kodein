@@ -1,4 +1,4 @@
-package kodein.demo.coffee
+package kodein.di.demo.coffee
 
 interface Heater {
     fun on()

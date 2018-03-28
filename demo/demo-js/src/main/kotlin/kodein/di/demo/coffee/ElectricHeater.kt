@@ -1,24 +1,23 @@
-package kodein.demo.coffee
+package kodein.di.demo.coffee
 
 import org.kodein.di.Kodein
 import org.kodein.di.erased.bind
 import org.kodein.di.erased.singleton
-import org.kodein.di.erased.provider
 
 class ElectricHeater : Heater {
     private var heating: Boolean = false
 
     init {
-        println("<Creating ElectricHeater>")
+        console.log("<Creating ElectricHeater>")
     }
 
     override fun on() {
-        println("~ ~ ~ heating ~ ~ ~")
+        console.log("~ ~ ~ heating ~ ~ ~")
         this.heating = true
     }
 
     override fun off() {
-        println(". . . cooling . . .")
+        console.log(". . . cooling . . .")
         this.heating = false
     }
 
@@ -26,5 +25,5 @@ class ElectricHeater : Heater {
 }
 
 val electricHeaterModule = Kodein.Module {
-    bind<Heater>() with provider { ElectricHeater() }
+    bind<Heater>() with singleton { ElectricHeater() }
 }

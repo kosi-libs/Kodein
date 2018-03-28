@@ -1,4 +1,4 @@
-package kodein.demo.coffee
+package kodein.di.demo.coffee
 
 import org.kodein.di.Kodein
 import org.kodein.di.erased.bind
@@ -8,14 +8,14 @@ import org.kodein.di.erased.singleton
 class Thermosiphon(private val heater: Heater) : Pump {
 
     init {
-        console.log("<Creating Thermosiphon>")
+        println("<Creating Thermosiphon>")
     }
 
     override fun pumpWater() {
         if (heater.isHot)
-            console.log("=> => pumping => =>")
+            println("=> => pumping => =>")
         else
-            console.log("!!! water is cold !!!")
+            println("!!! water is cold !!!")
     }
 }
 

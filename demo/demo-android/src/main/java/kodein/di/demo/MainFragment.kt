@@ -1,4 +1,4 @@
-package kodein.demo
+package kodein.di.demo
 
 import android.app.Fragment
 import android.os.Bundle
@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import kodein.demo.coffee.Coffee
-import kodein.demo.coffee.Kettle
+import kodein.di.demo.coffee.Coffee
+import kodein.di.demo.coffee.Kettle
 import org.kodein.di.KodeinAware
 import org.kodein.di.KodeinContext
 import org.kodein.di.android.closestKodein

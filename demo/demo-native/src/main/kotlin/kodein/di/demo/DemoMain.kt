@@ -1,12 +1,8 @@
-package kodein.demo
+package kodein.di.demo
 
-import kodein.demo.coffee.Coffee
-import kodein.demo.coffee.Kettle
-import kodein.demo.coffee.electricHeaterModule
-import kodein.demo.coffee.thermosiphonModule
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
+import org.kodein.di.*
 import org.kodein.di.erased.*
+import kodein.di.demo.coffee.*
 
 fun main(args: Array<String>) {
     Application()
@@ -30,9 +26,8 @@ class Application : KodeinAware {
 
     init {
         val author: String by instance("author")
-        console.log("Kodein 5 Demo by $author")
+        println("Kodein 5 Demo by $author")
 
         _kettle.brew()
     }
-
 }

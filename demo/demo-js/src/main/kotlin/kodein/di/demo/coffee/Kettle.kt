@@ -1,4 +1,4 @@
-package kodein.demo.coffee
+package kodein.di.demo.coffee
 
 
 interface Ration {
@@ -6,12 +6,12 @@ interface Ration {
 }
 
 class Coffee : Ration {
-    init { println("<Creating CoffeeRation>") }
+    init { console.log("<Creating CoffeeRation>") }
     override fun name(): String = "coffee"
 }
 
 class Tea : Ration {
-    init { println("<Creating TeaRation>") }
+    init { console.log("<Creating TeaRation>") }
     override fun name(): String = "tea"
 }
 
@@ -22,7 +22,7 @@ class Kettle<T : Ration>(
 ) {
 
     init {
-        println("<Creating CoffeeMaker>")
+        console.log("<Creating CoffeeMaker>")
     }
 
     fun brew() {
@@ -30,7 +30,7 @@ class Kettle<T : Ration>(
         pump.pumpWater()
         val ration = ration()
 
-        println("[_]P ${ration.name()} [_]P")
+        console.log("[_]P ${ration.name()} [_]P")
         heater.off()
     }
 }

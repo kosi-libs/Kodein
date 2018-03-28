@@ -1,4 +1,4 @@
-package kodein.demo
+package kodein.di.demo
 
 class Logger {
 

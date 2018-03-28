@@ -1,7 +1,7 @@
-package kodein.demo.coffee
+package kodein.di.demo.coffee
 
 import org.kodein.di.Kodein
-import kodein.demo.Logger
+import kodein.di.demo.Logger
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton

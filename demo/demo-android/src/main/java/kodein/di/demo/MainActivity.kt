@@ -1,11 +1,11 @@
-package kodein.demo
+package kodein.di.demo
 
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import kodein.demo.coffee.Coffee
-import kodein.demo.coffee.Kettle
-import kodein.demo.coffee.thermosiphonModule
+import kodein.di.demo.coffee.Coffee
+import kodein.di.demo.coffee.Kettle
+import kodein.di.demo.coffee.thermosiphonModule
 import org.kodein.di.android.closestKodein
 import org.kodein.di.android.retainedKodein
 import org.kodein.di.*

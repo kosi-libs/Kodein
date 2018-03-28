@@ -1,37 +1,36 @@
-package kodein.demo.coffee
+package kodein.di.demo.coffee
 
-import kodein.demo.Logger
 
 interface Ration {
     fun name(): String
 }
 
-class Coffee(log: Logger) : Ration {
-    init { log.log("<Creating CoffeeRation>") }
+class Coffee : Ration {
+    init { println("<Creating CoffeeRation>") }
     override fun name(): String = "coffee"
 }
 
-class Tea(log: Logger) : Ration {
-    init { log.log("<Creating TeaRation>") }
+class Tea : Ration {
+    init { println("<Creating TeaRation>") }
     override fun name(): String = "tea"
 }
 
 class Kettle<T : Ration>(
-        private val log: Logger,
         private val heater: Heater,
         private val pump: Pump,
         private val ration: () -> T // We will need a new ration every time
 ) {
 
     init {
-        log.log("<Creating CoffeeMaker>")
+        println("<Creating CoffeeMaker>")
     }
 
     fun brew() {
         heater.on()
         pump.pumpWater()
         val ration = ration()
-        log.log("[_]P ${ration.name()} ${System.identityHashCode(ration)} [_]P")
+
+        println("[_]P ${ration.name()} [_]P")
         heater.off()
     }
 }
