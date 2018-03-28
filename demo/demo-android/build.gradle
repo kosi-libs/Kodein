@@ -21,8 +21,8 @@ android {
 dependencies {
 //    compile fileTree(include: ['*.jar'], dir: 'libs')
 
-  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-  compile project(':generic:kodein-di-generic-jvm')
-  compile project(':framework:kodein-di-framework-android')
+  implementation project(':generic:kodein-di-generic-jvm')
+  implementation project(':framework:kodein-di-framework-android')
 }

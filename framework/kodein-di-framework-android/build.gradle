@@ -17,13 +17,13 @@ android {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile project(':core:kodein-di-core-jvm')
+    api project(':core:kodein-di-core-jvm')
 
-    compile 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
 
-    testCompile "junit:junit:$junit_version"
+    testImplementation "junit:junit:$junit_version"
 }
 
 apply from: "../../gradle/dokka.gradle"

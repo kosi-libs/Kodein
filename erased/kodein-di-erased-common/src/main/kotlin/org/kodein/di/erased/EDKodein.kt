@@ -17,7 +17,7 @@ import org.kodein.di.erased
  * @throws Kodein.NotFoundException if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.factory(tag: Any? = null) = (dkodein as DKodeinBase).Factory<A, T>(erased(), erased(), tag)
+inline fun <reified A, reified T : Any> DKodeinAware.factory(tag: Any? = null) = dkodein.Factory<A, T>(erased(), erased(), tag)
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
@@ -30,7 +30,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.factory(tag: Any? = null) =
  * @return A factory, or null if no factory was found.
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.factoryOrNull(tag: Any? = null) = (dkodein as DKodeinBase).FactoryOrNull<A, T>(erased(), erased(), tag)
+inline fun <reified A, reified T : Any> DKodeinAware.factoryOrNull(tag: Any? = null) = dkodein.FactoryOrNull<A, T>(erased(), erased(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -43,7 +43,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.factoryOrNull(tag: Any? = n
  * @throws Kodein.NotFoundException if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodeinAware.provider(tag: Any? = null) = (dkodein as DKodeinBase).Provider<T>(erased(), tag)
+inline fun <reified T : Any> DKodeinAware.provider(tag: Any? = null) = dkodein.Provider<T>(erased(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -58,7 +58,7 @@ inline fun <reified T : Any> DKodeinAware.provider(tag: Any? = null) = (dkodein 
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: A) = (dkodein as DKodeinBase).Provider<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: A) = dkodein.Provider<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -75,7 +75,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, 
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: Typed<A>) = (dkodein as DKodeinBase).Provider<A, T>(arg.type, erased(), tag) { arg.value }
+inline fun <A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: Typed<A>) = dkodein.Provider<A, T>(arg.type, erased(), tag) { arg.value }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -90,7 +90,7 @@ inline fun <A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: Typ
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, noinline fArg: () -> A) = (dkodein as DKodeinBase).Provider<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, noinline fArg: () -> A) = dkodein.Provider<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -103,7 +103,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, 
  * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null) = (dkodein as DKodeinBase).ProviderOrNull<T>(erased(), tag)
+inline fun <reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null) = dkodein.ProviderOrNull<T>(erased(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -117,7 +117,7 @@ inline fun <reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null) = (dk
  * @return A provider of `T`, or null if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, arg: A) = (dkodein as DKodeinBase).ProviderOrNull<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, arg: A) = dkodein.ProviderOrNull<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -133,7 +133,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = 
  * @return A provider of `T`, or null if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, arg: Typed<A>) = (dkodein as DKodeinBase).ProviderOrNull<A, T>(arg.type, erased(), tag) { arg.value }
+inline fun <A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, arg: Typed<A>) = dkodein.ProviderOrNull<A, T>(arg.type, erased(), tag) { arg.value }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -147,7 +147,7 @@ inline fun <A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, ar
  * @return A provider of `T`, or null if no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = (dkodein as DKodeinBase).ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = dkodein.ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -160,7 +160,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = 
  * @throws Kodein.NotFoundException if no provider was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodeinAware.instance(tag: Any? = null) = (dkodein as DKodeinBase).Instance<T>(erased(), tag)
+inline fun <reified T : Any> DKodeinAware.instance(tag: Any? = null) = dkodein.Instance<T>(erased(), tag)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument.
@@ -175,7 +175,7 @@ inline fun <reified T : Any> DKodeinAware.instance(tag: Any? = null) = (dkodein 
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: A) = (dkodein as DKodeinBase).Instance<A, T>(erased(), erased(), tag, arg)
+inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: A) = dkodein.Instance<A, T>(erased(), erased(), tag, arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument.
@@ -192,7 +192,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, 
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: Typed<A>) = (dkodein as DKodeinBase).Instance<A, T>(arg.type, erased(), tag, arg.value)
+inline fun <A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: Typed<A>) = dkodein.Instance<A, T>(arg.type, erased(), tag, arg.value)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -204,7 +204,7 @@ inline fun <A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: Typ
  * @return An instance, or null if no provider was found.
  * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null) = (dkodein as DKodeinBase).InstanceOrNull<T>(erased(), tag)
+inline fun <reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null) = dkodein.InstanceOrNull<T>(erased(), tag)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -219,7 +219,7 @@ inline fun <reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null) = (dk
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: A) = (dkodein as DKodeinBase).InstanceOrNull<A, T>(erased(), erased(), tag, arg)
+inline fun <reified A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: A) = dkodein.InstanceOrNull<A, T>(erased(), erased(), tag, arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -234,7 +234,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = 
  * @throws Kodein.NotFoundException If no provider was found.
  * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: Typed<A>) = (dkodein as DKodeinBase).InstanceOrNull<A, T>(arg.type, erased(), tag, arg.value)
+inline fun <A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: Typed<A>) = dkodein.InstanceOrNull<A, T>(arg.type, erased(), tag, arg.value)
 
 /**
  * Returns a `DKodein` with its context and/or receiver changed.
@@ -242,7 +242,7 @@ inline fun <A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, ar
  * @param context The new context for the new DKodein.
  * @param receiver The new receiver for the new DKodein.
  */
-inline fun <reified C> DKodeinAware.on(context: C, receiver: Any? = DKodeinBase.SAME_RECEIVER) = (dkodein as DKodeinBase).On(kcontext(context), receiver)
+inline fun <reified C> DKodeinAware.on(context: C, receiver: Any? = DKodeinBase.SAME_RECEIVER) = dkodein.On(kcontext(context), receiver)
 
 /**
  * Returns a `DKodein` with its receiver changed.
@@ -251,4 +251,4 @@ inline fun <reified C> DKodeinAware.on(context: C, receiver: Any? = DKodeinBase.
  *
  * @param receiver The new receiver for the new DKodein.
  */
-fun DKodeinAware.on(@Suppress("UNUSED_PARAMETER") _0: Nothing? = null, receiver: Any?) = (dkodein as DKodeinBase).On(DKodeinBase.SAME_CONTEXT, receiver)
+fun DKodeinAware.on(@Suppress("UNUSED_PARAMETER") _0: Nothing? = null, receiver: Any?) = dkodein.On(DKodeinBase.SAME_CONTEXT, receiver)
