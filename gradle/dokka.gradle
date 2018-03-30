@@ -11,7 +11,7 @@ dokka {
 
     linkMapping {
         dir = "src/main/kotlin"
-        url = "https://github.com/SalomonBrys/Kodein/blob/master/kodein/src/main/kotlin"
+        url = "https://github.com/Kodein-Framework/Kodein-DI/blob/master/kodein/src/main/kotlin"
         suffix = "#L"
     }
 }

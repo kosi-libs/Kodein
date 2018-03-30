@@ -1,13 +1,13 @@
-= KOtlin DEpendency INjection
+= KODEIN DI: KOtlin DEpendency INjection
 Salomon BRYS <salomon.brys@gmail.com>
 :toc: left
 :toc-position: left
 :toclevels: 5
 
-:version: 5.0.0-beta5
+:version: 5.0.0
 :branch: 5.0
 
-image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-logo.png[KODEIN, 700, 233]
 
 == Introduction
 
@@ -192,17 +192,6 @@ buildscript {
 }
 ----
 
-If you plan to use a beta version of Kodein, then you also need the Kodein specific repository:
-
-[source,groovy,subs="attributes"]
-----
-buildscript {
-    repositories {
-        maven { url "http://dl.bintray.com/salomonbrys/kodein" }
-    }
-}
-----
-
 Then add the dependency:
 
 [source,groovy,subs="attributes"]
@@ -215,8 +204,8 @@ dependencies {
 
 === Native
 
-- https://dl.bintray.com/salomonbrys/kodein-di/native/kodein-di-{version}/kodein-di-core-{version}.klib[Download kodein-core-{version}.klib].
-- https://dl.bintray.com/salomonbrys/kodein-di/native/kodein-di-{version}/kodein-di-erased-{version}.klib[Download kodein-erased-{version}.klib].
+- https://dl.bintray.com/kodein-framework/Kodein-DI/native/kodein-di-{version}/kodein-di-core-{version}.klib[Download kodein-core-{version}.klib].
+- https://dl.bintray.com/kodein-framework/Kodein-DI/native/kodein-di-{version}/kodein-di-erased-{version}.klib[Download kodein-erased-{version}.klib].
 - Add *both* libraries to your project.
 
 NOTE: Kodein supports the following targets: +
@@ -1590,7 +1579,7 @@ Kodein$DependencyLoopException: Dependency recursion:
 
 == Advanced use
 
-Read the https://salomonbrys.github.io/Kodein/?{branch}/advanced[advanced usage document] ;).
+Read the https://kodein.org/Kodein-DI/?{branch}/advanced[advanced usage document] ;).
 
 == Community
 
@@ -1600,11 +1589,3 @@ Read the https://salomonbrys.github.io/Kodein/?{branch}/advanced[advanced usage 
 You've read so far?! *You're awesome!* +
 Why don't you drop by the https://kotlinlang.slack.com/messages/kodein/[Kodein Slack channel] on Kotlin's Slack group?
 
-
-=== Donate
-
-Kodein is free to use for both non-profit and commercial use and always will be.
-
-If you wish to show some support or appreciation to my work, you are free to *https://donorbox.org/donation-salomonbrys[donate]*!
-
-TIP: This would be (of course) greatly appreciated but is by no means necessary to receive help or support, which I'll be happy to provide for free!

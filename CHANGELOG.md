@@ -159,7 +159,7 @@ No changes from `3.2.0-beta3`
 ### 3.0.0-beta5 (12-07-2016)
 
  - FEATURES
-   * Kodein's source code & API is now [fully documented](https://salomonbrys.github.io/Kodein/kodein-dokka/kodein/org.kodein/index.html)!
+   * Kodein's source code & API is now fully documented!
    * You can now bind a `Kodein.Bind` directly with `container.bind(bind)`.
    * `lazyKodein {...}` now returns a `LazyKodein` object, which can be used either as a lazy property or to inject lazy
      properties.

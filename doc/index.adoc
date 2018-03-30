@@ -1,34 +1,34 @@
-= KOtlin DEpendency INjection: {version}
+= KODEIN DI: KOtlin DEpendency INjection: {version}
 Salomon BRYS <salomon.brys@gmail.com>
-:version: 5.0.0-beta5
+:version: 5.0.0
 :branch: 5.0
 
-image::https://raw.githubusercontent.com/SalomonBrys/Kodein/{branch}/Kodein-logo.png[KODEIN, 700, 233]
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-logo.png[KODEIN-DI, 700, 233]
 
 == Getting started
 
-- https://salomonbrys.github.io/Kodein/?{branch}/getting-started[Guide to getting started with Kodein]
+- http://kodein.org/Kodein-DI/?{branch}/getting-started[Guide to getting started with Kodein]
 
 
 == Core documentation
 
-- *https://salomonbrys.github.io/Kodein/?5.0/core[FULL CORE DOCUMENTATION]*
+- *http://kodein.org/Kodein-DI/?5.0/core[FULL CORE DOCUMENTATION]*
 
 
 == Extensions
 
-- https://salomonbrys.github.io/Kodein/?{branch}/configurable[Configurable & global Kodein]
-- https://salomonbrys.github.io/Kodein/?{branch}/android[Kodein on Android]
-- https://salomonbrys.github.io/Kodein/?{branch}/jsr330[JSR-330 compatibility]
+- http://kodein.org/Kodein-DI/?{branch}/configurable[Configurable & global Kodein]
+- http://kodein.org/Kodein-DI/?{branch}/android[Kodein on Android]
+- http://kodein.org/Kodein-DI/?{branch}/jsr330[JSR-330 compatibility]
 
 
 == Migrations
 
-- https://salomonbrys.github.io/Kodein/?{branch}/migration-j2k[JSR-330 to Kodein]
-- https://salomonbrys.github.io/Kodein/?{branch}/migration-4to5[Kodein version 4 to version 5]
+- http://kodein.org/Kodein-DI/?{branch}/migration-j2k[JSR-330 to Kodein]
+- http://kodein.org/Kodein-DI/?{branch}/migration-4to5[Kodein version 4 to version 5]
 
 
 == Previous versions
 
-- https://salomonbrys.github.io/Kodein/?{branch}/old/v4[Kodein version 4]
-- https://salomonbrys.github.io/Kodein/?{branch}/old/v3[Kodein version 3].
+- http://kodein.org/Kodein-DI/?4.1[Kodein version 4]
+- http://kodein.org/Kodein-DI/?3.4[Kodein version 3].

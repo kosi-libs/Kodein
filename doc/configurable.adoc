@@ -1,10 +1,10 @@
-= Global & Configurable Kodein
+= Global & Configurable Kodein DI
 Salomon BRYS <salomon.brys@gmail.com>
 :toc: left
 :toc-position: left
 :toclevels: 5
 
-:version: 5.0.0-beta5
+:version: 5.0.0
 :branch: 5.0
 
 
@@ -62,7 +62,7 @@ IMPORTANT: Do not remove the `kodein-generic-js` (or `kodein-erased-js`) depende
 
 === Native
 
-- https://dl.bintray.com/salomonbrys/kodein-di/native/kodein-di-{version}/kodein-di-conf-{version}.klib[Download kodein-conf-{version}.klib].
+- https://dl.bintray.com/kodein-framework/Kodein-DI/native/kodein-di-{version}/kodein-di-conf-{version}.klib[Download kodein-conf-{version}.klib].
 - Add the library to your project.
 
 

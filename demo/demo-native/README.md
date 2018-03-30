@@ -1,8 +1,6 @@
 Kodein Demo Native Project
 ==========================
 
-**THIS PROJECT IS NOT FUNCTIONAL YET!!!**
+This is a very simple project that demonstrates the use of Kodein with Kotlin/Native.
 
-At the moment, Kotlin Native is missing some features needed by Kodein.
-
-Learn more in the [Kodein-Native project](https://github.com/SalomonBrys/Kodein/tree/master/kodein-native).
+It is inspired from Dagger's Coffee Maker example.

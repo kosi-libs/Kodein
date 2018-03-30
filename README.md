@@ -1,12 +1,11 @@
-<img alt="KODEIN" src="https://raw.githubusercontent.com/SalomonBrys/Kodein/master/Kodein-logo.png" width="700">
+<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/Kodein-logo.png" width="700">
 
 [![Kotlin 1.2.30](https://img.shields.io/badge/Kotlin-1.2.30-blue.svg)](http://kotlinlang.org)
-[![Konan 0.6.1](https://img.shields.io/badge/Konan-0.6.1-blue.svg)](https://github.com/JetBrains/kotlin-native)
-[![JCenter](https://api.bintray.com/packages/salomonbrys/kodein/Kodein-Core-JVM/images/download.svg)](https://bintray.com/salomonbrys/kodein)
-[![Travis](https://api.travis-ci.org/SalomonBrys/Kodein.svg?branch=5.0)](https://travis-ci.org/SalomonBrys/Kodein/builds)
-[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/SalomonBrys/Kodein/blob/master/LICENSE.txt)
+[![Konan 0.6.1](https://img.shields.io/badge/Konan-0.6.2-blue.svg)](https://github.com/JetBrains/kotlin-native)
+[![JCenter](https://api.bintray.com/packages/kodein-framework/Kodein-DI/Kodein-DI-Core-JVM/images/download.svg)](https://bintray.com/kodein-framework/Kodein-DI)
+[![Travis](https://travis-ci.org/Kodein-Framework/Kodein-DI.svg?branch=master)](https://travis-ci.org/Kodein-Framework/Kodein-DI/builds)
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Kodein-Framework/Kodein-DI/blob/master/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg)](https://kotlinlang.slack.com/messages/kodein/)
-[![Donate](https://img.shields.io/badge/Backing-Donate-orange.svg)](https://salomonbrys.github.io/Kodein/#_donate)
 
 
 KOtlin DEpendency INjection
@@ -60,7 +59,7 @@ Read more
 
 Kodein 5 is the current major version, but documentation is available for previous versions.
 
-**[Kodein documentation](https://salomonbrys.github.io/Kodein/)**
+**[Kodein documentation](https://kodein.org/Kodein-DI/)**
 
 
 Support
@@ -147,4 +146,4 @@ Testimonies
 
 &nbsp;
 
-If you are using Kodein, please [let me know](mailto:salomon.brys@gmail.com)!
+If you are using Kodein, please [let me know](mailto:contact@kodein.net)!

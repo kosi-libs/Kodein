@@ -1,10 +1,10 @@
-= Kodein on Android
+= Kodein DI on Android
 Salomon BRYS <salomon.brys@gmail.com>
 :toc: left
 :toc-position: left
 :toclevels: 5
 
-:version: 5.0.0-beta5
+:version: 5.0.0
 :branch: 5.0
 
 You can use Kodein as-is in your Android project or use the util library `kodein-android`.
@@ -13,7 +13,7 @@ NOTE: Kodein does work on Android as-is.
       The `kodein-android` extension adds multiple android-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
-Have a look at the https://github.com/SalomonBrys/Kodein/tree/{branch}/demo-android[Android demo project]!
+Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo-android[Android demo project]!
 
 
 == Install
@@ -130,7 +130,7 @@ class MyApplication : Application(), KodeinAware {
 }
 ----
 
-You can see everything that this module proposes in the Kodein-Android https://github.com/SalomonBrys/Kodein/blob/{branch}/framework/kodein-framework-android/src/main/java/org/kodein/android/module.kt[module.kt] file.
+You can see everything that this module proposes in the Kodein-Android https://github.com/Kodein-Framework/Kodein-DI/blob/{branch}/framework/kodein-framework-android/src/main/java/org/kodein/android/module.kt[module.kt] file.
 
 [source, kotlin]
 .Example: using kodein to retrieve a LayoutInflater

@@ -1,10 +1,10 @@
-= Getting started with Kodein
+= Getting started with Kodein DI
 Salomon BRYS <salomon.brys@gmail.com>
 :toc: left
 :toc-position: left
 :toclevels: 5
 
-:version: 5.0.0-beta5
+:version: 5.0.0
 :branch: 5.0
 
 Kodein (for KOtlin DEpendency INjection) is a DI framework.
@@ -160,7 +160,7 @@ val kodein = Kodein {
 ----
 
 As you can see, Kodein offers a DSL (Domain Specific Language) that allows to very easily declare a binding.
-Kodein offers many bindings that can manage implementations: `provider`, `singleton`, `factory`, `multiton`, `instance`, and more, wich you can read about in the https://salomonbrys.github.io/Kodein/?{branch}/core#declaring-dependencies[bindings section of the core documentation].
+Kodein offers many bindings that can manage implementations: `provider`, `singleton`, `factory`, `multiton`, `instance`, and more, wich you can read about in the https://kodein.org/Kodein-DI/?{branch}/core#declaring-dependencies[bindings section of the core documentation].
 
 Most of the time, the type of the interface of the dependency is enough to identify it.
 There is only one `Database` in the application, so if I'm asking for a `Database`, there is no question of _which_ `Database` I need: I need _the_ database. +
@@ -304,7 +304,7 @@ class Presenter(): KodeinAware {
 === Direct
 
 If you don't want everything to be lazy (as it is by default), Kodein has you covered.
-Head to the https://salomonbrys.github.io/Kodein/?5.0/core#direct-rectrieval[Retrival: Direct] section of the core documentation.
+Head to the https://kodein.org/Kodein-DI/?5.0/core#direct-rectrieval[Retrival: Direct] section of the core documentation.
 
 
 == Transitive dependencies
@@ -338,6 +338,6 @@ val kodein = Kodein {
 == Where to go next
 
 Kodein offers a lot of features.
-All of them are documented, you can find them here: *https://salomonbrys.github.io/Kodein/?{branch}*.
+All of them are documented, you can find them here: *https://kodein.org/Kodein-DI/?{branch}*.
 
-If you are using Kodein on Android, you should read the https://salomonbrys.github.io/Kodein/?5.0/android[Kodein on Android] documentation.
+If you are using Kodein on Android, you should read the https://kodein.org/Kodein-DI/?5.0/android[Kodein on Android] documentation.

@@ -1,10 +1,10 @@
-= Kodein Advanced Usage
+= Kodein DI Advanced Usage
 Salomon BRYS <salomon.brys@gmail.com>
 :toc: left
 :toc-position: left
 :toclevels: 5
 
-:version: 5.0.0-beta5
+:version: 5.0.0
 :branch: 5.0
 
 == OnReady callbacks
@@ -197,15 +197,13 @@ When defining bindings, in the `Kodein.Builder`, you can access the `container` 
 You can access a *copy* of the bindings map with `kodein.container.bindings`. +
 From this `Map<Kodein.Key, Factory<*, *>>`, you can explore all bindings, their keys and factories.
 
-TIP: The https://github.com/SalomonBrys/Kodein/blob/{branch}/kodein/src/main/kotlin/com/github/salomonbrys/kodein/bindings.kt[bindings.kt] file exposes several extension functions to this map that can be useful for exploring it.
-
 
 == Contribute
 
 Contributions are very welcome and greatly appreciated! The great majority of pull requests are eventually merged.
 
-To contribute, simply fork https://github.com/SalomonBrys/Kodein[the project on Github], fix whatever is iching you, and submit a pull request!
+To contribute, simply fork https://github.com/Kodein-Framework/Kodein-DI[the project on Github], fix whatever is iching you, and submit a pull request!
 
 I am sure that this documentation contains typos, inaccuracies and languages error (English is not my mother tongue).
-If you feel like enhancing this document, you can propose a pull request that modifies https://github.com/SalomonBrys/Kodein/blob/{branch}/README3.adoc[README3.adoc].
+If you feel like enhancing this document, you can propose a pull request that modifies https://github.com/Kodein-Framework/Kodein-DI/blob/{branch}/README3.adoc[README3.adoc].
 (The documentation page is auto-generated from it).
