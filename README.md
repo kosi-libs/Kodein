@@ -53,16 +53,11 @@ Kodein is a good choice because:
 Read more
 ---------
 
-[Kodein 5.0 is in Beta!](https://salomonbrys.github.io/Kodein/?5.0)
+[Kodein 5.0 is here!](http://kodein.org/Kodein-DI)
 
 Kodein version 4 is the current major version available:
 
-- **[Kodein 4 full documentation](https://salomonbrys.github.io/Kodein/)**
-- [Kodein 4 API reference](https://github.com/SalomonBrys/Kodein/blob/master/dokka/out/doc/index.md)
-
-If you are currently using a `javax.inject` compatible dependency injection library and whish to migrate to Kodein, [there is a guide for that](https://github.com/SalomonBrys/Kodein/blob/master/MIGRATION-JtoK.adoc).
-
-If you are still using version 3, you can access [version 3 documentation](https://github.com/SalomonBrys/Kodein/blob/master/DOCUMENTATION_V3.adoc).
+**[Kodein 4 full documentation](http://kodein.org/Kodein-DI/?4.1)**
 
 
 Support
