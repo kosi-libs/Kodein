@@ -9,7 +9,7 @@ if (hasProperty('bintrayUsername') && hasProperty('bintrayApiKey')) {
 
         pkg {
             userOrg = 'kodein-framework'
-            repo = 'kodein-DI'
+            repo = 'Kodein-DI'
             name = pom_name
             licenses = ['MIT']
             websiteUrl = 'https://kodein.org'

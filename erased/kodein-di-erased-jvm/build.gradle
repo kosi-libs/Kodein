@@ -21,7 +21,7 @@ apply from: "../../gradle/dokka.gradle"
 apply from: "../../gradle/kotlin-publish.gradle"
 
 ext {
-    pom_name = "Kodein-Erased-JVM"
+    pom_name = "Kodein-DI-Erased-JVM"
     pom_description = "KODEIN Dependency Injection using erased types by default for the JVM & Android (optimized, but error-prone)"
 }
 apply from: "../../gradle/publication-upload.gradle"

@@ -21,7 +21,7 @@ apply from: "../../gradle/dokka.gradle"
 apply from: "../../gradle/kotlin-publish.gradle"
 
 ext {
-    pom_name = "Kodein-Generic-JVM"
-    pom_description = "KOtlin DEpendency INjection compatible with generic types for the JVM & Android"
+    pom_name = "Kodein-DI-Generic-JVM"
+    pom_description = "KODEIN Dependency Injection compatible with generic types for the JVM & Android"
 }
 apply from: "../../gradle/publication-upload.gradle"

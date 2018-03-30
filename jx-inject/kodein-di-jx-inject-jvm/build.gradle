@@ -22,7 +22,7 @@ apply from: "../../gradle/dokka.gradle"
 apply from: "../../gradle/kotlin-publish.gradle"
 
 ext {
-    pom_name = "Kodein-Jx-Inject-JVM"
-    pom_description = "Kodein extension that enables to auto-inject with JSR 330 javax.inject annotations for the JVM & Android"
+    pom_name = "Kodein-DI-Jx-Inject-JVM"
+    pom_description = "Kodein DI extension that enables to auto-inject with JSR 330 javax.inject annotations for the JVM & Android"
 }
 apply from: "../../gradle/publication-upload.gradle"
