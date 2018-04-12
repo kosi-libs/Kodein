@@ -1,4 +1,35 @@
 
+#### 5.0.0 (10-04-2018)
+
+  - DOCUMENTATION
+    * Fragmented documentation: http://kodein.org/Kodein-DI/
+    * Getting started: http://kodein.org/Kodein-DI/?5.0/getting-started
+    * Migration from version 4 to 5: http://kodein.org/Kodein-DI/?5.0/migration-4to5
+
+  - CORE
+    * Package change: `org.kodein.di`, `org.kodein.di.generic`, `org.kodein.di.erased`.
+    * Everything is lazy by default.
+    * Distribution via Bintray's JCenter.
+    * Compatible with Kotlin/Native (Huge thanks to Nikolay Igotti and his amazing Kotlin/Native team!).
+    * Support for subtype bindings: [see documentation](http://kodein.org/Kodein-DI/?5.0/core#_subtypes_bindings).
+    * Ability to retrieve `allInstances`, `allProviders` or `allFactories` that match subtypes of a given type.
+    * Support for multi-argument factories & multiton.
+    * Changed the `extend` semantic to manage copy of state-holding bindings. [see documentation](http://kodein.org/Kodein-DI/?5.0/core#_overridden_access_from_parent).
+    * Complete rewrite of custom scopes.
+    * Better recursion error messages.
+    * Better currying syntax: `kodein.instance(arg = whatever)`.
+    * Injector has been replaced with `KodeinTrigger` and `LateInitKodein`, each taking a part of the responsibility.
+    * Introducing `LateInitKodein`.
+    * `scopeSingleton` and `refSingleton` are now options of `singleton`. Same goes for `multiton`.
+    * Support for non state-holding bindings to access the `receiver`.
+    * Support for an external source that will be queried when Kodein has no answer.
+    
+  - ANDROID
+    * Full rewrite of the android components, effectively removing them, replacing them with a much lighter system. [See documentation](http://kodein.org/Kodein-DI/?5.0/android)
+  
+  - INTERNALS
+    * Full rewrite of the retrieval engine, introducing `KodeinTree` to select the matching binding according to a query.
+
 #### 4.1.0 (28-07-2017)
 
  - CORE
