@@ -338,6 +338,6 @@ val kodein = Kodein {
 == Where to go next
 
 Kodein offers a lot of features.
-All of them are documented, you can find them here: *https://kodein.org/Kodein-DI/?{branch}*.
+All of them are documented, you can find them here: *http://kodein.org/Kodein-DI/?{branch}*.
 
-If you are using Kodein on Android, you should read the https://kodein.org/Kodein-DI/?5.0/android[Kodein on Android] documentation.
+If you are using Kodein on Android, you should read the http://kodein.org/Kodein-DI/?5.0/android[Kodein on Android] documentation.
