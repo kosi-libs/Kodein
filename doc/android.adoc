@@ -13,7 +13,7 @@ NOTE: Kodein does work on Android as-is.
       The `kodein-android` extension adds multiple android-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
-Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo-android[Android demo project]!
+Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-android[Android demo project]!
 
 
 == Install
@@ -37,7 +37,7 @@ NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
 .Example: an Android Application class that implements KodeinAware
 ----
 class MyApp : Application(), KodeinAware {
-	override val kodein by Kodein.lazy { <1>
+	override val kodein = Kodein.lazy { <1>
 	    /* bindings */
 	}
 }
@@ -123,7 +123,7 @@ NOTE: This module is absolutely *optional*, you are free to use it or leave it ;
 .Example: importing the android module
 ----
 class MyApplication : Application(), KodeinAware {
-    override val kodein by Kodein.lazy {
+    override val kodein = Kodein.lazy {
         import(androidModule(this@MyApplication))
 	    /* bindings */
     }

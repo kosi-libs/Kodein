@@ -480,7 +480,7 @@ The `androidModule` still exists but now need the application context:
 .Example: importing the android module
 ----
 class MyApplication : Application(), KodeinAware {
-    override val kodein by Kodein.lazy {
+    override val kodein = Kodein.lazy {
         import(androidModule(this@MyApplication))
 	    /* bindings */
     }
