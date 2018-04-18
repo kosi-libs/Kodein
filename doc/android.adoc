@@ -168,7 +168,7 @@ class MyController(androidContext: Context) : KodeinAware {
 
 In Android, each component has its own lifecycle, much like a "mini application".
 You may need to have dependencies that are defined only inside a specific activity.
-Kodein allows you to create a `Kodein` instance that lives only insidce your own Activity:
+Kodein allows you to create a `Kodein` instance that lives only inside your own Activity:
 
 [source, kotlin]
 .Example: defining an Activity specific Kodein
@@ -254,7 +254,7 @@ val kodein = Kodein {
 
 === Being KodeinAware
 
-It is quite easy to have your Android components being KodeinAware (provided that your `Applicaion` class is `KodeinAware`).
+It is quite easy to have your Android components being KodeinAware (provided that your `Application` class is `KodeinAware`).
 
 
 ==== Using lazy
