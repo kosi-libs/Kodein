@@ -366,8 +366,8 @@ Therefore, the provided function *may or may not* be called multiple times durin
 .Example: creates a Cache object that will exist only once at a given time
 ----
 val kodein = Kodein {
-    bind<Map>() with refSingleton(ref = softReference) { WorldMap() } <1>
-    bind<Client>() with refSingleton(ref = weakReference) { id -> clientFromDB(id) } <2>
+    bind<Map>() with singleton(ref = softReference) { WorldMap() } <1>
+    bind<Client>() with singleton(ref = weakReference) { id -> clientFromDB(id) } <2>
 }
 ----
 <1> Because it's bound by a soft reference, the JVM will GC it before any `OutOfMemoryException` can occur.
@@ -385,7 +385,7 @@ Therefore, the provided function will be called *once per thread* that needs the
 .Example: creates a Cache object that will exist once per thread
 ----
 val kodein = Kodein {
-    bind<Cache>() with refSingleton(threadLocal) { LRUCache(16 * 1024) }
+    bind<Cache>() with singleton(ref = threadLocal) { LRUCache(16 * 1024) }
 }
 ----
 
