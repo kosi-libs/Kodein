@@ -59,7 +59,7 @@ Read more
 
 Kodein 5 is the current major version, but documentation is available for previous versions.
 
-**[Kodein documentation](https://kodein.org/Kodein-DI/)**
+**[Kodein documentation](http://kodein.org/Kodein-DI/)**
 
 
 Support
