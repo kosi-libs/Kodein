@@ -1,7 +1,5 @@
 plugins {
     id("kodein-native")
-    `maven-publish`
-//    id("com.jfrog.bintray")
 }
 
 konanArtifacts {
@@ -14,8 +12,8 @@ dependencies {
     expectedBy(project(":core:kodein-di-core-common"))
 }
 
-//kodeinPublication {
-//    name = "Kodein-DI-Core-Native"
-//    description = "KODEIN Dependency Injection Core for Native Platforms"
-//    repo = "Kodein-DI"
-//}
+kodeinPublication {
+    name = "Kodein-DI-Core-Native"
+    description = "KODEIN Dependency Injection Core for Native Platforms"
+    repo = "Kodein-DI"
+}
