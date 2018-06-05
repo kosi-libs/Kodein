@@ -6,5 +6,5 @@ expect enum class MethodSorters {
 }
 
 expect annotation class FixMethodOrder(
-        val value: MethodSorters = MethodSorters.DEFAULT
+        val value: MethodSorters //= MethodSorters.DEFAULT
 )

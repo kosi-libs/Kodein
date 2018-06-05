@@ -475,7 +475,7 @@ class ErasedJvmTests {
             bind<IName>().subTypes() with { type ->
                 when (type.jvmType) {
                     FullName::class.java -> singleton { FullName("Salomon", "BRYS") }
-                    Name::class.java -> factory { u: Unit -> Name("Salomon") }
+                    Name::class.java -> factory { _: Unit -> Name("Salomon") }
                     else -> throw IllegalStateException()
                 }
             }
