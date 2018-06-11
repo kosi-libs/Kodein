@@ -206,7 +206,7 @@ val kodein = Kodein {
 
 
 
-== Injection & Retieval
+== Injection & Retrieval
 
 === The container
 
@@ -220,7 +220,7 @@ There are multiple ways of doing so:
 * You can have the `Kodein` object being statically available (in Android, for example, it is common to use a property of the `Application` object)
 
 
-=== Injection vs Retieval
+=== Injection vs Retrieval
 
 Kodein supports two different methods to allow a business unit to access its dependencies: *injection* and *retrieval*.
 
