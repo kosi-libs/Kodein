@@ -3,10 +3,10 @@ buildscript {
     repositories {
         jcenter()
         google()
-        mavenLocal()
         maven(url = "https://plugins.gradle.org/m2/")
         maven(url = "https://dl.bintray.com/jetbrains/kotlin-native-dependencies")
         maven(url = "https://dl.bintray.com/salomonbrys/KMP-Gradle-Utils")
+        maven(url = "https://dl.bintray.com/kodein-framework/Kodein-Internal-Gradle")
     }
 
     dependencies {

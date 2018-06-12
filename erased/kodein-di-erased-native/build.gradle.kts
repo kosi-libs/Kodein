@@ -8,24 +8,19 @@ konanArtifacts {
         libraries {
             allLibrariesFrom(project(":core:kodein-di-core-native"))
         }
+    }
+}
 
-        program("tests") {
-            commonSourceSets("test")
-            libraries {
-                allLibrariesFrom(project(":test-utils:test-utils-native"))
-                artifact(project.name)
-            }
-            extraOpts("-tr")
+konanTests {
+    testProgram(project.name) {
+        libraries {
+            allLibrariesFrom(project(":test-utils:test-utils-native"))
         }
     }
 }
 
 dependencies {
     expectedBy(project(":erased:kodein-di-erased-common"))
-}
-
-task("test") {
-    dependsOn("runTests")
 }
 
 kodeinPublication {
