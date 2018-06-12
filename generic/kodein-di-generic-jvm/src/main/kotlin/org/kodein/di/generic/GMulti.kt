@@ -6,6 +6,8 @@ import org.kodein.di.bindings.*
 /**
  * Creates a multi-argument factory.
  *
+ * A1, A2 & T generics will be preserved!
+ *
  * @see [Kodein.BindBuilder.WithContext.factory]
  *
  * @param A1 The first argument type.
@@ -19,7 +21,7 @@ inline fun <C, reified A1, reified A2,                                     reifi
 /**
  * Creates a multi-argument factory.
  *
- * All type arguments will be erased!
+ * A1, A2, A3 & T generics will be preserved!
  *
  * @see [Kodein.BindBuilder.WithContext.factory]
  *
@@ -35,7 +37,7 @@ inline fun <C, reified A1, reified A2, reified A3,                         reifi
 /**
  * Creates a multi-argument factory.
  *
- * All type arguments will be erased!
+ * A1, A2, A3, A4 & T generics will be preserved!
  *
  * @see [Kodein.BindBuilder.WithContext.factory]
  *
@@ -52,7 +54,7 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4,             reifi
 /**
  * Creates a multi-argument factory.
  *
- * All type arguments will be erased!
+ * A1, A2, A3, A4, A5 & T generics will be preserved!
  *
  * @see [Kodein.BindBuilder.WithContext.factory]
  *
@@ -72,7 +74,7 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reifi
 /**
  * Creates a multi-argument multiton.
  *
- * All type arguments will be erased!
+ * A1, A2 & T generics will be preserved!
  *
  * @see [Kodein.BindBuilder.WithScope.multiton]
  *
@@ -87,7 +89,7 @@ inline fun <EC, BC, reified A1, reified A2,                                     
 /**
  * Creates a multi-argument multiton.
  *
- * All type arguments will be erased!
+ * A1, A2, A3 & T generics will be preserved!
  *
  * @see [Kodein.BindBuilder.WithScope.multiton]
  *
@@ -103,7 +105,7 @@ inline fun <EC, BC, reified A1, reified A2, reified A3,                         
 /**
  * Creates a multi-argument multiton.
  *
- * All type arguments will be erased!
+ * A1, A2, A3, A4 & T generics will be preserved!
  *
  * @see [Kodein.BindBuilder.WithScope.multiton]
  *
@@ -120,7 +122,7 @@ inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4,             
 /**
  * Creates a multi-argument multiton.
  *
- * All type arguments will be erased!
+ * A1, A2, A3, A4, A5 & T generics will be preserved!
  *
  * @see [Kodein.BindBuilder.WithScope.multiton]
  *
@@ -140,19 +142,20 @@ inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4, reified A5, 
 /**
  * Creates a `Multi2`.
  *
- * All type arguments will be erased!
+ * A1 & A2 generics will be preserved!
  *
  * @param A1 The first argument type.
  * @param A2 The second argument type.
  * @param a1 The first argument.
  * @param a2 The second argument.
  */
+@Suppress("FunctionName")
 inline fun <reified A1, reified A2                                    > M(a1: A1, a2: A2                        ) = Multi2(a1, a2,             generic())
 
 /**
  * Creates a `Multi3`.
  *
- * All type arguments will be erased!
+ * A1, A2, & A3 generics will be preserved!
  *
  * @param A1 The first argument type.
  * @param A2 The second argument type.
@@ -161,12 +164,13 @@ inline fun <reified A1, reified A2                                    > M(a1: A1
  * @param a2 The second argument.
  * @param a3 The third argument.
  */
+@Suppress("FunctionName")
 inline fun <reified A1, reified A2, reified A3                        > M(a1: A1, a2: A2, a3: A3                ) = Multi3(a1, a2, a3,         generic())
 
 /**
  * Creates a `Multi4`.
  *
- * All type arguments will be erased!
+ * A1, A2, A3 & A4 generics will be preserved!
  *
  * @param A1 The first argument type.
  * @param A2 The second argument type.
@@ -177,12 +181,13 @@ inline fun <reified A1, reified A2, reified A3                        > M(a1: A1
  * @param a3 The third argument.
  * @param a4 The fourth argument.
  */
+@Suppress("FunctionName")
 inline fun <reified A1, reified A2, reified A3, reified A4            > M(a1: A1, a2: A2, a3: A3, a4: A4        ) = Multi4(a1, a2, a3, a4,     generic())
 
 /**
  * Creates a `Multi5`.
  *
- * All type arguments will be erased!
+ * A1, A2, A3, A4 & A5 generics will be preserved!
  *
  * @param A1 The first argument type.
  * @param A2 The second argument type.
@@ -195,4 +200,289 @@ inline fun <reified A1, reified A2, reified A3, reified A4            > M(a1: A1
  * @param a4 The fourth argument.
  * @param a5 The fifth argument.
  */
+@Suppress("FunctionName")
 inline fun <reified A1, reified A2, reified A3, reified A4, reified A5> M(a1: A1, a2: A2, a3: A3, a4: A4, a5: A5) = Multi5(a1, a2, a3, a4, a5, generic())
+
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag.
+ *
+ * A1, A2 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2,                                     reified T: Any> KodeinAware.factory2(tag: Any? = null) =
+        KodeinPropertyMap(Factory<Multi2<A1, A2            >, T>(generic(), generic(), tag)) { { a1: A1, a2: A2                         -> it(M(a1, a2            )) } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag.
+ *
+ * A1, A2, A3 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3,                         reified T: Any> KodeinAware.factory3(tag: Any? = null) =
+        KodeinPropertyMap(Factory<Multi3<A1, A2, A3        >, T>(generic(), generic(), tag)) { { a1: A1, a2: A2, a3: A3                 -> it(M(a1, a2, a3        )) } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag.
+ *
+ * A1, A2, A3, A4 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param A4 The type of the fourth argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3, reified A4,             reified T: Any> KodeinAware.factory4(tag: Any? = null) =
+        KodeinPropertyMap(Factory<Multi4<A1, A2, A3, A4    >, T>(generic(), generic(), tag)) { { a1: A1, a2: A2, a3: A3, a4: A4         -> it(M(a1, a2, a3, a4    )) } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag.
+ *
+ * A1, A2, A3, A4, A5 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param A4 The type of the fourth argument the factory takes.
+ * @param A5 The type of the fifth argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> KodeinAware.factory5(tag: Any? = null) =
+        KodeinPropertyMap(Factory<Multi5<A1, A2, A3, A4, A5>, T>(generic(), generic(), tag)) { { a1: A1, a2: A2, a3: A3, a4: A4, a5: A5 -> it(M(a1, a2, a3, a4, a5)) } }
+
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
+ *
+ * A1, A2 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory, or null if no factory was found.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2,                                     reified T: Any> KodeinAware.factory2OrNull(tag: Any? = null) =
+        KodeinPropertyMap(FactoryOrNull<Multi2<A1, A2            >, T>(generic(), generic(), tag)) { it?.let { { a1: A1, a2: A2                         -> it(M(a1, a2            )) } } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
+ *
+ * A1, A2, A3 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory, or null if no factory was found.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3,                         reified T: Any> KodeinAware.factory3OrNull(tag: Any? = null) =
+        KodeinPropertyMap(FactoryOrNull<Multi3<A1, A2, A3        >, T>(generic(), generic(), tag)) { it?.let { { a1: A1, a2: A2, a3: A3                 -> it(M(a1, a2, a3        )) } } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
+ *
+ * A1, A2, A3, A4 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param A4 The type of the fourth argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory, or null if no factory was found.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3, reified A4,             reified T: Any> KodeinAware.factory4OrNull(tag: Any? = null) =
+        KodeinPropertyMap(FactoryOrNull<Multi4<A1, A2, A3, A4    >, T>(generic(), generic(), tag)) { it?.let { { a1: A1, a2: A2, a3: A3, a4: A4         -> it(M(a1, a2, a3, a4    )) } } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
+ *
+ * A1, A2, A3, A4, A5 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param A4 The type of the fourth argument the factory takes.
+ * @param A5 The type of the fifth argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory, or null if no factory was found.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> KodeinAware.factory5OrNull(tag: Any? = null) =
+        KodeinPropertyMap(FactoryOrNull<Multi5<A1, A2, A3, A4, A5>, T>(generic(), generic(), tag)) { it?.let { { a1: A1, a2: A2, a3: A3, a4: A4, a5: A5 -> it(M(a1, a2, a3, a4, a5)) } } }
+
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag.
+ *
+ * A1, A2 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2,                                     reified T: Any> DKodein.factory2(tag: Any? = null) =
+    Factory<Multi2<A1, A2            >, T>(generic(), generic(), tag).let { { a1: A1, a2: A2                         -> it(M(a1, a2            )) } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag.
+ *
+ * A1, A2, A3 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3,                         reified T: Any> DKodein.factory3(tag: Any? = null) =
+    Factory<Multi3<A1, A2, A3        >, T>(generic(), generic(), tag).let { { a1: A1, a2: A2, a3: A3                 -> it(M(a1, a2, a3        )) } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag.
+ *
+ * A1, A2, A3, A4 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param A4 The type of the fourth argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3, reified A4,             reified T: Any> DKodein.factory4(tag: Any? = null) =
+    Factory<Multi4<A1, A2, A3, A4    >, T>(generic(), generic(), tag).let { { a1: A1, a2: A2, a3: A3, a4: A4         -> it(M(a1, a2, a3, a4    )) } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag.
+ *
+ * A1, A2, A3, A4, A5 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param A4 The type of the fourth argument the factory takes.
+ * @param A5 The type of the fifth argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> DKodein.factory5(tag: Any? = null) =
+    Factory<Multi5<A1, A2, A3, A4, A5>, T>(generic(), generic(), tag).let { { a1: A1, a2: A2, a3: A3, a4: A4, a5: A5 -> it(M(a1, a2, a3, a4, a5)) } }
+
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
+ *
+ * A1, A2 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory, or null if no factory was found.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2,                                     reified T: Any> DKodein.factory2OrNull(tag: Any? = null) =
+        FactoryOrNull<Multi2<A1, A2            >, T>(generic(), generic(), tag).let { it?.let { { a1: A1, a2: A2                         -> it(M(a1, a2            )) } } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
+ *
+ * A1, A2, A3 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory, or null if no factory was found.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3,                         reified T: Any> DKodein.factory3OrNull(tag: Any? = null) =
+        FactoryOrNull<Multi3<A1, A2, A3        >, T>(generic(), generic(), tag).let { it?.let { { a1: A1, a2: A2, a3: A3                 -> it(M(a1, a2, a3        )) } } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
+ *
+ * A1, A2, A3, A4 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param A4 The type of the fourth argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory, or null if no factory was found.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3, reified A4,             reified T: Any> DKodein.factory4OrNull(tag: Any? = null) =
+        FactoryOrNull<Multi4<A1, A2, A3, A4    >, T>(generic(), generic(), tag).let { it?.let { { a1: A1, a2: A2, a3: A3, a4: A4         -> it(M(a1, a2, a3, a4    )) } } }
+
+/**
+ * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
+ *
+ * A1, A2, A3, A4, A5 & T generics will be preserved!
+ *
+ * @param A1 The type of the first argument the factory takes.
+ * @param A2 The type of the second argument the factory takes.
+ * @param A3 The type of the third argument the factory takes.
+ * @param A4 The type of the fourth argument the factory takes.
+ * @param A5 The type of the fifth argument the factory takes.
+ * @param T The type of object the factory returns.
+ * @param tag The bound tag, if any.
+ * @return A factory, or null if no factory was found.
+ * @throws Kodein.NotFoundException if no factory was found.
+ * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ */
+inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> DKodein.factory5OrNull(tag: Any? = null) =
+        FactoryOrNull<Multi5<A1, A2, A3, A4, A5>, T>(generic(), generic(), tag).let { it?.let { { a1: A1, a2: A2, a3: A3, a4: A4, a5: A5 -> it(M(a1, a2, a3, a4, a5)) } } }

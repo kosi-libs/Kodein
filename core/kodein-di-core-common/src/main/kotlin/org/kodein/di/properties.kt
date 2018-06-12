@@ -23,15 +23,25 @@ class KodeinTrigger {
 
 }
 
+interface LazyDelegate<out V> {
+    /** @suppress */
+    operator fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V>
+}
+
 /**
  * A property delegate provider for Kodein retrieval.
  * Provides a `Lazy` value that, when accessed, retrieve the value from Kodein.
  *
  * In essence, the Kodein object is accessed only upon retrieving.
  */
-class KodeinProperty<out V>(internal val trigger: KodeinTrigger?, @PublishedApi internal val get: (Any?) -> V) {
+class KodeinProperty<out V>(internal val trigger: KodeinTrigger?, @PublishedApi internal val get: (Any?) -> V) : LazyDelegate<V> {
 
-    /** @suppress */
-    operator fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy { get(receiver) } .also { trigger?.properties?.add(it) }
+    override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy { get(receiver) } .also { trigger?.properties?.add(it) }
+
+}
+
+class KodeinPropertyMap<in I, out O>(private val base: KodeinProperty<I>, private val map: (I) -> O) : LazyDelegate<O> {
+
+    override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<O> = base.provideDelegate(receiver, prop).let { lazy { map(it.value) } } .also { base.trigger?.properties?.add(it) }
 
 }
