@@ -137,7 +137,7 @@ val TypeToken<*>.jvmType: Type get() =
 /**
  * The true Java `Type` if this is a [KodeinWrappedType], or itself if this is already a true Java `Type`.
  */
-val Type.javaType: Type get() = (this as? KodeinWrappedType)?.javaType ?: this
+val Type.javaType: Type get() = (this as? KodeinWrappedType)?.type ?: this
 
 
 internal abstract class JVMTypeToken<T> : TypeToken<T> {
