@@ -253,7 +253,7 @@ interface Kodein : KodeinAware {
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
             @Suppress("FunctionName")
-            fun <T: Any> With(valueType: TypeToken<out T>, value: T) = Bind(tag = _tag) from InstanceBinding(valueType, value)
+            fun <T: Any> With(valueType: TypeToken<out T>, value: T) = Bind(tag = _tag, overrides = _overrides) from InstanceBinding(valueType, value)
         }
 
         /**
