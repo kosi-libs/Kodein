@@ -2,12 +2,18 @@ package org.kodein.di.bindings
 
 import org.kodein.di.Volatile
 import org.kodein.di.internal.newConcurrentMap
+import org.kodein.di.internal.synchronizedIfNotNull
 import org.kodein.di.internal.synchronizedIfNull
 
 /**
  * A registry is responsible managing references inside a scope.
  */
-interface ScopeRegistry {
+interface ScopeRegistry<A> {
+    interface Key<out A> {
+        val arg: A
+    }
+
+
     /**
      * Get or create a value that correspond for the given key.
      *
@@ -23,20 +29,31 @@ interface ScopeRegistry {
      * @param creator A function that creates a reference that will be stored in the registry.
      * @return A value associated to the [key], whether created by [creator] or retrieved by [Reference.next].
      */
-    fun getOrCreate(key: Any, creator: () -> Reference<Any>): Any
+    fun getOrCreate(key: ScopeRegistry.Key<A>, creator: () -> Reference<Any>): Any
+
+    fun getOrNull(key: ScopeRegistry.Key<A>): (() -> Any?)?
+
+    fun values(): Iterable<Pair<ScopeRegistry.Key<A>, () -> Any?>>
+
+    fun remove(key: ScopeRegistry.Key<A>)
+
+    fun clear()
 }
 
+interface ScopeCloseable {
+    fun close()
+}
 
 /**
  * Standard [ScopeRegistry] implementation.
  */
-class MultiItemScopeRegistry : ScopeRegistry {
+class MultiItemScopeRegistry<A> : ScopeRegistry<A> {
 
-    private val _cache = newConcurrentMap<Any, () -> Any?>()
+    private val _cache = newConcurrentMap<ScopeRegistry.Key<A>, () -> Any?>()
 
     private val _lock = Any()
 
-    override fun getOrCreate(key: Any, creator: () -> Reference<Any>): Any {
+    override fun getOrCreate(key: ScopeRegistry.Key<A>, creator: () -> Reference<Any>): Any {
         return synchronizedIfNull(
                 lock = _lock,
                 predicate = { _cache[key]?.invoke() },
@@ -49,10 +66,27 @@ class MultiItemScopeRegistry : ScopeRegistry {
         )
     }
 
+    override fun getOrNull(key: ScopeRegistry.Key<A>) = _cache[key]
+
+    override fun values() = _cache.map { it.toPair() }
+
+    override fun remove(key: ScopeRegistry.Key<A>) {
+        (_cache.remove(key)?.invoke() as? ScopeCloseable)?.close()
+    }
+
     /**
      * Remove all objects from the scope.
      */
-    fun clear() = _cache.clear()
+    override fun clear() {
+        val refs = synchronized(_lock) {
+            val refs = _cache.values.toList()
+            _cache.clear()
+            refs
+        }
+        refs.forEach {
+            (it.invoke() as? ScopeCloseable)?.close()
+        }
+    }
 
     /**
      * The number of singleton objects currently created in this scope.
@@ -67,46 +101,66 @@ class MultiItemScopeRegistry : ScopeRegistry {
 
 /**
  * [ScopeRegistry] that is specialized to hold only one item.
+ *
+ * If the key changes, the held item will be replaced.
  */
-class SingleItemScopeRegistry : ScopeRegistry {
-    @Volatile private var _ref: () -> Any? = { null }
+class SingleItemScopeRegistry<A> : ScopeRegistry<A> {
     private val _lock = Any()
-    private var _key: Any? = null
+    @Volatile private var _pair: Pair<ScopeRegistry.Key<A>, () -> Any?>? = null
 
-    override fun getOrCreate(key: Any, creator: () -> Reference<Any>): Any {
-        synchronizedIfNull(
-                lock = _lock,
-                predicate = { _key },
-                ifNotNull = {
-                    if (it != key)
-                        throw IllegalStateException("SingleItemScopeRegistry must always receive the same key.\n$key != $it")
-                },
-                ifNull = { _key = key }
-        )
-
+    override fun getOrCreate(key: ScopeRegistry.Key<A>, creator: () -> Reference<Any>): Any {
         return synchronizedIfNull(
                 lock = _lock,
-                predicate = { _ref() },
+                predicate = { _pair?.let { (pKey, pRef) -> if (key == pKey) pRef() else null } },
                 ifNotNull = { it },
                 ifNull = {
-                    val (value, later) = creator()
-                    _ref = later
+                    val (value, ref) = creator()
+                    _pair = key to ref
                     value
                 }
         )
     }
 
+    override fun getOrNull(key: ScopeRegistry.Key<A>) = _pair?.let { (pKey, pRef) -> if (key == pKey) pRef else null }
+
     /**
      * @return Whether or not this scope is empty (contains no item).
      */
-    fun isEmpty(): Boolean = _key == null
+    fun isEmpty(): Boolean = _pair == null
+
+    override fun values() = _pair?.let { listOf(it) } ?: emptyList()
+
+    override fun remove(key: ScopeRegistry.Key<A>) {
+        val ref = synchronizedIfNotNull(
+                lock = _lock,
+                predicate = { _pair },
+                ifNull = { null },
+                ifNotNull = { (pKey, pRef) ->
+                    if (pKey != key)
+                        throw IllegalStateException("SingleItemScopeRegistry currently holds a different key\n$key != $pKey")
+                    _pair = null
+                    pRef
+                }
+        )
+
+        (ref?.invoke() as? ScopeCloseable)?.close()
+    }
 
     /**
      * Remove the item & reset the scope.
      */
-    fun clear() {
-        _key = null
-        _ref = { null }
+    override fun clear() {
+        val ref = synchronizedIfNotNull(
+                lock = _lock,
+                predicate = { _pair },
+                ifNull = { null },
+                ifNotNull = { (_, pRef) ->
+                    _pair = null
+                    pRef
+                }
+        )
+
+        (ref?.invoke() as? ScopeCloseable)?.close()
     }
 }
 
@@ -117,7 +171,7 @@ class SingleItemScopeRegistry : ScopeRegistry {
  * @param BC The Binding Context: That's the context that is given by the scope to the bindings.
  *   It is often the same as [EC], in which case you should use [SimpleScope] instead.
  */
-interface Scope<in EC, out BC> {
+interface Scope<in EC, out BC, in A> {
 
     /**
      * Get the Binding Context (that may or may not be derived from [envContext]).
@@ -133,24 +187,24 @@ interface Scope<in EC, out BC> {
      * @param context The context associated with the returned registry.
      * @return The registry associated with the given context.
      */
-    fun getRegistry(receiver: Any?, context: EC): ScopeRegistry
+    fun getRegistry(receiver: Any?, context: EC): ScopeRegistry<in A>
 }
 
 /**
  * Simple [Scope] where the Environment Context and the Binding Context do not differ.
  */
-interface SimpleScope<C> : Scope<C, C> {
+interface SimpleScope<C, in A> : Scope<C, C, A> {
     override fun getBindingContext(envContext: C) = envContext
 }
 
 /**
  * Default [Scope]: will always return the same registry, no matter the context.
  */
-class NoScope: Scope<Any?, Nothing?> {
+class NoScope: Scope<Any?, Nothing?, Any?> {
 
     override fun getBindingContext(envContext: Any?): Nothing? = null
 
-    private val _registry by lazy { MultiItemScopeRegistry() }
+    private val _registry by lazy { MultiItemScopeRegistry<Any?>() }
 
     override fun getRegistry(receiver: Any?, context: Any?) = _registry
 }

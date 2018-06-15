@@ -9,24 +9,24 @@ import org.kodein.di.bindings.SimpleScope
 import org.kodein.di.bindings.WeakContextScope
 import android.support.v4.app.Fragment as SupportFragment
 
-private object AndroidComponentsWeakScope : WeakContextScope<Any>()
+private object AndroidComponentsWeakScope : WeakContextScope<Any?, Any?>()
 
 /**
  * A scope for Android components.
  */
 @Suppress("UNCHECKED_CAST")
-fun <T: Any> androidScope() = AndroidComponentsWeakScope as SimpleScope<T>
+fun <T: Any> androidScope() = AndroidComponentsWeakScope as SimpleScope<T, Any?>
 
 private const val SCOPE_FRAGMENT_TAG = "org.kodein.android.ActivityRetainedScope.RetainedScopeFragment"
 
 /**
  * A scope that allows to get an activity-scoped singleton that's independent from the activity restart.
  */
-object activityRetainedScope : SimpleScope<Activity> {
+object activityRetainedScope : SimpleScope<Activity, Any?> {
 
     /** @suppress */
     class RetainedScopeFragment: Fragment() {
-        val registry = MultiItemScopeRegistry()
+        val registry = MultiItemScopeRegistry<Any?>()
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ object activityRetainedScope : SimpleScope<Activity> {
         }
     }
 
-    override fun getRegistry(receiver: Any?, context: Activity): ScopeRegistry {
+    override fun getRegistry(receiver: Any?, context: Activity): ScopeRegistry<Any?> {
         val fragment = context.fragmentManager.findFragmentByTag(SCOPE_FRAGMENT_TAG) as? RetainedScopeFragment ?: run {
             synchronized(context) {
                 context.fragmentManager.findFragmentByTag(SCOPE_FRAGMENT_TAG) as? RetainedScopeFragment ?: run {

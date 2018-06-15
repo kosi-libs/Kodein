@@ -175,13 +175,15 @@ interface Kodein : KodeinAware {
          * @param EC The scope's Environment Context.
          * @param BC The scope's Binding Context.
          */
-        interface WithScope<EC, out BC> : BindBuilder<EC> {
+        interface WithScope<EC, out BC, in A> : BindBuilder<EC> {
+
             /**
              * The scope that will be used by all bindings that are defined in this DSL context.
              */
-            val scope: Scope<EC, BC>
+            val scope: Scope<EC, BC, A>
+
             /** @suppress */
-            class Impl<EC, out BC>(override val contextType: TypeToken<EC>, override val scope: Scope<EC, BC>) : WithScope<EC, BC>
+            class Impl<EC, out BC, in A>(override val contextType: TypeToken<EC>, override val scope: Scope<EC, BC, A>) : WithScope<EC, BC, A>
         }
     }
 
@@ -196,11 +198,11 @@ interface Kodein : KodeinAware {
     open class Builder internal constructor(
             private val moduleName: String?,
             val containerBuilder: KodeinContainer.Builder
-    ) : BindBuilder.WithContext<Any?>, BindBuilder.WithScope<Any?, Nothing?> {
+    ) : BindBuilder.WithContext<Any?>, BindBuilder.WithScope<Any?, Nothing?, Any?> {
 
         override val contextType = AnyToken
 
-        override val scope: Scope<Any?, Nothing?> get() = NoScope() // Recreating a new NoScope every-time *on purpose*!
+        override val scope: Scope<Any?, Nothing?, Any?> get() = NoScope() // Recreating a new NoScope every-time *on purpose*!
 
         /**
          * Left part of the type-binding syntax (`bind(type, tag)`).

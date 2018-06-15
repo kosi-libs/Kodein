@@ -792,8 +792,8 @@ Dependency recursion:
         assertTrue(created)
     }
 
-    object test15Scope : Scope<Any?, Nothing?> {
-        private val registry = MultiItemScopeRegistry()
+    object test15Scope : Scope<Any?, Nothing?, Any?> {
+        private val registry = MultiItemScopeRegistry<Any?>()
         override fun getBindingContext(envContext: Any?): Nothing? = null
         override fun getRegistry(receiver: Any?, context: Any?) = registry
     }
@@ -864,8 +864,8 @@ Dependency recursion:
     }
 
     @Test fun test16_00_AnyScopeSingleton() {
-        val registry = MultiItemScopeRegistry()
-        val myScope = object : Scope<Any?, Nothing?> {
+        val registry = MultiItemScopeRegistry<Any?>()
+        val myScope = object : Scope<Any?, Nothing?, Any?> {
             override fun getBindingContext(envContext: Any?): Nothing? = null
             override fun getRegistry(receiver: Any?, context: Any?) = registry
         }
@@ -889,8 +889,8 @@ Dependency recursion:
 
     @Test fun test16_01_ScopeSingleton() {
 
-        val registries = mapOf("a" to SingleItemScopeRegistry(), "b" to SingleItemScopeRegistry())
-        val myScope = object : SimpleScope<String> {
+        val registries = mapOf("a" to SingleItemScopeRegistry<Any?>(), "b" to SingleItemScopeRegistry<Any?>())
+        val myScope = object : SimpleScope<String, Any?> {
             override fun getRegistry(receiver: Any?, context: String) = registries[context]!!
         }
         val kodein = Kodein {

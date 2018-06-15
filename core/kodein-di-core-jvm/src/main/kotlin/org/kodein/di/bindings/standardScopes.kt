@@ -7,11 +7,11 @@ import java.util.*
  *
  * In essence, the context is weak, and for a given context, its registry will be GC'd when it is itself GC'd.
  */
-open class WeakContextScope<C> : SimpleScope<C> {
+open class WeakContextScope<C, in A> : SimpleScope<C, A> {
 
-    private val map = WeakHashMap<C, ScopeRegistry>()
+    private val map = WeakHashMap<C, ScopeRegistry<in A>>()
 
-    override fun getRegistry(receiver: Any?, context: C): ScopeRegistry {
+    override fun getRegistry(receiver: Any?, context: C): ScopeRegistry<in A> {
         map[context]?.let { return it }
         synchronized(map) {
             return map.getOrPut(context) { MultiItemScopeRegistry() }
