@@ -926,6 +926,34 @@ Dependency recursion:
         assertSame(a, b)
     }
 
+    class CloseableData(val name: String? = null) : ScopeCloseable {
+        var closed = false
+            private set
+
+        override fun close() {
+            closed = true
+        }
+    }
+
+    @Test fun test16_03_ScopeColeableSingleton() {
+
+        val myScope = BasicScope(SingleItemScopeRegistry())
+
+        val kodein = Kodein {
+            bind<CloseableData>() with scoped(myScope).singleton { CloseableData() }
+        }
+
+        val a: CloseableData by kodein.instance()
+        val b: CloseableData by kodein.instance()
+        assertSame(a, b)
+        myScope.registry.clear()
+        val c: CloseableData by kodein.instance()
+
+        assertNotSame(a, c)
+        assertTrue(a.closed)
+        assertFalse(c.closed)
+    }
+
     @Test fun test17_00_ExplicitOverride() {
         val kodein = Kodein {
             bind<String>(tag = "name") with instance("Benjamin")
@@ -1189,6 +1217,29 @@ Dependency recursion:
 
         assertNotEquals(id1, System.identityHashCode(p1))
         assertNotEquals(id3, System.identityHashCode(p3))
+    }
+
+    @Test fun test23_03_MultitonWithSingleItemScope() {
+        val myScope = BasicScope(SingleItemScopeRegistry())
+
+        val kodein = Kodein {
+            bind<CloseableData>() with scoped(myScope).multiton { name: String -> CloseableData(name) }
+        }
+
+        val a: CloseableData by kodein.instance(arg = "one")
+        val b: CloseableData by kodein.instance(arg = "one")
+        assertSame(a, b)
+        val c: CloseableData by kodein.instance(arg = "two")
+
+        assertNotSame(a, c)
+        assertTrue(a.closed)
+        assertFalse(c.closed)
+
+        val d: CloseableData by kodein.instance(arg = "one")
+        assertNotSame(c, d)
+        assertNotSame(a, d)
+        assertTrue(c.closed)
+        assertFalse(d.closed)
     }
 
     @Test fun test24_00_Callback() {

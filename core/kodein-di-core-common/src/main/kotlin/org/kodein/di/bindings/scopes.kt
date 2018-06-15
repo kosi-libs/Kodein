@@ -109,16 +109,19 @@ class SingleItemScopeRegistry<A> : ScopeRegistry<A> {
     @Volatile private var _pair: Pair<ScopeRegistry.Key<A>, () -> Any?>? = null
 
     override fun getOrCreate(key: ScopeRegistry.Key<A>, creator: () -> Reference<Any>): Any {
-        return synchronizedIfNull(
+        val (oldRef, value) = synchronizedIfNull(
                 lock = _lock,
                 predicate = { _pair?.let { (pKey, pRef) -> if (key == pKey) pRef() else null } },
-                ifNotNull = { it },
+                ifNotNull = { null to it },
                 ifNull = {
+                    val oldRef = _pair?.second
                     val (value, ref) = creator()
                     _pair = key to ref
-                    value
+                    oldRef to value
                 }
         )
+        (oldRef?.invoke() as? ScopeCloseable)?.close()
+        return value
     }
 
     override fun getOrNull(key: ScopeRegistry.Key<A>) = _pair?.let { (pKey, pRef) -> if (key == pKey) pRef else null }
@@ -195,6 +198,10 @@ interface Scope<in EC, out BC, in A> {
  */
 interface SimpleScope<C, in A> : Scope<C, C, A> {
     override fun getBindingContext(envContext: C) = envContext
+}
+
+class BasicScope(val registry: ScopeRegistry<in Any?>) : SimpleScope<Any?, Any?> {
+    override fun getRegistry(receiver: Any?, context: Any?) = registry
 }
 
 /**
