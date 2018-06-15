@@ -1,4 +1,23 @@
 
+#### 5.0.1 (16-04-2018)
+
+  - FRAMEWORK
+    * The Kodein-DI library is officially part of the in-progress Kodein Framework!
+
+  - GRADLE
+    * Project is entirely configured with Gradle Kotlin DSL
+    * Project relies configuration relies heavily on `kodein-internal-gradle-plugin` which abstracts the configuration of all Kodein Framework components.
+  
+  - CORE
+    * Added `factoryX` functions to enable to directly retrieve a multi-argument function `(A1, A2) -> T` when using multi-argument bindings.
+   
+   - ANDROID
+    * Corrected a stack overflow error when using generic types on SDK 19 and lower
+   
+  - NATIVE
+    * Using new native distribution model to allow gradle dependency retrieval
+    
+
 #### 5.0.0 (10-04-2018)
 
   - DOCUMENTATION
