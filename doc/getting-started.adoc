@@ -4,8 +4,8 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 5.0.1
-:branch: 5.0
+:version: 5.1.0
+:branch: 5.1
 
 Kodein (for KOtlin DEpendency INjection) is a DI framework.
 It allows you to bind your business unit interfaces with their implementation and thus having each business unit being independent.
@@ -304,7 +304,7 @@ class Presenter(): KodeinAware {
 === Direct
 
 If you don't want everything to be lazy (as it is by default), Kodein has you covered.
-Head to the https://kodein.org/Kodein-DI/?5.0/core#direct-rectrieval[Retrival: Direct] section of the core documentation.
+Head to the https://kodein.org/Kodein-DI/?{branch}/core#direct-rectrieval[Retrival: Direct] section of the core documentation.
 
 
 == Transitive dependencies
@@ -340,4 +340,4 @@ val kodein = Kodein {
 Kodein offers a lot of features.
 All of them are documented, you can find them here: *http://kodein.org/Kodein-DI/?{branch}*.
 
-If you are using Kodein on Android, you should read the http://kodein.org/Kodein-DI/?5.0/android[Kodein on Android] documentation.
+If you are using Kodein on Android, you should read the http://kodein.org/Kodein-DI/?{branch}/android[Kodein on Android] documentation.

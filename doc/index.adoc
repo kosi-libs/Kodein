@@ -1,7 +1,7 @@
 = KODEIN DI: KOtlin DEpendency INjection: {version}
 Salomon BRYS <salomon.brys@gmail.com>
-:version: 5.0.1
-:branch: 5.0
+:version: 5.1.0
+:branch: 5.1
 
 image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-logo.png[KODEIN-DI, 700, 233]
 
@@ -12,7 +12,7 @@ image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kod
 
 == Core documentation
 
-- *http://kodein.org/Kodein-DI/?5.0/core[FULL CORE DOCUMENTATION]*
+- *http://kodein.org/Kodein-DI/?{branch}/core[FULL CORE DOCUMENTATION]*
 
 
 == Extensions
