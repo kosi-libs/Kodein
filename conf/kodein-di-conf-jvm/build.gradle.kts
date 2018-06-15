@@ -10,7 +10,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Conf-JVM"
-    description = "KODEIN Dependency Injection that can be configured / mutated for the JVM & Android"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Conf-JVM"
+        description = "KODEIN Dependency Injection that can be configured / mutated for the JVM & Android"
+        repo = "Kodein-DI"
+    }
 }

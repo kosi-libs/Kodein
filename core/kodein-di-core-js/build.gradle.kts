@@ -7,7 +7,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Core-JS"
-    description = "KODEIN Dependency Injection Core for Javascript"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Core-JS"
+        description = "KODEIN Dependency Injection Core for Javascript"
+        repo = "Kodein-DI"
+    }
 }

@@ -10,7 +10,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Jx-Inject-JVM"
-    description = "Kodein DI extension that enables to auto-inject with JSR 330 javax.inject annotations for the JVM & Android"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Jx-Inject-JVM"
+        description = "Kodein DI extension that enables to auto-inject with JSR 330 javax.inject annotations for the JVM & Android"
+        repo = "Kodein-DI"
+    }
 }

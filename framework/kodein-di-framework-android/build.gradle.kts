@@ -3,9 +3,11 @@ plugins {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Framework-Android"
-    description = "Kodein DI Kotlin classes & extensions for Android"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Framework-Android"
+        description = "Kodein DI Kotlin classes & extensions for Android"
+        repo = "Kodein-DI"
+    }
 }
 
 dependencies {

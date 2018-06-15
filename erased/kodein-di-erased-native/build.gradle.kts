@@ -24,7 +24,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Erased-Native"
-    description = "KODEIN Dependency Injection using erased types by default for Native Platforms (Native Platforms do NOT support genericity)"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Erased-Native"
+        description = "KODEIN Dependency Injection using erased types by default for Native Platforms (Native Platforms do NOT support genericity)"
+        repo = "Kodein-DI"
+    }
 }

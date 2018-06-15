@@ -3,9 +3,11 @@ plugins {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Erased-Common"
-    description = "KODEIN Dependency Injection using erased types by default Commons"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Erased-Common"
+        description = "KODEIN Dependency Injection using erased types by default Commons"
+        repo = "Kodein-DI"
+    }
 }
 
 dependencies {

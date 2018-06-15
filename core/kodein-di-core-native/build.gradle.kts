@@ -13,7 +13,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Core-Native"
-    description = "KODEIN Dependency Injection Core for Native Platforms"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Core-Native"
+        description = "KODEIN Dependency Injection Core for Native Platforms"
+        repo = "Kodein-DI"
+    }
 }

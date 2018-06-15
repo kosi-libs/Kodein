@@ -11,7 +11,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Generic-JVM"
-    description = "KODEIN Dependency Injection compatible with generic types for the JVM & Android"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Generic-JVM"
+        description = "KODEIN Dependency Injection compatible with generic types for the JVM & Android"
+        repo = "Kodein-DI"
+    }
 }

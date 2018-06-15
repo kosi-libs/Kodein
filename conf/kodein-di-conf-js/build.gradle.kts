@@ -10,7 +10,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Conf-JS"
-    description = "KODEIN Dependency Injection that can be configured / mutated for Javascript"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Conf-JS"
+        description = "KODEIN Dependency Injection that can be configured / mutated for Javascript"
+        repo = "Kodein-DI"
+    }
 }

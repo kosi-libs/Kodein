@@ -12,7 +12,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Erased-JVM"
-    description = "KODEIN Dependency Injection using erased types by default for the JVM & Android (optimized, but error-prone)"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Erased-JVM"
+        description = "KODEIN Dependency Injection using erased types by default for the JVM & Android (optimized, but error-prone)"
+        repo = "Kodein-DI"
+    }
 }

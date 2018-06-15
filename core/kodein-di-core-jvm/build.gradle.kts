@@ -7,7 +7,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Core-JVM"
-    description = "KODEIN Dependency Injection Core for the JVM & Android"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Core-JVM"
+        description = "KODEIN Dependency Injection Core for the JVM & Android"
+        repo = "Kodein-DI"
+    }
 }

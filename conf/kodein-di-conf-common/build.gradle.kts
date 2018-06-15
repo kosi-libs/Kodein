@@ -9,7 +9,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Conf-Common"
-    description = "KODEIN Dependency Injection that can be configured / mutated Commons"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Conf-Common"
+        description = "KODEIN Dependency Injection that can be configured / mutated Commons"
+        repo = "Kodein-DI"
+    }
 }

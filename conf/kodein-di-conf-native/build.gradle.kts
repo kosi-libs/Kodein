@@ -25,7 +25,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Conf-Native"
-    description = "KODEIN Dependency Injection that can be configured / mutated for Native Platforms"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Conf-Native"
+        description = "KODEIN Dependency Injection that can be configured / mutated for Native Platforms"
+        repo = "Kodein-DI"
+    }
 }

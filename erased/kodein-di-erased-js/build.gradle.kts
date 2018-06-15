@@ -9,7 +9,9 @@ dependencies {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Erased-JS"
-    description = "KODEIN Dependency Injection using erased types by default for Javascript (JS does NOT support genericity)"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Erased-JS"
+        description = "KODEIN Dependency Injection using erased types by default for Javascript (JS does NOT support genericity)"
+        repo = "Kodein-DI"
+    }
 }

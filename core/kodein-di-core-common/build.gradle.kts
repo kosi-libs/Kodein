@@ -3,7 +3,9 @@ plugins {
 }
 
 kodeinPublication {
-    name = "Kodein-DI-Core-Common"
-    description = "KODEIN Dependency Injection Core Commons"
-    repo = "Kodein-DI"
+    upload {
+        name = "Kodein-DI-Core-Common"
+        description = "KODEIN Dependency Injection Core Commons"
+        repo = "Kodein-DI"
+    }
 }
