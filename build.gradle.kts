@@ -7,11 +7,12 @@ buildscript {
         maven(url = "https://dl.bintray.com/jetbrains/kotlin-native-dependencies")
         maven(url = "https://dl.bintray.com/salomonbrys/KMP-Gradle-Utils")
         maven(url = "https://dl.bintray.com/kodein-framework/Kodein-Internal-Gradle")
+        maven(url = "https://dl.bintray.com/salomonbrys/wup-digital-maven")
         mavenLocal()
     }
 
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-plugin:1.2.0")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-plugin:1.1.1")
     }
 
 }
