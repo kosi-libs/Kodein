@@ -20,6 +20,6 @@ class Thermosiphon(private val log: Logger, private val heater: Heater) : Pump {
     }
 }
 
-val thermosiphonModule = Kodein.Module {
+val thermosiphonModule = Kodein.Module("Thermosiphon") {
     bind<Pump>() with singleton { Thermosiphon(instance(), instance()) }
 }

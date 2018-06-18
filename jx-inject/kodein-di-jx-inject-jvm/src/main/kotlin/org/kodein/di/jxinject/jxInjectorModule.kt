@@ -11,7 +11,7 @@ import org.kodein.di.jxinject.internal.JxInjectorContainer
 /**
  * Module that must be imported in order to use [JxInjector].
  */
-val jxInjectorModule = Kodein.Module {
+val jxInjectorModule = Kodein.Module("JX Injector") {
     Bind() from Singleton(NoScope(), erased(), erased()) { JxInjectorContainer() }
 }
 

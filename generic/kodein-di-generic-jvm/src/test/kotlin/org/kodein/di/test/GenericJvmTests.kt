@@ -550,7 +550,7 @@ Dependency recursion:
 
     @Test fun test12_00_ModuleImport() {
 
-        val personModule = Kodein.Module {
+        val personModule = Kodein.Module("test") {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
             bind<Person>(tag = "factory") with factory { name: String -> Person(name) }
@@ -1019,7 +1019,7 @@ Dependency recursion:
     }
 
     @Test fun test18_00_ModuleOverride() {
-        val module = Kodein.Module {
+        val module = Kodein.Module("test") {
             bind<String>(tag = "name", overrides = true) with instance("Salomon")
         }
 
@@ -1032,7 +1032,7 @@ Dependency recursion:
     }
 
     @Test fun test18_01_ModuleForbiddenOverride() {
-        val module = Kodein.Module {
+        val module = Kodein.Module("test") {
             bind<String>(tag = "name", overrides = true) with instance("Salomon")
         }
 
@@ -1046,11 +1046,11 @@ Dependency recursion:
     }
 
     @Test fun test18_02_ModuleImportsForbiddenOverride() {
-        val subModule = Kodein.Module {
+        val subModule = Kodein.Module("test1") {
             bind<String>(tag = "name", overrides = true) with instance("Salomon")
         }
 
-        val module = Kodein.Module { import(subModule, allowOverride = true) }
+        val module = Kodein.Module("test2") { import(subModule, allowOverride = true) }
 
         Kodein {
             bind<String>(tag = "name") with instance("Benjamin")

@@ -661,18 +661,38 @@ In this example, `requestScope` is of type `Scope<Request, Request>`, so to acce
 
 ==== Automatic scopes
 
-Some scopes are of type `Scope<Any?, *>`.
+Some scopes are of type `Scope<Any?, *, An?>`.
 Because the default context is of type `Any?`, these scopes need no explicit context, but are capable of finding the context by themselves (usually from a static env).
 
-In the previous example, `requestScope` could also be of type `Scope<Any?, Request>` (`Any?` being the request provided by the user to Kodein, `Request` being the context provided by Kodein to the binding function).
+In the previous example, `requestScope` could also be of type `Scope<Any?, Request, An?>` (`Any?` being the request provided by the user to Kodein, `Request` being the context provided by Kodein to the binding function).
 The difference being that the user would *not* have to define an explicit context.
 
 [TIP]
 ====
-The `Scope` type has two type parameters:
+The `Scope` type has three type parameters:
 
 - The first is the type of the context provided by the retriever (your code) to the scope.
 - The second is the type of the context by the scope to the factory function.
+- The third is the type of parameter factories scoped with this scope can take.
+====
+
+[[scope-closeable]]
+==== Scope closeable
+
+By default, a Singleton or a Multiton value will never expire.
+However, the purpose of a Scope is to handle the lifecycle of a long lived value.
+Therefore, it is possible for a scoped Singleton or Multiton value to expire (most of the time because the scope itself expires).
+For example, in android's `ActivityRetainedScope`, scoped values will only live the duration of the activity.
+
+If a value implements `ScopeCloseable`, it's `close` function will be called when the value is removed from the scope (or when the scope itself expires).
+
+[CAUTION]
+====
+The `ScopeCloseable.close` method will only be called:
+
+- By scopes that explicitely *support* that feature (not all scopes do).
+- If the value does *not* use `WeakRef` or `SoftRef` references.
+  If the value does, the close method _may or may not_ be called (it will be called if the reference has not expired).
 ====
 
 
@@ -1641,6 +1661,33 @@ object RequestScope : SimpleScope<Request> { <1>
 ----
 <1> The scope's context type is `Request`.
 <2> Creates a `ScopeRegistry` in the context `Request` if there is none.
+
+
+[[scope-registry]]
+==== Scope registry
+
+The `ScopeRegistry` is responsible for holding value instances.
+It is also responsible for calling the `close` methods on object that are `ScopeCloseable` when they are removed from the registry.
+
+TIP: To have your scope compatible with `ScopeCloseable` values, make sure to `clean` the registry when the scope expires.
+
+A `ScopeRegistry` associates a `ScopeRegistry.Key` to value instance.
+It is the responsibility of the binding to provide the same `ScopeReference.Key` when it needs the same instance.
+
+There are two standard implementations of `ScopeRegistry`:
+
+
+===== MultiItemScopeRegistry
+
+This is the "classic" expected `ScopeRegistry` behaviour: will hold one value instance by `ScopeKey`.
+
+
+===== SingleItemScopeRegistry
+
+This is a particular `ScopeRegistry` implementation : it will only hold one item and replace the held item if the binding asks for an instance with a new `ScopeRegistry.Key`.
+
+This means that a Multiton scoped with a Scope that uses a `SingleItemScopeRegistry` will actually hold only one instance: the one corresponding to the last argument.
+
 
 ==== Auto Scopes
 

@@ -221,21 +221,23 @@ In the previous code example, if `MyActivity` contains Fragments, and that these
 
 === Component scopes
 
-Kodein-Android provides standard scope for any android component:
+Kodein-Android provides a standard scope for any android component:
 
 [source, kotlin]
 .Example: using an Activity scope
 ----
 val kodein = Kodein {
-    bind<Controller>() with scoped(androidScope<Activity>()).singleton { ControllerImpl(context) } <1>
+    bind<Controller>() with scoped(AndroidComponentsWeakScope<Activity>()).singleton { ControllerImpl(context) } <1>
 }
 ----
 <1> `context` is of type `Activity` because we are using the `androidScope<Activity>()`.
 
+CAUTION: This scope is *NOT* compatible with `ScopeCloseable`.
+
 
 === Activity retained scope
 
-Kodein-Android provides the `activityRetainedScope`, which is a scope that allows to get an activity-scoped singleton that's independent from the activity restart.
+Kodein-Android provides the `ActivityRetainedScope`, which is a scope that allows activity-scoped singletons or multitons that are independent from the activity restart.
 
 This means that for the same activity, you'll get the same instance, even if the activity restarts.
 
@@ -245,9 +247,31 @@ CAUTION: This means that you *should never retain the activity* passed at creati
 .Example: using an Activity retained scope
 ----
 val kodein = Kodein {
-    bind<Controller>() with scoped(activityRetainedScope).singleton { ControllerImpl() } <1>
+    bind<Controller>() with scoped(ActivityRetainedScope).singleton { ControllerImpl() }
 }
 ----
+
+NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?5.1/core#scope-closeable[see documentation].
+
+
+=== Lifecycle scope
+
+Kodein-Android provides the `AndroidLifecycleScope`, which is a scope that allows activity-scoped singletons or multitons that are bound to a component lifecycle.
+It uses Android support Lifecycle, so you need to use Android support's `LifecycleOwner` components.
+
+Note that these lifecycles
+
+[source, kotlin]
+.Example: using an Activity retained scope
+----
+val kodein = Kodein {
+    bind<Controller>() with scoped(AndroidLifecycleScope<Activity>()).singleton { ControllerImpl(context) }
+}
+----
+
+NOTE: These lifecycles are *NOT* immune to activity restart due to configuration change.
+
+NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?5.1/core#scope-closeable[see documentation].
 
 
 == Kodein in Android without the extension

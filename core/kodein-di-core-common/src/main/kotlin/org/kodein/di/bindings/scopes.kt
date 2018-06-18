@@ -198,6 +198,10 @@ interface Scope<in EC, out BC, in A> {
  */
 interface SimpleScope<C, in A> : Scope<C, C, A> {
     override fun getBindingContext(envContext: C) = envContext
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T: C> invoke() = this as SimpleScope<T, A>
+
 }
 
 class BasicScope(val registry: ScopeRegistry<in Any?>) : SimpleScope<Any?, Any?> {

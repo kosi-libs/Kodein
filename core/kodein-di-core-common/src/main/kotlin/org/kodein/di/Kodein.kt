@@ -387,7 +387,10 @@ interface Kodein : KodeinAware {
      * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
      * @property init The block of configuration for this module.
      */
-    class Module(val name: String = "", val allowSilentOverride: Boolean = false, val init: Builder.() -> Unit)
+    class Module(val name: String, val allowSilentOverride: Boolean = false, val init: Builder.() -> Unit) {
+        @Deprecated("You should name your modules, for debug purposes.", ReplaceWith("Module(\"module name\", allowSilentOverride, init)"), DeprecationLevel.WARNING)
+        constructor(allowSilentOverride: Boolean = false, init: Builder.() -> Unit) : this("", allowSilentOverride, init)
+    }
 
     /**
      * Every methods eventually ends up to a call to this container.

@@ -1,4 +1,20 @@
 
+#### 5.1.0 (16-04-2018)
+
+  - CORE
+    * BREAKING CHANGE: updated the `ScopeRegistry` and `Scope` interfaces to get an `A` generic argument that allows to create scopes specialized for a type of factory argument.
+    * Introduced the `ScopeCloseable` interface that allows singletons / multitons objetcs to be closed when they are removed from the scope: [see documentation](http://kodein.org/Kodein-DI/?5.1/core#scope-closeable).
+    * The `SingleItemScopeRegistry` class now allows for key change, which closes the previous value and keeps the new.
+      This allows for `scoped(SingleItemScopeRegistry<Any?>()).multiton`: [see documentation](http://kodein.org/Kodein-DI/?5.1/core#scope-registry).
+    * Unnamed module creation deprecated (in favour of named modules).
+  
+  - ANDROID
+    * `activityRetainedScope` deprecated in favour of `ActivityRetainedScope`.
+    * `ActivityRetainedScope` is compatible with `ScopeCloseable`.
+    * `androidScope` deprecated in favour of `AndroidComponentsWeakScope`.
+    * Introducing `AndroidLifecycleScope`: a scope that uses LifecycleOwner components to close properly close instances.
+
+
 #### 5.0.1 (16-04-2018)
 
   - FRAMEWORK

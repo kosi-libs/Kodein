@@ -21,6 +21,10 @@ android {
         preDexLibraries = preDexEnabled && !travisBuild
     }
 
+    packagingOptions {
+        exclude("META-INF/main.kotlin_module")
+    }
+
 }
 
 dependencies {
