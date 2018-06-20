@@ -1,11 +1,30 @@
 
+#### 5.2.0 (20-04-2018)
+
+  - CORE
+    * Named Modules cannot be imported more than once.
+    * Introducing `importOnce` that allows to import a named module if it has not already been imported:
+      [see documentation](http://kodein.org/Kodein-DI/?5.2/core#module-uniqueness).
+    * Introducing `newScopeRegistry` that creates either a single or a multime item registry.
+
+ - ANDROID
+   * Android support has been split between `kodein-di-framework-android-core`, `kodein-di-framework-android-support` (for the Android Support library) and `kodein-di-framework-android-x` (for the AndroidX library): 
+     [see documentation](http://kodein.org/Kodein-DI/?5.2/android#install).
+
+#### 5.1.1 (20-04-2018)
+
+  - ANDROID
+    * Fixed `ActivityRetainedScope` NullPointerException regression.
+
+
 #### 5.1.0 (16-04-2018)
 
   - CORE
     * BREAKING CHANGE: updated the `ScopeRegistry` and `Scope` interfaces to get an `A` generic argument that allows to create scopes specialized for a type of factory argument.
     * Introduced the `ScopeCloseable` interface that allows singletons / multitons objetcs to be closed when they are removed from the scope: [see documentation](http://kodein.org/Kodein-DI/?5.1/core#scope-closeable).
     * The `SingleItemScopeRegistry` class now allows for key change, which closes the previous value and keeps the new.
-      This allows for `scoped(SingleItemScopeRegistry<Any?>()).multiton`: [see documentation](http://kodein.org/Kodein-DI/?5.1/core#scope-registry).
+      This allows for `scoped(SingleItemScopeRegistry<Any?>()).multiton`:
+      [see documentation](http://kodein.org/Kodein-DI/?5.1/core#scope-registry).
     * Unnamed module creation deprecated (in favour of named modules).
   
   - ANDROID

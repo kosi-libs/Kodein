@@ -9,10 +9,7 @@ import android.app.usage.NetworkStatsManager
 import android.app.usage.UsageStatsManager
 import android.appwidget.AppWidgetManager
 import android.bluetooth.BluetoothManager
-import android.content.AbstractThreadedSyncAdapter
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.RestrictionsManager
+import android.content.*
 import android.content.pm.LauncherApps
 import android.content.pm.ShortcutManager
 import android.hardware.ConsumerIrManager
@@ -50,14 +47,19 @@ import android.view.accessibility.AccessibilityManager
 import android.view.accessibility.CaptioningManager
 import android.view.inputmethod.InputMethodManager
 import android.view.textservice.TextServicesManager
-import org.kodein.di.AnyToken
-import org.kodein.di.Kodein
-import org.kodein.di.bindings.Factory
-import org.kodein.di.bindings.Provider
-import org.kodein.di.bindings.WithContext
-import org.kodein.di.bindings.WithReceiver
-import org.kodein.di.erased
+import org.kodein.di.*
+import org.kodein.di.bindings.*
 import java.io.File
+
+interface AndroidContextGetter {
+    fun get(from: Any): Context?
+
+    companion object {
+        operator fun invoke(block: (Any) -> Context?) = object : AndroidContextGetter {
+            override fun get(from: Any) = block(from)
+        }
+    }
+}
 
 /**
  * Android `Kodein.Module` that defines a lot of platform bindings.
@@ -68,16 +70,33 @@ import java.io.File
 @SuppressLint("NewApi")
 fun androidModule(app: Application) = Kodein.Module(name = "\u2063androidModule") {
 
-    fun Any.anyAndroidContext() = when(this) {
-            is Context -> this
-            is android.app.Fragment -> this.context
-            is android.support.v4.app.Fragment -> this.context
-            is Dialog -> this.context
-            is View -> this.context
-            is android.content.Loader<*> -> this.context
-            is android.support.v4.content.Loader<*> -> this.context
-            is AbstractThreadedSyncAdapter -> this.context
+    Bind() from SetBinding<Any?, AndroidContextGetter>(AnyToken, erased(), erasedSet())
+
+    Bind<AndroidContextGetter>(erased()).InSet(erasedSet()) with InstanceBinding(erased(), AndroidContextGetter {
+        when(it) {
+            is Fragment -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) it.context else it.activity
+            is Dialog -> it.context
+            is View -> it.context
+            is Loader<*> -> it.context
+            is AbstractThreadedSyncAdapter -> it.context
             else -> null
+        }
+    })
+
+    lateinit var contextGetters: Set<AndroidContextGetter>
+
+    onReady {
+        contextGetters = Instance(erasedSet())
+    }
+
+    fun Any.anyAndroidContext(): Context? {
+        (this as? Context)?.let { return it }
+
+        contextGetters.forEach {
+            it.get(this)?.let { return it }
+        }
+
+        return null
     }
 
     fun <T> T.androidContext(): Context where T: WithReceiver, T: WithContext<*> =

@@ -4,8 +4,8 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 5.1.1
-:branch: 5.1
+:version: 5.2.0
+:branch: 5.2
 
 image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-logo.png[KODEIN, 700, 233]
 
@@ -715,6 +715,8 @@ val kodein = Kodein {
 
 === Modules
 
+==== Definition
+
 Kodein allows you to export your bindings in modules.
 It is very useful to have separate modules defining their own bindings instead of having only one central binding definition.
 A module is an object that you can construct the exact same way as you construct a Kodein instance.
@@ -723,7 +725,7 @@ A module is an object that you can construct the exact same way as you construct
 [source, kotlin]
 .Example: a simple module
 ----
-val apiModule = Kodein.Module {
+val apiModule = Kodein.Module(name = "API") {
     bind<API>() with singleton { APIImpl() }
     /* other bindings */
 }
@@ -742,6 +744,55 @@ val kodein = Kodein {
 
 NOTE: Modules are *definitions*, they will re-declare their bindings in each Kodein instance you use.
       If you create a module that defines a singleton and import that module into two different Kodein instances, then the singleton object will exist twice: once in each Kodein instance.
+
+
+[[module-uniqueness]]
+==== Name uniqueness
+
+Each module name should only be imported once.
+
+If a second module with the name of an already imported module is imported, then Kodein will fail.
+
+However, you cannot always ensure that every module name is unique: you may need to import modules that are defined outside of your code.
+Kodein offers two ways to mitigate that:
+
+1. Rename a module: +
+   Use when you are importing a module whose name already exists.
++
+[source, kotlin]
+.Example: imports a renamed module
+----
+val kodein = Kodein {
+    import(apiModule.copy(name = "otherAPI"))
+}
+----
++
+2. Add a prefix to modules imported by a module: +
+   Use when a module imported by another module uses a names which already exists.
++
+[source, kotlin]
+.Example: imports a module with a prefix for sub-modules
+----
+val kodein = Kodein {
+    import(apiModule.copy(prefix = "otherAPI-"))
+}
+----
+
+
+==== Import once
+
+You may define a module which you know depends on another module, so it would be great to import that dependency inside the module that has the dependency.
+However, each module can only be imported once, so if every module that depends on another module imports it, Kodein will fail at the second module that imports it.
+
+To support this, Kodein offers `importOnce`: it imports the module if no module with that name was previously imported.
+
+[source, kotlin]
+.Example: importing a module only once
+----
+val appModule = Kodein.Module {
+    importOnce(apiModule)
+}
+----
 
 
 === Extension (composition)
@@ -799,7 +850,7 @@ Those cases should be rare and you should know what you are doing.
 [source, kotlin]
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
-val testModule = Kodein.Module(allowSilentOverride = true) {
+val testModule = Kodein.Module(name = "test", allowSilentOverride = true) {
     bind<EmailClient>() with singleton { MockEmailClient() } <1>
 }
 ----
@@ -811,7 +862,7 @@ This is useful if you want to "enhance" a binding (for example, using the decora
 [source, kotlin]
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
-val testModule = Kodein.Module {
+val testModule = Kodein.Module(name = "test") {
     bind<Logger>(overrides = true) with singleton { FileLoggerWrapper("path/to/file", overriddenInstance()) } <1>
 }
 ----
@@ -1475,6 +1526,7 @@ class JavaClass {
 Kodein allows multi bindings via a binding set.
 
 
+[[set-bindings]]
 === In a Set
 
 ==== Binding in a Set
@@ -1628,7 +1680,7 @@ This can be useful to do some "starting" jobs.
 [source, kotlin]
 .Example: registering a callback at binding time
 ----
-val appModule = Kodein.Module {
+val appModule = Kodein.Module(name = "app") {
     import(engineModule)
     onReady {
         val engine = instance<Engine>()

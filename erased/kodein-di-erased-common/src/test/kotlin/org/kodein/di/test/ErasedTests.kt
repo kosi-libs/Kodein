@@ -492,6 +492,34 @@ Dependency recursion:
         assertNotSame(kodein.direct.instance<Person>(tag = "named"), kodein2.direct.instance(tag = "named"))
     }
 
+    @Test fun test12_01_ModuleImportTwice() {
+
+        val module = Kodein.Module("test") {}
+
+        val ex = assertFailsWith<IllegalStateException> {
+            val kodein = Kodein {
+                import(module)
+                import(module)
+            }
+        }
+
+        assertEquals("Module \"test\" has already been imported!", ex.message)
+    }
+
+    @Test fun test12_02_ModuleOnce() {
+
+        val module = Kodein.Module("test") {
+            bind<String>() with instance("Salomon")
+        }
+
+        val kodein = Kodein {
+            importOnce(module)
+            importOnce(module)
+        }
+
+        assertEquals("Salomon", kodein.direct.instance())
+    }
+
     @Test fun test12_01_KodeinExtend() {
 
         val parent = Kodein {

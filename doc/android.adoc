@@ -4,8 +4,8 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 5.1.1
-:branch: 5.1
+:version: 5.2.0
+:branch: 5.2
 
 You can use Kodein as-is in your Android project or use the util library `kodein-android`.
 
@@ -15,7 +15,7 @@ NOTE: Kodein does work on Android as-is.
 
 Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-android[Android demo project]!
 
-
+[[install]]
 == Install
 
 .How to use `kodein-android`:
@@ -24,12 +24,21 @@ Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/d
 [subs="attributes"]
 ----
 compile 'org.kodein.di:kodein-di-generic-jvm:{version}'
-compile 'org.kodein.di:kodein-di-framework-android:{version}'
+compile 'org.kodein.di:kodein-di-framework-android-???:{version}'
 ----
 +
-IMPORTANT: Both `kodein-generic-jvm` and `kodein-android` dependencies must be declared. +
+Kodein offers support for:
 +
-NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
+[cols="1,2"]
+|=======
+| *Android only*               | `kodein-di-framework-android-core`
+| *Android + Support library*  | `kodein-di-framework-android-support`
+| *Android + AndroidX library* | `kodein-di-framework-android-x`
+|=======
++
+IMPORTANT: Either `kodein-di-generic-jvm` or `kodein-di-erased-jvm` *must* be declared in addition to the Kodein-Android package. +
++
+WARNING: If you are using `SupportFragment` in your application, then you *must* use either the `-support` or the `-x` package.
 
 . Declare the dependency bindings in the Android `Application`, having it implements `KodeinAware`.
 +
@@ -251,7 +260,7 @@ val kodein = Kodein {
 }
 ----
 
-NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?5.1/core#scope-closeable[see documentation].
+NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?{branch}/core#scope-closeable[see documentation].
 
 
 === Lifecycle scope
@@ -271,7 +280,7 @@ val kodein = Kodein {
 
 NOTE: These lifecycles are *NOT* immune to activity restart due to configuration change.
 
-NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?5.1/core#scope-closeable[see documentation].
+NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?{branch}/core#scope-closeable[see documentation].
 
 
 == Kodein in Android without the extension

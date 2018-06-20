@@ -10,8 +10,6 @@ import android.view.View
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import kotlin.reflect.KProperty
-import android.support.v4.app.Fragment as SupportFragment
-import android.support.v4.content.Loader as SupportLoader
 
 
 private fun closestKodein(thisRef: Any?, rootContext: Context): Kodein {
@@ -72,11 +70,6 @@ fun Fragment.closestKodein() = closestKodein { activity }
 /**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
-fun SupportFragment.closestKodein() = closestKodein { activity!! }
-
-/**
- * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
- */
 fun Dialog.closestKodein() = closestKodein { context }
 
 /**
@@ -93,9 +86,3 @@ fun AbstractThreadedSyncAdapter.closestKodein() = closestKodein { context }
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
 fun Loader<*>.closestKodein() = closestKodein { context }
-
-/**
- * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
- */
-fun SupportLoader<*>.closestKodein() = closestKodein { context }
-

@@ -167,6 +167,17 @@ class SingleItemScopeRegistry<A> : ScopeRegistry<A> {
     }
 }
 
+enum class ScopeRepositoryType {
+    MULTI_ITEM,
+    SINGLE_ITEM
+}
+
+fun <A> newScopeRegistry(type: ScopeRepositoryType) = when (type) {
+    ScopeRepositoryType.MULTI_ITEM -> MultiItemScopeRegistry<A>()
+    ScopeRepositoryType.SINGLE_ITEM -> SingleItemScopeRegistry<A>()
+}
+
+
 /**
  * A scope is an object that can return (or create) a [ScopeRegistry] according to a context.
  *

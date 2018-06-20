@@ -31,5 +31,5 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kodeinVersions.kotlin}")
 
   implementation(project(":generic:kodein-di-generic-jvm"))
-  implementation(project(":framework:kodein-di-framework-android"))
+  implementation(project(":framework:android:kodein-di-framework-android-core"))
 }

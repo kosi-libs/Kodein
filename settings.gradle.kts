@@ -28,7 +28,9 @@ include(
 
         ":jx-inject:kodein-di-jx-inject-jvm",
 
-        ":framework:kodein-di-framework-android",
+        ":framework:android:kodein-di-framework-android-core",
+        ":framework:android:kodein-di-framework-android-support",
+        ":framework:android:kodein-di-framework-android-x",
 
         ":demo:demo-android",
         ":demo:demo-js",

@@ -197,6 +197,8 @@ interface Kodein : KodeinAware {
     @KodeinDsl
     open class Builder internal constructor(
             private val moduleName: String?,
+            private val prefix: String,
+            private val importedModules: MutableSet<String>,
             val containerBuilder: KodeinContainer.Builder
     ) : BindBuilder.WithContext<Any?>, BindBuilder.WithScope<Any?, Nothing?, Any?> {
 
@@ -301,7 +303,19 @@ interface Kodein : KodeinAware {
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
         fun import(module: Module, allowOverride: Boolean = false) {
-            Builder(module.name, containerBuilder.subBuilder(allowOverride, module.allowSilentOverride)).apply(module.init)
+            val moduleName = prefix + module.name
+            if (moduleName.isNotEmpty() && moduleName in importedModules) {
+                throw IllegalStateException("Module \"$moduleName\" has already been imported!")
+            }
+            importedModules += moduleName
+            Builder(moduleName, prefix + module.prefix, importedModules, containerBuilder.subBuilder(allowOverride, module.allowSilentOverride)).apply(module.init)
+        }
+
+        fun importOnce(module: Module, allowOverride: Boolean = false) {
+            if (module.name.isEmpty())
+                throw IllegalStateException("importOnce must be given a named module.")
+            if (module.name !in importedModules)
+                import(module, allowOverride)
         }
 
         /**
@@ -317,7 +331,7 @@ interface Kodein : KodeinAware {
      *
      * @param allowSilentOverride Whether non-explicit overrides is allowed in this builder.
      */
-    class MainBuilder(allowSilentOverride: Boolean) : Builder(null, KodeinContainer.Builder(true, allowSilentOverride, HashMap(), ArrayList())) {
+    class MainBuilder(allowSilentOverride: Boolean) : Builder(null, "", HashSet<String>(), KodeinContainer.Builder(true, allowSilentOverride, HashMap(), ArrayList())) {
 
         /**
          * The external source is repsonsible for fetching / creating a value when Kodein cannot find a matching binding.
@@ -387,9 +401,9 @@ interface Kodein : KodeinAware {
      * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
      * @property init The block of configuration for this module.
      */
-    class Module(val name: String, val allowSilentOverride: Boolean = false, val init: Builder.() -> Unit) {
+    data class Module(val name: String, val allowSilentOverride: Boolean = false, val prefix: String = "", val init: Builder.() -> Unit) {
         @Deprecated("You should name your modules, for debug purposes.", ReplaceWith("Module(\"module name\", allowSilentOverride, init)"), DeprecationLevel.WARNING)
-        constructor(allowSilentOverride: Boolean = false, init: Builder.() -> Unit) : this("", allowSilentOverride, init)
+        constructor(allowSilentOverride: Boolean = false, init: Builder.() -> Unit) : this("", allowSilentOverride, "", init)
     }
 
     /**
