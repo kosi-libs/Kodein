@@ -76,7 +76,7 @@ open class ActivityRetainedScope private constructor(private val repositoryType:
 
     /** @suppress */
     class RetainedScopeFragment: Fragment() {
-        val registry = scopeRegistry(arguments.getInt(RepositoryType.KEY))
+        val registry by lazy { scopeRegistry(arguments.getInt(RepositoryType.KEY)) }
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
