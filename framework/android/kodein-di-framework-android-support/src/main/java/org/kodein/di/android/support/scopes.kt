@@ -33,6 +33,7 @@ open class AndroidLifecycleScope private constructor(private val repositoryType:
                         fun onDestroy() {
                             owner.lifecycle.removeObserver(this)
                             registry.clear()
+                            map.remove(owner)
                         }
                     })
                     registry
