@@ -12,7 +12,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-plugin:1.1.1")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-plugin:1.1.2")
     }
 
 }

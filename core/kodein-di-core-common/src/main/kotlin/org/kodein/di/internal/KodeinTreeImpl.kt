@@ -85,13 +85,13 @@ internal class KodeinTreeImpl(
     override fun <C, A, T : Any> find(key: Kodein.Key<C, A, T>, overrideLevel: Int, all: Boolean): List<Pair<Kodein.Key<C, A, T>, KodeinDefinition<C, A, T>>> {
 
         if (!all) {
-            _cache[key]?.let { return it.getOrNull(overrideLevel)?.let { listOf(key to it as KodeinDefinition<C, A, T>) } ?: emptyList() }
+            _cache[key]?.let { list -> return list.getOrNull(overrideLevel)?.let { listOf(key to it as KodeinDefinition<C, A, T>) } ?: emptyList() }
 
             if (key.contextType != AnyToken) {
                 val anyContextKey = key.copy(contextType = AnyToken)
-                _cache[anyContextKey]?.let {
-                    _cache[key] = it
-                    return it.getOrNull(overrideLevel)?.let { listOf(key to it as KodeinDefinition<C, A, T>) } ?: emptyList()
+                _cache[anyContextKey]?.let { list ->
+                    _cache[key] = list
+                    return list.getOrNull(overrideLevel)?.let { listOf(key to it as KodeinDefinition<C, A, T>) } ?: emptyList()
                 }
             }
         }
@@ -109,7 +109,9 @@ internal class KodeinTreeImpl(
     @Suppress("UNCHECKED_CAST")
     override fun find(search: SearchSpecs): List<Pair<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>> {
         val keys = findBySpecs(search)
-        return keys.map { realKey -> realKey to _cache[realKey]!! }
+        // TODO remove when issue is fixed : https://youtrack.jetbrains.net/issue/KT-26117
+        @Suppress("UselessCallOnCollection")
+        return keys.mapNotNull { realKey -> realKey to _cache[realKey]!! }
     }
 
     @Suppress("UNCHECKED_CAST")

@@ -14,7 +14,7 @@ import org.kodein.di.test.MethodSorters
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class KodeinConfTests {
+class ConfTests {
 
     @Test fun test00_00_Configurable() {
         val kodein = ConfigurableKodein()
@@ -164,19 +164,21 @@ class KodeinConfTests {
         assertEquals(42, Test04().answer)
     }
 
-    private object Test05 {
+    class Test05 {
         val kodein = ConfigurableKodein()
 
-        class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.direct.instance())
+        inner class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.direct.instance())
     }
 
     @Test fun test05_00_Loop() {
-        Test05.kodein.addConfig {
+        val test = Test05()
+
+        test.kodein.addConfig {
             bind() from singleton { "test" }
-            bind() from eagerSingleton { Test05.Loop() }
+            bind() from eagerSingleton { test.Loop() }
         }
 
-        Test05.kodein.getOrConstruct()
+        test.kodein.getOrConstruct()
     }
 
     @Test fun test06_00_Callback() {
