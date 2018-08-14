@@ -3,6 +3,7 @@ package org.kodein.di.conf
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinContainer
 import org.kodein.di.Volatile
+import org.kodein.di.internal.maySynchronized
 import org.kodein.di.internal.synchronizedIfNull
 
 /**
@@ -100,7 +101,7 @@ class ConfigurableKodein : Kodein {
         if (mutable != true)
             throw IllegalStateException("ConfigurableKodein is not mutable, you cannot clear bindings.")
 
-        synchronized(_lock) {
+        maySynchronized(_lock) {
             val configs = _configs
 
             if (configs != null) {
@@ -125,7 +126,7 @@ class ConfigurableKodein : Kodein {
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
      */
     fun addConfig(config: Kodein.MainBuilder.() -> Unit) {
-        synchronized(_lock) {
+        maySynchronized(_lock) {
             val configs = _configs
             if (configs == null) {
                 if (mutable != true)

@@ -84,7 +84,7 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reifi
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
-inline fun <EC, BC, reified A1, reified A2,                                     reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi2<A1, A2            >>.multiton(ref: RefMaker? = null, noinline creator: SimpleBindingKodein<BC>.(A1, A2            ) -> T) = Multiton(scope, contextType, generic<Multi2<A1, A2            >>(), generic(), ref) { creator(it.a1, it.a2                     ) }
+inline fun <EC, BC, reified A1, reified A2,                                     reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi2<A1, A2            >>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<BC>.(A1, A2            ) -> T) = Multiton(scope, contextType, generic<Multi2<A1, A2            >>(), generic(), ref, sync) { creator(it.a1, it.a2                     ) }
 
 /**
  * Creates a multi-argument multiton.
@@ -100,7 +100,7 @@ inline fun <EC, BC, reified A1, reified A2,                                     
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
-inline fun <EC, BC, reified A1, reified A2, reified A3,                         reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi3<A1, A2, A3        >>.multiton(ref: RefMaker? = null, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3        ) -> T) = Multiton(scope, contextType, generic<Multi3<A1, A2, A3        >>(), generic(), ref) { creator(it.a1, it.a2, it.a3              ) }
+inline fun <EC, BC, reified A1, reified A2, reified A3,                         reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi3<A1, A2, A3        >>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3        ) -> T) = Multiton(scope, contextType, generic<Multi3<A1, A2, A3        >>(), generic(), ref, sync) { creator(it.a1, it.a2, it.a3              ) }
 
 /**
  * Creates a multi-argument multiton.
@@ -117,7 +117,7 @@ inline fun <EC, BC, reified A1, reified A2, reified A3,                         
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
-inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4,             reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi4<A1, A2, A3, A4    >>.multiton(ref: RefMaker? = null, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3, A4    ) -> T) = Multiton(scope, contextType, generic<Multi4<A1, A2, A3, A4    >>(), generic(), ref) { creator(it.a1, it.a2, it.a3, it.a4       ) }
+inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4,             reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi4<A1, A2, A3, A4    >>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3, A4    ) -> T) = Multiton(scope, contextType, generic<Multi4<A1, A2, A3, A4    >>(), generic(), ref, sync) { creator(it.a1, it.a2, it.a3, it.a4       ) }
 
 /**
  * Creates a multi-argument multiton.
@@ -135,7 +135,7 @@ inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4,             
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
-inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi5<A1, A2, A3, A4, A5>>.multiton(ref: RefMaker? = null, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3, A4, A5) -> T) = Multiton(scope, contextType, generic<Multi5<A1, A2, A3, A4, A5>>(), generic(), ref) { creator(it.a1, it.a2, it.a3, it.a4, it.a5) }
+inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi5<A1, A2, A3, A4, A5>>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3, A4, A5) -> T) = Multiton(scope, contextType, generic<Multi5<A1, A2, A3, A4, A5>>(), generic(), ref, sync) { creator(it.a1, it.a2, it.a3, it.a4, it.a5) }
 
 
 
@@ -289,7 +289,7 @@ inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified 
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified A1, reified A2,                                     reified T: Any> KodeinAware.factory2OrNull(tag: Any? = null) =
-        KodeinPropertyMap(FactoryOrNull<Multi2<A1, A2            >, T>(generic(), generic(), tag)) { it?.let { { a1: A1, a2: A2                         -> it(M(a1, a2            )) } } }
+        KodeinPropertyMap(FactoryOrNull<Multi2<A1, A2            >, T>(generic(), generic(), tag)) { factory -> factory?.let { { a1: A1, a2: A2                         -> it(M(a1, a2            )) } } }
 
 /**
  * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
@@ -306,7 +306,7 @@ inline fun <reified A1, reified A2,                                     reified 
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified A1, reified A2, reified A3,                         reified T: Any> KodeinAware.factory3OrNull(tag: Any? = null) =
-        KodeinPropertyMap(FactoryOrNull<Multi3<A1, A2, A3        >, T>(generic(), generic(), tag)) { it?.let { { a1: A1, a2: A2, a3: A3                 -> it(M(a1, a2, a3        )) } } }
+        KodeinPropertyMap(FactoryOrNull<Multi3<A1, A2, A3        >, T>(generic(), generic(), tag)) { factory -> factory?.let { { a1: A1, a2: A2, a3: A3                 -> it(M(a1, a2, a3        )) } } }
 
 /**
  * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
@@ -324,7 +324,7 @@ inline fun <reified A1, reified A2, reified A3,                         reified 
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified A1, reified A2, reified A3, reified A4,             reified T: Any> KodeinAware.factory4OrNull(tag: Any? = null) =
-        KodeinPropertyMap(FactoryOrNull<Multi4<A1, A2, A3, A4    >, T>(generic(), generic(), tag)) { it?.let { { a1: A1, a2: A2, a3: A3, a4: A4         -> it(M(a1, a2, a3, a4    )) } } }
+        KodeinPropertyMap(FactoryOrNull<Multi4<A1, A2, A3, A4    >, T>(generic(), generic(), tag)) { factory -> factory?.let { { a1: A1, a2: A2, a3: A3, a4: A4         -> it(M(a1, a2, a3, a4    )) } } }
 
 /**
  * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
@@ -343,7 +343,7 @@ inline fun <reified A1, reified A2, reified A3, reified A4,             reified 
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> KodeinAware.factory5OrNull(tag: Any? = null) =
-        KodeinPropertyMap(FactoryOrNull<Multi5<A1, A2, A3, A4, A5>, T>(generic(), generic(), tag)) { it?.let { { a1: A1, a2: A2, a3: A3, a4: A4, a5: A5 -> it(M(a1, a2, a3, a4, a5)) } } }
+        KodeinPropertyMap(FactoryOrNull<Multi5<A1, A2, A3, A4, A5>, T>(generic(), generic(), tag)) { factory -> factory?.let { { a1: A1, a2: A2, a3: A3, a4: A4, a5: A5 -> it(M(a1, a2, a3, a4, a5)) } } }
 
 
 /**
@@ -431,7 +431,7 @@ inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified 
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified A1, reified A2,                                     reified T: Any> DKodein.factory2OrNull(tag: Any? = null) =
-        FactoryOrNull<Multi2<A1, A2            >, T>(generic(), generic(), tag).let { it?.let { { a1: A1, a2: A2                         -> it(M(a1, a2            )) } } }
+        FactoryOrNull<Multi2<A1, A2            >, T>(generic(), generic(), tag).let { factory -> factory?.let { { a1: A1, a2: A2                         -> it(M(a1, a2            )) } } }
 
 /**
  * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
@@ -448,7 +448,7 @@ inline fun <reified A1, reified A2,                                     reified 
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified A1, reified A2, reified A3,                         reified T: Any> DKodein.factory3OrNull(tag: Any? = null) =
-        FactoryOrNull<Multi3<A1, A2, A3        >, T>(generic(), generic(), tag).let { it?.let { { a1: A1, a2: A2, a3: A3                 -> it(M(a1, a2, a3        )) } } }
+        FactoryOrNull<Multi3<A1, A2, A3        >, T>(generic(), generic(), tag).let { factory -> factory?.let { { a1: A1, a2: A2, a3: A3                 -> it(M(a1, a2, a3        )) } } }
 
 /**
  * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
@@ -466,7 +466,7 @@ inline fun <reified A1, reified A2, reified A3,                         reified 
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified A1, reified A2, reified A3, reified A4,             reified T: Any> DKodein.factory4OrNull(tag: Any? = null) =
-        FactoryOrNull<Multi4<A1, A2, A3, A4    >, T>(generic(), generic(), tag).let { it?.let { { a1: A1, a2: A2, a3: A3, a4: A4         -> it(M(a1, a2, a3, a4    )) } } }
+        FactoryOrNull<Multi4<A1, A2, A3, A4    >, T>(generic(), generic(), tag).let { factory -> factory?.let { { a1: A1, a2: A2, a3: A3, a4: A4         -> it(M(a1, a2, a3, a4    )) } } }
 
 /**
  * Gets a factory of `T` for the given argument types, return type and tag, or null if none is found.
@@ -485,4 +485,4 @@ inline fun <reified A1, reified A2, reified A3, reified A4,             reified 
  * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> DKodein.factory5OrNull(tag: Any? = null) =
-        FactoryOrNull<Multi5<A1, A2, A3, A4, A5>, T>(generic(), generic(), tag).let { it?.let { { a1: A1, a2: A2, a3: A3, a4: A4, a5: A5 -> it(M(a1, a2, a3, a4, a5)) } } }
+        FactoryOrNull<Multi5<A1, A2, A3, A4, A5>, T>(generic(), generic(), tag).let { factory -> factory?.let { { a1: A1, a2: A2, a3: A3, a4: A4, a5: A5 -> it(M(a1, a2, a3, a4, a5)) } } }

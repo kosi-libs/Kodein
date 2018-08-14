@@ -4,6 +4,7 @@ import org.kodein.di.*
 import org.kodein.di.bindings.*
 import org.kodein.di.erased.*
 import kotlin.concurrent.thread
+import kotlin.system.measureTimeMillis
 import kotlin.test.*
 
 
@@ -489,5 +490,4 @@ class ErasedJvmTests {
         assertEquals(Name("Salomon"), kodein.instance())
         assertEquals<Name>(kodein.instance(), kodein.instance())
     }
-
 }

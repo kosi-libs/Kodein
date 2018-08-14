@@ -204,7 +204,7 @@ interface Kodein : KodeinAware {
 
         override val contextType = AnyToken
 
-        override val scope: Scope<Any?, Nothing?, Any?> get() = NoScope() // Recreating a new NoScope every-time *on purpose*!
+        override val scope: Scope<Any?, Nothing?, Any?>  = NoScope() // Recreating a new NoScope every-time *on purpose*!
 
         /**
          * Left part of the type-binding syntax (`bind(type, tag)`).

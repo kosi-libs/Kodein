@@ -128,6 +128,16 @@ class ErasedTests {
         assertSame(p1(), p2())
     }
 
+    @Test fun test01_02_NonSyncedSingletonBindingGetInstance() {
+
+        val kodein = Kodein { bind<Person>() with singleton(sync = false) { Person() } }
+
+        val p1: Person by kodein.instance()
+        val p2: Person by kodein.instance()
+
+        assertSame(p1, p2)
+    }
+
     @Test fun test03_00_InstanceBindingGetInstance() {
 
         val p = Person()
@@ -497,7 +507,7 @@ Dependency recursion:
         val module = Kodein.Module("test") {}
 
         val ex = assertFailsWith<IllegalStateException> {
-            val kodein = Kodein {
+            Kodein {
                 import(module)
                 import(module)
             }
@@ -1016,6 +1026,23 @@ Dependency recursion:
         assertNotSame(a, d)
         assertTrue(c.closed)
         assertFalse(d.closed)
+    }
+
+    @Test fun test23_04_NonSyncedMultiton() {
+        val kodein = Kodein { bind() from multiton(sync = false) { name: String -> Person(name) } }
+
+        val p1: Person by kodein.instance(arg = "Salomon")
+        val p2: Person by kodein.instance(fArg = { "Salomon" })
+        val p3: Person by kodein.instance(arg = "Laila")
+        val p4: Person by kodein.instance(fArg = { "Laila" })
+
+        assertSame(p1, p2)
+        assertSame(p3, p4)
+
+        assertNotSame(p1, p3)
+
+        assertEquals("Salomon", p1.name)
+        assertEquals("Laila", p3.name)
     }
 
     @Test fun test24_00_Callback() {

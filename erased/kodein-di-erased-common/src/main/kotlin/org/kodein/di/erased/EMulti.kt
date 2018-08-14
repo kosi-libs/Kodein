@@ -84,7 +84,7 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reifi
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
-inline fun <EC, BC, reified A1, reified A2,                                     reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi2<A1, A2            >>.multiton(ref: RefMaker? = null, noinline creator: SimpleBindingKodein<BC>.(A1, A2            ) -> T) = Multiton(scope, contextType, Multi2.erased<A1, A2            >(), erased(), ref) { creator(it.a1, it.a2                     ) }
+inline fun <EC, BC, reified A1, reified A2,                                     reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi2<A1, A2            >>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<BC>.(A1, A2            ) -> T) = Multiton(scope, contextType, Multi2.erased<A1, A2            >(), erased(), ref, sync) { creator(it.a1, it.a2                     ) }
 
 /**
  * Creates a multi-argument multiton.
@@ -100,7 +100,7 @@ inline fun <EC, BC, reified A1, reified A2,                                     
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
-inline fun <EC, BC, reified A1, reified A2, reified A3,                         reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi3<A1, A2, A3        >>.multiton(ref: RefMaker? = null, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3        ) -> T) = Multiton(scope, contextType, Multi3.erased<A1, A2, A3        >(), erased(), ref) { creator(it.a1, it.a2, it.a3              ) }
+inline fun <EC, BC, reified A1, reified A2, reified A3,                         reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi3<A1, A2, A3        >>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3        ) -> T) = Multiton(scope, contextType, Multi3.erased<A1, A2, A3        >(), erased(), ref, sync) { creator(it.a1, it.a2, it.a3              ) }
 
 /**
  * Creates a multi-argument multiton.
@@ -117,7 +117,7 @@ inline fun <EC, BC, reified A1, reified A2, reified A3,                         
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
-inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4,             reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi4<A1, A2, A3, A4    >>.multiton(ref: RefMaker? = null, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3, A4    ) -> T) = Multiton(scope, contextType, Multi4.erased<A1, A2, A3, A4    >(), erased(), ref) { creator(it.a1, it.a2, it.a3, it.a4       ) }
+inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4,             reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi4<A1, A2, A3, A4    >>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3, A4    ) -> T) = Multiton(scope, contextType, Multi4.erased<A1, A2, A3, A4    >(), erased(), ref, sync) { creator(it.a1, it.a2, it.a3, it.a4       ) }
 
 /**
  * Creates a multi-argument multiton.
@@ -135,7 +135,7 @@ inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4,             
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
-inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi5<A1, A2, A3, A4, A5>>.multiton(ref: RefMaker? = null, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3, A4, A5) -> T) = Multiton(scope, contextType, Multi5.erased<A1, A2, A3, A4, A5>(), erased(), ref) { creator(it.a1, it.a2, it.a3, it.a4, it.a5) }
+inline fun <EC, BC, reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> Kodein.BindBuilder.WithScope<EC, BC, Multi5<A1, A2, A3, A4, A5>>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<BC>.(A1, A2, A3, A4, A5) -> T) = Multiton(scope, contextType, Multi5.erased<A1, A2, A3, A4, A5>(), erased(), ref, sync) { creator(it.a1, it.a2, it.a3, it.a4, it.a5) }
 
 
 

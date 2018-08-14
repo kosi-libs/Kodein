@@ -1,9 +1,7 @@
 package org.kodein.di.bindings
 
 import org.kodein.di.Volatile
-import org.kodein.di.internal.newConcurrentMap
-import org.kodein.di.internal.synchronizedIfNotNull
-import org.kodein.di.internal.synchronizedIfNull
+import org.kodein.di.internal.*
 
 /**
  * A registry is responsible managing references inside a scope.
@@ -29,7 +27,7 @@ interface ScopeRegistry<A> {
      * @param creator A function that creates a reference that will be stored in the registry.
      * @return A value associated to the [key], whether created by [creator] or retrieved by [Reference.next].
      */
-    fun getOrCreate(key: ScopeRegistry.Key<A>, creator: () -> Reference<Any>): Any
+    fun getOrCreate(key: ScopeRegistry.Key<A>, sync: Boolean = true, creator: () -> Reference<Any>): Any
 
     fun getOrNull(key: ScopeRegistry.Key<A>): (() -> Any?)?
 
@@ -53,9 +51,9 @@ class MultiItemScopeRegistry<A> : ScopeRegistry<A> {
 
     private val _lock = Any()
 
-    override fun getOrCreate(key: ScopeRegistry.Key<A>, creator: () -> Reference<Any>): Any {
+    override fun getOrCreate(key: ScopeRegistry.Key<A>, sync: Boolean, creator: () -> Reference<Any>): Any {
         return synchronizedIfNull(
-                lock = _lock,
+                lock = if (sync) _lock else null,
                 predicate = { _cache[key]?.invoke() },
                 ifNotNull = { it },
                 ifNull = {
@@ -78,7 +76,7 @@ class MultiItemScopeRegistry<A> : ScopeRegistry<A> {
      * Remove all objects from the scope.
      */
     override fun clear() {
-        val refs = synchronized(_lock) {
+        val refs = maySynchronized(_lock) {
             val refs = _cache.values.toList()
             _cache.clear()
             refs
@@ -108,9 +106,9 @@ class SingleItemScopeRegistry<A> : ScopeRegistry<A> {
     private val _lock = Any()
     @Volatile private var _pair: Pair<ScopeRegistry.Key<A>, () -> Any?>? = null
 
-    override fun getOrCreate(key: ScopeRegistry.Key<A>, creator: () -> Reference<Any>): Any {
+    override fun getOrCreate(key: ScopeRegistry.Key<A>, sync: Boolean, creator: () -> Reference<Any>): Any {
         val (oldRef, value) = synchronizedIfNull(
-                lock = _lock,
+                lock = if (sync) _lock else null,
                 predicate = { _pair?.let { (pKey, pRef) -> if (key == pKey) pRef() else null } },
                 ifNotNull = { null to it },
                 ifNull = {
@@ -226,7 +224,7 @@ class NoScope: Scope<Any?, Nothing?, Any?> {
 
     override fun getBindingContext(envContext: Any?): Nothing? = null
 
-    private val _registry by lazy { MultiItemScopeRegistry<Any?>() }
+    private val _registry = MultiItemScopeRegistry<Any?>()
 
     override fun getRegistry(receiver: Any?, context: Any?) = _registry
 }
