@@ -320,7 +320,7 @@ If you are using injection, you can pass the argument the exact same way:
 .Example: binding the Presenter class with injection
 ----
 val kodein = Kodein {
-    bind<Presenter>() with singleton { Presenter(instance(), inetance()) }
+    bind<Presenter>() with singleton { Presenter(instance(), instance()) }
 }
 ----
 
