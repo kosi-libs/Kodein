@@ -10,6 +10,8 @@ kodeinPublication {
     }
 }
 
+setProperty("archivesBaseName", "Kodein_DI_Framework_Android_Support")
+
 dependencies {
     api(project(":framework:android:kodein-di-framework-android-core"))
 

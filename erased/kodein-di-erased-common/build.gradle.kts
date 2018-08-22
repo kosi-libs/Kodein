@@ -10,6 +10,8 @@ kodeinPublication {
     }
 }
 
+setProperty("archivesBaseName", "Kodein_DI_Erased_Common")
+
 dependencies {
     compile(project(":core:kodein-di-core-common"))
     testImplementation(project(":test-utils:test-utils-common"))

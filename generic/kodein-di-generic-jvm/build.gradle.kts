@@ -17,3 +17,5 @@ kodeinPublication {
         repo = "Kodein-DI"
     }
 }
+
+setProperty("archivesBaseName", "Kodein_DI_Generic_JVM")

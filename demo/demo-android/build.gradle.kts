@@ -20,11 +20,6 @@ android {
         val preDexEnabled = System.getProperty("pre-dex", "true") == "true"
         preDexLibraries = preDexEnabled && !travisBuild
     }
-
-    packagingOptions {
-        exclude("META-INF/main.kotlin_module")
-    }
-
 }
 
 dependencies {

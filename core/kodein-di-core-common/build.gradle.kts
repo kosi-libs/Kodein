@@ -9,3 +9,5 @@ kodeinPublication {
         repo = "Kodein-DI"
     }
 }
+
+setProperty("archivesBaseName", "Kodein_DI_Core_Common")
