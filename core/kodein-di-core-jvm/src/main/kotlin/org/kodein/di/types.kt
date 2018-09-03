@@ -174,10 +174,15 @@ internal class ParameterizedTypeToken<T>(val trueType: Type) : JVMTypeToken<T>()
 
     override fun fullErasedDispString() = trueType.fullErasedName()
 
-    private val rawType: Class<*> get() = ((trueType as? ParameterizedType)?.rawType ?: trueType) as Class<*>
+    private val rawType: Class<*>? get() =
+        when (trueType) {
+            is Class<*> -> trueType
+            is ParameterizedType -> trueType.rawType as Class<*>
+            else -> null
+        }
 
     override fun getGenericParameters(): Array<TypeToken<*>> {
-        val type = _type as? ParameterizedType ?: return rawType.typeParameters.map { TT(it.bounds[0]) } .toTypedArray()
+        val type = _type as? ParameterizedType ?: return rawType?.typeParameters?.map { TT(it.bounds[0]) } ?.toTypedArray() ?: emptyArray()
         return type.actualTypeArguments.map {
             if (it is WildcardType)
                 TT(it.upperBounds[0])
@@ -198,8 +203,8 @@ internal class ParameterizedTypeToken<T>(val trueType: Type) : JVMTypeToken<T>()
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun getRaw(): TypeToken<T> {
-        return ClassTypeToken(rawType as Class<T>)
+    override fun getRaw(): TypeToken<T>? {
+        return rawType?.let { ClassTypeToken(it as Class<T>) }
     }
 
     override fun isGeneric() = true
@@ -250,7 +255,7 @@ internal class ParameterizedTypeToken<T>(val trueType: Type) : JVMTypeToken<T>()
             is ParameterizedType -> (jvmType.rawType as Class<T>)._getClassSuperTT()
             else -> null
         }
-        val implements = rawType.interfaces.map { TT(it) }
+        val implements = rawType?.interfaces?.map { TT(it) } ?: emptyList()
         return (extends?.let { listOf(it) } ?: emptyList()) + implements
     }
 }
