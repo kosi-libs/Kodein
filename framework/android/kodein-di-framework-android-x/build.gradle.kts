@@ -5,7 +5,7 @@ plugins {
 kodeinPublication {
     upload {
         name = "Kodein-DI-Framework-Android-X"
-        description = "Kodein DI Kotlin classes & extensions for the Android Support library"
+        description = "Kodein DI Kotlin classes & extensions for the AndroidX library"
         repo = "Kodein-DI"
     }
 }
