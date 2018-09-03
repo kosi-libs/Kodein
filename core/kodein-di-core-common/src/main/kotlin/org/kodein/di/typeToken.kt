@@ -39,7 +39,7 @@ interface TypeToken<T> {
      * @return the raw type represented by this type.
      *   If this type is not generic, than it's raw type is itself.
      */
-    fun getRaw(): TypeToken<T>
+    fun getRaw(): TypeToken<T>?
 
     /**
      * @return Whether the type represented by this TypeToken is generic.
@@ -79,7 +79,8 @@ interface TypeToken<T> {
         if (this == typeToken)
             return true
 
-        if (getRaw() == typeToken.getRaw()) {
+        val raw = getRaw()
+        if (raw != null && raw == typeToken.getRaw()) {
             val thisParams = getGenericParameters()
             if (thisParams.isEmpty())
                 return true
