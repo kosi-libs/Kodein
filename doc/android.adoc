@@ -307,7 +307,7 @@ class MyActivity : Activity(), KodeinAware {
 .Example: a KodeinAware Activity
 ----
 class MyActivity : Activity(), KodeinAware {
-    override lateinit val kodein: Kodein
+    override lateinit var kodein: Kodein
     override fun onCreate(savedInstanceState: Bundle?) {
         kodein = (applicationContext as KodeinAware).kodein
     }
