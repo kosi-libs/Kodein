@@ -139,7 +139,7 @@ class MyApplication : Application(), KodeinAware {
 }
 ----
 
-You can see everything that this module proposes in the Kodein-Android https://github.com/Kodein-Framework/Kodein-DI/blob/{branch}/framework/kodein-framework-android/src/main/java/org/kodein/android/module.kt[module.kt] file.
+You can see everything that this module proposes in the Kodein-Android https://github.com/Kodein-Framework/Kodein-DI/blob/{branch}/framework/android/kodein-di-framework-android-core/src/main/java/org/kodein/di/android/module.kt[module.kt] file.
 
 [source, kotlin]
 .Example: using kodein to retrieve a LayoutInflater
