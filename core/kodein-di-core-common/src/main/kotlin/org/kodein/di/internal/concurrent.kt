@@ -1,10 +1,6 @@
 package org.kodein.di.internal
 
-inline fun <R> maySynchronized(lock: Any?, block: () -> R): R =
-        if (lock == null)
-            block()
-        else
-            synchronized(lock, block)
+expect inline fun <R> maySynchronized(lock: Any?, block: () -> R): R
 
 /** @suppress */
 inline fun <T: Any, R> synchronizedIfNull(lock: Any?, predicate: () -> T?, ifNotNull: (T) -> R, ifNull: () -> R): R {

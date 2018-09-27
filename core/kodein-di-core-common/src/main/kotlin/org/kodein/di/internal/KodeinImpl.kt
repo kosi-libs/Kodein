@@ -14,12 +14,12 @@ import org.kodein.di.bindings.BindingKodein
 internal open class KodeinImpl internal constructor(private val _container: KodeinContainerImpl) : Kodein {
 
     @Suppress("unused")
-    private constructor(builder: Kodein.MainBuilder, runCallbacks: Boolean) : this(KodeinContainerImpl(builder.containerBuilder, builder.externalSource, runCallbacks))
+    private constructor(builder: KodeinMainBuilderImpl, runCallbacks: Boolean) : this(KodeinContainerImpl(builder.containerBuilder, builder.externalSource, runCallbacks))
 
     constructor(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit) : this(newBuilder(allowSilentOverride, init), true)
 
     companion object {
-        private fun newBuilder(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit) = Kodein.MainBuilder(allowSilentOverride).apply(init)
+        private fun newBuilder(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit) = KodeinMainBuilderImpl(allowSilentOverride).apply(init)
 
         fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Pair<Kodein, () -> Unit> {
             val kodein = KodeinImpl(newBuilder(allowSilentOverride, init), false)

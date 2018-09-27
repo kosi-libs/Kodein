@@ -5,8 +5,8 @@ plugins {
 dependencies {
     compile(project(":core:kodein-di-core-jvm"))
     compile("javax.inject:javax.inject:1")
-    testImplementation(project(":test-utils:test-utils-jvm"))
-    testImplementation(project(":generic:kodein-di-generic-jvm"))
+    testCompile(project(":test-utils:test-utils-jvm"))
+    testCompile(project(":generic:kodein-di-generic-jvm"))
 }
 
 kodeinPublication {

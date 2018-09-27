@@ -1,18 +1,18 @@
 package org.kodein.di.jxinject
 
-import org.kodein.di.DKodein
-import org.kodein.di.Kodein
-import org.kodein.di.bindings.NoScope
-import org.kodein.di.bindings.Singleton
-import org.kodein.di.direct
-import org.kodein.di.erased
+import org.kodein.di.*
+import org.kodein.di.bindings.*
 import org.kodein.di.jxinject.internal.JxInjectorContainer
+import javax.inject.Named
 
 /**
  * Module that must be imported in order to use [JxInjector].
  */
 val jxInjectorModule = Kodein.Module("JX Injector") {
-    Bind() from Singleton(NoScope(), erased(), erased()) { JxInjectorContainer() }
+    Bind() from SetBinding<Any?, JxInjectorContainer.Qualifier>(AnyToken, erased(), erasedSet())
+    jxQualifier(Named::class.java) { it.value }
+
+    Bind() from Singleton(NoScope(), erased(), erased()) { JxInjectorContainer(Instance(erasedSet())) }
 }
 
 /**
@@ -26,10 +26,9 @@ val Kodein.jx: JxInjector get() = JxInjector(direct, direct.Instance(erased(), n
 val DKodein.jx: JxInjector get() = JxInjector(this, Instance(erased(), null))
 
 /** @suppress */
+@Suppress("UNCHECKED_CAST")
 fun <T: Annotation> Kodein.Builder.jxQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
-    onReady {
-        Instance<JxInjectorContainer>(erased(), null).registerQualifier(cls, tagProvider)
-    }
+    Bind(erased<JxInjectorContainer.Qualifier>()).InSet(erasedSet()) with InstanceBinding(erased(), JxInjectorContainer.Qualifier(cls, tagProvider as (Annotation) -> Any))
 }
 
 /**

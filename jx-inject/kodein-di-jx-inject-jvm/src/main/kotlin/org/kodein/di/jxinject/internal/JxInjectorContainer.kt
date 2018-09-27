@@ -8,24 +8,16 @@ import java.lang.reflect.*
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Provider
 
-internal class JxInjectorContainer {
-    private val _qualifiers = HashMap<Class<out Annotation>, (Annotation) -> Any>()
+internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
+    internal class Qualifier(val cls: Class<out Annotation>, val tagProvider: (Annotation) -> Any)
+
+    private val _qualifiers = qualifiers.associate { it.cls to it.tagProvider }
 
     private val _setters = ConcurrentHashMap<Class<*>, List<DKodein.(Any) -> Any>>()
 
     private val _constructors = ConcurrentHashMap<Class<*>, DKodein.() -> Any>()
-
-    init {
-        registerQualifier(Named::class.java) { it.value }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    internal fun <T: Annotation> registerQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
-        _qualifiers[cls] = tagProvider as (Annotation) -> Any
-    }
 
     private fun getTagFromQualifier(el: AnnotatedElement): Any? {
         _qualifiers.forEach {

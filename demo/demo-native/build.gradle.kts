@@ -1,11 +1,7 @@
 plugins {
-    id("konan")
+    id("kotlin-platform-native")
 }
 
-konanArtifacts {
-    program("demo") {
-        libraries {
-            allLibrariesFrom(project(":erased:kodein-di-erased-native"))
-        }
-    }
+dependencies {
+    implementation(project(":erased:kodein-di-erased-native"))
 }

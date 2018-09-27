@@ -3,6 +3,7 @@ package org.kodein.di.bindings
 import org.kodein.di.Kodein
 import org.kodein.di.TypeToken
 import org.kodein.di.UnitToken
+import org.kodein.di.internal.KodeinBuilderImpl
 
 /**
  * Base class for binding set.
@@ -92,6 +93,7 @@ class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _bind
      */
     @Suppress("UNCHECKED_CAST")
     infix fun <C> with(binding: KodeinBinding<in C, *, out T>) {
+        _binder as KodeinBuilderImpl.TypeBinder
         val setKey = Kodein.Key(binding.contextType, binding.argType, _colTypeToken, _binder.tag)
         val setBinding = _binder.containerBuilder.bindingsMap[setKey]?.first() ?: throw IllegalStateException("No set binding to $setKey")
 

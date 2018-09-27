@@ -195,16 +195,9 @@ interface Kodein : KodeinAware {
      * @property containerBuilder Every methods eventually ends up to a call to this builder.
      */
     @KodeinDsl
-    open class Builder internal constructor(
-            private val moduleName: String?,
-            private val prefix: String,
-            private val importedModules: MutableSet<String>,
-            val containerBuilder: KodeinContainer.Builder
-    ) : BindBuilder.WithContext<Any?>, BindBuilder.WithScope<Any?, Nothing?, Any?> {
+    interface Builder : BindBuilder.WithContext<Any?>, BindBuilder.WithScope<Any?, Nothing?, Any?> {
 
-        override val contextType = AnyToken
-
-        override val scope: Scope<Any?, Nothing?, Any?>  = NoScope() // Recreating a new NoScope every-time *on purpose*!
+        val containerBuilder: KodeinContainer.Builder
 
         /**
          * Left part of the type-binding syntax (`bind(type, tag)`).
@@ -214,22 +207,20 @@ interface Kodein : KodeinAware {
          * @property tag The tag that will compose the key to bind.
          * @property overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          */
-        inner class TypeBinder<T : Any> internal constructor(val type: TypeToken<out T>, val tag: Any?, val overrides: Boolean?) {
-            internal val containerBuilder get() = this@Builder.containerBuilder
-
+        interface TypeBinder<T : Any> {
             /**
              * Binds the previously given type and tag to the given binding.
              *
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun <C, A> with(binding: KodeinBinding<in C, in A, out T>) = containerBuilder.bind(Key(binding.contextType, binding.argType, type, tag), binding, moduleName, overrides)
+            infix fun <C, A> with(binding: KodeinBinding<in C, in A, out T>)
         }
 
         /**
          * Left part of the direct-binding syntax (`bind(tag)`).
          */
-        inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) {
+        interface DirectBinder {
             /**
              * Binds the previously given tag to the given binding.
              *
@@ -238,7 +229,7 @@ interface Kodein : KodeinAware {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun <C, A, T: Any> from(binding: KodeinBinding<in C, in A, out T>) = containerBuilder.bind(Key(binding.contextType, binding.argType, binding.createdType, _tag), binding, moduleName, _overrides)
+            infix fun <C, A, T: Any> from(binding: KodeinBinding<in C, in A, out T>)
         }
 
         /**
@@ -247,7 +238,7 @@ interface Kodein : KodeinAware {
          * @property _tag The tag that is being bound.
          * @property _overrides Whether this bind **must**, **may** or **must not** override an existing binding.
          */
-        inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) {
+        interface ConstantBinder {
             /**
              * Binds the previously given tag to the given instance.
              *
@@ -257,7 +248,7 @@ interface Kodein : KodeinAware {
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
             @Suppress("FunctionName")
-            fun <T: Any> With(valueType: TypeToken<out T>, value: T) = Bind(tag = _tag, overrides = _overrides) from InstanceBinding(valueType, value)
+            fun <T: Any> With(valueType: TypeToken<out T>, value: T)
         }
 
         /**
@@ -270,7 +261,7 @@ interface Kodein : KodeinAware {
          * @return The binder: call [TypeBinder.with]) on it to finish the binding syntax and register the binding.
          */
         @Suppress("FunctionName")
-        fun <T : Any> Bind(type: TypeToken<out T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T> = TypeBinder(type, tag, overrides)
+        fun <T : Any> Bind(type: TypeToken<out T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T>
 
         /**
          * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
@@ -280,7 +271,7 @@ interface Kodein : KodeinAware {
          * @return The binder: call [DirectBinder.from]) on it to finish the binding syntax and register the binding.
          */
         @Suppress("FunctionName")
-        fun Bind(tag: Any? = null, overrides: Boolean? = null): DirectBinder = DirectBinder(tag, overrides)
+        fun Bind(tag: Any? = null, overrides: Boolean? = null): DirectBinder
 
         /**
          * Starts a constant binding.
@@ -289,7 +280,7 @@ interface Kodein : KodeinAware {
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          * @return The binder: call `with` on it to finish the binding syntax and register the binding.
          */
-        fun constant(tag: Any, overrides: Boolean? = null) = ConstantBinder(tag, overrides)
+        fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder
 
         /**
          * Imports all bindings defined in the given [Kodein.Module] into this builder's definition.
@@ -302,28 +293,23 @@ interface Kodein : KodeinAware {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun import(module: Module, allowOverride: Boolean = false) {
-            val moduleName = prefix + module.name
-            if (moduleName.isNotEmpty() && moduleName in importedModules) {
-                throw IllegalStateException("Module \"$moduleName\" has already been imported!")
-            }
-            importedModules += moduleName
-            Builder(moduleName, prefix + module.prefix, importedModules, containerBuilder.subBuilder(allowOverride, module.allowSilentOverride)).apply(module.init)
-        }
+        fun import(module: Module, allowOverride: Boolean = false)
 
-        fun importOnce(module: Module, allowOverride: Boolean = false) {
-            if (module.name.isEmpty())
-                throw IllegalStateException("importOnce must be given a named module.")
-            if (module.name !in importedModules)
-                import(module, allowOverride)
-        }
+        /**
+         * Like [import] but checks that will only import each module once.
+         *
+         * If the module has already been imported, nothing happens.
+         *
+         * Careful: this is checked by name. If two modules share the same name, only one will be imported!
+         */
+        fun importOnce(module: Module, allowOverride: Boolean = false)
 
         /**
          * Adds a callback that will be called once the Kodein object is configured and instantiated.
          *
          * @param cb The callback.
          */
-        fun onReady(cb: DKodein.() -> Unit) = containerBuilder.onReady(cb)
+        fun onReady(cb: DKodein.() -> Unit)
     }
 
     /**
@@ -331,12 +317,12 @@ interface Kodein : KodeinAware {
      *
      * @param allowSilentOverride Whether non-explicit overrides is allowed in this builder.
      */
-    class MainBuilder(allowSilentOverride: Boolean) : Builder(null, "", HashSet<String>(), KodeinContainer.Builder(true, allowSilentOverride, HashMap(), ArrayList())) {
+    interface MainBuilder : Builder {
 
         /**
          * The external source is repsonsible for fetching / creating a value when Kodein cannot find a matching binding.
          */
-        var externalSource: ExternalSource? = null
+        var externalSource: ExternalSource?
 
         /**
          * Imports all bindings defined in the given [Kodein] into this builder.
@@ -355,12 +341,7 @@ interface Kodein : KodeinAware {
          * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
          *   OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(kodein: Kodein, allowOverride: Boolean = false, copy: Copy = Copy.NonCached) {
-            val keys = copy.keySet(kodein.container.tree)
-
-            containerBuilder.extend(kodein.container, allowOverride, keys)
-            kodein.container.tree.externalSource?.let { externalSource = it }
-        }
+        fun extend(kodein: Kodein, allowOverride: Boolean = false, copy: Copy = Copy.NonCached)
 
         /**
          * Imports all bindings defined in the given [Kodein] into this builder.
@@ -379,13 +360,7 @@ interface Kodein : KodeinAware {
          * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
          *   OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(dkodein: DKodein, allowOverride: Boolean = false, copy: Copy = Copy.NonCached) {
-            val keys = copy.keySet(dkodein.container.tree)
-
-            containerBuilder.extend(dkodein.container, allowOverride, keys)
-            dkodein.container.tree.externalSource?.let { externalSource = it }
-        }
-
+        fun extend(dkodein: DKodein, allowOverride: Boolean = false, copy: Copy = Copy.NonCached)
     }
 
     /**

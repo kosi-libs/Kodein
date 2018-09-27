@@ -15,7 +15,7 @@ internal class KodeinContainerImpl private constructor(
     /**
      * "Main" constructor that uses the bindings map configured by a [KodeinContainer.Builder].
      */
-    internal constructor(builder: KodeinContainer.Builder, externalSource: ExternalSource?, runCallbacks: Boolean) : this(KodeinTreeImpl(builder.bindingsMap, externalSource)) {
+    internal constructor(builder: KodeinContainerBuilderImpl, externalSource: ExternalSource?, runCallbacks: Boolean) : this(KodeinTreeImpl(builder.bindingsMap, externalSource)) {
         val init: () -> Unit = {
             val direct = DKodeinImpl(this, AnyKodeinContext, null)
             builder.callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }

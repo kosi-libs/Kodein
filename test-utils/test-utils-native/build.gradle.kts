@@ -1,11 +1,5 @@
 plugins {
-    id("konan")
-}
-
-konanArtifacts {
-    library("test-utils") {
-        enableMultiplatform(true)
-    }
+    id("kotlin-platform-native")
 }
 
 dependencies {
