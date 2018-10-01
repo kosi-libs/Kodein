@@ -24,7 +24,7 @@ allprojects {
     }
 
     group = "org.kodein.di"
-    version = "5.2.0"
+    version = "5.3.0"
 }
 
 val travisBuild by extra { System.getenv("TRAVIS") == "true" }

@@ -1,7 +1,7 @@
-<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/Kodein-logo.png" width="700">
+<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/5.3/Kodein-DI-logo.png" width="700">
 
-[![Kotlin 1.2.30](https://img.shields.io/badge/Kotlin-1.2.30-blue.svg)](http://kotlinlang.org)
-[![Konan 0.6.1](https://img.shields.io/badge/Konan-0.6.2-blue.svg)](https://github.com/JetBrains/kotlin-native)
+[![Kotlin 1.2.70](https://img.shields.io/badge/Kotlin-1.2.70-blue.svg)](http://kotlinlang.org)
+[![Konan 0.9.2](https://img.shields.io/badge/Konan-0.9.2-blue.svg)](https://github.com/JetBrains/kotlin-native)
 [![JCenter](https://api.bintray.com/packages/kodein-framework/Kodein-DI/Kodein-DI-Core-JVM/images/download.svg)](https://bintray.com/kodein-framework/Kodein-DI)
 [![Travis](https://travis-ci.org/Kodein-Framework/Kodein-DI.svg?branch=master)](https://travis-ci.org/Kodein-Framework/Kodein-DI/builds)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Kodein-Framework/Kodein-DI/blob/master/LICENSE.txt)
