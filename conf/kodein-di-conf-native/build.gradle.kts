@@ -11,7 +11,8 @@ dependencies {
     testImplementation(project(":erased:kodein-di-erased-native"))
 }
 
-components.named<KotlinNativeMainComponent>("main") {
+components.getByName("main") {
+    this as KotlinNativeMainComponent
     outputKinds.set(listOf(KotlinNativeMainComponent.KLIBRARY))
     targets = kodeinNative.allTargets
 }

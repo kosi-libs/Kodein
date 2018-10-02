@@ -10,7 +10,8 @@ dependencies {
     testImplementation(project(":test-utils:test-utils-native"))
 }
 
-components.named<KotlinNativeMainComponent>("main") {
+components.getByName("main") {
+    this as KotlinNativeMainComponent
     outputKinds.set(listOf(KotlinNativeMainComponent.KLIBRARY))
     targets = kodeinNative.allTargets
 }
