@@ -7,7 +7,7 @@ Salomon BRYS <salomon.brys@gmail.com>
 :version: 5.3.0
 :branch: 5.3
 
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-logo.png[KODEIN, 700, 233]
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-DI-logo.png[KODEIN, 700, 233]
 
 == Introduction
 
@@ -310,7 +310,7 @@ val kodein = Kodein {
 ----
 
 
-==== non-synced singleton
+==== Non-synced singleton
 
 By definition, there can be only one instance of a singleton, which means only one instance can be constructed.
 To achieve this certainty, Kodein synchronizes construction.
