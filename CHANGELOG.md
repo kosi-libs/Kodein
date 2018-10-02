@@ -1,3 +1,18 @@
+#### 5.3.0 (03-10-2018)
+
+- CORE
+  * Introducing non-synced singletons & multitons (can be used with the `sync = false` parameter).
+
+- NATIVE
+  * New `kotlin-platform-native` plugin
+
+- ANDROID
+  * Fixed a memory leak in `AndroidLifecycleScope` (Thanks to Eliezer Graber).
+  * Fixed a crash when binding arrays.
+
+- INTERNALS
+  * Builders are interfaces
+
 
 #### 5.2.0 (20-04-2018)
 

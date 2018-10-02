@@ -310,6 +310,31 @@ val kodein = Kodein {
 ----
 
 
+==== non-synced singleton
+
+By definition, there can be only one instance of a singleton, which means only one instance can be constructed.
+To achieve this certainty, Kodein synchronizes construction.
+This means that, when a singleton instance is requested and not available, Kodein uses a synchronization mutex to ensure that other request to the same type will wait for this instance to be constructed.
+
+While this behaviour is the only way to ensure the singleton's correctness, it is also costly (due to the mutex) and degrades startup performance.
+
+If you need to improve startup performance, _if you know what you are doing_, you can disable this synchronization.
+
+[source,kotlin]
+.Example: creates a DataSource non synced singleton
+----
+val kodein = Kodein {
+    bind<DataSource>() with singleton(sync = false) { SqliteDS.open("path/to/file") }
+}
+----
+
+Using `sync = false` means that:
+
+- There will be no construction synchronicity.
+- There _may_ be multiple instance constructed.
+- Instance will be _reused_ as much as possible.
+
+
 ==== Eager singleton
 
 This is the same as a regular singleton, except that the provided function will be called as soon as the Kodein instance is created and all bindings are defined.
@@ -348,7 +373,6 @@ val kodein = Kodein {
 ----
 
 
-
 === Multiton binding
 
 A multiton can be thought of a "singleton factory": it guarantees to always return the same object given the same argument.
@@ -363,6 +387,18 @@ val kodein = Kodein {
 ----
 
 Just like a factory, a multiton can take multiple (up to 5) arguments.
+
+==== non-synced multiton
+
+Just like a singleton, a multiton synchronization can be disabled:
+
+[source,kotlin]
+.Example: non-synced multiton
+----
+val kodein = Kodein {
+    bind<RandomGenerator>(sync = false) with multiton { max: Int -> SecureRandomGenerator(max) }
+}
+----
 
 
 === Referenced singleton or multiton binding
