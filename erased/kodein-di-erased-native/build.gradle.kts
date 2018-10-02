@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.experimental.internal.KotlinNativeMainComponent
+
 plugins {
     id("kodein-native")
 }
@@ -6,6 +8,11 @@ dependencies {
     expectedBy(project(":erased:kodein-di-erased-common"))
     implementation(project(":core:kodein-di-core-native"))
     testImplementation(project(":test-utils:test-utils-native"))
+}
+
+components.named<KotlinNativeMainComponent>("main") {
+    outputKinds.set(listOf(KotlinNativeMainComponent.KLIBRARY))
+    targets = kodeinNative.allTargets
 }
 
 kodeinPublication {
