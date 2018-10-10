@@ -1,6 +1,5 @@
 plugins {
     id("kodein-jvm")
-    id("kodein-versions")
 }
 
 dependencies {
