@@ -1,10 +1,10 @@
 
 rootProject.name = "Kodein-DI"
 
-//enableFeaturePreview("GRADLE_METADATA")
+enableFeaturePreview("GRADLE_METADATA")
 
 include(
-        ":kodein-core",
+        ":kodein-di-core",
 //        ":core:kodein-di-core-common",
 //        ":core:kodein-di-core-jvm",
 //        ":core:kodein-di-core-js",
@@ -18,7 +18,7 @@ include(
 
 //        ":generic:kodein-di-generic-jvm",
 
-        ":kodein-erased",
+        ":kodein-di-erased",
 //        ":erased:kodein-di-erased-common",
 //        ":erased:kodein-di-erased-jvm",
 //        ":erased:kodein-di-erased-js",
@@ -31,9 +31,9 @@ include(
 
 //        ":jx-inject:kodein-di-jx-inject-jvm",
 
-//        ":framework:android:kodein-di-framework-android-core",
-//        ":framework:android:kodein-di-framework-android-support",
-//        ":framework:android:kodein-di-framework-android-x",
+        ":framework:android:kodein-di-framework-android-core",
+        ":framework:android:kodein-di-framework-android-support",
+        ":framework:android:kodein-di-framework-android-x",
 
 //        ":demo:demo-android",
 //        ":demo:demo-js",
