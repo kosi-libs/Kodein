@@ -839,23 +839,31 @@ Dependency recursion:
     }
 
     @Test fun test16_04_SubScopedSingleton() {
-        val sessionScope = object : SimpleScope<String, Any?> {
+        data class Session(val id: String)
+        data class Request(val session: Session)
+
+        val sessionScope = object : SimpleScope<Session, Any?> {
             val registries = HashMap<String, ScopeRegistry<in Any?>>()
-            override fun getRegistry(receiver: Any?, context: String) = registries.getOrPut(context, ::MultiItemScopeRegistry)
+            override fun getRegistry(receiver: Any?, context: Session) = registries.getOrPut(context.id, ::MultiItemScopeRegistry)
         }
 
-        val requestScope = SimpleSubScope<String, Any?>(sessionScope)
+        val requestScope = object : SubScope<Request, Session, Any?>(sessionScope) {
+            override fun getBindingContext(envContext: Request) = envContext.session
+        }
 
         val kodein = Kodein {
             bind<CloseableData>() with scoped(requestScope).singleton { CloseableData() }
         }
 
-        val a: CloseableData by kodein.on("salut").instance()
-        val b: CloseableData by kodein.on("salut").instance()
+        val session = Session("sid")
+        val request = Request(session)
+
+        val a: CloseableData by kodein.on(request).instance()
+        val b: CloseableData by kodein.on(request).instance()
         assertSame(a, b)
         assertFalse(a.closed)
-        sessionScope.getRegistry(null, "salut").clear()
-        val c: CloseableData by kodein.on("salut").instance()
+        sessionScope.getRegistry(null, session).clear()
+        val c: CloseableData by kodein.on(request).instance()
 
         assertNotSame(a, c)
         assertTrue(a.closed)

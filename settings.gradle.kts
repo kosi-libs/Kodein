@@ -42,5 +42,3 @@ if (excludeAndroid != "true") {
             ":demo:demo-android"
     )
 }
-
-println("COUCOU: $excludeAndroid")
