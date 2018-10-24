@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION", "unused")
+@file:Suppress("unused")
 
 package org.kodein.di.test
 
@@ -820,7 +820,7 @@ Dependency recursion:
 
     @Test fun test16_03_ScopeColeableSingleton() {
 
-        val myScope = BasicScope(SingleItemScopeRegistry())
+        val myScope = UnboundedScope(SingleItemScopeRegistry())
 
         val kodein = Kodein {
             bind<CloseableData>() with scoped(myScope).singleton { CloseableData() }
@@ -829,8 +829,33 @@ Dependency recursion:
         val a: CloseableData by kodein.instance()
         val b: CloseableData by kodein.instance()
         assertSame(a, b)
+        assertFalse(a.closed)
         myScope.registry.clear()
         val c: CloseableData by kodein.instance()
+
+        assertNotSame(a, c)
+        assertTrue(a.closed)
+        assertFalse(c.closed)
+    }
+
+    @Test fun test16_04_SubScopedSingleton() {
+        val sessionScope = object : SimpleScope<String, Any?> {
+            val registries = HashMap<String, ScopeRegistry<in Any?>>()
+            override fun getRegistry(receiver: Any?, context: String) = registries.getOrPut(context, ::MultiItemScopeRegistry)
+        }
+
+        val requestScope = SimpleSubScope<String, Any?>(sessionScope)
+
+        val kodein = Kodein {
+            bind<CloseableData>() with scoped(requestScope).singleton { CloseableData() }
+        }
+
+        val a: CloseableData by kodein.on("salut").instance()
+        val b: CloseableData by kodein.on("salut").instance()
+        assertSame(a, b)
+        assertFalse(a.closed)
+        sessionScope.getRegistry(null, "salut").clear()
+        val c: CloseableData by kodein.on("salut").instance()
 
         assertNotSame(a, c)
         assertTrue(a.closed)
@@ -1006,7 +1031,7 @@ Dependency recursion:
     }
 
     @Test fun test23_03_MultitonWithSingleItemScope() {
-        val myScope = BasicScope(SingleItemScopeRegistry())
+        val myScope = UnboundedScope(SingleItemScopeRegistry())
 
         val kodein = Kodein {
             bind<CloseableData>() with scoped(myScope).multiton { name: String -> CloseableData(name) }

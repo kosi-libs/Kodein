@@ -12,15 +12,12 @@ kodein {
 
             test.dependencies {
                 implementation(project(":test-utils"))
+                implementation(project(":kodein-di-erased"))
             }
         }
 
         add(kodeinTargets.jvm) {
             target.setCompileClasspath()
-
-            test.dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-reflect")
-            }
         }
 
         add(kodeinTargets.js)
@@ -31,6 +28,6 @@ kodein {
 }
 
 kodeinUpload {
-    name = "Kodein-DI-Erased"
-    description = "KODEIN Dependency Injection using erased types by default"
+    name = "Kodein-DI-Conf"
+    description = "KODEIN Dependency Injection that can be configured / mutated"
 }

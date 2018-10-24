@@ -3,10 +3,14 @@ package org.kodein.di.bindings
 import org.kodein.di.Volatile
 import org.kodein.di.internal.*
 
+interface ScopeCloseable {
+    fun close()
+}
+
 /**
  * A registry is responsible managing references inside a scope.
  */
-interface ScopeRegistry<A> {
+sealed class ScopeRegistry<A> : ScopeCloseable {
     interface Key<out A> {
         val arg: A
     }
@@ -27,25 +31,23 @@ interface ScopeRegistry<A> {
      * @param creator A function that creates a reference that will be stored in the registry.
      * @return A value associated to the [key], whether created by [creator] or retrieved by [Reference.next].
      */
-    fun getOrCreate(key: ScopeRegistry.Key<A>, sync: Boolean = true, creator: () -> Reference<Any>): Any
+    abstract fun getOrCreate(key: ScopeRegistry.Key<A>, sync: Boolean = true, creator: () -> Reference<Any>): Any
 
-    fun getOrNull(key: ScopeRegistry.Key<A>): (() -> Any?)?
+    abstract fun getOrNull(key: ScopeRegistry.Key<A>): (() -> Any?)?
 
-    fun values(): Iterable<Pair<ScopeRegistry.Key<A>, () -> Any?>>
+    abstract fun values(): Iterable<Pair<ScopeRegistry.Key<A>, () -> Any?>>
 
-    fun remove(key: ScopeRegistry.Key<A>)
+    abstract fun remove(key: ScopeRegistry.Key<A>)
 
-    fun clear()
-}
+    abstract fun clear()
 
-interface ScopeCloseable {
-    fun close()
+    final override fun close() = clear()
 }
 
 /**
  * Standard [ScopeRegistry] implementation.
  */
-class MultiItemScopeRegistry<A> : ScopeRegistry<A> {
+class MultiItemScopeRegistry<A> : ScopeRegistry<A>() {
 
     private val _cache = newConcurrentMap<ScopeRegistry.Key<A>, () -> Any?>()
 
@@ -102,7 +104,7 @@ class MultiItemScopeRegistry<A> : ScopeRegistry<A> {
  *
  * If the key changes, the held item will be replaced.
  */
-class SingleItemScopeRegistry<A> : ScopeRegistry<A> {
+class SingleItemScopeRegistry<A> : ScopeRegistry<A>() {
     private val _lock = Any()
     @Volatile private var _pair: Pair<ScopeRegistry.Key<A>, () -> Any?>? = null
 
@@ -165,11 +167,14 @@ class SingleItemScopeRegistry<A> : ScopeRegistry<A> {
     }
 }
 
+@Deprecated("Use directly MultiItemScopeRegistry or SingleItemScopeRegistry constructors")
 enum class ScopeRepositoryType {
     MULTI_ITEM,
     SINGLE_ITEM
 }
 
+@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
+@Deprecated("Use directly MultiItemScopeRegistry or SingleItemScopeRegistry constructors")
 fun <A> newScopeRegistry(type: ScopeRepositoryType) = when (type) {
     ScopeRepositoryType.MULTI_ITEM -> MultiItemScopeRegistry<A>()
     ScopeRepositoryType.SINGLE_ITEM -> SingleItemScopeRegistry<A>()
@@ -213,9 +218,42 @@ interface SimpleScope<C, in A> : Scope<C, C, A> {
 
 }
 
-class BasicScope(val registry: ScopeRegistry<in Any?>) : SimpleScope<Any?, Any?> {
+/**
+ * [Scope] that is not bound to a context (always lives).
+ *
+ * This is kind of equivalent to having no scope at all, except that you can call [clear].
+ */
+class UnboundedScope(val registry: ScopeRegistry<in Any?> = MultiItemScopeRegistry()) : SimpleScope<Any?, Any?>, ScopeCloseable {
     override fun getRegistry(receiver: Any?, context: Any?) = registry
+
+    override fun close() = registry.clear()
 }
+
+// Deprecated since 5.4.0
+@Deprecated("BasicScope has been renamed UnboundedScope", ReplaceWith("UnboundedScope"))
+typealias BasicScope = UnboundedScope
+
+abstract class SubScope<in EC, BC, in A>(val parentScope: Scope<BC, Any?, Any?>) : Scope<EC, BC, A> {
+
+    private data class Key<C>(override val arg: C) : ScopeRegistry.Key<Any?>
+
+    override fun getRegistry(receiver: Any?, context: EC): ScopeRegistry<in A> {
+        val bindingContext = getBindingContext(context)
+        val parentRegistry = parentScope.getRegistry(receiver, bindingContext)
+        @Suppress("UNCHECKED_CAST")
+        return parentRegistry.getOrCreate(Key(context), false) { SingletonReference.make { newRegistry() } } as ScopeRegistry<in A>
+    }
+
+    fun removeFromParent(receiver: Any?, context: EC) {
+        val bindingContext = getBindingContext(context)
+        val parentRegistry = parentScope.getRegistry(receiver, bindingContext)
+        parentRegistry.remove(Key(context))
+    }
+
+    open fun newRegistry(): ScopeRegistry<in A> = MultiItemScopeRegistry()
+}
+
+open class SimpleSubScope<C, in A>(parentScope: Scope<C, Any?, Any?>) : SimpleScope<C, A>, SubScope<C, C, A>(parentScope)
 
 /**
  * Default [Scope]: will always return the same registry, no matter the context.

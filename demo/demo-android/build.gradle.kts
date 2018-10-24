@@ -1,18 +1,24 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kodein-versions")
 }
 
 android {
-    compileSdkVersion(27)
-    buildToolsVersion("27.0.3")
+    compileSdkVersion(28)
 
     defaultConfig {
         applicationId = "kodein.demo"
         minSdkVersion(15)
+        targetSdkVersion(28)
         versionCode = 1
         versionName = "1.0"
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        }
     }
 
     dexOptions {
@@ -28,8 +34,8 @@ android {
 }
 
 dependencies {
-  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kodeinVersions.kotlin}")
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.0-rc-190")
 
-  implementation(project(":generic:kodein-di-generic-jvm"))
-  implementation(project(":framework:android:kodein-di-framework-android-core"))
+    compile(project(":kodein-di-generic-jvm"))
+    compile(project(":framework:android:kodein-di-framework-android-core"))
 }

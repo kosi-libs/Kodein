@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package org.kodein.di.android
 
 import android.app.Dialog

@@ -25,6 +25,6 @@ class ElectricHeater : Heater {
     override val isHot: Boolean get() = heating
 }
 
-val electricHeaterModule = Kodein.Module {
+val electricHeaterModule = Kodein.Module("electricHeater") {
     bind<Heater>() with provider { ElectricHeater() }
 }

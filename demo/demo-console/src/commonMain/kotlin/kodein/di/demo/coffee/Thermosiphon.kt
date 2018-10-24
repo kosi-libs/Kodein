@@ -19,6 +19,6 @@ class Thermosiphon(private val heater: Heater) : Pump {
     }
 }
 
-val thermosiphonModule = Kodein.Module {
+val thermosiphonModule = Kodein.Module("thermosiphon") {
     bind<Pump>() with singleton { Thermosiphon(instance()) }
 }
