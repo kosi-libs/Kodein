@@ -175,15 +175,15 @@ interface Kodein : KodeinAware {
          * @param EC The scope's Environment Context.
          * @param BC The scope's Binding Context.
          */
-        interface WithScope<EC, out BC, in A> : BindBuilder<EC> {
+        interface WithScope<EC, out BC> : BindBuilder<EC> {
 
             /**
              * The scope that will be used by all bindings that are defined in this DSL context.
              */
-            val scope: Scope<EC, BC, A>
+            val scope: Scope<EC, BC>
 
             /** @suppress */
-            class Impl<EC, out BC, in A>(override val contextType: TypeToken<EC>, override val scope: Scope<EC, BC, A>) : WithScope<EC, BC, A>
+            class Impl<EC, out BC>(override val contextType: TypeToken<EC>, override val scope: Scope<EC, BC>) : WithScope<EC, BC>
         }
     }
 
@@ -195,7 +195,7 @@ interface Kodein : KodeinAware {
      * @property containerBuilder Every methods eventually ends up to a call to this builder.
      */
     @KodeinDsl
-    interface Builder : BindBuilder.WithContext<Any?>, BindBuilder.WithScope<Any?, Nothing?, Any?> {
+    interface Builder : BindBuilder.WithContext<Any?>, BindBuilder.WithScope<Any?, Nothing?> {
 
         val containerBuilder: KodeinContainer.Builder
 

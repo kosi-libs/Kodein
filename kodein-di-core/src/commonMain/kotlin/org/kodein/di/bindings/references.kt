@@ -6,7 +6,7 @@ package org.kodein.di.bindings
  *  @param current The value of the reference at the time of reference creation.
  *  @param next A function that returns the value of the reference, or null if the reference has become invalid, when later needed.
  */
-data class Reference<out T>(
+data class Reference<out T: Any>(
     val current: T,
     val next: () -> T?
 )

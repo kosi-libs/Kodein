@@ -802,8 +802,8 @@ Dependency recursion:
         assertTrue(created)
     }
 
-    object test15Scope : Scope<Any?, Nothing?, Any?> {
-        private val registry = MultiItemScopeRegistry<Any?>()
+    object test15Scope : Scope<Any?, Nothing?> {
+        private val registry = StandardScopeRegistry()
         override fun getBindingContext(envContext: Any?): Nothing? = null
         override fun getRegistry(receiver: Any?, context: Any?) = registry
     }
@@ -874,8 +874,8 @@ Dependency recursion:
     }
 
     @Test fun test16_00_AnyScopeSingleton() {
-        val registry = MultiItemScopeRegistry<Any?>()
-        val myScope = object : Scope<Any?, Nothing?, Any?> {
+        val registry = StandardScopeRegistry()
+        val myScope = object : Scope<Any?, Nothing?> {
             override fun getBindingContext(envContext: Any?): Nothing? = null
             override fun getRegistry(receiver: Any?, context: Any?) = registry
         }
@@ -899,8 +899,8 @@ Dependency recursion:
 
     @Test fun test16_01_ScopeSingleton() {
 
-        val registries = mapOf("a" to SingleItemScopeRegistry<Any?>(), "b" to SingleItemScopeRegistry<Any?>())
-        val myScope = object : SimpleScope<String, Any?> {
+        val registries = mapOf("a" to SingleItemScopeRegistry(), "b" to SingleItemScopeRegistry())
+        val myScope = object : SimpleScope<String> {
             override fun getRegistry(receiver: Any?, context: String) = registries[context]!!
         }
         val kodein = Kodein {
@@ -968,12 +968,12 @@ Dependency recursion:
         data class Session(val id: String)
         data class Request(val session: Session)
 
-        val sessionScope = object : SimpleScope<Session, Any?> {
-            val registries = HashMap<String, ScopeRegistry<in Any?>>()
-            override fun getRegistry(receiver: Any?, context: Session) = registries.getOrPut(context.id, ::MultiItemScopeRegistry)
+        val sessionScope = object : SimpleScope<Session> {
+            val registries = HashMap<String, ScopeRegistry>()
+            override fun getRegistry(receiver: Any?, context: Session) = registries.getOrPut(context.id, ::StandardScopeRegistry)
         }
 
-        val requestScope = object : SubScope<Request, Session, Any?>(sessionScope) {
+        val requestScope = object : SubScope<Request, Session>(sessionScope) {
             override fun getBindingContext(envContext: Request) = envContext.session
         }
 

@@ -33,7 +33,7 @@ Kodein is a very useful dependency injection / retrieval container, it is very e
 
 === Example
 
-Kodein makes it very easy to bind a type to a scope:
+Kodein makes it very easy to bind a type:
 
 [source,kotlin]
 .Example bindings:
@@ -679,6 +679,10 @@ Kodein does not provide scopes by default, but:
 ====
 
 Scopes are derived from the context variable. They allow a singleton or multiton objects to exist multiple times in different contexts. +
+They are of type `Scope<EC, BC, A>` where:
+
+- EC is the context provided by
+
 Think, for example, of a session object inside a web server.
 There can be only one Session per Request, so we can say that a Session is a singleton inside a Scope defined by a Request.
 Therefore, the provided function will be called *once per context*.
@@ -692,15 +696,15 @@ val kodein = Kodein {
 ----
 <1> note that `requestScope` does not really exist, it is an example.
 
-In this example, `requestScope` is of type `Scope<Request, Request>`, so to access this binding, the user will have to explicitly define a `Request` context.
+In this example, `requestScope` is of type `Scope<Request, *, *>`, so to access this binding, the user will have to explicitly define a `Request` context.
 
 
 ==== Automatic scopes
 
-Some scopes are of type `Scope<Any?, *, An?>`.
-Because the default context is of type `Any?`, these scopes need no explicit context, but are capable of finding the context by themselves (usually from a static env).
+Some scopes are of type `Scope<Any?, *, *>`.
+Because the default context is of type `Any?`, these scopes need no explicit context, but are capable of finding the context by themselves (usually from a static environment).
 
-In the previous example, `requestScope` could also be of type `Scope<Any?, Request, An?>` (`Any?` being the request provided by the user to Kodein, `Request` being the context provided by Kodein to the binding function).
+In the previous example, `requestScope` could also be of type `Scope<Any?, Request, Any?>` (`Any?` being the request provided by the user to Kodein, `Request` being the context provided by Kodein to the binding function).
 The difference being that the user would *not* have to define an explicit context.
 
 [TIP]
