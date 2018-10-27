@@ -750,7 +750,7 @@ Dependency recursion:
         val registry = StandardScopeRegistry()
         val myScope = object : Scope<Any?, Nothing?> {
             override fun getBindingContext(envContext: Any?): Nothing? = null
-            override fun getRegistry(receiver: Any?, context: Any?) = registry
+            override fun getRegistry(context: Any?) = registry
         }
         val kodein = Kodein {
             bind<Person>() with scoped(myScope).singleton { Person() }
@@ -774,7 +774,7 @@ Dependency recursion:
 
         val registries = mapOf("a" to SingleItemScopeRegistry(), "b" to SingleItemScopeRegistry())
         val myScope = object : SimpleScope<String> {
-            override fun getRegistry(receiver: Any?, context: String) = registries[context]!!
+            override fun getRegistry(context: String) = registries[context]!!
         }
         val kodein = Kodein {
             bind<Person>() with scoped(myScope).singleton { Person() }
@@ -844,7 +844,7 @@ Dependency recursion:
 
         val sessionScope = object : SimpleScope<Session> {
             val registries = HashMap<String, ScopeRegistry>()
-            override fun getRegistry(receiver: Any?, context: Session) = registries.getOrPut(context.id, ::StandardScopeRegistry)
+            override fun getRegistry(context: Session) = registries.getOrPut(context.id, ::StandardScopeRegistry)
         }
 
         val requestScope = object : SubScope<Request, Session>(sessionScope) {
@@ -862,12 +862,36 @@ Dependency recursion:
         val b: CloseableData by kodein.on(request).instance()
         assertSame(a, b)
         assertFalse(a.closed)
-        sessionScope.getRegistry(null, session).clear()
+        sessionScope.getRegistry(session).clear()
         val c: CloseableData by kodein.on(request).instance()
 
         assertNotSame(a, c)
         assertTrue(a.closed)
         assertFalse(c.closed)
+    }
+
+    class Test16_05(override val kodein: Kodein, val name: String) : KodeinAware {
+        val registry = StandardScopeRegistry()
+        val person1: Person by instance()
+        val person2: Person by instance()
+    }
+
+    @Test fun test16_05_ReceiverAsScopeSingleton() {
+        val testScope = object : SimpleScope<Test16_05> {
+            override fun getRegistry(context: Test16_05) = context.registry
+        }
+
+        val kodein = Kodein {
+            bind() from scoped(testScope).singleton { Person(context.name) }
+        }
+
+        val test1 = Test16_05(kodein, "one")
+        assertSame(test1.person1, test1.person2)
+        assertEquals("one", test1.person1.name)
+
+        val test2 = Test16_05(kodein, "two")
+        assertNotSame(test1.person1, test2.person1)
+        assertEquals("two", test2.person1.name)
     }
 
     @Test fun test17_00_ExplicitOverride() {
@@ -1404,22 +1428,22 @@ Dependency recursion:
         val name: String by instance()
     }
 
-    class Test_34_D(dkodein: DKodein) : DKodeinAware {
-        override val dkodein: DKodein = dkodein.on(receiver = this)
-        val name: String = instance()
-    }
-
-    @Test fun test34_00_Receiver() {
-        val kodein = Kodein {
-            bind<String>() with provider { if (receiver == null) "null" else receiver!!::class.simpleName!! }
-        }
-
-        val test = Test_34(kodein)
-        assertEquals("Test_34", test.name)
-
-        val testD = Test_34_D(kodein.direct)
-        assertEquals("Test_34_D", testD.name)
-    }
+//    class Test_34_D(dkodein: DKodein) : DKodeinAware {
+//        override val dkodein: DKodein = dkodein.on(receiver = this)
+//        val name: String = instance()
+//    }
+//
+//    @Test fun test34_00_Receiver() {
+//        val kodein = Kodein {
+//            bind<String>() with provider { if (receiver == null) "null" else receiver!!::class.simpleName!! }
+//        }
+//
+//        val test = Test_34(kodein)
+//        assertEquals("Test_34", test.name)
+//
+//        val testD = Test_34_D(kodein.direct)
+//        assertEquals("Test_34_D", testD.name)
+//    }
 
     @Test fun test35_00_SearchTagged() {
         val kodein = Kodein {
@@ -1437,7 +1461,7 @@ Dependency recursion:
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            kodein.container.factory(key as Kodein.Key<Any?, Any?, Any>, null, null).invoke(Unit)
+            kodein.container.factory(key as Kodein.Key<Any?, Any?, Any>, null).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)
@@ -1460,7 +1484,7 @@ Dependency recursion:
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            kodein.container.factory(key as Kodein.Key<Any?, Unit, Any>, null, null).invoke(Unit)
+            kodein.container.factory(key as Kodein.Key<Any?, Unit, Any>, null).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)
@@ -1483,7 +1507,7 @@ Dependency recursion:
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            kodein.container.factory(key as Kodein.Key<Any?, Any?, Any>, null, null).invoke(Unit)
+            kodein.container.factory(key as Kodein.Key<Any?, Any?, Any>, null).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)

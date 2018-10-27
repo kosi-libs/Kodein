@@ -24,13 +24,12 @@ interface KodeinContainer {
      * @param T The key return type.
      * @param key The key to look for.
      * @param context The context to pass to the binding.
-     * @param receiver The object that shall receive the value.
      * @param overrideLevel 0 if looking for a regular binding, 1 or more if looking for a binding that has been overridden.
      * @return The found factory.
      * @throws Kodein.NotFoundException If no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C, A, T: Any> factory(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int = 0): (A) -> T
+    fun <C, A, T: Any> factory(key: Kodein.Key<C, A, T>, context: C, overrideLevel: Int = 0): (A) -> T
 
     /**
      * Retrieve a factory for the given key, or null if none is found.
@@ -40,12 +39,11 @@ interface KodeinContainer {
      * @param T The key return type.
      * @param key The key to look for.
      * @param context The context to pass to the binding.
-     * @param receiver The object that shall receive the value.
      * @param overrideLevel 0 if looking for the regular binding, 1 or more if looking for a binding that has been overridden.
      * @return The found factory, or null if no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C, A, T: Any> factoryOrNull(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int = 0): ((A) -> T)?
+    fun <C, A, T: Any> factoryOrNull(key: Kodein.Key<C, A, T>, context: C, overrideLevel: Int = 0): ((A) -> T)?
 
     /**
      * Retrieve all factories that match the given key.
@@ -55,13 +53,12 @@ interface KodeinContainer {
      * @param T The key return type.
      * @param key The key to look for.
      * @param context The context to pass to the bindings.
-     * @param receiver The object that shall receive the values.
      * @param overrideLevel 0 if looking for regular bindings, 1 or more if looking for bindings that have been overridden.
      * @return A list of matching factories.
      * @throws Kodein.NotFoundException If no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C, A, T: Any> allFactories(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int = 0): List<(A) -> T>
+    fun <C, A, T: Any> allFactories(key: Kodein.Key<C, A, T>, context: C, overrideLevel: Int = 0): List<(A) -> T>
 
     /**
      * Retrieve a provider for the given key.
@@ -70,14 +67,13 @@ interface KodeinContainer {
      * @param T The key return type.
      * @param key The key to look for.
      * @param context The context to pass to the binding.
-     * @param receiver The object that shall receive the value.
      * @param overrideLevel 0 if looking for the regular binding, 1 or more if looking for a binding that has been overridden.
      * @return The found provider.
      * @throws Kodein.NotFoundException If no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <C, T: Any> provider(key: Kodein.Key<C, Unit, T>, context: C, receiver: Any?, overrideLevel: Int = 0): () -> T =
-            factory(key, context, receiver).toProvider { Unit }
+    fun <C, T: Any> provider(key: Kodein.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): () -> T =
+            factory(key, context).toProvider { Unit }
 
     /**
      * Retrieve a provider for the given key, or null if none is found.
@@ -86,13 +82,12 @@ interface KodeinContainer {
      * @param T The key return type.
      * @param key The key to look for.
      * @param context The context to pass to the binding.
-     * @param receiver The object that shall receive the value.
      * @param overrideLevel 0 if looking for the regular binding, 1 or more if looking for a binding that has been overridden.
      * @return The found provider, or null if no provider was found.
      * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <C, T: Any> providerOrNull(key: Kodein.Key<C, Unit, T>, context: C, receiver: Any?, overrideLevel: Int = 0): (() -> T)? =
-            factoryOrNull(key, context, receiver)?.toProvider { Unit }
+    fun <C, T: Any> providerOrNull(key: Kodein.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): (() -> T)? =
+            factoryOrNull(key, context)?.toProvider { Unit }
 
     /**
      * Retrieve all providers that match the given key.
@@ -101,14 +96,13 @@ interface KodeinContainer {
      * @param T The key return type.
      * @param key The key to look for.
      * @param context The context to pass to the bindings.
-     * @param receiver The object that shall receive the values.
      * @param overrideLevel 0 if looking for regular bindings, 1 or more if looking for bindings that have been overridden.
      * @return A list of matching providers.
      * @throws Kodein.NotFoundException If no factory was found.
      * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C, T: Any> allProviders(key: Kodein.Key<C, Unit, T>, context: C, receiver: Any?, overrideLevel: Int = 0): List<() -> T> =
-            allFactories(key, context, receiver).map { it.toProvider { Unit } }
+    fun <C, T: Any> allProviders(key: Kodein.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): List<() -> T> =
+            allFactories(key, context).map { it.toProvider { Unit } }
 
     /**
      * This is where you configure the bindings.

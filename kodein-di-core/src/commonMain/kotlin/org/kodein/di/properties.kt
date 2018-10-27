@@ -34,14 +34,18 @@ interface LazyDelegate<out V> {
  *
  * In essence, the Kodein object is accessed only upon retrieving.
  */
-class KodeinProperty<out V>(internal val trigger: KodeinTrigger?, @PublishedApi internal val get: (Any?) -> V) : LazyDelegate<V> {
+class KodeinProperty<out V>(internal val trigger: KodeinTrigger?, val originalContext: KodeinContext<*>, @PublishedApi internal val get: (KodeinContext<*>, Boolean) -> V) : LazyDelegate<V> {
 
-    override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy { get(receiver) } .also { trigger?.properties?.add(it) }
+    override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy {
+        @Suppress("UNCHECKED_CAST")
+        val context = if (receiver != null && originalContext === AnyKodeinContext) KodeinContext(TTOf(receiver) as TypeToken<in Any>, receiver) else originalContext
+        get(context, true) } .also { trigger?.properties?.add(it)
+    }
 
 }
 
 class KodeinPropertyMap<in I, out O>(private val base: KodeinProperty<I>, private val map: (I) -> O) : LazyDelegate<O> {
 
-    override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<O> = base.provideDelegate(receiver, prop).let { lazy { map(it.value) } } .also { base.trigger?.properties?.add(it) }
+    override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<O> = lazy { map(base.provideDelegate(receiver, prop).value) }.also { base.trigger?.properties?.add(it) }
 
 }

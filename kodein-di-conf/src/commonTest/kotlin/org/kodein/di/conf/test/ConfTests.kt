@@ -2,6 +2,7 @@
 
 package org.kodein.di.conf.test
 
+import org.kodein.di.AnyKodeinContext
 import org.kodein.di.Kodein
 import org.kodein.di.conf.ConfigurableKodein
 import org.kodein.di.conf.KodeinGlobalAware

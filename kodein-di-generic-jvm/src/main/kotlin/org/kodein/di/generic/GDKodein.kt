@@ -350,13 +350,4 @@ inline fun <A, reified T : Any> DKodeinAware.allInstances(tag: Any? = null, arg:
  * @param context The new context for the new DKodein.
  * @param receiver The new receiver for the new DKodein.
  */
-inline fun <reified C> DKodeinAware.on(context: C, receiver: Any? = DKodeinBase.SAME_RECEIVER) = dkodein.On(kcontext(context), receiver)
-
-/**
- * Returns a `DKodein` with its receiver changed.
- *
- * Can only be used with a named parameter: `dkodein.on(receiver = this)`
- *
- * @param receiver The new receiver for the new DKodein.
- */
-fun DKodeinAware.on(@Suppress("UNUSED_PARAMETER") _0: Nothing? = null, receiver: Any?) = dkodein.On(DKodeinBase.SAME_CONTEXT, receiver)
+inline fun <reified C> DKodeinAware.on(context: C) = dkodein.On(kcontext(context))

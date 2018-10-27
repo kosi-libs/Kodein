@@ -59,4 +59,4 @@ fun <T: Any> TT(cls: JsClass<T>): TypeToken<T> = JSTypeToken(cls)
  */
 fun <T: Any> TT(cls: KClass<T>): TypeToken<T> = TT(cls.js)
 
-actual fun <T: Any> TTOf(obj: T): TypeToken<out T> = JSTypeToken(obj::class.js)
+actual fun <T: Any> TTOf(obj: T): TypeToken<out T> = JSTypeToken<T>(obj::class.js)

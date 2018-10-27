@@ -200,12 +200,12 @@ interface Scope<in EC, out BC> {
 
     /**
      * Get a registry for a given context.
-     * Should always return the same registry for the same tuple receiver / envContext / bindContext.
+     * Should always return the same registry for the same tuple envContext / bindContext.
      *
      * @param context The context associated with the returned registry.
      * @return The registry associated with the given context.
      */
-    fun getRegistry(receiver: Any?, context: EC): ScopeRegistry
+    fun getRegistry(context: EC): ScopeRegistry
 }
 
 /**
@@ -225,7 +225,7 @@ interface SimpleScope<C> : Scope<C, C> {
  * This is kind of equivalent to having no scope at all, except that you can call [clear].
  */
 class UnboundedScope(val registry: ScopeRegistry = StandardScopeRegistry()) : SimpleScope<Any?>, ScopeCloseable {
-    override fun getRegistry(receiver: Any?, context: Any?) = registry
+    override fun getRegistry(context: Any?) = registry
 
     override fun close() = registry.clear()
 }
@@ -238,16 +238,16 @@ abstract class SubScope<in EC, BC>(val parentScope: Scope<BC, Any?>) : Scope<EC,
 
     private data class Key<C>(val context: C)
 
-    override fun getRegistry(receiver: Any?, context: EC): ScopeRegistry {
+    override fun getRegistry(context: EC): ScopeRegistry {
         val bindingContext = getBindingContext(context)
-        val parentRegistry = parentScope.getRegistry(receiver, bindingContext)
+        val parentRegistry = parentScope.getRegistry(bindingContext)
         @Suppress("UNCHECKED_CAST")
         return parentRegistry.getOrCreate(Key(context), false) { SingletonReference.make { newRegistry() } } as ScopeRegistry
     }
 
-    fun removeFromParent(receiver: Any?, context: EC) {
+    fun removeFromParent(context: EC) {
         val bindingContext = getBindingContext(context)
-        val parentRegistry = parentScope.getRegistry(receiver, bindingContext)
+        val parentRegistry = parentScope.getRegistry(bindingContext)
         parentRegistry.remove(Key(context))
     }
 
@@ -265,5 +265,5 @@ class NoScope: Scope<Any?, Nothing?> {
 
     private val _registry = StandardScopeRegistry()
 
-    override fun getRegistry(receiver: Any?, context: Any?) = _registry
+    override fun getRegistry(context: Any?) = _registry
 }

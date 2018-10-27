@@ -102,7 +102,7 @@ class ErasedJvmTests {
     object test15Scope : Scope<Any?, Nothing?> {
         private val registry = StandardScopeRegistry()
         override fun getBindingContext(envContext: Any?) = null
-        override fun getRegistry(receiver: Any?, context: Any?) = registry
+        override fun getRegistry(context: Any?) = registry
     }
 
     // Only the JVM supports precise description

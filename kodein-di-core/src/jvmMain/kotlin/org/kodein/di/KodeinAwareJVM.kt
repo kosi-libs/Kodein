@@ -17,7 +17,7 @@ private val KodeinContext<*>.anyType get() = type as TypeToken<in Any?>
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 fun <A, T : Any> KodeinAware.AllFactories(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): KodeinProperty<List<(A) -> T>> =
-        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.allFactories(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver) }
+        KodeinProperty(kodeinTrigger, kodeinContext) { ctx, _ -> kodein.container.allFactories(Kodein.Key(ctx.anyType, argType, type, tag), ctx.value) }
 
 /**
  * Gets all providers that match the the given return type and tag.
@@ -29,7 +29,7 @@ fun <A, T : Any> KodeinAware.AllFactories(argType: TypeToken<in A>, type: TypeTo
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 fun <T : Any> KodeinAware.AllProviders(type: TypeToken<out T>, tag: Any? = null): KodeinProperty<List<() -> T>> =
-        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.allProviders(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver) }
+        KodeinProperty(kodeinTrigger, kodeinContext) { ctx, _ -> kodein.container.allProviders(Kodein.Key(ctx.anyType, UnitToken, type, tag), ctx.value) }
 
 /**
  * Gets all providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -44,7 +44,7 @@ fun <T : Any> KodeinAware.AllProviders(type: TypeToken<out T>, tag: Any? = null)
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 fun <A, T : Any> KodeinAware.AllProviders(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): KodeinProperty<List<() -> T>> =
-        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.allFactories(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).map { it.toProvider(arg) } }
+        KodeinProperty(kodeinTrigger, kodeinContext) { ctx, _ -> kodein.container.allFactories(Kodein.Key(ctx.anyType, argType, type, tag), ctx.value).map { it.toProvider(arg) } }
 
 /**
  * Gets all instances from providers that match the the given return type and tag.
@@ -56,7 +56,7 @@ fun <A, T : Any> KodeinAware.AllProviders(argType: TypeToken<in A>, type: TypeTo
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 fun <T : Any> KodeinAware.AllInstances(type: TypeToken<out T>, tag: Any? = null): KodeinProperty<List<T>> =
-        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.allProviders(Kodein.Key(kodeinContext.anyType, UnitToken, type, tag), kodeinContext.value, receiver).map { it.invoke() } }
+        KodeinProperty(kodeinTrigger, kodeinContext) { ctx, _ -> kodein.container.allProviders(Kodein.Key(ctx.anyType, UnitToken, type, tag), ctx.value).map { it.invoke() } }
 
 /**
  * Gets all instances from providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -71,4 +71,4 @@ fun <T : Any> KodeinAware.AllInstances(type: TypeToken<out T>, tag: Any? = null)
  * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 fun <A, T : Any> KodeinAware.AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): KodeinProperty<List<T>> =
-        KodeinProperty(kodeinTrigger) { receiver -> kodein.container.allFactories(Kodein.Key(kodeinContext.anyType, argType, type, tag), kodeinContext.value, receiver).map { it.invoke(arg()) } }
+        KodeinProperty(kodeinTrigger, kodeinContext) { ctx, _ -> kodein.container.allFactories(Kodein.Key(ctx.anyType, argType, type, tag), ctx.value).map { it.invoke(arg()) } }

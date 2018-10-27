@@ -26,16 +26,6 @@ interface WithContext<out C> {
 }
 
 /**
- * Indicates that the receiver of a retrieval is accessible.
- */
-interface WithReceiver {
-    /**
-     * The receiver that will get the binding's factory value.
-     */
-    val receiver: Any?
-}
-
-/**
  * Direct Kodein interface to be passed to factory methods that hold references.
  *
  * It is augmented to allow such methods to access the context of the retrieval, as well as a factory from the binding it is overriding (if it is overriding).
@@ -66,11 +56,11 @@ interface SimpleBindingKodein<out C> : DKodein, WithContext<C> {
 /**
  * Direct Kodein interface to be passed to factory methods that do **not** hold references (i.e. that recreate a new instance every time).
  *
- * It is augmented to allow such methods to access the context and receiver of the retrieval, as well as a factory from the binding it is overriding (if it is overriding).
+ * It is augmented to allow such methods to access the context of the retrieval, as well as a factory from the binding it is overriding (if it is overriding).
  *
  * @param C The type of the context
  */
-interface BindingKodein<out C> : SimpleBindingKodein<C>, WithReceiver
+interface BindingKodein<out C> : SimpleBindingKodein<C>
 
 /**
  * Direct Kodein interface to be passed to provider methods that hold references.
@@ -120,13 +110,13 @@ interface NoArgSimpleBindingKodein<out C> : DKodein, WithContext<C> {
 /**
  * Direct Kodein interface to be passed to provider methods that do **not** hold references (i.e. that recreate a new instance every time).
  *
- * It is augmented to allow such methods to access the context and receiver of the retrieval, as well as a provider or instance from the binding it is overriding (if it is overriding).
+ * It is augmented to allow such methods to access the context of the retrieval, as well as a provider or instance from the binding it is overriding (if it is overriding).
  *
  * @param C The type of the context
  */
-interface NoArgBindingKodein<out C> : NoArgSimpleBindingKodein<C>, WithReceiver
+interface NoArgBindingKodein<out C> : NoArgSimpleBindingKodein<C>
 
-internal class NoArgBindingKodeinWrap<out C>(private val _kodein: BindingKodein<C>) : NoArgBindingKodein<C>, DKodein by _kodein, WithContext<C> by _kodein, WithReceiver by _kodein {
+internal class NoArgBindingKodeinWrap<out C>(private val _kodein: BindingKodein<C>) : NoArgBindingKodein<C>, DKodein by _kodein, WithContext<C> by _kodein {
     override fun overriddenProvider() = _kodein.overriddenFactory().toProvider { Unit }
     override fun overriddenProviderOrNull() = _kodein.overriddenFactoryOrNull()?.toProvider { Unit }
     override fun overriddenInstance() = overriddenProvider().invoke()

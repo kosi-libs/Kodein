@@ -3,6 +3,7 @@ package org.kodein.di.internal
 import org.kodein.di.*
 import org.kodein.di.bindings.BindingKodein
 import org.kodein.di.bindings.ExternalSource
+import org.kodein.di.bindings.KodeinBinding
 
 internal class KodeinContainerImpl private constructor(
         override val tree: KodeinTree,
@@ -17,7 +18,7 @@ internal class KodeinContainerImpl private constructor(
      */
     internal constructor(builder: KodeinContainerBuilderImpl, externalSource: ExternalSource?, runCallbacks: Boolean) : this(KodeinTreeImpl(builder.bindingsMap, externalSource)) {
         val init: () -> Unit = {
-            val direct = DKodeinImpl(this, AnyKodeinContext, null)
+            val direct = DKodeinImpl(this, AnyKodeinContext)
             builder.callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }
         }
 
@@ -113,24 +114,24 @@ internal class KodeinContainerImpl private constructor(
         }
     }
 
-    private fun <C, A, T: Any> bindingKodein(key: Kodein.Key<C, A, T>, context: KodeinContext<C>, receiver: Any?, tree: KodeinTree, overrideLevel: Int) : BindingKodein<C> {
+    private fun <C, A, T: Any> bindingKodein(key: Kodein.Key<C, A, T>, context: KodeinContext<C>, tree: KodeinTree, overrideLevel: Int) : BindingKodein<C> {
         val container = KodeinContainerImpl(tree, Node(key, overrideLevel, node))
-        return BindingKodeinImpl(DKodeinImpl(container, context, receiver), key, context.value, receiver, overrideLevel)
+        return BindingKodeinImpl(DKodeinImpl(container, context), key, context.value, overrideLevel)
     }
 
-    override fun <C, A, T: Any> factoryOrNull(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int): ((A) -> T)? {
+    override fun <C, A, T: Any> factoryOrNull(key: Kodein.Key<C, A, T>, context: C, overrideLevel: Int): ((A) -> T)? {
         val kContext = KodeinContext(key.contextType, context)
 
         tree.find(key, 0).let {
             if (it.size == 1) {
                 val (_, definition) = it[0]
                 node?.check(key, 0)
-                val bindingKodein = bindingKodein(key, kContext, receiver, definition.tree, 0)
+                val bindingKodein = bindingKodein(key, kContext, definition.tree, 0)
                 return definition.binding.getFactory(bindingKodein, key)
             }
         }
 
-        val bindingKodein = bindingKodein(key, kContext, receiver, tree, 0)
+        val bindingKodein = bindingKodein(key, kContext, tree, 0)
         tree.externalSource?.getFactory(bindingKodein, key)?.let {
             node?.check(key, 0)
             @Suppress("UNCHECKED_CAST")
@@ -140,7 +141,7 @@ internal class KodeinContainerImpl private constructor(
         return null
     }
 
-    override fun <C, A, T: Any> factory(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int): (A) -> T {
+    override fun <C, A, T: Any> factory(key: Kodein.Key<C, A, T>, context: C, overrideLevel: Int): (A) -> T {
         val kContext = KodeinContext(key.contextType, context)
 
         val result = tree.find(key, overrideLevel)
@@ -148,11 +149,11 @@ internal class KodeinContainerImpl private constructor(
         if (result.size == 1) {
             val (_, definition) = result[0]
             node?.check(key, overrideLevel)
-            val bindingKodein = bindingKodein(key, kContext, receiver, definition.tree, overrideLevel)
+            val bindingKodein = bindingKodein(key, kContext, definition.tree, overrideLevel)
             return definition.binding.getFactory(bindingKodein, key)
         }
 
-        val bindingKodein = bindingKodein(key, kContext, receiver, tree, overrideLevel)
+        val bindingKodein = bindingKodein(key, kContext, tree, overrideLevel)
         tree.externalSource?.getFactory(bindingKodein, key)?.let {
             node?.check(key, overrideLevel)
             @Suppress("UNCHECKED_CAST")
@@ -179,14 +180,14 @@ internal class KodeinContainerImpl private constructor(
         throw Kodein.NotFoundException(key, "${potentials.size} bindings found that match $key:\n${potentials.description(withOverrides)}Other bindings registered in Kodein:\n${others.description(withOverrides)}")
     }
 
-    override fun <C, A, T: Any> allFactories(key: Kodein.Key<C, A, T>, context: C, receiver: Any?, overrideLevel: Int): List<(A) -> T> {
+    override fun <C, A, T: Any> allFactories(key: Kodein.Key<C, A, T>, context: C, overrideLevel: Int): List<(A) -> T> {
         val kContext = KodeinContext(key.contextType, context)
 
         val result = tree.find(key, overrideLevel, all = true)
 
         return result.map { (_, definition) ->
             node?.check(key, overrideLevel)
-            val bindingKodein = bindingKodein(key, kContext, receiver, definition.tree, overrideLevel)
+            val bindingKodein = bindingKodein(key, kContext, definition.tree, overrideLevel)
             definition.binding.getFactory(bindingKodein, key)
         }
     }

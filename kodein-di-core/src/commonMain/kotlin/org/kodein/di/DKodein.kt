@@ -31,19 +31,12 @@ interface DKodeinBase : DKodeinAware {
      */
     val kodein: Kodein get() = lazy
 
-    /** @suppress */
-    object SAME_CONTEXT : KodeinContext<Unit>(UnitToken, Unit)
-
-    /** @suppress */
-    object SAME_RECEIVER
-
     /**
-     * Returns a [DKodein] with its context and/or receiver changed.
+     * Returns a [DKodein] with its context changed.
      *
      * @param context The new context for the new DKodein.
-     * @param receiver The new receiver for the new DKodein.
      */
-    fun On(context: KodeinContext<*> = SAME_CONTEXT, receiver: Any? = SAME_RECEIVER): DKodein
+    fun On(context: KodeinContext<*>): DKodein
 
     /**
      * Gets a factory of `T` for the given argument type, return type and tag.

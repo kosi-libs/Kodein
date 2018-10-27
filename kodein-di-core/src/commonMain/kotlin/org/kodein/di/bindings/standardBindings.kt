@@ -60,7 +60,7 @@ class Multiton<EC, out BC, A, T: Any>(override val scope: Scope<EC, BC>, overrid
     }
 
     override fun getFactory(kodein: BindingKodein<EC>, key: Kodein.Key<EC, A, T>): (A) -> T {
-        val registry = scope.getRegistry(kodein.receiver, kodein.context)
+        val registry = scope.getRegistry(kodein.context)
         return { arg ->
             val bindContext = scope.getBindingContext(kodein.context)
             @Suppress("UNCHECKED_CAST")
@@ -125,7 +125,7 @@ class Singleton<EC, BC, T: Any>(override val scope: Scope<EC, BC>, override val 
      * @see [KodeinBinding.getFactory]
      */
     override fun getFactory(kodein: BindingKodein<EC>, key: Kodein.Key<EC, Unit, T>): (Unit) -> T {
-        val registry = scope.getRegistry(kodein.receiver, kodein.context)
+        val registry = scope.getRegistry(kodein.context)
         return {
             val bindContext = scope.getBindingContext(kodein.context)
             @Suppress("UNCHECKED_CAST")
@@ -172,7 +172,7 @@ class EagerSingleton<T: Any>(builder: KodeinContainer.Builder, override val crea
 
     init {
         val key = Kodein.Key(AnyToken, UnitToken, createdType, null)
-        builder.onReady { getFactory(BindingKodeinImpl(this, key, null, null, 0)).invoke(Unit) }
+        builder.onReady { getFactory(BindingKodeinImpl(this, key, null, 0)).invoke(Unit) }
     }
 
     override val copier = KodeinBinding.Copier { builder -> EagerSingleton(builder, createdType, creator) }

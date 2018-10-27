@@ -155,12 +155,17 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
     override fun hashCode() = 31 * main.hashCode() + params.contentHashCode()
 }
 
+private object Tokens {
+    val UnitToken = erased<Unit>()
+    val AnyToken = erased<Any?>()
+}
+
 /**
  * A simple type token that represents the type `Unit`.
  */
-val UnitToken = erased<Unit>()
+val UnitToken get() = Tokens.UnitToken
 
 /**
  * A simple type token that represents the type `Any?`.
  */
-val AnyToken = erased<Any?>()
+val AnyToken get() = Tokens.AnyToken

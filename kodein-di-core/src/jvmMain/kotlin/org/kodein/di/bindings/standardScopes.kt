@@ -11,7 +11,7 @@ open class WeakContextScope<C>(val newRepo: () -> ScopeRegistry) : SimpleScope<C
 
     private val map = WeakHashMap<C, ScopeRegistry>()
 
-    override fun getRegistry(receiver: Any?, context: C): ScopeRegistry {
+    override fun getRegistry(context: C): ScopeRegistry {
         map[context]?.let { return it }
         synchronized(map) {
             return map.getOrPut(context) { newRepo() }
