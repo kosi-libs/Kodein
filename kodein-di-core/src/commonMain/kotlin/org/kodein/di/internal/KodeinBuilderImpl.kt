@@ -12,7 +12,7 @@ internal open class KodeinBuilderImpl internal constructor(
 
     override val contextType = AnyToken
 
-    override val scope: Scope<Any?, Nothing?> get() = NoScope() // Recreating a new NoScope every-time *on purpose*!
+    override val scope: Scope<Any?> get() = NoScope() // Recreating a new NoScope every-time *on purpose*!
 
     inner class TypeBinder<T : Any> internal constructor(val type: TypeToken<out T>, val tag: Any?, val overrides: Boolean?) : Kodein.Builder.TypeBinder<T> {
         internal val containerBuilder get() = this@KodeinBuilderImpl.containerBuilder

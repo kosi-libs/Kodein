@@ -1,7 +1,6 @@
 package org.kodein.di.test
 
 import org.kodein.di.*
-import org.kodein.di.DKodein
 import org.kodein.di.bindings.*
 import org.kodein.di.generic.*
 import kotlin.concurrent.thread
@@ -802,11 +801,7 @@ Dependency recursion:
         assertTrue(created)
     }
 
-    object test15Scope : Scope<Any?, Nothing?> {
-        private val registry = StandardScopeRegistry()
-        override fun getBindingContext(envContext: Any?): Nothing? = null
-        override fun getRegistry(context: Any?) = registry
-    }
+    object test15Scope : UnboundedScope()
 
     @Test fun test15_00_BindingsDescription() {
 
@@ -875,8 +870,7 @@ Dependency recursion:
 
     @Test fun test16_00_AnyScopeSingleton() {
         val registry = StandardScopeRegistry()
-        val myScope = object : Scope<Any?, Nothing?> {
-            override fun getBindingContext(envContext: Any?): Nothing? = null
+        val myScope = object : Scope<Any?> {
             override fun getRegistry(context: Any?) = registry
         }
         val kodein = Kodein {
@@ -900,7 +894,7 @@ Dependency recursion:
     @Test fun test16_01_ScopeSingleton() {
 
         val registries = mapOf("a" to SingleItemScopeRegistry(), "b" to SingleItemScopeRegistry())
-        val myScope = object : SimpleScope<String> {
+        val myScope = object : Scope<String> {
             override fun getRegistry(context: String) = registries[context]!!
         }
         val kodein = Kodein {
@@ -974,7 +968,7 @@ Dependency recursion:
         }
 
         val requestScope = object : SubScope<Request, Session>(sessionScope) {
-            override fun getBindingContext(envContext: Request) = envContext.session
+            override fun getParentContext(context: Request) = context.session
         }
 
         val kodein = Kodein {
@@ -1813,27 +1807,6 @@ Dependency recursion:
         assertTrue(Name("Salomon") in dValues)
         assertTrue(FullName("Salomon", "BRYS") in dValues)
     }
-
-    class Test_34(override val kodein: Kodein) : KodeinAware {
-        val name: String by instance()
-    }
-
-//    class Test_34_D(dkodein: DKodein) : DKodeinAware {
-//        override val dkodein: DKodein = dkodein.on(receiver = this)
-//        val name: String = instance()
-//    }
-//
-//    @Test fun test34_00_Receiver() {
-//        val kodein = Kodein {
-//            bind<String>() with provider { if (receiver == null) "null" else receiver!!::class.simpleName!! }
-//        }
-//
-//        val test = Test_34(kodein)
-//        assertEquals("Test_34", test.name)
-//
-//        val testD = Test_34_D(kodein.direct)
-//        assertEquals("Test_34_D", testD.name)
-//    }
 
     @Test fun test35_00_SearchTagged() {
         val kodein = Kodein {

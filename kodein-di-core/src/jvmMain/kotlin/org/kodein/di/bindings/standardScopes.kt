@@ -7,7 +7,7 @@ import java.util.*
  *
  * In essence, the context is weak, and for a given context, its registry will be GC'd when it is itself GC'd.
  */
-open class WeakContextScope<C>(val newRepo: () -> ScopeRegistry) : SimpleScope<C> {
+open class WeakContextScope<C>(val newRepo: () -> ScopeRegistry) : Scope<C> {
 
     private val map = WeakHashMap<C, ScopeRegistry>()
 

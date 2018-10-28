@@ -189,14 +189,7 @@ fun <A> newScopeRegistry(type: ScopeRepositoryType) = when (type) {
  * @param BC The Binding Context: That's the context that is given by the scope to the bindings.
  *   It is often the same as [EC], in which case you should use [SimpleScope] instead.
  */
-interface Scope<in EC, out BC> {
-
-    /**
-     * Get the Binding Context (that may or may not be derived from [envContext]).
-     *
-     * @param envContext The context that was given to the scope from the retriever code.
-     */
-    fun getBindingContext(envContext: EC): BC
+interface Scope<in C> {
 
     /**
      * Get a registry for a given context.
@@ -205,26 +198,22 @@ interface Scope<in EC, out BC> {
      * @param context The context associated with the returned registry.
      * @return The registry associated with the given context.
      */
-    fun getRegistry(context: EC): ScopeRegistry
+    fun getRegistry(context: C): ScopeRegistry
 }
 
 /**
  * Simple [Scope] where the Environment Context and the Binding Context do not differ.
  */
-interface SimpleScope<C> : Scope<C, C> {
-    override fun getBindingContext(envContext: C) = envContext
-
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T: C> invoke() = this as SimpleScope<T>
-
-}
+//Deprecated since 5.4.0
+@Deprecated("Scope itself has been simplified", ReplaceWith("Scope<C>"))
+typealias SimpleScope<C> = Scope<C>
 
 /**
  * [Scope] that is not bound to a context (always lives).
  *
  * This is kind of equivalent to having no scope at all, except that you can call [clear].
  */
-class UnboundedScope(val registry: ScopeRegistry = StandardScopeRegistry()) : SimpleScope<Any?>, ScopeCloseable {
+open class UnboundedScope(val registry: ScopeRegistry = StandardScopeRegistry()) : Scope<Any?>, ScopeCloseable {
     override fun getRegistry(context: Any?) = registry
 
     override fun close() = registry.clear()
@@ -234,34 +223,25 @@ class UnboundedScope(val registry: ScopeRegistry = StandardScopeRegistry()) : Si
 @Deprecated("BasicScope has been renamed UnboundedScope", ReplaceWith("UnboundedScope"))
 typealias BasicScope = UnboundedScope
 
-abstract class SubScope<in EC, BC>(val parentScope: Scope<BC, Any?>) : Scope<EC, BC> {
+abstract class SubScope<in C, PC>(val parentScope: Scope<PC>) : Scope<C> {
 
     private data class Key<C>(val context: C)
 
-    override fun getRegistry(context: EC): ScopeRegistry {
-        val bindingContext = getBindingContext(context)
-        val parentRegistry = parentScope.getRegistry(bindingContext)
+    protected abstract fun getParentContext(context: C): PC
+
+    override fun getRegistry(context: C): ScopeRegistry {
+        val parentRegistry = parentScope.getRegistry(getParentContext(context))
         @Suppress("UNCHECKED_CAST")
         return parentRegistry.getOrCreate(Key(context), false) { SingletonReference.make { newRegistry() } } as ScopeRegistry
-    }
-
-    fun removeFromParent(context: EC) {
-        val bindingContext = getBindingContext(context)
-        val parentRegistry = parentScope.getRegistry(bindingContext)
-        parentRegistry.remove(Key(context))
     }
 
     open fun newRegistry(): ScopeRegistry = StandardScopeRegistry()
 }
 
-open class SimpleSubScope<C>(parentScope: Scope<C, Any?>) : SimpleScope<C>, SubScope<C, C>(parentScope)
-
 /**
  * Default [Scope]: will always return the same registry, no matter the context.
  */
-class NoScope: Scope<Any?, Nothing?> {
-
-    override fun getBindingContext(envContext: Any?): Nothing? = null
+class NoScope: Scope<Any?> {
 
     private val _registry = StandardScopeRegistry()
 

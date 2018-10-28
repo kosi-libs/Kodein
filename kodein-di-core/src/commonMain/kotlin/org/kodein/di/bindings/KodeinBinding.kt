@@ -55,7 +55,7 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
     /**
      * The scope used by this factory, if any
      */
-    val scope: Scope<C, *>? get() = null
+    val scope: Scope<C>? get() = null
 
     /**
      * The type of contexts that are to be set when using this factory.

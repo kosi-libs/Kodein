@@ -99,11 +99,7 @@ class ErasedJvmTests {
         assertNotEquals(id, System.identityHashCode(p))
     }
 
-    object test15Scope : Scope<Any?, Nothing?> {
-        private val registry = StandardScopeRegistry()
-        override fun getBindingContext(envContext: Any?) = null
-        override fun getRegistry(context: Any?) = registry
-    }
+    object test15Scope : UnboundedScope()
 
     // Only the JVM supports precise description
     @Test fun test15_00_BindingsDescription() {
