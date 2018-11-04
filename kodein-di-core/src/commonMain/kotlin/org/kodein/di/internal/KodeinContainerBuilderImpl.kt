@@ -4,6 +4,7 @@ import org.kodein.di.DKodein
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinContainer
 import org.kodein.di.KodeinDefining
+import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.KodeinBinding
 
 /**
@@ -17,7 +18,8 @@ internal class KodeinContainerBuilderImpl(
         allowOverride: Boolean,
         silentOverride: Boolean,
         internal val bindingsMap: MutableMap<Kodein.Key<*, *, *>, MutableList<KodeinDefining<*, *, *>>>,
-        internal val callbacks: MutableList<DKodein.() -> Unit>
+        internal val callbacks: MutableList<DKodein.() -> Unit>,
+        internal val translators: MutableList<ContextTranslator<*, *>>
 ) : KodeinContainer.Builder {
 
     /**
@@ -149,7 +151,7 @@ internal class KodeinContainerBuilderImpl(
 
     override fun subBuilder(allowOverride: Boolean, silentOverride: Boolean): KodeinContainerBuilderImpl {
         checkMatch(allowOverride)
-        return KodeinContainerBuilderImpl(allowOverride, silentOverride, bindingsMap, callbacks)
+        return KodeinContainerBuilderImpl(allowOverride, silentOverride, bindingsMap, callbacks, translators)
     }
 
     /**
@@ -159,5 +161,9 @@ internal class KodeinContainerBuilderImpl(
      */
     override fun onReady(cb: DKodein.() -> Unit) {
         callbacks += cb
+    }
+
+    override fun registerContextTranslator(translator: ContextTranslator<*, *>) {
+        translators += translator
     }
 }

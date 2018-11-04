@@ -310,6 +310,8 @@ interface Kodein : KodeinAware {
          * @param cb The callback.
          */
         fun onReady(cb: DKodein.() -> Unit)
+
+        fun RegisterContextTranslator(translator: ContextTranslator<*, *>)
     }
 
     /**

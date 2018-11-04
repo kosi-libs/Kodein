@@ -472,7 +472,7 @@ class ErasedJvmTests {
                 when (type.jvmType) {
                     FullName::class.java -> singleton { FullName("Salomon", "BRYS") }
                     Name::class.java -> factory { _: Unit -> Name("Salomon") }
-                    else -> throw IllegalStateException()
+                    else -> throw IllegalStateException("Unknown type ${type.fullDispString()}")
                 }
             }
         }

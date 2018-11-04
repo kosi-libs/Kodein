@@ -893,27 +893,52 @@ Dependency recursion:
         assertEquals("two", test2.person1.name)
     }
 
-//    @Test fun test16_06_ContextTranslaterScopedSingleton() {
-//        data class Session(val id: String)
-//        data class Request(val session: Session)
-//
-//        val sessionScope = object : Scope<Session> {
-//            val registries = HashMap<String, ScopeRegistry>()
-//            override fun getRegistry(context: Session) = registries.getOrPut(context.id, ::StandardScopeRegistry)
-//        }
-//
-//        val kodein = Kodein {
-//            bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
-//        }
-//
-//        val session = Session("sid")
-//        val request = Request(session)
-//
-//        val c: CloseableData by kodein.on(request).instance()
-//        assertFalse(c.closed)
-//        sessionScope.registries[session.id]!!.clear()
-//        assertTrue(c.closed)
-//    }
+    @Test fun test16_06_ContextTranslatorScopedSingleton() {
+        data class Session(val id: String)
+        data class Request(val session: Session)
+
+        val sessionScope = object : Scope<Session> {
+            val registries = HashMap<String, ScopeRegistry>()
+            override fun getRegistry(context: Session) = registries.getOrPut(context.id, ::StandardScopeRegistry)
+        }
+
+        val kodein = Kodein {
+            bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
+            registerContextTranslator { r: Request -> r.session }
+        }
+
+        val session = Session("sid")
+        val request = Request(session)
+
+        val c: CloseableData by kodein.on(request).instance()
+        assertFalse(c.closed)
+        sessionScope.registries[session.id]!!.clear()
+        assertTrue(c.closed)
+    }
+
+    @Test fun test16_07_ContextTranslatorAutoScopedSingleton() {
+        data class Session(val id: String)
+        data class Request(val session: Session)
+
+        val sessionScope = object : Scope<Session> {
+            val registries = HashMap<String, ScopeRegistry>()
+            override fun getRegistry(context: Session) = registries.getOrPut(context.id, ::StandardScopeRegistry)
+        }
+
+        val session = Session("sid")
+        val request = Request(session)
+
+        val kodein = Kodein {
+            bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
+            registerContextTranslator { r: Request -> r.session }
+            registerContextFinder { request }
+        }
+
+        val c: CloseableData by kodein.instance()
+        assertFalse(c.closed)
+        sessionScope.registries[session.id]!!.clear()
+        assertTrue(c.closed)
+    }
 
     @Test fun test17_00_ExplicitOverride() {
         val kodein = Kodein {

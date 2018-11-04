@@ -54,9 +54,12 @@ internal open class KodeinBuilderImpl internal constructor(
     }
 
     override fun onReady(cb: DKodein.() -> Unit) = containerBuilder.onReady(cb)
+
+    override fun RegisterContextTranslator(translator: ContextTranslator<*, *>) = containerBuilder.registerContextTranslator(translator)
+
 }
 
-internal open class KodeinMainBuilderImpl(allowSilentOverride: Boolean) : KodeinBuilderImpl(null, "", HashSet(), KodeinContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList())), Kodein.MainBuilder {
+internal open class KodeinMainBuilderImpl(allowSilentOverride: Boolean) : KodeinBuilderImpl(null, "", HashSet(), KodeinContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList())), Kodein.MainBuilder {
 
     override var externalSource: ExternalSource? = null
 

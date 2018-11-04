@@ -56,7 +56,7 @@ interface Copy {
                 throw Kodein.NoResultException(it, "No binding found that match this search: $it")
             }
             if (!it.all && list.size > 1) {
-                throw Kodein.NoResultException(it, "There were ${list.size} matches for this search: $it\n${list.toMap().description(false)}")
+                throw Kodein.NoResultException(it, "There were ${list.size} matches for this search: $it\n${list.associate { it.first to it.second }.description(false)}")
             }
             return list.map { it.first }
         }

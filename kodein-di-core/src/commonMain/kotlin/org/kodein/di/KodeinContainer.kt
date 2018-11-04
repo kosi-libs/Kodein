@@ -1,5 +1,6 @@
 package org.kodein.di
 
+import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.KodeinBinding
 import org.kodein.di.internal.newLinkedList
 
@@ -151,6 +152,8 @@ interface KodeinContainer {
          * @param cb A callback.
          */
         fun onReady(cb: DKodein.() -> Unit)
+
+        fun registerContextTranslator(translator: ContextTranslator<*, *>)
     }
 
 }

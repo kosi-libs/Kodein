@@ -1,5 +1,7 @@
 package org.kodein.di.bindings
 
+import org.kodein.di.KodeinContext
+import org.kodein.di.TypeToken
 import org.kodein.di.Volatile
 import org.kodein.di.internal.*
 
@@ -181,6 +183,22 @@ fun <A> newScopeRegistry(type: ScopeRepositoryType) = when (type) {
     ScopeRepositoryType.SINGLE_ITEM -> SingleItemScopeRegistry()
 }
 
+//interface ContextTranslator<in C, S> {
+//    val contextType: TypeToken<in C>
+//    val scopeType: TypeToken<in S>
+//    fun translate(ctx: C): S
+//}
+
+abstract class ContextTranslator<in C, S>(val contextType: TypeToken<in C>, val scopeType: TypeToken<in S>) {
+    abstract fun translate(ctx: C): S
+}
+
+fun <C, S> ContextTranslator<C, S>.toKContext(ctx: C) = KodeinContext(scopeType, translate(ctx))
+
+internal class CompositeContextTranslator<in C, I, S>(val src: ContextTranslator<C, I>, val dst: ContextTranslator<I, S>) : ContextTranslator<C, S>(src.contextType, dst.scopeType) {
+    override fun translate(ctx: C): S = dst.translate(src.translate(ctx))
+}
+
 
 /**
  * A scope is an object that can return (or create) a [ScopeRegistry] according to a context.
@@ -189,7 +207,7 @@ fun <A> newScopeRegistry(type: ScopeRepositoryType) = when (type) {
  * @param BC The Binding Context: That's the context that is given by the scope to the bindings.
  *   It is often the same as [EC], in which case you should use [SimpleScope] instead.
  */
-interface Scope<in C> {
+interface Scope<C> {
 
     /**
      * Get a registry for a given context.
@@ -199,6 +217,8 @@ interface Scope<in C> {
      * @return The registry associated with the given context.
      */
     fun getRegistry(context: C): ScopeRegistry
+
+    fun scopeTranslators(): Iterable<ContextTranslator<*, C>> = emptyList()
 }
 
 /**
@@ -223,7 +243,7 @@ open class UnboundedScope(val registry: ScopeRegistry = StandardScopeRegistry())
 @Deprecated("BasicScope has been renamed UnboundedScope", ReplaceWith("UnboundedScope"))
 typealias BasicScope = UnboundedScope
 
-abstract class SubScope<in C, PC>(val parentScope: Scope<PC>) : Scope<C> {
+abstract class SubScope<C, PC>(val parentScope: Scope<PC>) : Scope<C> {
 
     private data class Key<C>(val context: C)
 
