@@ -62,7 +62,7 @@ internal class KodeinTreeImpl(
             val added = ArrayList<ContextTranslator<*, *>>()
             for (src in translators) {
                 for (dst in translators) {
-                    if (dst.contextType.isAssignableFrom(src.scopeType)) {
+                    if (dst.contextType.isAssignableFrom(src.scopeType) && src.contextType != dst.scopeType) {
                         if (translators.none { it.contextType == src.contextType && it.scopeType == dst.scopeType })
                             @Suppress("UNCHECKED_CAST")
                             added += CompositeContextTranslator(src as ContextTranslator<Any, Any>, dst as ContextTranslator<Any, Any>)
@@ -129,6 +129,19 @@ internal class KodeinTreeImpl(
                 _cache[anyContextKey]?.let { triple ->
                     _cache[key] = triple
                     val (realKey, list, translator) = triple
+                    val definition = list.getOrNull(overrideLevel) ?: return emptyList()
+                    return listOf(Triple(realKey as Kodein.Key<Any, A, T>, definition as KodeinDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?))
+                }
+            }
+
+            val applicableTranslators = translators.filter { it.contextType == key.contextType || it.contextType == AnyToken }
+            for (translator in applicableTranslators) {
+                val translatedKey = Kodein.Key(translator.scopeType, key.argType, key.type, key.tag)
+                _cache[translatedKey]?.takeIf { it.third == null }?.let { triple ->
+                    if (triple.third != null)
+                        return@let
+                    _cache[key] = triple.copy(third = translator)
+                    val (realKey, list) = triple
                     val definition = list.getOrNull(overrideLevel) ?: return emptyList()
                     return listOf(Triple(realKey as Kodein.Key<Any, A, T>, definition as KodeinDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?))
                 }
