@@ -1,5 +1,6 @@
 package org.kodein.di.bindings
 
+import org.kodein.di.AnyToken
 import org.kodein.di.KodeinContext
 import org.kodein.di.TypeToken
 import org.kodein.di.Volatile
@@ -183,19 +184,26 @@ fun <A> newScopeRegistry(type: ScopeRepositoryType) = when (type) {
     ScopeRepositoryType.SINGLE_ITEM -> SingleItemScopeRegistry()
 }
 
-//interface ContextTranslator<in C, S> {
-//    val contextType: TypeToken<in C>
-//    val scopeType: TypeToken<in S>
-//    fun translate(ctx: C): S
-//}
+interface ContextTranslator<in C, S> {
+    val contextType: TypeToken<in C>
+    val scopeType: TypeToken<in S>
+    fun translate(ctx: C): S
+}
 
-abstract class ContextTranslator<in C, S>(val contextType: TypeToken<in C>, val scopeType: TypeToken<in S>) {
-    abstract fun translate(ctx: C): S
+class SimpleContextTranslator<in C, S>(override val contextType: TypeToken<in C>, override val scopeType: TypeToken<in S>, private val t: (ctx: C) -> S) : ContextTranslator<C, S> {
+    override fun translate(ctx: C): S = t(ctx)
+}
+
+class SimpleAutoContextTranslator<S>(override val scopeType: TypeToken<in S>, private val t: () -> S) : ContextTranslator<Any?, S> {
+    override val contextType get() = AnyToken
+    override fun translate(ctx: Any?): S = t()
 }
 
 fun <C, S> ContextTranslator<C, S>.toKContext(ctx: C) = KodeinContext(scopeType, translate(ctx))
 
-internal class CompositeContextTranslator<in C, I, S>(val src: ContextTranslator<C, I>, val dst: ContextTranslator<I, S>) : ContextTranslator<C, S>(src.contextType, dst.scopeType) {
+internal class CompositeContextTranslator<in C, I, S>(val src: ContextTranslator<C, I>, val dst: ContextTranslator<I, S>) : ContextTranslator<C, S> {
+    override val contextType get() = src.contextType
+    override val scopeType get() = dst.scopeType
     override fun translate(ctx: C): S = dst.translate(src.translate(ctx))
 }
 

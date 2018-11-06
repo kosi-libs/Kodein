@@ -169,6 +169,32 @@ class ErasedJvmTests {
         assertEquals("instance", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<Int>(), "answer")]!!.first().binding.factoryName())
     }
 
+    // Only the JVM supports up-casting
+    @Test fun test16_09_AbstractContextTranslatorAbstractScope() {
+        abstract class AbstractSession(val id: String)
+        class SessionImpl(id: String) : AbstractSession(id)
+        abstract class AbstractRequest(val session: SessionImpl)
+        class RequestImpl(session: SessionImpl) : AbstractRequest(session)
+
+        val sessionScope = object : Scope<AbstractSession> {
+            val registries = HashMap<String, ScopeRegistry>()
+            override fun getRegistry(context: AbstractSession) = registries.getOrPut(context.id, ::StandardScopeRegistry)
+        }
+
+        val kodein = Kodein {
+            bind<ErasedTests.CloseableData>() with scoped(sessionScope).singleton { ErasedTests.CloseableData() }
+            registerContextTranslator { r: AbstractRequest -> r.session }
+        }
+
+        val session = SessionImpl("sid")
+        val request = RequestImpl(session)
+
+        val c: ErasedTests.CloseableData by kodein.on(request).instance()
+        assertFalse(c.closed)
+        sessionScope.registries[session.id]!!.clear()
+        assertTrue(c.closed)
+    }
+
     open class Test21_A
     class Test21_B : Test21_A()
     @Suppress("unused")

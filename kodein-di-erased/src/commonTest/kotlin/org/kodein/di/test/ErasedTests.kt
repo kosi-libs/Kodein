@@ -817,7 +817,7 @@ Dependency recursion:
         }
     }
 
-    @Test fun test16_03_ScopeColeableSingleton() {
+    @Test fun test16_03_ScopeCloseableSingleton() {
 
         val myScope = UnboundedScope(SingleItemScopeRegistry())
 
@@ -893,7 +893,7 @@ Dependency recursion:
         assertEquals("two", test2.person1.name)
     }
 
-    @Test fun test16_06_ContextTranslatorScopedSingleton() {
+    @Test fun test16_06_ContextTranslatorScope() {
         data class Session(val id: String)
         data class Request(val session: Session)
 
@@ -916,7 +916,7 @@ Dependency recursion:
         assertTrue(c.closed)
     }
 
-    @Test fun test16_07_ContextTranslatorAutoScopedSingleton() {
+    @Test fun test16_07_ContextTranslatorAutoScope() {
         data class Session(val id: String)
         data class Request(val session: Session)
 
@@ -938,6 +938,35 @@ Dependency recursion:
         assertFalse(c.closed)
         sessionScope.registries[session.id]!!.clear()
         assertTrue(c.closed)
+    }
+
+    @Test fun test16_08_CircularScopes() {
+        val kodein = Kodein.direct {
+            bind() from contexted<A>().provider { context.str }
+            bind() from contexted<B>().provider { context.int }
+            bind() from contexted<C>().provider { context.char }
+            registerContextTranslator { a: A -> a.b }
+            registerContextTranslator { b: B -> b.c }
+            registerContextTranslator { c: C -> c.a }
+        }
+
+        val a = A(null, "test")
+        val b = B(null, 42)
+        val c = C(null, 'S')
+        a.b = b
+        b.c = c
+        c.a = a
+
+        val str1: String = kodein.on(b).instance()
+        val str2: String = kodein.on(c).instance()
+        val int1: Int = kodein.on(a).instance()
+        val int2: Int = kodein.on(c).instance()
+        val char1: Char = kodein.on(a).instance()
+        val char2: Char = kodein.on(b).instance()
+
+        assertAllEqual("test", str1, str2)
+        assertAllEqual(42, int1, int2)
+        assertAllEqual('S', char1, char2)
     }
 
     @Test fun test17_00_ExplicitOverride() {

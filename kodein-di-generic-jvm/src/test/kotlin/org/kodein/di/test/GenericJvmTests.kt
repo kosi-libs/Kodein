@@ -939,7 +939,7 @@ Dependency recursion:
         }
     }
 
-    @Test fun test16_03_ScopeColeableSingleton() {
+    @Test fun test16_03_ScopeCloseableSingleton() {
 
         val myScope = UnboundedScope(SingleItemScopeRegistry())
 
@@ -950,6 +950,7 @@ Dependency recursion:
         val a: CloseableData by kodein.instance()
         val b: CloseableData by kodein.instance()
         assertSame(a, b)
+        assertFalse(a.closed)
         myScope.registry.clear()
         val c: CloseableData by kodein.instance()
 
@@ -962,7 +963,7 @@ Dependency recursion:
         data class Session(val id: String)
         data class Request(val session: Session)
 
-        val sessionScope = object : SimpleScope<Session> {
+        val sessionScope = object : Scope<Session> {
             val registries = HashMap<String, ScopeRegistry>()
             override fun getRegistry(context: Session) = registries.getOrPut(context.id, ::StandardScopeRegistry)
         }
@@ -988,6 +989,131 @@ Dependency recursion:
         assertNotSame(a, c)
         assertTrue(a.closed)
         assertFalse(c.closed)
+    }
+
+    class Test16_05(override val kodein: Kodein, val name: String) : KodeinAware {
+        val registry = StandardScopeRegistry()
+        val person1: Person by instance()
+        val person2: Person by instance()
+    }
+
+    @Test fun test16_05_ReceiverAsScopeSingleton() {
+        val testScope = object : Scope<Test16_05> {
+            override fun getRegistry(context: Test16_05) = context.registry
+        }
+
+        val kodein = Kodein {
+            bind() from scoped(testScope).singleton { Person(context.name) }
+        }
+
+        val test1 = Test16_05(kodein, "one")
+        assertSame(test1.person1, test1.person2)
+        assertEquals("one", test1.person1.name)
+
+        val test2 = Test16_05(kodein, "two")
+        assertNotSame(test1.person1, test2.person1)
+        assertEquals("two", test2.person1.name)
+    }
+
+    @Test fun test16_06_ContextTranslatorScope() {
+        data class Session(val id: String)
+        data class Request(val session: Session)
+
+        val sessionScope = object : Scope<Session> {
+            val registries = HashMap<String, ScopeRegistry>()
+            override fun getRegistry(context: Session) = registries.getOrPut(context.id, ::StandardScopeRegistry)
+        }
+
+        val kodein = Kodein {
+            bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
+            registerContextTranslator { r: Request -> r.session }
+        }
+
+        val session = Session("sid")
+        val request = Request(session)
+
+        val c: CloseableData by kodein.on(request).instance()
+        assertFalse(c.closed)
+        sessionScope.registries[session.id]!!.clear()
+        assertTrue(c.closed)
+    }
+
+    @Test fun test16_07_ContextTranslatorAutoScope() {
+        data class Session(val id: String)
+        data class Request(val session: Session)
+
+        val sessionScope = object : Scope<Session> {
+            val registries = HashMap<String, ScopeRegistry>()
+            override fun getRegistry(context: Session) = registries.getOrPut(context.id, ::StandardScopeRegistry)
+        }
+
+        val session = Session("sid")
+        val request = Request(session)
+
+        val kodein = Kodein {
+            bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
+            registerContextTranslator { r: Request -> r.session }
+            registerContextFinder { request }
+        }
+
+        val c: CloseableData by kodein.instance()
+        assertFalse(c.closed)
+        sessionScope.registries[session.id]!!.clear()
+        assertTrue(c.closed)
+    }
+
+    @Test fun test16_08_CircularScopes() {
+        val kodein = Kodein.direct {
+            bind() from contexted<A>().provider { context.str }
+            bind() from contexted<B>().provider { context.int }
+            bind() from contexted<C>().provider { context.char }
+            registerContextTranslator { a: A -> a.b }
+            registerContextTranslator { b: B -> b.c }
+            registerContextTranslator { c: C -> c.a }
+        }
+
+        val a = A(null, "test")
+        val b = B(null, 42)
+        val c = C(null, 'S')
+        a.b = b
+        b.c = c
+        c.a = a
+
+        val str1: String = kodein.on(b).instance()
+        val str2: String = kodein.on(c).instance()
+        val int1: Int = kodein.on(a).instance()
+        val int2: Int = kodein.on(c).instance()
+        val char1: Char = kodein.on(a).instance()
+        val char2: Char = kodein.on(b).instance()
+
+        assertAllEqual("test", str1, str2)
+        assertAllEqual(42, int1, int2)
+        assertAllEqual('S', char1, char2)
+    }
+
+    @Test fun test16_09_AbstractContextTranslatorAbstractScope() {
+        abstract class AbstractSession(val id: String)
+        class SessionImpl(id: String) : AbstractSession(id)
+        abstract class AbstractRequest(val session: SessionImpl)
+        class RequestImpl(session: SessionImpl) : AbstractRequest(session)
+
+        val sessionScope = object : Scope<AbstractSession> {
+            val registries = HashMap<String, ScopeRegistry>()
+            override fun getRegistry(context: AbstractSession) = registries.getOrPut(context.id, ::StandardScopeRegistry)
+        }
+
+        val kodein = Kodein {
+            bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
+            registerContextTranslator { r: AbstractRequest -> r.session }
+        }
+
+        val session = SessionImpl("sid")
+        val request = RequestImpl(session)
+
+        val c: CloseableData by kodein.on(request).instance()
+        assertFalse(c.closed)
+        sessionScope.registries[session.id]!!.clear()
+        assertTrue(c.closed)
     }
 
     @Test fun test17_00_ExplicitOverride() {

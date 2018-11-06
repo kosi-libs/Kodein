@@ -4,9 +4,9 @@ interface IPerson { val name: String? }
 
 data class Person(override val name: String? = null ) : IPerson
 
-data class A(val b: B?)
-data class B(val c: C?)
-data class C(val a: A?)
+data class A(var b: B?, val str: String = "")
+data class B(var c: C?, val int: Int = 0)
+data class C(var a: A?, val char: Char = ' ')
 
 interface IName {
     val firstName: String
