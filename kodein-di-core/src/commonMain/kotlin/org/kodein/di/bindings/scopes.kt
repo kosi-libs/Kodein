@@ -215,7 +215,7 @@ internal class CompositeContextTranslator<in C, I, S>(val src: ContextTranslator
  * @param BC The Binding Context: That's the context that is given by the scope to the bindings.
  *   It is often the same as [EC], in which case you should use [SimpleScope] instead.
  */
-interface Scope<C> {
+interface Scope<in C> {
 
     /**
      * Get a registry for a given context.
@@ -225,8 +225,6 @@ interface Scope<C> {
      * @return The registry associated with the given context.
      */
     fun getRegistry(context: C): ScopeRegistry
-
-    fun scopeTranslators(): Iterable<ContextTranslator<*, C>> = emptyList()
 }
 
 /**

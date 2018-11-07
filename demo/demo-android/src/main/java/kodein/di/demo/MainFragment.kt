@@ -1,23 +1,22 @@
 package kodein.di.demo
 
-import android.app.Fragment
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import kodein.di.demo.coffee.Coffee
 import kodein.di.demo.coffee.Kettle
+import kotlinx.android.synthetic.main.fragment_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.KodeinContext
-import org.kodein.di.android.closestKodein
+import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
 class MainFragment : Fragment(), KodeinAware {
-
-    override val kodeinContext: KodeinContext<*> get() = kcontext(activity)
 
     override val kodein by closestKodein()
 
@@ -25,8 +24,6 @@ class MainFragment : Fragment(), KodeinAware {
     val coffeeMaker: Kettle<Coffee> by instance()
 
     val log: Logger by instance()
-
-    val textView: TextView by lazy { activity.findViewById<TextView>(R.id.text) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,11 +35,11 @@ class MainFragment : Fragment(), KodeinAware {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         log.callback = {
-            textView.text = log.text
+            text.text = log.text
         }
 
         log.log("Starting to brew coffee using $coffeeMaker")

@@ -928,10 +928,14 @@ Dependency recursion:
         val session = Session("sid")
         val request = Request(session)
 
-        val kodein = Kodein {
+        val parentKodein = Kodein {
             bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
             registerContextTranslator { r: Request -> r.session }
             registerContextFinder { request }
+        }
+
+        val kodein = Kodein {
+            extend(parentKodein)
         }
 
         val c: CloseableData by kodein.instance()

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package org.kodein.di.android
 
 import android.app.Activity
@@ -5,34 +7,44 @@ import android.app.Fragment
 import android.os.Bundle
 import org.kodein.di.bindings.*
 
-object AndroidComponentsWeakScope : WeakContextScope<Any?, Any?>({ MultiItemScopeRegistry() })
-
-/**
- * A scope for Android components.
- */
-@Deprecated("Use AndroidWeakComponentScope or AndroidWeakComponentScope<T>()", ReplaceWith("AndroidComponentsWeakScope<T>()"))
-fun <T: Any> androidScope() = AndroidComponentsWeakScope<T>()
+// Deprecated since Kodein 6.0
+@Deprecated("Use WeakContextScope.of()")
+object AndroidComponentsWeakScope : WeakContextScope<Any?>()
 
 private const val SCOPE_FRAGMENT_TAG = "org.kodein.android.ActivityRetainedScope.RetainedScopeFragment"
 
 /**
  * A scope that allows to get an activity-scoped singleton that's independent from the activity restart.
  */
-open class ActivityRetainedScope private constructor(private val repositoryType: ScopeRepositoryType) : SimpleScope<Activity, Any?> {
+open class ActivityRetainedScope private constructor(private val registryType: RegistryType) : SimpleScope<Activity> {
 
-    object Key {
-        const val scopeRepositoryTypeOrdinal = "org.kodein.di.android.scopeRepositoryTypeOrdinal"
+    private enum class RegistryType {
+        Standard { override fun new() = StandardScopeRegistry() },
+        SingleItem { override fun new() = SingleItemScopeRegistry() };
+        abstract fun new(): ScopeRegistry
     }
 
-    companion object multiItem: ActivityRetainedScope(ScopeRepositoryType.MULTI_ITEM)
+    object Keys {
+        const val registryTypeOrdinal = "org.kodein.di.android.registryTypeOrdinal"
+    }
 
-    object singleItem: ActivityRetainedScope(ScopeRepositoryType.SINGLE_ITEM)
+    companion object MultiItem: ActivityRetainedScope(RegistryType.Standard) {
+        // Deprecated since 6.0
+        @Deprecated("use MultiItem", replaceWith = ReplaceWith("MultiItem"))
+        val multiItem = MultiItem
+
+        // Deprecated since 6.0
+        @Deprecated("use SingleItem", replaceWith = ReplaceWith("SingleItem"))
+        val singleItem = SingleItem
+    }
+
+    object SingleItem: ActivityRetainedScope(RegistryType.SingleItem)
 
     /** @suppress */
     class RetainedScopeFragment: Fragment() {
         val registry by lazy {
-            val ordinal = arguments.getInt(Key.scopeRepositoryTypeOrdinal)
-            newScopeRegistry<Any?>(ScopeRepositoryType.values()[ordinal])
+            val ordinal = arguments.getInt(Keys.registryTypeOrdinal)
+            RegistryType.values()[ordinal].new()
         }
 
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,12 +58,12 @@ open class ActivityRetainedScope private constructor(private val repositoryType:
         }
     }
 
-    override fun getRegistry(receiver: Any?, context: Activity): ScopeRegistry<Any?> {
+    override fun getRegistry(context: Activity): ScopeRegistry {
         val fragment = context.fragmentManager.findFragmentByTag(SCOPE_FRAGMENT_TAG) as? RetainedScopeFragment ?: run {
             synchronized(context) {
                 context.fragmentManager.findFragmentByTag(SCOPE_FRAGMENT_TAG) as? RetainedScopeFragment ?: run {
                     RetainedScopeFragment().also {
-                        it.arguments = Bundle().apply { putInt("scope", repositoryType.ordinal) }
+                        it.arguments = Bundle().apply { putInt(Keys.registryTypeOrdinal, registryType.ordinal) }
                         context.fragmentManager.beginTransaction().add(it, SCOPE_FRAGMENT_TAG).commit()
                     }
                 }
@@ -61,6 +73,3 @@ open class ActivityRetainedScope private constructor(private val repositoryType:
     }
 
 }
-
-@Deprecated("use ActivityRetainedScope", ReplaceWith("ActivityRetainedScope"), DeprecationLevel.WARNING)
-val activityRetainedScope: ActivityRetainedScope get() = ActivityRetainedScope

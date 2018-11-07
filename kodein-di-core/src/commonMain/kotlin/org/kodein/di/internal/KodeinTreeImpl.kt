@@ -31,14 +31,14 @@ private typealias TagTree = MutableMap<Any?, Kodein.Key<*, *, *>>
 internal class KodeinTreeImpl(
         map: Map<Kodein.Key<*, *, *>, List<KodeinDefining<*, *, *>>>,
         override val externalSource: ExternalSource?,
-        contextTranslators: List<ContextTranslator<*, *>>
+        override val registeredTranslators: List<ContextTranslator<*, *>>
 ): KodeinTree {
     private val _cache: MutableMap<Kodein.Key<*, *, *>, Triple<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>, ContextTranslator<*, *>?>> = HashMap()
     private val _typeTree: BoundTypeTree = HashMap()
 
     override val bindings: BindingsMap
 
-    private val translators = contextTranslators.toMutableList()
+    private val translators = ArrayList(registeredTranslators)
 
     init {
         map.forEach { (key, bindings) ->

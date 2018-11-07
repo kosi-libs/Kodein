@@ -13,6 +13,8 @@ interface KodeinTree {
      */
     val bindings: BindingsMap
 
+    val registeredTranslators: List<ContextTranslator<*, *>>
+
     /**
      * The external source that will be queried if no bindings are found for a given request.
      */

@@ -8,7 +8,7 @@ import android.support.v4.content.Loader
 /**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
-fun Fragment.closestKodein() = closestKodein { activity!! }
+fun Fragment.closestKodein() = closestKodein { requireActivity() }
 
 /**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).

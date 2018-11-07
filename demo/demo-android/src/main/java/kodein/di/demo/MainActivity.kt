@@ -3,6 +3,7 @@ package kodein.di.demo
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import kodein.di.demo.coffee.Coffee
 import kodein.di.demo.coffee.Kettle
 import kodein.di.demo.coffee.thermosiphonModule
@@ -12,7 +13,7 @@ import org.kodein.di.*
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
-class MainActivity : Activity(), KodeinAware {
+class MainActivity : AppCompatActivity(), KodeinAware {
 
     override val kodeinContext: KodeinContext<*> = kcontext(this)
 
@@ -35,7 +36,7 @@ class MainActivity : Activity(), KodeinAware {
         if(savedInstanceState == null) {
             log.log("Going to brew coffee using $coffeeMaker")
 
-            fragmentManager.beginTransaction().add(R.id.fragment, MainFragment()).commit()
+            supportFragmentManager.beginTransaction().add(R.id.fragment, MainFragment()).commit()
         }
 
         Log.i("Kodein", "=====================-BINDINGS-=====================")

@@ -5,8 +5,7 @@ import java.lang.reflect.*
 private abstract class TypeStringer {
 
     fun dispString(type: Type, skipStars: Boolean = false): String {
-        val jvmType = type.javaType
-        return when (jvmType) {
+        return when (val jvmType = type.javaType) {
             is Class<*> -> dispName(jvmType, skipStars)
             is ParameterizedType -> {
                 val cls = jvmType.rawType as Class<*>
@@ -122,8 +121,7 @@ fun Type.fullDispString(): String = FullTypeStringer.dispString(this)
  * Returns the erased name of a type (e.g. the type name without it's generic parameters).
  */
 fun Type.simpleErasedName(): String {
-    val jvmType = javaType
-    return when (jvmType) {
+    return when (val jvmType = javaType) {
         is Class<*> -> (jvmType.enclosingClass?.simpleErasedName()?.plus(".") ?: "") + jvmType.simpleName
         is ParameterizedType -> jvmType.rawType.simpleErasedName()
         is GenericArrayType -> jvmType.genericComponentType.simpleErasedName()
@@ -137,8 +135,7 @@ fun Type.simpleErasedName(): String {
  * Returns the fully qualified erased name of a type (e.g. the type name without it's generic parameters).
  */
 fun Type.fullErasedName(): String {
-    val jvmType = javaType
-    return when (jvmType) {
+    return when (val jvmType = javaType) {
         is Class<*> -> jvmType.canonicalName._magic()
         is ParameterizedType -> jvmType.rawType.fullErasedName()
         is GenericArrayType -> jvmType.genericComponentType.fullErasedName()

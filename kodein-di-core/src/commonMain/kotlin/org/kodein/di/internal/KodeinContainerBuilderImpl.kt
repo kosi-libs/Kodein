@@ -147,6 +147,8 @@ internal class KodeinContainerBuilderImpl(
 
             bindingsMap[key] = newBindings
         }
+
+        translators += container.tree.registeredTranslators
     }
 
     override fun subBuilder(allowOverride: Boolean, silentOverride: Boolean): KodeinContainerBuilderImpl {

@@ -210,8 +210,7 @@ internal class ParameterizedTypeToken<T>(val trueType: Type) : JVMTypeToken<T>()
     override fun isGeneric() = true
 
     private fun Type._checkIsReified(disp: Any) {
-        val jvmType = javaType
-        when (jvmType) {
+        when (val jvmType = javaType) {
             is Class<*> -> {}
             is ParameterizedType -> for (arg in jvmType.actualTypeArguments) arg._checkIsReified(disp)
             is GenericArrayType -> jvmType.genericComponentType._checkIsReified(disp)
@@ -250,8 +249,7 @@ internal class ParameterizedTypeToken<T>(val trueType: Type) : JVMTypeToken<T>()
 
     @Suppress("UNCHECKED_CAST")
     override fun getSuper(): List<TypeToken<*>> {
-        val jvmType = jvmType
-        val extends = when (jvmType) {
+        val extends = when (val jvmType = jvmType) {
             is ParameterizedType -> (jvmType.rawType as Class<T>)._getClassSuperTT()
             else -> null
         }
