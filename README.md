@@ -1,4 +1,4 @@
-<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/5.3/Kodein-DI-logo.png" width="700">
+<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/6.0/Kodein-DI-logo.png" width="700">
 
 [![Kotlin 1.2.70](https://img.shields.io/badge/Kotlin-1.2.70-blue.svg)](http://kotlinlang.org)
 [![Konan 0.9.2](https://img.shields.io/badge/Konan-0.9.2-blue.svg)](https://github.com/JetBrains/kotlin-native)

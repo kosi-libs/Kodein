@@ -4,13 +4,13 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 5.3.0
-:branch: 5.3
+:version: 6.0.0
+:branch: 6.0
 
-This guide will help you migrate from Kodein 4 to Kodein 5.
+This guide will help you migrate from Kodein 4 to Kodein 5+.
 
 - The first part explains the changes and their reasoning.
-- The second part gives steps to follow to port your code to Kodein 5.
+- The second part gives steps to follow to port your code to Kodein 5+.
 
 == Changes
 

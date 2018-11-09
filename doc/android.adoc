@@ -4,8 +4,8 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 5.3.0
-:branch: 5.3
+:version: 6.0.0
+:branch: 6.0
 
 You can use Kodein as-is in your Android project or use the util library `kodein-android`.
 
@@ -187,7 +187,7 @@ val kodein = Kodein {
 ----
 <1> `context` is of type `Activity` because we are using the `WeakContextScope.of<Activity>()`.
 
-CAUTION: This scope is *NOT* compatible with `ScopeCloseable`.
+CAUTION: WeakContextScope is *NOT* compatible with `ScopeCloseable`.
 
 
 === Activity retained scope

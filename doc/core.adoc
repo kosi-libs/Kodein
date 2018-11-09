@@ -4,8 +4,8 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 5.3.0
-:branch: 5.3
+:version: 6.0.0
+:branch: 6.0
 
 image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-DI-logo.png[KODEIN, 700, 233]
 
@@ -1442,10 +1442,10 @@ val kodein = Kodein {
 
 [NOTE]
 ====
-Kodein does not provide scopes by default, but:
+Kodein provides only 1 scope by default, but:
 
 - It is easy to create your own scopes.
-- All `kodein-framework-*` modules provide scopes that are specific to the target framework.
+- All `kodein-framework-*` modules provide more scopes that are specific to the target framework.
 ====
 
 Scopes are derived from a context variable.
@@ -1501,13 +1501,42 @@ The `ScopeCloseable.close` method will only be called:
 Yes, you can...
 
 [source, kotlin]
-.Example:
+.Example: JVM scoped weak references.
 ----
 val kodein = Kodein {
     bind<User>() with scoped(requestScope).singleton(ref = weakReference) {
         instance<DataSource>().createUser(context.session.id)
     } <1>
 }
+----
+
+
+==== Weak Context Scope
+
+Kodein provides the `WeakContextScope` scope.
+This is a particular scope, as the context it holds on are weak references.
+
+CAUTION: WeakContextScope is *NOT* compatible with `ScopeCloseable`.
+
+You can use this scope when it makes sense to have a scope on a context that is held by the system for the duration of its life cycle.
+
+[source, kotlin]
+.Example: controller scoped to an Activity with WeakContextScope.
+----
+val kodein = Kodein {
+    bind<Controller>() with scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } <1>
+}
+----
+<1> `context` is of type `Activity` because we are using the `WeakContextScope.of<Activity>()`.
+
+`WeakContextScope.of` will always return the same scope, which you should never clean!
+
+If you need a compartimentalized scope which you can clean, you can create a new `WeakContextScope`:
+
+[source, kotlin]
+.Example: creating a WeakContextScope.
+----
+val activityScope = WeakContextScope<Activity>()
 ----
 
 

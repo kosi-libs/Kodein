@@ -1,3 +1,15 @@
+#### 6.0.0 (09-11-2018)
+
+- CORE
+  * Kotlin 1.3.0
+  * Simplified `Scope` interface
+  * Introducing context translators & context finders
+  * Introducing sub scopes
+
+- NATIVE
+  * New multiplatform gradle plugin
+
+
 #### 5.3.0 (03-10-2018)
 
 - CORE

@@ -99,7 +99,7 @@ class StandardScopeRegistry : ScopeRegistry() {
     fun isEmpty(): Boolean = _cache.isEmpty()
 }
 
-// Deprecated since 5.4.0
+// Deprecated since 6.0
 @Deprecated("MultiItemScopeRegistry has been renamed StandardScopeRegistry", ReplaceWith("StandardScopeRegistry"))
 typealias MultiItemScopeRegistry = StandardScopeRegistry
 
@@ -171,12 +171,14 @@ class SingleItemScopeRegistry : ScopeRegistry() {
     }
 }
 
+// Deprecated since 6.0
 @Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors")
 enum class ScopeRepositoryType {
     MULTI_ITEM,
     SINGLE_ITEM
 }
 
+// Deprecated since 6.0
 @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
 @Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors")
 fun <A> newScopeRegistry(type: ScopeRepositoryType) = when (type) {
@@ -230,7 +232,7 @@ interface Scope<in C> {
 /**
  * Simple [Scope] where the Environment Context and the Binding Context do not differ.
  */
-//Deprecated since 5.4.0
+//Deprecated since 6.0
 @Deprecated("Scope itself has been simplified", ReplaceWith("Scope<C>"))
 typealias SimpleScope<C> = Scope<C>
 
@@ -245,7 +247,7 @@ open class UnboundedScope(val registry: ScopeRegistry = StandardScopeRegistry())
     override fun close() = registry.clear()
 }
 
-// Deprecated since 5.4.0
+// Deprecated since 6.0
 @Deprecated("BasicScope has been renamed UnboundedScope", ReplaceWith("UnboundedScope"))
 typealias BasicScope = UnboundedScope
 
