@@ -595,162 +595,6 @@ val kodein = Kodein {
 <1> ManagerImpl is given a Kodein instance.
 
 
-== Creating from environment
-
-Binding functions have access to the environment where the bound type is retrieved to be able to create it accordingly.
-
-[.lead]
-A binding function has access to two types of environment variables: the receiver and the context.
-
-- The receiver is the object that will receive the dependency.
-- The context is an object that is explicitly defined by the programmer for this retrieval.
-
-
-=== Receiver
-
-The receiver is the object that will receive the dependency.
-It's type is `Any?`.
-It is non `null` only when using retrieval via property delegate (not using injection), e.g. when a <<kodein-aware,KodeinAware>> class retrieves its own dependencies.
-
-[source, kotlin]
-.Example: creating a controller from it's view
-----
-val kodein = Kodein {
-    bind<MainController>() with provider {
-        val view = receiver as? MainView ?: throw IllegalStateException("MainController needs a MainView receiver")
-        MainController(view)
-    }
-}
-----
-
-WARNING: The receiver is *not* accessible to binding functions of bindings that keep the created object (e.g. `singleton` and `multiton`).
-         Because the created objects may be re-used by a different receiver, the receiver _at the creation_ is not accessible.
-
-Note that it becomes really easy to create a `Logger` binding that uses the receiver class as the log tag:
-
-[source, kotlin]
-.Example: a Logger binding
-----
-val kodein = Kodein {
-    bind<Logger>() with provider {
-        val tag = receiver?.javaClass?.simpleName ?: throw IllegalStateException("A Logger needs a receiver")
-        LoggerFactory.newInstance(tag)
-    }
-}
-----
-
-
-=== Context
-
-The context is an object that is explicitly defined by the programmer for this retrieval.
-It's type is `C: Any?`.
-It is null by default unless explicitly defined by the user.
-
-There are two very important differences between a tag and a context:
-
-- The tag *instance* identifies the binding but can not be used in the binding function.
-- The context *type* identifies the binding and it's *instance* can be used in the binding function.
-
-There are also two very important differences between a factory argument and a context:
-
-- The context is defined _before_ retrieving the binding function while the factory argument is the last known variable.
-- A context is usually global to an entire class while a factory argument is local to a retrieval.
-
-TIP: When in doubt, use a factory with an argument instead of a provider with a context.
-
-[source, kotlin]
-.Example: binding in a context
-----
-val kodein = Kodein {
-    bind<Writer>() with contexted<Request>.provider { context.response.writer } <1>
-}
-----
-<1> note that `context` is already of type `Request`.
-
-
-=== Scope
-
-[NOTE]
-====
-Kodein does not provide scopes by default, but:
-
-- It is easy to create your own scopes.
-- All `kodein-framework-*` modules provide scopes that are specific to the target framework.
-====
-
-Scopes are derived from the context variable. They allow a singleton or multiton objects to exist multiple times in different contexts. +
-They are of type `Scope<EC, BC, A>` where:
-
-- EC is the context provided by
-
-Think, for example, of a session object inside a web server.
-There can be only one Session per Request, so we can say that a Session is a singleton inside a Scope defined by a Request.
-Therefore, the provided function will be called *once per context*.
-
-[source, kotlin]
-.Example: binding the Session type in a Request context
-----
-val kodein = Kodein {
-    bind<Session>() with scoped(requestScope).singleton { context.openSession() } <1>
-}
-----
-<1> note that `requestScope` does not really exist, it is an example.
-
-In this example, `requestScope` is of type `Scope<Request, *, *>`, so to access this binding, the user will have to explicitly define a `Request` context.
-
-
-==== Automatic scopes
-
-Some scopes are of type `Scope<Any?, *, *>`.
-Because the default context is of type `Any?`, these scopes need no explicit context, but are capable of finding the context by themselves (usually from a static environment).
-
-In the previous example, `requestScope` could also be of type `Scope<Any?, Request, Any?>` (`Any?` being the request provided by the user to Kodein, `Request` being the context provided by Kodein to the binding function).
-The difference being that the user would *not* have to define an explicit context.
-
-[TIP]
-====
-The `Scope` type has three type parameters:
-
-- The first is the type of the context provided by the retriever (your code) to the scope.
-- The second is the type of the context by the scope to the factory function.
-- The third is the type of parameter factories scoped with this scope can take.
-====
-
-[[scope-closeable]]
-==== Scope closeable
-
-By default, a Singleton or a Multiton value will never expire.
-However, the purpose of a Scope is to handle the lifecycle of a long lived value.
-Therefore, it is possible for a scoped Singleton or Multiton value to expire (most of the time because the scope itself expires).
-For example, in android's `ActivityRetainedScope`, scoped values will only live the duration of the activity.
-
-If a value implements `ScopeCloseable`, it's `close` function will be called when the value is removed from the scope (or when the scope itself expires).
-
-[CAUTION]
-====
-The `ScopeCloseable.close` method will only be called:
-
-- By scopes that explicitely *support* that feature (not all scopes do).
-- If the value does *not* use `WeakRef` or `SoftRef` references.
-  If the value does, the close method _may or may not_ be called (it will be called if the reference has not expired).
-====
-
-
-==== JVM references in scopes
-
-Yes, you can...
-
-[source, kotlin]
-.Example:
-----
-val kodein = Kodein {
-    bind<User>() with scoped(requestScope).singleton(ref = weakReference) {
-        instance<DataSource>().createUser(context.session.id)
-    } <1>
-}
-----
-
-
 == Bindings separation
 
 === Modules
@@ -1561,6 +1405,223 @@ class JavaClass {
 ====
 
 
+== Using the environment
+
+Binding functions have access to the environment where the bound type is retrieved to be able to create it accordingly.
+
+=== Context
+
+[.lead]
+This environment is represented as a *context* variable.
+
+The context is an object that is explicitly defined by the programmer for this retrieval or the receiving object when none is explicitely defined.
+
+There are two very important differences between a tag and a context:
+
+- The tag *instance* identifies the binding but can not be used in the binding function.
+- The context *type* identifies the binding and it's *instance* can be used in the binding function.
+
+There are also two very important differences between a factory argument and a context:
+
+- The context is defined _before_ retrieving the binding function while the factory argument is the last known variable.
+- A context is usually global to an entire class while a factory argument is local to a retrieval.
+
+TIP: When in doubt, use a factory with an argument instead of a provider with a context.
+
+[source, kotlin]
+.Example: binding in a context
+----
+val kodein = Kodein {
+    bind<Writer>() with contexted<Request>.provider { context.response.writer } <1>
+}
+----
+<1> note that `context` is already of type `Request`.
+
+
+=== Scope
+
+[NOTE]
+====
+Kodein does not provide scopes by default, but:
+
+- It is easy to create your own scopes.
+- All `kodein-framework-*` modules provide scopes that are specific to the target framework.
+====
+
+Scopes are derived from a context variable.
+They allow a singleton or multiton objects to exist multiple times in different contexts. +
+They are of type `Scope<C>` where `C` is the context type.
+
+Think, for example, of a session object inside a web server.
+We can say that there can be only one user per session, and therefore define a `User` singleton scoped in a session.
+Therefore, the provided function will be called *once per session*.
+
+[source, kotlin]
+.Example: binding a User in a Session scope.
+----
+val kodein = Kodein {
+    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) } <1>
+}
+----
+<1> note that `SessionScope` does not really exist, it is an example.
+
+In this example, `SessionScope` is of type `Scope<Session>`, so to access this binding, the user will either have retrieve it inside the session object or explicitly define a `Session` context:
+
+[source, kotlin]
+.Example: binding in a context
+----
+val user by kodein.on(session).instance()
+----
+
+NOTE: Please read the <<scope-creation>> section if you want to create your own scopes.
+
+
+[[scope-closeable]]
+==== Scope closeable
+
+By default, a Singleton or a Multiton value will never expire.
+However, the purpose of a Scope is to handle the lifecycle of a long lived value.
+Therefore, it is possible for a scoped Singleton or Multiton value to expire (most of the time because the scope itself expires).
+For example, in android's `ActivityRetainedScope`, scoped values will only live the duration of the activity.
+
+If a value implements `ScopeCloseable`, it's `close` function will be called when the value is removed from the scope (or when the scope itself expires).
+
+[CAUTION]
+====
+The `ScopeCloseable.close` method will only be called:
+
+- By scopes that explicitely *support* that feature (not all scopes do, all scopes provided by the Kodein Framework do *except WeakContextScope*).
+- If the value does *not* use `WeakRef` or `SoftRef` references. +
+  If the value does, the close method _may or may not_ be called (it will be called if the reference has not expired).
+====
+
+
+==== JVM references in scopes
+
+Yes, you can...
+
+[source, kotlin]
+.Example:
+----
+val kodein = Kodein {
+    bind<User>() with scoped(requestScope).singleton(ref = weakReference) {
+        instance<DataSource>().createUser(context.session.id)
+    } <1>
+}
+----
+
+
+==== Context translators
+
+Let's get back to the web server example.
+There is one session per user, so we have bound a `User` singleton inside a `Session` scope.
+As each `Request` is associated with a `Session`, you can register a context translator that will make any binding that needs a `Session` context work with a `Request` context:
+
+[source, kotlin]
+.Example:
+----
+val kodein = Kodein {
+    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) }
+
+    registerContextTranslator { r: Request -> r.session }
+}
+----
+
+This allows you to retrieve a `User` instance:
+
+- When there is a global `Request` context:
++
+[source, kotlin]
+.Example: retriving with a global context
+----
+class MyController(override val kodein: Kodein, request: Request): KodeinAware {
+    override val kodeinContext = kcontext(request)
+
+    val user: User by instance()
+}
+----
+- When the retrieval happens on a `Request` itself:
++
+[source, kotlin]
+.Example: retriving with a global context
+----
+class MySpecialRequest(override val kodein: Kodein): Request(), KodeinAware {
+    val user: User by instance()
+}
+----
+
+
+==== Context finder
+
+A context finder is a similar to context translator, except that it gets the context from a global context.
+
+For example, if you are in a thread-based server where each request is assigned a thread (are people still doing those?!?), you could get the session from a global:
+
+[source, kotlin]
+.Example:
+----
+val kodein = Kodein {
+    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) }
+
+    registerContextFinder { ThreadLocalSession.get() }
+}
+----
+
+This allows to access a `User` object wihout specifying a context.
+
+TIP: Having an other type of context declared will not block from using a context finder.
+
+
+[[scope-creation]]
+=== Scope creation
+
+Scoped singletons/multitons are bound to a context and live while that context exists.
+
+To define a scope that can contain scoped singletons or multitons, you must define an object that implements the `Scope` interface.
+This object will be responsible for providing a `ScopeRegistry` according to a context.
+It should always return the same `ScopeRegistry` when given the same context object.
+A standard way of doing so is to use the `userData` property of the context, if it has one, or else to use a `WeakHashMap<C, ScopeRegistry>`.
+
+[source, kotlin]
+.Example: a simple session scope
+----
+object SessionScope : Scope<Session> { <1>
+    override fun getRegistry(context: Session): ScopeRegistry =
+            context.userData as? ScopeRegistry
+                ?: StandardScopeRegistry().also { context.userData = it } <2>
+}
+----
+<1> The scope's context type is `Session`.
+<2> Creates a `ScopeRegistry` and attach it to the `Session` if there is none.
+
+IMPORTANT: Scope providers should also provide standard context translators. +
+           In this example, we should provide, along with `sessionScope` a module providing the `Request` to `Session` context translator.
+
+[[scope-registry]]
+==== Scope registry
+
+The `ScopeRegistry` is responsible for holding value instances.
+It is also responsible for calling the `close` methods on object that are `ScopeCloseable` when they are removed from the registry.
+
+IMPORTANT: To have your scope compatible with `ScopeCloseable` values, make sure to `clean` the registry when the scope expires.
+
+There are two standard implementations of `ScopeRegistry`:
+
+
+===== StandardScopeRegistry
+
+This is the "classic" expected `ScopeRegistry` behaviour.
+
+
+===== SingleItemScopeRegistry
+
+This is a particular `ScopeRegistry` implementation : it will only hold one item and replace the held item if the binding asks for an instance of another binding.
+
+This means that a Multiton scoped with a Scope that uses a `SingleItemScopeRegistry` will actually hold only one instance: the one corresponding to the last argument.
+
+CAUTION: You should NOT use this registry unless you know exactly WHAT you are doing, and WHY you are doing it.
+
+
 == Multi-binding
 
 Kodein allows multi bindings via a binding set.
@@ -1710,9 +1771,7 @@ Kodein$DependencyLoopException: Dependency recursion:
 <3> `Repository` with the tag "users" depends on `Database`, *we have found the dependency loop!*.
 
 
-== Advanced usage
-
-=== OnReady callbacks
+== OnReady callbacks
 
 You can define callbacks to be called once the kodein instance is ready and all bindings are defined.
 This can be useful to do some "starting" jobs.
@@ -1731,77 +1790,7 @@ val appModule = Kodein.Module(name = "app") {
 ----
 
 
-=== Create your own scopes
-
-==== Scoped singletons
-
-Scoped singletons/multitons are singletons/multitons that are bound to a context and live while that context exists.
-
-To define a scope that can contain scoped singleton, you must define an object that implements the `Scope` interface.
-This object will be responsible for providing a `ScopeRegistry` according to a context.
-It should always return the same `ScopeRegistry` when given the same context object.
-A standard way of doing so is to use the `userData` property of the context, if it has one, or else to use a `WeakHashMap<C, ScopeRegistry>`.
-
-[source, kotlin]
-.Example: a simple request scope
-----
-object RequestScope : SimpleScope<Request> { <1>
-    override fun getRegistry(receiver: Any?, context: Request): ScopeRegistry =
-            context.userData as? ScopeRegistry
-                    ?: MultiItemScopeRegistry().also { context.userData = it } <2>
-}
-----
-<1> The scope's context type is `Request`.
-<2> Creates a `ScopeRegistry` in the context `Request` if there is none.
-
-
-[[scope-registry]]
-==== Scope registry
-
-The `ScopeRegistry` is responsible for holding value instances.
-It is also responsible for calling the `close` methods on object that are `ScopeCloseable` when they are removed from the registry.
-
-TIP: To have your scope compatible with `ScopeCloseable` values, make sure to `clean` the registry when the scope expires.
-
-A `ScopeRegistry` associates a `ScopeRegistry.Key` to value instance.
-It is the responsibility of the binding to provide the same `ScopeReference.Key` when it needs the same instance.
-
-There are two standard implementations of `ScopeRegistry`:
-
-
-===== MultiItemScopeRegistry
-
-This is the "classic" expected `ScopeRegistry` behaviour: will hold one value instance by `ScopeKey`.
-
-
-===== SingleItemScopeRegistry
-
-This is a particular `ScopeRegistry` implementation : it will only hold one item and replace the held item if the binding asks for an instance with a new `ScopeRegistry.Key`.
-
-This means that a Multiton scoped with a Scope that uses a `SingleItemScopeRegistry` will actually hold only one instance: the one corresponding to the last argument.
-
-
-==== Auto Scopes
-
-Scoped singletons are not always ideal since you need the context to retrieve any object.
-Sometimes, the context is static.
-For these times, you can use a scope that finds it context automatically.
-
-[source, kotlin]
-.Example: a simple request scope
-----
-object treadRequestScope : Scope<Any?, Request> { <1>
-    override fun getBindingContext(envContext: Any?): Request = Request.threadRequest <2>
-
-    override fun getRegistry(receiver: Any?, envContext: Any?, bindContext: Request): ScopeRegistry =
-            bindContext.userData as? ScopeRegistry ?: MultiItemScopeRegistry().also { bindContext.userData = it }
-}
-----
-<1> The scope's environment context type is `Any?`, which actually means "no context".
-<2> Returns the binding context, in this case: the Request.
-
-
-=== Add an External Source
+== External Source
 
 An external source is responsible for providing an answer when Kodein cannot find one.
 
@@ -1849,9 +1838,9 @@ Note that if no argument is provided, the argument to the lambda will be `Unit`.
 
 
 [[erased-version]]
-=== Erased version pitfalls
+== Erased version pitfalls
 
-==== The type erasure problem
+=== The type erasure problem
 
 When using the `generic` JVM version on the, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `kodein.instance<List<String>>()` and `kodein.instance<List<Int>>()` will yield two different list.
@@ -1863,7 +1852,7 @@ To improve performance, you can use the `erased` JVM Kodein version, which is fa
 Furthermore, on Javascript and Native platforms, there's no choice: `erased` is the only version available!
 
 
-==== Using generic and erased function forms
+=== Using generic and erased function forms
 
 Each kodein function that handles a type exists in two form: as inline (lowercased first letter) and as regular function (uppercased first letter). +
 For example, the `kodein.instance` function also exists as `kodein.Instance`.
@@ -1883,7 +1872,7 @@ For example, the `kodein.instance()` function is an alias to `kodein.Instance(ge
 So, when you know that you inject a type that is *not generic*, you can use `kodein.Instance(erased())`.
 
 
-==== Erased parameterized generic types
+=== Erased parameterized generic types
 
 When using the `erased` function or using erased by default (either by choice on the JVM or by necessity elsewhere), you cannot represent a generic type. +
 For example, `erased<Set<String>>` will yield a `TypeToken` representing `Set<*>`.
@@ -1902,16 +1891,16 @@ NOTE: The type parameter themselves are erased, meaning that you cannot represen
       You can, however, construct your own `CompositeTypeToken` to represent such a type.
 
 
-=== Bind the same type to different factories
+== Bind the same type to different factories
 
 Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are bound with different tags", I lied.
-Because each binding is actually a _factory_, the bindings are not `([BindType], [Tag])` but actually `([BindType], [ArgType], [Tag])` (note that providers and singletons are bound as `([BindType], Unit, [Tag])`).
+Because each binding is actually a _factory_, the binding tuples are not `([BindType], [Tag])` but actually `([ContextType], [BindType], [ArgType], [Tag])` (note that providers and singletons are bound as `([BindType], Unit, [Tag])`).
 This means that any combination of these three information can be bound to it's own factory, which in turns means that you can bind the same type without tagging to different factories.
 
 CAUTION: Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
 
 
-=== Hack the container!
+== Hack the container!
 
 The KodeinContainer is the sacred Kodein object that contains all bindings and is responsible for retrieval.
 You can access it with `kodein.container`.
@@ -1922,14 +1911,13 @@ In fact, all Kodein functions are proxies to this container API.
 When defining bindings, in the `Kodein.Builder`, you can access the `container` property to bind factories to a `Kodein.Key` or a `Kodein.Bind`.
 
 
-=== Tag vs context vs receiver vs argument
+=== Tag vs context vs argument
 
 [options="header"]
 |=======
 | &nbsp;     | Binding identification | accessible by the binding _itself_* | accessible by the binding function
 | *tag*      | instance               | no                                 | no
 | *context*  | type                   | yes                                | yes
-| *receiver* | no                     | yes                                | yes
 | *argument* | type                   | no                                 | yes
 |=======
 

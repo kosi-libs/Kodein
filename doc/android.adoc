@@ -31,12 +31,12 @@ Kodein offers support for:
 +
 [cols="1,2"]
 |=======
-| *Android only*               | `kodein-di-framework-android-core`
+| *Barebone Android*           | `kodein-di-framework-android-core`
 | *Android + Support library*  | `kodein-di-framework-android-support`
 | *Android + AndroidX library* | `kodein-di-framework-android-x`
 |=======
 +
-IMPORTANT: Either `kodein-di-generic-jvm` or `kodein-di-erased-jvm` *must* be declared in addition to the Kodein-Android package. +
+IMPORTANT: Either `kodein-di-generic-jvm` or `kodein-di-erased-jvm` *must* be declared in addition to the Kodein-Android package.
 +
 WARNING: If you are using `SupportFragment` in your application, then you *must* use either the `-support` or the `-x` package.
 
@@ -155,7 +155,7 @@ If you are retrieving these classes inside a non-Android class, you need to defi
 [source, kotlin]
 .Example: using kodein with a context to retrieve a LayoutInflater
 ----
-val inflater: LayoutInflater by kodein.on(context = getActivity()).instance()
+val inflater: LayoutInflater by kodein.on(getActivity()).instance()
 ----
 
 or
@@ -169,6 +169,64 @@ class MyController(androidContext: Context) : KodeinAware {
     val inflater: LayoutInflater by instance()
 }
 ----
+
+
+== Android scopes
+
+=== Component scopes
+
+Kodein provides a standard scope for any component (Android or not).
+The `WeakContextScope` will keep singletons and multiton instances as long as the context (= component) lives.
+
+[source, kotlin]
+.Example: using an Activity scope
+----
+val kodein = Kodein {
+    bind<Controller>() with scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } <1>
+}
+----
+<1> `context` is of type `Activity` because we are using the `WeakContextScope.of<Activity>()`.
+
+CAUTION: This scope is *NOT* compatible with `ScopeCloseable`.
+
+
+=== Activity retained scope
+
+Kodein-Android provides the `ActivityRetainedScope`, which is a scope that allows activity-scoped singletons or multitons that are independent from the activity restart.
+
+This means that for the same activity, you'll get the same instance, even if the activity restarts.
+
+CAUTION: This means that you *should never retain the activity* passed at creation because it may have been restarted and not valid anymore!
+
+[source, kotlin]
+.Example: using an Activity retained scope
+----
+val kodein = Kodein {
+    bind<Controller>() with scoped(ActivityRetainedScope).singleton { ControllerImpl() }
+}
+----
+
+NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?{branch}/core#scope-closeable[see documentation].
+
+
+=== Lifecycle scope
+
+Kodein-Android provides the `AndroidLifecycleScope`, which is a scope that allows activity-scoped singletons or multitons that are bound to a component lifecycle.
+It uses Android support Lifecycle, so you need to use Android support's `LifecycleOwner` components.
+
+Note that these lifecycles
+
+[source, kotlin]
+.Example: using an Activity retained scope
+----
+val kodein = Kodein {
+    bind<Controller>() with scoped(AndroidLifecycleScope<Activity>()).singleton { ControllerImpl(context) }
+}
+----
+
+NOTE: These lifecycles are *NOT* immune to activity restart due to configuration change.
+
+NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?{branch}/core#scope-closeable[see documentation].
 
 
 == Layered dependencies
@@ -225,63 +283,6 @@ The `closestKodein` function will always return the kodein of the closest parent
 In a `View` or a `Fragment`, for example, it will return the containing Activity's Kodein, if it defines one, else it will return the "global" Application Kodein.
 
 In the previous code example, if `MyActivity` contains Fragments, and that these fragments get their Kodein object via `closestKodein`, they will receive the `MyActivity` Kodein object, instead of the Application one.
-
-
-== Android scopes
-
-=== Component scopes
-
-Kodein-Android provides a standard scope for any android component:
-
-[source, kotlin]
-.Example: using an Activity scope
-----
-val kodein = Kodein {
-    bind<Controller>() with scoped(AndroidComponentsWeakScope<Activity>()).singleton { ControllerImpl(context) } <1>
-}
-----
-<1> `context` is of type `Activity` because we are using the `androidScope<Activity>()`.
-
-CAUTION: This scope is *NOT* compatible with `ScopeCloseable`.
-
-
-=== Activity retained scope
-
-Kodein-Android provides the `ActivityRetainedScope`, which is a scope that allows activity-scoped singletons or multitons that are independent from the activity restart.
-
-This means that for the same activity, you'll get the same instance, even if the activity restarts.
-
-CAUTION: This means that you *should never retain the activity* passed at creation because it may have been restarted and not valid anymore!
-
-[source, kotlin]
-.Example: using an Activity retained scope
-----
-val kodein = Kodein {
-    bind<Controller>() with scoped(ActivityRetainedScope).singleton { ControllerImpl() }
-}
-----
-
-NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?{branch}/core#scope-closeable[see documentation].
-
-
-=== Lifecycle scope
-
-Kodein-Android provides the `AndroidLifecycleScope`, which is a scope that allows activity-scoped singletons or multitons that are bound to a component lifecycle.
-It uses Android support Lifecycle, so you need to use Android support's `LifecycleOwner` components.
-
-Note that these lifecycles
-
-[source, kotlin]
-.Example: using an Activity retained scope
-----
-val kodein = Kodein {
-    bind<Controller>() with scoped(AndroidLifecycleScope<Activity>()).singleton { ControllerImpl(context) }
-}
-----
-
-NOTE: These lifecycles are *NOT* immune to activity restart due to configuration change.
-
-NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?{branch}/core#scope-closeable[see documentation].
 
 
 == Kodein in Android without the extension
