@@ -1691,6 +1691,22 @@ This means that a Multiton scoped with a Scope that uses a `SingleItemScopeRegis
 CAUTION: You should NOT use this registry unless you know exactly WHAT you are doing, and WHY you are doing it.
 
 
+==== Sub-scopes
+
+You can define a scope to be defined inside another scope.
+This means that when the parent scope clears, so does all of its subscopes.
+
+[source, kotlin]
+.Example: a simple session scope
+----
+val requestScope = object : SubScope<Request, Session>(sessionScope) {
+    override fun getParentContext(context: Request) = context.session
+}
+----
+
+In this simple example, when the session expires, then all of its associates request scoped values also expire.
+
+
 == Multi-binding
 
 Kodein allows multi bindings via a binding set.
