@@ -204,12 +204,15 @@ dependencies {
 
 === Native (Gradle)
 
-NOTE: Kodein-DI {version} is compiled with Kotlin/Native version `0.8-dev-2179`.
-
 NOTE: Kodein supports the following targets: +
-      linux, linux_mips32, linux_mipsel32, macbook, mingw, android_arm32, android_arm64, iphone, iphone_sim, wasm32, raspberrypi
+      androidArm32, androidArm64, iosArm32, iosArm64, iosX64, linuxArm32Hfp, linuxMips32, linuxMipsel32, linuxX64, macosX64, mingwX64
 
 Kodein-DI uses the new gradle native dependency model.
+Because that model is experimental in gradle, it is not forward compatible with next versions of Gradle.
+
+Kodein offers two repositories: one for gradle 4.7 *exactly*, and one that uses the latest version of Gradle.
+
+==== Gralde 4.7 exactly
 
 Add the JCenter repository:
 
@@ -226,11 +229,48 @@ Then add the dependency:
 
 [source,groovy,subs="attributes"]
 ----
-dependencies {
-    artifact<Konan-Artifact-Name> 'org.kodein.di:kodein-di-erased-native:{version}'
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation "org.kodein.di:kodein-di-erased:{version}"
+            }
+        }
+    }
 }
 ----
 
+==== latest gradle
+
+Add the LGM (Latest Gradle Metadata) repository:
+
+[source,groovy,subs="attributes"]
+----
+buildscript {
+    repositories {
+        maven {
+            url "https://dl.bintray.com/kodein-framework/Kodein-DI-LGM"
+        }
+    }
+}
+----
+
+Then add the dependency:
+
+[source,groovy,subs="attributes"]
+----
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation "org.kodein.di:kodein-di-erased:{version}-LGM"
+            }
+        }
+    }
+}
+----
+
+NOTE: Using LGM has no consequences whatsoever regarding JVM & JS platforms.
 
 
 [[declaring-dependencies]]
