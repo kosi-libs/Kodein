@@ -1182,7 +1182,7 @@ For this, you can use a `LazyKodein`:
 .Example: Using a LazyKodein.
 ----
 val kodein = LazyKodein { /* access to a kodein instance */ }
-val ds: DataSource by kodeien.instance()
+val ds: DataSource by kodein.instance()
 /*...*/
 die.roll() <1>
 ----
@@ -1196,7 +1196,7 @@ Note that you can also lazily create a `Kodein` object so that the bindings defi
 val kodein = Kodein.lazy {
     bind<Env>() with instance(Env.getInstance())
 }
-val env: Env by kodeien.instance()
+val env: Env by kodein.instance()
 /*...*/
 env.doSomething() <1>
 ----
