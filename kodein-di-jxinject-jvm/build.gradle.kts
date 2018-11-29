@@ -2,12 +2,14 @@ plugins {
     id("org.kodein.library.jvm")
 }
 
-dependencies {
-    api(project(":kodein-di-core"))
-    api("javax.inject:javax.inject:1")
+kodeinLib {
+    dependencies {
+        api(project(":kodein-di-core") target "jvm")
+        api("javax.inject:javax.inject:1")
 
-    testImplementation(project(":test-utils"))
-    testImplementation(project(":kodein-di-generic-jvm"))
+        testImplementation(project(":test-utils"))
+        testImplementation(project(":kodein-di-generic-jvm"))
+    }
 }
 
 kodeinUpload {

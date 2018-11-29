@@ -2,6 +2,8 @@ plugins {
     id("org.kodein.library.android")
 }
 
-dependencies {
-    api(project(":kodein-di-core"))
+kodeinLib {
+    dependencies {
+        api(project(":kodein-di-core") target "jvm")
+    }
 }
