@@ -1120,6 +1120,21 @@ Dependency recursion:
         assertTrue(c.closed)
     }
 
+    @Test
+    fun test16_10_ContextTranslatorAndReceiver() {
+        val kodein = Kodein.direct {
+            bind() from contexted<Name>().provider { FullName(context.firstName, "BRYS") }
+            registerContextFinder { Name("Salomon") }
+            registerContextTranslator { name: String -> Name(name) }
+        }
+
+        val fn1: FullName = kodein.instance()
+        val fn2: FullName = kodein.on("Laila").instance()
+
+        assertEquals(fn1, FullName("Salomon", "BRYS"))
+        assertEquals(fn2, FullName("Laila", "BRYS"))
+    }
+
     @Test fun test17_00_ExplicitOverride() {
         val kodein = Kodein {
             bind<String>(tag = "name") with instance("Benjamin")

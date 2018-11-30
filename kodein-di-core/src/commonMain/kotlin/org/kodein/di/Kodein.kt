@@ -1,6 +1,9 @@
 package org.kodein.di
 
-import org.kodein.di.bindings.*
+import org.kodein.di.bindings.ContextTranslator
+import org.kodein.di.bindings.ExternalSource
+import org.kodein.di.bindings.KodeinBinding
+import org.kodein.di.bindings.Scope
 import org.kodein.di.internal.KodeinImpl
 
 /**
@@ -132,6 +135,8 @@ interface Kodein : KodeinAware {
             append(bindDescription)
             appendDescription(TypeToken<*>::simpleDispString)
         }
+
+        val internalDescription: String get() = "(context: ${contextType.simpleDispString()}, arg: ${argType.simpleDispString()}, type: ${type.simpleDispString()}, tag: $tag)"
 
         /**
          * Description using full type names. The description is as close as possible to the code used to create this key.
