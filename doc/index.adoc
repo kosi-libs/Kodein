@@ -1,6 +1,6 @@
 = KODEIN DI: KOtlin DEpendency INjection: {version}
 Salomon BRYS <salomon.brys@gmail.com>
-:version: 6.0.0
+:version: 6.0.1
 :branch: 6.0
 
 image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-DI-logo.png[KODEIN-DI, 700]

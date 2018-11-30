@@ -973,6 +973,21 @@ Dependency recursion:
         assertAllEqual('S', char1, char2)
     }
 
+    @Test
+    fun test16_10_ContextTranslatorAndReceiver() {
+        val kodein = Kodein.direct {
+            bind() from contexted<Name>().provider { FullName(context.firstName, "BRYS") }
+            registerContextFinder { Name("Salomon") }
+            registerContextTranslator { name: String -> Name(name) }
+        }
+
+        val fn1: FullName = kodein.instance()
+        val fn2: FullName = kodein.on("Laila").instance()
+
+        assertEquals(FullName("Salomon", "BRYS"), fn1)
+        assertEquals(FullName("Laila", "BRYS"), fn2)
+    }
+
     @Test fun test17_00_ExplicitOverride() {
         val kodein = Kodein {
             bind<String>(tag = "name") with instance("Benjamin")

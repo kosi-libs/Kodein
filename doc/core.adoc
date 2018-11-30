@@ -4,7 +4,7 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.0.0
+:version: 6.0.1
 :branch: 6.0
 
 image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-DI-logo.png[KODEIN, 700, 233]
@@ -1689,6 +1689,22 @@ This is a particular `ScopeRegistry` implementation : it will only hold one item
 This means that a Multiton scoped with a Scope that uses a `SingleItemScopeRegistry` will actually hold only one instance: the one corresponding to the last argument.
 
 CAUTION: You should NOT use this registry unless you know exactly WHAT you are doing, and WHY you are doing it.
+
+
+==== Sub-scopes
+
+You can define a scope to be defined inside another scope.
+This means that when the parent scope clears, so does all of its subscopes.
+
+[source, kotlin]
+.Example: a simple session scope
+----
+val requestScope = object : SubScope<Request, Session>(sessionScope) {
+    override fun getParentContext(context: Request) = context.session
+}
+----
+
+In this simple example, when the session expires, then all of its associates request scoped values also expire.
 
 
 == Multi-binding
