@@ -33,7 +33,7 @@ internal class KodeinTreeImpl(
         override val externalSource: ExternalSource?,
         override val registeredTranslators: List<ContextTranslator<*, *>>
 ): KodeinTree {
-    private val _cache: MutableMap<Kodein.Key<*, *, *>, Triple<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>, ContextTranslator<*, *>?>> = HashMap()
+    private val _cache: MutableMap<Kodein.Key<*, *, *>, Triple<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>, ContextTranslator<*, *>?>> = newConcurrentMap()
     private val _typeTree: BoundTypeTree = HashMap()
 
     override val bindings: BindingsMap
@@ -111,7 +111,7 @@ internal class KodeinTreeImpl(
             tagSeq = tagSeq.filter { (tag) -> tag == specsTag } // Filter tags that match this specs tag
         }
 
-        val resultSeq = tagSeq.map { (_, overrideQueue, translator) -> overrideQueue to translator } // Get all corresponding queues
+        val resultSeq = tagSeq.map { (_, key, translator) -> key to translator } // Get all corresponding queues
         return resultSeq.toList()
     }
 
@@ -127,14 +127,16 @@ internal class KodeinTreeImpl(
             if (key.contextType != AnyToken) {
                 val anyContextKey = key.copy(contextType = AnyToken)
                 _cache[anyContextKey]?.let { triple ->
-                    _cache[key] = triple
                     val (realKey, list, translator) = triple
+                    if ((translator != null && translator.contextType != key.contextType) || (translator == null && realKey.contextType != key.contextType ))
+                        return@let
+                    _cache[key] = triple
                     val definition = list.getOrNull(overrideLevel) ?: return emptyList()
                     return listOf(Triple(realKey as Kodein.Key<Any, A, T>, definition as KodeinDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?))
                 }
             }
 
-            val applicableTranslators = translators.filter { it.contextType == key.contextType || it.contextType == AnyToken }
+            val applicableTranslators = translators.filter { it.contextType == key.contextType } + translators.filter { it.contextType == AnyToken } // Ensure Any translators are at the end of the list.
             for (translator in applicableTranslators) {
                 val translatedKey = Kodein.Key(translator.scopeType, key.argType, key.type, key.tag)
                 _cache[translatedKey]?.takeIf { it.third == null }?.let { triple ->
@@ -151,15 +153,17 @@ internal class KodeinTreeImpl(
         val result = findBySpecs(SearchSpecs(key.contextType, key.argType, key.type, key.tag))
         if (result.size == 1) {
             val (realKey, _) = result.first()
-            _cache[key] = _cache[realKey] ?: throw IllegalStateException("The tree contains a key that is not in the map.")
+            _cache[key] = _cache[realKey] ?: throw notInMap(realKey, key)
         }
 
         return result.mapNotNull { (realKey, translator) ->
-            val (_, definitions, _) = _cache[realKey] ?: return@mapNotNull null
+            val (_, definitions, _) = _cache[realKey] ?: throw notInMap(realKey, key)
             val definition = definitions.getOrNull(overrideLevel) ?: return@mapNotNull null
             Triple(realKey as Kodein.Key<Any, A, T>, definition as KodeinDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?)
         }
     }
+
+    private fun notInMap(result: Kodein.Key<*, *, *>, request: Kodein.Key<*, *, *>) = IllegalStateException("Tree returned key ${result.internalDescription} that is not in cache when searching for ${request.internalDescription}.\nKeys in cache:\n${_cache.keys.joinToString("\n") { it.internalDescription }}")
 
     @Suppress("UNCHECKED_CAST")
     override fun find(search: SearchSpecs): List<Triple<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>, ContextTranslator<*, *>?>> {

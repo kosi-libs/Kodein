@@ -2,12 +2,14 @@ plugins {
     id("org.kodein.library.jvm")
 }
 
-dependencies {
-    api(project(":kodein-di-core"))
+kodeinLib {
+    dependencies {
+        api(project(":kodein-di-core") target "jvm")
 
-    testImplementation("com.google.inject:guice:4.1.0")
-    testImplementation(project(":test-utils"))
-    testImplementation("org.jetbrains.kotlin:kotlin-reflect")
+        testImplementation("com.google.inject:guice:4.1.0")
+        testImplementation(project(":test-utils"))
+        testImplementation("org.jetbrains.kotlin:kotlin-reflect")
+    }
 }
 
 kodeinUpload {

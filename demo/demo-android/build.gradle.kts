@@ -35,9 +35,9 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.10")
 
-    implementation("androidx.appcompat:appcompat:1.0.1")
+    implementation("androidx.appcompat:appcompat:1.0.2")
 
     implementation(project(":kodein-di-generic-jvm"))
     implementation(project(":framework:android:kodein-di-framework-android-x"))

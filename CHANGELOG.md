@@ -1,3 +1,15 @@
+#### 6.0.1 (30-11-2018)
+
+- CORE
+  * Fixed context translator & finder "collision".
+  * Improved multi-theading.
+  
+- ANDROID
+  * Version bump.
+
+- DEPLOYMENT
+  * Fixed POM dependencies & module file uploads.
+
 #### 6.0.0 (09-11-2018)
 
 - CORE
