@@ -136,7 +136,7 @@ internal class KodeinTreeImpl(
                 }
             }
 
-            val applicableTranslators = translators.filter { it.contextType == key.contextType || it.contextType == AnyToken }
+            val applicableTranslators = translators.filter { it.contextType == key.contextType } + translators.filter { it.contextType == AnyToken } // Ensure Any translators are at the end of the list.
             for (translator in applicableTranslators) {
                 val translatedKey = Kodein.Key(translator.scopeType, key.argType, key.type, key.tag)
                 _cache[translatedKey]?.takeIf { it.third == null }?.let { triple ->

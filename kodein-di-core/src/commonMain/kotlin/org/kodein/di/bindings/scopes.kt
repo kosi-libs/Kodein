@@ -4,7 +4,10 @@ import org.kodein.di.AnyToken
 import org.kodein.di.KodeinContext
 import org.kodein.di.TypeToken
 import org.kodein.di.Volatile
-import org.kodein.di.internal.*
+import org.kodein.di.internal.maySynchronized
+import org.kodein.di.internal.newConcurrentMap
+import org.kodein.di.internal.synchronizedIfNotNull
+import org.kodein.di.internal.synchronizedIfNull
 
 interface ScopeCloseable {
     fun close()
@@ -194,11 +197,13 @@ interface ContextTranslator<in C, S> {
 
 class SimpleContextTranslator<in C, S>(override val contextType: TypeToken<in C>, override val scopeType: TypeToken<in S>, private val t: (ctx: C) -> S) : ContextTranslator<C, S> {
     override fun translate(ctx: C): S = t(ctx)
+    override fun toString() = "()"
 }
 
 class SimpleAutoContextTranslator<S>(override val scopeType: TypeToken<in S>, private val t: () -> S) : ContextTranslator<Any?, S> {
     override val contextType get() = AnyToken
     override fun translate(ctx: Any?): S = t()
+    override fun toString() = "(${scopeType.simpleDispString()} -> ${contextType.simpleDispString()})"
 }
 
 fun <C, S> ContextTranslator<C, S>.toKContext(ctx: C) = KodeinContext(scopeType, translate(ctx))
@@ -207,6 +212,7 @@ internal class CompositeContextTranslator<in C, I, S>(val src: ContextTranslator
     override val contextType get() = src.contextType
     override val scopeType get() = dst.scopeType
     override fun translate(ctx: C): S = dst.translate(src.translate(ctx))
+    override fun toString() = "($src -> $dst)"
 }
 
 
