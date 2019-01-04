@@ -38,6 +38,8 @@ class MainFragment : Fragment(), KodeinAware {
     override fun onStart() {
         super.onStart()
 
+        if (coffeeMaker != (requireActivity() as MainActivity).coffeeMaker) throw AssertionError()
+
         log.callback = {
             text.text = log.text
         }
