@@ -35,8 +35,8 @@ class MainFragment : Fragment(), KodeinAware {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onStart() {
+        super.onStart()
 
         log.callback = {
             text.text = log.text
@@ -51,5 +51,10 @@ class MainFragment : Fragment(), KodeinAware {
         Handler().postDelayed({
             coffeeMaker.brew()
         }, 6000)
+    }
+
+    override fun onStop() {
+        log.callback = null
+        super.onStop()
     }
 }
