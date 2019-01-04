@@ -152,8 +152,8 @@ internal class KodeinTreeImpl(
 
         val result = findBySpecs(SearchSpecs(key.contextType, key.argType, key.type, key.tag))
         if (result.size == 1) {
-            val (realKey, _) = result.first()
-            _cache[key] = _cache[realKey] ?: throw notInMap(realKey, key)
+            val (realKey, translator) = result.first()
+            _cache[key] = _cache[realKey]?.copy(third = translator) ?: throw notInMap(realKey, key)
         }
 
         return result.mapNotNull { (realKey, translator) ->
