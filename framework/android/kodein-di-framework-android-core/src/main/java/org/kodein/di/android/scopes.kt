@@ -4,8 +4,11 @@ package org.kodein.di.android
 
 import android.app.Activity
 import android.app.Fragment
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import org.kodein.di.bindings.*
+import java.lang.ref.WeakReference
 
 // Deprecated since Kodein 6.0
 @Deprecated("Use WeakContextScope.of()")
@@ -47,6 +50,13 @@ open class ActivityRetainedScope private constructor(private val registryType: R
             RegistryType.values()[ordinal].new()
         }
 
+        var transactionPendingFragmentCache: MutableMap<Activity, WeakReference<RetainedScopeFragment>>? = null
+
+        override fun onAttach(context: Context?) {
+            super.onAttach(context)
+            transactionPendingFragmentCache?.remove(context).also { transactionPendingFragmentCache = null }
+        }
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             retainInstance = true
@@ -58,18 +68,31 @@ open class ActivityRetainedScope private constructor(private val registryType: R
         }
     }
 
+    private val transactionPendingFragmentCache = mutableMapOf<Activity, WeakReference<RetainedScopeFragment>>()
+
     override fun getRegistry(context: Activity): ScopeRegistry {
-        val fragment = context.fragmentManager.findFragmentByTag(SCOPE_FRAGMENT_TAG) as? RetainedScopeFragment ?: run {
+        val fragment = context.retainedScopeFragment ?: run {
             synchronized(context) {
-                context.fragmentManager.findFragmentByTag(SCOPE_FRAGMENT_TAG) as? RetainedScopeFragment ?: run {
+                context.retainedScopeFragment ?: transactionPendingFragmentCache[context]?.get() ?: run {
                     RetainedScopeFragment().also {
                         it.arguments = Bundle().apply { putInt(Keys.registryTypeOrdinal, registryType.ordinal) }
-                        context.fragmentManager.beginTransaction().add(it, SCOPE_FRAGMENT_TAG).commit()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            context.fragmentManager.beginTransaction().add(it, SCOPE_FRAGMENT_TAG).commitNow()
+                        } else {
+                            // since we can't commit immediately, we cache the fragment temporarily and clear
+                            // the reference when the commit completes
+                            context.fragmentManager.beginTransaction().add(it, SCOPE_FRAGMENT_TAG).commit()
+                            transactionPendingFragmentCache[context] = WeakReference(it)
+                            it.transactionPendingFragmentCache = transactionPendingFragmentCache
+                        }
                     }
                 }
             }
         }
         return fragment.registry
     }
+
+    private val Activity.retainedScopeFragment: RetainedScopeFragment?
+        get() = fragmentManager.findFragmentByTag(SCOPE_FRAGMENT_TAG) as? RetainedScopeFragment
 
 }
