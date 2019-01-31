@@ -8,5 +8,5 @@ allprojects {
 }
 
 kodeinPublications {
-    repo = "Kodein-DI"
+    repo = "Kodein-DI-LGM"
 }
