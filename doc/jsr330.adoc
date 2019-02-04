@@ -33,7 +33,7 @@ CAUTION: Every-thing that is described here is *a lot less performant* than usin
 ----
 &lt;dependency&gt;
     &lt;groupId&gt;org.kodein.di&lt;/groupId&gt;
-    &lt;artifactId&gt;kodein-di-jx-inject-jvm&lt;/artifactId&gt;
+    &lt;artifactId&gt;kodein-di-jxinject-jvm&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
 ----
@@ -46,7 +46,7 @@ IMPORTANT: Do not remove the "kodein-generic-jvm" (or "kodein-erased-jvm") depen
 
 [source,groovy,subs="attributes"]
 ----
-compile 'org.kodein.di:kodein-di-jx-inject-jvm:{version}'
+compile 'org.kodein.di:kodein-di-jxinject-jvm:{version}'
 ----
 
 IMPORTANT: Do not remove the "kodein-generic-jvm" (or "kodein-erased-jvm") dependency.

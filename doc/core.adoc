@@ -560,7 +560,7 @@ These are big words for a simple concept that's best explained with an example:
 val kodein = Kodein {
     bind<Controller>().subtypes() with { type ->
         when (type.jvmType) { <1>
-            is MySpecialController::class.java -> singleton { MySpecialController() }
+            MySpecialController::class.java -> singleton { MySpecialController() }
             else -> provider { myControllerSystem.getController(type.jvmType) }
         }
     }

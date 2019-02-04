@@ -23,8 +23,8 @@ Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/d
 +
 [subs="attributes"]
 ----
-compile 'org.kodein.di:kodein-di-generic-jvm:{version}'
-compile 'org.kodein.di:kodein-di-framework-android-???:{version}'
+implementation 'org.kodein.di:kodein-di-generic-jvm:{version}'
+implementation 'org.kodein.di:kodein-di-framework-android-???:{version}'
 ----
 +
 Kodein offers support for:
