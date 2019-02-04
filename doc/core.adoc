@@ -806,7 +806,7 @@ val parent = Kodein {
 }
 
 val child = Kodein {
-    extends(parent)
+    extend(parent)
     bind<Foo>(overrides = true) with provider { Foo2() }
 }
 
@@ -828,7 +828,7 @@ If you want the `Bar` singleton to have access to the overridden `Foo` binding, 
 .Example: Copying the bar binding into the child container
 ----
 val child = Kodein {
-    extends(parent, copy = Copy {
+    extend(parent, copy = Copy {
         copy the binding<Bar>() <1>
     })
     bind<Foo>(overrides = true) with provider { Foo2() }
@@ -848,7 +848,7 @@ val parent = Kodein {
 }
 
 val child = Kodein {
-    extends(parent, copy = Copy {
+    extend(parent, copy = Copy {
         copy the binding<Session>() with scope(requestScope) and tag("req")
     })
     bind<Foo>(overrides = true) with provider { Foo2() }
@@ -863,7 +863,7 @@ You can also copy all bindings that matches a particular definition :
 .Example: Copying all that matches
 ----
 val child = Kodein {
-    extends(parent, copy = Copy {
+    extend(parent, copy = Copy {
         copy all binding<String>() <1>
         copy all scope(requestScope) <2>
     })
@@ -878,7 +878,7 @@ Finally, you can simply copy *all* bindings:
 .Example: Copying all
 ----
 val child = Kodein {
-    extends(parent, copy = Copy.All)
+    extend(parent, copy = Copy.All)
 }
 ----
 
@@ -888,7 +888,7 @@ Or you can decide that none are copied (if you do want existing bindings to have
 .Example: Copying none
 ----
 val child = Kodein {
-    extends(parent, copy = Copy.None)
+    extend(parent, copy = Copy.None)
 }
 ----
 
