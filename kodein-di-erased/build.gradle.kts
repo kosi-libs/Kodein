@@ -30,10 +30,6 @@ kodein {
     }
 }
 
-kodeinLib {
-    updateMavenPom()
-}
-
 kodeinUpload {
     name = "Kodein-DI-Erased"
     description = "KODEIN Dependency Injection using erased types by default"

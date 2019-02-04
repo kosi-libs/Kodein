@@ -27,10 +27,6 @@ kodein {
     }
 }
 
-kodeinLib {
-    updateMavenPom()
-}
-
 kodeinUpload {
     name = "Kodein-DI-Conf"
     description = "KODEIN Dependency Injection that can be configured / mutated"

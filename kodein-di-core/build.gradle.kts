@@ -14,10 +14,6 @@ kodein {
     }
 }
 
-kodeinLib {
-    updateMavenPom()
-}
-
 kodeinUpload {
     name = "Kodein-DI"
     description = "KODEIN Dependency Injection Core"
