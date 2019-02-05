@@ -2041,4 +2041,39 @@ Dependency recursion:
         assertEquals(Name("Salomon"), kodein.instance())
         assertEquals<Name>(kodein.instance(), kodein.instance())
     }
+
+    @Test fun test37_00_lazyOnContext() {
+        val kodein = Kodein{
+            bind<String>() with contexted<String>().provider { "Salomon $context" }
+        }
+
+        var contextRetrieved = false
+
+        val name: String by kodein.on { contextRetrieved = true ; "BRYS" } .instance()
+
+        assertFalse(contextRetrieved)
+        assertEquals("Salomon BRYS", name)
+        assertTrue(contextRetrieved)
+    }
+
+    class Test37_01(override val kodein: Kodein) : KodeinAware {
+        var contextRetrieved = false
+        override val kodeinContext = kcontext {
+            contextRetrieved = true
+            "BRYS"
+        }
+        val name: String by instance()
+    }
+
+    @Test fun test37_01_lazyKContext() {
+        val kodein = Kodein{
+            bind<String>() with contexted<String>().provider { "Salomon $context" }
+        }
+
+        val t = Test37_01(kodein)
+
+        assertFalse(t.contextRetrieved)
+        assertEquals("Salomon BRYS", t.name)
+        assertTrue(t.contextRetrieved)
+    }
 }

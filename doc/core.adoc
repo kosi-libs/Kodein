@@ -1014,15 +1014,8 @@ TIP: The `arg` argument should always be named.
 
 ==== Defining context
 
-Whether you are using a scoped singleton/multiton or using a context in the target binding, you may need to specify a context.
-
-[source, kotlin]
-.Example: Getting a RollController constructor dependency with a context.
-----
-val controller by kodein.newInstance { RollController(on(context = myContext).instance(arg = 6)) }
-----
-
-If you inject multiple dependencies all using the same context, you can set a global context:
+When retrieving, you sometimes need to manually define a context (for example, when retrieving a scoped singleton).
+For this, you can use the `on` method:
 
 [source, kotlin]
 .Example: Setting a global context.
@@ -1032,8 +1025,15 @@ val controller by kodein.on(context = myContext).newInstance { OtherController(i
 
 TIP: The `context` argument should always be named.
 
-NOTE: Using a global context does not forces you to use only bindings that are declared with this type of context.
-      Because the default context is `Any?`, all non-contexted bindings will still be available with a global context set.
+Sometimes, the context is not available directly at construction.
+When that happens, you can define a lazy context that will be accessed only when needed.
+
+[source, kotlin]
+.Example: Setting a global context.
+----
+val controller by kodein.on { requireActivity() } .newInstance { OtherController(instance(arg = 6), instance()) }
+----
+
 
 
 === Retrieval: the Kodein container
@@ -1275,6 +1275,18 @@ class MyManager(override val kodein: Kodein) : KodeinAware {
 
 NOTE: Using a global context does not forces you to use only bindings that are declared with this type of context.
       Because the default context is `Any?`, all non-contexted bindings will still be available with a global context set.
+
+Sometimes, the context is not available directly at construction.
+When that happens, you can define a lazy context that will be accessed only when needed.
+
+[source, kotlin]
+.Example: a KodeinAware class with a context
+----
+class MyManager(override val kodein: Kodein) : KodeinAware {
+    override val kodeinContext = kcontext { requireActivity }
+    /*...*/
+}
+----
 
 
 ==== Class global trigger

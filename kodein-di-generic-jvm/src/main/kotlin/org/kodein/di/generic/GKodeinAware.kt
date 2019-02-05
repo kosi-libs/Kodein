@@ -390,6 +390,11 @@ inline fun <reified A, reified T : Any> KodeinAware.allInstances(tag: Any? = nul
 inline fun <reified C> kcontext(context: C) = KodeinContext(generic(), context)
 
 /**
+ * Defines a context and its type to be used by Kodein.
+ */
+inline fun <reified C> kcontext(crossinline getContext: () -> C) = KodeinContext<C>(generic()) { getContext() }
+
+/**
  * Allows to create a new Kodein object with a context and/or a trigger set.
  *
  * @param context The new context of the new Kodein.
@@ -397,6 +402,15 @@ inline fun <reified C> kcontext(context: C) = KodeinContext(generic(), context)
  * @return A Kodein object that uses the same container as this one, but with its context and/or trigger changed.
  */
 inline fun <reified C> KodeinAware.on(context: C, trigger: KodeinTrigger? = this.kodeinTrigger) = On(kcontext(context), trigger)
+
+/**
+ * Allows to create a new Kodein object with a context and/or a trigger set.
+ *
+ * @param getContext A function that gets the new context of the new Kodein.
+ * @param trigger The new trigger of the new Kodein.
+ * @return A Kodein object that uses the same container as this one, but with its context and/or trigger changed.
+ */
+inline fun <reified C> KodeinAware.on(trigger: KodeinTrigger? = this.kodeinTrigger, crossinline getContext: () -> C) = On(kcontext(getContext), trigger)
 
 /**
  * Allows to create a new Kodein object with a trigger set.

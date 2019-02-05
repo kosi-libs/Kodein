@@ -7,17 +7,36 @@ import org.kodein.di.internal.DKodeinImpl
 /**
  * Defines a context and its type to be used by Kodein
  */
-data class KodeinContext<C>(
+interface KodeinContext<C> {
         /**
          * The type of the context, used to lookup corresponding bindings.
          */
-        val type: TypeToken<in C>,
+        val type: TypeToken<in C>
 
         /**
          * The context itself.
          */
         val value: C
-)
+
+    /**
+     * Defines a context and its type to be used by Kodein
+     */
+    data class Value<C>(override val type: TypeToken<in C>, override val value: C) : KodeinContext<C>
+
+    /**
+     * Defines a context and its type to be used by Kodein
+     */
+    class Lazy<C>(override val type: TypeToken<in C>, val getValue: () -> C) : KodeinContext<C> {
+        override val value by lazy(getValue)
+    }
+
+    companion object {
+        operator fun <C> invoke(type: TypeToken<in C>, value: C): KodeinContext<C> = Value(type, value)
+        operator fun <C> invoke(type: TypeToken<in C>, getValue: () -> C): KodeinContext<C> = Lazy(type, getValue)
+    }
+}
+
+
 
 @Suppress("UNCHECKED_CAST")
 private inline val KodeinContext<*>.anyType get() = (type as TypeToken<in Any?>)
