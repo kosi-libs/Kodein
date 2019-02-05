@@ -10,7 +10,6 @@ import kodein.di.demo.coffee.Coffee
 import kodein.di.demo.coffee.Kettle
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
 

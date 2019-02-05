@@ -53,6 +53,14 @@ import org.kodein.di.*
 import org.kodein.di.bindings.*
 import java.io.File
 
+val androidCoreContextTranslators = Kodein.Module(name = "\u2063androidCoreContextTranslators") {
+    RegisterContextTranslator(SimpleContextTranslator<Fragment, Activity>(erased(), erased()) { it.activity })
+    RegisterContextTranslator(SimpleContextTranslator<Dialog, Context>(erased(), erased()) { it.context })
+    RegisterContextTranslator(SimpleContextTranslator<View, Context>(erased(), erased()) { it.context })
+    RegisterContextTranslator(SimpleContextTranslator<Loader<*>, Context>(erased(), erased()) { it.context })
+    RegisterContextTranslator(SimpleContextTranslator<AbstractThreadedSyncAdapter, Context>(erased(), erased()) { it.context })
+}
+
 /**
  * Android `Kodein.Module` that defines a lot of platform bindings.
  *
@@ -60,13 +68,9 @@ import java.io.File
  * @return An Android `Kodein.Module` that defines a lot of platform bindings.
  */
 @SuppressLint("NewApi")
-fun androidModule(app: Application) = Kodein.Module(name = "\u2063androidModule") {
+fun androidCoreModule(app: Application) = Kodein.Module(name = "\u2063androidModule") {
 
-    RegisterContextTranslator(SimpleContextTranslator<Fragment, Activity>(erased(), erased()) { it.activity })
-    RegisterContextTranslator(SimpleContextTranslator<Dialog, Context>(erased(), erased()) { it.context })
-    RegisterContextTranslator(SimpleContextTranslator<View, Context>(erased(), erased()) { it.context })
-    RegisterContextTranslator(SimpleContextTranslator<Loader<*>, Context>(erased(), erased()) { it.context })
-    RegisterContextTranslator(SimpleContextTranslator<AbstractThreadedSyncAdapter, Context>(erased(), erased()) { it.context })
+    importOnce(androidCoreContextTranslators)
 
     val contextToken = erased<Context>()
 
@@ -178,3 +182,6 @@ fun androidModule(app: Application) = Kodein.Module(name = "\u2063androidModule"
         Bind() from Provider(contextToken, erased()) { context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager }
     }
 }
+
+@Deprecated("Use androidCoreModule, androidXModule, or androidSupportModule", ReplaceWith("androidCoreModule(app)"))
+fun androidModule(app: Application) = androidCoreModule(app)

@@ -166,11 +166,12 @@ NOTE: This module is absolutely *optional*, you are free to use it or leave it ;
 ----
 class MyApplication : Application(), KodeinAware {
     override val kodein by Kodein.lazy {
-        import(androidModule(this@MyApplication))
+        import(androidXModule(this@MyApplication)) <1>
 	    /* bindings */
     }
 }
 ----
+<1> Can either be `androidXModule` or `androidSupportModule` or `androidCoreModule`.
 
 You can see everything that this module proposes in the Kodein-Android https://github.com/Kodein-Framework/Kodein-DI/blob/{branch}/framework/android/kodein-di-framework-android-core/src/main/java/org/kodein/di/android/module.kt[module.kt] file.
 
@@ -206,6 +207,28 @@ class MyUtility(androidContext: Context) : KodeinAware {
 }
 ----
 <1> Defining the default context: the Android context to use to retrieve Android system services.
+
+
+== Android context translators
+
+The android module provides a number of http://kodein.org/Kodein-DI/?6.0/core#_context_translators[context translators].
+For example, they allow you to retrieve an activity scoped singleton inside a fragment, without manually specifying the activity.
+
+NOTE: The android modules automatically register these translators.
+
+However, if you don't want to use the android modules, but still need these translators, you can register them easily:
+
+[source, kotlin]
+.Example: importing the android module
+----
+class MyApplication : Application(), KodeinAware {
+    override val kodein by Kodein.lazy {
+        import(androidXContextTranslators) <1>
+	    /* bindings */
+    }
+}
+----
+<1> Can either be `androidXContextTranslators` or `androidSupportContextTranslators` or `androidCoreContextTranslators`.
 
 
 == Android scopes
