@@ -54,7 +54,8 @@ open class ActivityRetainedScope private constructor(private val registryType: R
 
         override fun onAttach(context: Context?) {
             super.onAttach(context)
-            transactionPendingFragmentCache?.remove(context).also { transactionPendingFragmentCache = null }
+            transactionPendingFragmentCache?.remove(context)
+            transactionPendingFragmentCache = null
         }
 
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +69,9 @@ open class ActivityRetainedScope private constructor(private val registryType: R
         }
     }
 
-    private val transactionPendingFragmentCache = mutableMapOf<Activity, WeakReference<RetainedScopeFragment>>()
+    // This is a hack to circumvent the fact that commitNow do not exist before Android N.
+    // See https://github.com/Kodein-Framework/Kodein-DI/pull/174
+    private val transactionPendingFragmentCache = HashMap<Activity, WeakReference<RetainedScopeFragment>>()
 
     override fun getRegistry(context: Activity): ScopeRegistry {
         val fragment = context.retainedScopeFragment ?: run {
@@ -81,9 +84,9 @@ open class ActivityRetainedScope private constructor(private val registryType: R
                         } else {
                             // since we can't commit immediately, we cache the fragment temporarily and clear
                             // the reference when the commit completes
-                            context.fragmentManager.beginTransaction().add(it, SCOPE_FRAGMENT_TAG).commit()
                             transactionPendingFragmentCache[context] = WeakReference(it)
                             it.transactionPendingFragmentCache = transactionPendingFragmentCache
+                            context.fragmentManager.beginTransaction().add(it, SCOPE_FRAGMENT_TAG).commit()
                         }
                     }
                 }
