@@ -5,20 +5,18 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import kodein.di.demo.coffee.Coffee
 import kodein.di.demo.coffee.Kettle
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.kodein.di.KodeinAware
-import org.kodein.di.KodeinContext
 import org.kodein.di.android.x.closestKodein
+import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
-import org.kodein.di.generic.kcontext
 
 class MainFragment : Fragment(), KodeinAware {
 
-    override val kodein by closestKodein()
+    override val kodein by kodein()
 
     // will be the same instance as the coffeeMaker in MainActivity
     val coffeeMaker: Kettle<Coffee> by instance()

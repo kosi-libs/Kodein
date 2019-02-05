@@ -13,7 +13,7 @@ import org.kodein.di.generic.*
 
 class DemoApplication : Application(), KodeinAware {
 
-    override val kodein = Kodein.lazy {
+    override val kodein by Kodein.lazy {
         import(androidXModule(this@DemoApplication))
 
         bind() from instance(Logger())

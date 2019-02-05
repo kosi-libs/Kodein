@@ -1193,7 +1193,7 @@ Note that you can also lazily create a `Kodein` object so that the bindings defi
 [source, kotlin]
 .Example: Using a lazy Kodein.
 ----
-val kodein = Kodein.lazy {
+val kodein by Kodein.lazy {
     bind<Env>() with instance(Env.getInstance())
 }
 val env: Env by kodein.instance()

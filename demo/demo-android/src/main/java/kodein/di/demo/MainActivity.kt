@@ -1,15 +1,13 @@
 package kodein.di.demo
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kodein.di.demo.coffee.Coffee
 import kodein.di.demo.coffee.Kettle
 import kodein.di.demo.coffee.thermosiphonModule
-import org.kodein.di.android.closestKodein
-import org.kodein.di.android.retainedKodein
 import org.kodein.di.*
+import org.kodein.di.android.*
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
@@ -17,10 +15,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     override val kodeinContext: KodeinContext<*> = kcontext(this)
 
-    private val _parentKodein by closestKodein()
-
-    override val kodein: Kodein by retainedKodein {
-        extend(_parentKodein, copy = Copy.All)
+    override val kodein by retainedSubKodein(kodein(), copy = Copy.All) {
         import(thermosiphonModule)
     }
 

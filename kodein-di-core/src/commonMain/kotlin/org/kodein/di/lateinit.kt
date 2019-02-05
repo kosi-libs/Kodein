@@ -1,5 +1,7 @@
 package org.kodein.di
 
+import kotlin.reflect.KProperty
+
 /**
  * Kodein object that defers all method to a base kodein object that can be set later.
  *
@@ -27,4 +29,6 @@ class LazyKodein(f: () -> Kodein) : Kodein {
     val baseKodein by lazy(f)
 
     override val container: KodeinContainer get() = baseKodein.container
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>) = this
 }
