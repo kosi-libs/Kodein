@@ -103,7 +103,7 @@ class StandardScopeRegistry : ScopeRegistry() {
 }
 
 // Deprecated since 6.0
-@Deprecated("MultiItemScopeRegistry has been renamed StandardScopeRegistry", ReplaceWith("StandardScopeRegistry"))
+@Deprecated("MultiItemScopeRegistry has been renamed StandardScopeRegistry", replaceWith = ReplaceWith("StandardScopeRegistry"), level = DeprecationLevel.ERROR)
 typealias MultiItemScopeRegistry = StandardScopeRegistry
 
 /**
@@ -175,7 +175,7 @@ class SingleItemScopeRegistry : ScopeRegistry() {
 }
 
 // Deprecated since 6.0
-@Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors")
+@Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors", level = DeprecationLevel.WARNING)
 enum class ScopeRepositoryType {
     MULTI_ITEM,
     SINGLE_ITEM
@@ -183,11 +183,8 @@ enum class ScopeRepositoryType {
 
 // Deprecated since 6.0
 @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-@Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors")
-fun <A> newScopeRegistry(type: ScopeRepositoryType) = when (type) {
-    ScopeRepositoryType.MULTI_ITEM -> StandardScopeRegistry()
-    ScopeRepositoryType.SINGLE_ITEM -> SingleItemScopeRegistry()
-}
+@Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors", level = DeprecationLevel.ERROR)
+fun <A> newScopeRegistry(type: ScopeRepositoryType): ScopeRegistry = throw UnsupportedOperationException()
 
 interface ContextTranslator<in C, S> {
     val contextType: TypeToken<in C>
@@ -219,9 +216,7 @@ internal class CompositeContextTranslator<in C, I, S>(val src: ContextTranslator
 /**
  * A scope is an object that can return (or create) a [ScopeRegistry] according to a context.
  *
- * @param EC The Environment Context: That's the context that is given to the scope from the retriever code.
- * @param BC The Binding Context: That's the context that is given by the scope to the bindings.
- *   It is often the same as [EC], in which case you should use [SimpleScope] instead.
+ * @param C The Context.
  */
 interface Scope<in C> {
 
@@ -239,7 +234,7 @@ interface Scope<in C> {
  * Simple [Scope] where the Environment Context and the Binding Context do not differ.
  */
 //Deprecated since 6.0
-@Deprecated("Scope itself has been simplified", ReplaceWith("Scope<C>"))
+@Deprecated("Scope itself has been simplified", ReplaceWith("Scope<C>"), level = DeprecationLevel.ERROR)
 typealias SimpleScope<C> = Scope<C>
 
 /**
@@ -254,7 +249,7 @@ open class UnboundedScope(val registry: ScopeRegistry = StandardScopeRegistry())
 }
 
 // Deprecated since 6.0
-@Deprecated("BasicScope has been renamed UnboundedScope", ReplaceWith("UnboundedScope"))
+@Deprecated("BasicScope has been renamed UnboundedScope", ReplaceWith("UnboundedScope"), level = DeprecationLevel.ERROR)
 typealias BasicScope = UnboundedScope
 
 abstract class SubScope<C, PC>(val parentScope: Scope<PC>) : Scope<C> {

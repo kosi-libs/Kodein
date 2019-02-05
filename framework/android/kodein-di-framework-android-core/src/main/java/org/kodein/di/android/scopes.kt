@@ -11,7 +11,7 @@ import org.kodein.di.bindings.*
 import java.lang.ref.WeakReference
 
 // Deprecated since Kodein 6.0
-@Deprecated("Use WeakContextScope.of()")
+@Deprecated("Use WeakContextScope.of()", level = DeprecationLevel.ERROR)
 object AndroidComponentsWeakScope : WeakContextScope<Any?>()
 
 private const val SCOPE_FRAGMENT_TAG = "org.kodein.android.ActivityRetainedScope.RetainedScopeFragment"
@@ -19,7 +19,7 @@ private const val SCOPE_FRAGMENT_TAG = "org.kodein.android.ActivityRetainedScope
 /**
  * A scope that allows to get an activity-scoped singleton that's independent from the activity restart.
  */
-open class ActivityRetainedScope private constructor(private val registryType: RegistryType) : SimpleScope<Activity> {
+open class ActivityRetainedScope private constructor(private val registryType: RegistryType) : Scope<Activity> {
 
     private enum class RegistryType {
         Standard { override fun new() = StandardScopeRegistry() },
@@ -33,11 +33,11 @@ open class ActivityRetainedScope private constructor(private val registryType: R
 
     companion object MultiItem: ActivityRetainedScope(RegistryType.Standard) {
         // Deprecated since 6.0
-        @Deprecated("use MultiItem", replaceWith = ReplaceWith("MultiItem"))
+        @Deprecated("use MultiItem", replaceWith = ReplaceWith("MultiItem"), level = DeprecationLevel.ERROR)
         val multiItem = MultiItem
 
         // Deprecated since 6.0
-        @Deprecated("use SingleItem", replaceWith = ReplaceWith("SingleItem"))
+        @Deprecated("use SingleItem", replaceWith = ReplaceWith("SingleItem"), level = DeprecationLevel.ERROR)
         val singleItem = SingleItem
     }
 

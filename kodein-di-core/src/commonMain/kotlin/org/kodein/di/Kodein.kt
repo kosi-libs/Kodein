@@ -177,8 +177,7 @@ interface Kodein : KodeinAware {
         /**
          * Used to define bindings with a scope.
          *
-         * @param EC The scope's Environment Context.
-         * @param BC The scope's Binding Context.
+         * @param C The scope's Context.
          */
         interface WithScope<C> : BindBuilder<C> {
 
@@ -208,9 +207,6 @@ interface Kodein : KodeinAware {
          * Left part of the type-binding syntax (`bind(type, tag)`).
          *
          * @param T The type to bind.
-         * @property type The type that will compose the key to bind.
-         * @property tag The tag that will compose the key to bind.
-         * @property overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          */
         interface TypeBinder<T : Any> {
             /**
@@ -240,8 +236,6 @@ interface Kodein : KodeinAware {
         /**
          * Left part of the constant-binding syntax (`constant(tag)`).
          *
-         * @property _tag The tag that is being bound.
-         * @property _overrides Whether this bind **must**, **may** or **must not** override an existing binding.
          */
         interface ConstantBinder {
             /**
@@ -321,8 +315,6 @@ interface Kodein : KodeinAware {
 
     /**
      * Builder to create a [Kodein] object.
-     *
-     * @param allowSilentOverride Whether non-explicit overrides is allowed in this builder.
      */
     interface MainBuilder : Builder {
 
@@ -384,7 +376,7 @@ interface Kodein : KodeinAware {
      * @property init The block of configuration for this module.
      */
     data class Module(val name: String, val allowSilentOverride: Boolean = false, val prefix: String = "", val init: Builder.() -> Unit) {
-        @Deprecated("You should name your modules, for debug purposes.", ReplaceWith("Module(\"module name\", allowSilentOverride, init)"), DeprecationLevel.WARNING)
+        @Deprecated("You should name your modules, for debug purposes.", replaceWith = ReplaceWith("Module(\"module name\", allowSilentOverride, init)"), level = DeprecationLevel.WARNING)
         constructor(allowSilentOverride: Boolean = false, init: Builder.() -> Unit) : this("", allowSilentOverride, "", init)
     }
 
