@@ -10,7 +10,7 @@ import android.os.Bundle
 import org.kodein.di.bindings.*
 import java.lang.ref.WeakReference
 
-// Deprecated since Kodein 6.0
+// Deprecated since 6.0
 @Deprecated("Use WeakContextScope.of()", level = DeprecationLevel.ERROR)
 object AndroidComponentsWeakScope : WeakContextScope<Any?>()
 

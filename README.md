@@ -1,8 +1,7 @@
-<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/6.0/Kodein-DI-logo.png" width="700">
+<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/6.1/Kodein-DI-logo.png" width="700">
 
-[![Kotlin 1.2.70](https://img.shields.io/badge/Kotlin-1.2.70-blue.svg)](http://kotlinlang.org)
-[![Konan 0.9.2](https://img.shields.io/badge/Konan-0.9.2-blue.svg)](https://github.com/JetBrains/kotlin-native)
-[![JCenter](https://api.bintray.com/packages/kodein-framework/Kodein-DI/Kodein-DI-Core-JVM/images/download.svg)](https://bintray.com/kodein-framework/Kodein-DI)
+[![Kotlin 1.2.70](https://img.shields.io/badge/Kotlin-1.3.20-blue.svg)](http://kotlinlang.org)
+[![JCenter](https://api.bintray.com/packages/kodein-framework/Kodein-DI/Kodein-DI/images/download.svg)](https://bintray.com/kodein-framework/Kodein-DI)
 [![Travis](https://travis-ci.org/Kodein-Framework/Kodein-DI.svg?branch=master)](https://travis-ci.org/Kodein-Framework/Kodein-DI/builds)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Kodein-Framework/Kodein-DI/blob/master/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg)](https://kotlinlang.slack.com/messages/kodein/)

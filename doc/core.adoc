@@ -4,8 +4,8 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.0.1
-:branch: 6.0
+:version: 6.1.0
+:branch: 6.1
 
 image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-DI-logo.png[KODEIN, 700, 233]
 
@@ -210,10 +210,6 @@ NOTE: Kodein supports the following targets: +
 Kodein-DI uses the new gradle native dependency model.
 Because that model is experimental in gradle, it is not forward compatible with next versions of Gradle.
 
-Kodein offers two repositories: one for gradle 4.7 *exactly*, and one that uses the latest version of Gradle.
-
-==== Gralde 4.7 exactly
-
 Add the JCenter repository:
 
 [source,groovy,subs="attributes"]
@@ -239,38 +235,6 @@ kotlin {
     }
 }
 ----
-
-==== latest gradle
-
-Add the LGM (Latest Gradle Metadata) repository:
-
-[source,groovy,subs="attributes"]
-----
-buildscript {
-    repositories {
-        maven {
-            url "https://dl.bintray.com/kodein-framework/Kodein-DI-LGM"
-        }
-    }
-}
-----
-
-Then add the dependency:
-
-[source,groovy,subs="attributes"]
-----
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation "org.kodein.di:kodein-di-erased:{version}-LGM"
-            }
-        }
-    }
-}
-----
-
-NOTE: Using LGM has no consequences whatsoever regarding JVM & JS platforms.
 
 
 [[declaring-dependencies]]

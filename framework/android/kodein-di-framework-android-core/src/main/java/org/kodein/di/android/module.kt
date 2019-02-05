@@ -183,5 +183,6 @@ fun androidCoreModule(app: Application) = Kodein.Module(name = "\u2063androidMod
     }
 }
 
+// Deprecated since 6.1
 @Deprecated("Use androidCoreModule, androidXModule, or androidSupportModule", ReplaceWith("androidCoreModule(app)"))
 fun androidModule(app: Application) = androidCoreModule(app)

@@ -49,6 +49,7 @@ private class LazyContextKodeinPropertyDelegateProvider(private val getContext: 
  * To be used on Android's `Context` classes, such as `Activity` or `Service`.
  */
 fun kodein(): KodeinPropertyDelegateProvider<Context> = ContextKodeinPropertyDelegateProvider()
+// Deprecated since 6.1
 @Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
 fun closestKodein() = kodein()
 
@@ -58,6 +59,7 @@ fun closestKodein() = kodein()
  * @param context The Android context to use to walk up the context hierarchy.
  */
 fun kodein(context: Context): KodeinPropertyDelegateProvider<Any?> = LazyContextKodeinPropertyDelegateProvider { context }
+// Deprecated since 6.1
 @Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein(context)", "org.kodein.di.android.kodein"))
 fun closestKodein(context: Context) = kodein(context)
 
@@ -67,6 +69,7 @@ fun closestKodein(context: Context) = kodein(context)
  * @param getContext A function that returns the Android context to use to walk up the context hierarchy.
  */
 fun kodein(getContext: () -> Context): KodeinPropertyDelegateProvider<Any?> = LazyContextKodeinPropertyDelegateProvider(getContext)
+// Deprecated since 6.1
 @Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein(getContext)", "org.kodein.di.android.kodein"), DeprecationLevel.WARNING)
 fun closestKodein(getContext: () -> Context) = kodein(getContext)
 
@@ -74,6 +77,7 @@ fun closestKodein(getContext: () -> Context) = kodein(getContext)
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
 fun Fragment.kodein() = kodein { activity }
+// Deprecated since 6.1
 @Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
 fun Fragment.closestKodein() = kodein()
 
@@ -81,6 +85,7 @@ fun Fragment.closestKodein() = kodein()
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
 fun Dialog.kodein() = kodein { context }
+// Deprecated since 6.1
 @Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
 fun Dialog.closestKodein() = kodein()
 
@@ -88,6 +93,7 @@ fun Dialog.closestKodein() = kodein()
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
 fun View.kodein() = kodein { context }
+// Deprecated since 6.1
 @Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
 fun View.closestKodein() = kodein()
 
@@ -95,6 +101,7 @@ fun View.closestKodein() = kodein()
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
 fun AbstractThreadedSyncAdapter.kodein() = kodein { context }
+// Deprecated since 6.1
 @Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
 fun AbstractThreadedSyncAdapter.closestKodein() = kodein()
 
@@ -102,5 +109,6 @@ fun AbstractThreadedSyncAdapter.closestKodein() = kodein()
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
 fun Loader<*>.kodein() = kodein { context }
+// Deprecated since 6.1
 @Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
 fun Loader<*>.closestKodein() = kodein()

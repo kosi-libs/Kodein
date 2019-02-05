@@ -4,8 +4,8 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.0.1
-:branch: 6.0
+:version: 6.1.0
+:branch: 6.1
 
 
 == Introduction

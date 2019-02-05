@@ -175,14 +175,14 @@ class SingleItemScopeRegistry : ScopeRegistry() {
 }
 
 // Deprecated since 6.0
-@Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors", level = DeprecationLevel.WARNING)
+@Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors")
 enum class ScopeRepositoryType {
     MULTI_ITEM,
     SINGLE_ITEM
 }
 
-// Deprecated since 6.0
 @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
+// Deprecated since 6.0
 @Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors", level = DeprecationLevel.ERROR)
 fun <A> newScopeRegistry(type: ScopeRepositoryType): ScopeRegistry = throw UnsupportedOperationException()
 
@@ -233,7 +233,7 @@ interface Scope<in C> {
 /**
  * Simple [Scope] where the Environment Context and the Binding Context do not differ.
  */
-//Deprecated since 6.0
+// Deprecated since 6.0
 @Deprecated("Scope itself has been simplified", ReplaceWith("Scope<C>"), level = DeprecationLevel.ERROR)
 typealias SimpleScope<C> = Scope<C>
 
