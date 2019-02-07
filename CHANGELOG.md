@@ -1,11 +1,14 @@
 #### 6.1.0 (06-02-2019)
 
 - CORE
-  * Kotlin 4.3.20
-  * Gradle 4.10 & Gradle Metadata 0.4 by default. LGM versions are dropped since they are not needed anymore.
-  * Kodein.Lazy supports both `by` and `equals`, which makes it easier to use (most `*Lazy` classes in Kotlin are supposed to be used with `by`).
-  * Support for lazy contexts via `on { context }.instance()` or via `override val kodeinContext = kcontext { context }`.
+  * Kotlin 1.3.20
   * Fixed a bug that made a cached "hit" in the container loose its translator for future access (Thanks to Charles Julian Knight).
+  * Kodein.Lazy supports both `by` and `=`, which makes it easier to use (most `*Lazy` classes in Kotlin are supposed to be used with `by`).
+  * Support for lazy contexts via `on { context }.instance()` or via `override val kodeinContext = kcontext { context }`.
+
+- MULTIPLATFORM
+  * Gradle 4.10 & Gradle Metadata 0.4 by default.
+  * LGM versions are dropped since they are not needed anymore.
 
 - ANDROID
   * Fixed a bug that may duplicate the underlying fragment when using `retainedKodein` (Thanks to Charles Julian Knight).
