@@ -42,3 +42,11 @@ if (excludeAndroid != "true") {
             ":demo:demo-android"
     )
 }
+
+val excludeKtor: String? by settings
+
+if (excludeKtor != "true") {
+    include(
+        ":framework:ktor:kodein-di-framework-ktor-server-jvm"
+    )
+}
