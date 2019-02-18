@@ -31,4 +31,20 @@ object SessionScope : Scope<KtorSession> {
             }
         }
     }
+
+    /**
+     * Remove amd close the [ScopeRegistry] linked to the [KtorSession]
+     * The linked singletons won't be retrievable anymore
+     *
+     * This is usually called when closing / expiring the session
+     */
+    fun close(session: KtorSession) {
+        synchronized(mapRegistry) {
+            val scopeRegistry = mapRegistry[session]
+            if (scopeRegistry != null) {
+                mapRegistry.remove(session.getSessionId())
+                scopeRegistry.clear()
+            }
+        }
+    }
 }
