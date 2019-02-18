@@ -1,5 +1,8 @@
 package org.kodein.di.ktor
 
+import io.ktor.sessions.CurrentSession
+import io.ktor.sessions.clear
+import io.ktor.sessions.get
 import org.kodein.di.bindings.Scope
 import org.kodein.di.bindings.ScopeRegistry
 import org.kodein.di.bindings.StandardScopeRegistry
@@ -47,4 +50,18 @@ object SessionScope : Scope<KtorSession> {
             }
         }
     }
+}
+
+/**
+ * Clear session instance with type [T] and clear the corresponding [ScopeRegistry]
+ * @throws IllegalStateException if no session provider registered for type [T]
+ */
+inline fun <reified T> CurrentSession.clearSessionScope() {
+    val session = get<T>()
+
+    if(session != null && session is KtorSession){
+        SessionScope.close(session)
+    }
+
+    this.clear<T>()
 }
