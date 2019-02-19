@@ -1,12 +1,15 @@
 package org.kodein.di.ktor
 
+import io.ktor.application.ApplicationCall
 import io.ktor.sessions.CurrentSession
 import io.ktor.sessions.clear
 import io.ktor.sessions.get
 import org.kodein.di.bindings.Scope
 import org.kodein.di.bindings.ScopeRegistry
 import org.kodein.di.bindings.StandardScopeRegistry
+import org.kodein.di.bindings.WeakContextScope
 
+//region Session scope
 /**
  * Interface that will help leverage the use of Kodein in the Ktor [Sessions] context
  */
@@ -65,3 +68,7 @@ inline fun <reified T> CurrentSession.clearSessionScope() {
 
     this.clear<T>()
 }
+//endregion
+//region Request scope
+object RequestScope : WeakContextScope<ApplicationCall>()
+//endregion
