@@ -46,7 +46,7 @@ object SessionScope : Scope<KtorSession> {
      */
     fun close(session: KtorSession) {
         synchronized(mapRegistry) {
-            val scopeRegistry = mapRegistry[session]
+            val scopeRegistry = mapRegistry[session.getSessionId()]
             if (scopeRegistry != null) {
                 mapRegistry.remove(session.getSessionId())
                 scopeRegistry.clear()
