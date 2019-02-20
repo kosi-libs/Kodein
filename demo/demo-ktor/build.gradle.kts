@@ -11,7 +11,7 @@ repositories {
 }
 
 application {
-    mainClassName = "ScopeApplicationKt"
+    mainClassName = "KodeinApplicationKt"
 }
 
 dependencies {

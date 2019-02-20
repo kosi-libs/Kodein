@@ -14,12 +14,8 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.sessions.*
 import kotlinx.html.*
-import org.kodein.di.Kodein
 import org.kodein.di.generic.*
-import org.kodein.di.ktor.KtorSession
-import org.kodein.di.ktor.RequestScope
-import org.kodein.di.ktor.SessionScope
-import org.kodein.di.ktor.clearSessionScope
+import org.kodein.di.ktor.*
 import java.security.SecureRandom
 import java.util.*
 
@@ -28,18 +24,17 @@ fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8000) {
         install(DefaultHeaders)
         install(CallLogging)
+        install(KodeinFeature) {
+            bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
+            bind<Random>() with scoped(RequestScope).singleton { SecureRandom() }
+        }
 
         sessionModule()
         requestModule()
     }.start(true)
 }
 //endregion
-//region Kodein
-val kodein = Kodein {
-    bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
-    bind<Random>() with scoped(RequestScope).singleton { SecureRandom() }
-}
-//endregion
+
 //region Scope demo
 data class UserSession(val counter: Int) : KtorSession {
     override fun getSessionId() = counter
@@ -73,8 +68,8 @@ private fun Application.sessionModule() {
             get(viewRoute) {
                 val session = call.sessions.get<UserSession>() ?: UserSession(0)
 
-                val random by kodein.on(session).instance<Random>()
-                application.log.info("${call.info()} / Session: $session / Random instance: $random")
+                val random by kodein().on(session).instance<Random>()
+                application.log.info("${call.info()} / Session: $session / Kodein ${kodein().container} / Random instance: $random")
 
                 call.respondHtml {
                     head {
@@ -124,8 +119,8 @@ fun Application.requestModule() {
                 applicationCall: ApplicationCall,
                 proceed: suspend () -> Unit
             ) {
-                val random by kodein.on(applicationCall).instance<Random>()
-                log.info("Context $applicationCall / $phase Random instance: $random")
+                val random by kodein().on(applicationCall).instance<Random>()
+                log.info("Context $applicationCall / Kodein ${kodein().container} / $phase Random instance: $random")
                 proceed()
             }
 
@@ -146,6 +141,8 @@ fun Application.requestModule() {
             }
 
             get {
+                val random by kodein().on(context).instance<Random>()
+                application.log.info("Kodein ${kodein().container} / Random instance: $random")
                 logPhase("[GET", context) {
                     call.respondText("Request processing...")
                 }
