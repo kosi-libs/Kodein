@@ -6,7 +6,12 @@ repositories {
     maven ("https://kotlin.bintray.com/ktor")
 }
 
+kodeinLib {
+    dependencies {
+        api(project(":kodein-di-core") target "jvm")
+    }
+}
+
 dependencies {
-    api(project(":kodein-di-generic-jvm"))
     implementation("io.ktor:ktor-server-core:1.1.1")
 }
