@@ -28,6 +28,11 @@ fun kodein(getApplication: () -> Application) = getApplication().kodein()
 fun PipelineContext<*, ApplicationCall>.kodein() = kodein { context.application }
 
 /**
+ * Getting the global [Kodein] container from the [ApplicationCall]
+ */
+fun ApplicationCall.kodein() = kodein { application }
+
+/**
  * Getting the global [Kodein] container from the [Routing] feature
  */
 fun Routing.kodein() = kodein { application }
