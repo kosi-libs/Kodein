@@ -906,7 +906,7 @@ These methods are:
 - `provider()` if you need a provider: `() -> T`.
 - `factory()` if you need an instance: `(A) -> T`.
 
-All three method can take a `tag` argument.
+All three methods can take a `tag` argument.
 
 [TIP]
 ====
@@ -1007,9 +1007,9 @@ val controller by kodein.on { requireActivity() } .newInstance { OtherController
 In the next few sections, we will be describing dependency retrieval.
 As you might have guessed by the title of this section, everything, in dependency retrieval, is lazy by default.
 
-This allow:
+This allows:
 
-- Dependencies to be retrieved retrieved only when they are actually needed.
+- Dependencies to be retrieved only when they are actually needed.
 - "Out of context" classes such as Android Activities to access their dependencies once their contexts have been initialized.
 
 If you want "direct" retrieval, well, there's a section named <<direct-retrieval,direct retrieval>>, how about that!
@@ -1061,7 +1061,7 @@ val sixSideDiceProvider: () -> Dice by kodein.provider(arg = 6)
 val twentySideDice: Dice by kodein.instance(arg = 20)
 ----
 
-Note that if you bound a factory with multiple argument, you need to use the `M` function to pass multiple arguments:
+Note that if you bound a factory with multiple arguments, you need to use the `M` function to pass multiple arguments:
 
 [source, kotlin]
 .Example: Creating a multi-argument Dice by injecting its dependency.
