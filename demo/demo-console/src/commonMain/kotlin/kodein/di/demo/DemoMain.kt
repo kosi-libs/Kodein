@@ -35,7 +35,7 @@ class Application : KodeinAware {
 }
 
 class ConsoleLogger : CommonLogger {
-    override fun log(s: String) {
-        println(s)
+    override fun log(msg: String) {
+        println(msg)
     }
 }
