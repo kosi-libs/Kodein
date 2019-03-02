@@ -1,8 +1,12 @@
 package kodein.di.demo
 
-import org.kodein.di.*
+import kodein.di.demo.coffee.Coffee
+import kodein.di.demo.coffee.Kettle
+import kodein.di.demo.coffee.electricHeaterModule
+import kodein.di.demo.coffee.thermosiphonModule
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
 import org.kodein.di.erased.*
-import kodein.di.demo.coffee.*
 
 fun main() {
     Application()
@@ -14,7 +18,7 @@ class Application : KodeinAware {
         import(thermosiphonModule)
         import(electricHeaterModule)
 
-        bind<CommonLogger>() with provider { ConsoleLogger() }
+        bind() from instance(ConsoleLogger())
         bind<Coffee>() with provider { Coffee(instance()) }
 
         // this is bound in the scope of an activity so any retrieval using the same activity will return the same Kettle instance
