@@ -1,4 +1,4 @@
 
-fun main(args: Array<String>) {
-    kodein.di.demo.main(args)
+fun main() {
+    kodein.di.demo.main()
 }
