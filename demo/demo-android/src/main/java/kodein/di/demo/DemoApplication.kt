@@ -19,7 +19,7 @@ class DemoApplication : Application(), KodeinAware {
     override val kodein by Kodein.lazy {
         import(androidXModule(this@DemoApplication))
 
-        bind() from instance(Logger())
+        bind() from instance(AndroidLogger())
 
         import(electricHeaterModule)
 

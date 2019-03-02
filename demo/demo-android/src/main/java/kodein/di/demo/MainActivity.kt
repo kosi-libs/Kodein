@@ -6,8 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import kodein.di.demo.coffee.Coffee
 import kodein.di.demo.coffee.Kettle
 import kodein.di.demo.coffee.thermosiphonModule
-import org.kodein.di.*
-import org.kodein.di.android.*
+import org.kodein.di.Copy
+import org.kodein.di.KodeinAware
+import org.kodein.di.KodeinContext
+import org.kodein.di.android.kodein
+import org.kodein.di.android.retainedSubKodein
+import org.kodein.di.description
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.kcontext
 
@@ -21,7 +25,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     // will be the same instance as the coffeeMaker in MainFragment
     val coffeeMaker: Kettle<Coffee> by instance()
-    val log: Logger by instance()
+    val log: AndroidLogger by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

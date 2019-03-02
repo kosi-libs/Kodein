@@ -20,7 +20,7 @@ class MainFragment : Fragment(), KodeinAware {
     // will be the same instance as the coffeeMaker in MainActivity
     val coffeeMaker: Kettle<Coffee> by instance()
 
-    val log: Logger by instance()
+    val log: AndroidLogger by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
