@@ -25,6 +25,7 @@ include(
 
         ":kodein-di-jxinject-jvm",
 
+        ":demo:demo-common",
         ":demo:demo-console",
         ":demo:demo-js",
 
