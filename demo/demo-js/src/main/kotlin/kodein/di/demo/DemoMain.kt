@@ -18,21 +18,30 @@ class Application : KodeinAware {
         import(thermosiphonModule)
         import(electricHeaterModule)
 
-        bind<Coffee>() with provider { Coffee() }
+        bind() from instance(JsLogger())
+        bind<Coffee>() with provider { Coffee(instance()) }
 
         // this is bound in the scope of an activity so any retrieval using the same activity will return the same Kettle instance
-        bind<Kettle<*>>() with singleton { Kettle<Coffee>(instance(), instance(), provider()) }
+        bind<Kettle<*>>() with singleton { Kettle<Coffee>(instance(), instance(), instance(), provider()) }
 
         constant("author") with "Salomon BRYS"
     }
 
+    private val _logger: CommonLogger by instance()
     private val _kettle: Kettle<Coffee> by instance()
 
     init {
         val author: String by instance("author")
-        console.log("Kodein 5 Demo by $author")
+        _logger.log("Kodein 5 Demo by $author")
 
         _kettle.brew()
+    }
+
+}
+
+class JsLogger : CommonLogger {
+    override fun log(msg: String) {
+        console.log(msg)
     }
 
 }
