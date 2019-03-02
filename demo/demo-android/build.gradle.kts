@@ -35,10 +35,13 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.20")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.21")
 
     implementation("androidx.appcompat:appcompat:1.0.2")
 
     implementation(project(":kodein-di-generic-jvm"))
+    implementation(project(":demo:demo-common")) {
+        exclude(group = "org.kodein")
+    }
     implementation(project(":framework:android:kodein-di-framework-android-x"))
 }

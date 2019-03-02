@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
     implementation(project(":kodein-di-erased"))
+    implementation(project(":demo:demo-common"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-js")
 }
 
