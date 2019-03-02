@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeOutputKind
-import org.jetbrains.kotlin.utils.addToStdlib.cast
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -18,6 +17,7 @@ kotlin {
         getByName("commonMain").dependencies {
             implementation(project(":kodein-di-core"))
             implementation(project(":kodein-di-erased"))
+            implementation(project(":demo:demo-common"))
             implementation("org.jetbrains.kotlin:kotlin-stdlib-common")
         }
 
