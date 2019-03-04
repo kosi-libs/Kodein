@@ -18,7 +18,7 @@ class Application : KodeinAware {
         import(thermosiphonModule)
         import(electricHeaterModule)
 
-        bind() from instance(ConsoleLogger())
+        bind<CommonLogger>() with  singleton { ConsoleLogger() }
         bind<Coffee>() with provider { Coffee(instance()) }
 
         // this is bound in the scope of an activity so any retrieval using the same activity will return the same Kettle instance
