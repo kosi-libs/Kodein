@@ -64,10 +64,7 @@ val Application.logger get(): CommonLogger {
 fun Application.routeModule() {
     routing {
         get<Index> {
-            val session = call.sessions.get<UserSession>()
-            if (session == null)
-                call.respondRedirect(locations.href(Login()))
-            else
+            checkSessionOrRedirect() ?:
                 call.respondRedirect(locations.href(Home()))
         }
     }
@@ -88,19 +85,53 @@ fun Application.logUserModule() {
     }
 
     routing {
-        get<login> {
-            call.respondText { "LOGIN" }
+        get<Login> {
+            logger.log("Load login page")
+            checkSessionOrRedirect {
+                call.respond(FreeMarkerContent("login.ftl", mapOf("username" to "romain"), ""))
+            }
+        }
+        post<Login> {
+            val username = call.receive<Parameters>()["username"]
+            logger.log("Login Attempt for [$username]")
+
+            if (username == null) {
+                logger.log("Login fail for [$username]")
+                call.respondRedirect(locations.href(Login()))
+            } else {
+                logger.log("Login succeed for [$username]")
+                call.sessions.getOrSet { UserSession(username) }
+                call.respondRedirect(locations.href(Home()))
+            }
+        }
+        post<Login.ClearSession> {
+            call.sessions.clearSessionScope<UserSession>()
+            call.respondRedirect(locations.href(Login()))
         }
     }
 }
+
+suspend fun PipelineContext<Unit, ApplicationCall>
+        .checkSessionOrRedirect(action: suspend () -> Unit = { call.respondRedirect(locations.href(Login())) }): UserSession? {
+    val session = call.sessions.get<UserSession>()
+
+    if(session == null) {
+        action()
+    }
+
+    return session
+}
 //endregion
 
-//region Coffee Maker
+//region Home module
 @KtorExperimentalLocationsAPI
-fun Application.coffeeMaker() {
+fun Application.homeModule() {
     routing {
-        get<home> {
-            call.respondText { "HOME" }
+        get<Home> {
+            val session = checkSessionOrRedirect()?: return@get
+
+            logger.log("load Hone page for the user ${session.username}")
+            call.respond(FreeMarkerContent("home.ftl", mapOf("session" to session), ""))
         }
     }
 }
