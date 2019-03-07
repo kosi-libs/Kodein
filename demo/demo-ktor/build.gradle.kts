@@ -1,4 +1,4 @@
-val ktorVersion = "1.1.1"
+val ktorVersion = "1.1.2"
 val logbackVersion = "1.2.3"
 
 plugins {

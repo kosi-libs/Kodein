@@ -15,6 +15,10 @@
         <#nested />
     </div>
 </div>
+
+<div class="footer">
+    Checkout your logging console :)
+</div>
 </body>
 </html>
 </#macro>

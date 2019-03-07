@@ -47,6 +47,7 @@ fun Application.main() {
     routeModule()
     logUserModule()
     homeModule()
+    coffeeMakerModule()
 }
 
 val Application.logger get(): CommonLogger {
@@ -59,13 +60,18 @@ val Application.logger get(): CommonLogger {
 @Location("/login") class Login(val username: String = "") {
     @Location("/clear") class ClearSession()
 }
+@Location("/kettle") class CoffeeMaker {
+    @Location("/on") class On
+    @Location("/off") class Off
+    @Location("/brew") class Brew
+}
 
 @KtorExperimentalLocationsAPI
 fun Application.routeModule() {
     routing {
         get<Index> {
-            checkSessionOrRedirect() ?:
-                call.respondRedirect(locations.href(Home()))
+            checkSessionOrRedirect() ?: return@get
+            call.respondRedirect(locations.href(Home()))
         }
     }
 }
@@ -132,6 +138,24 @@ fun Application.homeModule() {
 
             logger.log("load Hone page for the user ${session.username}")
             call.respond(FreeMarkerContent("home.ftl", mapOf("session" to session), ""))
+        }
+    }
+}
+//endregion
+
+
+//region Coffee Maker module
+@KtorExperimentalLocationsAPI
+fun Application.coffeeMakerModule() {
+    routing {
+        post<CoffeeMaker.Brew> {
+            val session = checkSessionOrRedirect()?: return@post
+
+            val kettle: Kettle<*> by kodein().on(session).instance()
+            logger.log("Brewing coffee for ${session.username} with $kettle scoped on $session")
+            kettle.brew()
+
+            call.respond(FreeMarkerContent("home.ftl", mapOf("session" to session, "coffee" to true), ""))
         }
     }
 }
