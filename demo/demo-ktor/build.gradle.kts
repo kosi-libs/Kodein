@@ -11,7 +11,7 @@ repositories {
 }
 
 application {
-    mainClassName = "KodeinApplicationKt"
+    mainClassName = "io.ktor.server.netty.EngineMain"
 }
 
 dependencies {
@@ -24,6 +24,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
     implementation(project(":kodein-di-generic-jvm"))
+    implementation(project(":demo:demo-common")) {
+        exclude(group = "org.kodein")
+    }
     implementation(project(":framework:ktor:kodein-di-framework-ktor-server-jvm"))
 }
 
