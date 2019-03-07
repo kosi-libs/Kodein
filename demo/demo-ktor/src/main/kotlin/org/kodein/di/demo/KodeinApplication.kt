@@ -1,5 +1,6 @@
 package org.kodein.di.demo
 
+import freemarker.cache.*
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.freemarker.*
@@ -48,8 +49,10 @@ fun Application.main() {
     homeModule()
 }
 
-@Location("/")
-class index()
+val Application.logger get(): CommonLogger {
+    val ktorLogger by kodein().instance<CommonLogger>()
+    return ktorLogger
+}
 
 @Location("/") class Index
 @Location("/home") class Home
