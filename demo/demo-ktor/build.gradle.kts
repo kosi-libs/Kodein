@@ -20,7 +20,8 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(ktor())
     implementation(ktor("-server-netty"))
-    implementation(ktor("-html-builder"))
+    implementation(ktor("-locations"))
+    implementation(ktor("-freemarker"))
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
     implementation(project(":kodein-di-generic-jvm"))
