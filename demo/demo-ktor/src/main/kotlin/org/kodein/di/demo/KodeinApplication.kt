@@ -2,13 +2,17 @@ package org.kodein.di.demo
 
 import io.ktor.application.*
 import io.ktor.features.*
+import io.ktor.freemarker.*
+import io.ktor.http.*
 import io.ktor.locations.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.sessions.*
+import io.ktor.util.pipeline.*
 import kodein.di.demo.*
 import kodein.di.demo.coffee.*
-import org.kodein.di.erased.*
+import org.kodein.di.generic.*
 import org.kodein.di.ktor.*
 
 //region App setup
@@ -19,6 +23,9 @@ fun Application.main() {
     install(DefaultHeaders)
     install(Locations)
     install(CallLogging)
+    install(FreeMarker) {
+        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+    }
     install(KodeinFeature) {
         import(thermosiphonModule)
         import(electricHeaterModule)
@@ -28,36 +35,37 @@ fun Application.main() {
         bind<Coffee>() with provider { Coffee(instance()) }
 
         // this is bound in the scope of an activity so any retrieval using the same activity will return the same Kettle instance
-        bind<Kettle<*>>() with singleton { Kettle<Coffee>(instance(), instance(), instance(), provider()) }
+        bind<Kettle<*>>() with scoped(SessionScope).singleton { Kettle<Coffee>(instance(), instance(), instance(), provider()) }
 
         constant("author") with "Romain BOISSELLE"
     }
 
+    val author: String by kodein().instance("author")
+    logger.log("Setup Ktor application by $author")
+
     routeModule()
     logUserModule()
-    coffeeMaker()
+    homeModule()
 }
 
 @Location("/")
 class index()
 
-@Location("/home")
-class home()
-
-@Location("/login") class login() {
-    @Location("/user/{username}") data class logUser(val username: String)
-    @Location("/clear") class clearSession()
+@Location("/") class Index
+@Location("/home") class Home
+@Location("/login") class Login(val username: String = "") {
+    @Location("/clear") class ClearSession()
 }
 
 @KtorExperimentalLocationsAPI
 fun Application.routeModule() {
     routing {
-        get<index> {
+        get<Index> {
             val session = call.sessions.get<UserSession>()
             if (session == null)
-                call.respondRedirect(locations.href(login()))
+                call.respondRedirect(locations.href(Login()))
             else
-                call.respondRedirect(locations.href(home()))
+                call.respondRedirect(locations.href(Home()))
         }
     }
 }
