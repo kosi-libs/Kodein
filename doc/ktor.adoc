@@ -155,7 +155,7 @@ WARNING: The `kodein()` function will only work if your Ktor `Application` has t
 
 === Session scopes
 
-With the `kodein-ktor` utils you can scope your dependencies upon your Ktor sessions. To do that you'll have to follow the steps:
+With the `kodein-di-ktor-server-jvm` utils you can scope your dependencies upon your Ktor sessions. To do that you'll have to follow the steps:
 
 . Defining your session and scope your dependencies
 
@@ -218,7 +218,7 @@ get("/clear") {
 ----
 <1> clear the session and remove the `ScopeRegistry` linked to the session
 
-=== Request scope
+=== Call scope
 
 Kodein provides a standard scope for any object (Ktor or not).
 The `WeakContextScope` will keep singleton and multiton instances as long as the context (= object) lives.
