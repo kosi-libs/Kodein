@@ -1,17 +1,14 @@
 package org.kodein.di.ktor
 
 import io.ktor.application.*
-import io.ktor.features.DefaultHeaders
-import io.ktor.request.httpMethod
-import io.ktor.request.uri
-import io.ktor.response.respondText
-import io.ktor.routing.get
-import io.ktor.routing.route
-import io.ktor.routing.routing
+import io.ktor.features.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
 import io.ktor.sessions.*
-import org.kodein.di.Kodein
+import org.kodein.di.*
 import org.kodein.di.generic.*
-import java.security.SecureRandom
+import java.security.*
 import java.util.*
 
 // Test Ktor Application
@@ -19,7 +16,7 @@ fun Application.main() {
     install(DefaultHeaders)
     install(KodeinFeature) {
         bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
-        bind<Random>() with scoped(RequestScope).singleton { SecureRandom() }
+        bind<Random>() with scoped(CallScope).singleton { SecureRandom() }
     }
 
     sessionModule()
@@ -36,7 +33,7 @@ const val ROUTE_CLOSEST = "/closest"
 const val SESSION_FEATURE_SESSION_ID = "SESSION_FEATURE_SESSION_ID"
 const val NO_SESSION = "NO_SESSION"
 
-data class MockSession(val counter: Int = 0) : KtorSession {
+data class MockSession(val counter: Int = 0) : KodeinSession {
     override fun getSessionId() = counter
 }
 

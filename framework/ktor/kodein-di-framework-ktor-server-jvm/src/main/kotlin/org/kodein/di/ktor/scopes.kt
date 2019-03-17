@@ -1,34 +1,31 @@
 package org.kodein.di.ktor
 
-import io.ktor.application.ApplicationCall
-import io.ktor.sessions.CurrentSession
-import io.ktor.sessions.clear
-import io.ktor.sessions.get
-import org.kodein.di.bindings.Scope
-import org.kodein.di.bindings.ScopeRegistry
-import org.kodein.di.bindings.StandardScopeRegistry
-import org.kodein.di.bindings.WeakContextScope
+import io.ktor.application.*
+import io.ktor.sessions.*
+import org.kodein.di.bindings.*
+import kotlin.collections.HashMap
+import kotlin.collections.set
 
 //region Session scope
 /**
  * Interface that will help leverage the use of Kodein in the Ktor [Sessions] context
  */
-interface KtorSession {
+interface KodeinSession {
     fun getSessionId(): Any
 }
 
 /**
- * Kodein scope that will provide singletons according to a specific [KtorSession]
+ * Kodein scope that will provide singletons according to a specific [KodeinSession]
  */
-object SessionScope : Scope<KtorSession> {
+object SessionScope : Scope<KodeinSession> {
 
     private val mapRegistry = HashMap<Any, ScopeRegistry>()
 
     /**
-     * Reclaim the right [ScopeRegistry] regarding to the given [KtorSession]
-     * This will help maintaining and retrieving singletons linked with the [KtorSession]
+     * Reclaim the right [ScopeRegistry] regarding to the given [KodeinSession]
+     * This will help maintaining and retrieving singletons linked with the [KodeinSession]
      */
-    override fun getRegistry(context: KtorSession): ScopeRegistry {
+    override fun getRegistry(context: KodeinSession): ScopeRegistry {
         return synchronized(mapRegistry) {
             mapRegistry[context.getSessionId()] ?: run {
                 val scopeRegistry = StandardScopeRegistry()
@@ -39,12 +36,12 @@ object SessionScope : Scope<KtorSession> {
     }
 
     /**
-     * Remove amd close the [ScopeRegistry] linked to the [KtorSession]
+     * Remove amd close the [ScopeRegistry] linked to the [KodeinSession]
      * The linked singletons won't be retrievable anymore
      *
      * This is usually called when closing / expiring the session
      */
-    fun close(session: KtorSession) {
+    fun close(session: KodeinSession) {
         synchronized(mapRegistry) {
             val scopeRegistry = mapRegistry[session.getSessionId()]
             if (scopeRegistry != null) {
@@ -62,7 +59,7 @@ object SessionScope : Scope<KtorSession> {
 inline fun <reified T> CurrentSession.clearSessionScope() {
     val session = get<T>()
 
-    if(session != null && session is KtorSession){
+    if(session != null && session is KodeinSession){
         SessionScope.close(session)
     }
 
@@ -70,5 +67,5 @@ inline fun <reified T> CurrentSession.clearSessionScope() {
 }
 //endregion
 //region Request scope
-object RequestScope : WeakContextScope<ApplicationCall>()
+object CallScope : WeakContextScope<ApplicationCall>()
 //endregion

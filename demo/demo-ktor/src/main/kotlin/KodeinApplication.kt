@@ -1,22 +1,17 @@
 
 import io.ktor.application.*
-import io.ktor.features.CallLogging
-import io.ktor.features.DefaultHeaders
-import io.ktor.html.respondHtml
-import io.ktor.request.httpMethod
-import io.ktor.request.uri
-import io.ktor.response.respondRedirect
-import io.ktor.response.respondText
-import io.ktor.routing.get
-import io.ktor.routing.route
-import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import io.ktor.features.*
+import io.ktor.html.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import io.ktor.sessions.*
 import kotlinx.html.*
 import org.kodein.di.generic.*
 import org.kodein.di.ktor.*
-import java.security.SecureRandom
+import java.security.*
 import java.util.*
 
 //region APP starter
@@ -26,7 +21,7 @@ fun main(args: Array<String>) {
         install(CallLogging)
         install(KodeinFeature) {
             bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
-            bind<Random>() with scoped(RequestScope).singleton { SecureRandom() }
+            bind<Random>() with scoped(CallScope).singleton { SecureRandom() }
         }
 
         sessionModule()
@@ -36,7 +31,7 @@ fun main(args: Array<String>) {
 //endregion
 
 //region Scope demo
-data class UserSession(val counter: Int) : KtorSession {
+data class UserSession(val counter: Int) : KodeinSession {
     override fun getSessionId() = counter
 }
 
