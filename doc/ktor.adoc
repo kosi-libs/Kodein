@@ -153,43 +153,53 @@ NOTE: Because of those extension functions you can always get the Kodein object 
 
 WARNING: The `kodein()` function will only work if your Ktor `Application` has the `KodeinFeature` installed
 
+== Extending the nearest Kodein container from a route
+
+    Coming soon
+
 == Ktor scopes
 
 === Session scopes
 
 With the `kodein-di-ktor-server-jvm` utils you can scope your dependencies upon your Ktor sessions. To do that you'll have to follow the steps:
 
-. Defining your session and scope your dependencies
+. Defining your session by implementing `KodeinSession`
 
 [source, kotlin]
-.Example: Defining the session and scope dependencies
+.Example: Defining the session
 ----
-data class UserSession(val user: User) : KtorSession { <1>
+data class UserSession(val user: User) : KodeinSession { <1>
     override fun getSessionId() = user.id <2>
 }
+----
+<1> Create session object that implements `KtorSession`
+<2> Implement the function `getSessionId()`
 
+. Defining your scoped dependencies
+
+[source, kotlin]
+.Example: Defining the session scoped dependencies
+----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8000) {
-        install(Sessions) { <3>
-            cookie<UserSession>("SESSION_FEATURE_SESSION_ID") <4>
+        install(Sessions) { <1>
+            cookie<UserSession>("SESSION_FEATURE_SESSION_ID") <2>
         }
         install(KodeinFeature) {
-            bind<Random>() with scoped(SessionScope).singleton { SecureRandom() } <5>
+            bind<Random>() with scoped(SessionScope).singleton { SecureRandom() } <3>
             /* binding */
         }
     }.start(true)
 }
 ----
-<1> Create session object that implements `KtorSession`
-<2> Implement the function `getSessionId()`
-<3> Install the `Sessions` feature
-<4> Declaring a session cookie represented by `UserSession`
-<5> Bind `Random` object scoped by `SessionScope`
+<1> Install the `Sessions` feature
+<2> Declaring a session cookie represented by `UserSession`
+<3> Bind `Random` object scoped by `SessionScope`
 
 . Retrieving your scoped dependencies
 
 [source, kotlin]
-.Example: Retrieving scoped dependencies
+.Example: Retrieving session scoped dependencies
 ----
 embeddedServer(Netty, port = 8000) {
     /* configurations */
@@ -207,9 +217,9 @@ embeddedServer(Netty, port = 8000) {
 
 . Clear the scope as long as the sessions are no longer used
 
-A Ktor session is cleared by calling the function `CurrentSession.clear<Session>()`.
-To clear the session combine to the scope removal you can use the function `CurrentSession.clearSessionAndScope<Session>()`, 
-thus the session will be cleared and the `ScopeRegistry` removed.
+IMPORTANT:  A Ktor session is cleared by calling the function `CurrentSession.clear<Session>()`.
+            To clear the session combine to the scope removal you *MUST* use the extension function `CurrentSession.clearSessionScope<Session>()`,
+            thus the session will be cleared and the `ScopeRegistry` removed.
 
 [source, kotlin]
 .Example: Clear the session and scope
@@ -219,6 +229,15 @@ get("/clear") {
 }
 ----
 <1> clear the session and remove the `ScopeRegistry` linked to the session
+
+
+[CAUTION]
+====
+.When working with multiple server instances you should be careful of what you are doing.
+You should be aware that using the same session over multiple servers won't give you the same instance of your scoped dependencies.
+In that context you might consider using a mechanism that always redirect a session request on the same server.
+This mechanism will not be provided by Ktor or Kodein.
+====
 
 === Call scope
 
