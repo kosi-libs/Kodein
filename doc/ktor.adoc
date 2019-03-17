@@ -244,13 +244,21 @@ This mechanism will not be provided by Ktor or Kodein.
 Kodein provides a standard scope for any object (Ktor or not).
 The `WeakContextScope` will keep singleton and multiton instances as long as the context (= object) lives.
 
-That's why the `RequestScope` is just a wrapper upon `WeakContextScope` with the target `ApplicationCall`, that lives only along the Request (HTTP or Websocket).
+That's why the `CallScope` is just a wrapper upon `WeakContextScope` with the target `ApplicationCall`, that lives only along the Request (HTTP or Websocket).
 
 [source, kotlin]
-.Example: using a Request scope
+.Example: Defining call scoped dependencies
 ----
 val kodein = Kodein {
-    bind<Random>() with scoped(RequestScope).singleton { SecureRandom() } <1>
+    bind<Random>() with scoped(CallScope).singleton { SecureRandom() } <1>
 }
 ----
-<1> A `Random` object will be created for each `Request` and will be retrieved as long as the `Request` lives.
+<1> A `Random` object will be created for each Request (HTTP or Websocket) and will be retrieved as long as the Request lives.
+
+[source, kotlin]
+.Example: Retrieving call scoped dependencies
+----
+ get {
+    val random by kodein().on(context).instance<Random>()
+}
+----
