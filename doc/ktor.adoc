@@ -67,14 +67,89 @@ fun main(args: Array<String>) {
 
 . Retrieve your dependencies!
 
-== Retrieving
+[[kodeinfeature]]
+== `KodeinFeature`
 
-You can always get the `Kodein` object by using:
+As a Ktor https://ktor.io/servers/application.html[Application] is based on extensions we cannot use the `KodeinAware` mechanism on it.
+So, we had to find another, elegant, way to provide a global Kodein container. That's where the `KodeinFeature` stands.
+It allows developers to create an instance of a Kodein container, that will be available from anywhere in their Ktor app.
 
-- `kodein()` inside a Ktor class (such as `Application`, `ApplicationCall`, `Route`, etc.)
-- `kodein { application }` inside another class
+To help with that, the `kodein-di-ktor-server-jvm` provides a https://ktor.io/advanced/features.html[custom feature]
+that will create and register an instance of a Kodein container in the application's https://ktor.io/advanced/pipeline/attributes.html[attributes].
+Thus, the Kodein will be reachable from multiple places like:
 
-CAUTION: The `kodein` function will only work if your Ktor `Application` has the `KodeinFeature` installed
+- Application
+- ApplicationCall
+- Routing / Routes
+
+[source, kotlin]
+.Example: a Ktor Application declaration, installing the `KodeinFeature`, and retrieving it from routes
+----
+fun main(args: Array<String>) {
+    embeddedServer(Netty, port = 8080) {
+        install(KodeinFeature) { // <1>
+            bind<Random>() with singleton { SecureRandom() } // <2>
+        }
+
+        routing {
+            get("/") {
+                val random by kodein().instance<Random>() // <3>
+                /* logic here */
+            }
+        }
+   }.start(true)
+}
+----
+<1> Install the `KodeinFeature`
+<2> Lambda that represent a Kodein builder, accepting Kodein core features
+<3> retrieving the Kodein container from the Application by calling `PipelineContext<*, ApplicationCall>.kodein()` extension function
+
+.Available `kodein()` extension function receivers
+- https://ktor.io/servers/application.html#application[Application]
+
+    fun Application.main() {
+        /* usage */
+        val kodein = kodein()
+
+        /* other usage */
+        val random by kodein().instance<Random>()
+    }
+
+- https://ktor.io/advanced/pipeline.html#interceptors-and-the-pipelinecontext[PipelineContext<*, ApplicationCall>]
+
+    get {
+        /* usage */
+        val kodein = context.kodein()
+
+        /* other usage */
+        val random by context.kodein().instance<Random>()
+    }
+
+- https://ktor.io/servers/calls.html[ApplicationCall]
+
+    get("/") {
+        /* usage */
+        val kodein = kodein()
+
+        /* other usage */
+        val random by kodein().instance<Random>()
+    }
+
+- https://ktor.io/servers/features/routing.html[Routing]
+
+    routing {
+        /* usage */
+        val kodein = kodein()
+
+        /* other usage */
+        val random by kodein().instance<Random>()
+    }
+
+NOTE: Because of those extension functions you can always get the Kodein object by using:
+    - `kodein()` inside a Ktor class (such as `Application`, `ApplicationCall`, `Route`, etc.)
+    - `kodein { application }` inside another class
+
+WARNING: The `kodein()` function will only work if your Ktor `Application` has the `KodeinFeature` installed
 
 == Ktor scopes
 
