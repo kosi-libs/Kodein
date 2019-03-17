@@ -1,5 +1,5 @@
 = Kodein DI on Ktor
-Romain BOISSELLE <romain.boisselle@protonmail.com>
+Romain BOISSELLE <romain@boisselle.dev>
 :toc: left
 :toc-position: left
 :toclevels: 5
@@ -7,33 +7,50 @@ Romain BOISSELLE <romain.boisselle@protonmail.com>
 :version: 6.1.0
 :branch: 6.1
 
-You can use Kodein as-is in your Ktor project, but you can go further by using the library `kodein-ktor`.
+You can use Kodein as-is in your Ktor project, but you can level-up your game by using the library `kodein-di-ktor-server-jvm`.
 
 NOTE: Kodein does work on Ktor as-is.
-      The `kodein-ktor` extension adds multiple ktor-specific utilities to Kodein. +
+      The `kodein-di-ktor-server-jvm` extension adds multiple ktor-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
-Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-ktor[Ktor demo project]!
+NOTE: Ktor is a multiplatform project, meaning you can use it for JVM, JS and Native projects.
+      Please note that, at the moment, Kodein utilities are only available for the JVM platform, for the server cases precisely
+
+Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-ktor[Ktor demo project] to help you going further!
 
 [[install]]
 == Install
 
-.How to use `kodein-ktor`:
+.How to quickly get into `kodein-di-ktor-server-jvm`:
 . Add this line in your `dependencies` block in your application `build.gradle` file:
 +
 [subs="attributes"]
+.Gradle Groovy script
 ----
 implementation 'org.kodein.di:kodein-di-ktor-server-jvm:{version}'
 ----
 +
-IMPORTANT: Either `kodein-di-generic-jvm` or `kodein-di-erased-jvm` *must* be declared in addition to the Kodein-Ktor package.
+[subs="attributes"]
+.Gradle Kotlin script
+----
+implementation(project("org.kodein.di:kodein-di-ktor-server-jvm:{version}"))
+----
 +
-. Using the `KodeinFeature`
+IMPORTANT: Either `kodein-di-generic-jvm` or `kodein-di-erased-jvm` *must* be declared in addition to the `kodein-di-ktor-server-jvm` package.
 +
-As a Ktor `Application` is based on extensions it cannot be declared as `KodeinAware`.
-So, we had to find another way to provide a global Kodein container. That's where the `KodeinFeature` stands.
-It provides an instance of a Kodein container, that can potentially be accessed from anywhere in Ktor app.
+. Declare a Kodein container in your application or use the <<kodeinfeature>>
 +
+[source, kotlin]
+.Example: a Ktor Application declaration, with Kodein container declaration
+----
+fun main(args: Array<String>) {
+    embeddedServer(Netty, port = 8080) {
+        val kodein = Kodein {
+            /* bindings */
+        }
+   }.start(true)
+}
+----
 [source, kotlin]
 .Example: a Ktor Application declaration, installing the `KodeinFeature`
 ----
@@ -46,7 +63,7 @@ fun main(args: Array<String>) {
 }
 ----
 
-. In your application, routes, etc. retrieve a Kodein object!
+. In your application, routes, etc. retrieve your Kodein object!
 
 . Retrieve your dependencies!
 
