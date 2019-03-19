@@ -1,13 +1,8 @@
 package org.kodein.di.ktor
 
-import io.ktor.application.Application
-import io.ktor.http.Cookie
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.parseServerSetCookieHeader
-import io.ktor.server.testing.cookiesSession
-import io.ktor.server.testing.handleRequest
-import io.ktor.server.testing.withTestApplication
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.server.testing.*
 import kotlin.test.*
 
 class KtorTest {
@@ -146,11 +141,33 @@ class KtorTest {
 
             response.content?.let {
                 val kodeinInstances = it.split(",").map { it.trim() }
-                assertTrue{ kodeinInstances.distinct().size == 1 }
+                assertTrue { kodeinInstances.distinct().size == 1 }
                 assertEquals("$kodeinInstance", kodeinInstances.first())
             }
 
-            assertSame(kodeinInstance, kodein())
+            assertSame(kodeinInstance, kodein)
+        }
+    }
+
+    @Test
+    fun testSubKodein(): Unit = withTestApplication(Application::main) {
+        val kodeinInstance = this.application.attributes[KodeinKey]
+
+        assertSame(kodeinInstance, kodein { this.application })
+
+        handleRequest(HttpMethod.Get, ROUTE_SUBKODEIN) {
+            assertSame(kodeinInstance, kodein { this.call.application })
+        }.apply {
+            assertNotNull(response.content)
+
+            response.content?.let {
+                val kodeinInstances = it.split(",").map { it.trim() }
+                assertTrue { kodeinInstances.distinct().size == 2 }
+                assertEquals("$kodeinInstance", kodeinInstances.first())
+                assertTrue { kodeinInstances.last().contains("LazyKodein".toRegex()) }
+            }
+
+            assertSame(kodeinInstance, kodein)
         }
     }
 }

@@ -17,11 +17,13 @@ fun Application.main() {
     install(KodeinFeature) {
         bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
         bind<Random>() with scoped(CallScope).singleton { SecureRandom() }
+        bind<Random>() with singleton { SecureRandom() }
     }
 
     sessionModule()
     requestModule()
     closestModule()
+    subKodeinModule()
 }
 
 const val ROUTE_SESSION = "/session"
@@ -29,6 +31,7 @@ const val ROUTE_INC = "/increment"
 const val ROUTE_CLEAR = "/clear"
 const val ROUTE_REQUEST = "/request"
 const val ROUTE_CLOSEST = "/closest"
+const val ROUTE_SUBKODEIN = "/sub"
 
 const val SESSION_FEATURE_SESSION_ID = "SESSION_FEATURE_SESSION_ID"
 const val NO_SESSION = "NO_SESSION"
@@ -134,6 +137,21 @@ fun Application.closestModule() {
             kodeinInstances.add(kodein)
             get {
                 kodeinInstances.add(kodein)
+                call.respondText(kodeinInstances.joinToString())
+            }
+        }
+    }
+}
+
+fun Application.subKodeinModule() {
+    val kodeinInstances = mutableListOf<Kodein>()
+    routing {
+        kodeinInstances.add(kodein)
+        route(ROUTE_SUBKODEIN) {
+            kodeinInstances.add(kodein)
+            get {
+                kodeinInstances.add(kodein)
+                kodeinInstances.add(subKodein {  })
                 call.respondText(kodeinInstances.joinToString())
             }
         }
