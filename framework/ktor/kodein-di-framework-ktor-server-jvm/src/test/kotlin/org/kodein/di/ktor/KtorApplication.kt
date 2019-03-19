@@ -57,10 +57,10 @@ private fun Application.sessionModule() {
                 val session = call.sessions.get<MockSession>() ?: MockSession(0)
                 val random by kodein.on(session).instance<Random>()
 
-            application.log.info("${call.info()} / Session: $session / Kodein ${kodein().container} / Random instance: $random")
+                application.log.info("${call.info()} / Session: $session / Kodein ${kodein.container} / Random instance: $random")
 
-            call.respondText("$random")
-        }
+                call.respondText("$random")
+            }
 
             get(ROUTE_INC) {
                 application.log.info("${call.info()} Increment session IN - ${call.sessions.get<MockSession>()}")
@@ -91,9 +91,9 @@ fun Application.requestModule() {
                     applicationCall: ApplicationCall,
                     proceed: suspend () -> Unit
             ) {
-                val random by kodein().on(applicationCall).instance<Random>()
+                val random by kodein.on(applicationCall).instance<Random>()
                 randomDto.randomInstances.add(phase to "$random")
-                log.info("Context $applicationCall / Kodein ${kodein().container} / $phase Random instance: $random")
+                log.info("Context $applicationCall / Kodein ${kodein.container} / $phase Random instance: $random")
                 proceed()
             }
 
@@ -115,8 +115,8 @@ fun Application.requestModule() {
             }
 
             get {
-                val random by kodein().on(context).instance<Random>()
-                application.log.info("Kodein ${kodein().container} / Random instance: $random")
+                val random by kodein.on(context).instance<Random>()
+                application.log.info("Kodein ${kodein.container} / Random instance: $random")
                 logPhase("[GET]", context) {
                     call.respondText(randomDto.randomInstances.joinToString { "${it.first}=${it.second}" })
                 }
@@ -129,11 +129,11 @@ fun Application.requestModule() {
 fun Application.closestModule() {
     val kodeinInstances = mutableListOf<Kodein>()
     routing {
-        kodeinInstances.add(kodein())
+        kodeinInstances.add(kodein)
         route(ROUTE_CLOSEST) {
-            kodeinInstances.add(kodein())
+            kodeinInstances.add(kodein)
             get {
-                kodeinInstances.add(kodein())
+                kodeinInstances.add(kodein)
                 call.respondText(kodeinInstances.joinToString())
             }
         }

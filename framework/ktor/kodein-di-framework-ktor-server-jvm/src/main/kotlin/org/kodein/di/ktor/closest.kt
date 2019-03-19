@@ -1,12 +1,10 @@
 package org.kodein.di.ktor
 
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
-import io.ktor.routing.Route
-import io.ktor.routing.Routing
-import io.ktor.util.AttributeKey
-import io.ktor.util.pipeline.PipelineContext
-import org.kodein.di.Kodein
+import io.ktor.application.*
+import io.ktor.routing.*
+import io.ktor.util.*
+import io.ktor.util.pipeline.*
+import org.kodein.di.*
 
 
 // attribute key for storing injector in a call
@@ -15,27 +13,31 @@ val KodeinKey = AttributeKey<Kodein>("kodein")
 /**
  * Getting the global [Kodein] container from the [Application]
  */
-fun Application.kodein() = attributes[KodeinKey]
+val Application.kodein: Kodein
+    get() = attributes[KodeinKey]
 
 /**
  * Getting the global [Kodein] container from the [Application] parameter
  */
-fun kodein(getApplication: () -> Application) = getApplication().kodein()
+fun kodein(getApplication: () -> Application) = getApplication().kodein
 
 /**
  * Getting the global [Kodein] container from the [ApplicationCall]
  */
-fun PipelineContext<*, ApplicationCall>.kodein() = kodein { context.application }
+val PipelineContext<*, ApplicationCall>.kodein: Kodein
+    get() = kodein { context.application }
 
 /**
  * Getting the global [Kodein] container from the [ApplicationCall]
  */
-fun ApplicationCall.kodein() = kodein { application }
+val ApplicationCall.kodein: Kodein
+    get() = kodein { application }
 
 /**
  * Getting the global [Kodein] container from the [Routing] feature
  */
-fun Routing.kodein() = kodein { application }
+val Routing.kodein: Kodein
+    get() = kodein { application }
 
 /**
  * Getting the global [Kodein] container from the current [Route]
@@ -43,7 +45,8 @@ fun Routing.kodein() = kodein { application }
  *
  * @throws IllegalStateException if there is no [Kodein] container
  */
-fun Route.kodein(): Kodein = when {
-    this is Routing -> kodein()
-    else -> parent?.kodein() ?: throw IllegalStateException("No kodein container found for [$this]")
-}
+val Route.kodein: Kodein
+    get() = when {
+        this is Routing -> kodein
+        else -> parent?.kodein ?: throw IllegalStateException("No kodein container found for [$this]")
+    }
