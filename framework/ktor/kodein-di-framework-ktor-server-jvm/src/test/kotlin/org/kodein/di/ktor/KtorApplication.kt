@@ -25,8 +25,8 @@ fun Application.main() {
 }
 
 const val ROUTE_SESSION = "/session"
-const val ROUTE_INC = "$ROUTE_SESSION/increment"
-const val ROUTE_CLEAR = "$ROUTE_SESSION/clear"
+const val ROUTE_INC = "/increment"
+const val ROUTE_CLEAR = "/clear"
 const val ROUTE_REQUEST = "/request"
 const val ROUTE_CLOSEST = "/closest"
 
@@ -52,31 +52,34 @@ private fun Application.sessionModule() {
 
         val info: ApplicationCall.() -> String = { "[${request.httpMethod.value}] ${request.uri}" }
 
-        get(ROUTE_SESSION) {
-            val session = call.sessions.get<MockSession>() ?: MockSession(0)
-            val random by kodein().on(session).instance<Random>()
+        route(ROUTE_SESSION) {
+            get {
+                val session = call.sessions.get<MockSession>() ?: MockSession(0)
+                val random by kodein.on(session).instance<Random>()
 
             application.log.info("${call.info()} / Session: $session / Kodein ${kodein().container} / Random instance: $random")
 
             call.respondText("$random")
         }
 
-        get(ROUTE_INC) {
-            application.log.info("${call.info()} Increment session IN - ${call.sessions.get<MockSession>()}")
-            val session = call.sessions.get<MockSession>() ?: MockSession(0)
-            call.sessions.set(MockSession(session.counter + 1))
-            application.log.info("${call.info()} Increment session OUT - ${call.sessions.get<MockSession>()}")
+            get(ROUTE_INC) {
+                application.log.info("${call.info()} Increment session IN - ${call.sessions.get<MockSession>()}")
+                val session = call.sessions.get<MockSession>() ?: MockSession(0)
+                call.sessions.set(MockSession(session.counter + 1))
+                application.log.info("${call.info()} Increment session OUT - ${call.sessions.get<MockSession>()}")
 
-            call.respondText("${call.sessions.get<MockSession>()}")
+                call.respondText("${call.sessions.get<MockSession>()}")
+            }
+
+            get(ROUTE_CLEAR) {
+                application.log.info("${call.info()} Clear session IN - ${call.sessions.get<MockSession>()}")
+                call.sessions.clearSessionScope<MockSession>()
+                application.log.info("${call.info()} Clear session OUT - ${call.sessions.get<MockSession>()}")
+
+                call.respondText("${call.sessions.get<MockSession>()}")
+            }
         }
 
-        get(ROUTE_CLEAR) {
-            application.log.info("${call.info()} Clear session IN - ${call.sessions.get<MockSession>()}")
-            call.sessions.clearSessionScope<MockSession>()
-            application.log.info("${call.info()} Clear session OUT - ${call.sessions.get<MockSession>()}")
-
-            call.respondText("${call.sessions.get<MockSession>()}")
-        }
     }
 }
 
