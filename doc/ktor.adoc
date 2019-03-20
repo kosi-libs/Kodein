@@ -180,7 +180,7 @@ In some cases we might want to extend our global Kodein container for local need
 
 We can easily achieve this goal, as we have facilities to retrieve our Kodein container with the previously defined extension properties,
 To do so we have a function `subKodein` available for the same classes as the [[closest]]:
-+
+
 [source, kotlin]
 .Example: a Ktor Application declaration, installing the `KodeinFeature`, and retrieving it from routes
 ----

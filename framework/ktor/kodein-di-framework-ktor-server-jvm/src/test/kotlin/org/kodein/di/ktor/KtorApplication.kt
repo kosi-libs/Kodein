@@ -17,7 +17,6 @@ fun Application.main() {
     install(KodeinFeature) {
         bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
         bind<Random>() with scoped(CallScope).singleton { SecureRandom() }
-        bind<Random>() with singleton { SecureRandom() }
     }
 
     sessionModule()

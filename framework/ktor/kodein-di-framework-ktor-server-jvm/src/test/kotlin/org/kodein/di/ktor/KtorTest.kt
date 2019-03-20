@@ -7,7 +7,6 @@ import kotlin.test.*
 
 class KtorTest {
 
-
     @Test
     fun testGetSession(): Unit = withTestApplication(Application::main) {
         handleRequest(HttpMethod.Get, ROUTE_SESSION).apply {
@@ -17,14 +16,14 @@ class KtorTest {
 
     @Test
     fun testGetIncrement(): Unit = withTestApplication(Application::main) {
-        handleRequest(HttpMethod.Get, ROUTE_INC).apply {
+        handleRequest(HttpMethod.Get, ROUTE_SESSION + ROUTE_INC).apply {
             assertTrue { response.content == "${MockSession(1)}" }
         }
     }
 
     @Test
     fun testGetClear(): Unit = withTestApplication(Application::main) {
-        handleRequest(HttpMethod.Get, ROUTE_CLEAR).apply {
+        handleRequest(HttpMethod.Get, ROUTE_SESSION + ROUTE_CLEAR).apply {
             assertTrue { response.content == "null" }
         }
     }
@@ -45,7 +44,7 @@ class KtorTest {
             }
 
             // (2) Call '/session/increment' to create a session - MockSession(counter=1)
-            handleRequest(HttpMethod.Get, ROUTE_INC).apply {
+            handleRequest(HttpMethod.Get, ROUTE_SESSION + ROUTE_INC).apply {
                 sessionCookie = response.headers.values(HttpHeaders.SetCookie)
                         .map { parseServerSetCookieHeader(it) }
                         .first { it.name == SESSION_FEATURE_SESSION_ID }
@@ -67,7 +66,7 @@ class KtorTest {
 
             // (4) Call '/session/increment' to create a new session - MockSession(counter=2)
             // Session cookie is still the same
-            handleRequest(HttpMethod.Get, ROUTE_INC) {
+            handleRequest(HttpMethod.Get, ROUTE_SESSION + ROUTE_INC) {
                 addHeader(HttpHeaders.Cookie, sessionCookie.toString())
             }.apply {
                 val cookie = response.headers.values(HttpHeaders.SetCookie)
@@ -92,7 +91,7 @@ class KtorTest {
 
             // (6) Call '/session/clear'
             // Should return 'null
-            handleRequest(HttpMethod.Get, ROUTE_CLEAR) {
+            handleRequest(HttpMethod.Get, ROUTE_SESSION + ROUTE_CLEAR) {
                 addHeader(HttpHeaders.Cookie, sessionCookie.toString())
             }.apply {
                 assertTrue { response.content == "null" }
