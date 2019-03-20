@@ -174,7 +174,7 @@ NOTE: Because of those extension properties you can always get the Kodein object
 
 WARNING: The `kodein` extension property will only work if your Ktor `Application` has the `KodeinFeature` installed, or if you handle the installation manually.
 
-.Extending the nearest Kodein container
+=== Extending the nearest Kodein container
 
 In some cases we might want to extend our global Kodein container for local needs. For example, we could extend the Kodein container for a login `Route`, by adding credentials bindings, thus they would be only available in the login `Route`and its children.
 
