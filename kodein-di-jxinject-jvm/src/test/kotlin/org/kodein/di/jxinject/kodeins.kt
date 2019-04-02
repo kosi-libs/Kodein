@@ -40,5 +40,5 @@ fun test4() = Kodein.direct {
 
     import(jxInjectorModule)
 
-    jxQualifier<KodeinInjectJvmTests.Test04_00_UniversePrefix> { "universe:" + it.value }
+    jxQualifier<InjectJvmTests_04_Qualifier.UniversePrefix> { "universe:" + it.value }
 }

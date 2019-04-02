@@ -16,7 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class KodeinConfJvmTests {
+class ConfJvmTests {
 
     private open class Name(val firstName: String) {
         override fun equals(other: Any?): Boolean{
@@ -46,7 +46,7 @@ class KodeinConfJvmTests {
     }
 
     // Only the JVM supports generics
-    @Test fun test03_01_GenericOverride() {
+    @Test fun test_00_GenericOverride() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
@@ -63,7 +63,7 @@ class KodeinConfJvmTests {
         assertEquals("42 *", kodein.direct.Factory<List<Int>, String>(generic(), erased(), null).invoke(listOf(42)))
     }
 
-    @Test fun test07_00_ExternalSource() {
+    @Test fun test_01_ExternalSource() {
         val kodein = ConfigurableKodein(mutable = true)
         kodein.addConfig {
             externalSource = ExternalSource { key ->

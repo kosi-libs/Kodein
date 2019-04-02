@@ -1,8 +1,11 @@
 package org.kodein.di
 
+import org.junit.FixMethodOrder
+import org.junit.runners.MethodSorters
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TypesTests {
 
     interface A
@@ -14,7 +17,7 @@ class TypesTests {
     class Concrete : Base<B>
 
     @Test
-    fun test_01_genericInterface() {
+    fun test_00_genericInterface() {
         val concrete = Concrete()
 
         val typeOfConcrete = TTOf(concrete)

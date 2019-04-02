@@ -1,12 +1,8 @@
 @file:Suppress("DEPRECATION", "unused")
 
-package org.kodein.di.conf.test
+package org.kodein.di.conf
 
-import org.kodein.di.AnyKodeinContext
 import org.kodein.di.Kodein
-import org.kodein.di.conf.ConfigurableKodein
-import org.kodein.di.conf.KodeinGlobalAware
-import org.kodein.di.conf.global
 import org.kodein.di.direct
 import org.kodein.di.erased.*
 import org.kodein.di.test.FixMethodOrder
@@ -17,7 +13,7 @@ import kotlin.test.*
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ConfTests {
 
-    @Test fun test00_00_Configurable() {
+    @Test fun test_00_Configurable() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
@@ -33,7 +29,7 @@ class ConfTests {
         assertFalse(kodein.canConfigure)
     }
 
-    @Test fun test01_04_Clear() {
+    @Test fun test_01_Clear() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addImport(Kodein.Module {
@@ -51,7 +47,7 @@ class ConfTests {
         assertEquals(42, kodein.direct.instance(tag = "answer"))
     }
 
-    @Test fun test01_02_Mutate() {
+    @Test fun test_02_Mutate() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addExtend(Kodein {
@@ -68,7 +64,7 @@ class ConfTests {
         assertEquals(42, kodein.direct.instance(tag = "full"))
     }
 
-    @Test fun test01_03_NonMutableClear() {
+    @Test fun test_03_NonMutableClear() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
@@ -82,7 +78,7 @@ class ConfTests {
         }
     }
 
-    @Test fun test01_04_NonMutableMutate() {
+    @Test fun test_04_NonMutableMutate() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
@@ -96,7 +92,7 @@ class ConfTests {
         }
     }
 
-    @Test fun test02_00_mutateConfig() {
+    @Test fun test_05_mutateConfig() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
@@ -113,7 +109,7 @@ class ConfTests {
         assertEquals(42, kodein.direct.instance(tag = "full"))
     }
 
-    @Test fun test02_01_nonMutableMutateConfig() {
+    @Test fun test_06_nonMutableMutateConfig() {
         val kodein = ConfigurableKodein()
 
         kodein.addConfig {
@@ -128,7 +124,7 @@ class ConfTests {
     }
 
     @Test
-    fun test03_00_ChildOverride() {
+    fun test_07_ChildOverride() {
         val kodein = ConfigurableKodein(true)
 
         kodein.addConfig {
@@ -148,7 +144,7 @@ class ConfTests {
         val answer: Int by instance(tag = "full")
     }
 
-    @Test fun test04_00_Global() {
+    @Test fun test_08_Global() {
         Kodein.global.mutable = true
 
         Kodein.global.addConfig {
@@ -171,7 +167,7 @@ class ConfTests {
         inner class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.direct.instance())
     }
 
-    @Test fun test05_00_Loop() {
+    @Test fun test_09_Loop() {
         val test = Test05()
 
         test.kodein.addConfig {
@@ -182,7 +178,7 @@ class ConfTests {
         test.kodein.getOrConstruct()
     }
 
-    @Test fun test06_00_Callback() {
+    @Test fun test_10_Callback() {
         val kodein = ConfigurableKodein()
 
         var ready = false

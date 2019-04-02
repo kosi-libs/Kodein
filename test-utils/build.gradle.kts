@@ -9,6 +9,7 @@ kodein {
         common.main.dependencies {
             api("org.jetbrains.kotlin:kotlin-test-common")
             api("org.jetbrains.kotlin:kotlin-test-annotations-common")
+            api(project(":kodein-di-core"))
         }
 
         add(kodeinTargets.jvm) {
