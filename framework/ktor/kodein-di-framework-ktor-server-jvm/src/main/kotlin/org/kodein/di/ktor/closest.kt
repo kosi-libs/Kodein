@@ -13,31 +13,27 @@ val KodeinKey = AttributeKey<Kodein>("kodein")
 /**
  * Getting the global [Kodein] container from the [Application]
  */
-val Application.kodein: Kodein
-    get() = attributes[KodeinKey]
+fun Application.kodein() = attributes[KodeinKey]
 
 /**
  * Getting the global [Kodein] container from the [Application] parameter
  */
-fun kodein(getApplication: () -> Application) = getApplication().kodein
+fun kodein(getApplication: () -> Application) = getApplication().kodein()
 
 /**
  * Getting the global [Kodein] container from the [ApplicationCall]
  */
-val PipelineContext<*, ApplicationCall>.kodein: Kodein
-    get() = kodein { context.application }
+fun PipelineContext<*, ApplicationCall>.kodein() = kodein { context.application }
 
 /**
  * Getting the global [Kodein] container from the [ApplicationCall]
  */
-val ApplicationCall.kodein: Kodein
-    get() = kodein { application }
+fun ApplicationCall.kodein() = kodein { application }
 
 /**
  * Getting the global [Kodein] container from the [Routing] feature
  */
-val Routing.kodein: Kodein
-    get() = kodein { application }
+fun Routing.kodein() = kodein { application }
 
 /**
  * Getting the global [Kodein] container from the current [Route]
@@ -45,8 +41,7 @@ val Routing.kodein: Kodein
  *
  * @throws IllegalStateException if there is no [Kodein] container
  */
-val Route.kodein: Kodein
-    get() = when {
-        this is Routing -> kodein
-        else -> parent?.kodein ?: throw IllegalStateException("No kodein container found for [$this]")
-    }
+fun Route.kodein(): Kodein = when {
+    this is Routing -> kodein()
+    else -> parent?.kodein() ?: throw IllegalStateException("No kodein container found for [$this]")
+}

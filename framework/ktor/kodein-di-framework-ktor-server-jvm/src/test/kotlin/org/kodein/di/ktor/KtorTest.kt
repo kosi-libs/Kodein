@@ -144,7 +144,7 @@ class KtorTest {
                 assertEquals("$kodeinInstance", kodeinInstances.first())
             }
 
-            assertSame(kodeinInstance, kodein)
+            assertSame(kodeinInstance, kodein())
         }
     }
 
@@ -166,7 +166,7 @@ class KtorTest {
                 assertTrue { kodeinInstances.last().contains("LazyKodein".toRegex()) }
             }
 
-            assertSame(kodeinInstance, kodein)
+            assertSame(kodeinInstance, kodein())
         }
     }
 }

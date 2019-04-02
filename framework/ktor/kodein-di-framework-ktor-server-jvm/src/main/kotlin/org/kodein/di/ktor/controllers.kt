@@ -5,6 +5,6 @@ import io.ktor.routing.*
 import org.kodein.di.*
 
 abstract class KodeinController(val application: Application) : KodeinAware {
-    override val kodein: Kodein by lazy { application.kodein }
+    override val kodein: Kodein by lazy { application.kodein() }
     abstract fun Routing.installRoutes()
 }
