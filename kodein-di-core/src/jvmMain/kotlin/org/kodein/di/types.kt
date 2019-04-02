@@ -253,7 +253,7 @@ internal class ParameterizedTypeToken<T>(val trueType: Type) : JVMTypeToken<T>()
             is ParameterizedType -> (jvmType.rawType as Class<T>)._getClassSuperTT()
             else -> null
         }
-        val implements = rawType?.interfaces?.map { TT(it) } ?: emptyList()
+        val implements = rawType?.genericInterfaces?.map { TT(it) } ?: emptyList()
         return (extends?.let { listOf(it) } ?: emptyList()) + implements
     }
 }
@@ -296,7 +296,7 @@ internal class ClassTypeToken<T>(override val jvmType: Class<T>) : JVMTypeToken<
 
     override fun checkIsReified(disp: Any) {}
 
-    override fun getSuper() = (jvmType._getClassSuperTT()?.let { listOf(it) } ?: emptyList()) + jvmType.interfaces.map { TT(it) }
+    override fun getSuper() = (jvmType._getClassSuperTT()?.let { listOf(it) } ?: emptyList()) + jvmType.genericInterfaces.map { TT(it) }
 
     override fun isAssignableFrom(typeToken: TypeToken<*>): Boolean {
         return if (typeToken is ClassTypeToken)
