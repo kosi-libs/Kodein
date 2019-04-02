@@ -253,7 +253,7 @@ With Kodein, this is very easy:
 [source,kotlin]
 .Example: creating an object of an injected class
 ----
-val presenter = kodein.newInstance { Presenter(instance(), instance()) }
+val presenter by kodein.newInstance { Presenter(instance(), instance()) }
 ----
 
 For each argument of the `Presenter` constructor, you can simply use the `instance()` function, and Kodein will actually pass the correct dependency.
