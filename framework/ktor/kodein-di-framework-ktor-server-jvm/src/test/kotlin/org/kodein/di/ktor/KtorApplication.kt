@@ -53,9 +53,10 @@ private fun Application.sessionModule() {
     routing {
 
         val info: ApplicationCall.() -> String = { "[${request.httpMethod.value}] ${request.uri}" }
-
+        application.log.info("${kodein()}")
         route(ROUTE_SESSION) {
             get {
+                application.log.info("${kodein()}")
                 val session = call.sessions.get<MockSession>() ?: MockSession(0)
                 val random by kodein().on(session).instance<Random>()
 
@@ -131,11 +132,11 @@ fun Application.requestModule() {
 fun Application.closestModule() {
     val kodeinInstances = mutableListOf<Kodein>()
     routing {
-        kodeinInstances.add(kodein())
+        kodeinInstances.add(kodein().baseKodein)
         route(ROUTE_CLOSEST) {
-            kodeinInstances.add(kodein())
+            kodeinInstances.add(kodein().baseKodein)
             get {
-                kodeinInstances.add(kodein())
+                kodeinInstances.add(kodein().baseKodein)
                 call.respondText(kodeinInstances.joinToString())
             }
         }
@@ -145,12 +146,12 @@ fun Application.closestModule() {
 fun Application.subKodeinModule() {
     val kodeinInstances = mutableListOf<Kodein>()
     routing {
-        kodeinInstances.add(kodein())
+        kodeinInstances.add(kodein().baseKodein)
         route(ROUTE_SUBKODEIN) {
-            kodeinInstances.add(kodein())
+            kodeinInstances.add(kodein().baseKodein)
             get {
-                kodeinInstances.add(kodein())
-                kodeinInstances.add(subKodein {  })
+                kodeinInstances.add(kodein().baseKodein)
+                kodeinInstances.add(subKodein {  }.baseKodein)
                 call.respondText(kodeinInstances.joinToString())
             }
         }

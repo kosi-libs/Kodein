@@ -131,10 +131,10 @@ class KtorTest {
     fun testClosest(): Unit = withTestApplication(Application::main) {
         val kodeinInstance = this.application.attributes[KodeinKey]
 
-        assertSame(kodeinInstance, kodein { this.application })
+        assertSame(kodeinInstance, kodein { this.application }.baseKodein)
 
         handleRequest(HttpMethod.Get, ROUTE_CLOSEST) {
-            assertSame(kodeinInstance, kodein { this.call.application })
+            assertSame(kodeinInstance, kodein { this.call.application }.baseKodein)
         }.apply {
             assertNotNull(response.content)
 
@@ -144,7 +144,7 @@ class KtorTest {
                 assertEquals("$kodeinInstance", kodeinInstances.first())
             }
 
-            assertSame(kodeinInstance, kodein())
+            assertSame(kodeinInstance, kodein().baseKodein)
         }
     }
 
@@ -152,21 +152,20 @@ class KtorTest {
     fun testSubKodein(): Unit = withTestApplication(Application::main) {
         val kodeinInstance = this.application.attributes[KodeinKey]
 
-        assertSame(kodeinInstance, kodein { this.application })
+        assertSame(kodeinInstance, kodein { this.application }.baseKodein)
 
         handleRequest(HttpMethod.Get, ROUTE_SUBKODEIN) {
-            assertSame(kodeinInstance, kodein { this.call.application })
+            assertSame(kodeinInstance, kodein { this.call.application }.baseKodein)
         }.apply {
             assertNotNull(response.content)
 
             response.content?.let {
                 val kodeinInstances = it.split(",").map { it.trim() }
-                assertTrue { kodeinInstances.distinct().size == 2 }
+                assertEquals(2, kodeinInstances.distinct().size)
                 assertEquals("$kodeinInstance", kodeinInstances.first())
-                assertTrue { kodeinInstances.last().contains("LazyKodein".toRegex()) }
             }
 
-            assertSame(kodeinInstance, kodein())
+            assertSame(kodeinInstance, kodein().baseKodein)
         }
     }
 }

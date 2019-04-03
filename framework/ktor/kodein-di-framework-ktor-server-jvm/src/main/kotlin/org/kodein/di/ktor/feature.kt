@@ -1,7 +1,6 @@
 package org.kodein.di.ktor
 
 import io.ktor.application.*
-import io.ktor.routing.*
 import io.ktor.util.*
 import org.kodein.di.*
 import org.kodein.di.generic.*
@@ -33,26 +32,6 @@ class KodeinFeature private constructor() {
             val kodeinInstance = Kodein {
                 bind<Application>() with instance(application)
                 configure()
-            }
-
-            application.routing {
-                kodeinInstance.container.tree.bindings.asSequence()
-                        /*
-                        For every binding we check whether or not its assignable to KodeinController.
-                        Simply, we are looking for all the [KodeinController] in the Kodein DI context
-                        */
-                        .filter { KodeinController::class.java.isAssignableFrom(it.key.type.jvmType as Class<*>) }
-                        .map { it.key.type }
-                        .forEach { type ->
-                            /*
-                            For each of those [KodeinController]s we install the defined routes to the [Routing] feature
-                             */
-                            val controller by kodeinInstance.Instance(type)
-                            (controller as KodeinController).apply {
-                                application.log.info("Installing '$controller' routes.")
-                                installRoutes()
-                            }
-                        }
             }
 
             return KodeinFeature().apply {

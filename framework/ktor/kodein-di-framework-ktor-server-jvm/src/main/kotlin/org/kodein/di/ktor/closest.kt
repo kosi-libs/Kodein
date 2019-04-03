@@ -13,7 +13,7 @@ val KodeinKey = AttributeKey<Kodein>("kodein")
 /**
  * Getting the global [Kodein] container from the [Application]
  */
-fun Application.kodein() = attributes[KodeinKey]
+fun Application.kodein() = LazyKodein { attributes[KodeinKey] }
 
 /**
  * Getting the global [Kodein] container from the [Application] parameter
@@ -41,7 +41,7 @@ fun Routing.kodein() = kodein { application }
  *
  * @throws IllegalStateException if there is no [Kodein] container
  */
-fun Route.kodein(): Kodein = when {
+fun Route.kodein(): LazyKodein = when {
     this is Routing -> kodein()
     else -> parent?.kodein() ?: throw IllegalStateException("No kodein container found for [$this]")
 }
