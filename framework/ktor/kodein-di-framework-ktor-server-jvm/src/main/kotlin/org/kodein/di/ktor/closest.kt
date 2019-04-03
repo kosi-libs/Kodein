@@ -23,11 +23,6 @@ fun kodein(getApplication: () -> Application) = getApplication().kodein()
 /**
  * Getting the global [Kodein] container from the [ApplicationCall]
  */
-fun PipelineContext<*, ApplicationCall>.kodein() = kodein { context.application }
-
-/**
- * Getting the global [Kodein] container from the [ApplicationCall]
- */
 fun ApplicationCall.kodein() = kodein { application }
 
 /**
@@ -41,7 +36,19 @@ fun Routing.kodein() = kodein { application }
  *
  * @throws IllegalStateException if there is no [Kodein] container
  */
-fun Route.kodein(): LazyKodein = when {
-    this is Routing -> kodein()
-    else -> parent?.kodein() ?: throw IllegalStateException("No kodein container found for [$this]")
+fun Route.kodein(): LazyKodein = try {
+    this.attributes[KodeinKey] as LazyKodein
+} catch (e: IllegalStateException) {
+    when {
+        this is Routing -> kodein()
+        else -> parent?.kodein() ?: throw IllegalStateException("No kodein container found for [$this]")
+    }
+}
+
+/**
+ * Getting the global [Kodein] container from the [ApplicationCall]
+ */
+fun PipelineContext<*, ApplicationCall>.kodein(): LazyKodein {
+    val routingCall = (this.call as RoutingApplicationCall)
+    return routingCall.route.kodein()
 }

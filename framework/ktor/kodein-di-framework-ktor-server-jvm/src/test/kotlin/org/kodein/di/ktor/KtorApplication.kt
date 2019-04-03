@@ -17,6 +17,8 @@ fun Application.main() {
     install(KodeinFeature) {
         bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
         bind<Random>() with scoped(CallScope).singleton { SecureRandom() }
+
+        constant("author") with AUTHOR.toLowerCase()
     }
 
     sessionModule()
@@ -31,9 +33,13 @@ const val ROUTE_CLEAR = "/clear"
 const val ROUTE_REQUEST = "/request"
 const val ROUTE_CLOSEST = "/closest"
 const val ROUTE_SUBKODEIN = "/sub"
+const val ROUTE_SUB_LOWER = "/lower"
+const val ROUTE_SUB_UPPER = "/upper"
 
 const val SESSION_FEATURE_SESSION_ID = "SESSION_FEATURE_SESSION_ID"
 const val NO_SESSION = "NO_SESSION"
+
+const val AUTHOR = "romain boisselle"
 
 data class MockSession(val counter: Int = 0) : KodeinSession {
     override fun getSessionId() = counter
@@ -53,17 +59,17 @@ private fun Application.sessionModule() {
     routing {
 
         val info: ApplicationCall.() -> String = { "[${request.httpMethod.value}] ${request.uri}" }
-        application.log.info("${kodein()}")
+
         route(ROUTE_SESSION) {
             get {
                 application.log.info("${kodein()}")
                 val session = call.sessions.get<MockSession>() ?: MockSession(0)
                 val random by kodein().on(session).instance<Random>()
 
-            application.log.info("${call.info()} / Session: $session / Kodein ${kodein().container} / Random instance: $random")
+                application.log.info("${call.info()} / Session: $session / Kodein ${kodein().container} / Random instance: $random")
 
-            call.respondText("$random")
-        }
+                call.respondText("$random")
+            }
 
             get(ROUTE_INC) {
                 application.log.info("${call.info()} Increment session IN - ${call.sessions.get<MockSession>()}")
@@ -146,13 +152,29 @@ fun Application.closestModule() {
 fun Application.subKodeinModule() {
     val kodeinInstances = mutableListOf<Kodein>()
     routing {
-        kodeinInstances.add(kodein().baseKodein)
         route(ROUTE_SUBKODEIN) {
             kodeinInstances.add(kodein().baseKodein)
-            get {
-                kodeinInstances.add(kodein().baseKodein)
-                kodeinInstances.add(subKodein {  }.baseKodein)
-                call.respondText(kodeinInstances.joinToString())
+
+            route(ROUTE_SUB_LOWER) {
+                get {
+                    val author: String by kodein().instance("author")
+                    call.respondText(author)
+                }
+            }
+
+            route(ROUTE_SUB_UPPER) {
+                subKodein(allowSilentOverride = true) {
+                    constant("author") with AUTHOR.toUpperCase()
+                }
+
+                get {
+                    val author: String by kodein().instance("author")
+                    call.respondText(author)
+                }
+                post {
+                    kodeinInstances.add(kodein().baseKodein)
+                    call.respondText(kodeinInstances.joinToString())
+                }
             }
         }
     }

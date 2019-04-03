@@ -154,7 +154,7 @@ class KtorTest {
 
         assertSame(kodeinInstance, kodein { this.application }.baseKodein)
 
-        handleRequest(HttpMethod.Get, ROUTE_SUBKODEIN) {
+        handleRequest(HttpMethod.Post, "$ROUTE_SUBKODEIN$ROUTE_SUB_UPPER") {
             assertSame(kodeinInstance, kodein { this.call.application }.baseKodein)
         }.apply {
             assertNotNull(response.content)
@@ -167,5 +167,20 @@ class KtorTest {
 
             assertSame(kodeinInstance, kodein().baseKodein)
         }
+
+        val lowerAuthor: String
+        val upperAuthor: String
+        val NO_RESPONSE = "NO_RESPONSE"
+
+        handleRequest(HttpMethod.Get, "$ROUTE_SUBKODEIN$ROUTE_SUB_LOWER").apply {
+            lowerAuthor = response.content ?: NO_RESPONSE
+            assertEquals(AUTHOR.toLowerCase(), lowerAuthor)
+        }
+        handleRequest(HttpMethod.Get, "$ROUTE_SUBKODEIN$ROUTE_SUB_UPPER").apply {
+            upperAuthor = response.content ?: NO_RESPONSE
+            assertEquals(AUTHOR.toUpperCase(), upperAuthor)
+        }
+
+        assertNotSame(lowerAuthor, upperAuthor, NO_RESPONSE)
     }
 }
