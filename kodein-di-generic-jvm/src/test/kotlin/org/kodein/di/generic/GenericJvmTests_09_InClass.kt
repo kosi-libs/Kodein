@@ -16,7 +16,7 @@ class GenericJvmTests_09_InClass {
     }
 
     @Test
-    fun test11_00_Class() {
+    fun test_00_Class() {
         val kodein = Kodein {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }

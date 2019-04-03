@@ -17,7 +17,7 @@ class GenericJvmTests_10_Module {
     }
 
     @Test
-    fun test12_00_ModuleImport() {
+    fun test_00_ModuleImport() {
 
         val personModule = Kodein.Module("test") {
             bind<Person>() with provider { Person() }

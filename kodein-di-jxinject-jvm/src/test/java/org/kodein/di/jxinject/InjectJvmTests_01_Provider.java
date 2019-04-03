@@ -92,7 +92,7 @@ public class InjectJvmTests_01_Provider {
     }
 
     @Test
-    public void test01_05_LazyJavaxProviderInjection() {
+    public void test_05_LazyJavaxProviderInjection() {
         T05 test = new T05();
         Jx.of(KodeinsKt.test1()).inject(test);
 

@@ -16,7 +16,7 @@ class ErasedJvmTests_04_Scope {
 
     // Only the JVM supports up-casting
     @Test
-    fun test16_09_AbstractContextTranslatorAbstractScope() {
+    fun test_00_AbstractContextTranslatorAbstractScope() {
         abstract class AbstractSession(val id: String)
         class SessionImpl(id: String) : AbstractSession(id)
         abstract class AbstractRequest(val session: SessionImpl)

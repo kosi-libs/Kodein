@@ -2,16 +2,13 @@ package kodein.di.demo
 
 import android.app.Activity
 import android.app.Application
-import android.app.Fragment
 import kodein.di.demo.coffee.Coffee
 import kodein.di.demo.coffee.Kettle
 import kodein.di.demo.coffee.electricHeaterModule
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
-import org.kodein.di.bindings.SimpleContextTranslator
 import org.kodein.di.bindings.WeakContextScope
-import org.kodein.di.erased
 import org.kodein.di.generic.*
 
 class DemoApplication : Application(), KodeinAware {

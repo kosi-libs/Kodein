@@ -100,7 +100,7 @@ class ErasedTests_00_Factory {
     }
 
     @Test
-    fun test_00_StarFactory() {
+    fun test_06_StarFactory() {
         val kodein = Kodein {
             bind<FakeLogger>() with factory { cls: KClass<*> -> FakeLoggerImpl(cls) }
         }
