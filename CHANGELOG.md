@@ -1,3 +1,11 @@
+#### 6.1.1 (03-04-2019)
+
+- CORE
+  * Fixed a bug in the JVM specific code that prevented a generic interface from being retrieved when a concrete class was bound.
+  * `bind() from Binding<Unit>` is now forbidden. Binding specifically the Unit type with `bind<Unit>() with Binding<Unit>` is allowed (although I cannot see why someone would use it!).
+  * Kotlin 1.3.21
+
+
 #### 6.1.0 (06-02-2019)
 
 - CORE
