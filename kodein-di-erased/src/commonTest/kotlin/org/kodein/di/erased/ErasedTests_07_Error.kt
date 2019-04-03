@@ -3,10 +3,7 @@ package org.kodein.di.erased
 import org.kodein.di.Kodein
 import org.kodein.di.direct
 import org.kodein.di.test.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
+import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ErasedTests_07_Error {
@@ -132,4 +129,28 @@ Dependency recursion:
         }
     }
 
+    @Test
+    fun test_07_BindFromUnit() {
+
+        fun unit(@Suppress("UNUSED_PARAMETER") i: Int = 42) {}
+
+        val kodein = Kodein.direct {
+            assertFailsWith<IllegalArgumentException> {
+                bind() from factory { i: Int -> unit(i) }
+            }
+            assertFailsWith<IllegalArgumentException> {
+                bind() from provider { unit() }
+            }
+            assertFailsWith<IllegalArgumentException> {
+                bind() from instance(Unit)
+            }
+            assertFailsWith<IllegalArgumentException> {
+                bind() from singleton { unit() }
+            }
+
+            bind<Unit>() with instance(unit())
+        }
+
+        assertSame(Unit, kodein.instance())
+    }
 }

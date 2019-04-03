@@ -128,4 +128,28 @@ Dependency recursion:
         }
     }
 
+    @Test
+    fun test_07_BindFromUnit() {
+
+        fun unit(@Suppress("UNUSED_PARAMETER") i: Int = 42) {}
+
+        val kodein = Kodein.direct {
+            assertFailsWith<IllegalArgumentException> {
+                bind() from factory { i: Int -> unit(i) }
+            }
+            assertFailsWith<IllegalArgumentException> {
+                bind() from provider { unit() }
+            }
+            assertFailsWith<IllegalArgumentException> {
+                bind() from instance(Unit)
+            }
+            assertFailsWith<IllegalArgumentException> {
+                bind() from singleton { unit() }
+            }
+
+            bind<Unit>() with instance(unit())
+        }
+
+        assertSame(Unit, kodein.instance())
+    }
 }
