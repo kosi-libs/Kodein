@@ -19,7 +19,8 @@ fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8000) {
         install(DefaultHeaders)
         install(CallLogging)
-        install(KodeinFeature) {
+
+        kodein {
             bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
             bind<Random>() with scoped(CallScope).singleton { SecureRandom() }
         }
