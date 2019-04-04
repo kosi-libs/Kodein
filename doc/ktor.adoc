@@ -38,7 +38,7 @@ implementation(project("org.kodein.di:kodein-di-generic-jvm:{version}"))
 implementation(project("org.kodein.di:kodein-di-ktor-server-jvm:{version}"))
 ----
 +
-IMPORTANT: Either `kodein-di-generic-jvm` or `kodein-di-erased-jvm` *must* be declared in addition to the `kodein-di-ktor-server-jvm` package.
+IMPORTANT: `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-ktor-server-jvm` package.
 +
 . Declare a Kodein container in your application or use the <<kodeinfeature>>
 +
@@ -395,4 +395,64 @@ val kodein = Kodein {
 
 === Making your controllers `KodeinAware`
 
-// TODO
+To help those who want to implement a Ktor application base on a "MVC-like" architecture, we provide a https://ktor.io/advanced/features.html[custom feature]. This feature is a specific module called `kodein-di-ktor-server-controller-jvm`. To enable it, add this line in your `dependencies` block in your application `build.gradle` file:
+
+[subs="attributes"]
+.Gradle Groovy script
+----
+implementation 'org.kodein.di:kodein-di-ktor-server-controller-jvm:{version}'
+----
+
+[subs="attributes"]
+.Gradle Kotlin script
+----
+implementation(project("org.kodein.di:kodein-di-ktor-server-controller-jvm:{version}"))
+----
+
+INFO: `kodein-di-generic-jvm` is provided as an API dependency, through `kodein-di-ktor-server-jvm` package, so you don't need to import it.
+
+-  Defining your controllers
++ 
+To define your controllers you need to extend the class `KodeinController`, provide it an `Application` instance and implement the function `Routing.installRoutes()`.
++
+[source, kotlin]
+.Example: Extending KodeinController
+----
+class MyController(application: Application) : KodeinController(application) { <1>
+    private val repository: DataRepository by instance("dao") <2>
+
+    override fun Routing.installRoutes() { <3>
+        get("/version") { <4>
+            val version: String by instance("version") <5>
+            call.respondText(version)
+        }
+    }
+----
+<1> Extend `KodeinController` and provide a `Application` instance (from constructor)
+<2> Use your `Kodein` container as in any `KodeinAware` class
+<3> Override the function `Routing.installRoutes` and define some routes
+<4> This route will be automatically register by the `KodeinControllerFeature`
+<5> Use your `Kodein` container as in any `KodeinAware` class
+
+- Using the `KodeinControllerFeature`
++
+To benefit from the `KodeinController` behavior, you *need* to use the `KodeinControllerFeature` and bind your `KodeinController`s and other in it.
++ 
+As for the `KodeinFeature`, the `KodeinControllerFeature` provide a global Kodein container in your Ktor application.
++ 
+[source, kotlin]
+.Example: a Ktor Application declaration, installing the `KodeinFeature`, and retrieving it from routes
+----
+fun main(args: Array<String>) {
+    embeddedServer(Netty, port = 8080) {
+        install(KodeinControllerFeature) { // <1>
+            bind<DataRepository>(tag = "dao") with singleton { DataRepository() } // <2>
+            bind<MyController>() with singleton { MyController(instance()) }
+        }
+   }.start(true)
+}
+----
+<1> Install the `KodeinControllerFeature`
+<2> Lambda that represent a Kodein builder, accepting Kodein core features
++
+Doing that the `MyController` will be autowired by the `KodeinControllerFeature`, meaning that the routes defined in the `Routing.installRoutes` will be reachable on the web server (e.g. `http://localhost:8080/version`).
