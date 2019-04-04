@@ -48,6 +48,7 @@ val excludeKtor: String? by settings
 if (excludeKtor != "true") {
     include(
         ":framework:ktor:kodein-di-framework-ktor-server-jvm",
+        ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
 
         ":demo:demo-ktor"
     )
