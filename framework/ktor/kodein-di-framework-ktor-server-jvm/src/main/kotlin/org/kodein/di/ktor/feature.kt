@@ -1,6 +1,7 @@
 package org.kodein.di.ktor
 
 import io.ktor.application.*
+import io.ktor.routing.*
 import io.ktor.util.*
 import org.kodein.di.*
 import org.kodein.di.generic.*
@@ -23,7 +24,7 @@ class KodeinFeature private constructor() {
     // Implements ApplicationFeature as a companion object.
     companion object Feature : ApplicationFeature<Application, Kodein.MainBuilder, KodeinFeature> {
         // Creates a unique key for the feature.
-        override val key = AttributeKey<KodeinFeature>("Closest Kodein Container")
+        override val key = AttributeKey<KodeinFeature>("[Global Kodein Container]")
 
         // Code to execute when installing the feature.
         override fun install(pipeline: Application, configure: Kodein.MainBuilder.() -> Unit): KodeinFeature {
@@ -40,3 +41,8 @@ class KodeinFeature private constructor() {
         }
     }
 }
+
+/**
+ * Gets or installs a [KodeinFeature] feature for the this [Application] and runs a [configuration] script on it
+ */
+fun Application.kodein(configuration: Kodein.MainBuilder.() -> Unit) = install(KodeinFeature, configuration)

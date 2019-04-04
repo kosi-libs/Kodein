@@ -14,7 +14,8 @@ import java.util.*
 // Test Ktor Application
 fun Application.main() {
     install(DefaultHeaders)
-    install(KodeinFeature) {
+
+    kodein {
         bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
         bind<Random>() with scoped(CallScope).singleton { SecureRandom() }
 
