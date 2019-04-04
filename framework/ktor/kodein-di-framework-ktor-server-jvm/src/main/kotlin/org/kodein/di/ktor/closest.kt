@@ -31,7 +31,7 @@ fun ApplicationCall.kodein() = kodein { application }
 fun Routing.kodein() = kodein { application }
 
 /**
- * Getting the global [Kodein] container from the current [Route]
+ * Getting the global or local (if extended) [Kodein] container from the current [Route]
  * by browsering all the routing tree until we get to the root level, the [Routing] feature
  *
  * @throws IllegalStateException if there is no [Kodein] container

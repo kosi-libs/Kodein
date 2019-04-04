@@ -24,6 +24,8 @@ class KodeinControllerFeature private constructor() {
         override fun install(pipeline: Application, configure: Unit.() -> Unit): KodeinControllerFeature {
             val application = pipeline
 
+            // Try to retrieve the [KodeinFeature]
+            // if not found throw MissingApplicationFeatureException
             application.feature(KodeinFeature)
             application.routing {
                 /*
