@@ -116,7 +116,7 @@ fun main(args: Array<String>) {
 
         routing {
             get("/") {
-                val random by kodein.instance<Random>() // <3>
+                val random by kodein().instance<Random>() // <3>
                 /* logic here */
             }
         }
@@ -125,61 +125,61 @@ fun main(args: Array<String>) {
 ----
 <1> Install the `KodeinFeature`
 <2> Lambda that represent a Kodein builder, accepting Kodein core features
-<3> retrieving the Kodein container from the Application by calling `PipelineContext<*, ApplicationCall>.kodein` extension property
+<3> retrieving the Kodein container from the Application by calling `PipelineContext<*, ApplicationCall>.kodein` extension function
 
-.Available `kodein` extension property receivers
+.Available `kodein()` extension function receivers
 - https://ktor.io/servers/application.html#application[Application]
 
     fun Application.main() {
         /* usage */
-        val kodein = kodein
+        val kodein = kodein()
 
         /* other usage */
-        val random by kodein.instance<Random>()
+        val random by kodein().instance<Random>()
     }
 
 - https://ktor.io/advanced/pipeline.html#interceptors-and-the-pipelinecontext[PipelineContext<*, ApplicationCall>]
 
     get {
         /* usage */
-        val kodein = context.kodein
+        val kodein = context.kodein()
 
         /* other usage */
-        val random by context.kodein.instance<Random>()
+        val random by context.kodein().instance<Random>()
     }
 
 - https://ktor.io/servers/calls.html[ApplicationCall]
 
     get("/") {
         /* usage */
-        val kodein = kodein
+        val kodein = kodein()
 
         /* other usage */
-        val random by kodein.instance<Random>()
+        val random by kodein().instance<Random>()
     }
 
 - https://ktor.io/servers/features/routing.html[Routing]
 
     routing {
         /* usage */
-        val kodein = kodein
+        val kodein = kodein()
 
         /* other usage */
-        val random by kodein.instance<Random>()
+        val random by kodein().instance<Random>()
     }
 
-NOTE: Because of those extension properties you can always get the Kodein object by using:
-    - `kodein` inside a Ktor class (such as `Application`, `ApplicationCall`, `Route`, etc.)
+NOTE: Because of those extension functions you can always get the Kodein object by using:
+    - `kodein()` inside a Ktor class (such as `Application`, `ApplicationCall`, `Route`, etc.)
     - `kodein { application }` inside another class, where application is the running Ktor application.
 
-WARNING: The `kodein` extension property will only work if your Ktor `Application` has the `KodeinFeature` installed, or if you handle the installation manually.
+WARNING: The `kodein()` extension function will only work if your Ktor `Application` has the `KodeinFeature` installed, or if you handle the installation manually.
 
 === Extending the nearest Kodein container
 
 In some cases we might want to extend our global Kodein container for local needs. For example, we could extend the Kodein container for a login `Route`, by adding credentials bindings, thus they would be only available in the login `Route`and its children.
 
-We can easily achieve this goal, as we have facilities to retrieve our Kodein container with the previously defined extension properties,
-To do so we have a function `subKodein` available for the same classes as the [[closest]]:
+We can easily achieve this goal, as we have facilities to retrieve our Kodein container with the previously defined extension functions,
+To do so we have a function `subKodein` available for the `Routing` / `Route` classes.
 
 [source, kotlin]
 .Example: a Ktor Application declaration, installing the `KodeinFeature`, and retrieving it from routes
@@ -192,12 +192,12 @@ fun main(args: Array<String>) {
 
         routing {
             route("/login") {
-                val subKodein = subKodein {
+                subKodein {
                     bind<CredentialsDao> with singleton { CredentialsDao() } // <3>
                 }
 
                 post {
-                    val dao by subKodein.instance<CredentialsDao>() // <4>
+                    val dao by kodein().instance<CredentialsDao>() // <4>
                     /* logic here */
                 }
             }
@@ -207,8 +207,12 @@ fun main(args: Array<String>) {
 ----
 <1> Install the `KodeinFeature`
 <2> Lambda that represent a Kodein builder, accepting Kodein core features
-<3> Adding new binding that will be only available for the subKodein consumers
-<4> Retrieve the `CredentialsDao` from the extended Kodein container `subKodein`
+<3> Adding new binding that will be only available for the children of the `/login` route
+<4> Retrieve the `CredentialsDao` from the nearest Kodein container
+
+WARNING: If you define multiple `routing { }` features, Ktor have a specific way of joining the different routing definition, finally there is only one `Routing` object. Thus, if you define multiple `subKodein { }` in your different `routing { }` object, only one `subKodein` will be taking into account.
+
+INFO: On the contrary you can define a `subKodein { }` object for each of your `Route`s as each of them will be able to embbed a Kodein instance.
 
 .*Copying bindings*
 
@@ -223,7 +227,7 @@ val root = Kodein {
     bind<Bar>() with singleton { Bar(instance()) }
 }
 
-val sub = subKodein(root, copy = Copy.All) { // <1>
+subKodein(root, copy = Copy.All) { // <1>
     /** new bindings / overrides **/
 }
 ----
@@ -243,7 +247,7 @@ val root = Kodein {
     bind<Bar>() with singleton { Bar(instance()) }
 }
 
-val sub = subKodein(root) {
+subKodein(root) {
     bind<Foo>(overrides = true) with provider { Foo("subFoo") } // <1>
 }
 ----
@@ -385,3 +389,10 @@ val kodein = Kodein {
     val random by kodein().on(context).instance<Random>()
 }
 ----
+
+[[extrafeatures]]
+== Extra Features
+
+=== Making your controllers `KodeinAware`
+
+// TODO
