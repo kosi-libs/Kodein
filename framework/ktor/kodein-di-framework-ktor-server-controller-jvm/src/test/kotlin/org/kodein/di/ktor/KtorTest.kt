@@ -8,7 +8,7 @@ import kotlin.test.*
 
 class KtorTest {
     @Test
-    fun testGetBindController(): Unit = withTestApplication(Application::main) {
+    fun testSuccessKodeinControllerFeature(): Unit = withTestApplication(Application::success) {
         handleRequest(HttpMethod.Get, ROUTE_VERSION).apply {
             assertEquals(VERSION, response.content)
         }
@@ -16,4 +16,7 @@ class KtorTest {
             assertEquals(AUTHOR, response.content)
         }
     }
+
+    @Test(expected = MissingApplicationFeatureException::class)
+    fun testFailureKodeinControllerFeature(): Unit = withTestApplication(Application::failure) { }
 }
