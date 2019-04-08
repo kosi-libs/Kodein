@@ -11,7 +11,7 @@ repositories {
 
 kodeinLib {
     dependencies {
-        api(project(":kodein-di-generic-jvm"))
+        api(project(":kodein-di-core") target "jvm")
     }
 }
 
@@ -22,4 +22,5 @@ dependencies {
     implementation(ktor("-server-core"))
     implementation(kotlin("stdlib-jdk8"))
     testImplementation(ktor("-server-tests"))
+    testImplementation(project(":kodein-di-generic-jvm"))
 }

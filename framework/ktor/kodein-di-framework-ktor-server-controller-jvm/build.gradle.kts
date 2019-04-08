@@ -18,4 +18,5 @@ dependencies {
     implementation(ktor("-server-core"))
     implementation(kotlin("stdlib-jdk8"))
     testImplementation(ktor("-server-tests"))
+    testImplementation(project(":kodein-di-generic-jvm"))
 }
