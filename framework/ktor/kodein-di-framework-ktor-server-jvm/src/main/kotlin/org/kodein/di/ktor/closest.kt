@@ -1,5 +1,7 @@
 package org.kodein.di.ktor
 
+import com.sun.tools.doclets.internal.toolkit.util.*
+import com.sun.tools.doclets.internal.toolkit.util.DocPath.*
 import io.ktor.application.*
 import io.ktor.routing.*
 import io.ktor.util.*
@@ -36,10 +38,11 @@ fun Routing.kodein() = kodein { application }
  *
  * @throws IllegalStateException if there is no [Kodein] container
  */
-fun Route.kodein(): LazyKodein = try {
-    this.attributes[KodeinKey] as LazyKodein
-} catch (e: IllegalStateException) {
-    when {
+fun Route.kodein(): LazyKodein {
+    // Is there an inner Kodein container for this Route ?
+    val routeKodein = this.attributes.getOrNull(KodeinKey)
+    return when {
+        routeKodein != null -> routeKodein as LazyKodein
         this is Routing -> kodein()
         else -> parent?.kodein() ?: throw IllegalStateException("No kodein container found for [$this]")
     }
