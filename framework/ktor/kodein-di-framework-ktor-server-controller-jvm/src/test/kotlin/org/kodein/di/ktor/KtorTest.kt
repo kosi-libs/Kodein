@@ -17,6 +17,10 @@ class KtorTest {
         }
     }
 
-    @Test(expected = MissingApplicationFeatureException::class)
-    fun testFailureKodeinControllerFeature(): Unit = withTestApplication(Application::failure) { }
+    @Test
+    fun testFailureKodeinControllerFeature() {
+        assertFailsWith(MissingApplicationFeatureException::class) {
+            withTestApplication(Application::failure) {}
+        }
+    }
 }
