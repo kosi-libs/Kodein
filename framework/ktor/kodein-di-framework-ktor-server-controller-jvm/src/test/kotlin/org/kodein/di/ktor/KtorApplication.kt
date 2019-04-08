@@ -2,7 +2,6 @@ package org.kodein.di.ktor
 
 import io.ktor.application.*
 import io.ktor.features.*
-import org.kodein.di.*
 import org.kodein.di.generic.*
 
 const val AUTHOR = "Romain Boisselle"

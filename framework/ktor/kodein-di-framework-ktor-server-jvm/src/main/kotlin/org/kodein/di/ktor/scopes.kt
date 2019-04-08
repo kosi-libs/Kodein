@@ -3,7 +3,6 @@ package org.kodein.di.ktor
 import io.ktor.application.*
 import io.ktor.sessions.*
 import org.kodein.di.bindings.*
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 //region Session scope

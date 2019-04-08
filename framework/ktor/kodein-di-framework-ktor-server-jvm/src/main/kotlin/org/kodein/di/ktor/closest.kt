@@ -1,7 +1,5 @@
 package org.kodein.di.ktor
 
-import com.sun.tools.doclets.internal.toolkit.util.*
-import com.sun.tools.doclets.internal.toolkit.util.DocPath.*
 import io.ktor.application.*
 import io.ktor.routing.*
 import io.ktor.util.*
