@@ -7,10 +7,10 @@ Romain BOISSELLE <romain@boisselle.dev>
 :version: 6.1.0
 :branch: 6.1
 
-You can use Kodein as-is in your Ktor project, but you can level-up your game by using the library `kodein-di-ktor-server-jvm`.
+You can use Kodein as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-ktor-server-jvm` or `kodein-di-ktor-server-controller-jvm`.
 
 NOTE: Kodein does work on Ktor as-is.
-      The `kodein-di-ktor-server-jvm` extension adds multiple ktor-specific utilities to Kodein. +
+      The `kodein-di-ktor-server-jvm` / `kodein-di-ktor-server-controller-jvm` extensions add multiple ktor-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
 NOTE: Ktor is a multiplatform project, meaning you can use it for JVM, JS and Native projects.
@@ -34,11 +34,11 @@ implementation 'org.kodein.di:kodein-di-ktor-server-jvm:{version}'
 [subs="attributes"]
 .Gradle Kotlin script
 ----
-implementation(project("org.kodein.di:kodein-di-generic-jvm:{version}"))
-implementation(project("org.kodein.di:kodein-di-ktor-server-jvm:{version}"))
+implementation("org.kodein.di:kodein-di-generic-jvm:{version}")
+implementation("org.kodein.di:kodein-di-ktor-server-jvm:{version}")
 ----
 +
-IMPORTANT: `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-ktor-server-jvm` package.
+IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-ktor-server-jvm` package.
 +
 . Declare a Kodein container in your application or use the <<kodeinfeature>>
 +
@@ -97,10 +97,9 @@ fun main(args: Array<String>) {
 
 WARNING: If you install multiple `KodeinFeature` on the same Ktor `Application`, only one will be taken into account, obviously the last one that has been declared.
 
-[[closest]]
 === Closest Kodein pattern
 
-The idea behind this concept, is to be able to retrieve a Kodein container, from an outer class. The [[kodeinfeature]]
+The idea behind this concept, is to be able to retrieve a Kodein container, from an outer class. The `KodeinFeature`
 help us with that by defining a Kodein container that can be retrieve from multiple places, like:
 
 - Application
@@ -144,20 +143,20 @@ fun main(args: Array<String>) {
 
     get {
         /* usage */
-        val kodein = context.kodein()
+        val kodein = kodein()
 
         /* other usage */
-        val random by context.kodein().instance<Random>()
+        val random by kodein().instance<Random>()
     }
 
 - https://ktor.io/servers/calls.html[ApplicationCall]
 
     get("/") {
         /* usage */
-        val kodein = kodein()
+        val kodein = call.kodein()
 
         /* other usage */
-        val random by kodein().instance<Random>()
+        val random by call.kodein().instance<Random>()
     }
 
 - https://ktor.io/servers/features/routing.html[Routing]
@@ -178,7 +177,7 @@ WARNING: The `kodein()` extension function will only work if your Ktor `Applicat
 
 === Extending the nearest Kodein container
 
-In some cases we might want to extend our global Kodein container for local needs. For example, we could extend the Kodein container for a login `Route`, by adding credentials bindings, thus they would be only available in the login `Route`and its children.
+In some cases we might want to extend our global Kodein container for local needs. For example, we could extend the Kodein container for a login `Route`, by adding credentials bindings, thus they would be only available in the login `Route` and its children.
 
 We can easily achieve this goal, as we have facilities to retrieve our Kodein container with the previously defined extension functions,
 To do so we have a function `subKodein` available for the `Routing` / `Route` classes.
@@ -212,11 +211,11 @@ fun main(args: Array<String>) {
 <3> Adding new binding that will be only available for the children of the `/login` route
 <4> Retrieve the `CredentialsDao` from the nearest Kodein container
 
-WARNING: If you define multiple `routing { }` features, Ktor have a specific way of joining the different routing definition, finally there is only one `Routing` object. Thus, if you define multiple `subKodein { }` in your different `routing { }` object, only one `subKodein` will be taking into account.
+WARNING: If you define multiple `routing { }` features, Ktor have a specific way of joining the different routing definition, finally there is only one `Routing` object. Thus, if you define multiple `subKodein { }` in your different `routing { }` declaration, only one `subKodein` will be taking into account.
 
 WARNING: The `subKodein` mechanism will only work if your Ktor `Application` has the `KodeinFeature` installed, or if you handle the installation manually.
 
-INFO: On the contrary you can define a `subKodein { }` object for each of your `Route`s as each of them will be able to embbed a Kodein instance.
+NOTE: On the contrary you can define a `subKodein { }` object for each of your `Route`s as each of them will be able to embbed a Kodein instance.
 
 .*Copying bindings*
 
@@ -261,7 +260,7 @@ subKodein(allowSilentOverrides = true) { // <2>
 <1> Overriding the `Foo` binding
 <2> Overriding in the `subKodein` will be implicit
 
-This feature is restricted to the `Routing` / `Route`, but can be used like:
+This feature is restricted to the `Routing` / `Route` and can be used like:
 
 [source, kotlin]
 .Example: extend from multiple places
@@ -283,8 +282,8 @@ This feature is restricted to the `Routing` / `Route`, but can be used like:
     }
 ----
 <1> extending the nearest Kodein instance, most likely the Application's one
-<2> extending the nearest Kodein instance, the one created in the <1>
-<3> extending the nearest Kodein instance, the one created in the <2>
+<2> extending the nearest Kodein instance, the one created in <1>
+<3> extending the nearest Kodein instance, the one created in <2>
 
 == Ktor scopes
 
@@ -293,7 +292,7 @@ This feature is restricted to the `Routing` / `Route`, but can be used like:
 With the `kodein-di-ktor-server-jvm` utils you can scope your dependencies upon your Ktor sessions. To do that you'll have to follow the steps:
 
 . Defining your session by implementing `KodeinSession`
-
++
 [source, kotlin]
 .Example: Defining the session
 ----
@@ -301,11 +300,12 @@ data class UserSession(val user: User) : KodeinSession { <1>
     override fun getSessionId() = user.id <2>
 }
 ----
++
 <1> Create session object that implements `KtorSession`
 <2> Implement the function `getSessionId()`
 
 . Defining your scoped dependencies
-
++
 [source, kotlin]
 .Example: Defining the session scoped dependencies
 ----
@@ -314,19 +314,20 @@ fun main(args: Array<String>) {
         install(Sessions) { <1>
             cookie<UserSession>("SESSION_FEATURE_SESSION_ID") <2>
         }
-        install(KodeinFeature) {
+        kodein {
             bind<Random>() with scoped(SessionScope).singleton { SecureRandom() } <3>
             /* binding */
         }
     }.start(true)
 }
 ----
++
 <1> Install the `Sessions` feature
 <2> Declaring a session cookie represented by `UserSession`
 <3> Bind `Random` object scoped by `SessionScope`
 
 . Retrieving your scoped dependencies
-
++
 [source, kotlin]
 .Example: Retrieving session scoped dependencies
 ----
@@ -341,15 +342,12 @@ embeddedServer(Netty, port = 8000) {
     }
 }.start(true)
 ----
++
 <1> Retrieve the `session` from the request context or fail
 <2> retrieve a `Random` object from the `Kodein` object scoped by `session`
 
 . Clear the scope as long as the sessions are no longer used
-
-IMPORTANT:  A Ktor session is cleared by calling the function `CurrentSession.clear<Session>()`.
-            To clear the session combine to the scope removal you *MUST* use the extension function `CurrentSession.clearSessionScope<Session>()`,
-            thus the session will be cleared and the `ScopeRegistry` removed.
-
++
 [source, kotlin]
 .Example: Clear the session and scope
 ----
@@ -357,8 +355,12 @@ get("/clear") {
     call.sessions.clearSessionScope<UserSession>()
 }
 ----
++
 <1> clear the session and remove the `ScopeRegistry` linked to the session
-
++
+IMPORTANT:  A Ktor session is cleared by calling the function `CurrentSession.clear<Session>()`.
+            To clear the session combine to the scope removal you *MUST* use the extension function `CurrentSession.clearSessionScope<Session>()`,
+            thus the session will be cleared and the `ScopeRegistry` removed.
 
 [CAUTION]
 ====
@@ -402,25 +404,50 @@ To help those who want to implement a Ktor application base on a "MVC-like" arch
 [subs="attributes"]
 .Gradle Groovy script
 ----
+implementation 'org.kodein.di:kodein-di-generic-jvm:{version}'
 implementation 'org.kodein.di:kodein-di-ktor-server-controller-jvm:{version}'
 ----
 
 [subs="attributes"]
 .Gradle Kotlin script
 ----
-implementation(project("org.kodein.di:kodein-di-ktor-server-controller-jvm:{version}"))
+implementation("org.kodein.di:kodein-di-generic-jvm:{version}")
+implementation("org.kodein.di:kodein-di-ktor-server-controller-jvm:{version}")
 ----
 
-INFO: `kodein-di-generic-jvm` is provided as an API dependency, through `kodein-di-ktor-server-jvm` package, so you don't need to import it.
+IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-ktor-server-controller-jvm` package.
 
--  Defining your controllers
+NOTE:  the `kodein-di-ktor-server-controller-jvm` already have  the `kodein-di-ktor-server-jvm` as transitive dependency, so you don't need to declare both.
+
+-  Defining your controllers, by implementing `KodeinController`, or extending `AbstractKodeinController`
 + 
-To define your controllers you need to extend the class `KodeinController`, provide it an `Application` instance and implement the function `Routing.installRoutes()`.
+To define your controllers you need, either to implement the interface `KodeinController`, or to extend the class `AbstractKodeinController` and implement the function `Routing.installRoutes()`.
 +
 [source, kotlin]
-.Example: Extending KodeinController
+.Example: Implementing KodeinController
 ----
-class MyController(application: Application) : KodeinController(application) { <1>
+class MyController(application: Application) : KodeinController { <1>
+    override val kodein by kodein { application } <2>
+    private val repository: DataRepository by instance("dao") <3>
+
+    override fun Routing.installRoutes() { <4>
+        get("/version") { <5>
+            val version: String by instance("version") <8>
+            call.respondText(version)
+        }
+    }
+----
+<1> Implement `KodeinController` and provide a `Application` instance (from constructor)
+<2> Override the `Kodein` container, from the provided `Application`
+<3> Use your `Kodein` container as in any `KodeinAware` class
+<4> Override the function `Routing.installRoutes` and define some routes
+<5> This route will be automatically register by the `KodeinControllerFeature`
+<6> Use your `Kodein` container as in any `KodeinAware` class
++
+[source, kotlin]
+.Example: Extending AbstractKodeinController
+----
+class MyController(application: Application) : AbstractKodeinController(application) { <1>
     private val repository: DataRepository by instance("dao") <2>
 
     override fun Routing.installRoutes() { <3>
@@ -430,13 +457,19 @@ class MyController(application: Application) : KodeinController(application) { <
         }
     }
 ----
-<1> Extend `KodeinController` and provide a `Application` instance (from constructor)
+<1> Extend `AbstractKodeinController` and provide a `Application` instance (from constructor)
 <2> Use your `Kodein` container as in any `KodeinAware` class
 <3> Override the function `Routing.installRoutes` and define some routes
 <4> This route will be automatically register by the `KodeinControllerFeature`
 <5> Use your `Kodein` container as in any `KodeinAware` class
 
-- Using the `KodeinControllerFeature`
+NOTE:   Using `KodeinController` or `AbstractKodeinController` depends on your needs.
+        +
+        If you don't need to use inheritance on your controllers, then you could benefit from using `AbstractKodeinController`.
+        +
+        On the contrary, if you want to use inheritance for your controllers you should implement `KodeinController` and override the `Kodein` container by yourself. 
+
+- Declaring the `KodeinControllerFeature`
 +
 To benefit from the `KodeinController` behavior, you *need* to use the `KodeinControllerFeature` that will install the routes of your `KodeinController`s.
 +
