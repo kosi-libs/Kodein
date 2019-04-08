@@ -9,7 +9,7 @@ import org.kodein.di.ktor.KodeinControllerFeature.Feature
 
 /**
  * Ktor [Feature] that provide a global [Kodein] container
- * and autowire all the bound [KodeinController] by installing the routes
+ * and autowire all the bound [AbstractKodeinController] by installing the routes
  * that would be accessible from everywhere in the Ktor application
  */
 class KodeinControllerFeature private constructor() {
