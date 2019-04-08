@@ -4,8 +4,7 @@ import io.ktor.application.*
 import io.ktor.routing.*
 import io.ktor.util.*
 import org.kodein.di.*
-import org.kodein.di.generic.*
-import org.kodein.di.ktor.KodeinControllerFeature.Feature
+import org.kodein.di.ktor.KodeinControllerFeature.*
 
 /**
  * Ktor [Feature] that provide a global [Kodein] container
@@ -32,7 +31,7 @@ class KodeinControllerFeature private constructor() {
                 For every binding we check whether or not its assignable to KodeinController.
                 Simply, we are looking for all the [KodeinController] in the Kodein DI context
                 */
-                val controllerInstances: List<KodeinController> by application.kodein().allInstances()
+                val controllerInstances by application.kodein().AllInstances(erased<KodeinController>())
                 controllerInstances.forEach {
                     it.apply {
                         /*

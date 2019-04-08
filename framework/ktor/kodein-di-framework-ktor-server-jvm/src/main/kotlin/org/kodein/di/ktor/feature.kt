@@ -1,11 +1,10 @@
 package org.kodein.di.ktor
 
 import io.ktor.application.*
-import io.ktor.routing.*
 import io.ktor.util.*
 import org.kodein.di.*
-import org.kodein.di.generic.*
-import org.kodein.di.ktor.KodeinFeature.Feature
+import org.kodein.di.bindings.*
+import org.kodein.di.ktor.KodeinFeature.*
 
 /**
  * Ktor [Feature] that provide a global [Kodein] container
@@ -30,8 +29,10 @@ class KodeinFeature private constructor() {
         override fun install(pipeline: Application, configure: Kodein.MainBuilder.() -> Unit): KodeinFeature {
             val application = pipeline
 
+            val applicationToken = erased<Application>()
+
             val kodeinInstance = Kodein {
-                bind<Application>() with instance(application)
+                Bind<Application>(erased()) with InstanceBinding(applicationToken, application)
                 configure()
             }
 
