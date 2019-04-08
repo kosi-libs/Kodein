@@ -3,33 +3,35 @@ package org.kodein.di.ktor
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
+import io.ktor.util.*
 import kotlin.test.*
 
+@KtorExperimentalAPI
 class KtorTest {
 
     @Test
-    fun testGetSession(): Unit = withTestApplication(Application::main) {
+    fun test_00_getSession(): Unit = withTestApplication(Application::main) {
         handleRequest(HttpMethod.Get, ROUTE_SESSION).apply {
             assertTrue { response.content?.contains("java.security.SecureRandom@.*".toRegex()) ?: false }
         }
     }
 
     @Test
-    fun testGetIncrement(): Unit = withTestApplication(Application::main) {
+    fun test_01_getIncrement(): Unit = withTestApplication(Application::main) {
         handleRequest(HttpMethod.Get, ROUTE_SESSION + ROUTE_INC).apply {
             assertTrue { response.content == "${MockSession(1)}" }
         }
     }
 
     @Test
-    fun testGetClear(): Unit = withTestApplication(Application::main) {
+    fun test_02_getClear(): Unit = withTestApplication(Application::main) {
         handleRequest(HttpMethod.Get, ROUTE_SESSION + ROUTE_CLEAR).apply {
             assertTrue { response.content == "null" }
         }
     }
 
     @Test
-    fun testSessionScoped(): Unit = withTestApplication(Application::main) {
+    fun test_03_sessionScoped(): Unit = withTestApplication(Application::main) {
         cookiesSession {
             // set a session context
             val sessionRandomPairs = mutableListOf<Pair<MockSession, String>>()
@@ -108,7 +110,7 @@ class KtorTest {
 
 
     @Test
-    fun testGetRequestScoped(): Unit = withTestApplication(Application::main) {
+    fun test_04_getRequestScoped(): Unit = withTestApplication(Application::main) {
         handleRequest(HttpMethod.Get, ROUTE_REQUEST).apply {
             assertNotNull(response.content)
 
@@ -128,7 +130,7 @@ class KtorTest {
     }
 
     @Test
-    fun testClosest(): Unit = withTestApplication(Application::main) {
+    fun test_05_closest(): Unit = withTestApplication(Application::main) {
         val kodeinInstance = this.application.attributes[KodeinKey]
 
         assertSame(kodeinInstance, kodein { this.application }.baseKodein)
@@ -149,7 +151,7 @@ class KtorTest {
     }
 
     @Test
-    fun testSubKodein(): Unit = withTestApplication(Application::main) {
+    fun test_06_subKodein(): Unit = withTestApplication(Application::main) {
         val kodeinInstance = this.application.attributes[KodeinKey]
 
         assertSame(kodeinInstance, kodein { this.application }.baseKodein)
