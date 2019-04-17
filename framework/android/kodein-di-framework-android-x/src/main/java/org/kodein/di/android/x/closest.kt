@@ -12,7 +12,7 @@ import org.kodein.di.android.kodein
  */
 fun Fragment.kodein() = kodein { requireActivity() }
 // Deprecated since 6.1
-@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.x.kodein"))
+@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.x.kodein"), DeprecationLevel.ERROR)
 fun Fragment.closestKodein() = kodein()
 
 /**
@@ -20,10 +20,10 @@ fun Fragment.closestKodein() = kodein()
  */
 fun Loader<*>.kodein() = kodein { context }
 // Deprecated since 6.1
-@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.x.kodein"))
+@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.x.kodein"), DeprecationLevel.ERROR)
 fun Loader<*>.closestKodein() = kodein()
 
 /**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
-fun AndroidViewModel.kodein() = org.kodein.di.android.kodein(getApplication<Application>())
+fun AndroidViewModel.kodein() = kodein(getApplication<Application>())

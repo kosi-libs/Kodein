@@ -140,7 +140,7 @@ class ConfTests {
         assertEquals("Salomon BRYS", kodein.direct.factory<FullName, String>().invoke(FullName("Salomon", "BRYS")))
     }
 
-    class Test04 : KodeinGlobalAware {
+    class T08: KodeinGlobalAware {
         val answer: Int by instance(tag = "full")
     }
 
@@ -158,27 +158,10 @@ class ConfTests {
         }
 
         assertEquals(21, Kodein.global.direct.instance(tag = "half"))
-        assertEquals(42, Test04().answer)
+        assertEquals(42, T08().answer)
     }
 
-    class Test05 {
-        val kodein = ConfigurableKodein()
-
-        inner class Loop(@Suppress("UNUSED_PARAMETER") text: String = kodein.direct.instance())
-    }
-
-    @Test fun test_09_Loop() {
-        val test = Test05()
-
-        test.kodein.addConfig {
-            bind() from singleton { "test" }
-            bind() from eagerSingleton { test.Loop() }
-        }
-
-        test.kodein.getOrConstruct()
-    }
-
-    @Test fun test_10_Callback() {
+    @Test fun test_09_Callback() {
         val kodein = ConfigurableKodein()
 
         var ready = false

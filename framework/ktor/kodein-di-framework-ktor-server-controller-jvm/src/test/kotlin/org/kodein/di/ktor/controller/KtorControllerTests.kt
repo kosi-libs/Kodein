@@ -1,4 +1,4 @@
-package org.kodein.di.ktor
+package org.kodein.di.ktor.controller
 
 import io.ktor.application.*
 import io.ktor.http.*
@@ -6,7 +6,7 @@ import io.ktor.server.testing.*
 import org.junit.Test
 import kotlin.test.*
 
-class KtorTest {
+class KtorControllerTests {
     @Test
     fun test_00_successAbstractKodeinControllerFeature(): Unit = withTestApplication(Application::kodeinAbsControllerSuccess) {
         handleRequest(HttpMethod.Get, ROUTE_VERSION).apply {

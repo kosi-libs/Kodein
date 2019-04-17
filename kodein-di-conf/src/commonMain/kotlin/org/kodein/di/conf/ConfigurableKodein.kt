@@ -13,6 +13,8 @@ import org.kodein.di.internal.synchronizedIfNull
  * The non-mutable configuration methods ([addImport], [addExtend] & [addConfig]) needs to happen **before** any dependency retrieval.
  */
 class ConfigurableKodein : Kodein {
+//    override val container: KodeinContainer
+//        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
     /** @suppress */
     override val kodein: Kodein get() = this
@@ -70,7 +72,7 @@ class ConfigurableKodein : Kodein {
     fun getOrConstruct(): Kodein {
         return synchronizedIfNull(
                 lock = _lock,
-                predicate = this::_instance,
+                predicate = { _instance },
                 ifNotNull = { it },
                 ifNull = {
                     if (mutable == null)

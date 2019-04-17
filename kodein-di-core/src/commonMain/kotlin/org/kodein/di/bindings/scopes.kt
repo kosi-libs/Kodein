@@ -102,10 +102,6 @@ class StandardScopeRegistry : ScopeRegistry() {
     fun isEmpty(): Boolean = _cache.isEmpty()
 }
 
-// Deprecated since 6.0
-@Deprecated("MultiItemScopeRegistry has been renamed StandardScopeRegistry", replaceWith = ReplaceWith("StandardScopeRegistry"), level = DeprecationLevel.ERROR)
-typealias MultiItemScopeRegistry = StandardScopeRegistry
-
 /**
  * [ScopeRegistry] that is specialized to hold only one item.
  *
@@ -174,18 +170,6 @@ class SingleItemScopeRegistry : ScopeRegistry() {
     }
 }
 
-// Deprecated since 6.0
-@Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors")
-enum class ScopeRepositoryType {
-    MULTI_ITEM,
-    SINGLE_ITEM
-}
-
-@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-// Deprecated since 6.0
-@Deprecated("Use directly StandardScopeRegistry or SingleItemScopeRegistry constructors", level = DeprecationLevel.ERROR)
-fun <A> newScopeRegistry(type: ScopeRepositoryType): ScopeRegistry = throw UnsupportedOperationException()
-
 interface ContextTranslator<in C, S> {
     val contextType: TypeToken<in C>
     val scopeType: TypeToken<in S>
@@ -231,13 +215,6 @@ interface Scope<in C> {
 }
 
 /**
- * Simple [Scope] where the Environment Context and the Binding Context do not differ.
- */
-// Deprecated since 6.0
-@Deprecated("Scope itself has been simplified", ReplaceWith("Scope<C>"), level = DeprecationLevel.ERROR)
-typealias SimpleScope<C> = Scope<C>
-
-/**
  * [Scope] that is not bound to a context (always lives).
  *
  * This is kind of equivalent to having no scope at all, except that you can call [clear].
@@ -247,10 +224,6 @@ open class UnboundedScope(val registry: ScopeRegistry = StandardScopeRegistry())
 
     override fun close() = registry.clear()
 }
-
-// Deprecated since 6.0
-@Deprecated("BasicScope has been renamed UnboundedScope", ReplaceWith("UnboundedScope"), level = DeprecationLevel.ERROR)
-typealias BasicScope = UnboundedScope
 
 abstract class SubScope<C, PC>(val parentScope: Scope<PC>) : Scope<C> {
 

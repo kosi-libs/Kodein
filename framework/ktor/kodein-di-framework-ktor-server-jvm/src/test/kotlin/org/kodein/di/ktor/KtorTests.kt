@@ -7,7 +7,7 @@ import io.ktor.util.*
 import kotlin.test.*
 
 @KtorExperimentalAPI
-class KtorTest {
+class KtorTests {
 
     @Test
     fun test_00_getSession(): Unit = withTestApplication(Application::main) {

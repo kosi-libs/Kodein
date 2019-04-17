@@ -10,10 +10,6 @@ import android.os.Bundle
 import org.kodein.di.bindings.*
 import java.lang.ref.WeakReference
 
-// Deprecated since 6.0
-@Deprecated("Use WeakContextScope.of()", level = DeprecationLevel.ERROR)
-object AndroidComponentsWeakScope : WeakContextScope<Any?>()
-
 private const val SCOPE_FRAGMENT_TAG = "org.kodein.android.ActivityRetainedScope.RetainedScopeFragment"
 
 /**
@@ -29,16 +25,6 @@ open class ActivityRetainedScope private constructor(private val registryType: R
 
     object Keys {
         const val registryTypeOrdinal = "org.kodein.di.android.registryTypeOrdinal"
-    }
-
-    companion object MultiItem: ActivityRetainedScope(RegistryType.Standard) {
-        // Deprecated since 6.0
-        @Deprecated("use MultiItem", replaceWith = ReplaceWith("MultiItem"), level = DeprecationLevel.ERROR)
-        val multiItem = MultiItem
-
-        // Deprecated since 6.0
-        @Deprecated("use SingleItem", replaceWith = ReplaceWith("SingleItem"), level = DeprecationLevel.ERROR)
-        val singleItem = SingleItem
     }
 
     object SingleItem: ActivityRetainedScope(RegistryType.SingleItem)

@@ -50,7 +50,7 @@ private class LazyContextKodeinPropertyDelegateProvider(private val getContext: 
  */
 fun kodein(): KodeinPropertyDelegateProvider<Context> = ContextKodeinPropertyDelegateProvider()
 // Deprecated since 6.1
-@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
+@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"), DeprecationLevel.ERROR)
 fun closestKodein() = kodein()
 
 /**
@@ -60,7 +60,7 @@ fun closestKodein() = kodein()
  */
 fun kodein(context: Context): KodeinPropertyDelegateProvider<Any?> = LazyContextKodeinPropertyDelegateProvider { context }
 // Deprecated since 6.1
-@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein(context)", "org.kodein.di.android.kodein"))
+@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein(context)", "org.kodein.di.android.kodein"), DeprecationLevel.ERROR)
 fun closestKodein(context: Context) = kodein(context)
 
 /**
@@ -70,7 +70,7 @@ fun closestKodein(context: Context) = kodein(context)
  */
 fun kodein(getContext: () -> Context): KodeinPropertyDelegateProvider<Any?> = LazyContextKodeinPropertyDelegateProvider(getContext)
 // Deprecated since 6.1
-@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein(getContext)", "org.kodein.di.android.kodein"), DeprecationLevel.WARNING)
+@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein(getContext)", "org.kodein.di.android.kodein"), DeprecationLevel.ERROR)
 fun closestKodein(getContext: () -> Context) = kodein(getContext)
 
 /**
@@ -78,7 +78,7 @@ fun closestKodein(getContext: () -> Context) = kodein(getContext)
  */
 fun Fragment.kodein() = kodein { activity }
 // Deprecated since 6.1
-@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
+@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"), DeprecationLevel.ERROR)
 fun Fragment.closestKodein() = kodein()
 
 /**
@@ -86,7 +86,7 @@ fun Fragment.closestKodein() = kodein()
  */
 fun Dialog.kodein() = kodein { context }
 // Deprecated since 6.1
-@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
+@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"), DeprecationLevel.ERROR)
 fun Dialog.closestKodein() = kodein()
 
 /**
@@ -94,7 +94,7 @@ fun Dialog.closestKodein() = kodein()
  */
 fun View.kodein() = kodein { context }
 // Deprecated since 6.1
-@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
+@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"), DeprecationLevel.ERROR)
 fun View.closestKodein() = kodein()
 
 /**
@@ -102,7 +102,7 @@ fun View.closestKodein() = kodein()
  */
 fun AbstractThreadedSyncAdapter.kodein() = kodein { context }
 // Deprecated since 6.1
-@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
+@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"), DeprecationLevel.ERROR)
 fun AbstractThreadedSyncAdapter.closestKodein() = kodein()
 
 /**
@@ -110,5 +110,5 @@ fun AbstractThreadedSyncAdapter.closestKodein() = kodein()
  */
 fun Loader<*>.kodein() = kodein { context }
 // Deprecated since 6.1
-@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"))
+@Deprecated("closestKodein has been renamed kodein", ReplaceWith("kodein()", "org.kodein.di.android.kodein"), DeprecationLevel.ERROR)
 fun Loader<*>.closestKodein() = kodein()

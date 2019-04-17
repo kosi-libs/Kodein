@@ -4,7 +4,7 @@ import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 
 
-private var oneTrueKodein = ConfigurableKodein()
+private val oneTrueKodein = ConfigurableKodein()
 
 /**
  * A global One True Kodein.

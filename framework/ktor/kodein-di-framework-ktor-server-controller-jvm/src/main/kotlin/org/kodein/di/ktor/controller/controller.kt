@@ -1,8 +1,9 @@
-package org.kodein.di.ktor
+package org.kodein.di.ktor.controller
 
 import io.ktor.application.*
 import io.ktor.routing.*
 import org.kodein.di.*
+import org.kodein.di.ktor.kodein
 
 /**
  * Base controller super class to leverage your Ktor server as a MVC-like architecture

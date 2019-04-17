@@ -1,10 +1,12 @@
-package org.kodein.di.ktor
+package org.kodein.di.ktor.controller
 
 import io.ktor.application.*
 import io.ktor.routing.*
 import io.ktor.util.*
 import org.kodein.di.*
-import org.kodein.di.ktor.KodeinControllerFeature.*
+import org.kodein.di.ktor.KodeinFeature
+import org.kodein.di.ktor.controller.KodeinControllerFeature.*
+import org.kodein.di.ktor.kodein
 
 /**
  * Ktor [Feature] that provide a global [Kodein] container
