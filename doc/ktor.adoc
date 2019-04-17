@@ -4,8 +4,8 @@ Romain BOISSELLE <romain@boisselle.dev>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.1.0
-:branch: 6.1
+:version: 6.2.0
+:branch: 6.2
 
 You can use Kodein as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-ktor-server-jvm` or `kodein-di-ktor-server-controller-jvm`.
 
@@ -43,19 +43,7 @@ IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declar
 . Declare a Kodein container in your application or use the <<kodeinfeature>>
 +
 [source, kotlin]
-.Example: a Ktor Application declaration, with Kodein container declaration
-----
-fun main(args: Array<String>) {
-    embeddedServer(Netty, port = 8080) {
-        val kodein = Kodein {
-            /* bindings */
-        }
-   }.start(true)
-}
-----
-+
-[source, kotlin]
-.Example: a Ktor Application declaration, installing the `KodeinFeature` (via the extension function `Application.kodein(...)`)
+.Example: a Ktor Application declaration, installing the `KodeinFeature` (via the extension function `Application.kodein`).
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
@@ -394,10 +382,7 @@ val kodein = Kodein {
 }
 ----
 
-[[extrafeatures]]
-== Extra Features
-
-=== Making your controllers `KodeinAware`
+== Kodein Controllers
 
 To help those who want to implement a Ktor application base on a "MVC-like" architecture, we provide a https://ktor.io/advanced/features.html[custom feature]. This feature is a specific module called `kodein-di-ktor-server-controller-jvm`. To enable it, add this line in your `dependencies` block in your application `build.gradle(.kts)` file:
 
