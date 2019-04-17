@@ -6,7 +6,7 @@
   * `bind() from Binding<Unit>` is now forbidden. Binding specifically the Unit type with `bind<Unit>() with Binding<Unit>` is allowed (although I cannot see why someone would use it!).
 
 - Ktor
-  * New framework module for Ktor integration thanks to the huge work of Romain Boisselle! See [documentation](http://kodein.org/Kodein-DI/?{branch}/ktor).
+  * New framework module for Ktor integration thanks to the huge work of Romain Boisselle! See [documentation](https://kodein.org/Kodein-DI/?6.2/ktor).
 
 #### 6.1.0 (06-02-2019)
 

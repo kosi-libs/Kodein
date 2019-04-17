@@ -7,29 +7,29 @@ image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kod
 
 == Getting started
 
-- http://kodein.org/Kodein-DI/?{branch}/getting-started[Guide to getting started with Kodein]
+- https://kodein.org/Kodein-DI/?{branch}/getting-started[Guide to getting started with Kodein]
 
 
 == Core documentation
 
-- *http://kodein.org/Kodein-DI/?{branch}/core[FULL CORE DOCUMENTATION]*
+- *https://kodein.org/Kodein-DI/?{branch}/core[FULL CORE DOCUMENTATION]*
 
 
 == Extensions
 
-- http://kodein.org/Kodein-DI/?{branch}/configurable[Configurable & global Kodein]
-- http://kodein.org/Kodein-DI/?{branch}/android[Kodein on Android]
-- http://kodein.org/Kodein-DI/?{branch}/ktor[Kodein on Ktor]
-- http://kodein.org/Kodein-DI/?{branch}/jsr330[JSR-330 compatibility]
+- https://kodein.org/Kodein-DI/?{branch}/configurable[Configurable & global Kodein]
+- https://kodein.org/Kodein-DI/?{branch}/android[Kodein on Android]
+- https://kodein.org/Kodein-DI/?{branch}/ktor[Kodein on Ktor]
+- https://kodein.org/Kodein-DI/?{branch}/jsr330[JSR-330 compatibility]
 
 
 == Migrations
 
-- http://kodein.org/Kodein-DI/?{branch}/migration-j2k[JSR-330 to Kodein]
-- http://kodein.org/Kodein-DI/?{branch}/migration-4to5[Kodein version 4 to version 5]
+- https://kodein.org/Kodein-DI/?{branch}/migration-j2k[JSR-330 to Kodein]
+- https://kodein.org/Kodein-DI/?{branch}/migration-4to5[Kodein version 4 to version 5]
 
 
 == Previous versions
 
-- http://kodein.org/Kodein-DI/?4.1[Kodein version 4]
-- http://kodein.org/Kodein-DI/?3.4[Kodein version 3].
+- https://kodein.org/Kodein-DI/?4.1[Kodein version 4]
+- https://kodein.org/Kodein-DI/?3.4[Kodein version 3].
