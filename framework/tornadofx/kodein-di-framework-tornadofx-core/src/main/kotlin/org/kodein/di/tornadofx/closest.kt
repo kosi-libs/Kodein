@@ -22,11 +22,16 @@ private val KODEIN_KEY = "KODEIN_KEY"
 /**
  * Installing a [Kodein] container into Node#properties if there is none
  */
-fun Node.kodein(init: Kodein.MainBuilder.() -> Unit) {
+fun Node.kodein(init: Kodein.MainBuilder.() -> Unit) = addKodeinProperty(Kodein { init() })
+
+/**
+ * Installing a [Kodein] container into Node#properties if there is none
+ */
+fun Node.addKodeinProperty(kodein: Kodein) {
     if (properties[KODEIN_KEY] != null)
         throw IllegalArgumentException("There is already a Kodein container for the node ${this}")
 
-    properties[KODEIN_KEY] = Kodein { init() }
+    properties[KODEIN_KEY] = kodein
 }
 
 /**
