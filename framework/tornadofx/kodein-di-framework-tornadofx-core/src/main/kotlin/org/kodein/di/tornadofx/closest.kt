@@ -1,14 +1,39 @@
 package org.kodein.di.tornadofx
 
+import javafx.scene.*
 import org.kodein.di.*
 import tornadofx.*
 
 /**
  * Getting the global [Kodein] container from the [App] parameter if its [KodeinAware]
  */
-private fun kodein(getApplication: () -> App) = LazyKodein { (getApplication() as KodeinAware).kodein}
+private fun kodein(getApplication: () -> App) = LazyKodein { (getApplication() as KodeinAware).kodein }
 
 /**
  * Getting a global [Kodein] container from the running [App]
  */
 fun Component.kodein() = kodein { app }
+
+/**
+ * Unique value to be able to set a [Kodein] container into Node#properties
+ */
+private val KODEIN_KEY = "KODEIN_KEY"
+
+/**
+ * Installing a [Kodein] container into Node#properties if there is none
+ */
+fun Node.kodein(init: Kodein.MainBuilder.() -> Unit) {
+    if (properties[KODEIN_KEY] != null)
+        throw IllegalArgumentException("There is already a Kodein container for the node ${this}")
+
+    properties[KODEIN_KEY] = Kodein { init() }
+}
+
+/**
+ * Getting the nearest [Kodein] container in the Node hierarchy,
+ * going from parent to parent and retrieve the first [Kodein] container encountered
+ */
+fun Node.kodein(): LazyKodein = when {
+    properties[KODEIN_KEY] != null -> LazyKodein { properties[KODEIN_KEY] as Kodein }
+    else -> parent?.kodein() ?: throw IllegalStateException("No kodein container found for [${this}]")
+}
