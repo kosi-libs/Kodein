@@ -32,8 +32,13 @@ fun Node.kodein(init: Kodein.MainBuilder.() -> Unit) {
 /**
  * Getting the nearest [Kodein] container in the Node hierarchy,
  * going from parent to parent and retrieve the first [Kodein] container encountered
+ *
+ * If no [Kodein] container is not found in the hierarchy, we try to retrieve the one from the App if there is one
  */
 fun Node.kodein(): LazyKodein = when {
     properties[KODEIN_KEY] != null -> LazyKodein { properties[KODEIN_KEY] as Kodein }
-    else -> parent?.kodein() ?: throw IllegalStateException("No kodein container found for [${this}]")
+    else -> parent?.kodein() ?: when {
+        FX.application is KodeinAware -> LazyKodein { (FX.application as KodeinAware).kodein }
+        else -> throw IllegalStateException("No kodein container found for [${this}]")
+    }
 }
