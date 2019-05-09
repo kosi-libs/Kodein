@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.*
+
 val tornadofxVersion = "1.7.18"
 
 plugins {
@@ -13,6 +15,9 @@ application {
     mainClassName = "org.kodein.di.demo.tfx.TornadoApplication"
 }
 
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
+}
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
