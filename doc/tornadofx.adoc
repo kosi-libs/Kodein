@@ -1,0 +1,16 @@
+= Kodein DI on TornadoFX
+Romain BOISSELLE <romain@boisselle.dev>
+:toc: left
+:toc-position: left
+:toclevels: 5
+
+:version: 6.2.0
+:branch: 6.2
+
+You can use Kodein as-is in your TornadoFX project, but you can level-up your game by using the libraries `kodein-di-framework-tornadofx-core`.
+
+NOTE: Kodein does work on TornadoFX as-is.
+      The `kodein-di-framework-tornadofx-core` extensions add multiple TornadoFX-specific utilities to Kodein. +
+      Using or not using this extension really depends on your needs.
+
+Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-tornadofx[Ktor demo project] to help you going further!
