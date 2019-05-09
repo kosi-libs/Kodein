@@ -16,5 +16,4 @@ kodeinLib {
 
 dependencies {
     implementation("no.tornado:tornadofx:$tornadofxVersion")
-    testImplementation(project(":kodein-di-generic-jvm"))
 }
