@@ -75,7 +75,15 @@ The idea behind this concept, is to be able to retrieve a Kodein container, from
 
 In TornadoFX there is no hierachy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available thourgh the DI container of TornadoFX (and the one of Kodein if you use link:tornadofx.adoc#external-source[external source] helper), and they all have a reference to the `App`.
 
-So, if we made our `App` as `KodeinAware`, we can get the global `Kodein` container from any `Component` easily with:
+So, if we made our `App` as `KodeinAware`, we can get the global `Kodein` container from any `Component` thanks to:
+
+[source, kotlin]
+.Code: Extension function on `Component` that get the Kodein container from the `App`, if its `KodeinAware`
+----
+fun Component.kodein() = kodein { app }
+----
+
+In your code you can access the global Kodein container like the following snippets.
 
 [source, kotlin]
 .Example: retrieving dependency through closest Kodein container from a `Controller`
