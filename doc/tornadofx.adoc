@@ -101,14 +101,32 @@ class PersonEditorView : View() {
     val controller: PersonController by kodein().instance() <1>
 }
 ----
-<1> The `kodein()` function that will get the nearest Kodein container, from the `App`
+<1> The `kodein()` function will get the nearest Kodein container, from the `App`
 
 CAUTION: All TornadoFX `Component` can access the global Kodein container ) by calling the function `kodein()`, but your `App` *must* be `KodeinAware`.
 
 [[closest-jfx]]
 ==== From a JavaFX perspective
 
+In JavaFX, an `Application` is made of a `Stage` (the window), a `Scene` (the container for all content) and a graph of `Node`. All `Node` are grouped by view (in the case of TornadoFX: `View` or `Fragment`). 
 
+So, the `Node` hierarchy can apply to the closest Kodein pattern, limited to the scope of a `View` or `Fragment` for now. If none of the parent `Node` have a `Kodein` container, thanks to the TornadoFX facilities, we can fallback onto the global Kodein container from the `App`.
+
+[source, kotlin]
+.Example: retrieving dependency through the closest Kodein container from a `Node`
+----
+class EditorTabFragment : Fragment() {
+    override val root = hbox {
+        form {
+            val author: String by kodein().instance("author") <1>
+            label { author }
+        }
+    }
+}
+----
+<1> The `kodein()` function will get the nearest Kodein container, from the parent `Node`, or from the `App`
+
+CAUTION: If none of the parent nodes have a Kodein container, we try to get to the one in the `App`, only if this `App` is `KodeinAware`.
 
 [[kodein-extension]]
 == Extension of Kodein
