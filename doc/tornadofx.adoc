@@ -55,18 +55,6 @@ class TornadoApplication : App(MainView::class), KodeinAware { <1>
 
 WARNING: In order to leverage the power of `Kodein` and the helpers we made, you should really consider making your `App` as `KodeinAware`.
 
-[[kodein-extension]]
-== Extension of `Kodein`
-
-[[external-source]]
-=== Using TornadoFX Dependency Injection as external source
-
-[[kodein-containers]]
-=== Specific `Kodein` containers
-
-[[sub-kodein]]
-=== `SubKodein`
-
 [[retrieving]]
 == Retrieving
 
@@ -78,6 +66,26 @@ WARNING: In order to leverage the power of `Kodein` and the helpers we made, you
 
 [[closest-jfx]]
 ==== From a `JavaFX` perspective
+
+[[kodein-extension]]
+== Extension of `Kodein`
+
+This section will cover how we can extend the use of `Kodein` in a `TornadoFX` application, like:
+
+- Getting control of dependency injection over `TornadoFX`
+
+- Defining specific `Kodein` containers in a `TornadoFX / JavaFX`'s graph
+
+- Overriding a parent `Kodein` container in a `TornadoFX` component / `JavaFX` node
+
+[[external-source]]
+=== Using TornadoFX Dependency Injection as external source
+
+[[kodein-containers]]
+=== Specific `Kodein` containers
+
+[[sub-kodein]]
+=== `SubKodein`
 
 [[scopes]]
 == TornadoFX scopes
