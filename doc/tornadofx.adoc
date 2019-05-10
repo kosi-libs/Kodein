@@ -41,19 +41,25 @@ IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declar
 . Declare your `App` as `KodeinAware` and implement a `Kodein` container
 +
 [source, kotlin]
-.Example: a TornadoFX Application declaration, `KodeinAware`
+.Example: a TornadoFX Application declaration, `KodeinAware`, using TornadoFX DI as external source
 ----
 class TornadoApplication : App(MainView::class), KodeinAware { <1>
-    override val kodein: Kodein get() = Kodein { } <2>
+    override val kodein: Kodein get() = Kodein { <2>
+        extend(tornadoFXExternalSource) <3>
+     } 
 }
 ----
 <1> Setting the `App` as `KodeinAware` will help you define a global `Kodein` container
 <2> Define a `Kodein` container, accessible from almost anywhere in your application
+<3> Branch `Kodein` upon `TornadoFX` dependency injection, to be able to access those dependencies through your `Kodein` container (see link:tornadofx.adoc#external-source[documentation])
 
 WARNING: In order to leverage the power of `Kodein` and the helpers we made, you should really consider making your `App` as `KodeinAware`.
 
 [[kodein-extension]]
-== Extension for `Kodein`
+== Extension of `Kodein`
+
+[[external-source]]
+=== Using TornadoFX Dependency Injection as external source
 
 [[kodein-containers]]
 === Specific `Kodein` containers
