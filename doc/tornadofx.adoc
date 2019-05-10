@@ -38,7 +38,7 @@ implementation("kodein-di-framework-tornadofx-core:{version}")
 +
 IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-framework-tornadofx-core` package.
 +
-. Declare your `App` as `KodeinAware` and implement a `Kodein` container
+. Declare your `App` as `KodeinAware` and implement a Kodein container
 +
 [source, kotlin]
 .Example: a TornadoFX Application declaration, `KodeinAware`, using TornadoFX DI as external source
@@ -49,40 +49,75 @@ class TornadoApplication : App(MainView::class), KodeinAware { <1>
      } 
 }
 ----
-<1> Setting the `App` as `KodeinAware` will help you define a global `Kodein` container
-<2> Define a `Kodein` container, accessible from almost anywhere in your application
-<3> Branch `Kodein` upon `TornadoFX` dependency injection, to be able to access those dependencies through your `Kodein` container (see link:tornadofx.adoc#external-source[documentation])
+<1> Setting the `App` as `KodeinAware` will help you define a global Kodein container
+<2> Define a Kodein container, accessible from almost anywhere in your application
+<3> Branch Kodein upon TornadoFX dependency injection, to be able to access those dependencies through your Kodein container (see link:tornadofx.adoc#external-source[documentation])
 
-WARNING: In order to leverage the power of `Kodein` and the helpers we made, you should really consider making your `App` as `KodeinAware`.
+WARNING: In order to leverage the power of Kodein and the helpers we made, you should really consider making your `App` as `KodeinAware`.
 
 [[retrieving]]
 == Retrieving
 
+If you defined your `App` as `KodeinAware`, you will normally be able to retrieve a Kodein container, and dependencies, from almost anywhere in your code.
+
+CAUTION: You may also want to access your TornadoFX components (such as `View`, `Fragment`, `Controller`, etc) through a Kodein container, to help you with that check the link:tornadofx.adoc#external-source[external source] section.
+
 [[closest-kodein]]
-=== Closest `Kodein` pattern
+=== Closest Kodein pattern
+
+The idea behind this concept, is to be able to retrieve a Kodein container, from an outer class. For example, making our `App` as `KodeinAware` give us the ability to have a global Kodein container that can be retrieve from multiple places, like:
+
+- Components (`View`, `Fragment`, `Controller`, etc)
+- Nodes, graphical object of the `App`
 
 [[closest-tfx]]
-==== From a `TornadoFX` perspective
+==== From a TornadoFX perspective
+
+In TornadoFX there is no hierachy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available thourgh the DI container of TornadoFX (and the one of Kodein if you use link:tornadofx.adoc#external-source[external source] helper), and they all have a reference to the `App`.
+
+So, if we made our `App` as `KodeinAware`, we can get the global `Kodein` container from any `Component` easily with:
+
+[source, kotlin]
+.Example: retrieving dependency through closest Kodein container from a `Controller`
+----
+class PersonController : Controller() {
+    val repository: PersonRepository by kodein().instance() <1>
+}
+----
+<1> The `kodein()` function that will get the nearest Kodein container, from the `App` 
+
+[source, kotlin]
+.Example: retrieving dependency through the closest Kodein container from a `View`
+----
+class PersonEditorView : View() {
+    val controller: PersonController by kodein().instance() <1>
+}
+----
+<1> The `kodein()` function that will get the nearest Kodein container, from the `App`
+
+CAUTION: All TornadoFX `Component` can access the global Kodein container ) by calling the function `kodein()`, but your `App` *must* be `KodeinAware`.
 
 [[closest-jfx]]
-==== From a `JavaFX` perspective
+==== From a JavaFX perspective
+
+
 
 [[kodein-extension]]
-== Extension of `Kodein`
+== Extension of Kodein
 
-This section will cover how we can extend the use of `Kodein` in a `TornadoFX` application, like:
+This section will cover how we can extend the use of Kodein in a TornadoFX application, like:
 
-- Getting control of dependency injection over `TornadoFX`
+- Getting control of dependency injection over TornadoFX
 
-- Defining specific `Kodein` containers in a `TornadoFX / JavaFX`'s graph
+- Defining specific Kodein containers in a TornadoFX / JavaFX graph
 
-- Overriding a parent `Kodein` container in a `TornadoFX` component / `JavaFX` node
+- Overriding a parent Kodein container in a TornadoFX component / JavaFX node
 
 [[external-source]]
 === Using TornadoFX Dependency Injection as external source
 
 [[kodein-containers]]
-=== Specific `Kodein` containers
+=== Specific Kodein containers
 
 [[sub-kodein]]
 === `SubKodein`
