@@ -13,4 +13,29 @@ NOTE: Kodein does work on TornadoFX as-is.
       The `kodein-di-framework-tornadofx-core` extensions add multiple TornadoFX-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
-Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-tornadofx[Ktor demo project] to help you going further!
+Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-tornadofx[TornadoFX demo project] to help you going further!
+
+
+[[install]]
+== Install
+
+[[kodein-extension]]
+== Extension for `Kodein`
+
+[[kodein-container]]
+== Specific `Kodein` containers
+
+[[sub-kodein]]
+=== `SubKodein`
+
+[[closest-kodein]]
+== Closest `Kodein` pattern
+
+[[closest-tfx]]
+=== From a `TornadoFX` perspective
+
+[[closest-jfx]]
+=== From a `JavaFX` perspective
+
+[[scopes]]
+== Scopes
