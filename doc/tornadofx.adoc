@@ -83,6 +83,16 @@ So, if we made our `App` as `KodeinAware`, we can get the global `Kodein` contai
 fun Component.kodein() = kodein { app }
 ----
 
+[NOTE]
+====
+TornadoFX `Component` are:
+
+- View
+- Fragment
+- Controller
+- ViewModel
+====
+
 In your code you can access the global Kodein container like the following snippets.
 
 [source, kotlin]
