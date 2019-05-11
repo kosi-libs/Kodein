@@ -15,7 +15,6 @@ NOTE: Kodein does work on TornadoFX as-is.
 
 Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-tornadofx[TornadoFX demo project] to help you going further!
 
-
 [[install]]
 == Install
 
@@ -43,9 +42,9 @@ IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declar
 [source, kotlin]
 .Example: a TornadoFX Application declaration, `KodeinAware`, using TornadoFX DI as external source
 ----
-class TornadoApplication : App(MainView::class), KodeinAware { <1>
-    override val kodein: Kodein get() = Kodein { <2>
-        extend(tornadoFXExternalSource) <3>
+class TornadoApplication : App(MainView::class), KodeinAware { // <1>
+    override val kodein: Kodein get() = Kodein { // <2>
+        extend(tornadoFXExternalSource) // <3>
      } 
 }
 ----
@@ -99,7 +98,7 @@ In your code you can access the global Kodein container like the following snipp
 .Example: retrieving dependency through closest Kodein container from a `Controller`
 ----
 class PersonController : Controller() {
-    val repository: PersonRepository by kodein().instance() <1>
+    val repository: PersonRepository by kodein().instance() // <1>
 }
 ----
 <1> The `kodein()` function that will get the nearest Kodein container, from the `App` 
@@ -108,7 +107,7 @@ class PersonController : Controller() {
 .Example: retrieving dependency through the closest Kodein container from a `View`
 ----
 class PersonEditorView : View() {
-    val controller: PersonController by kodein().instance() <1>
+    val controller: PersonController by kodein().instance() // <1>
 }
 ----
 <1> The `kodein()` function will get the nearest Kodein container, from the `App`
@@ -128,7 +127,7 @@ So, the `Node` hierarchy can apply to the closest Kodein pattern, limited to the
 class EditorTabFragment : Fragment() {
     override val root = hbox {
         form {
-            val author: String by kodein().instance("author") <1>
+            val author: String by kodein().instance("author") // <1>
             label { author }
         }
     }
@@ -152,11 +151,85 @@ This section will cover how we can extend the use of Kodein in a TornadoFX appli
 [[external-source]]
 === Using TornadoFX Dependency Injection as external source
 
-[[kodein-containers]]
-=== Specific Kodein containers
+[[fx-container]]
+=== Defining Kodein container in FX's `Node`
+
+For some need we could want to define Kodein containers into the `Node` hierarchy. To do so we provide an extension function to create a Kodein container attached to a `Node`. This is done by adding the Kodein container to the properties of the `Node`, thus we will be able to access it from any child in the hierarachy.
+
+[source, kotlin]
+.Example: Defining and using a Kodein container from a `Node`
+----
+class MyView : View() {
+    override val root = hbox { // <1>
+        kodein { // <2>
+            bind<Random>() with singleton { SecureRandom() }
+        }
+        
+        form { // <3>
+            val random by kodein().instance<Random>() // <4>
+        }
+    }
+}
+----
+<1> Defining the root `Node` for a `View`
+<2> Declaring a *new* Kodein container into the root `Node`, with its binding
+<3> Defining a child `Node`
+<4> Calling the `kodein()` extension function to access the nearest Kodein container, in this case the one defined at <2>, then retrieve a dependency
+
+IMPORTANT: This feature will provide a *new* Kodein container, meaning it won't be linked to other Kodein container, such as your global one. To keep your binding from the global Kodein container you can use link:tornadofx.adoc#core#_extension_composition[extension] or following the next about core#sub-kodein[subKodein]
 
 [[sub-kodein]]
-=== `SubKodein`
+=== Extending the nearest Kodein container
+
+Some times, we might want to extend an existing Kodein container in a dedicated area, without impacting the whole application. For example, in a login form, we might want to have credentials binding, that would be only available on this form and its children.
+
+To do so, we have facilities to extend a Kodein container by calling the `subKodein` extension function, available on `Component` and `Node` classes.
+
+. In the case of a `Component`
++
+[source, kotlin]
+.Example: Extending the nearest Kodein container for a `Component`
+----
+class LoginController : Controller(), KodeinAware { // <1>
+    override val kodein: Kodein = subKodein { // <2>
+            bind<CredentialsDao> with singleton { CredentialsDao() } <3>
+    }
+    
+    // ...
+
+    val dao by kodein.instance<CredentialsDao>() // <4>
+}
+----
+<1> Defining your `Component` as `KodeinAware` will help keeping track of your extended Kodein container
+<2> Extending the nearest Kodein container, here the `App` one
+<3> Defining binding only available for the extended Kodein container
+<4> Retrieve the `CredentialsDao` from the Kodein container
++
+NOTE: Making your `Component` as `KodeinAware` is *optional*, but it will help you keeping track of your extended container. Otherwise, you might want to store a reference of your extended container in a local variable.
+
+. In the case of a `Node` hierarchy 
++
+[source, kotlin]
+.Example: Extending the nearest Kodein container for a `Node`
+----
+class LoginView : View() {
+    override val root = hbox { // <1>
+        subKodein { // <2>
+            bind<LoginController>() with singleton { instance() } // <3>
+        }
+        
+        form {
+            val controller by kodein().instance<LoginController>() <4>
+        }
+    }
+}
+----
+<1> Defining the root `Node` for a `View`
+<2> Extending the nearest Kodein container, here the `App` one, but stored in the `Node` properties
+<3> Defining binding only available for the extended Kodein container
+<4> Retrieve the `CredentialsDao` from the nearest Kodein container, in that case the extended container stored in the *hbox* properties
+
+IMPORTANT: In the case of a `Component` you have to handle the reference of the extended comtainer yourself. But, in the case of a `Node` the `subKodein` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the link:tornadofx.adoc#fx-container[FX container feature]
 
 [[scopes]]
 == TornadoFX scopes
