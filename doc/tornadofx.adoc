@@ -151,6 +151,10 @@ This section will cover how we can extend the use of Kodein in a TornadoFX appli
 [[external-source]]
 === Using TornadoFX Dependency Injection as external source
 
+TornadoFX integrates a dependency injection mechanism to work with its `Component`. This section will show you how you can interact with the Tornado DI container, by using Kodein. Our goal is to provide you some tools to be able to integrate Kodein as your main DI container, thus by learning and knowing only one mechanism.
+
+// TODO
+
 [[fx-container]]
 === Defining Kodein container in FX's `Node`
 
@@ -197,13 +201,13 @@ class LoginController : Controller(), KodeinAware { // <1>
     
     // ...
 
-    val dao by kodein.instance<CredentialsDao>() // <4>
+    val dao by instance<CredentialsDao>() // <4>
 }
 ----
 <1> Defining your `Component` as `KodeinAware` will help keeping track of your extended Kodein container
 <2> Extending the nearest Kodein container, here the `App` one
 <3> Defining binding only available for the extended Kodein container
-<4> Retrieve the `CredentialsDao` from the Kodein container
+<4> Retrieve the `CredentialsDao` from the local Kodein container
 +
 NOTE: Making your `Component` as `KodeinAware` is *optional*, but it will help you keeping track of your extended container. Otherwise, you might want to store a reference of your extended container in a local variable.
 
@@ -233,3 +237,28 @@ IMPORTANT: In the case of a `Component` you have to handle the reference of the 
 
 [[scopes]]
 == TornadoFX scopes
+
+// TODO managing TornadoFX DI scopes
+
+Kodein provides a standard scope for any object (Ktor or not).
+The `WeakContextScope` will keep singleton and multiton instances as long as the context (= object) lives.
+
+That's why the `ComponentScope` and `NodeScope` are just wrappers upon `WeakContextScope` with the respective targets `Component` and `Node`.
+
+[source, kotlin]
+.Example: Defining Component scoped dependencies
+----
+val kodein = Kodein {
+    bind<EditingState>() with scoped(ComponentScope).singleton { EditingState() } <1>
+}
+----
+<1> A `EditingState` object will be created for each Component that will ask for.
+
+[source, kotlin]
+.Example: Retrieving Component scoped dependencies
+----
+class EditorTabFragment : Fragment() {
+    private val editingState: EditingState by kodein().on(this).instance() <1>
+}
+----
+<1> Scope is `this`
