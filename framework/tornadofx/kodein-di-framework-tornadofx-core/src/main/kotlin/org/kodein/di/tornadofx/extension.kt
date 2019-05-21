@@ -9,11 +9,12 @@ import kotlin.reflect.*
 @Suppress("UNCHECKED_CAST")
 val tornadoFXExternalSource = Kodein {
     externalSource = ExternalSource { key ->
-        val elementType = key.type.jvmType as Class<*>
-        val contextType = key.argType.jvmType as Class<*>
+        val elementType = key.type.getRaw()?.jvmType as Class<*>?
+        val contextType = key.argType.getRaw()?.jvmType as Class<*>?
 
         // Check if the elementType is injectable by TornadoFX di container (infine if its a Component)
-        if (Component::class.java.isAssignableFrom(elementType)) {
+        if (elementType != null &&
+                Component::class.java.isAssignableFrom(elementType)) {
             val componentType = elementType.kotlin as KClass<Component>
 
             when (contextType) {
@@ -22,9 +23,10 @@ val tornadoFXExternalSource = Kodein {
                 else ->
                     // If there is a context argument it must be of type Scope
                     // then we try to find the right Component for the given Scope
-                    if (Scope::class.java.isAssignableFrom(contextType))
+                    if (contextType != null && Scope::class.java.isAssignableFrom(contextType))
                         externalFactory { find(type = componentType, scope = it as Scope) }
-                    else null // The context is not of type Scope
+                    else
+                        externalFactory { find(componentType) } // ignore context
             }
         } else null // its not a Component
     }
