@@ -318,11 +318,9 @@ interface Kodein : KodeinAware {
      */
     interface MainBuilder : Builder {
 
-        // Deprecated in 6.3
+        @Deprecated("Use externalSources instead")
         var externalSource: ExternalSource?
-            @Deprecated("Use externalSources", ReplaceWith("externalSources.firstOrNull()"))
             get() = externalSources.firstOrNull()
-            @Deprecated(message = "Use externalSources", replaceWith = ReplaceWith("externalSources = value"))
             set(value) {
                 externalSources.clear()
                 if (value != null)
