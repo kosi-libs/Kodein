@@ -10,7 +10,7 @@ import tornadofx.*
 class TornadoApplication : App(MainView::class), KodeinAware {
     override val kodein: Kodein
         get() = Kodein {
-            extend(tornadoFXExternalSource)
+            installTornadoSource()
 
             constant("test") with "MyApp"
             bind<PersonScope>() with factory { p: Person -> PersonScope(p) }

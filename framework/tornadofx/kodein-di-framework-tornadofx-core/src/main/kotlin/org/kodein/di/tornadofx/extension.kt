@@ -8,7 +8,7 @@ import kotlin.reflect.*
 
 @Suppress("UNCHECKED_CAST")
 fun Kodein.MainBuilder.installTornadoSource() {
-    externalSource = ExternalSource { key ->
+    externalSources += ExternalSource { key ->
         val elementType = key.type.getRaw()?.jvmType as Class<*>?
         val contextType = key.argType.getRaw()?.jvmType as Class<*>?
 
