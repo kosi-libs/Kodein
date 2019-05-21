@@ -318,10 +318,22 @@ interface Kodein : KodeinAware {
      */
     interface MainBuilder : Builder {
 
+        // Deprecated in 6.3
+        var externalSource: ExternalSource?
+            @Deprecated("Use externalSources", ReplaceWith("externalSources.firstOrNull()"))
+            get() = externalSources.firstOrNull()
+            @Deprecated(message = "Use externalSources", replaceWith = ReplaceWith("externalSources = value"))
+            set(value) {
+                externalSources.clear()
+                if (value != null)
+                    externalSources += value
+            }
+
+
         /**
          * The external source is repsonsible for fetching / creating a value when Kodein cannot find a matching binding.
          */
-        var externalSource: ExternalSource?
+        val externalSources: MutableList<ExternalSource>
 
         /**
          * Imports all bindings defined in the given [Kodein] into this builder.

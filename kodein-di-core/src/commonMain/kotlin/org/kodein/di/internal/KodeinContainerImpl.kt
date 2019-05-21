@@ -14,7 +14,7 @@ internal class KodeinContainerImpl private constructor(
     /**
      * "Main" constructor that uses the bindings map configured by a [KodeinContainer.Builder].
      */
-    internal constructor(builder: KodeinContainerBuilderImpl, externalSource: ExternalSource?, runCallbacks: Boolean) : this(KodeinTreeImpl(builder.bindingsMap, externalSource, builder.translators)) {
+    internal constructor(builder: KodeinContainerBuilderImpl, externalSources: List<ExternalSource>, runCallbacks: Boolean) : this(KodeinTreeImpl(builder.bindingsMap, externalSources, builder.translators)) {
         val init: () -> Unit = {
             val direct = DKodeinImpl(this, AnyKodeinContext)
             builder.callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }
@@ -131,10 +131,12 @@ internal class KodeinContainerImpl private constructor(
         }
 
         val bindingKodein = bindingKodein(key, KodeinContext(key.contextType, context), tree, overrideLevel)
-        tree.externalSource?.getFactory(bindingKodein, key)?.let {
-            node?.check(key, 0)
-            @Suppress("UNCHECKED_CAST")
-            return it as (A) -> T
+        tree.externalSources.forEach { source ->
+            source.getFactory(bindingKodein, key)?.let {
+                node?.check(key, 0)
+                @Suppress("UNCHECKED_CAST")
+                return it as (A) -> T
+            }
         }
 
         return null
@@ -154,10 +156,12 @@ internal class KodeinContainerImpl private constructor(
         }
 
         val bindingKodein = bindingKodein(key, KodeinContext(key.contextType, context), tree, overrideLevel)
-        tree.externalSource?.getFactory(bindingKodein, key)?.let {
-            node?.check(key, overrideLevel)
-            @Suppress("UNCHECKED_CAST")
-            return it as (A) -> T
+        tree.externalSources.forEach { source ->
+            source.getFactory(bindingKodein, key)?.let {
+                node?.check(key, overrideLevel)
+                @Suppress("UNCHECKED_CAST")
+                return it as (A) -> T
+            }
         }
 
         val withOverrides = overrideLevel != 0

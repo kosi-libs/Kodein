@@ -19,7 +19,7 @@ class ErasedJvmTests_05_ExternalSource {
             bind(tag = "him") from singleton { Person("Salomon") }
 
             val laila = Person("Laila")
-            externalSource = ExternalSource { key ->
+            externalSources += ExternalSource { key ->
                 @Suppress("UNUSED_PARAMETER")
                 when (key.type.jvmType) {
                     Person::class.java -> {

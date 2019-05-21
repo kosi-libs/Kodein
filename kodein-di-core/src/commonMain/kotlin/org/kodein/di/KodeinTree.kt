@@ -16,9 +16,10 @@ interface KodeinTree {
     val registeredTranslators: List<ContextTranslator<*, *>>
 
     /**
-     * The external source that will be queried if no bindings are found for a given request.
+     * The external sources that will be queried if no bindings are found for a given request.
      */
-    val externalSource: ExternalSource?
+    val externalSources: List<ExternalSource>
+
 
     /**
      * Finds all keys and definitions that match the given key.

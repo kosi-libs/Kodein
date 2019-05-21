@@ -30,7 +30,7 @@ private typealias TagTree = MutableMap<Any?, Kodein.Key<*, *, *>>
 
 internal class KodeinTreeImpl(
         map: Map<Kodein.Key<*, *, *>, List<KodeinDefining<*, *, *>>>,
-        override val externalSource: ExternalSource?,
+        override val externalSources: List<ExternalSource>,
         override val registeredTranslators: List<ContextTranslator<*, *>>
 ): KodeinTree {
     private val _cache: MutableMap<Kodein.Key<*, *, *>, Triple<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>, ContextTranslator<*, *>?>> = newConcurrentMap()

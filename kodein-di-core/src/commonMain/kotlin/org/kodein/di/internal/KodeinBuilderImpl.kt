@@ -66,19 +66,19 @@ internal open class KodeinBuilderImpl internal constructor(
 
 internal open class KodeinMainBuilderImpl(allowSilentOverride: Boolean) : KodeinBuilderImpl(null, "", HashSet(), KodeinContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList())), Kodein.MainBuilder {
 
-    override var externalSource: ExternalSource? = null
+    override val externalSources: MutableList<ExternalSource> = ArrayList()
 
     override fun extend(kodein: Kodein, allowOverride: Boolean, copy: Copy) {
         val keys = copy.keySet(kodein.container.tree)
 
         containerBuilder.extend(kodein.container, allowOverride, keys)
-        kodein.container.tree.externalSource?.let { externalSource = it }
+        externalSources += kodein.container.tree.externalSources
     }
 
     override fun extend(dkodein: DKodein, allowOverride: Boolean, copy: Copy) {
         val keys = copy.keySet(dkodein.container.tree)
 
         containerBuilder.extend(dkodein.container, allowOverride, keys)
-        dkodein.container.tree.externalSource?.let { externalSource = it }
+        externalSources += dkodein.container.tree.externalSources
     }
 }
