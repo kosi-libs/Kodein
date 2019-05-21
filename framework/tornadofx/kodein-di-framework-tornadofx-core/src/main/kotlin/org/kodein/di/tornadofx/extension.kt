@@ -7,7 +7,7 @@ import tornadofx.Scope
 import kotlin.reflect.*
 
 @Suppress("UNCHECKED_CAST")
-val tornadoFXExternalSource = Kodein {
+fun Kodein.MainBuilder.installTornadoSource() {
     externalSource = ExternalSource { key ->
         val elementType = key.type.getRaw()?.jvmType as Class<*>?
         val contextType = key.argType.getRaw()?.jvmType as Class<*>?
