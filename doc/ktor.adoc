@@ -7,10 +7,10 @@ Romain BOISSELLE <romain@boisselle.dev>
 :version: 6.2.0
 :branch: 6.2
 
-You can use Kodein as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-ktor-server-jvm` or `kodein-di-ktor-server-controller-jvm`.
+You can use Kodein as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-framework-ktor-server-jvm` or `kodein-di-framework-ktor-server-controller-jvm`.
 
 NOTE: Kodein does work on Ktor as-is.
-      The `kodein-di-ktor-server-jvm` / `kodein-di-ktor-server-controller-jvm` extensions add multiple ktor-specific utilities to Kodein. +
+      The `kodein-di-framework-ktor-server-jvm` / `kodein-di-framework-ktor-server-controller-jvm` extensions add multiple ktor-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
 NOTE: Ktor is a multiplatform project, meaning you can use it for JVM, JS and Native projects.
@@ -21,24 +21,24 @@ Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/d
 [[install]]
 == Install
 
-.How to quickly get into `kodein-di-ktor-server-jvm`:
+.How to quickly get into `kodein-di-framework-ktor-server-jvm`:
 . Add this line in your `dependencies` block in your application `build.gradle` file:
 +
 [subs="attributes"]
 .Gradle Groovy script
 ----
 implementation 'org.kodein.di:kodein-di-generic-jvm:{version}'
-implementation 'org.kodein.di:kodein-di-ktor-server-jvm:{version}'
+implementation 'org.kodein.di:kodein-di-framework-ktor-server-jvm:{version}'
 ----
 +
 [subs="attributes"]
 .Gradle Kotlin script
 ----
 implementation("org.kodein.di:kodein-di-generic-jvm:{version}")
-implementation("org.kodein.di:kodein-di-ktor-server-jvm:{version}")
+implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:{version}")
 ----
 +
-IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-ktor-server-jvm` package.
+IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-framework-ktor-server-jvm` package.
 +
 . Declare a Kodein container in your application or use the <<kodeinfeature>>
 +
@@ -65,7 +65,7 @@ As a Ktor https://ktor.io/servers/application.html[Application] is based on exte
 So, we had to find another, elegant, way to provide a global Kodein container. That's where the `KodeinFeature` stands.
 It allows developers to create an instance of a Kodein container, that will be available from anywhere in their Ktor app.
 
-To help with that, the `kodein-di-ktor-server-jvm` provides a https://ktor.io/advanced/features.html[custom feature]
+To help with that, the `kodein-di-framework-ktor-server-jvm` provides a https://ktor.io/advanced/features.html[custom feature]
 that will create and register an instance of a Kodein container in the application's https://ktor.io/advanced/pipeline/attributes.html[attributes].
 Thus, the Kodein will be reachable from multiple places in your Ktor application.
 
@@ -277,7 +277,7 @@ This feature is restricted to the `Routing` / `Route` and can be used like:
 
 === Session scopes
 
-With the `kodein-di-ktor-server-jvm` utils you can scope your dependencies upon your Ktor sessions. To do that you'll have to follow the steps:
+With the `kodein-di-framework-ktor-server-jvm` utils you can scope your dependencies upon your Ktor sessions. To do that you'll have to follow the steps:
 
 . Defining your session by implementing `KodeinSession`
 +
@@ -384,25 +384,25 @@ val kodein = Kodein {
 
 == Kodein Controllers
 
-To help those who want to implement a Ktor application base on a "MVC-like" architecture, we provide a https://ktor.io/advanced/features.html[custom feature]. This feature is a specific module called `kodein-di-ktor-server-controller-jvm`. To enable it, add this line in your `dependencies` block in your application `build.gradle(.kts)` file:
+To help those who want to implement a Ktor application base on a "MVC-like" architecture, we provide a https://ktor.io/advanced/features.html[custom feature]. This feature is a specific module called `kodein-di-framework-ktor-server-controller-jvm`. To enable it, add this line in your `dependencies` block in your application `build.gradle(.kts)` file:
 
 [subs="attributes"]
 .Gradle Groovy script
 ----
 implementation 'org.kodein.di:kodein-di-generic-jvm:{version}'
-implementation 'org.kodein.di:kodein-di-ktor-server-controller-jvm:{version}'
+implementation 'org.kodein.di:kodein-di-framework-ktor-server-controller-jvm:{version}'
 ----
 
 [subs="attributes"]
 .Gradle Kotlin script
 ----
 implementation("org.kodein.di:kodein-di-generic-jvm:{version}")
-implementation("org.kodein.di:kodein-di-ktor-server-controller-jvm:{version}")
+implementation("org.kodein.di:kodein-di-framework-ktor-server-controller-jvm:{version}")
 ----
 
-IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-ktor-server-controller-jvm` package.
+IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-framework-ktor-server-controller-jvm` package.
 
-NOTE:  the `kodein-di-ktor-server-controller-jvm` already have  the `kodein-di-ktor-server-jvm` as transitive dependency, so you don't need to declare both.
+NOTE:  the `kodein-di-framework-ktor-server-controller-jvm` already have  the `kodein-di-framework-ktor-server-jvm` as transitive dependency, so you don't need to declare both.
 
 -  Defining your controllers, by implementing `KodeinController`, or extending `AbstractKodeinController`
 + 
