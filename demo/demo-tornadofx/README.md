@@ -11,4 +11,5 @@ Execute this command in the repository's root directory to run this sample:
 ```
  
 Let's play with the App.
-> SCREENSHOT
+
+![screenshot](res/screenshot.png)

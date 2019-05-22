@@ -14,7 +14,7 @@ class PersonEditorController : Controller() {
         val tp = personEditorView.tabPane
 
         val personScope: PersonScope by kodein().instance(arg = person)
-        val editor: EditorTabFragment by kodein().instance(arg = personScope)
+        val editor: EditorTabFragment by kodein().on(personScope).instance()
 
         tp.tab(Bindings.concat(person.firstnameProperty, " ", person.lastnameProperty).valueSafe) {
             closeableWhen(editor.model.dirty.not())
