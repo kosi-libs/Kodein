@@ -8,14 +8,13 @@ import org.kodein.di.tornadofx.*
 import tornadofx.*
 
 class TornadoApplication : App(MainView::class), KodeinAware {
-    override val kodein: Kodein
-        get() = Kodein {
-            installTornadoSource()
+    override val kodein: Kodein = Kodein {
+        installTornadoSource()
 
-            constant("test") with "MyApp"
-            bind<PersonScope>() with factory { p: Person -> PersonScope(p) }
-            bind<EditingState>() with scoped(ComponentScope).singleton { EditingState() }
-        }
+        constant("test") with "MyApp"
+        bind<PersonScope>() with factory { p: Person -> PersonScope(p) }
+        bind<EditingState>() with scoped(ComponentScope).singleton { EditingState() }
+    }
 }
 
 class MainView : View("Kodein TornadoFX") {

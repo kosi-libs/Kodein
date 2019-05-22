@@ -24,11 +24,10 @@ class PersonEditorView : View() {
     }
 }
 
-class EditorTabFragment : Fragment() , KodeinAware {
-    override val kodein: Kodein
-        get() = subKodein {
-            constant("item") with "Person"
-        }
+class EditorTabFragment : Fragment(), KodeinAware {
+    override val kodein: Kodein = subKodein {
+        constant("item") with "Person"
+    }
 
     private val item: String by instance("item")
 

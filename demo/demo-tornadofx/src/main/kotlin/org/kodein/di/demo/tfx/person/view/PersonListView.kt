@@ -8,10 +8,7 @@ import tornadofx.*
 
 class PersonListView : View() {
     private val listController: PersonListController by kodein().instance()
-    init {
 
-        println(this)
-    }
     override val root = tableview(listController.personList) {
         column("ID", Person::idProperty)
         column("Firstname", Person::firstnameProperty)
