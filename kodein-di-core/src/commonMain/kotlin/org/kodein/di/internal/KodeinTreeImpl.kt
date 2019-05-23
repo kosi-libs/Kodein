@@ -128,7 +128,7 @@ internal class KodeinTreeImpl(
                 val anyContextKey = key.copy(contextType = AnyToken)
                 _cache[anyContextKey]?.let { triple ->
                     val (realKey, list, translator) = triple
-                    if ((translator != null && translator.contextType != key.contextType) || (translator == null && realKey.contextType != key.contextType ))
+                    if ((translator != null && translator.contextType != key.contextType))
                         return@let
                     _cache[key] = triple
                     val definition = list.getOrNull(overrideLevel) ?: return emptyList()
