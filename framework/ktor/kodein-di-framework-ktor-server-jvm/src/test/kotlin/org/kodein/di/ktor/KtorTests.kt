@@ -30,7 +30,7 @@ class KtorTests {
         handleRequest(HttpMethod.Get, ROUTE_SESSION).apply {
             val content = response.content
             assertNotNull(content)
-            assertContained("java.security.SecureRandom@.*".toRegex(), content)
+            assertContained("java.util.Random@.*".toRegex(), content)
         }
     }
 
