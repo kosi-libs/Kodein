@@ -27,6 +27,8 @@ open class ActivityRetainedScope private constructor(private val registryType: R
         const val registryTypeOrdinal = "org.kodein.di.android.registryTypeOrdinal"
     }
 
+    companion object MultiItem: ActivityRetainedScope(RegistryType.Standard)
+
     object SingleItem: ActivityRetainedScope(RegistryType.SingleItem)
 
     /** @suppress */
