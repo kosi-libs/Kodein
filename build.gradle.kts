@@ -10,5 +10,3 @@ allprojects {
 kodeinPublications {
     repo = "Kodein-DI"
 }
-
-

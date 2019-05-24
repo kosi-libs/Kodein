@@ -1,3 +1,9 @@
+#### 6.2.1 (24-05-2019)
+
+- ANDROID
+  * Fixed a regression to ActivityRetainedScope
+
+
 #### 6.2.0 (18-04-2019)
 
 - CORE
