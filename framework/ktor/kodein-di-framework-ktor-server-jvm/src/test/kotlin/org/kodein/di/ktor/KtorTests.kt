@@ -9,24 +9,42 @@ import kotlin.test.*
 @KtorExperimentalAPI
 class KtorTests {
 
+    private fun assertContained(regex: Regex, content: String) {
+        asserter.assertTrue({ "Expected <$regex> to be contained in <$content>" }, regex in content)
+    }
+
+    private fun <T> assertNone(iterable: Iterable<T>, predicate: (T) -> Boolean) {
+        val found = iterable.firstOrNull(predicate)
+        if (found != null)
+            fail("Expected iterable NOT to contain <$found>\nIterable contains:\n${iterable.joinToString(separator = "\n", prefix = "  ")}")
+    }
+
+    private fun <T> assertAny(iterable: Iterable<T>, predicate: (T) -> Boolean) {
+        if (!iterable.any(predicate))
+            fail("Expected iterable to contain value matching predicate.\nIterable contains:\n${iterable.joinToString(separator = "\n", prefix = "  ")}")
+    }
+
+
     @Test
     fun test_00_getSession(): Unit = withTestApplication(Application::main) {
         handleRequest(HttpMethod.Get, ROUTE_SESSION).apply {
-            assertTrue { response.content?.contains("java.security.SecureRandom@.*".toRegex()) ?: false }
+            val content = response.content
+            assertNotNull(content)
+            assertContained("java.security.SecureRandom@.*".toRegex(), content)
         }
     }
 
     @Test
     fun test_01_getIncrement(): Unit = withTestApplication(Application::main) {
         handleRequest(HttpMethod.Get, ROUTE_SESSION + ROUTE_INC).apply {
-            assertTrue { response.content == "${MockSession(1)}" }
+            assertEquals(MockSession(1).toString(), response.content)
         }
     }
 
     @Test
     fun test_02_getClear(): Unit = withTestApplication(Application::main) {
         handleRequest(HttpMethod.Get, ROUTE_SESSION + ROUTE_CLEAR).apply {
-            assertTrue { response.content == "null" }
+            assertEquals("null", response.content)
         }
     }
 
@@ -52,7 +70,7 @@ class KtorTests {
                         .first { it.name == SESSION_FEATURE_SESSION_ID }
 
                 assertNotNull(sessionCookie)
-                assertTrue { sessionCookie.value != NO_SESSION }
+                assertNotEquals(NO_SESSION, sessionCookie.value)
             }
 
             // (3) Call '/session' with the session - MockSession(counter=1)
@@ -63,7 +81,7 @@ class KtorTests {
                 val newRandomInstance = response.content ?: "null"
                 val pairs = sessionRandomPairs.toList()
                 sessionRandomPairs.add(MockSession(1) to newRandomInstance)
-                assertTrue { pairs.none { it.second == newRandomInstance } }
+                assertNone(pairs) { it.second == newRandomInstance }
             }
 
             // (4) Call '/session/increment' to create a new session - MockSession(counter=2)
@@ -76,7 +94,7 @@ class KtorTests {
                         .first { it.name == SESSION_FEATURE_SESSION_ID }
 
                 assertNotNull(cookie)
-                assertTrue { cookie == sessionCookie }
+                assertEquals(sessionCookie, cookie)
             }
 
             // (5) Call '/session' with the session MockSession(counter=2)
@@ -88,7 +106,7 @@ class KtorTests {
                 val pairs = sessionRandomPairs.toList()
                 sessionRandomPairs.add(MockSession(2) to newRandomInstance)
 
-                assertTrue { pairs.none { it.second == newRandomInstance } }
+                assertNone(pairs) { it.second == newRandomInstance }
             }
 
             // (6) Call '/session/clear'
@@ -96,14 +114,14 @@ class KtorTests {
             handleRequest(HttpMethod.Get, ROUTE_SESSION + ROUTE_CLEAR) {
                 addHeader(HttpHeaders.Cookie, sessionCookie.toString())
             }.apply {
-                assertTrue { response.content == "null" }
+                assertEquals("null", response.content)
             }
 
             // (7) Call '/session' after clearing the session
             // Should send a scoped instance of SecureRandom; same as (1)
             // Session is actually MockSession(counter=0) - default value
             handleRequest(HttpMethod.Get, ROUTE_SESSION).apply {
-                assertTrue { sessionRandomPairs.any { it.first == MockSession() && it.second == response.content } }
+                assertAny(sessionRandomPairs) { it.first == MockSession() && it.second == response.content }
             }
         }
     }
@@ -121,10 +139,9 @@ class KtorTests {
                             keyValue.first() to keyValue.last()
                         }
 
-                assertTrue {
-                    pairs.size == 5 && // Ensure we pass through 5 phases (Setup, Monitoring, Features, Call, GET)
-                            pairs.map { it.second }.distinct().count() == 1 // For all the phases we only have 1 Random instance
-                }
+                assertEquals(5, pairs.size) // Ensure we pass through 5 phases (Setup, Monitoring, Features, Call, GET)
+
+                assertEquals(1, pairs.map { it.second }.distinct().count()) // For all the phases we only have 1 Random instance
             }
         }
     }
@@ -142,7 +159,7 @@ class KtorTests {
 
             response.content?.let {
                 val kodeinInstances = it.split(",").map { it.trim() }
-                assertTrue { kodeinInstances.distinct().size == 1 }
+                assertEquals(1, kodeinInstances.distinct().size)
                 assertEquals("$kodeinInstance", kodeinInstances.first())
             }
 
