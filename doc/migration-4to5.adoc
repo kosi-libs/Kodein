@@ -4,7 +4,7 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.2.0
+:version: 6.2.1
 :branch: 6.2
 
 This guide will help you migrate from Kodein 4 to Kodein 5+.
