@@ -17,7 +17,7 @@ fun Component.kodein() = kodein { app }
 /**
  * Unique value to be able to set a [Kodein] container into Node#properties
  */
-private val KODEIN_KEY = "KODEIN_KEY"
+private const val KODEIN_KEY = "KODEIN_KEY"
 
 /**
  * Installing a [Kodein] container into Node#properties if there is none
