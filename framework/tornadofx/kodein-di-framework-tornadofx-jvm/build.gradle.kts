@@ -4,10 +4,6 @@ plugins {
     id("org.kodein.library.jvm")
 }
 
-repositories {
-    mavenCentral()
-}
-
 kodeinLib {
     dependencies {
         api(project(":kodein-di-core") target "jvm")
