@@ -48,12 +48,12 @@
         </a>
 
         <div id="content">
-            <h1>KOtlin DEpendency INjection</h1>
+            <h1>Kodein-DI</h1>
             <div id="preamble">
                 <div class="sectionbody">
                     <div class="imageblock">
                         <div class="content">
-                            <img src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/Kodein-logo.png" alt="KODEIN" width="700" height="233" />
+                            <img src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/Kodein-DI-logo.png" alt="KODEIN" width="700" height="233" />
                         </div>
                     </div>
                     <div class="paragraph">
@@ -72,6 +72,9 @@
                 if (location.search != "") {
                   var slash = location.search.indexOf("/");
                   branch = location.search.substr(1, slash != -1 ? slash - 1 : undefined);
+                  if (branch == "latest") {
+                    branch = "master";
+                  }
                   if (slash >= 0) {
                     doc = location.search.substr(slash + 1)
                   }
