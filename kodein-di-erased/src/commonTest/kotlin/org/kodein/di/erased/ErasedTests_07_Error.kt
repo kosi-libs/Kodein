@@ -75,21 +75,13 @@ Dependency recursion:
 
         val kodein = Kodein.direct {}
 
-        assertFailsWith<Kodein.NotFoundException> {
-            kodein.instance<Person>()
-        }
+        assertEquals("No binding found for bind<Person>() with ? { ? }\nRegistered in this Kodein container:\n", assertFailsWith<Kodein.NotFoundException> { kodein.instance<Person>() }.message)
 
-        assertFailsWith<Kodein.NotFoundException> {
-            kodein.instance<FullName>()
-        }
+        assertFailsWith<Kodein.NotFoundException> { kodein.instance<FullName>() }
 
-        assertFailsWith<Kodein.NotFoundException> {
-            kodein.instance<List<*>>()
-        }
+        assertFailsWith<Kodein.NotFoundException> { kodein.instance<List<*>>() }
 
-        assertFailsWith<Kodein.NotFoundException> {
-            kodein.instance<List<String>>()
-        }
+        assertFailsWith<Kodein.NotFoundException> { kodein.instance<List<String>>() }
     }
 
     @Test

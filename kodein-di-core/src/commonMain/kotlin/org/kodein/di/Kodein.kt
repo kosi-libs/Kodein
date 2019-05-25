@@ -327,6 +327,10 @@ interface Kodein : KodeinAware {
                     externalSources += value
             }
 
+        /**
+         * If true, exceptions thrown will contain qualified names.
+         */
+        var fullDescriptionOnError: Boolean
 
         /**
          * The external source is repsonsible for fetching / creating a value when Kodein cannot find a matching binding.
@@ -438,6 +442,8 @@ interface Kodein : KodeinAware {
          *   Note that you *should not* use the Kodein object before calling the callbacks function.
          */
         fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): Pair<Kodein, () -> Unit> = KodeinImpl.withDelayedCallbacks(allowSilentOverride, init)
+
+        var defaultFullDescriptionOnError: Boolean = false
     }
 
 }

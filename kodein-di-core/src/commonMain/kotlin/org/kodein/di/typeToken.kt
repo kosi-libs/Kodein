@@ -1,5 +1,7 @@
 package org.kodein.di
 
+import kotlin.reflect.KClass
+
 /**
  * An interface that contains a simple Type but is parameterized to enable type safety.
  *
@@ -76,7 +78,7 @@ interface TypeToken<T> {
      * Determines if the type represented by this type object is either the same as, or is a superclass or superinterface of, the type represented by the specified type parameter.
      */
     fun isAssignableFrom(typeToken: TypeToken<*>): Boolean {
-        if (this == typeToken)
+        if (this == typeToken || typeToken == AnyToken)
             return true
 
         val raw = getRaw()
@@ -158,6 +160,44 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
 private object Tokens {
     val UnitToken = erased<Unit>()
     val AnyToken = erased<Any?>()
+}
+
+abstract class AbstractKClassTypeToken<T>(protected val type: KClass<*>): TypeToken<T> {
+
+    override fun simpleDispString(): String = simpleErasedDispString()
+
+    override fun fullDispString() = fullErasedDispString()
+
+    override fun checkIsReified(disp: Any) {}
+
+    override fun getRaw(): TypeToken<T>? = this
+    override fun isGeneric(): Boolean = false
+    override fun isWildcard(): Boolean = false
+
+    override fun getSuper(): List<TypeToken<*>> = emptyList()
+    override fun getGenericParameters(): Array<out TypeToken<*>> = emptyArray()
+
+    override fun isAssignableFrom(typeToken: TypeToken<*>): Boolean {
+        if (this == typeToken)
+            return true
+        if (type == Any::class)
+            return true
+        return false
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AbstractKClassTypeToken<*>) return false
+
+        if (type != other.type) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return type.hashCode()
+    }
+
 }
 
 /**

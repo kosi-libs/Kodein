@@ -68,6 +68,8 @@ internal open class KodeinMainBuilderImpl(allowSilentOverride: Boolean) : Kodein
 
     override val externalSources: MutableList<ExternalSource> = ArrayList()
 
+    override var fullDescriptionOnError: Boolean = Kodein.defaultFullDescriptionOnError
+
     override fun extend(kodein: Kodein, allowOverride: Boolean, copy: Copy) {
         val keys = copy.keySet(kodein.container.tree)
 
