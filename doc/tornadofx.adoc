@@ -73,7 +73,7 @@ The idea behind this concept, is to be able to retrieve a Kodein container, from
 [[closest-tfx]]
 ==== From a TornadoFX perspective
 
-In TornadoFX there is no hierachy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available thourgh the DI container of TornadoFX (and the one of Kodein if you use link:tornadofx.adoc#external-source[external source] helper), and they all have a reference to the `App`.
+In TornadoFX there is no hierarchy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available through the DI container of TornadoFX (and the one of Kodein if you use link:tornadofx.adoc#external-source[external source] helper), and they all have a reference to the `App`.
 
 So, if we made our `App` as `KodeinAware`, we can get the global `Kodein` container from any `Component` thanks to:
 
@@ -139,6 +139,36 @@ class EditorTabFragment : Fragment() {
 
 CAUTION: If none of the parent nodes have a Kodein container, we try to get to the one in the `App`, only if this `App` is `KodeinAware`.
 
+[[kodeinaware]]
+==== Being KodeinAware
+
+Having your classes set as `KodeinAware` have multiple advantages. For example this allow to cache the Kodein container or simplify the way we retrieve our dependencies.
+
+[source, kotlin]
+.Example: A KodeinAware TornadoFX Controller
+----
+
+class PersonListController : Controller(), KodeinAware { <1>
+    override val kodein: Kodein = kodein() <2>
+
+    val personEditorController: PersonEditorController by instance() <3>
+
+    fun editPerson(person: Person) {
+        personEditorController.editPerson(person) <4>
+    }
+    /*...*/
+}
+----
+<1> Set the Controller as `KodeeinAware`
+<2> Retrieve the `App` Kodein container from the `kodein()` extension function
+<3> Retrieve dependency using the `instance()` function, as the Kodein container is part of the context
+<4> Use the dependency
+
+NOTE: Because Kodein is lazy, the container and the dependencies will be retrieve at call site only.
+
+NOTE: To benefit from the Kodein optimization, and the facilities we provide, we highly recommend
+that you make your classes `KodeinAware` when its possible.
+
 [[kodein-extension]]
 == Extension of Kodein
 
@@ -176,7 +206,7 @@ class TornadoApplication : App(MainView::class), KodeinAware {
 ----
 <1> Branch Kodein upon TornadoFX dependency injection, to be able to access those dependencies through your Kodein container
 +
-WARNING: We highly recommand that you make your `App` as `KodeinAware` in order to benefit from the use of Kodein upon TornadoFX DI container.
+WARNING: We highly recommend that you make your `App` as `KodeinAware` in order to benefit from the use of Kodein upon TornadoFX DI container.
 
 - Retrieving TornadoFX `Component` through Kodein
 +
@@ -221,7 +251,7 @@ val editor: EditorTabFragment by kodein().on(personScope).instance() <3>
 [[fx-container]]
 === Defining Kodein container in FX's `Node`
 
-For some need we could want to define Kodein containers into the `Node` hierarchy. To do so we provide an extension function to create a Kodein container attached to a `Node`. This is done by adding the Kodein container to the properties of the `Node`, thus we will be able to access it from any child in the hierarachy.
+For some need we could want to define Kodein containers into the `Node` hierarchy. To do so we provide an extension function to create a Kodein container attached to a `Node`. This is done by adding the Kodein container to the properties of the `Node`, thus we will be able to access it from any child in the hierarchy.
 
 [source, kotlin]
 .Example: Defining and using a Kodein container from a `Node`
@@ -297,7 +327,7 @@ class LoginView : View() {
 <3> Defining binding only available for the extended Kodein container
 <4> Retrieve the `CredentialsDao` from the nearest Kodein container, in that case the extended container stored in the *hbox* properties
 
-IMPORTANT: In the case of a `Component` you have to handle the reference of the extended comtainer yourself. But, in the case of a `Node` the `subKodein` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the link:tornadofx.adoc#fx-container[FX container feature]
+IMPORTANT: In the case of a `Component` you have to handle the reference of the extended container yourself. But, in the case of a `Node` the `subKodein` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the link:tornadofx.adoc#fx-container[FX container feature]
 
 [[scopes]]
 == TornadoFX scopes
