@@ -97,7 +97,8 @@ class KtorTests {
                         .first { it.name == SESSION_FEATURE_SESSION_ID }
 
                 assertNotNull(cookie)
-                assertEquals(sessionCookie, cookie)
+                assertEquals(sessionCookie.name, cookie.name)
+                assertEquals(sessionCookie.value, cookie.value)
             }
 
             // (5) Call '/session' with the session MockSession(counter=2)
