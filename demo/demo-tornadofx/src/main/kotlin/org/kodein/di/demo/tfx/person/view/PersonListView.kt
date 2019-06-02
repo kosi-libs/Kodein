@@ -15,9 +15,10 @@ class PersonListView : View() {
         column("Lastname", Person::lastnameProperty)
         column("Birthday", Person::birthdayProperty)
 
-        smartResize()
-        onUserSelect(2) {
-            listController.editPerson(it)
+        onSelectionChange {
+            if (it != null) {
+                listController.editPerson(it)
+            }
         }
     }
 }
