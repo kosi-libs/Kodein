@@ -1,6 +1,7 @@
 package org.kodein.di.generic
 
 import org.kodein.di.Kodein
+import org.kodein.di.named
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
@@ -37,36 +38,33 @@ class GenericJvmTests_05_Named {
         assertEquals("Salomon", p2().name)
     }
 
-    @Test
-    fun test_02_NamedSingletonBindingGetInstance() {
+    @Test fun test_02_NamedSingletonBindingGetInstance() {
         val kodein = Kodein {
             bind<Person>() with singleton { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
         }
 
         val p1: Person by kodein.instance(tag = "named")
-        val p2: Person by kodein.instance(tag = "named")
+        val named: Person by kodein.named.instance()
 
         assertEquals("Salomon", p1.name)
-        assertSame(p1, p2)
+        assertSame(p1, named)
     }
 
-    @Test
-    fun test_03_NamedSingletonBindingGetProvider() {
+    @Test fun test_03_NamedSingletonBindingGetProvider() {
         val kodein = Kodein {
             bind<Person>() with singleton { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
         }
 
         val p1: () -> Person by kodein.provider(tag = "named")
-        val p2: () -> Person by kodein.provider(tag = "named")
+        val named: () -> Person by kodein.named.provider()
 
         assertEquals("Salomon", p1().name)
-        assertSame(p1(), p2())
+        assertSame(p1(), named())
     }
 
-    @Test
-    fun test_04_NamedInstanceBindingGetInstance() {
+    @Test fun test_04_NamedInstanceBindingGetInstance() {
 
         val kodein = Kodein {
             bind<Person>() with instance(Person())
@@ -74,17 +72,16 @@ class GenericJvmTests_05_Named {
         }
 
         val p1: Person by kodein.instance()
-        val p2: Person by kodein.instance(tag = "named")
+        val named: Person by kodein.named.instance()
         val p3: Person by kodein.instance(tag = "named")
 
         assertNull(p1.name)
-        assertEquals("Salomon", p2.name)
-        assertNotSame(p1, p2)
-        assertSame(p2, p3)
+        assertEquals("Salomon", named.name)
+        assertNotSame(p1, named)
+        assertSame(named, p3)
     }
 
-    @Test
-    fun test_05_NamedInstanceBindingGetProvider() {
+    @Test fun test_05_NamedInstanceBindingGetProvider() {
 
         val kodein = Kodein {
             bind<Person>() with instance(Person())
@@ -92,13 +89,13 @@ class GenericJvmTests_05_Named {
         }
 
         val p1: () -> Person by kodein.provider()
-        val p2: () -> Person by kodein.provider(tag = "named")
+        val named: () -> Person by kodein.named.provider()
         val p3: () -> Person by kodein.provider(tag = "named")
 
         assertNull(p1().name)
-        assertEquals("Salomon", p2().name)
-        assertNotSame(p1(), p2())
-        assertSame(p2(), p3())
+        assertEquals("Salomon", named().name)
+        assertNotSame(p1(), named())
+        assertSame(named(), p3())
     }
 
 }

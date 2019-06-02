@@ -473,6 +473,7 @@ val kodein = Kodein {
 <1> Instance is used *with parenthesis*: it is not given a function, but an instance.
 
 
+[[constant-binding]]
 ==== Constant binding
 
 It is often useful to bind "configuration" constants.
@@ -870,7 +871,7 @@ val kodein = Kodein {
     bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
     bind<Random>() with provider { SecureRandom() }
-    bind<FileAccess> with factory { path: String, mode: Int -> FileAccess.open(path, mode }
+    bind<FileAccess>() with factory { path: String, mode: Int -> FileAccess.open(path, mode }
     constant("answer") with "fourty-two"
 }
 ----
@@ -1063,6 +1064,28 @@ val diceFactory: ((Int) -> Dice)? by kodein.factoryOrNull()
 val dataSource: DataSource? by kodein.instanceOrNull()
 val randomProvider: (() -> Random)? by kodein.providerOrNull()
 val answerConstant: String? by kodein.instanceOrNull(tag = "answer")
+----
+
+
+==== Constants
+
+If you bound <<constant-binding,constants>>, you can easily retrieve them with the constant method if the name of the property matches the tag:
+
+[source, kotlin]
+.Example: retrieving a constant
+----
+val answer: String by kodein.constant()
+----
+
+
+==== Named bindings
+
+If you used <<tagged-bindings,tagged bindings>>, if the tag is a `String` and the property name matches the tag, instead of passing it as argument, you can use `named`:
+
+[source, kotlin]
+.Example: retrieving a named binding
+----
+val answer: String by kodein.named.instance()
 ----
 
 

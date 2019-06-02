@@ -18,8 +18,10 @@ class GenericJvmTests_06_Constant {
         }
 
         val c: Int by kodein.instance(tag = "answer")
+        val answer: Int by kodein.constant()
 
         assertEquals(42, c)
+        assertEquals(42, answer)
     }
 
     @Test
@@ -42,8 +44,10 @@ class GenericJvmTests_06_Constant {
         }
 
         val p: IPerson by kodein.instance(tag = "salomon")
+        val salomon: IPerson by kodein.constant()
 
         assertEquals(Person("Salomon"), p)
+        assertEquals(Person("Salomon"), salomon)
     }
 
 }

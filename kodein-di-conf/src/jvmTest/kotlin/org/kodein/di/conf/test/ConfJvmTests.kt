@@ -66,7 +66,7 @@ class ConfJvmTests {
     @Test fun test_01_ExternalSource() {
         val kodein = ConfigurableKodein(mutable = true)
         kodein.addConfig {
-            externalSource = ExternalSource { key ->
+            externalSources += ExternalSource { key ->
                 if (key.type.jvmType == String::class.java && key.tag == "foo")
                     externalFactory { "bar" }
                 else

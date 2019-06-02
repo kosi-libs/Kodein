@@ -19,8 +19,10 @@ class ErasedTests_06_Constant {
         }
 
         val c: Int by kodein.instance(tag = "answer")
+        val answer: Int by kodein.constant()
 
         assertEquals(42, c)
+        assertEquals(42, answer)
     }
 
     @Test
@@ -36,15 +38,17 @@ class ErasedTests_06_Constant {
     }
 
     @Test
-    fun test_02_ConstantBindingGetProviderPolymorphic() {
+    fun test_02_ConstantBindingGetPolymorphic() {
 
         val kodein = Kodein {
             constant(tag = "salomon") with Person("Salomon") as IPerson
         }
 
         val p: IPerson by kodein.instance(tag = "salomon")
+        val salomon: IPerson by kodein.constant()
 
         assertEquals(Person("Salomon"), p)
+        assertEquals(Person("Salomon"), salomon)
     }
 
 

@@ -2,9 +2,6 @@
 
 package org.kodein.di
 
-@Suppress("UNCHECKED_CAST")
-private val KodeinContext<*>.anyType get() = type as TypeToken<in Any?>
-
 /**
  * Gets all factories that match the the given argument type, return type and tag.
  *

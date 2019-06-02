@@ -34,12 +34,12 @@ interface LazyDelegate<out V> {
  *
  * In essence, the Kodein object is accessed only upon retrieving.
  */
-class KodeinProperty<out V>(internal val trigger: KodeinTrigger?, val originalContext: KodeinContext<*>, @PublishedApi internal val get: (KodeinContext<*>, Boolean) -> V) : LazyDelegate<V> {
+class KodeinProperty<out V>(internal val trigger: KodeinTrigger?, val originalContext: KodeinContext<*>, private val get: (KodeinContext<*>, String) -> V) : LazyDelegate<V> {
 
     override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy {
         @Suppress("UNCHECKED_CAST")
         val context = if (receiver != null && originalContext === AnyKodeinContext) KodeinContext(TTOf(receiver) as TypeToken<in Any>, receiver) else originalContext
-        get(context, true) } .also { trigger?.properties?.add(it)
+        get(context, prop.name) } .also { trigger?.properties?.add(it)
     }
 
 }
