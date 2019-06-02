@@ -5,10 +5,16 @@ val tornadofxVersion = "1.7.18"
 plugins {
     kotlin("jvm")
     application
+    id("org.openjfx.javafxplugin") version "0.0.7"
 }
 
 application {
     mainClassName = "org.kodein.di.demo.tfx.TornadoApplication"
+}
+
+javafx {
+    version = "12.0.1"
+    modules("javafx.controls")
 }
 
 tasks.withType<KotlinCompile> {
