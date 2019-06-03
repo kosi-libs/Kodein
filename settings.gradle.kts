@@ -60,6 +60,7 @@ if (excludeTFX != "true") {
     include(
         ":framework:tornadofx:kodein-di-framework-tornadofx-jvm",
         
-        ":demo:demo-tornadofx"
+//        ":demo:demo-tornadofx"
+    ""
     )
 }
