@@ -20,6 +20,7 @@ image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kod
 - https://kodein.org/Kodein-DI/?{branch}/configurable[Configurable & global Kodein]
 - https://kodein.org/Kodein-DI/?{branch}/android[Kodein on Android]
 - https://kodein.org/Kodein-DI/?{branch}/ktor[Kodein on Ktor]
+- https://kodein.org/Kodein-DI/?{branch}/tornadofx[Kodein on TornadoFX]
 - https://kodein.org/Kodein-DI/?{branch}/jsr330[JSR-330 compatibility]
 
 
