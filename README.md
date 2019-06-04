@@ -28,7 +28,9 @@ Kodein allows you to:
 
 Kodein provides extensions to be integrable into:
 
-- Android
+- [Android](https://developer.android.com/)
+- [Ktor](https://ktor.io/)
+- [TornadoFX](https://tornadofx.io/)
 
 An example is always better than a thousand words:
 
@@ -74,9 +76,9 @@ Future
 The following frameworks will receive special love from Kodein:
 
 - Android
-- TornadoFX, TODO
-- Cocoa-Touch (iOS), TODO
-- Ktor, TODO
+- Cocoa-Touch (iOS), **// TODO**
+- Ktor
+- TornadoFX
 
 
 &nbsp;
