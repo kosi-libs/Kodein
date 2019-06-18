@@ -56,7 +56,7 @@ Kodein is a good choice because:
 Read more
 ---------
 
-Kodein 5 is the current major version, but documentation is available for previous versions.
+Kodein 6 is the current major version, but documentation is available for previous versions.
 
 **[Kodein documentation](http://kodein.org/Kodein-DI/)**
 
