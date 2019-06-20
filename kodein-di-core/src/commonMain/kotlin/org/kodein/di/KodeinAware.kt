@@ -39,7 +39,7 @@ interface KodeinContext<C> {
 
 
 @Suppress("UNCHECKED_CAST")
-private inline val KodeinContext<*>.anyType get() = (type as TypeToken<in Any?>)
+internal inline val KodeinContext<*>.anyType get() = type as TypeToken<in Any?>
 
 private object Contexes {
     val AnyKodeinContext = KodeinContext<Any?>(AnyToken, null)

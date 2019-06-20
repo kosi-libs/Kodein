@@ -4,7 +4,7 @@ buildscript {
         maven(url = "https://dl.bintray.com/kodein-framework/Kodein-Internal-Gradle")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.4.0")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.5.2")
     }
 }
 
@@ -51,5 +51,16 @@ if (excludeKtor != "true") {
         ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
 
         ":demo:demo-ktor"
+    )
+}
+
+val excludeTFX: String? by settings
+
+if (excludeTFX != "true") {
+    include(
+        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm",
+        
+//        ":demo:demo-tornadofx"
+    ""
     )
 }

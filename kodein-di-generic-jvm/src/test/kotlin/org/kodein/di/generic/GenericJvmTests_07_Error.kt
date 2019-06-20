@@ -32,6 +32,32 @@ Dependency recursion:
         )
     }
 
+    @Test
+    fun test_01_DependencyLoopFullDescription() {
+
+        val kodein = Kodein {
+            fullDescriptionOnError = true
+            bind<A>() with singleton { A(instance()) }
+            bind<B>() with singleton { B(instance()) }
+            bind<C>() with singleton { C(instance()) }
+        }
+
+        val ex = assertFailsWith<Kodein.DependencyLoopException> {
+            kodein.direct.instance<A>()
+        }
+
+        assertEquals("""
+Dependency recursion:
+     bind<org.kodein.di.test.A>()
+    ╔╩>bind<org.kodein.di.test.B>()
+    ║  ╚>bind<org.kodein.di.test.C>()
+    ║    ╚>bind<org.kodein.di.test.A>()
+    ╚══════╝
+        """.trim(), ex.message?.trim()
+        )
+    }
+
+
     @Suppress("unused")
     class Recurs0(val a: RecursA)
     @Suppress("unused")
@@ -41,7 +67,7 @@ Dependency recursion:
     @Suppress("unused")
     class RecursC(val a: RecursA)
 
-    @Test fun test_01_RecursiveDependencies() {
+    @Test fun test_02_RecursiveDependencies() {
 
         val kodein = Kodein {
             bind() from provider { Recurs0(instance()) }
@@ -56,7 +82,7 @@ Dependency recursion:
     }
 
     @Test
-    fun test_02_NoDependencyLoop() {
+    fun test_03_NoDependencyLoop() {
 
         val kodein = Kodein {
             bind<A>() with singleton { A(instance()) }
@@ -70,7 +96,7 @@ Dependency recursion:
     }
 
     @Test
-    fun test_03_TypeNotFound() {
+    fun test_04_TypeNotFound() {
 
         val kodein = Kodein.direct {}
 
@@ -92,7 +118,18 @@ Dependency recursion:
     }
 
     @Test
-    fun test_04_NameNotFound() {
+    fun test_05_TypeNotFoundFullDescription() {
+
+        val kodein = Kodein.direct {
+            fullDescriptionOnError = true
+        }
+
+        assertEquals("No binding found for bind<org.kodein.di.test.Person>() with ? { ? }\nRegistered in this Kodein container:\n", assertFailsWith<Kodein.NotFoundException> { kodein.instance<Person>() }.message)
+    }
+
+
+    @Test
+    fun test_06_NameNotFound() {
 
         val kodein = Kodein.direct {
             bind<Person>() with provider { Person() }
@@ -105,7 +142,7 @@ Dependency recursion:
     }
 
     @Test
-    fun test_05_FactoryIsNotProvider() {
+    fun test_07_FactoryIsNotProvider() {
 
         val kodein = Kodein.direct {
             bind<Person>() with factory { name: String -> Person(name) }
@@ -117,7 +154,7 @@ Dependency recursion:
     }
 
     @Test
-    fun test_06_ProviderIsNotFactory() {
+    fun test_08_ProviderIsNotFactory() {
 
         val kodein = Kodein.direct {
             bind<Person>() with provider { Person() }
@@ -129,7 +166,7 @@ Dependency recursion:
     }
 
     @Test
-    fun test_07_BindFromUnit() {
+    fun test_09_BindFromUnit() {
 
         fun unit(@Suppress("UNUSED_PARAMETER") i: Int = 42) {}
 

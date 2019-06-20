@@ -11,7 +11,6 @@ import io.ktor.sessions.*
 import kotlinx.html.*
 import org.kodein.di.generic.*
 import org.kodein.di.ktor.*
-import java.security.*
 import java.util.*
 
 //region APP starter
@@ -21,8 +20,8 @@ fun main(args: Array<String>) {
         install(CallLogging)
 
         kodein {
-            bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
-            bind<Random>() with scoped(CallScope).singleton { SecureRandom() }
+            bind() from scoped(SessionScope).singleton { Random() }
+            bind() from scoped(CallScope).singleton { Random() }
         }
 
         sessionModule()

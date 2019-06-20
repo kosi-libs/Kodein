@@ -295,6 +295,32 @@ interface Kodein : KodeinAware {
         fun import(module: Module, allowOverride: Boolean = false)
 
         /**
+         * Imports all bindings defined in the given [Kodein.Module]s into this builder's definition.
+         *
+         * Note that modules are *definitions*, they will re-declare their bindings in each kodein instance you use.
+         *
+         * @param modules The module objects to import.
+         * @param allowOverride Whether this module is allowed to override existing bindings.
+         *                      If it is not, overrides (even explicit) will throw an [OverridingException].
+         * @throws OverridingException If this module overrides an existing binding and is not allowed to
+         *                             OR [allowOverride] is true while YOU don't have the permission to override.
+         */
+        fun importAll(vararg modules: Module, allowOverride: Boolean = false)
+
+        /**
+         * Imports all bindings defined in the given [Kodein.Module]s into this builder's definition.
+         *
+         * Note that modules are *definitions*, they will re-declare their bindings in each kodein instance you use.
+         *
+         * @param modules The module objects to import.
+         * @param allowOverride Whether this module is allowed to override existing bindings.
+         *                      If it is not, overrides (even explicit) will throw an [OverridingException].
+         * @throws OverridingException If this module overrides an existing binding and is not allowed to
+         *                             OR [allowOverride] is true while YOU don't have the permission to override.
+         */
+        fun importAll(modules: Iterable<Module>, allowOverride: Boolean = false)
+
+        /**
          * Like [import] but checks that will only import each module once.
          *
          * If the module has already been imported, nothing happens.
@@ -318,10 +344,25 @@ interface Kodein : KodeinAware {
      */
     interface MainBuilder : Builder {
 
+        // Deprecated since 6.3
+        @Deprecated("Use externalSources instead")
+        var externalSource: ExternalSource?
+            get() = externalSources.firstOrNull()
+            set(value) {
+                externalSources.clear()
+                if (value != null)
+                    externalSources += value
+            }
+
+        /**
+         * If true, exceptions thrown will contain qualified names.
+         */
+        var fullDescriptionOnError: Boolean
+
         /**
          * The external source is repsonsible for fetching / creating a value when Kodein cannot find a matching binding.
          */
-        var externalSource: ExternalSource?
+        val externalSources: MutableList<ExternalSource>
 
         /**
          * Imports all bindings defined in the given [Kodein] into this builder.
@@ -428,6 +469,8 @@ interface Kodein : KodeinAware {
          *   Note that you *should not* use the Kodein object before calling the callbacks function.
          */
         fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): Pair<Kodein, () -> Unit> = KodeinImpl.withDelayedCallbacks(allowSilentOverride, init)
+
+        var defaultFullDescriptionOnError: Boolean = false
     }
 
 }

@@ -8,7 +8,6 @@ import io.ktor.routing.*
 import io.ktor.sessions.*
 import org.kodein.di.*
 import org.kodein.di.generic.*
-import java.security.*
 import java.util.*
 
 // Test Ktor Application
@@ -16,8 +15,8 @@ fun Application.main() {
     install(DefaultHeaders)
 
     kodein {
-        bind<Random>() with scoped(SessionScope).singleton { SecureRandom() }
-        bind<Random>() with scoped(CallScope).singleton { SecureRandom() }
+        bind() from scoped(SessionScope).singleton { Random() }
+        bind() from scoped(CallScope).singleton { Random() }
 
         constant("author") with AUTHOR.toLowerCase()
     }

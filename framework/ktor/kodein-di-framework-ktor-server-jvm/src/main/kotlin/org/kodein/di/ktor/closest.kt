@@ -16,9 +16,19 @@ val KodeinKey = AttributeKey<Kodein>("kodein")
 fun Application.kodein() = LazyKodein { attributes[KodeinKey] }
 
 /**
+ * Alias to `kodein`
+ */
+fun Application.closestKodein() = kodein()
+
+/**
  * Getting the global [Kodein] container from the [Application] parameter
  */
 fun kodein(getApplication: () -> Application) = getApplication().kodein()
+
+/**
+ * Alias to `kodein`
+ */
+fun closestKodein(getApplication: () -> Application) = kodein(getApplication)
 
 /**
  * Getting the global [Kodein] container from the [ApplicationCall]
@@ -26,9 +36,19 @@ fun kodein(getApplication: () -> Application) = getApplication().kodein()
 fun ApplicationCall.kodein() = kodein { application }
 
 /**
+ * Alias to `kodein`
+ */
+fun ApplicationCall.closestKodein() = kodein()
+
+/**
  * Getting the global [Kodein] container from the [Routing] feature
  */
 fun Routing.kodein() = kodein { application }
+
+/**
+ * Alias to `kodein`
+ */
+fun Routing.closestKodein() = kodein()
 
 /**
  * Getting the global or local (if extended) [Kodein] container from the current [Route]
@@ -47,9 +67,19 @@ fun Route.kodein(): LazyKodein {
 }
 
 /**
+ * Alias to `kodein`
+ */
+fun Route.closestKodein() = kodein()
+
+/**
  * Getting the global [Kodein] container from the [ApplicationCall]
  */
 fun PipelineContext<*, ApplicationCall>.kodein(): LazyKodein {
     val routingCall = (this.call as RoutingApplicationCall)
     return routingCall.route.kodein()
 }
+
+/**
+ * Alias to `kodein`
+ */
+fun PipelineContext<*, ApplicationCall>.closestKodein() = kodein()

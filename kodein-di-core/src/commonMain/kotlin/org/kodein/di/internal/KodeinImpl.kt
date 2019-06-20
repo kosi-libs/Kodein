@@ -14,7 +14,7 @@ import org.kodein.di.bindings.BindingKodein
 internal open class KodeinImpl internal constructor(private val _container: KodeinContainerImpl) : Kodein {
 
     @Suppress("unused")
-    private constructor(builder: KodeinMainBuilderImpl, runCallbacks: Boolean) : this(KodeinContainerImpl(builder.containerBuilder, builder.externalSource, runCallbacks))
+    private constructor(builder: KodeinMainBuilderImpl, runCallbacks: Boolean) : this(KodeinContainerImpl(builder.containerBuilder, builder.externalSources, builder.fullDescriptionOnError, runCallbacks))
 
     constructor(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit) : this(newBuilder(allowSilentOverride, init), true)
 

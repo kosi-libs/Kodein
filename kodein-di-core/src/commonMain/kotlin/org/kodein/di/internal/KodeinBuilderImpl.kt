@@ -51,6 +51,12 @@ internal open class KodeinBuilderImpl internal constructor(
         KodeinBuilderImpl(moduleName, prefix + module.prefix, importedModules, containerBuilder.subBuilder(allowOverride, module.allowSilentOverride)).apply(module.init)
     }
 
+    override fun importAll(modules: Iterable<Kodein.Module>, allowOverride: Boolean) =
+            modules.forEach { import(it, allowOverride) }
+
+    override fun importAll(vararg modules: Kodein.Module, allowOverride: Boolean) =
+            modules.forEach { import(it, allowOverride) }
+
     override fun importOnce(module: Kodein.Module, allowOverride: Boolean) {
         if (module.name.isEmpty())
             throw IllegalStateException("importOnce must be given a named module.")
@@ -66,19 +72,21 @@ internal open class KodeinBuilderImpl internal constructor(
 
 internal open class KodeinMainBuilderImpl(allowSilentOverride: Boolean) : KodeinBuilderImpl(null, "", HashSet(), KodeinContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList())), Kodein.MainBuilder {
 
-    override var externalSource: ExternalSource? = null
+    override val externalSources: MutableList<ExternalSource> = ArrayList()
+
+    override var fullDescriptionOnError: Boolean = Kodein.defaultFullDescriptionOnError
 
     override fun extend(kodein: Kodein, allowOverride: Boolean, copy: Copy) {
         val keys = copy.keySet(kodein.container.tree)
 
         containerBuilder.extend(kodein.container, allowOverride, keys)
-        kodein.container.tree.externalSource?.let { externalSource = it }
+        externalSources += kodein.container.tree.externalSources
     }
 
     override fun extend(dkodein: DKodein, allowOverride: Boolean, copy: Copy) {
         val keys = copy.keySet(dkodein.container.tree)
 
         containerBuilder.extend(dkodein.container, allowOverride, keys)
-        dkodein.container.tree.externalSource?.let { externalSource = it }
+        externalSources += dkodein.container.tree.externalSources
     }
 }

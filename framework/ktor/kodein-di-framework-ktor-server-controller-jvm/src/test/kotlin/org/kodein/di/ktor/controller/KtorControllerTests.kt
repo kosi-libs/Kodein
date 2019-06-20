@@ -3,9 +3,12 @@ package org.kodein.di.ktor.controller
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import kotlin.test.*
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KtorControllerTests {
     @Test
     fun test_00_successAbstractKodeinControllerFeature(): Unit = withTestApplication(Application::kodeinAbsControllerSuccess) {

@@ -5,7 +5,8 @@ import org.kodein.di.bindings.*
 
 internal class KodeinContainerImpl private constructor(
         override val tree: KodeinTree,
-        private val node: Node? = null
+        private val node: Node?,
+        private val fullDescriptionOnError: Boolean
 ) : KodeinContainer {
 
     @Volatile var initCallbacks: (() -> Unit)? = null
@@ -14,7 +15,7 @@ internal class KodeinContainerImpl private constructor(
     /**
      * "Main" constructor that uses the bindings map configured by a [KodeinContainer.Builder].
      */
-    internal constructor(builder: KodeinContainerBuilderImpl, externalSource: ExternalSource?, runCallbacks: Boolean) : this(KodeinTreeImpl(builder.bindingsMap, externalSource, builder.translators)) {
+    internal constructor(builder: KodeinContainerBuilderImpl, externalSources: List<ExternalSource>, fullDescriptionOnError: Boolean, runCallbacks: Boolean) : this(KodeinTreeImpl(builder.bindingsMap, externalSources, builder.translators), null, fullDescriptionOnError) {
         val init: () -> Unit = {
             val direct = DKodeinImpl(this, AnyKodeinContext)
             builder.callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }
@@ -48,10 +49,10 @@ internal class KodeinContainerImpl private constructor(
      * This allows, at each step, to walk up the node tree and check if the requested key has not yet been requested.
      * If the same key exists twice in the tree, it means that it has, and that there's a dependency recursion.
      *
-     * @property _key The key of this node, meaning that this key has been looked for once.
-     * @property _parent The parent node, meaning the parent lookup that needed this key.
+     * @property key The key of this node, meaning that this key has been looked for once.
+     * @property parent The parent node, meaning the parent lookup that needed this key.
      */
-    private class Node(private val _key: Kodein.Key<*, *, *>, private val _overrideLevel: Int, private val _parent: Node?) {
+    private class Node(private val key: Kodein.Key<*, *, *>, private val overrideLevel: Int, private val parent: Node?, private val fullDescriptionOnError: Boolean) {
 
         /**
          * Check that given key does **not** exist in the node tree or throws an exception if it does.
@@ -60,7 +61,7 @@ internal class KodeinContainerImpl private constructor(
          */
         internal fun check(searchedKey: Kodein.Key<*, *, *>, searchedOverrideLevel: Int) {
             if (!recursiveCheck(this, searchedKey, searchedOverrideLevel)) {
-                val list = recursiveLoop(this, searchedKey, searchedOverrideLevel, emptyList()) + displayString(searchedKey, _overrideLevel)
+                val list = recursiveLoop(this, searchedKey, searchedOverrideLevel, emptyList()) + displayString(searchedKey, overrideLevel)
                 val sb = StringBuilder()
                 list.forEachIndexed { index, string ->
                     sb.append("  ")
@@ -83,37 +84,39 @@ internal class KodeinContainerImpl private constructor(
             }
         }
 
-        private companion object {
-            private fun displayString(key: Kodein.Key<*, *, *>, overrideLevel: Int) = if (overrideLevel != 0) "overridden ${key.bindDescription}" else key.bindDescription
-
-            /**
-             * Recursive function that walks up the node tree to check if a specific key can be found.
-             *
-             * @return whether the given key exists in the tree.
-             */
-            private tailrec fun recursiveCheck(node: Node, searchedKey: Kodein.Key<*, *, *>, searchedOverrideLevel: Int): Boolean {
-                return if (node._key == searchedKey && node._overrideLevel == searchedOverrideLevel)
-                    false
-                else if (node._parent == null)
-                    true
-                else
-                    recursiveCheck(node._parent, searchedKey, searchedOverrideLevel)
-            }
-
-            /**
-             * @return The current transitive dependency tree as a list of string.
-             */
-            private tailrec fun recursiveLoop(node: Node, firstKey: Kodein.Key<*, *, *>, firstOverrideLevel: Int, tail: List<String>): List<String> {
-                return if (node._parent == null || (firstKey == node._key && firstOverrideLevel == node._overrideLevel))
-                    listOf(displayString(node._key, node._overrideLevel)) + tail
-                else
-                    return recursiveLoop(node._parent, firstKey, firstOverrideLevel, listOf(displayString(node._key, node._overrideLevel)) + tail)
-            }
+        private fun displayString(key: Kodein.Key<*, *, *>, overrideLevel: Int): String {
+            val descProp = if (fullDescriptionOnError) key::bindFullDescription else key::bindDescription
+            return if (overrideLevel != 0) "overridden ${descProp.get()}" else descProp.get()
         }
+
+        /**
+         * @return The current transitive dependency tree as a list of string.
+         */
+        private tailrec fun recursiveLoop(node: Node, firstKey: Kodein.Key<*, *, *>, firstOverrideLevel: Int, tail: List<String>): List<String> {
+            return if (node.parent == null || (firstKey == node.key && firstOverrideLevel == node.overrideLevel))
+                listOf(displayString(node.key, node.overrideLevel)) + tail
+            else
+                return recursiveLoop(node.parent, firstKey, firstOverrideLevel, listOf(displayString(node.key, node.overrideLevel)) + tail)
+        }
+
+        /**
+         * Recursive function that walks up the node tree to check if a specific key can be found.
+         *
+         * @return whether the given key exists in the tree.
+         */
+        private tailrec fun recursiveCheck(node: Node, searchedKey: Kodein.Key<*, *, *>, searchedOverrideLevel: Int): Boolean {
+            return if (node.key == searchedKey && node.overrideLevel == searchedOverrideLevel)
+                false
+            else if (node.parent == null)
+                true
+            else
+                recursiveCheck(node.parent, searchedKey, searchedOverrideLevel)
+        }
+
     }
 
     private fun <C, A, T: Any> bindingKodein(key: Kodein.Key<C, A, T>, context: KodeinContext<C>, tree: KodeinTree, overrideLevel: Int) : BindingKodein<C> {
-        val container = KodeinContainerImpl(tree, Node(key, overrideLevel, node))
+        val container = KodeinContainerImpl(tree, Node(key, overrideLevel, node, fullDescriptionOnError), fullDescriptionOnError)
         return BindingKodeinImpl(DKodeinImpl(container, context), key, context.value, overrideLevel)
     }
 
@@ -131,10 +134,12 @@ internal class KodeinContainerImpl private constructor(
         }
 
         val bindingKodein = bindingKodein(key, KodeinContext(key.contextType, context), tree, overrideLevel)
-        tree.externalSource?.getFactory(bindingKodein, key)?.let {
-            node?.check(key, 0)
-            @Suppress("UNCHECKED_CAST")
-            return it as (A) -> T
+        tree.externalSources.forEach { source ->
+            source.getFactory(bindingKodein, key)?.let {
+                node?.check(key, 0)
+                @Suppress("UNCHECKED_CAST")
+                return it as (A) -> T
+            }
         }
 
         return null
@@ -154,22 +159,27 @@ internal class KodeinContainerImpl private constructor(
         }
 
         val bindingKodein = bindingKodein(key, KodeinContext(key.contextType, context), tree, overrideLevel)
-        tree.externalSource?.getFactory(bindingKodein, key)?.let {
-            node?.check(key, overrideLevel)
-            @Suppress("UNCHECKED_CAST")
-            return it as (A) -> T
+        tree.externalSources.forEach { source ->
+            source.getFactory(bindingKodein, key)?.let {
+                node?.check(key, overrideLevel)
+                @Suppress("UNCHECKED_CAST")
+                return it as (A) -> T
+            }
         }
 
         val withOverrides = overrideLevel != 0
 
+        val descProp = if (fullDescriptionOnError) key::fullDescription else key::description
+        val descFun: BindingsMap.(Boolean) -> String = if (fullDescriptionOnError) ({ fullDescription(it) }) else ({ description(it) })
+
         if (result.isEmpty()) {
             val description = buildString {
-                append("No binding found for $key\n")
+                append("No binding found for ${descProp.get()}\n")
                 val forType = tree.find(SearchSpecs(type = key.type))
                 if (forType.isNotEmpty()) {
-                    append("Available bindings for this type:\n${forType.associate { it.first to it.second }.description(withOverrides)}")
+                    append("Available bindings for this type:\n${forType.associate { it.first to it.second }.descFun(withOverrides)}")
                 }
-                append("Registered in this Kodein container:\n${tree.bindings.description(withOverrides)}")
+                append("Registered in this Kodein container:\n${tree.bindings.descFun(withOverrides)}")
             }
 
             throw Kodein.NotFoundException(key, description)
@@ -179,7 +189,7 @@ internal class KodeinContainerImpl private constructor(
             it.first to tree[it.first]!!.second
         }
         val others: BindingsMap = tree.bindings.filter { (key, _) -> key !in potentials.keys } // Map.minus does not yet exist in Konan
-        throw Kodein.NotFoundException(key, "${potentials.size} bindings found that match $key:\n${potentials.description(withOverrides)}Other bindings registered in Kodein:\n${others.description(withOverrides)}")
+        throw Kodein.NotFoundException(key, "${potentials.size} bindings found that match $key:\n${potentials.descFun(withOverrides)}Other bindings registered in Kodein:\n${others.descFun(withOverrides)}")
     }
 
     @Suppress("UNCHECKED_CAST")

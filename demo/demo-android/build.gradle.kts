@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-android-extensions")
+    id("org.kodein.versions")
 }
 
 android {
@@ -35,7 +36,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.30")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kodeinVersions.kotlin}")
 
     implementation("androidx.appcompat:appcompat:1.0.2")
 

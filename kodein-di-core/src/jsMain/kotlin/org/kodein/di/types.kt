@@ -3,46 +3,19 @@ package org.kodein.di
 import kotlin.reflect.KClass
 
 @PublishedApi
-internal class JSTypeToken<T>(val type: JsClass<*>) : TypeToken<T> {
+internal class JSTypeToken<T>(type: KClass<*>) : AbstractKClassTypeToken<T>(type) {
 
-    override fun simpleDispString() = type.name
-    override fun simpleErasedDispString() = type.name
-    override fun fullDispString() = type.name
-    override fun fullErasedDispString() = type.name
+    override fun simpleErasedDispString(): String = type.simpleName ?: type.js.name
 
-    override fun checkIsReified(disp: Any) {}
-    override fun getRaw() = this
-    override fun isGeneric() = false
-    override fun isWildcard() = false
-    override fun getSuper() = emptyList<TypeToken<*>>()
-    override fun getGenericParameters() = emptyArray<TypeToken<*>>()
-    override fun isAssignableFrom(typeToken: TypeToken<*>): Boolean {
-        if (this == typeToken)
-            return true
-        if (type == Any::class.js)
-            return true
-        return false
-    }
+    override fun fullErasedDispString() = type.js.name
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is JSTypeToken<*>) return false
-
-        if (type != other.type) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return type.hashCode()
-    }
 }
 
 @Suppress("UNCHECKED_CAST", "UNCHECKED_CAST_TO_NATIVE_INTERFACE")
 actual inline fun <reified T> erased(): TypeToken<T> {
     try {
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-        return JSTypeToken((T::class as KClass<*>).js as JsClass<*>)
+        return JSTypeToken(T::class)
     }
     catch (ex: Throwable) {
         throw IllegalArgumentException("Could not get KClass. Note that Kotlin does NOT support reflection over primitives.")
@@ -52,11 +25,13 @@ actual inline fun <reified T> erased(): TypeToken<T> {
 /**
  * Gives a [TypeToken] representing the given `Class`.
  */
-fun <T: Any> TT(cls: JsClass<T>): TypeToken<T> = JSTypeToken(cls)
+// Deprecated since 6.3
+@Deprecated("Use with KClass", ReplaceWith("TT(cls.kotlin)"))
+fun <T: Any> TT(cls: JsClass<T>): TypeToken<T> = TT(cls.kotlin)
 
 /**
  * Gives a [TypeToken] representing the given `KClass`.
  */
-fun <T: Any> TT(cls: KClass<T>): TypeToken<T> = TT(cls.js)
+fun <T: Any> TT(cls: KClass<T>): TypeToken<T> = JSTypeToken(cls)
 
-actual fun <T: Any> TTOf(obj: T): TypeToken<out T> = JSTypeToken<T>(obj::class.js)
+actual fun <T: Any> TTOf(obj: T): TypeToken<out T> = JSTypeToken<T>(obj::class)

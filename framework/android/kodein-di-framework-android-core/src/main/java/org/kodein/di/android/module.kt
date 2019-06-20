@@ -182,7 +182,3 @@ fun androidCoreModule(app: Application) = Kodein.Module(name = "\u2063androidMod
         Bind() from Provider(contextToken, erased()) { context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager }
     }
 }
-
-// Deprecated since 6.1
-@Deprecated("Use androidCoreModule, androidXModule, or androidSupportModule", ReplaceWith("androidCoreModule(app)"), DeprecationLevel.ERROR)
-fun androidModule(app: Application) = androidCoreModule(app)

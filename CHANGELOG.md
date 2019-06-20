@@ -1,3 +1,24 @@
+#### 6.3.0 (24-05-2019)
+
+- TORNADOFX
+  * New framework module for TornadoFx integration thanks to the huge work of Romain Boisselle! See [documentation](https://kodein.org/Kodein-DI/?6.3/tornadofx).
+
+- CORE
+  * `importAll` allows to import multiple modules at once
+  * Kotlin `1.3.40`
+  * Named retrieval allows `val name: String by named.instance()` and `val name: String by constant()`
+  * If `fullDescriptionOnError` is true, all Kodein errors will include full type names.
+
+- NATIVE
+  * Updated to Gradle Module schema 1.0. Gradle 5.3.0 minimum is required!
+
+- ANDROID
+  * the function `closestKodein` aliases `kodein` for import conflicts.
+
+- KTOR
+  * the function `closestKodein` aliases `kodein` for import conflicts.
+
+
 #### 6.2.1 (24-05-2019)
 
 - ANDROID
@@ -11,7 +32,7 @@
   * Fixed a bug in the JVM specific code that prevented a generic interface from being retrieved when a concrete class was bound.
   * `bind() from Binding<Unit>` is now forbidden. Binding specifically the Unit type with `bind<Unit>() with Binding<Unit>` is allowed (although I cannot see why someone would use it!).
 
-- Ktor
+- KTOR
   * New framework module for Ktor integration thanks to the huge work of Romain Boisselle! See [documentation](https://kodein.org/Kodein-DI/?6.2/ktor).
 
 #### 6.1.0 (06-02-2019)
