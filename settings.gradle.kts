@@ -53,3 +53,14 @@ if (excludeKtor != "true") {
         ":demo:demo-ktor"
     )
 }
+
+val excludeTFX: String? by settings
+
+if (excludeTFX != "true") {
+    include(
+        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm",
+        
+//        ":demo:demo-tornadofx"
+    ""
+    )
+}
