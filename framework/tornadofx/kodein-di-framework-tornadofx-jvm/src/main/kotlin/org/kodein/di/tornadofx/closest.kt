@@ -15,6 +15,11 @@ private fun kodein(getApplication: () -> App) = LazyKodein { (getApplication() a
 fun Component.kodein() = kodein { app }
 
 /**
+ * Alias to `kodein`
+ */
+fun Component.closestKodein() = kodein()
+
+/**
  * Unique value to be able to set a [Kodein] container into Node#properties
  */
 private const val KODEIN_KEY = "KODEIN_KEY"
@@ -23,6 +28,11 @@ private const val KODEIN_KEY = "KODEIN_KEY"
  * Installing a [Kodein] container into Node#properties if there is none
  */
 fun Node.kodein(init: Kodein.MainBuilder.() -> Unit) = addKodeinProperty(Kodein { init() })
+
+/**
+ * Alias to `kodein`
+ */
+fun Node.closestKodein(init: Kodein.MainBuilder.() -> Unit) = kodein(init)
 
 /**
  * Installing a [Kodein] container into Node#properties if there is none
@@ -47,3 +57,8 @@ fun Node.kodein(): LazyKodein = when {
         else -> throw IllegalStateException("No kodein container found for [${this}]")
     }
 }
+
+/**
+ * Alias to `kodein`
+ */
+fun Node.closestKodein() = kodein()

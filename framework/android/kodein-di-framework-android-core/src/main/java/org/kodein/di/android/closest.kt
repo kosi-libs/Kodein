@@ -51,11 +51,21 @@ private class LazyContextKodeinPropertyDelegateProvider(private val getContext: 
 fun kodein(): KodeinPropertyDelegateProvider<Context> = ContextKodeinPropertyDelegateProvider()
 
 /**
+ * Alias to `kodein`
+ */
+fun closestKodein() = kodein()
+
+/**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  *
  * @param context The Android context to use to walk up the context hierarchy.
  */
 fun kodein(context: Context): KodeinPropertyDelegateProvider<Any?> = LazyContextKodeinPropertyDelegateProvider { context }
+
+/**
+ * Alias to `kodein`
+ */
+fun closestKodein(context: Context) = kodein(context)
 
 /**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
@@ -65,9 +75,19 @@ fun kodein(context: Context): KodeinPropertyDelegateProvider<Any?> = LazyContext
 fun kodein(getContext: () -> Context): KodeinPropertyDelegateProvider<Any?> = LazyContextKodeinPropertyDelegateProvider(getContext)
 
 /**
+ * Alias to `kodein`
+ */
+fun closestKodein(getContext: () -> Context) = kodein(getContext)
+
+/**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
 fun Fragment.kodein() = kodein { activity }
+
+/**
+ * Alias to `kodein`
+ */
+fun Fragment.closestKodein() = kodein()
 
 /**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
@@ -75,9 +95,19 @@ fun Fragment.kodein() = kodein { activity }
 fun Dialog.kodein() = kodein { context }
 
 /**
+ * Alias to `kodein`
+ */
+fun Dialog.closestKodein() = kodein()
+
+/**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
 fun View.kodein() = kodein { context }
+
+/**
+ * Alias to `kodein`
+ */
+fun View.closestKodein() = kodein()
 
 /**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
@@ -85,6 +115,16 @@ fun View.kodein() = kodein { context }
 fun AbstractThreadedSyncAdapter.kodein() = kodein { context }
 
 /**
+ * Alias to `kodein`
+ */
+fun AbstractThreadedSyncAdapter.closestKodein() = kodein()
+
+/**
  * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
  */
 fun Loader<*>.kodein() = kodein { context }
+
+/**
+ * Alias to `kodein`
+ */
+fun Loader<*>.closestKodein() = kodein()
