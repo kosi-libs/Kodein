@@ -8,6 +8,7 @@
   * Kotlin `1.3.40`
   * Named retrieval allows `val name: String by named.instance()` and `val name: String by constant()`
   * If `fullDescriptionOnError` is true, all Kodein errors will include full type names.
+  * The `externalSource` var is now deprecated in favour of the `externalSources` mutable list.
 
 - NATIVE
   * Updated to Gradle Module schema 1.0. Gradle 5.3.0 minimum is required!
