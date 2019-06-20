@@ -51,6 +51,12 @@ internal open class KodeinBuilderImpl internal constructor(
         KodeinBuilderImpl(moduleName, prefix + module.prefix, importedModules, containerBuilder.subBuilder(allowOverride, module.allowSilentOverride)).apply(module.init)
     }
 
+    override fun importAll(modules: Iterable<Kodein.Module>, allowOverride: Boolean) =
+            modules.forEach { import(it, allowOverride) }
+
+    override fun importAll(vararg modules: Kodein.Module, allowOverride: Boolean) =
+            modules.forEach { import(it, allowOverride) }
+
     override fun importOnce(module: Kodein.Module, allowOverride: Boolean) {
         if (module.name.isEmpty())
             throw IllegalStateException("importOnce must be given a named module.")
