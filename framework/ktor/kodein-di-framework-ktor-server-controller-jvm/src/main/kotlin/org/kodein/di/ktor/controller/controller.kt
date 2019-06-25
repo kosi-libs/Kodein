@@ -44,6 +44,9 @@ interface KodeinController : KodeinAware {
     /**
      * Define the getRoutes that may be applied by installing [KodeinControllerFeature]
      */
+    // Deprecated Since 6.4
+    @Deprecated(message = "As [KodeinControllerFeature] will be deprectated we will not need this anymore",
+            replaceWith = ReplaceWith("Route.installRoutes()"), level = DeprecationLevel.WARNING)
     fun Routing.installRoutes() = getRoutes()
     /**
      * Install the controller's routes into the [Routing] feature
