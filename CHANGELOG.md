@@ -1,4 +1,10 @@
-#### 6.3.0 (24-05-2019)
+#### 6.3.1 (25-06-2019)
+
+- ANDROID
+  * the function `closestKodein` aliases `kodein` for import conflicts, in modules `kodein-di-framework-android-support` and `kodein-di-framework-android-x`.
+
+
+#### 6.3.0 (20-06-2019)
 
 - TORNADOFX
   * New framework module for TornadoFx integration thanks to the huge work of Romain Boisselle! See [documentation](https://kodein.org/Kodein-DI/?6.3/tornadofx).
