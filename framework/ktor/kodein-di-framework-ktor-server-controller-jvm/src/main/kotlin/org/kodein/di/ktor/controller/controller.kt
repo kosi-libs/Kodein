@@ -3,14 +3,14 @@ package org.kodein.di.ktor.controller
 import io.ktor.application.*
 import io.ktor.routing.*
 import org.kodein.di.*
-import org.kodein.di.ktor.kodein
+import org.kodein.di.ktor.*
 
 /**
  * Base controller super class to leverage your Ktor server as a MVC-like architecture
  *
  * Example:
  * class ApplicationController(application: Application) : AbstractKodeinController(application) {
- *    override fun Routing.installRoutes() {
+ *    override fun Route.getRoutes() {
  *      route(ROUTE_VERSION) {
  *      get {
  *        val version: String by instance("version")
@@ -30,7 +30,7 @@ abstract class AbstractKodeinController(val application: Application) : KodeinCo
  * Example:
  * class KodeinControllerImpl(application: Application) : KodeinController(application) {
  *    override val kodein by kodein { application }
- *    override fun Routing.installRoutes() {
+ *    override fun Route.getRoutes() {
  *      route(ROUTE_VERSION) {
  *      get {
  *        val version: String by instance("version")
@@ -42,7 +42,15 @@ abstract class AbstractKodeinController(val application: Application) : KodeinCo
  */
 interface KodeinController : KodeinAware {
     /**
-     * Define the routes that may be applied by installing [KodeinControllerFeature]
+     * Define the getRoutes that may be applied by installing [KodeinControllerFeature]
      */
-    fun Routing.installRoutes()
+    fun Routing.installRoutes() = getRoutes()
+    /**
+     * Install the controller's routes into the [Routing] feature
+     */
+    fun Route.installRoutes() = getRoutes()
+    /**
+     * Define the routes that may be applied into the [Routing] feature
+     */
+    fun Route.getRoutes()
 }
