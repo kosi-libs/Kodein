@@ -4,7 +4,7 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.3.1
+:version: 6.3.2
 :branch: 6.3
 
 You can use Kodein as-is in your Android project or use the util library `kodein-android`.

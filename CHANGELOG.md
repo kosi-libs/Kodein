@@ -1,3 +1,9 @@
+#### 6.3.2 (27-06-2019)
+
+- JVM
+  * As we build Kodein with `JDK12`, the JVM librairies no longer throw exception when used with **Gradle > 5.2**, 
+  by bringing target compatibility on `JDK8`.  
+
 #### 6.3.1 (25-06-2019)
 
 - ANDROID
