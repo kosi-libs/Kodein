@@ -1,10 +1,7 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
-import org.kodein.di.direct
-import org.kodein.di.test.FixMethodOrder
-import org.kodein.di.test.MethodSorters
-import org.kodein.di.test.Person
+import org.kodein.di.*
+import org.kodein.di.test.*
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -75,4 +72,30 @@ class ErasedTests_10_Module {
         assertEquals("Salomon", kodein.direct.instance())
     }
 
+    @Test
+    fun test_03_ModuleOverExtend() {
+        val salomon = "Salomon"
+        val module = Kodein.Module("test") {
+            bind<String>() with instance(salomon)
+        }
+
+        val container1 = Kodein {
+            importOnce(module)
+        }
+
+        val container2 = Kodein {
+            extend(container1)
+            importOnce(module)
+        }
+
+        val container3 = Kodein {
+            extend(container2)
+            importOnce(module)
+        }
+
+        assertEquals(salomon, container1.direct.instance())
+        assertEquals(salomon, container2.direct.instance())
+        assertEquals(salomon, container3.direct.instance())
+        assertSame(container1.direct.instance<String>(), container2.direct.instance(), container3.direct.instance())
+    }
 }
