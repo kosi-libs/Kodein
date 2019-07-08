@@ -6,7 +6,7 @@ import org.kodein.di.bindings.*
 internal open class KodeinBuilderImpl internal constructor(
         private val moduleName: String?,
         private val prefix: String,
-        private val importedModules: MutableSet<String>,
+        internal val importedModules: MutableSet<String>,
         override val containerBuilder: KodeinContainerBuilderImpl
 ) : Kodein.Builder {
 
@@ -81,6 +81,11 @@ internal open class KodeinMainBuilderImpl(allowSilentOverride: Boolean) : Kodein
 
         containerBuilder.extend(kodein.container, allowOverride, keys)
         externalSources += kodein.container.tree.externalSources
+        importedModules.addAll(
+                containerBuilder.bindingsMap
+                        .flatMap { it.value.map { it.fromModule } }
+                        .filterNotNull()
+        )
     }
 
     override fun extend(dkodein: DKodein, allowOverride: Boolean, copy: Copy) {
@@ -88,5 +93,10 @@ internal open class KodeinMainBuilderImpl(allowSilentOverride: Boolean) : Kodein
 
         containerBuilder.extend(dkodein.container, allowOverride, keys)
         externalSources += dkodein.container.tree.externalSources
+        importedModules.addAll(
+                containerBuilder.bindingsMap
+                        .flatMap { it.value.map { it.fromModule } }
+                        .filterNotNull()
+        )
     }
 }
