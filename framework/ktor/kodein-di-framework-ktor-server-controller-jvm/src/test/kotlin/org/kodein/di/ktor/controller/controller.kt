@@ -10,7 +10,7 @@ const val ROUTE_VERSION = "/version"
 const val ROUTE_AUTHOR = "/author"
 
 class ApplicationController(application: Application) : AbstractKodeinController(application) {
-    override fun Routing.installRoutes() {
+    override fun Route.getRoutes() {
         route(ROUTE_VERSION) {
             get {
                 val version: String by instance("version")
@@ -28,7 +28,7 @@ class ApplicationController(application: Application) : AbstractKodeinController
 
 class KodeinControllerImpl(application: Application) : KodeinController {
     override val kodein by kodein { application }
-    override fun Routing.installRoutes() {
+    override fun Route.getRoutes() {
         route(ROUTE_VERSION) {
             get {
                 val version: String by instance("version")
