@@ -58,9 +58,6 @@ val excludeTFX: String? by settings
 
 if (excludeTFX != "true") {
     include(
-        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm",
-        
-//        ":demo:demo-tornadofx"
-    ""
+        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
     )
 }

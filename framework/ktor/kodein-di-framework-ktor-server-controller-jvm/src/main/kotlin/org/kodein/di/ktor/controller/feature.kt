@@ -4,15 +4,18 @@ import io.ktor.application.*
 import io.ktor.routing.*
 import io.ktor.util.*
 import org.kodein.di.*
-import org.kodein.di.ktor.KodeinFeature
+import org.kodein.di.ktor.*
 import org.kodein.di.ktor.controller.KodeinControllerFeature.*
-import org.kodein.di.ktor.kodein
 
 /**
  * Ktor [Feature] that provide a global [Kodein] container
  * and autowire all the bound [AbstractKodeinController] by installing the routes
  * that would be accessible from everywhere in the Ktor application
  */
+// Deprecated Since 6.4
+@Deprecated(message="KodeinController doesn't need to be bound to the Kodein container. " +
+        "\nConsider using the [Route.controller] method (e.g. `Route.controller { KodeinController() }`)" +
+        "\nWill be remove in 7.0", level = DeprecationLevel.WARNING)
 class KodeinControllerFeature private constructor() {
 
     // Implements ApplicationFeature as a companion object.

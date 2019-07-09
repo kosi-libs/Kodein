@@ -4,7 +4,7 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.3.0
+:version: 6.3.2
 :branch: 6.3
 
 image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-DI-logo.png[KODEIN, 700, 233]
@@ -871,7 +871,7 @@ val kodein = Kodein {
     bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
     bind<Random>() with provider { SecureRandom() }
-    bind<FileAccess>() with factory { path: String, mode: Int -> FileAccess.open(path, mode }
+    bind<FileAccess>() with factory { path: String, mode: Int -> FileAccess.open(path, mode) }
     constant("answer") with "fourty-two"
 }
 ----
@@ -962,7 +962,7 @@ When injecting a value that was bound with a <<multi-argument-factories,multi-ar
 [source, kotlin]
 .Example: Creating a FileController by injecting a multi-argument bound dependency.
 ----
-val controller by kodein.newInstance { FileController(instance(args = M("path/to/file, 0)) }
+val controller by kodein.newInstance { FileController(instance(args = M("path/to/fil", 0))) }
 ----
 
 
@@ -1098,6 +1098,26 @@ When retrieving a value that was bound with a <<multi-argument-factories,multi-a
 ----
 val fileAccess: FileAccess by kodein.instance(args = M("/path/to/file", 0))
 ----
+
+===== Factory retrieval
+
+Instead of retrieving a value, you can retrieve a factory, that can call as much as you need.
+As you can declare factories with multiple arguments (up to 5), you can retrieve factories with arguments from 1 to 5:
+
+[source, kotlin]
+.Example: Creating factories with multi-argument (from 1 to 5).
+----
+val f1: (Int) -> Int by kodein.factory() <1>
+val f2: (Int, Int) -> Int by kodein.factory2() <2>
+val f3: (String, Int, Int) -> String by kodein.factory3() <3>
+val f4: (Int, Int, Int, Int) -> Int by kodein.factory4() <4>
+val f5: (String, Int, String, Int, String) -> String by kodein.factory5() <5>
+----
+<1> retrieving a factory that takes 1 argument (Int) and return an Int
+<2> retrieving a factory that takes 2 argument (Int, Int) and return an Int
+<3> retrieving a factory that takes 3 argument (String, Int, Int) and return a String
+<4> retrieving a factory that takes 4 argument (Int, Int, Int, Int) and return an Int
+<5> retrieving a factory that takes 5 argument (String, Int, String, Int, String) and return an String
 
 
 ==== Currying factories

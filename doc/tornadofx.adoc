@@ -4,7 +4,7 @@ Romain BOISSELLE <romain@boisselle.dev>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.3.0
+:version: 6.3.2
 :branch: 6.3
 
 You can use Kodein as-is in your TornadoFX project, but you can level-up your game by using the libraries `kodein-di-framework-tornadofx-jvm`.
@@ -13,7 +13,7 @@ NOTE: Kodein does work on TornadoFX as-is.
       The `kodein-di-framework-tornadofx-jvm` extensions add multiple TornadoFX-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
-Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-tornadofx[TornadoFX demo project] to help you going further!
+Have a look at the https://github.com/Kodein-Framework/Kodein-Samples/tree/master/di/tornadofx[TornadoFX demo project] to help you going further!
 
 [[install]]
 == Install
@@ -51,7 +51,7 @@ class TornadoApplication : App(MainView::class), KodeinAware { // <1>
 ----
 <1> Setting the `App` as `KodeinAware` will help you define a global Kodein container
 <2> Define a Kodein container, accessible from almost anywhere in your application
-<3> Branch Kodein upon TornadoFX dependency injection, to be able to access those dependencies through your Kodein container (see link:tornadofx.adoc#external-source[documentation])
+<3> Branch Kodein upon TornadoFX dependency injection, to be able to access those dependencies through your Kodein container (see https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[documentation])
 
 WARNING: In order to leverage the power of Kodein and the helpers we made, you should really consider making your `App` as `KodeinAware`.
 
@@ -60,7 +60,7 @@ WARNING: In order to leverage the power of Kodein and the helpers we made, you s
 
 If you defined your `App` as `KodeinAware`, you will normally be able to retrieve a Kodein container, and dependencies, from almost anywhere in your code.
 
-CAUTION: You may also want to access your TornadoFX components (such as `View`, `Fragment`, `Controller`, etc) through a Kodein container, to help you with that check the link:tornadofx.adoc#external-source[external source] section.
+CAUTION: You may also want to access your TornadoFX components (such as `View`, `Fragment`, `Controller`, etc) through a Kodein container, to help you with that check the https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[external source] section.
 
 [[closest-kodein]]
 === Closest Kodein pattern
@@ -73,7 +73,7 @@ The idea behind this concept, is to be able to retrieve a Kodein container, from
 [[closest-tfx]]
 ==== From a TornadoFX perspective
 
-In TornadoFX there is no hierarchy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available through the DI container of TornadoFX (and the one of Kodein if you use link:tornadofx.adoc#external-source[external source] helper), and they all have a reference to the `App`.
+In TornadoFX there is no hierarchy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available through the DI container of TornadoFX (and the one of Kodein if you use https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[external source] helper), and they all have a reference to the `App`.
 
 So, if we made our `App` as `KodeinAware`, we can get the global `Kodein` container from any `Component` thanks to:
 
@@ -274,7 +274,7 @@ class MyView : View() {
 <4> Calling the `kodein()` extension function to access the nearest Kodein container, in this case the one defined at <2>, then retrieve a dependency
 
 IMPORTANT: This feature will provide a *new* Kodein container, meaning it won't be linked to other Kodein container, such as your global one.
-To keep your binding from the global Kodein container you can use link:tornadofx.adoc#core#_extension_composition[extension] or following the next about link:tornadofx.adoc#sub-kodein[subKodein]
+To keep your binding from the global Kodein container you can use https://kodein.org/Kodein-DI/?{branch}/tornadofx#kodein-extension[extension] or following the next about https://kodein.org/Kodein-DI/?{branch}/tornadofx#sub-kodein[subKodein]
 
 [[sub-kodein]]
 === Extending the nearest Kodein container
@@ -327,7 +327,7 @@ class LoginView : View() {
 <3> Defining binding only available for the extended Kodein container
 <4> Retrieve the `CredentialsDao` from the nearest Kodein container, in that case the extended container stored in the *hbox* properties
 
-IMPORTANT: In the case of a `Component` you have to handle the reference of the extended container yourself. But, in the case of a `Node` the `subKodein` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the link:tornadofx.adoc#fx-container[FX container feature]
+IMPORTANT: In the case of a `Component` you have to handle the reference of the extended container yourself. But, in the case of a `Node` the `subKodein` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the https://kodein.org/Kodein-DI/?{branch}/tornadofx#fx-container[FX container feature]
 
 [[scopes]]
 == TornadoFX scopes

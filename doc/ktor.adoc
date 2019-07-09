@@ -4,7 +4,7 @@ Romain BOISSELLE <romain@boisselle.dev>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.3.0
+:version: 6.3.2
 :branch: 6.3
 
 You can use Kodein as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-framework-ktor-server-jvm` or `kodein-di-framework-ktor-server-controller-jvm`.
@@ -406,7 +406,7 @@ NOTE:  the `kodein-di-framework-ktor-server-controller-jvm` already have  the `k
 
 -  Defining your controllers, by implementing `KodeinController`, or extending `AbstractKodeinController`
 + 
-To define your controllers you need, either to implement the interface `KodeinController`, or to extend the class `AbstractKodeinController` and implement the function `Routing.installRoutes()`.
+To define your controllers you need, either to implement the interface `KodeinController`, or to extend the class `AbstractKodeinController` and implement the function `Route.getRoutes()`.
 +
 [source, kotlin]
 .Example: Implementing KodeinController
@@ -415,7 +415,7 @@ class MyController(application: Application) : KodeinController { <1>
     override val kodein by kodein { application } <2>
     private val repository: DataRepository by instance("dao") <3>
 
-    override fun Routing.installRoutes() { <4>
+    override fun Route.getRoutes() { <4>
         get("/version") { <5>
             val version: String by instance("version") <8>
             call.respondText(version)
@@ -425,7 +425,7 @@ class MyController(application: Application) : KodeinController { <1>
 <1> Implement `KodeinController` and provide a `Application` instance (from constructor)
 <2> Override the `Kodein` container, from the provided `Application`
 <3> Use your `Kodein` container as in any `KodeinAware` class
-<4> Override the function `Routing.installRoutes` and define some routes
+<4> Override the function `Route.getRoutes` and define some routes
 <5> This route will be automatically register by the `KodeinControllerFeature`
 <6> Use your `Kodein` container as in any `KodeinAware` class
 +
@@ -454,9 +454,9 @@ NOTE:   Using `KodeinController` or `AbstractKodeinController` depends on your n
         +
         On the contrary, if you want to use inheritance for your controllers you should implement `KodeinController` and override the `Kodein` container by yourself. 
 
-- Declaring the `KodeinControllerFeature`
+- Declaring the `KodeinControllerFeature` (deprecated in `6.4`, removed in `7.0`)
 +
-To benefit from the `KodeinController` behavior, you *need* to use the `KodeinControllerFeature` that will install the routes of your `KodeinController`s.
+To benefit from the `KodeinController` behavior, you *could* use the `KodeinControllerFeature` that will install the routes of your `KodeinController`s.
 +
 The `KodeinControllerFeature` will work upon the `KodeinFeature`, registering all the `KodeinController` bound in it. 
 + 
@@ -478,8 +478,37 @@ fun main(args: Array<String>) {
 <3> Bind a `KodeinController`
 <4> Apply the `KodeinControllerFeature`
 +
-Doing that the `MyController` will be autowired by the `KodeinControllerFeature`, meaning that the routes defined in the `Routing.installRoutes` will be reachable on the web server (e.g. `http://localhost:8080/version`).
+Doing that the `MyController` will be autowired by the `KodeinControllerFeature`, meaning that the routes defined in the `Route.getRoutes` will be reachable on the web server (e.g. `http://localhost:8080/version`).
 
 WARNING: Using the `KodeinControllerFeature` *must* be used in addition of the `KodeinFeature`
 
 WARNING: In your code, the `KodeinControllerFeature` *must* be declared *after* the `KodeinFeature`, as in the previous snippet *4* is declared after *1*, unless you'll see a `MissingApplicationFeatureException` fired
+
+- Install your `KodeinController`s routes directly into the routing system
++
+To leverage the use of `KodeinController`, you *could* use the `Route.controller` extension functions.
+Those functions will automatically install the routes defined in your `KodeinController` into the Ktor routing system.
++
+[source, kotlin]
+.Example: Route.controller extension functions
+----
+routing {
+// ...
+controller { MyFirstKodeinController(instance()) } <1>
+controller("/protected") { `MySecondKodeinController`(instance()) } <2>
+// ...
+}
+----
+<1> install the routes of MyFirstKodeinController` inside the routing system
+<2> install the routes of `MyFirstKodeinController` inside the routing system, as child of a `Route`, under "/protected"
++
+Doing that the `MyFirstKodeinController` and `MyFirstKodeinController` will added to the routing system but not autowired, neither bound to the Kodein container.
+Only their routes defined in the `Route.getRoutes` will be reachable on the web server (e.g. `http://localhost:8080/version`).
+
+
+[CAUTION]
+====
+`Route.controller` extension functions and `KodeinControllerFeature` can be used at the same time but we recommand that you *should not*
+Declaring controllers in the `Route.controller` extension functions and the `KodeinControllerFeature` might install the same route multiple times, thus leading to exceptions.
+====
+
