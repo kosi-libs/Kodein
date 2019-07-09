@@ -8,7 +8,7 @@ import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.erased.*
 
-fun main(args: Array<String>) {
+fun main() {
     Application()
 }
 
