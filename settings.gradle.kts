@@ -1,12 +1,10 @@
-import org.kodein.internal.gradle.settings.*
-
 buildscript {
     repositories {
         mavenLocal()
         maven(url = "https://dl.bintray.com/kodein-framework/Kodein-Internal-Gradle")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.9.2")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.6.0")
     }
 }
 
@@ -33,21 +31,36 @@ include(
         ""
 )
 
-android.include(
-        ":framework:android:kodein-di-framework-android-core",
-        ":framework:android:kodein-di-framework-android-support",
-        ":framework:android:kodein-di-framework-android-x",
+val excludeAndroid: String? by settings
 
-        ":demo:demo-android"
-)
+if (excludeAndroid != "true") {
+    include(
+            ":framework:android:kodein-di-framework-android-core",
+            ":framework:android:kodein-di-framework-android-support",
+            ":framework:android:kodein-di-framework-android-x",
 
-framework("ktor").include(
+            ":demo:demo-android"
+    )
+}
+
+val excludeKtor: String? by settings
+
+if (excludeKtor != "true") {
+    include(
         ":framework:ktor:kodein-di-framework-ktor-server-jvm",
         ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
 
         ":demo:demo-ktor"
-)
+    )
+}
 
-framework("TFX").include(
-        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
-)
+val excludeTFX: String? by settings
+
+if (excludeTFX != "true") {
+    include(
+        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm",
+        
+//        ":demo:demo-tornadofx"
+    ""
+    )
+}
