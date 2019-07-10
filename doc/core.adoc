@@ -962,7 +962,7 @@ When injecting a value that was bound with a <<multi-argument-factories,multi-ar
 [source, kotlin]
 .Example: Creating a FileController by injecting a multi-argument bound dependency.
 ----
-val controller by kodein.newInstance { FileController(instance(args = M("path/to/file, 0)) }
+val controller by kodein.newInstance { FileController(instance(args = M("path/to/file", 0)) }
 ----
 
 
