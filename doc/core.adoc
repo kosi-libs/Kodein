@@ -4,7 +4,7 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.3.2
+:version: 6.3.3
 :branch: 6.3
 
 image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-DI-logo.png[KODEIN, 700, 233]

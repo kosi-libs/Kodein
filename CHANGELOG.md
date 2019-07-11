@@ -1,3 +1,8 @@
+#### 6.3.3 (11-07-2019)
+
+- CORE
+  * Hotfix on false positive bindings (#216)   
+
 #### 6.3.2 (27-06-2019)
 
 - JVM
