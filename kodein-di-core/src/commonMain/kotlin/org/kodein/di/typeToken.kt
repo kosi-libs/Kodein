@@ -1,6 +1,6 @@
 package org.kodein.di
 
-import kotlin.reflect.KClass
+import kotlin.reflect.*
 
 /**
  * An interface that contains a simple Type but is parameterized to enable type safety.
@@ -78,7 +78,7 @@ interface TypeToken<T> {
      * Determines if the type represented by this type object is either the same as, or is a superclass or superinterface of, the type represented by the specified type parameter.
      */
     fun isAssignableFrom(typeToken: TypeToken<*>): Boolean {
-        if (this == typeToken || typeToken == AnyToken)
+        if (this == typeToken || this == AnyToken)
             return true
 
         val raw = getRaw()
