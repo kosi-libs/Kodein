@@ -33,7 +33,7 @@ include(
 
 val excludeAndroid: String? by settings
 
-if (excludeAndroid != "true") {
+if ((excludeAndroid ?: System.getenv("EXCLUDE_ANDROID")) != "true") {
     include(
             ":framework:android:kodein-di-framework-android-core",
             ":framework:android:kodein-di-framework-android-support",
@@ -45,19 +45,19 @@ if (excludeAndroid != "true") {
 
 val excludeKtor: String? by settings
 
-if (excludeKtor != "true") {
+if ((excludeKtor  ?: System.getenv("EXCLUDE_KTOR")) != "true") {
     include(
-        ":framework:ktor:kodein-di-framework-ktor-server-jvm",
-        ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
+            ":framework:ktor:kodein-di-framework-ktor-server-jvm",
+            ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
 
-        ":demo:demo-ktor"
+            ":demo:demo-ktor"
     )
 }
 
 val excludeTFX: String? by settings
 
-if (excludeTFX != "true") {
+if ((excludeTFX ?: System.getenv("EXCLUDE_TFX")) != "true") {
     include(
-        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
+            ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
     )
 }
