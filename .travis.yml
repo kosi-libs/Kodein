@@ -1,29 +1,206 @@
-language: android
+stages:
+  - name: test
+    if: (tag IS NOT present) && (branch != master) && (branch != dev) && (NOT branch =~ /^(\d*)[\.](\d*)$/)
+    #  - stage: test
+    #    script: ./gradlew check
+  - name: snapshot
+    if: branch = dev
+    #  - stage: snapshot
+    #    script: ./gradlew bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
+  - name: release
+    if: branch = master
+    #  - stage: release
+    #    script: ./gradlew check bintrayUpload
 
-dist: xenial
-
-android:
-  components:
-    - tools
-    - platform-tools
-    - build-tools-28.0.3
-    - build-tools-27.0.3
-    - android-28
-    - extra-google-m2repository
-    - extra-android-m2repository
-
-licenses:
-  - 'android-sdk-preview-license-.+'
-  - 'android-sdk-license-.+'
-  - 'google-gdk-license-.+'
-
-jdk:
-  - openjdk12
-
-before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-get update
-  - sudo apt-get install libstdc++6
-
-script:
-  - ./gradlew check
+jobs:
+  include:
+    #region Linux
+    # os: linux
+    #   language: android
+    #   android:
+    #     components:
+    #       - tools
+    #       - platform-tools
+    #       - build-tools-28.0.3
+    #       - build-tools-27.0.3
+    #       - android-28
+    #       - extra-google-m2repository
+    #       - extra-android-m2repository
+    #   licenses:
+    #     - 'android-sdk-preview-license-.+'
+    #     - 'android-sdk-license-.+'
+    #     - 'google-gdk-license-.+'
+    #   jdk: openjdk12
+    #   before_install:
+    #     - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    #     - sudo apt-get update
+    #     - sudo apt-get install libstdc++6
+    #endregion
+    - stage: test
+      script: ./gradlew check
+      #region os configuration
+      os: linux
+      language: android
+      android:
+        components:
+          - tools
+          - platform-tools
+          - build-tools-28.0.3
+          - build-tools-27.0.3
+          - android-28
+          - extra-google-m2repository
+          - extra-android-m2repository
+      licenses:
+        - 'android-sdk-preview-license-.+'
+        - 'android-sdk-license-.+'
+        - 'google-gdk-license-.+'
+      jdk: openjdk12
+      before_install:
+        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - sudo apt-get update
+        - sudo apt-get install libstdc++6
+      #endregion
+    - stage: snapshot
+      script: ./gradlew bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
+      #region os configuration
+      os: linux
+      language: android
+      android:
+        components:
+          - tools
+          - platform-tools
+          - build-tools-28.0.3
+          - build-tools-27.0.3
+          - android-28
+          - extra-google-m2repository
+          - extra-android-m2repository
+      licenses:
+        - 'android-sdk-preview-license-.+'
+        - 'android-sdk-license-.+'
+        - 'google-gdk-license-.+'
+      jdk: openjdk12
+      before_install:
+        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - sudo apt-get update
+        - sudo apt-get install libstdc++6
+      #endregion
+    - stage: release
+      script: ./gradlew check bintrayUpload
+      #region os configuration
+      os: linux
+      language: android
+      android:
+        components:
+          - tools
+          - platform-tools
+          - build-tools-28.0.3
+          - build-tools-27.0.3
+          - android-28
+          - extra-google-m2repository
+          - extra-android-m2repository
+      licenses:
+        - 'android-sdk-preview-license-.+'
+        - 'android-sdk-license-.+'
+        - 'google-gdk-license-.+'
+      jdk: openjdk12
+      before_install:
+        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - sudo apt-get update
+        - sudo apt-get install libstdc++6
+      #endregion
+    #region Windows
+    # os: windows
+    #   language: shell
+    #   before_install:
+    #     - choco install openjdk11
+    #     - export JAVA_HOME="C:\Program Files\OpenJDK\jdk-11.0.2"
+    #     - export PATH=${JAVA_HOME}\\bin:${PATH}
+    #     - export GRADLE_OPTS=-Dorg.gradle.daemon=false
+    #     - export EXCLUDE_ANDROID=true
+    #     - export EXCLUDE_KTOR=true
+    #     - export EXCLUDE_TFX=true
+    #endregion
+    - stage: test
+      script: ./gradlew check
+      #region os configuration
+      os: windows
+      language: shell
+      before_install:
+        - choco install openjdk11
+        - export JAVA_HOME="C:\Program Files\OpenJDK\jdk-11.0.2"
+        - export PATH=${JAVA_HOME}\\bin:${PATH}
+        - export GRADLE_OPTS=-Dorg.gradle.daemon=false
+        - export EXCLUDE_ANDROID=true
+        - export EXCLUDE_KTOR=true
+        - export EXCLUDE_TFX=true
+      #endregion
+    - stage: snapshot
+      script: false # SNAPSHOT UPLOAD ?
+      #region os configuration
+      os: windows
+      language: shell
+      before_install:
+        - choco install openjdk11
+        - export JAVA_HOME="C:\Program Files\OpenJDK\jdk-11.0.2"
+        - export PATH=${JAVA_HOME}\\bin:${PATH}
+        - export GRADLE_OPTS=-Dorg.gradle.daemon=false
+        - export EXCLUDE_ANDROID=true
+        - export EXCLUDE_KTOR=true
+        - export EXCLUDE_TFX=true
+      #endregion
+    - stage: release
+      script: true # ./gradlew check bintrayUpload
+      #region os configuration
+      os: windows
+      language: shell
+      before_install:
+        - choco install openjdk11
+        - export JAVA_HOME="C:\Program Files\OpenJDK\jdk-11.0.2"
+        - export PATH=${JAVA_HOME}\\bin:${PATH}
+        - export GRADLE_OPTS=-Dorg.gradle.daemon=false
+        - export EXCLUDE_ANDROID=true
+        - export EXCLUDE_KTOR=true
+        - export EXCLUDE_TFX=true
+      #endregion
+    #region OSX
+    # os: osx
+    #   language: java
+    #   jdk: openjdk12
+    #   before_install:
+    #     - export EXCLUDE_ANDROID=true
+    #     - export EXCLUDE_KTOR=true
+    #     - export EXCLUDE_TFX=true
+    #endregion
+    - stage: test
+      script: ./gradlew check
+      #region os configuration
+      os: osx
+      language: java
+      jdk: openjdk12
+      before_install:
+        - export EXCLUDE_ANDROID=true
+        - export EXCLUDE_KTOR=true
+        - export EXCLUDE_TFX=true
+      #endregion
+    - stage: snapshot
+      script: ./gradlew bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
+      #region os configuration
+      os: osx
+      language: java
+      jdk: openjdk12
+      before_install:
+        - export EXCLUDE_ANDROID=true
+        - export EXCLUDE_KTOR=true
+        - export EXCLUDE_TFX=true
+      #endregion
+    - stage: release
+      script: ./gradlew check bintrayUpload
+      #region os configuration
+      os: osx
+      language: java
+      jdk: openjdk12
+      before_install:
+        - export EXCLUDE_ANDROID=true
+        - export EXCLUDE_KTOR=true
+        - export EXCLUDE_TFX=true
+      #endregion
