@@ -135,7 +135,7 @@ jobs:
         - export EXCLUDE_TFX=true
       #endregion
     - stage: snapshot
-      script: false # SNAPSHOT UPLOAD ?
+      script: ./gradlew bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
       #region os configuration
       os: windows
       language: shell
@@ -149,7 +149,7 @@ jobs:
         - export EXCLUDE_TFX=true
       #endregion
     - stage: release
-      script: true # ./gradlew check bintrayUpload
+      script: ./gradlew check bintrayUpload
       #region os configuration
       os: windows
       language: shell
