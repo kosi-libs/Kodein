@@ -4,11 +4,11 @@ stages:
     #  - stage: test
     #    script: ./gradlew check
   - name: snapshot
-    if: branch = dev
+    if: (branch = dev) && (type = push)
     #  - stage: snapshot
     #    script: ./gradlew bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
   - name: release
-    if: branch = master
+    if: (branch = master) && (type = push)
     #  - stage: release
     #    script: ./gradlew check bintrayUpload
 
