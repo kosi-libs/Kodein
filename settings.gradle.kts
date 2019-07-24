@@ -1,10 +1,13 @@
+import org.kodein.internal.gradle.settings.android
+import org.kodein.internal.gradle.settings.framework
+
 buildscript {
     repositories {
         mavenLocal()
         maven(url = "https://dl.bintray.com/kodein-framework/Kodein-Internal-Gradle")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.7.0")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.9.0")
     }
 }
 
@@ -31,33 +34,21 @@ include(
         ""
 )
 
-val excludeAndroid: String? by settings
+android.include(
+        ":framework:android:kodein-di-framework-android-core",
+        ":framework:android:kodein-di-framework-android-support",
+        ":framework:android:kodein-di-framework-android-x",
 
-if ((excludeAndroid ?: System.getenv("EXCLUDE_ANDROID")) != "true") {
-    include(
-            ":framework:android:kodein-di-framework-android-core",
-            ":framework:android:kodein-di-framework-android-support",
-            ":framework:android:kodein-di-framework-android-x",
+        ":demo:demo-android"
+)
 
-            ":demo:demo-android"
-    )
-}
+framework("ktor").include(
+        ":framework:ktor:kodein-di-framework-ktor-server-jvm",
+        ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
 
-val excludeKtor: String? by settings
+        ":demo:demo-ktor"
+)
 
-if ((excludeKtor  ?: System.getenv("EXCLUDE_KTOR")) != "true") {
-    include(
-            ":framework:ktor:kodein-di-framework-ktor-server-jvm",
-            ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
-
-            ":demo:demo-ktor"
-    )
-}
-
-val excludeTFX: String? by settings
-
-if ((excludeTFX ?: System.getenv("EXCLUDE_TFX")) != "true") {
-    include(
-            ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
-    )
-}
+framework("TFX").include(
+        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
+)
