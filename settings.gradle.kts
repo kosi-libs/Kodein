@@ -4,7 +4,7 @@ buildscript {
         maven(url = "https://dl.bintray.com/kodein-framework/Kodein-Internal-Gradle")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.5.3")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.9.2")
     }
 }
 
@@ -59,7 +59,7 @@ val excludeTFX: String? by settings
 if (excludeTFX != "true") {
     include(
         ":framework:tornadofx:kodein-di-framework-tornadofx-jvm",
-        
+
 //        ":demo:demo-tornadofx"
     ""
     )

@@ -20,6 +20,12 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+// TODO to be remove in 7.0 in benefit of kodein-internal-gradle 1.8 source compatibility
+project.withConvention(JavaPluginConvention::class) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }

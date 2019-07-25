@@ -1,3 +1,8 @@
+#### 6.3.4 (26-07-2019)
+
+- BUILD
+  * Fix build compatiblity for JVM targets   
+
 #### 6.3.3 (11-07-2019)
 
 - CORE
