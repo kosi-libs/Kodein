@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "kodein.demo"
-        minSdkVersion(21)
+        minSdkVersion(16)
         targetSdkVersion(28)
         versionCode = 1
         versionName = "1.0"
