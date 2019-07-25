@@ -1,14 +1,14 @@
 stages:
   - name: test
-    if: (tag IS NOT present) && (branch != master) && (branch != dev) && (NOT branch =~ /^(\d*)[\.](\d*)$/)
+    if: (tag IS NOT present) && (branch != master) && (branch != stable) && (NOT branch =~ /^(\d*)[\.](\d*)$/)
     #  - stage: test
     #    script: ./gradlew check
   - name: snapshot
-    if: (branch = dev) && (type = push)
+    if: (branch = master) && (type = push)
     #  - stage: snapshot
     #    script: ./gradlew bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
   - name: release
-    if: (branch = master) && (type = push)
+    if: (branch = stable) && (type = push)
     #  - stage: release
     #    script: ./gradlew check bintrayUpload
 
