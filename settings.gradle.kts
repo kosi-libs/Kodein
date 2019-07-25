@@ -1,3 +1,5 @@
+import org.kodein.internal.gradle.settings.*
+
 buildscript {
     repositories {
         mavenLocal()
@@ -31,36 +33,21 @@ include(
         ""
 )
 
-val excludeAndroid: String? by settings
+android.include(
+        ":framework:android:kodein-di-framework-android-core",
+        ":framework:android:kodein-di-framework-android-support",
+        ":framework:android:kodein-di-framework-android-x",
 
-if (excludeAndroid != "true") {
-    include(
-            ":framework:android:kodein-di-framework-android-core",
-            ":framework:android:kodein-di-framework-android-support",
-            ":framework:android:kodein-di-framework-android-x",
+        ":demo:demo-android"
+)
 
-            ":demo:demo-android"
-    )
-}
-
-val excludeKtor: String? by settings
-
-if (excludeKtor != "true") {
-    include(
+framework("ktor").include(
         ":framework:ktor:kodein-di-framework-ktor-server-jvm",
         ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
 
         ":demo:demo-ktor"
-    )
-}
+)
 
-val excludeTFX: String? by settings
-
-if (excludeTFX != "true") {
-    include(
-        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm",
-
-//        ":demo:demo-tornadofx"
-    ""
-    )
-}
+framework("TFX").include(
+        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
+)
