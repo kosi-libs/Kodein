@@ -1,10 +1,18 @@
+import org.jetbrains.kotlin.gradle.tasks.*
+
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
 }
 
 kotlin {
     targets {
-        jvm()
+        jvm() {
+            tasks.withType<KotlinCompile> {
+                kotlinOptions {
+                    jvmTarget = "1.8"
+                }
+            }
+        }
         linuxX64 { binaries.executable() }
         macosX64 { binaries.executable() }
         mingwX64 { binaries.executable() }
