@@ -33,9 +33,7 @@ include(
 android.include(
         ":framework:android:kodein-di-framework-android-core",
         ":framework:android:kodein-di-framework-android-support",
-        ":framework:android:kodein-di-framework-android-x",
-
-        ":demo:demo-android"
+        ":framework:android:kodein-di-framework-android-x"
 )
 
 framework("ktor").include(
