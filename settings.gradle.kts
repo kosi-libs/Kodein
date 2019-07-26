@@ -40,9 +40,7 @@ android.include(
 
 framework("ktor").include(
         ":framework:ktor:kodein-di-framework-ktor-server-jvm",
-        ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
-
-        ":demo:demo-ktor"
+        ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm"
 )
 
 framework("TFX").include(
