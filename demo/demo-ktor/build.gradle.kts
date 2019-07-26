@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.*
+
 val ktorVersion = "1.1.1"
 val logbackVersion = "1.2.3"
 
@@ -12,6 +14,12 @@ repositories {
 
 application {
     mainClassName = "KodeinApplicationKt"
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
