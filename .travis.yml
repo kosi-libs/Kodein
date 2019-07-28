@@ -41,12 +41,13 @@ jobs:
       #region os configuration
       os: linux
       language: android
-      dist: xenial
+      dist: trusty
       android:
         components:
           - tools
           - platform-tools
           - build-tools-28.0.3
+          - build-tools-27.0.3
           - android-28
           - extra-google-m2repository
           - extra-android-m2repository
@@ -65,12 +66,13 @@ jobs:
       #region os configuration
       os: linux
       language: android
-      dist: xenial
+      dist: trusty
       android:
         components:
           - tools
           - platform-tools
           - build-tools-28.0.3
+          - build-tools-27.0.3
           - android-28
           - extra-google-m2repository
           - extra-android-m2repository
@@ -88,12 +90,13 @@ jobs:
       script: ./gradlew check bintrayUpload
       #region os configuration
       os: linux
-      dist: xenial
+      dist: trusty
       android:
         components:
           - tools
           - platform-tools
           - build-tools-28.0.3
+          - build-tools-27.0.3
           - android-28
           - extra-google-m2repository
           - extra-android-m2repository
