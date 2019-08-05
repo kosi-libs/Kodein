@@ -27,25 +27,18 @@ include(
 
         ":kodein-di-jxinject-jvm",
 
-        ":demo:demo-console",
-        ":demo:demo-js",
-
         ""
 )
 
 android.include(
         ":framework:android:kodein-di-framework-android-core",
         ":framework:android:kodein-di-framework-android-support",
-        ":framework:android:kodein-di-framework-android-x",
-
-        ":demo:demo-android"
+        ":framework:android:kodein-di-framework-android-x"
 )
 
 framework("ktor").include(
         ":framework:ktor:kodein-di-framework-ktor-server-jvm",
-        ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
-
-        ":demo:demo-ktor"
+        ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm"
 )
 
 framework("TFX").include(
