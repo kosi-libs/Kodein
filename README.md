@@ -54,6 +54,9 @@ Kodein is a good choice because:
 - It is fast and optimized (makes extensive use of `inline`)
 - It can be used in plain Java
 
+Demo Projects
+---------
+You can find samples for MPP project here https://github.com/Kodein-Framework/Kodein-Samples 
 
 Read more
 ---------
