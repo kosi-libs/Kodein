@@ -8,6 +8,11 @@ package org.kodein.di
  * @property a1 The first argument.
  * @property a2 The second argument.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
+        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
 data class Multi2<A1, A2>(
         val a1: A1,
         val a2: A2,
@@ -28,6 +33,11 @@ data class Multi2<A1, A2>(
  * @property a2 The second argument.
  * @property a3 The third argument.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
+        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
 data class Multi3<A1, A2, A3>(
         val a1: A1,
         val a2: A2,
@@ -51,6 +61,11 @@ data class Multi3<A1, A2, A3>(
  * @property a3 The third argument.
  * @property a4 The fourth argument.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
+        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
 data class Multi4<A1, A2, A3, A4>(
         val a1: A1,
         val a2: A2,
@@ -80,6 +95,11 @@ data class Multi4<A1, A2, A3, A4>(
  * @property a4 The fourth argument.
  * @property a5 The fifth argument.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
+        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
 data class Multi5<A1, A2, A3, A4, A5>(
         val a1: A1,
         val a2: A2,
