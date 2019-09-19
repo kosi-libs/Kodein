@@ -1,3 +1,24 @@
+#### 6.4.0 (19-09-2019)
+
+- CORE
+  * Allowing to use `importOnce` over extended modules
+  * Kotlin `1.3.50`
+- JVM
+  * Set the `JDK8` as default target
+- KTOR
+  * Route.controller extension functions to be able to install KodeinController routes inside the Ktor routing system.
+  * KodeinControllerFeature depreciation as the new extensions will better cover the use case
+- DEMOS
+  * The samples projects have been moved. They are in a separate repo
+    * https://github.com/Kodein-Framework/Kodein-Samples
+- CI/CD
+  * Automate builds on Travis CI
+- MISC
+  * Move to a more traditional branching model with:
+    * `master` as default 
+    * `stable` for release 
+    * `X.X` for versioning
+
 #### 6.3.4 (26-07-2019)
 
 - BUILD
