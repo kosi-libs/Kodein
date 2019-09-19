@@ -4,8 +4,8 @@ Romain BOISSELLE <romain@boisselle.dev>
 :toc-position: left
 :toclevels: 5
 
-:version: 6.4.0
-:branch: 6.4
+:version: 6.5.0
+:branch: 6.5
 
 You can use Kodein as-is in your TornadoFX project, but you can level-up your game by using the libraries `kodein-di-framework-tornadofx-jvm`.
 
