@@ -370,6 +370,8 @@ val kodein = Kodein {
 [[multi-argument-factories]]
 ==== Multi-arguments factories
 
+CAUTION: This multi-agrument-factories mechanism is deprecated and will be removed in version `7.0`
+
 A factory can take multiple (up to 5) arguments:
 
 [source,kotlin]
@@ -377,6 +379,22 @@ A factory can take multiple (up to 5) arguments:
 ----
 val kodein = Kodein {
     bind<Dice>() with factory { startNumber: Int, sides: Int -> RandomDice(sides) }
+}
+----
+
+NOTE: We recommand to use `data classes` instead!
+
+Regarding our users feedbacks, we find out that multi-arguments factories was difficult to use.
+
+Thus this mechanism will be deprecate soon. So we highly recommend that you migrate your multi-args factories to simple factories by using *data classes*.
+
+[source,kotlin]
+.Example: creates a new Dice each time you need one, according to multiple parameters
+----
+data class DiceParams(val startNumber: Int, val sides: Int)
+
+val kodein = Kodein {
+    bind<Dice>() with factory { params: DiceParams -> RandomDice(params) }
 }
 ----
 
@@ -957,12 +975,14 @@ If you are not sure (or simply do not know) if the type has been bound, you can 
 
 ==== Multi-arguments factories
 
-When injecting a value that was bound with a <<multi-argument-factories,multi-argument factory>>, the arguments must be wrapped inside the `M` function:
+When injecting a value that was bound with a <<multi-argument-factories,multi-argument factory>>,
+the arguments must be wrapped inside a *data class*:
 
 [source, kotlin]
 .Example: Creating a FileController by injecting a multi-argument bound dependency.
 ----
-val controller by kodein.newInstance { FileController(instance(args = M("path/to/fil", 0))) }
+data class ControllerParams(val path: String, val timeout: Int)
+val controller by kodein.newInstance { FileController(instance(args = ControllerParams("path/to/file", 0))) }
 ----
 
 
@@ -982,12 +1002,13 @@ class RollController(val dice: Dice) { /*...*/ }
 val controller by kodein.newInstance { RollController(instance(arg = 6)) }
 ----
 
-Note that if you bound a factory with multiple argument, you need to use the `M` function to pass multiple arguments:
+Note that if you want to bind a factory with multiple argument, you need to use a *data class* to pass multiple arguments:
 
 [source, kotlin]
 .Example: Creating a multi-argument RollController by injecting its dependency.
 ----
-val controller by kodein.newInstance { RollController(instance(arg = M(60, 6))) }
+data class Params(val arg1: Int, val arg2: Int)
+val controller by kodein.newInstance { RollController(instance(arg = Params(60, 6))) }
 ----
 
 TIP: The `arg` argument should always be named.
@@ -1091,34 +1112,25 @@ val answer: String by kodein.named.instance()
 
 ==== Multi-arguments factories
 
-When retrieving a value that was bound with a <<multi-argument-factories,multi-argument factory>>, the arguments must be wrapped inside the `M` function:
+When retrieving a value that was bound with a <<multi-argument-factories,multi-argument factory>>, the arguments must be wrapped inside a *data class*:
 
 [source, kotlin]
 .Example: Creating a MainController by injecting a multi-argument bound dependency.
 ----
-val fileAccess: FileAccess by kodein.instance(args = M("/path/to/file", 0))
+data class FileParams(val path: String, val maxSize: Int)
+val fileAccess: FileAccess by kodein.instance(args = FileParams("/path/to/file", 0))
 ----
 
 ===== Factory retrieval
 
 Instead of retrieving a value, you can retrieve a factory, that can call as much as you need.
-As you can declare factories with multiple arguments (up to 5), you can retrieve factories with arguments from 1 to 5:
 
 [source, kotlin]
-.Example: Creating factories with multi-argument (from 1 to 5).
+.Example: Retrieving factory.
 ----
 val f1: (Int) -> Int by kodein.factory() <1>
-val f2: (Int, Int) -> Int by kodein.factory2() <2>
-val f3: (String, Int, Int) -> String by kodein.factory3() <3>
-val f4: (Int, Int, Int, Int) -> Int by kodein.factory4() <4>
-val f5: (String, Int, String, Int, String) -> String by kodein.factory5() <5>
 ----
 <1> retrieving a factory that takes 1 argument (Int) and return an Int
-<2> retrieving a factory that takes 2 argument (Int, Int) and return an Int
-<3> retrieving a factory that takes 3 argument (String, Int, Int) and return a String
-<4> retrieving a factory that takes 4 argument (Int, Int, Int, Int) and return an Int
-<5> retrieving a factory that takes 5 argument (String, Int, String, Int, String) and return an String
-
 
 ==== Currying factories
 
@@ -1131,12 +1143,13 @@ val sixSideDiceProvider: () -> Dice by kodein.provider(arg = 6)
 val twentySideDice: Dice by kodein.instance(arg = 20)
 ----
 
-Note that if you bound a factory with multiple arguments, you need to use the `M` function to pass multiple arguments:
+Note that if you bound a factory with multiple arguments, you need to use a *data class* to pass multiple arguments:
 
 [source, kotlin]
 .Example: Creating a multi-argument Dice by injecting its dependency.
 ----
-val sixtyToSixtySixDice: Dice by kodein.instance(arg = M(60, 6)) <1>
+data class DiceParams(val startNumber: Int, val sides: Int)
+val sixtyToSixtySixDice: Dice by kodein.instance(arg = DiceParams(60, 6)) <1>
 ----
 <1> Bonus points if you can say the variable name 5 times in less than 5 seconds ;)
 
