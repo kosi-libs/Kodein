@@ -321,7 +321,7 @@ class MyActivity : Activity(), KodeinAware {
 
 [NOTE]
 ====
-You can define the way the parent kodein is extended by defining the http://kodein.org/Kodein-DI/?{branch}/core#_overridden_access_from_parent[copy mode]:
+By default all bindings are cached. You can also define the way the parent kodein is extended by defining the http://kodein.org/Kodein-DI/?{branch}/core#_overridden_access_from_parent[copy mode]. In below example each instance of activity will store a copy of the kodein module (all bindings including `singleton` will be recreated per activity instance).
 
 [source, kotlin]
 .Example: defining an Activity specific Kodein that copies all parent bindings
