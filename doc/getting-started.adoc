@@ -141,8 +141,8 @@ In DI, you *bind* a type (often an interface) to a *binding* that manages an *im
 A binding is responsible for returning the implementation when asked.
 In this example, we have seen to different bindings:
 
-* The *provider* always return a new implementation instance.
-* The *singleton* creates only on implementation instance, and always return that same instance.
+* The *provider* always returns a new implementation instance.
+* The *singleton* creates only one implementation instance, and always returns that same instance.
 
 
 === Declaration

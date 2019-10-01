@@ -1883,7 +1883,7 @@ val configurations by kodein.instance<ConfigurationEntries>().toMap()
 ----
 
 
- [[debugging]]
+[[debugging]]
 == Debugging
 
 === Print bindings
@@ -1902,8 +1902,8 @@ Here's an example of what this prints:
 
 As you can see, it's really easy to understand which type with which tag is bound to which implementation inside which scope.
 
-NOTE: Descriptions prints type names in a "kotlin-esque" way.
-      Because Kodein does not depends on `kotlin-reflect`, it uses java `Type` objects that do not contains nullability information.
+NOTE: Description prints type names in a "kotlin-esque" way.
+      Because Kodein does not depend on `kotlin-reflect`, it uses java `Type` objects that do not contain nullability information.
       As such, the type display does not include nullability. Still, it's easier to read `List<*>` than `List<? extends Object>`.
 
 
@@ -1997,7 +1997,7 @@ Note that if no argument is provided, the argument to the lambda will be `Unit`.
 
 === The type erasure problem
 
-When using the `generic` JVM version on the, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
+When using the `generic` version on the JVM, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `kodein.instance<List<String>>()` and `kodein.instance<List<Int>>()` will yield two different list.
 
 To be erasure immune, the `generic` JVM version relies heavily on the `generic` function, which is known to be slow.
