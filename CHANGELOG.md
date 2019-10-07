@@ -1,3 +1,8 @@
+#### 6.4.1 (07-10-2019)
+
+- CORE
+  * Hotfix on base class injection, failing on automatic context (#254)   
+
 #### 6.4.0 (19-09-2019)
 
 - CORE
