@@ -1,15 +1,16 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
-import org.kodein.di.direct
+import org.kodein.di.*
 import org.kodein.di.test.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
+import kotlin.test.*
 
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
+        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_20_MultiArguments {
+class ErasedTests_20_1_MultiArguments_deprecated {
 
     @Test
     fun test_00_MultiArgumentsFactory() {
@@ -155,5 +156,4 @@ class ErasedTests_20_MultiArguments {
         assertNull(fn4)
         assertNull(fn5)
     }
-    
 }
