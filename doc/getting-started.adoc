@@ -135,7 +135,7 @@ For example, a `Random` object may needs to be re-created every time one is need
 Have a look at these two sentences:
 
 * "I want to *bind* the `Random` type to a *provider* that creates a `SecureRandom` *implementation*.
-* "I want to *bind* the `Database` type to a *singleton* that contains a `SQLiteDatabase`" *implementation*.
+* "I want to *bind* the `Database` type to a *singleton* that contains a `SQLiteDatabase` *implementation*.
 
 In DI, you *bind* a type (often an interface) to a *binding* that manages an *implementation*.
 A binding is responsible for returning the implementation when asked.
