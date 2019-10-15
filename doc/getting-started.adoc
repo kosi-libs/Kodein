@@ -160,7 +160,7 @@ val kodein = Kodein {
 ----
 
 As you can see, Kodein offers a DSL (Domain Specific Language) that allows to very easily declare a binding.
-Kodein offers many bindings that can manage implementations: `provider`, `singleton`, `factory`, `multiton`, `instance`, and more, wich you can read about in the https://kodein.org/Kodein-DI/?{branch}/core#declaring-dependencies[bindings section of the core documentation].
+Kodein offers many bindings that can manage implementations: `provider`, `singleton`, `factory`, `multiton`, `instance`, and more, which you can read about in the https://kodein.org/Kodein-DI/?{branch}/core#declaring-dependencies[bindings section of the core documentation].
 
 Most of the time, the type of the interface of the dependency is enough to identify it.
 There is only one `Database` in the application, so if I'm asking for a `Database`, there is no question of _which_ `Database` I need: I need _the_ database. +
