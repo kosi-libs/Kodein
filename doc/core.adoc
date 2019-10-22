@@ -144,7 +144,7 @@ Then add the dependency:
 &lt;/dependencies&gt;
 ----
 
-NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
+NOTE: Use `kodein-di-generic-jvm` or `kodein-di-erased-jvm`.
 
 
 ==== With Gradle
@@ -169,7 +169,7 @@ dependencies {
 }
 ----
 
-NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
+NOTE: Use `kodein-di-generic-jvm` or `kodein-di-erased-jvm`.
 
 
 === JavaScript (Gradle)
@@ -250,9 +250,9 @@ val kodein = Kodein {
 
 Bindings are declared inside a Kodein initialization block.
 
-NOTE: If you are using `kodein-generic-jvm`, Kodein *not* subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>`).
+NOTE: If you are using `kodein-di-generic-jvm`, Kodein *not* subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>`).
 
-CAUTION: This is *NOT* the case when using `kodein-erased-jvm`, `kodein-erased-js` or `kodein-erased-native`.
+CAUTION: This is *NOT* the case when using `kodein-di-erased-jvm`, `kodein-erased-js` or `kodein-erased-native`.
          With the `erased` version by default, binding `List<Int>` and `List<String>` actually means binding `List<*>` twice.
 
 A binding always starts with `bind<TYPE>() with`.
