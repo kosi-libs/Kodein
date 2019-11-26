@@ -129,7 +129,7 @@ jobs:
       language: shell
       before_install:
         - choco install openjdk11
-        - export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11u-11.0.4_11"
+        - export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.5_10"
         - export PATH=${JAVA_HOME}\\bin:${PATH}
         - export GRADLE_OPTS=-Dorg.gradle.daemon=false
         - export EXCLUDE_ANDROID=true
@@ -143,7 +143,7 @@ jobs:
       language: shell
       before_install:
         - choco install openjdk11
-        - export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11u-11.0.4_11"
+        - export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.5_10"
         - export PATH=${JAVA_HOME}\\bin:${PATH}
         - export GRADLE_OPTS=-Dorg.gradle.daemon=false
         - export EXCLUDE_ANDROID=true
@@ -157,7 +157,7 @@ jobs:
       language: shell
       before_install:
         - choco install openjdk11
-        - export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11u-11.0.4_11"
+        - export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.5_10"
         - export PATH=${JAVA_HOME}\\bin:${PATH}
         - export GRADLE_OPTS=-Dorg.gradle.daemon=false
         - export EXCLUDE_ANDROID=true
@@ -177,6 +177,7 @@ jobs:
       script: ./gradlew check
       #region os configuration
       os: osx
+      osx_image: xcode11.2
       language: java
       jdk: openjdk12
       before_install:
@@ -188,6 +189,7 @@ jobs:
       script: ./gradlew bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
       #region os configuration
       os: osx
+      osx_image: xcode11.2
       language: java
       jdk: openjdk12
       before_install:
@@ -199,6 +201,7 @@ jobs:
       script: ./gradlew check bintrayUpload
       #region os configuration
       os: osx
+      osx_image: xcode11.2
       language: java
       jdk: openjdk12
       before_install:
