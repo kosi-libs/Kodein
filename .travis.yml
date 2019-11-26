@@ -62,7 +62,7 @@ jobs:
         - sudo apt-get install libstdc++6
       #endregion
     - stage: snapshot
-      script: ./gradlew bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
+      script: ./gradlew check bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
       #region os configuration
       os: linux
       language: android
@@ -137,7 +137,7 @@ jobs:
         - export EXCLUDE_TFX=true
       #endregion
     - stage: snapshot
-      script: ./gradlew bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
+      script: ./gradlew check bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
       #region os configuration
       os: windows
       language: shell
@@ -186,7 +186,7 @@ jobs:
         - export EXCLUDE_TFX=true
       #endregion
     - stage: snapshot
-      script: ./gradlew bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
+      script: ./gradlew check bintrayUpload -PsnapshotNumber=$TRAVIS_BUILD_NUMBER
       #region os configuration
       os: osx
       osx_image: xcode11.2
