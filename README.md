@@ -54,19 +54,20 @@ Kodein is a good choice because:
 - It is fast and optimized (makes extensive use of `inline`)
 - It can be used in plain Java
 
-Kotlin compatibility
+Kotlin & JVM compatibility
 ---------
 
-|Kodein-DI|Kotlin|
-|:---:|:---:|
-|6.4+|1.3.50|
-|6.3+|1.3.40|
-|6.2+|1.3.30|
-|6.1+|1.3.20|
-|6.0+|1.3.0|
-|5.0+|1.2.30|
-|4.1+|1.1.3|
-|4.0.0-beta2|1.1.0|
+|Kodein-DI|Kotlin|JDK
+|:---:|:---:|:---:|
+|6.4.2|1.3.60|min 1.8/
+|6.4.1|1.3.50|min 1.8/
+|6.3+|1.3.40|min 1.8/
+|6.2+|1.3.30|1.6/
+|6.1+|1.3.20|1.6/
+|6.0+|1.3.0|1.6/
+|5.0+|1.2.30|1.6/
+|4.1+|1.1.3|1.6/
+|4.0.0-beta2|1.1.0|1.6/
 
 Demo Projects
 ---------
