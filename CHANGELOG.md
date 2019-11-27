@@ -1,3 +1,10 @@
+#### 6.5.0 (27-11-2019)
+
+- CORE
+  * Depreciate multi-args factories, we now recommend to use data classes instead   
+  * Kotlin `1.3.60`
+  * Documentation
+  
 #### 6.4.1 (07-10-2019)
 
 - CORE
