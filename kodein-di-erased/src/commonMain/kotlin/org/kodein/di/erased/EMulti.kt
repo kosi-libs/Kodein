@@ -19,8 +19,8 @@ import org.kodein.di.bindings.*
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <C, reified A1, reified A2,                                     reified T: Any> Kodein.BindBuilder.WithContext<C>.factory(noinline creator: BindingKodein<C>.(A1, A2            ) -> T) = Factory(contextType, Multi2.erased<A1, A2            >(), erased()) { creator(it.a1, it.a2                     ) }
 
 /**
@@ -40,8 +40,8 @@ inline fun <C, reified A1, reified A2,                                     reifi
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <C, reified A1, reified A2, reified A3,                         reified T: Any> Kodein.BindBuilder.WithContext<C>.factory(noinline creator: BindingKodein<C>.(A1, A2, A3        ) -> T) = Factory(contextType, Multi3.erased<A1, A2, A3        >(), erased()) { creator(it.a1, it.a2, it.a3              ) }
 
 /**
@@ -62,8 +62,8 @@ inline fun <C, reified A1, reified A2, reified A3,                         reifi
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <C, reified A1, reified A2, reified A3, reified A4,             reified T: Any> Kodein.BindBuilder.WithContext<C>.factory(noinline creator: BindingKodein<C>.(A1, A2, A3, A4    ) -> T) = Factory(contextType, Multi4.erased<A1, A2, A3, A4    >(), erased()) { creator(it.a1, it.a2, it.a3, it.a4       ) }
 
 /**
@@ -85,8 +85,8 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4,             reifi
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> Kodein.BindBuilder.WithContext<C>.factory(noinline creator: BindingKodein<C>.(A1, A2, A3, A4, A5) -> T) = Factory(contextType, Multi5.erased<A1, A2, A3, A4, A5>(), erased()) { creator(it.a1, it.a2, it.a3, it.a4, it.a5) }
 
 
@@ -107,8 +107,8 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reifi
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <C, reified A1, reified A2,                                     reified T: Any> Kodein.BindBuilder.WithScope<C>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<C>.(A1, A2            ) -> T) = Multiton(scope, contextType, Multi2.erased<A1, A2            >(), erased(), ref, sync) { creator(it.a1, it.a2                     ) }
 
 /**
@@ -128,8 +128,8 @@ inline fun <C, reified A1, reified A2,                                     reifi
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <C, reified A1, reified A2, reified A3,                         reified T: Any> Kodein.BindBuilder.WithScope<C>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<C>.(A1, A2, A3        ) -> T) = Multiton(scope, contextType, Multi3.erased<A1, A2, A3        >(), erased(), ref, sync) { creator(it.a1, it.a2, it.a3              ) }
 
 /**
@@ -150,8 +150,8 @@ inline fun <C, reified A1, reified A2, reified A3,                         reifi
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <C, reified A1, reified A2, reified A3, reified A4,             reified T: Any> Kodein.BindBuilder.WithScope<C>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<C>.(A1, A2, A3, A4    ) -> T) = Multiton(scope, contextType, Multi4.erased<A1, A2, A3, A4    >(), erased(), ref, sync) { creator(it.a1, it.a2, it.a3, it.a4       ) }
 
 /**
@@ -173,8 +173,8 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4,             reifi
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> Kodein.BindBuilder.WithScope<C>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<C>.(A1, A2, A3, A4, A5) -> T) = Multiton(scope, contextType, Multi5.erased<A1, A2, A3, A4, A5>(), erased(), ref, sync) { creator(it.a1, it.a2, it.a3, it.a4, it.a5) }
 
 
@@ -193,8 +193,8 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reifi
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2                                    > M(a1: A1, a2: A2                        ) = Multi2(a1, a2,             Multi2.erased())
 
 /**
@@ -213,8 +213,8 @@ inline fun <reified A1, reified A2                                    > M(a1: A1
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3                        > M(a1: A1, a2: A2, a3: A3                ) = Multi3(a1, a2, a3,         Multi3.erased())
 
 /**
@@ -235,8 +235,8 @@ inline fun <reified A1, reified A2, reified A3                        > M(a1: A1
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4            > M(a1: A1, a2: A2, a3: A3, a4: A4        ) = Multi4(a1, a2, a3, a4,     Multi4.erased())
 
 /**
@@ -259,8 +259,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4            > M(a1: A1
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4, reified A5> M(a1: A1, a2: A2, a3: A3, a4: A4, a5: A5) = Multi5(a1, a2, a3, a4, a5, Multi5.erased())
 
 
@@ -272,8 +272,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4, reified A5> M(a1: A1
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2                                    > Multi2.Companion.erased() = erasedComp2<Multi2<A1, A2            >, A1, A2            >()
 
 /**
@@ -284,8 +284,8 @@ inline fun <reified A1, reified A2                                    > Multi2.C
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3                        > Multi3.Companion.erased() = erasedComp3<Multi3<A1, A2, A3        >, A1, A2, A3        >()
 
 /**
@@ -296,8 +296,8 @@ inline fun <reified A1, reified A2, reified A3                        > Multi3.C
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4            > Multi4.Companion.erased() = erasedComp4<Multi4<A1, A2, A3, A4    >, A1, A2, A3, A4    >()
 
 /**
@@ -308,8 +308,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4            > Multi4.C
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4, reified A5> Multi5.Companion.erased() = erasedComp5<Multi5<A1, A2, A3, A4, A5>, A1, A2, A3, A4, A5>()
 
 
@@ -355,8 +355,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4, reified A5> Multi5.C
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2,                                     reified T: Any> KodeinAware.factory2(tag: Any? = null) =
         KodeinPropertyMap(Factory<Multi2<A1, A2            >, T>(Multi2.erased(), erased(), tag)) { { a1: A1, a2: A2                         -> it(M(a1, a2            )) } }
 
@@ -377,8 +377,8 @@ inline fun <reified A1, reified A2,                                     reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3,                         reified T: Any> KodeinAware.factory3(tag: Any? = null) =
         KodeinPropertyMap(Factory<Multi3<A1, A2, A3        >, T>(Multi3.erased(), erased(), tag)) { { a1: A1, a2: A2, a3: A3                 -> it(M(a1, a2, a3        )) } }
 
@@ -400,8 +400,8 @@ inline fun <reified A1, reified A2, reified A3,                         reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4,             reified T: Any> KodeinAware.factory4(tag: Any? = null) =
         KodeinPropertyMap(Factory<Multi4<A1, A2, A3, A4    >, T>(Multi4.erased(), erased(), tag)) { { a1: A1, a2: A2, a3: A3, a4: A4         -> it(M(a1, a2, a3, a4    )) } }
 
@@ -424,8 +424,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4,             reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> KodeinAware.factory5(tag: Any? = null) =
         KodeinPropertyMap(Factory<Multi5<A1, A2, A3, A4, A5>, T>(Multi5.erased(), erased(), tag)) { { a1: A1, a2: A2, a3: A3, a4: A4, a5: A5 -> it(M(a1, a2, a3, a4, a5)) } }
 
@@ -446,8 +446,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2,                                     reified T: Any> KodeinAware.factory2OrNull(tag: Any? = null): LazyDelegate<((A1, A2            ) -> T)?> {
     return KodeinPropertyMap(FactoryOrNull<Multi2<A1, A2            >, T>(Multi2.erased(), erased(), tag)) {
         val factory = it ?: return@KodeinPropertyMap null
@@ -472,8 +472,8 @@ inline fun <reified A1, reified A2,                                     reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3,                         reified T: Any> KodeinAware.factory3OrNull(tag: Any? = null): LazyDelegate<((A1, A2, A3        ) -> T)?> {
     return KodeinPropertyMap(FactoryOrNull<Multi3<A1, A2, A3        >, T>(Multi3.erased(), erased(), tag)) {
         val factory = it ?: return@KodeinPropertyMap null
@@ -499,8 +499,8 @@ inline fun <reified A1, reified A2, reified A3,                         reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4,             reified T: Any> KodeinAware.factory4OrNull(tag: Any? = null): LazyDelegate<((A1, A2, A3, A4    ) -> T)?> {
     return KodeinPropertyMap(FactoryOrNull<Multi4<A1, A2, A3, A4    >, T>(Multi4.erased(), erased(), tag)) {
         val factory = it ?: return@KodeinPropertyMap null
@@ -527,8 +527,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4,             reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> KodeinAware.factory5OrNull(tag: Any? = null): LazyDelegate<((A1, A2, A3, A4, A5) -> T)?> {
     return KodeinPropertyMap(FactoryOrNull<Multi5<A1, A2, A3, A4, A5>, T>(Multi5.erased(), erased(), tag)) {
         val factory = it ?: return@KodeinPropertyMap null
@@ -553,8 +553,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2,                                     reified T: Any> DKodein.factory2(tag: Any? = null) =
         Factory<Multi2<A1, A2            >, T>(Multi2.erased(), erased(), tag).let { { a1: A1, a2: A2                         -> it(M(a1, a2            )) } }
 
@@ -575,8 +575,8 @@ inline fun <reified A1, reified A2,                                     reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3,                         reified T: Any> DKodein.factory3(tag: Any? = null) =
         Factory<Multi3<A1, A2, A3        >, T>(Multi3.erased(), erased(), tag).let { { a1: A1, a2: A2, a3: A3                 -> it(M(a1, a2, a3        )) } }
 
@@ -598,8 +598,8 @@ inline fun <reified A1, reified A2, reified A3,                         reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4,             reified T: Any> DKodein.factory4(tag: Any? = null) =
         Factory<Multi4<A1, A2, A3, A4    >, T>(Multi4.erased(), erased(), tag).let { { a1: A1, a2: A2, a3: A3, a4: A4         -> it(M(a1, a2, a3, a4    )) } }
 
@@ -622,8 +622,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4,             reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> DKodein.factory5(tag: Any? = null) =
         Factory<Multi5<A1, A2, A3, A4, A5>, T>(Multi5.erased(), erased(), tag).let { { a1: A1, a2: A2, a3: A3, a4: A4, a5: A5 -> it(M(a1, a2, a3, a4, a5)) } }
 
@@ -646,8 +646,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2,                                     reified T: Any> DKodein.factory2OrNull(tag: Any? = null): ((A1, A2            ) -> T)? {
     val factory = FactoryOrNull<Multi2<A1, A2            >, T>(Multi2.erased(), erased(), tag) ?: return null
     return { a1, a2             -> factory(M(a1, a2            )) }
@@ -670,8 +670,8 @@ inline fun <reified A1, reified A2,                                     reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3,                         reified T: Any> DKodein.factory3OrNull(tag: Any? = null): ((A1, A2, A3        ) -> T)? {
     val factory = FactoryOrNull<Multi3<A1, A2, A3        >, T>(Multi3.erased(), erased(), tag) ?: return null
     return { a1, a2, a3         -> factory(M(a1, a2, a3        )) }
@@ -695,8 +695,8 @@ inline fun <reified A1, reified A2, reified A3,                         reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4,             reified T: Any> DKodein.factory4OrNull(tag: Any? = null): ((A1, A2, A3, A4    ) -> T)? {
     val factory = FactoryOrNull<Multi4<A1, A2, A3, A4    >, T>(Multi4.erased(), erased(), tag) ?: return null
     return { a1, a2, a3, a4     -> factory(M(a1, a2, a3, a4    )) }
@@ -722,8 +722,8 @@ inline fun <reified A1, reified A2, reified A3, reified A4,             reified 
 // Deprecated Since 6.4
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
-        "\n(see https://github.com/Kodein-Framework/Kodein-DI/issues/240)" +
-        "\ntThis will be removed in 7.0", level = DeprecationLevel.WARNING)
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
 inline fun <reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> DKodein.factory5OrNull(tag: Any? = null): ((A1, A2, A3, A4, A5) -> T)? {
     val factory = FactoryOrNull<Multi5<A1, A2, A3, A4, A5>, T>(Multi5.erased(), erased(), tag) ?: return null
     return { a1, a2, a3, a4, a5 -> factory(M(a1, a2, a3, a4, a5)) }
