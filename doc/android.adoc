@@ -38,6 +38,8 @@ Kodein offers support for:
 +
 IMPORTANT: Either `kodein-di-generic-jvm` or `kodein-di-erased-jvm` *must* be declared in addition to the Kodein-Android package.
 +
+IMPORTANT: From `6.3.0` On the JVM, you must be targeting `JDK 1.8` minimum!
++
 WARNING: If you are using `SupportFragment` in your application, then you *must* use either the `-support` or the `-x` package.
 
 . Declare the dependency bindings in the Android `Application`, having it implements `KodeinAware`.

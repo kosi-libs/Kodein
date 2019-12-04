@@ -75,6 +75,8 @@ Kodein is compatible with all platforms that the Kotlin language compiles to: JV
 On the JVM & compatible (Android), you need to choose to use either the `erased` or the `generic` version. +
 On the Javascript and Native targets, only the `erased` version is available.
 
+IMPORTANT: From `6.3.0` On the JVM, you must be targeting `JDK 1.8` minimum!
+
 The difference is very simple: the `generic` version is *NOT* subject to type erasure while the `erased` version *IS*.
 
 Of course, it is a little bit more complicated! +
