@@ -1,4 +1,4 @@
-name: Test Gradle CI
+name: Snapshot version deployments
 
 on:
   push:
