@@ -1,3 +1,8 @@
+#### 6.5.1 (09-12-2019)
+
+- CORE
+  * Fix build issue for Kotlin/Native projects    
+  
 #### 6.5.0 (27-11-2019)
 
 - CORE
