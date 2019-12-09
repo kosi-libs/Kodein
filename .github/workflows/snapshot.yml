@@ -1,58 +1,83 @@
-name: Snapshot version deployments
+name: Snapshot - Test, Build & Deploy
 
 on:
   push:
     branches: [master]
 
 jobs:
-  test-linux:
-    runs-on: [ubuntu-latest]
+  snapshot-version:
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-    - name: Build
-      env:
-        EXCLUDE_ANDROID: false
-        EXCLUDE_KTOR: false
-        EXCLUDE_TFX: false
-        BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-        BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
-        BINTRAY_USER_ORG: ${{ secrets.BINTRAY_USER_ORG }}
-      run: ./gradlew check assemble bintrayUpload -PsnapshotNumber=$GITHUB_ACTION
-  test-win:
-    runs-on: [windows-latest]
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v2
+        with:
+          token: ${{secrets.github_token}}
+      - name: Upload build number
+        uses: actions/upload-artifact@v1
+        with:
+          name: BUILD_NUMBER
+          path: BUILD_NUMBER
+  build-deploy-unix:
+    needs: snapshot-version
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+    env:
+      EXCLUDE_ANDROID: false
+      EXCLUDE_KTOR: false
+      EXCLUDE_TFX: false
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-    - name: Build
-      env:
-        EXCLUDE_ANDROID: false
-        EXCLUDE_KTOR: false
-        EXCLUDE_TFX: false
-        BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-        BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
-        BINTRAY_USER_ORG: ${{ secrets.BINTRAY_USER_ORG }}
-      run: ./gradlew check assemble bintrayUpload -PsnapshotNumber=$GITHUB_ACTION
-  test-macOS:
-    runs-on: [macOS-latest]
+      - name: Download build number
+        uses: actions/download-artifact@v1
+        with:
+          name: BUILD_NUMBER
+      - name: Restore build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v2
+      - uses: actions/checkout@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build
+        run: ./gradlew build -x jsTest
+        shell: bash
+      - name: Deploy
+        env:
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
+          BINTRAY_USER_ORG: ${{ secrets.BINTRAY_USER_ORG }}
+        run: ./gradlew bintrayUpload -PsnapshotNumber=$BUILD_NUMBER
+        shell: bash
+  build-deploy-windows:
+    needs: snapshot-version
+    runs-on: windows-latest
+    env:
+      EXCLUDE_ANDROID: true
+      EXCLUDE_KTOR: true
+      EXCLUDE_TFX: true
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-    - name: Build
-      env:
-        EXCLUDE_ANDROID: true
-        EXCLUDE_KTOR: true
-        EXCLUDE_TFX: true
-        BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-        BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
-        BINTRAY_USER_ORG: ${{ secrets.BINTRAY_USER_ORG }}
-      run: ./gradlew check -x jsTest assemble bintrayUpload -PsnapshotNumber=$GITHUB_ACTION
+      - name: Download build number
+        uses: actions/download-artifact@v1
+        with:
+          name: BUILD_NUMBER
+      - name: Restore build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v2
+      - uses: actions/checkout@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build
+        run: ./gradlew build
+        shell: bash
+      - name: Deploy
+        env:
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
+          BINTRAY_USER_ORG: ${{ secrets.BINTRAY_USER_ORG }}
+        run: ./gradlew bintrayUpload -PsnapshotNumber=$BUILD_NUMBER
+        shell: bash

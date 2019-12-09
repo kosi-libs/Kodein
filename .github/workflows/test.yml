@@ -1,0 +1,51 @@
+name: Test
+
+on:
+  push:
+    branches-ignore:
+      - stable
+      - master
+      - '[0-9]+.[0-9]+'
+  pull_request:
+    branches: ['**']
+
+jobs:
+  test-unix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+    env:
+      EXCLUDE_ANDROID: false
+      EXCLUDE_KTOR: false
+      EXCLUDE_TFX: false
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build
+        run: ./gradlew assemble
+        shell: bash
+      - name: Test
+        run: ./gradlew check -x jstTest
+        shell: bash
+  test-windows:
+    runs-on: windows-latest
+    env:
+      EXCLUDE_ANDROID: true
+      EXCLUDE_KTOR: true
+      EXCLUDE_TFX: true
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build
+        run: ./gradlew assemble
+        shell: bash
+      - name: Test
+        run: ./gradlew check
+        shell: bash
