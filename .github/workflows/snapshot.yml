@@ -1,4 +1,4 @@
-name: Snapshot - Test, Build & Deploy
+name: Snapshot
 
 on:
   push:

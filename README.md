@@ -1,10 +1,10 @@
 <img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/6.1/Kodein-DI-logo.png" width="700">
 
-[![Kotlin 1.2.70](https://img.shields.io/badge/Kotlin-1.3.20-blue.svg)](http://kotlinlang.org)
-[![JCenter](https://api.bintray.com/packages/kodein-framework/Kodein-DI/Kodein-DI/images/download.svg)](https://bintray.com/kodein-framework/Kodein-DI)
-[![Travis](https://travis-ci.org/Kodein-Framework/Kodein-DI.svg?branch=master)](https://travis-ci.org/Kodein-Framework/Kodein-DI/builds)
+[![Kotlin 1.3.61](https://img.shields.io/badge/Kotlin-1.3.61-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
+[![JCenter](https://api.bintray.com/packages/kodein-framework/Kodein-DI/Kodein-DI-Core/images/download.svg)](https://bintray.com/kodein-framework/Kodein-DI)
+[![Github Actions](https://img.shields.io/github/workflow/status/Kodein-Framework/Kodein-DI/Snapshot/master?logo=github)](https://github.com/Kodein-Framework/Kodein-DI/actions)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Kodein-Framework/Kodein-DI/blob/master/LICENSE.txt)
-[![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg)](https://kotlinlang.slack.com/messages/kodein/)
+[![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg?style=flat&logo=slack)](https://kotlinlang.slack.com/messages/kodein/)
 
 
 KOtlin DEpendency INjection
