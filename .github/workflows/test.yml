@@ -29,7 +29,7 @@ jobs:
         run: ./gradlew assemble
         shell: bash
       - name: Test
-        run: ./gradlew check -x jstTest
+        run: ./gradlew check -x jsTest
         shell: bash
   test-windows:
     runs-on: windows-latest
