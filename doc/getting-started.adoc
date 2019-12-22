@@ -27,7 +27,7 @@ This means that you cannot have `List<String>::class`, only `List<*>::class`.
 
 NOTE: For feature parity and simplicity, Kotlin/JS & Kotlin/Native work the same way.
 
-This leads to a problem, if you are using generic types in the DI container, because the compiler erases generic type information when using Kodein api.
+This leads to a problem, if you are using generic types in the DI container, because the compiler erases generic type information when using Kodein API.
 
 
 ==== Kodein flavours
@@ -130,7 +130,7 @@ TIP: Business units are very often themselves dependencies to other business uni
 
 Each business unit and dependency need to be managed.
 Some dependencies need to be created on demand, while other will need to exist only once.
-For example, a `Random` object may needs to be re-created every time one is needed, while a `Database` object should exist only once in the application.
+For example, a `Random` object may need to be re-created every time one is needed, while a `Database` object should exist only once in the application.
 
 Have a look at these two sentences:
 
@@ -139,7 +139,7 @@ Have a look at these two sentences:
 
 In DI, you *bind* a type (often an interface) to a *binding* that manages an *implementation*.
 A binding is responsible for returning the implementation when asked.
-In this example, we have seen to different bindings:
+In this example, we have seen two different bindings:
 
 * The *provider* always returns a new implementation instance.
 * The *singleton* creates only one implementation instance, and always returns that same instance.
@@ -231,7 +231,7 @@ Dependency injection is more pure in the sense that an injected class will have 
 It is however more cumbersome, and does not provide a lot of features. +
 At contrario, dependency retrieval is easier and feature full, but it requires the class to know about Kodein.
 
-In the end, it boils down to that question: *Do you need this class to be Kodein independant?*
+In the end, it boils down to that question: *Do you need this class to be Kodein independent?*
 If you are building a library that will be used in multiple architecture, you probably do.
 If you are building an application, you probably don't.
 
