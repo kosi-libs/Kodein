@@ -5,10 +5,10 @@ plugins {
 kodein {
     kotlin {
 
-        add(kodeinTargets.jvm) {
+        add(kodeinTargets.jvm.jvm) {
             target.setCompileClasspath()
         }
-        add(kodeinTargets.js)
+        add(kodeinTargets.js.js)
         add(kodeinTargets.native.all)
 
     }

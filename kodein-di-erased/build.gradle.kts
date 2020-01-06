@@ -15,7 +15,7 @@ kodein {
             }
         }
 
-        add(kodeinTargets.jvm) {
+        add(kodeinTargets.jvm.jvm) {
             target.setCompileClasspath()
 
             test.dependencies {
@@ -23,7 +23,7 @@ kodein {
             }
         }
 
-        add(kodeinTargets.js)
+        add(kodeinTargets.js.js)
 
         add(kodeinTargets.native.all)
 

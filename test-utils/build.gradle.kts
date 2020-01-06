@@ -12,7 +12,7 @@ kodein {
             api(project(":kodein-di-core"))
         }
 
-        add(kodeinTargets.jvm) {
+        add(kodeinTargets.jvm.jvm) {
             main.dependencies {
                 api("org.jetbrains.kotlin:kotlin-test")
                 api("org.jetbrains.kotlin:kotlin-test-junit")
@@ -20,7 +20,7 @@ kodein {
             }
         }
 
-        add(kodeinTargets.js) {
+        add(kodeinTargets.js.js) {
             main.dependencies {
                 api("org.jetbrains.kotlin:kotlin-test-js")
                 api("org.jetbrains.kotlin:kotlin-stdlib-js")
