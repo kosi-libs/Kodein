@@ -1,6 +1,6 @@
 package org.kodein.di
 
-import org.kodein.di.bindings.KodeinBinding
+import org.kodein.di.bindings.*
 
 /**
  * A binding that is being defined inside a [Kodein.Builder] bloc.
@@ -10,6 +10,7 @@ import org.kodein.di.bindings.KodeinBinding
  * @property binding The binding
  * @property fromModule The module name that defined the binding (for debug)
  */
+@Deprecated(DEPRECATE_7X)
 open class KodeinDefining<C, A, T: Any>(val binding: KodeinBinding<C, A, T>, val fromModule: String?)
 
 /**
@@ -19,13 +20,16 @@ open class KodeinDefining<C, A, T: Any>(val binding: KodeinBinding<C, A, T>, val
  * @property fromModule The module name that defined the binding (for debug)
  * @property tree The tree that this binding relates to.
  */
+@Deprecated(DEPRECATE_7X)
 class KodeinDefinition<C, A, T: Any>(binding: KodeinBinding<C, A, T>, fromModule: String?, val tree: KodeinTree) : KodeinDefining<C, A, T>(binding, fromModule)
 
 /**
  * A Map containing all bindings associated to their keys
  */
+@Deprecated(DEPRECATE_7X)
 typealias BindingsMap = Map<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>
 
+@Deprecated(DEPRECATE_7X)
 private fun BindingsMap.descriptionImpl(withOverrides: Boolean, ident: Int, keyBindDisp: Kodein.Key<*, *, *>.() -> String, bindingDisp: KodeinBinding<*, *, *>.() -> String): String {
 
     fun StringBuilder.appendBindings(ident: Int, entries: List<Map.Entry<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>>) =
@@ -61,6 +65,7 @@ private fun BindingsMap.descriptionImpl(withOverrides: Boolean, ident: Int, keyB
  *
  * @receiver The bindings map.
  */
+@Deprecated(DEPRECATE_7X)
 fun BindingsMap.description(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, Kodein.Key<*, *, *>::bindDescription, KodeinBinding<*, *, *>::description)
 
 /**
@@ -68,4 +73,5 @@ fun BindingsMap.description(withOverrides: Boolean = false, ident: Int = 8): Str
  *
  * @receiver The bindings map.
  */
+@Deprecated(DEPRECATE_7X)
 fun BindingsMap.fullDescription(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, Kodein.Key<*, *, *>::bindFullDescription, KodeinBinding<*, *, *>::fullDescription)

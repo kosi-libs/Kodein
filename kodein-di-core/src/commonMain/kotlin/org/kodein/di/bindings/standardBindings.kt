@@ -13,6 +13,7 @@ import org.kodein.di.internal.synchronizedIfNull
  * @param createdType The type of objects created by this factory.
  * @property creator The function that will be called each time an instance is requested. Should create a new instance.
  */
+@Deprecated(DEPRECATE_7X)
 class Factory<C, A, T: Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, private val creator: BindingKodein<C>.(A) -> T) : KodeinBinding<C, A, T> {
 
     override fun factoryName() = "factory"
@@ -21,6 +22,7 @@ class Factory<C, A, T: Any>(override val contextType: TypeToken<in C>, override 
 }
 
 @Suppress("UNCHECKED_CAST")
+@Deprecated(DEPRECATE_7X)
 private class BindingContextedKodein<out C>(val base: BindingKodein<*>, override val context: C) : BindingKodein<C> by (base as BindingKodein<C>)
 
 private data class ScopeKey<out A>(val scopeId: Any, val arg: A)
@@ -34,6 +36,7 @@ private data class ScopeKey<out A>(val scopeId: Any, val arg: A)
  * @property createdType The type of the created object, *used for debug print only*.
  * @property creator The function that will be called the first time an instance is requested. Guaranteed to be called only once per argument. Should create a new instance.
  */
+@Deprecated(DEPRECATE_7X)
 class Multiton<C, A, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, val sync: Boolean = true, private val creator: SimpleBindingKodein<C>.(A) -> T) : KodeinBinding<C, A, T> {
     private val _refMaker = refMaker ?: SingletonReference
 
@@ -79,6 +82,7 @@ class Multiton<C, A, T: Any>(override val scope: Scope<C>, override val contextT
  * @param createdType The type of objects created by this provider, *used for debug print only*.
  * @property creator The function that will be called each time an instance is requested. Should create a new instance.
  */
+@Deprecated(DEPRECATE_7X)
 class Provider<C, T: Any>(override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, val creator: NoArgBindingKodein<C>.() -> T) : NoArgKodeinBinding<C, T> {
     override fun factoryName() = "provider"
 
@@ -95,6 +99,7 @@ class Provider<C, T: Any>(override val contextType: TypeToken<in C>, override va
  * @param createdType The type of the created object, *used for debug print only*.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
+@Deprecated(DEPRECATE_7X)
 class Singleton<C, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, val sync: Boolean = true, val creator: NoArgSimpleBindingKodein<C>.() -> T) : NoArgKodeinBinding<C, T> {
     @Suppress("UNCHECKED_CAST")
     private val _refMaker = refMaker ?: SingletonReference
@@ -141,6 +146,7 @@ class Singleton<C, T: Any>(override val scope: Scope<C>, override val contextTyp
  * @param createdType The type of the created object.
  * @param creator The function that will be called as soon as Kodein is ready. Guaranteed to be called only once. Should create a new instance.
  */
+@Deprecated(DEPRECATE_7X)
 class EagerSingleton<T: Any>(builder: KodeinContainer.Builder, override val createdType: TypeToken<out T>, val creator: NoArgSimpleBindingKodein<Any?>.() -> T) : NoArgKodeinBinding<Any?, T> {
 
     override val contextType = AnyToken
@@ -183,6 +189,7 @@ class EagerSingleton<T: Any>(builder: KodeinContainer.Builder, override val crea
  * @param createdType The type of the object, *used for debug print only*.
  * @property instance The object that will always be returned.
  */
+@Deprecated(DEPRECATE_7X)
 class InstanceBinding<T: Any>(override val createdType: TypeToken<out T>, val instance: T) : NoArgKodeinBinding<Any?, T> {
     override fun factoryName() = "instance"
     override val contextType = AnyToken

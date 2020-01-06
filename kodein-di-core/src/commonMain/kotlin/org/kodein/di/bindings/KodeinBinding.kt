@@ -36,6 +36,7 @@ interface Binding<C, A, T: Any> {
  * @param A The type of argument used to create or retrieve an instance.
  * @param T The type of instance this factory creates or retrieves.
  */
+@Deprecated(DEPRECATE_7X)
 interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
 
     /**
@@ -136,6 +137,7 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
  *
  * As a factory does need an argument, it uses `Unit` as its argument.
  */
+@Deprecated(DEPRECATE_7X)
 interface NoArgKodeinBinding<C, T: Any> : KodeinBinding<C, Unit, T>, Binding<C, Unit, T> {
 
     override val argType get() = UnitToken

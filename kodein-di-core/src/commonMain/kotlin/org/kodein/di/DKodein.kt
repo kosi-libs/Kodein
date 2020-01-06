@@ -3,10 +3,12 @@ package org.kodein.di
 /**
  * Any class that extends this interface can use direct Kodein "seamlessly".
  */
+@Deprecated(DEPRECATE_7X)
 interface DKodeinAware {
     /**
      * A Direct Kodein Aware class must be within reach of a [DKodein] object.
      */
+    @Deprecated(DEPRECATE_7X)
     val dkodein: DKodein
 }
 
@@ -14,6 +16,7 @@ interface DKodeinAware {
  * @see [DKodein]
  */
 @Suppress("FunctionName", "ClassName")
+@Deprecated(DEPRECATE_7X)
 interface DKodeinBase : DKodeinAware {
 
     /**
@@ -29,6 +32,7 @@ interface DKodeinBase : DKodeinAware {
     /**
      * Returns a regular [Kodein] instance (Kodein is lazy by default).
      */
+    @Deprecated(DEPRECATE_7X)
     val kodein: Kodein get() = lazy
 
     /**
@@ -174,6 +178,7 @@ interface DKodeinBase : DKodeinAware {
  *
  * Note that `DKodein` is engineered to also work with Java code.
  */
+@Deprecated(DEPRECATE_7X)
 expect interface DKodein : DKodeinBase
 
 /**

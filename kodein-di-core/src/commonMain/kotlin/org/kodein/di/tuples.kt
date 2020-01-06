@@ -12,7 +12,7 @@ package org.kodein.di
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
         " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
-        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
+        " This will be removed in 7.0 ")
 data class Multi2<A1, A2>(
         val a1: A1,
         val a2: A2,
@@ -37,7 +37,7 @@ data class Multi2<A1, A2>(
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
         " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
-        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
+        " This will be removed in 7.0 ")
 data class Multi3<A1, A2, A3>(
         val a1: A1,
         val a2: A2,
@@ -65,7 +65,7 @@ data class Multi3<A1, A2, A3>(
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
         " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
-        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
+        " This will be removed in 7.0 ")
 data class Multi4<A1, A2, A3, A4>(
         val a1: A1,
         val a2: A2,
@@ -99,7 +99,7 @@ data class Multi4<A1, A2, A3, A4>(
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
         " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
-        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
+        " This will be removed in 7.0 ")
 data class Multi5<A1, A2, A3, A4, A5>(
         val a1: A1,
         val a2: A2,

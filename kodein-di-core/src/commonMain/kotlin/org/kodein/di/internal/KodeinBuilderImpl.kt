@@ -3,6 +3,7 @@ package org.kodein.di.internal
 import org.kodein.di.*
 import org.kodein.di.bindings.*
 
+@Deprecated(DEPRECATE_7X)
 internal open class KodeinBuilderImpl internal constructor(
         private val moduleName: String?,
         private val prefix: String,
@@ -70,6 +71,7 @@ internal open class KodeinBuilderImpl internal constructor(
 
 }
 
+@Deprecated(DEPRECATE_7X)
 internal open class KodeinMainBuilderImpl(allowSilentOverride: Boolean) : KodeinBuilderImpl(null, "", HashSet(), KodeinContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList())), Kodein.MainBuilder {
 
     override val externalSources: MutableList<ExternalSource> = ArrayList()

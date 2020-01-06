@@ -20,6 +20,7 @@ import org.kodein.di.internal.KodeinImpl
  * }
  * ```
  */
+@Deprecated(DEPRECATE_7X)
 interface Kodein : KodeinAware {
 
     /**
@@ -151,6 +152,7 @@ interface Kodein : KodeinAware {
      * Defines a kodein DSL function
      */
     @DslMarker
+    @Deprecated(DEPRECATE_7X)
     annotation class KodeinDsl
 
     /**
@@ -417,7 +419,7 @@ interface Kodein : KodeinAware {
      * @property init The block of configuration for this module.
      */
     data class Module(val name: String, val allowSilentOverride: Boolean = false, val prefix: String = "", val init: Builder.() -> Unit) {
-        @Deprecated("You should name your modules, for debug purposes.", replaceWith = ReplaceWith("Module(\"module name\", allowSilentOverride, init)"), level = DeprecationLevel.WARNING)
+        @Deprecated("You should name your modules, for debug purposes.", replaceWith = ReplaceWith("Module(\"module name\", allowSilentOverride, init)"))
         constructor(allowSilentOverride: Boolean = false, init: Builder.() -> Unit) : this("", allowSilentOverride, "", init)
     }
 

@@ -12,12 +12,14 @@ import org.kodein.di.internal.KodeinBuilderImpl
  * @param A The argument type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
+@Deprecated(DEPRECATE_7X)
 abstract class BaseMultiBinding<C, A, T: Any> : KodeinBinding<C, A, Set<T>> {
     internal abstract val set: MutableSet<KodeinBinding<C, A, T>>
 
     override fun factoryName(): String = "bindingSet"
 }
 
+@Deprecated(DEPRECATE_7X)
 private class SetBindingKodein<out C>(private val _base: BindingKodein<C>) : BindingKodein<C> by _base {
     override fun overriddenFactory() = throw IllegalStateException("Cannot access overrides in a Set binding")
     override fun overriddenFactoryOrNull() = throw IllegalStateException("Cannot access overrides in a Set binding")
@@ -31,6 +33,7 @@ private class SetBindingKodein<out C>(private val _base: BindingKodein<C>) : Bin
  * @param A The argument type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
+@Deprecated(DEPRECATE_7X)
 class ArgSetBinding<C, A, T: Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : BaseMultiBinding<C, A, T>() {
 
     override val set = LinkedHashSet<KodeinBinding<C, A, T>>()
@@ -57,6 +60,7 @@ class ArgSetBinding<C, A, T: Any>(override val contextType: TypeToken<in C>, ove
  * @param C The context type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
+@Deprecated(DEPRECATE_7X)
 class SetBinding<C, T: Any>(override val contextType: TypeToken<in C>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : NoArgKodeinBinding<C, Set<T>>, BaseMultiBinding<C, Unit, T>() {
 
     @Suppress("UNCHECKED_CAST")
@@ -83,6 +87,7 @@ class SetBinding<C, T: Any>(override val contextType: TypeToken<in C>, private v
  *
  * @param T The type of the binding in the set.
  */
+@Deprecated(DEPRECATE_7X)
 class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _binder: Kodein.Builder.TypeBinder<T>, private val _colTypeToken: TypeToken<S>) {
 
     /**
@@ -112,4 +117,5 @@ class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _bind
  * @param setTypeToken The type of the bound set.
  */
 @Suppress("FunctionName")
+@Deprecated(DEPRECATE_7X)
 fun <T: Any> Kodein.Builder.TypeBinder<T>.InSet(setTypeToken: TypeToken<Set<T>>) = TypeBinderInSet(this, setTypeToken)

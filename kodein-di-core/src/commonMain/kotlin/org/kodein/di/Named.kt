@@ -1,7 +1,7 @@
 package org.kodein.di
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING")
-inline class Named(val kodein: KodeinAware) {
+inline class Named(@Deprecated(DEPRECATE_7X) val kodein: KodeinAware) {
     /**
      * Gets a factory of [T] for the given argument type and return type.
      * The name of the receiving property is used as tag.

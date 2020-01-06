@@ -10,6 +10,7 @@ import org.kodein.di.internal.newLinkedList
  * In kodein, every binding is stored as a factory.
  * Providers are special classes of factories that take Unit as parameter.
  */
+@Deprecated(DEPRECATE_7X)
 interface KodeinContainer {
 
     /**

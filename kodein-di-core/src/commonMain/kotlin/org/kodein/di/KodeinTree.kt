@@ -6,6 +6,7 @@ import org.kodein.di.bindings.ExternalSource
 /**
  * Tree where the bindings and their factories are sorted & stored.
  */
+@Deprecated(DEPRECATE_7X)
 interface KodeinTree {
 
     /**

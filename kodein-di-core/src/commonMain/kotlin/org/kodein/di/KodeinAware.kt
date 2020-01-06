@@ -7,6 +7,7 @@ import org.kodein.di.internal.DKodeinImpl
 /**
  * Defines a context and its type to be used by Kodein
  */
+@Deprecated(DEPRECATE_7X)
 interface KodeinContext<C> {
         /**
          * The type of the context, used to lookup corresponding bindings.
@@ -39,8 +40,10 @@ interface KodeinContext<C> {
 
 
 @Suppress("UNCHECKED_CAST")
+@Deprecated(DEPRECATE_7X)
 internal inline val KodeinContext<*>.anyType get() = type as TypeToken<in Any?>
 
+@Deprecated(DEPRECATE_7X)
 private object Contexes {
     val AnyKodeinContext = KodeinContext<Any?>(AnyToken, null)
 }
@@ -55,10 +58,12 @@ val AnyKodeinContext get() = Contexes.AnyKodeinContext
 /**
  * Any class that extends this interface can use Kodein "seamlessly".
  */
+@Deprecated(DEPRECATE_7X)
 interface KodeinAware {
     /**
      * A Kodein Aware class must be within reach of a [Kodein] object.
      */
+    @Deprecated(DEPRECATE_7X)
     val kodein: Kodein
 
     /**
@@ -66,6 +71,7 @@ interface KodeinAware {
      *
      * Note that even if you override this property, all bindings that do not use a Context or are not scoped will still work!
      */
+    @Deprecated(DEPRECATE_7X)
     val kodeinContext: KodeinContext<*> get() = AnyKodeinContext
 
     /**
@@ -74,6 +80,7 @@ interface KodeinAware {
      * By default, retrieval happens on first property access.
      * However, you can use a [KodeinTrigger] to force retrieval at a given time of your choice.
      */
+    @Deprecated(DEPRECATE_7X)
     val kodeinTrigger: KodeinTrigger? get() = null
 }
 
@@ -221,6 +228,7 @@ fun <A, T : Any> KodeinAware.InstanceOrNull(argType: TypeToken<in A>, type: Type
  */
 val KodeinAware.direct: DKodein get() = DKodeinImpl(kodein.container, kodeinContext)
 
+@Deprecated(DEPRECATE_7X)
 private class KodeinWrapper(
         private val _base: Kodein,
         override val kodeinContext: KodeinContext<*>,

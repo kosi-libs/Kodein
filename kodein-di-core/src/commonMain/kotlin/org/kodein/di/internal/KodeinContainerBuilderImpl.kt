@@ -14,6 +14,7 @@ import org.kodein.di.bindings.KodeinBinding
  * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
  * @param bindingsMap The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
  */
+@Deprecated(DEPRECATE_7X)
 internal class KodeinContainerBuilderImpl(
         allowOverride: Boolean,
         silentOverride: Boolean,

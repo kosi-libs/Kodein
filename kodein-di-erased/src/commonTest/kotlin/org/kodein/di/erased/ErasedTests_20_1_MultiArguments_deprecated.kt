@@ -8,7 +8,7 @@ import kotlin.test.*
 @Deprecated(message="Multi argument factories are confusing for lot of users, " +
         "we recommend using a data class to pass multiple values to a factory. " +
         " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
-        " This will be removed in 7.0 ", level = DeprecationLevel.WARNING)
+        " This will be removed in 7.0 ")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ErasedTests_20_1_MultiArguments_deprecated {
 

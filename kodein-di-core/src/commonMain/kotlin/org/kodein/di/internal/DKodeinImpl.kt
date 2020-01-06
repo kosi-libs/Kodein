@@ -3,10 +3,12 @@ package org.kodein.di.internal
 import org.kodein.di.*
 
 @Suppress("UNCHECKED_CAST")
+@Deprecated(DEPRECATE_7X)
 private inline val KodeinContext<*>.anyType get() = type as TypeToken<in Any?>
 
 
 @Suppress("FunctionName")
+@Deprecated(DEPRECATE_7X)
 internal abstract class DKodeinBaseImpl protected constructor(override val container: KodeinContainer, val context: KodeinContext<*>) : DKodein {
 
     override val dkodein: DKodein get() = this
@@ -35,5 +37,5 @@ internal abstract class DKodeinBaseImpl protected constructor(override val conta
 
     override fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?, arg: A): T? = container.factoryOrNull(Kodein.Key(context.anyType, argType, type, tag), context.value)?.invoke(arg)
 }
-
+@Deprecated(DEPRECATE_7X)
 internal expect class DKodeinImpl(container: KodeinContainer, context: KodeinContext<*>) : DKodein

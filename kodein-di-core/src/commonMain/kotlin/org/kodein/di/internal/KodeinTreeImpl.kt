@@ -26,6 +26,7 @@ private typealias ArgumentTypeTree = MutableMap<TypeChecker.Down, TagTree>
 
 private typealias TagTree = MutableMap<Any?, Kodein.Key<*, *, *>>
 
+@Deprecated(DEPRECATE_7X)
 internal class KodeinTreeImpl(
         map: Map<Kodein.Key<*, *, *>, List<KodeinDefining<*, *, *>>>,
         override val externalSources: List<ExternalSource>,

@@ -1,6 +1,7 @@
 package org.kodein.di
 
 @Suppress("FunctionName")
+@Deprecated(DEPRECATE_7X)
 actual interface DKodein : DKodeinBase {
     /**
      * Gets all factories that can return a `T` for the given argument type, return type and tag.

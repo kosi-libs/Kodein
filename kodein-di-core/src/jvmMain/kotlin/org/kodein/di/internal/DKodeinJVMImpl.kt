@@ -3,9 +3,11 @@ package org.kodein.di.internal
 import org.kodein.di.*
 
 @Suppress("UNCHECKED_CAST")
+@Deprecated(DEPRECATE_7X)
 private val KodeinContext<*>.anyType get() = type as TypeToken<in Any?>
 
 @Suppress("FunctionName")
+@Deprecated(DEPRECATE_7X)
 internal actual class DKodeinImpl actual constructor(container: KodeinContainer, context: KodeinContext<*>) : DKodeinBaseImpl(container, context), DKodein {
 
     override fun <A, T : Any> AllFactories(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?): List<(A) -> T> = container.allFactories(Kodein.Key(context.anyType, argType, type, tag), context.value)
