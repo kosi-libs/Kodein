@@ -36,7 +36,7 @@ android.include(
         ":framework:android:kodein-di-framework-android-x"
 )
 
-framework("ktor").include(
+framework("KTOR").include(
         ":framework:ktor:kodein-di-framework-ktor-server-jvm",
         ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm"
 )
