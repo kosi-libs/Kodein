@@ -1,8 +1,6 @@
 package org.kodein.di.conf
 
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinContainer
-import org.kodein.di.Volatile
+import org.kodein.di.*
 import org.kodein.di.internal.maySynchronized
 import org.kodein.di.internal.synchronizedIfNull
 
@@ -12,11 +10,13 @@ import org.kodein.di.internal.synchronizedIfNull
  * If you want it to be mutable, the [mutable] property needs to be set **before** any dependency retrieval.
  * The non-mutable configuration methods ([addImport], [addExtend] & [addConfig]) needs to happen **before** any dependency retrieval.
  */
+@Deprecated(DEPRECATE_7X)
 class ConfigurableKodein : Kodein {
 //    override val container: KodeinContainer
 //        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
     /** @suppress */
+    @Deprecated(DEPRECATE_7X)
     override val kodein: Kodein get() = this
 
     private val _lock = Any()

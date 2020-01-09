@@ -1,7 +1,6 @@
 package org.kodein.di.conf
 
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
+import org.kodein.di.*
 
 
 private val oneTrueKodein = ConfigurableKodein()
@@ -15,6 +14,7 @@ val Kodein.Companion.global: ConfigurableKodein get() = oneTrueKodein
 /**
  * A `KodeinAware` class that needs no implementation because the kodein used will be the [global] One True Kodein.
  */
+@Deprecated(DEPRECATE_7X)
 interface KodeinGlobalAware : KodeinAware {
 
     /**
