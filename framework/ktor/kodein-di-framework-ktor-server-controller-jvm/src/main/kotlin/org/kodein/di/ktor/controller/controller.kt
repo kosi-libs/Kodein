@@ -20,6 +20,7 @@ import org.kodein.di.ktor.*
  * }
  *
  */
+@Deprecated(DEPRECATE_7X)
 abstract class AbstractKodeinController(val application: Application) : KodeinController {
     override val kodein by kodein { application }
 }
@@ -40,6 +41,7 @@ abstract class AbstractKodeinController(val application: Application) : KodeinCo
  * }
  *
  */
+@Deprecated(DEPRECATE_7X)
 interface KodeinController : KodeinAware {
     /**
      * Define the getRoutes that may be applied by installing [KodeinControllerFeature]

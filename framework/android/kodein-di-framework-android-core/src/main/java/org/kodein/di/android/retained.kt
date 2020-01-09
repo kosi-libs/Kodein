@@ -5,9 +5,10 @@ package org.kodein.di.android
 import android.app.Activity
 import android.app.Fragment
 import android.os.Bundle
-import org.kodein.di.Kodein
+import org.kodein.di.*
 
 /** @suppress */
+@Deprecated(DEPRECATE_7X)
 class RetainedKodeinFragment : Fragment() {
 
     var kodein: Kodein? = null
@@ -20,6 +21,7 @@ class RetainedKodeinFragment : Fragment() {
 
 }
 
+@Deprecated(DEPRECATE_7X)
 private const val kodeinRetainedFragmentTag = "org.kodein.di.android.RetainedKodeinFragment"
 
 /**
@@ -28,6 +30,7 @@ private const val kodeinRetainedFragmentTag = "org.kodein.di.android.RetainedKod
  * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
  * @property init The block of configuration for this module.
  */
+@Deprecated(DEPRECATE_7X)
 fun Activity.retainedKodein(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Lazy<Kodein> = lazy {
     (fragmentManager.findFragmentByTag(kodeinRetainedFragmentTag) as? RetainedKodeinFragment)?.kodein?.let { return@lazy it }
 

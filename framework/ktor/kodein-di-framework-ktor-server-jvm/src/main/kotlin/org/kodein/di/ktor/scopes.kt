@@ -2,6 +2,7 @@ package org.kodein.di.ktor
 
 import io.ktor.application.*
 import io.ktor.sessions.*
+import org.kodein.di.*
 import org.kodein.di.bindings.*
 import kotlin.collections.set
 
@@ -9,6 +10,7 @@ import kotlin.collections.set
 /**
  * Interface that will help leverage the use of Kodein in the Ktor [Sessions] context
  */
+@Deprecated(DEPRECATE_7X)
 interface KodeinSession {
     fun getSessionId(): Any
 }

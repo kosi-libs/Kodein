@@ -10,12 +10,14 @@ import org.kodein.di.ktor.KodeinFeature.*
  * Ktor [Feature] that provide a global [Kodein] container
  * that would be accessible from everywhere in the Ktor application
  */
+@Deprecated(DEPRECATE_7X)
 class KodeinFeature private constructor() {
 
     /**
      * Configure the [Kodein] container then put it in the [Application.attributes],
      * thus it would be easily accessible (e.g. [Application.kodein]
      */
+    @Deprecated(DEPRECATE_7X)
     fun configureKodein(application: Application, kodeinInstance: Kodein) {
         application.attributes.put(KodeinKey, kodeinInstance)
     }
@@ -46,4 +48,5 @@ class KodeinFeature private constructor() {
 /**
  * Gets or installs a [KodeinFeature] feature for the this [Application] and runs a [configuration] script on it
  */
+@Deprecated(DEPRECATE_7X)
 fun Application.kodein(configuration: Kodein.MainBuilder.() -> Unit) = install(KodeinFeature, configuration)

@@ -8,46 +8,55 @@ import org.kodein.di.*
 
 
 // attribute key for storing injector in a call
+@Deprecated(DEPRECATE_7X)
 val KodeinKey = AttributeKey<Kodein>("kodein")
 
 /**
  * Getting the global [Kodein] container from the [Application]
  */
+@Deprecated(DEPRECATE_7X)
 fun Application.kodein() = LazyKodein { attributes[KodeinKey] }
 
 /**
  * Alias to `kodein`
  */
+@Deprecated(DEPRECATE_7X)
 fun Application.closestKodein() = kodein()
 
 /**
  * Getting the global [Kodein] container from the [Application] parameter
  */
+@Deprecated(DEPRECATE_7X)
 fun kodein(getApplication: () -> Application) = getApplication().kodein()
 
 /**
  * Alias to `kodein`
  */
+@Deprecated(DEPRECATE_7X)
 fun closestKodein(getApplication: () -> Application) = kodein(getApplication)
 
 /**
  * Getting the global [Kodein] container from the [ApplicationCall]
  */
+@Deprecated(DEPRECATE_7X)
 fun ApplicationCall.kodein() = kodein { application }
 
 /**
  * Alias to `kodein`
  */
+@Deprecated(DEPRECATE_7X)
 fun ApplicationCall.closestKodein() = kodein()
 
 /**
  * Getting the global [Kodein] container from the [Routing] feature
  */
+@Deprecated(DEPRECATE_7X)
 fun Routing.kodein() = kodein { application }
 
 /**
  * Alias to `kodein`
  */
+@Deprecated(DEPRECATE_7X)
 fun Routing.closestKodein() = kodein()
 
 /**
@@ -56,6 +65,7 @@ fun Routing.closestKodein() = kodein()
  *
  * @throws IllegalStateException if there is no [Kodein] container
  */
+@Deprecated(DEPRECATE_7X)
 fun Route.kodein(): LazyKodein {
     // Is there an inner Kodein container for this Route ?
     val routeKodein = this.attributes.getOrNull(KodeinKey)
@@ -69,11 +79,13 @@ fun Route.kodein(): LazyKodein {
 /**
  * Alias to `kodein`
  */
+@Deprecated(DEPRECATE_7X)
 fun Route.closestKodein() = kodein()
 
 /**
  * Getting the global [Kodein] container from the [ApplicationCall]
  */
+@Deprecated(DEPRECATE_7X)
 fun PipelineContext<*, ApplicationCall>.kodein(): LazyKodein {
     val routingCall = (this.call as RoutingApplicationCall)
     return routingCall.route.kodein()
@@ -82,4 +94,5 @@ fun PipelineContext<*, ApplicationCall>.kodein(): LazyKodein {
 /**
  * Alias to `kodein`
  */
+@Deprecated(DEPRECATE_7X)
 fun PipelineContext<*, ApplicationCall>.closestKodein() = kodein()

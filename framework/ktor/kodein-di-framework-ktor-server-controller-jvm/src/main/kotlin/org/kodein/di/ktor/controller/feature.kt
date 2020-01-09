@@ -14,8 +14,8 @@ import org.kodein.di.ktor.controller.KodeinControllerFeature.*
  */
 // Deprecated Since 6.4
 @Deprecated(message="KodeinController doesn't need to be bound to the Kodein container. " +
-        "\nConsider using the [Route.controller] method (e.g. `Route.controller { KodeinController() }`)" +
-        "\nWill be remove in 7.0")
+        " Consider using the [Route.controller] method (e.g. `Route.controller { KodeinController() }`)" +
+        " Will be remove in 7.0")
 class KodeinControllerFeature private constructor() {
 
     // Implements ApplicationFeature as a companion object.
