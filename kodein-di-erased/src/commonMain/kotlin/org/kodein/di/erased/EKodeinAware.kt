@@ -262,11 +262,13 @@ inline fun <reified A, reified T : Any> KodeinAware.instanceOrNull(tag: Any? = n
 /**
  * Defines a context and its type to be used by Kodein.
  */
+@Deprecated(DEPRECATE_7X)
 inline fun <reified C> kcontext(context: C) = KodeinContext(erased(), context)
 
 /**
  * Defines a context and its type to be used by Kodein.
  */
+@Deprecated(DEPRECATE_7X)
 inline fun <reified C> kcontext(crossinline getContext: () -> C) = KodeinContext<C>(erased()) { getContext() }
 
 /**
