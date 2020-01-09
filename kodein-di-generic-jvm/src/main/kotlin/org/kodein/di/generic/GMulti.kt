@@ -16,6 +16,11 @@ import org.kodein.di.bindings.*
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  * @return A factory ready to be bound.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 inline fun <C, reified A1, reified A2,                                     reified T: Any> Kodein.BindBuilder.WithContext<C>.factory(noinline creator: BindingKodein<C>.(A1, A2            ) -> T) = Factory(contextType, generic<Multi2<A1, A2            >>(), generic()) { creator(it.a1, it.a2                     ) }
 
 /**
@@ -32,6 +37,11 @@ inline fun <C, reified A1, reified A2,                                     reifi
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  * @return A factory ready to be bound.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 inline fun <C, reified A1, reified A2, reified A3,                         reified T: Any> Kodein.BindBuilder.WithContext<C>.factory(noinline creator: BindingKodein<C>.(A1, A2, A3        ) -> T) = Factory(contextType, generic<Multi3<A1, A2, A3        >>(), generic()) { creator(it.a1, it.a2, it.a3              ) }
 
 /**
@@ -49,6 +59,11 @@ inline fun <C, reified A1, reified A2, reified A3,                         reifi
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  * @return A factory ready to be bound.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 inline fun <C, reified A1, reified A2, reified A3, reified A4,             reified T: Any> Kodein.BindBuilder.WithContext<C>.factory(noinline creator: BindingKodein<C>.(A1, A2, A3, A4    ) -> T) = Factory(contextType, generic<Multi4<A1, A2, A3, A4    >>(), generic()) { creator(it.a1, it.a2, it.a3, it.a4       ) }
 
 /**
@@ -67,6 +82,11 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4,             reifi
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  * @return A factory ready to be bound.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> Kodein.BindBuilder.WithContext<C>.factory(noinline creator: BindingKodein<C>.(A1, A2, A3, A4, A5) -> T) = Factory(contextType, generic<Multi5<A1, A2, A3, A4, A5>>(), generic()) { creator(it.a1, it.a2, it.a3, it.a4, it.a5) }
 
 
@@ -84,6 +104,11 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reifi
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 inline fun <C, reified A1, reified A2,                                     reified T: Any> Kodein.BindBuilder.WithScope<C>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<C>.(A1, A2            ) -> T) = Multiton(scope, contextType, generic<Multi2<A1, A2            >>(), generic(), ref, sync) { creator(it.a1, it.a2                     ) }
 
 /**
@@ -100,6 +125,11 @@ inline fun <C, reified A1, reified A2,                                     reifi
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 inline fun <C, reified A1, reified A2, reified A3,                         reified T: Any> Kodein.BindBuilder.WithScope<C>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<C>.(A1, A2, A3        ) -> T) = Multiton(scope, contextType, generic<Multi3<A1, A2, A3        >>(), generic(), ref, sync) { creator(it.a1, it.a2, it.a3              ) }
 
 /**
@@ -117,6 +147,11 @@ inline fun <C, reified A1, reified A2, reified A3,                         reifi
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 inline fun <C, reified A1, reified A2, reified A3, reified A4,             reified T: Any> Kodein.BindBuilder.WithScope<C>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<C>.(A1, A2, A3, A4    ) -> T) = Multiton(scope, contextType, generic<Multi4<A1, A2, A3, A4    >>(), generic(), ref, sync) { creator(it.a1, it.a2, it.a3, it.a4       ) }
 
 /**
@@ -135,6 +170,11 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4,             reifi
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A factory ready to be bound.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reified T: Any> Kodein.BindBuilder.WithScope<C>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingKodein<C>.(A1, A2, A3, A4, A5) -> T) = Multiton(scope, contextType, generic<Multi5<A1, A2, A3, A4, A5>>(), generic(), ref, sync) { creator(it.a1, it.a2, it.a3, it.a4, it.a5) }
 
 
@@ -149,6 +189,11 @@ inline fun <C, reified A1, reified A2, reified A3, reified A4, reified A5, reifi
  * @param a1 The first argument.
  * @param a2 The second argument.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 @Suppress("FunctionName")
 inline fun <reified A1, reified A2                                    > M(a1: A1, a2: A2                        ) = Multi2(a1, a2,             generic())
 
@@ -164,6 +209,11 @@ inline fun <reified A1, reified A2                                    > M(a1: A1
  * @param a2 The second argument.
  * @param a3 The third argument.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 @Suppress("FunctionName")
 inline fun <reified A1, reified A2, reified A3                        > M(a1: A1, a2: A2, a3: A3                ) = Multi3(a1, a2, a3,         generic())
 
@@ -181,6 +231,11 @@ inline fun <reified A1, reified A2, reified A3                        > M(a1: A1
  * @param a3 The third argument.
  * @param a4 The fourth argument.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 @Suppress("FunctionName")
 inline fun <reified A1, reified A2, reified A3, reified A4            > M(a1: A1, a2: A2, a3: A3, a4: A4        ) = Multi4(a1, a2, a3, a4,     generic())
 
@@ -200,6 +255,11 @@ inline fun <reified A1, reified A2, reified A3, reified A4            > M(a1: A1
  * @param a4 The fourth argument.
  * @param a5 The fifth argument.
  */
+// Deprecated Since 6.4
+@Deprecated(message="Multi argument factories are confusing for lot of users, " +
+        "we recommend using a data class to pass multiple values to a factory. " +
+        " (see https://github.com/Kodein-Framework/Kodein-DI/issues/240) " +
+        " This will be removed in 7.0 ")
 @Suppress("FunctionName")
 inline fun <reified A1, reified A2, reified A3, reified A4, reified A5> M(a1: A1, a2: A2, a3: A3, a4: A4, a5: A5) = Multi5(a1, a2, a3, a4, a5, generic())
 
