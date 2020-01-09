@@ -1,6 +1,6 @@
 package org.kodein.di.jxinject
 
-import org.kodein.di.DKodein
+import org.kodein.di.*
 import org.kodein.di.jxinject.internal.JxInjectorContainer
 
 /**
@@ -8,7 +8,7 @@ import org.kodein.di.jxinject.internal.JxInjectorContainer
  *
  * @property kodein The kodein object to use to retrieve injections.
  */
-class JxInjector internal constructor(private val kodein: DKodein, private val container: JxInjectorContainer) {
+class JxInjector internal constructor(@Deprecated(DEPRECATE_7X) private val kodein: DKodein, private val container: JxInjectorContainer) {
 
     /**
      * Injects all fields and methods annotated with `@Inject` in `receiver`.
