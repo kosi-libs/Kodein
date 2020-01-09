@@ -8,14 +8,14 @@ package org.kodein.di.jxinject
 annotation class ErasedBinding
 
 /**
- * Defines that the annotated `Function0` is to be injected as a kodein provider.
+ * Defines that the annotated `Function0` is to be injected as a di provider.
  */
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ProviderFun
 
 /**
- * Defines that the annotated `Function1` is to be injected as a kodein factory.
+ * Defines that the annotated `Function1` is to be injected as a di factory.
  */
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)

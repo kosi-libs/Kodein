@@ -1,7 +1,7 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
+import org.kodein.di.DI
+import org.kodein.di.DIAware
 import org.kodein.di.direct
 import org.kodein.di.test.*
 import kotlin.reflect.KClass
@@ -13,7 +13,7 @@ class ErasedTests_00_Factory {
     @Test
     fun test_00_FactoryBindingGetFactory() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind() from factory { name: String -> Person(name) }
         }
 
@@ -26,7 +26,7 @@ class ErasedTests_00_Factory {
     @Test
     fun test_01_WithFactoryGetProvider() {
 
-        val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
+        val kodein = DI { bind<Person>() with factory { name: String -> Person(name) } }
 
         val p: () -> Person by kodein.provider(arg = "Salomon")
         val dp: () -> Person = kodein.direct.provider(arg = "Salomon")
@@ -42,7 +42,7 @@ class ErasedTests_00_Factory {
     @Test
     fun test_02_WithFactoryGetInstance() {
 
-        val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
+        val kodein = DI { bind<Person>() with factory { name: String -> Person(name) } }
 
         val p: Person by kodein.instance(arg = "Salomon")
 
@@ -56,7 +56,7 @@ class ErasedTests_00_Factory {
     @Test
     fun test_03_WithGenericFactoryGetInstance() {
 
-        val kodein = Kodein { bind<Person>() with factory { l: List<*> -> Person(l.first().toString()) } }
+        val kodein = DI { bind<Person>() with factory { l: List<*> -> Person(l.first().toString()) } }
 
         val p: Person by kodein.instance(arg = listOf("Salomon", "BRYS"))
 
@@ -66,19 +66,19 @@ class ErasedTests_00_Factory {
     @Test
     fun test_04_WithTwoItfFactoryGetInstance() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with factory { p: IName -> Person(p.firstName) }
             bind<Person>() with factory { p: IFullName -> Person(p.firstName + " " + p.lastName) }
         }
 
         val p: Person by kodein.instance(arg = FullInfos("Salomon", "BRYS", 30))
 
-        assertFailsWith<Kodein.NotFoundException> { p.name }
+        assertFailsWith<DI.NotFoundException> { p.name }
     }
 
     @Test
     fun test_05_WithFactoryLambdaArgument() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<() -> Unit>() with factory { f: () -> Unit -> f }
         }
 
@@ -95,13 +95,13 @@ class ErasedTests_00_Factory {
 
     class FakeLoggerImpl(override val cls: KClass<*>) : FakeLogger
 
-    class AwareTest(override val kodein: Kodein) : KodeinAware {
+    class AwareTest(override val di: DI) : DIAware {
         val logger: FakeLogger by instance(arg = this::class)
     }
 
     @Test
     fun test_06_StarFactory() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<FakeLogger>() with factory { cls: KClass<*> -> FakeLoggerImpl(cls) }
         }
 

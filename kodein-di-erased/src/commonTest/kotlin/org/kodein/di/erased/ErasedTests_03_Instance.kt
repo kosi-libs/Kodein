@@ -1,7 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
-import org.kodein.di.direct
+import org.kodein.di.DI
 import org.kodein.di.test.*
 import kotlin.test.*
 
@@ -12,10 +11,10 @@ class ErasedTests_03_Instance {
 
         val p = Person()
 
-        val kodein = Kodein { bind() from instance(p) }
+        val di = DI { bind() from instance(p) }
 
-        val p1: Person by kodein.instance()
-        val p2: Person by kodein.instance()
+        val p1: Person by di.instance()
+        val p2: Person by di.instance()
 
         assertSame(p1, p)
         assertSame(p2, p)
@@ -25,10 +24,10 @@ class ErasedTests_03_Instance {
 
         val p = Person()
 
-        val kodein = Kodein { bind<Person>() with instance(p) }
+        val di = DI { bind<Person>() with instance(p) }
 
-        val p1: () -> Person by kodein.provider()
-        val p2: () -> Person by kodein.provider()
+        val p1: () -> Person by di.provider()
+        val p2: () -> Person by di.provider()
 
         assertSame(p1(), p)
         assertSame(p2(), p)

@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.findAllBindings
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
@@ -11,7 +11,7 @@ class GenericJvmTests_22_Search {
 
     @Test
     fun test_00_SearchTagged() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<String>(tag = "foo") with provider { "String-foo" }
             bind<String>(tag = "bar") with provider { "String-bar" }
             bind<Int>(tag = "foo") with provider { 42 }
@@ -26,7 +26,7 @@ class GenericJvmTests_22_Search {
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            kodein.container.factory(key as Kodein.Key<Any?, Any?, Any>, null).invoke(Unit)
+            kodein.container.factory(key as DI.Key<Any?, Any?, Any>, null).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)
@@ -35,7 +35,7 @@ class GenericJvmTests_22_Search {
 
     @Test
     fun test_01_SearchArgument() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<String>() with provider { "String-foo" }
             bind<String>() with factory { name: String -> "String-$name" }
             bind<Int>() with provider { 42 }
@@ -50,7 +50,7 @@ class GenericJvmTests_22_Search {
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            kodein.container.factory(key as Kodein.Key<Any?, Unit, Any>, null).invoke(Unit)
+            kodein.container.factory(key as DI.Key<Any?, Unit, Any>, null).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)
@@ -59,7 +59,7 @@ class GenericJvmTests_22_Search {
 
     @Test
     fun test_02_SearchContext() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<String>() with provider { "String-foo" }
             bind<String>() with contexted<String>().provider { "String-$context" }
             bind<Int>() with provider { 42 }
@@ -74,7 +74,7 @@ class GenericJvmTests_22_Search {
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            kodein.container.factory(key as Kodein.Key<Any?, Any?, Any>, null).invoke(Unit)
+            kodein.container.factory(key as DI.Key<Any?, Any?, Any>, null).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)

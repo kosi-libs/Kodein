@@ -1,7 +1,7 @@
 package org.kodein.di.bindings
 
 import org.kodein.di.AnyToken
-import org.kodein.di.KodeinContext
+import org.kodein.di.DIContext
 import org.kodein.di.TypeToken
 import org.kodein.di.Volatile
 import org.kodein.di.internal.maySynchronized
@@ -187,7 +187,7 @@ class SimpleAutoContextTranslator<S>(override val scopeType: TypeToken<in S>, pr
     override fun toString() = "(${scopeType.simpleDispString()} -> ${contextType.simpleDispString()})"
 }
 
-fun <C, S> ContextTranslator<C, S>.toKContext(ctx: C) = KodeinContext(scopeType, translate(ctx))
+fun <C, S> ContextTranslator<C, S>.toKContext(ctx: C) = DIContext(scopeType, translate(ctx))
 
 internal class CompositeContextTranslator<in C, I, S>(val src: ContextTranslator<C, I>, val dst: ContextTranslator<I, S>) : ContextTranslator<C, S> {
     override val contextType get() = src.contextType

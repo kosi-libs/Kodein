@@ -1,6 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.newInstance
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
@@ -15,24 +15,24 @@ class ErasedTests_17_NewInstance {
 
     @Test
     fun test_00_NewInstance() {
-        val kodein = Kodein {
+        val di = DI {
             bind<Person>(tag = "Author") with singleton { Person("Salomon") }
             bind<Person>(tag = "Spouse") with singleton { Person("Laila") }
         }
 
-        val wedding by kodein.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }
+        val wedding by di.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }
         assertEquals("Salomon", wedding.him.name)
         assertEquals("Laila", wedding.her.name)
     }
 
     @Test
     fun test_01_DirectNewInstance() {
-        val kodein = Kodein.direct {
+        val di = DI.direct {
             bind<Person>(tag = "Author") with singleton { Person("Salomon") }
             bind<Person>(tag = "Spouse") with singleton { Person("Laila") }
         }
 
-        val wedding = kodein.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }
+        val wedding = di.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }
         assertEquals("Salomon", wedding.him.name)
         assertEquals("Laila", wedding.her.name)
     }

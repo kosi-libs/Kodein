@@ -53,7 +53,7 @@ import org.kodein.di.*
 import org.kodein.di.bindings.*
 import java.io.File
 
-val androidCoreContextTranslators = Kodein.Module(name = "\u2063androidCoreContextTranslators") {
+val androidCoreContextTranslators = DI.Module(name = "\u2063androidCoreContextTranslators") {
     RegisterContextTranslator(SimpleContextTranslator<Fragment, Activity>(erased(), erased()) { it.activity })
     RegisterContextTranslator(SimpleContextTranslator<Dialog, Context>(erased(), erased()) { it.context })
     RegisterContextTranslator(SimpleContextTranslator<View, Context>(erased(), erased()) { it.context })
@@ -62,13 +62,13 @@ val androidCoreContextTranslators = Kodein.Module(name = "\u2063androidCoreConte
 }
 
 /**
- * Android `Kodein.Module` that defines a lot of platform bindings.
+ * Android `DI.Module` that defines a lot of platform bindings.
  *
  * @param app The application object, used for context.
- * @return An Android `Kodein.Module` that defines a lot of platform bindings.
+ * @return An Android `DI.Module` that defines a lot of platform bindings.
  */
 @SuppressLint("NewApi")
-fun androidCoreModule(app: Application) = Kodein.Module(name = "\u2063androidModule") {
+fun androidCoreModule(app: Application) = DI.Module(name = "\u2063androidModule") {
 
     importOnce(androidCoreContextTranslators)
 

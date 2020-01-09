@@ -4,29 +4,29 @@ import io.ktor.application.*
 import io.ktor.sessions.*
 import org.kodein.di.*
 import org.kodein.di.bindings.*
-import kotlin.collections.set
 
 //region Session scope
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("KodeinDISession"), DeprecationLevel.ERROR)
+typealias KodeinSession = KodeinDISession
 /**
- * Interface that will help leverage the use of Kodein in the Ktor [Sessions] context
+ * Interface that will help leverage the use of DI in the Ktor [Sessions] context
  */
-@Deprecated(DEPRECATE_7X)
-interface KodeinSession {
+interface KodeinDISession {
     fun getSessionId(): Any
 }
 
 /**
- * Kodein scope that will provide singletons according to a specific [KodeinSession]
+ * DI scope that will provide singletons according to a specific [KodeinDISession]
  */
-object SessionScope : Scope<KodeinSession> {
+object SessionScope : Scope<KodeinDISession> {
 
     private val mapRegistry = HashMap<Any, ScopeRegistry>()
 
     /**
-     * Reclaim the right [ScopeRegistry] regarding to the given [KodeinSession]
-     * This will help maintaining and retrieving singletons linked with the [KodeinSession]
+     * Reclaim the right [ScopeRegistry] regarding to the given [KodeinDISession]
+     * This will help maintaining and retrieving singletons linked with the [KodeinDISession]
      */
-    override fun getRegistry(context: KodeinSession): ScopeRegistry {
+    override fun getRegistry(context: KodeinDISession): ScopeRegistry {
         return synchronized(mapRegistry) {
             mapRegistry[context.getSessionId()] ?: run {
                 val scopeRegistry = StandardScopeRegistry()
@@ -37,12 +37,12 @@ object SessionScope : Scope<KodeinSession> {
     }
 
     /**
-     * Remove amd close the [ScopeRegistry] linked to the [KodeinSession]
+     * Remove amd close the [ScopeRegistry] linked to the [KodeinDISession]
      * The linked singletons won't be retrievable anymore
      *
      * This is usually called when closing / expiring the session
      */
-    fun close(session: KodeinSession) {
+    fun close(session: KodeinDISession) {
         synchronized(mapRegistry) {
             val scopeRegistry = mapRegistry[session.getSessionId()]
             if (scopeRegistry != null) {
@@ -60,7 +60,7 @@ object SessionScope : Scope<KodeinSession> {
 inline fun <reified T> CurrentSession.clearSessionScope() {
     val session = get<T>()
 
-    if(session != null && session is KodeinSession){
+    if(session != null && session is KodeinDISession){
         SessionScope.close(session)
     }
 

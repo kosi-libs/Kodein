@@ -2,7 +2,7 @@
 
 package org.kodein.di.conf
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.erased.*
 import org.kodein.di.test.FixMethodOrder
@@ -14,159 +14,159 @@ import kotlin.test.*
 class ConfTests {
 
     @Test fun test_00_Configurable() {
-        val kodein = ConfigurableKodein()
+        val di = ConfigurableDI()
 
-        kodein.addConfig {
+        di.addConfig {
             constant(tag = "answer") with 42
         }
 
-        assertTrue(kodein.canConfigure)
+        assertTrue(di.canConfigure)
 
-        val answer: Int by kodein.instance(tag = "answer")
+        val answer: Int by di.instance(tag = "answer")
 
         assertEquals(42, answer)
 
-        assertFalse(kodein.canConfigure)
+        assertFalse(di.canConfigure)
     }
 
     @Test fun test_01_Clear() {
-        val kodein = ConfigurableKodein(true)
+        val di = ConfigurableDI(true)
 
-        kodein.addImport(Kodein.Module {
+        di.addImport(DI.Module {
             constant(tag = "answer") with 21
         })
 
-        assertEquals(21, kodein.direct.instance(tag = "answer"))
+        assertEquals(21, di.direct.instance(tag = "answer"))
 
-        kodein.clear()
+        di.clear()
 
-        kodein.addConfig {
+        di.addConfig {
             constant(tag = "answer") with 42
         }
 
-        assertEquals(42, kodein.direct.instance(tag = "answer"))
+        assertEquals(42, di.direct.instance(tag = "answer"))
     }
 
     @Test fun test_02_Mutate() {
-        val kodein = ConfigurableKodein(true)
+        val di = ConfigurableDI(true)
 
-        kodein.addExtend(Kodein {
+        di.addExtend(DI {
             constant(tag = "half") with 21
         })
 
-        assertEquals(21, kodein.direct.instance(tag = "half"))
+        assertEquals(21, di.direct.instance(tag = "half"))
 
-        kodein.addConfig {
+        di.addConfig {
             constant(tag = "full") with 42
         }
 
-        assertEquals(21, kodein.direct.instance(tag = "half"))
-        assertEquals(42, kodein.direct.instance(tag = "full"))
+        assertEquals(21, di.direct.instance(tag = "half"))
+        assertEquals(42, di.direct.instance(tag = "full"))
     }
 
     @Test fun test_03_NonMutableClear() {
-        val kodein = ConfigurableKodein()
+        val di = ConfigurableDI()
 
-        kodein.addConfig {
+        di.addConfig {
             constant(tag = "answer") with 21
         }
 
-        assertEquals(21, kodein.direct.instance(tag = "answer"))
+        assertEquals(21, di.direct.instance(tag = "answer"))
 
         assertFailsWith<IllegalStateException> {
-            kodein.clear()
+            di.clear()
         }
     }
 
     @Test fun test_04_NonMutableMutate() {
-        val kodein = ConfigurableKodein()
+        val di = ConfigurableDI()
 
-        kodein.addConfig {
+        di.addConfig {
             constant(tag = "answer") with 21
         }
 
-        assertEquals(21, kodein.direct.instance(tag = "answer"))
+        assertEquals(21, di.direct.instance(tag = "answer"))
 
         assertFailsWith<IllegalStateException> {
-            kodein.addConfig {}
+            di.addConfig {}
         }
     }
 
     @Test fun test_05_mutateConfig() {
-        val kodein = ConfigurableKodein(true)
+        val di = ConfigurableDI(true)
 
-        kodein.addConfig {
+        di.addConfig {
             constant(tag = "half") with 21
         }
 
-        assertEquals(21, kodein.direct.instance(tag = "half"))
+        assertEquals(21, di.direct.instance(tag = "half"))
 
-        kodein.addConfig {
+        di.addConfig {
             constant(tag = "full") with 42
         }
 
-        assertEquals(21, kodein.direct.instance(tag = "half"))
-        assertEquals(42, kodein.direct.instance(tag = "full"))
+        assertEquals(21, di.direct.instance(tag = "half"))
+        assertEquals(42, di.direct.instance(tag = "full"))
     }
 
     @Test fun test_06_nonMutableMutateConfig() {
-        val kodein = ConfigurableKodein()
+        val di = ConfigurableDI()
 
-        kodein.addConfig {
+        di.addConfig {
             constant(tag = "half") with 21
         }
 
-        assertEquals(21, kodein.direct.instance(tag = "half"))
+        assertEquals(21, di.direct.instance(tag = "half"))
 
         assertFailsWith<IllegalStateException> {
-            kodein.addConfig {}
+            di.addConfig {}
         }
     }
 
     @Test
     fun test_07_ChildOverride() {
-        val kodein = ConfigurableKodein(true)
+        val di = ConfigurableDI(true)
 
-        kodein.addConfig {
+        di.addConfig {
             bind<String>() with factory { n: FullName -> n.firstName }
         }
 
-        assertEquals("Salomon", kodein.direct.factory<FullName, String>().invoke(FullName("Salomon", "BRYS")))
+        assertEquals("Salomon", di.direct.factory<FullName, String>().invoke(FullName("Salomon", "BRYS")))
 
-        kodein.addConfig {
+        di.addConfig {
             bind<String>(overrides = true) with factory { n: FullName -> n.firstName + " " + n.lastName }
         }
 
-        assertEquals("Salomon BRYS", kodein.direct.factory<FullName, String>().invoke(FullName("Salomon", "BRYS")))
+        assertEquals("Salomon BRYS", di.direct.factory<FullName, String>().invoke(FullName("Salomon", "BRYS")))
     }
 
-    class T08: KodeinGlobalAware {
+    class T08: DIGlobalAware {
         val answer: Int by instance(tag = "full")
     }
 
     @Test fun test_08_Global() {
-        Kodein.global.mutable = true
+        DI.global.mutable = true
 
-        Kodein.global.addConfig {
+        DI.global.addConfig {
             constant(tag = "half") with 21
         }
 
-        assertEquals(21, Kodein.global.direct.instance(tag = "half"))
+        assertEquals(21, DI.global.direct.instance(tag = "half"))
 
-        Kodein.global.addConfig {
+        DI.global.addConfig {
             constant(tag = "full") with 42
         }
 
-        assertEquals(21, Kodein.global.direct.instance(tag = "half"))
+        assertEquals(21, DI.global.direct.instance(tag = "half"))
         assertEquals(42, T08().answer)
     }
 
     @Test fun test_09_Callback() {
-        val kodein = ConfigurableKodein()
+        val di = ConfigurableDI()
 
         var ready = false
 
-        kodein.addConfig {
+        di.addConfig {
             bind() from singleton { "test" }
 
             onReady {
@@ -178,7 +178,7 @@ class ConfTests {
 
         assertFalse(ready)
 
-        val value: String by kodein.instance()
+        val value: String by di.instance()
 
         assertFalse(ready)
 

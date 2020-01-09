@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.test.*
 import kotlin.test.*
@@ -11,13 +11,13 @@ class GenericJvmTests_07_Error {
     @Test
     fun test_00_DependencyLoop() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<A>() with singleton { A(instance()) }
             bind<B>() with singleton { B(instance()) }
             bind<C>() with singleton { C(instance()) }
         }
 
-        val ex = assertFailsWith<Kodein.DependencyLoopException> {
+        val ex = assertFailsWith<DI.DependencyLoopException> {
             kodein.direct.instance<A>()
         }
 
@@ -35,14 +35,14 @@ Dependency recursion:
     @Test
     fun test_01_DependencyLoopFullDescription() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             fullDescriptionOnError = true
             bind<A>() with singleton { A(instance()) }
             bind<B>() with singleton { B(instance()) }
             bind<C>() with singleton { C(instance()) }
         }
 
-        val ex = assertFailsWith<Kodein.DependencyLoopException> {
+        val ex = assertFailsWith<DI.DependencyLoopException> {
             kodein.direct.instance<A>()
         }
 
@@ -69,14 +69,14 @@ Dependency recursion:
 
     @Test fun test_02_RecursiveDependencies() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind() from provider { Recurs0(instance()) }
             bind() from provider { RecursA(instance()) }
             bind() from provider { RecursB(instance(tag = "yay")) }
             bind(tag = "yay") from provider { RecursC(instance()) }
         }
 
-        assertFailsWith<Kodein.DependencyLoopException> {
+        assertFailsWith<DI.DependencyLoopException> {
             kodein.direct.instance<Recurs0>()
         }
     }
@@ -84,7 +84,7 @@ Dependency recursion:
     @Test
     fun test_03_NoDependencyLoop() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<A>() with singleton { A(instance()) }
             bind<A>(tag = "root") with singleton { A(null) }
             bind<B>() with singleton { B(instance()) }
@@ -98,21 +98,21 @@ Dependency recursion:
     @Test
     fun test_04_TypeNotFound() {
 
-        val kodein = Kodein.direct {}
+        val kodein = DI.direct {}
 
-        assertFailsWith<Kodein.NotFoundException> {
+        assertFailsWith<DI.NotFoundException> {
             kodein.instance<Person>()
         }
 
-        assertFailsWith<Kodein.NotFoundException> {
+        assertFailsWith<DI.NotFoundException> {
             kodein.instance<FullName>()
         }
 
-        assertFailsWith<Kodein.NotFoundException> {
+        assertFailsWith<DI.NotFoundException> {
             kodein.instance<List<*>>()
         }
 
-        assertFailsWith<Kodein.NotFoundException> {
+        assertFailsWith<DI.NotFoundException> {
             kodein.instance<List<String>>()
         }
     }
@@ -120,23 +120,23 @@ Dependency recursion:
     @Test
     fun test_05_TypeNotFoundFullDescription() {
 
-        val kodein = Kodein.direct {
+        val kodein = DI.direct {
             fullDescriptionOnError = true
         }
 
-        assertEquals("No binding found for bind<org.kodein.di.test.Person>() with ? { ? }\nRegistered in this Kodein container:\n", assertFailsWith<Kodein.NotFoundException> { kodein.instance<Person>() }.message)
+        assertEquals("No binding found for bind<org.kodein.di.test.Person>() with ? { ? }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { kodein.instance<Person>() }.message)
     }
 
 
     @Test
     fun test_06_NameNotFound() {
 
-        val kodein = Kodein.direct {
+        val kodein = DI.direct {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with provider { Person("Salomon") }
         }
 
-        assertFailsWith<Kodein.NotFoundException> {
+        assertFailsWith<DI.NotFoundException> {
             kodein.instance<Person>(tag = "schtroumpf")
         }
     }
@@ -144,11 +144,11 @@ Dependency recursion:
     @Test
     fun test_07_FactoryIsNotProvider() {
 
-        val kodein = Kodein.direct {
+        val kodein = DI.direct {
             bind<Person>() with factory { name: String -> Person(name) }
         }
 
-        assertFailsWith<Kodein.NotFoundException> {
+        assertFailsWith<DI.NotFoundException> {
             kodein.provider<Person>()
         }
     }
@@ -156,11 +156,11 @@ Dependency recursion:
     @Test
     fun test_08_ProviderIsNotFactory() {
 
-        val kodein = Kodein.direct {
+        val kodein = DI.direct {
             bind<Person>() with provider { Person() }
         }
 
-        assertFailsWith<Kodein.NotFoundException> {
+        assertFailsWith<DI.NotFoundException> {
             kodein.factory<Int, Person>()
         }
     }
@@ -170,7 +170,7 @@ Dependency recursion:
 
         fun unit(@Suppress("UNUSED_PARAMETER") i: Int = 42) {}
 
-        val kodein = Kodein.direct {
+        val kodein = DI.direct {
             assertFailsWith<IllegalArgumentException> {
                 bind() from factory { i: Int -> unit(i) }
             }

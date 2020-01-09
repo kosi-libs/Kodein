@@ -4,49 +4,50 @@ import io.ktor.application.*
 import io.ktor.util.*
 import org.kodein.di.*
 import org.kodein.di.bindings.*
-import org.kodein.di.ktor.KodeinFeature.*
+import org.kodein.di.ktor.DIFeature.*
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIFeature"), DeprecationLevel.ERROR)
+typealias KodeinFeature = DIFeature
 /**
- * Ktor [Feature] that provide a global [Kodein] container
+ * Ktor [Feature] that provide a global [DI] container
  * that would be accessible from everywhere in the Ktor application
  */
-@Deprecated(DEPRECATE_7X)
-class KodeinFeature private constructor() {
+class DIFeature private constructor() {
 
     /**
-     * Configure the [Kodein] container then put it in the [Application.attributes],
-     * thus it would be easily accessible (e.g. [Application.kodein]
+     * Configure the [DI] container then put it in the [Application.attributes],
+     * thus it would be easily accessible (e.g. [Application.di]
      */
-    @Deprecated(DEPRECATE_7X)
-    fun configureKodein(application: Application, kodeinInstance: Kodein) {
-        application.attributes.put(KodeinKey, kodeinInstance)
+    fun configureDI(application: Application, diInstance: DI) {
+        application.attributes.put(KodeinDIKey, diInstance)
     }
 
     // Implements ApplicationFeature as a companion object.
-    companion object Feature : ApplicationFeature<Application, Kodein.MainBuilder, KodeinFeature> {
+    companion object Feature : ApplicationFeature<Application, DI.MainBuilder, DIFeature> {
         // Creates a unique key for the feature.
-        override val key = AttributeKey<KodeinFeature>("[Global Kodein Container]")
+        override val key = AttributeKey<DIFeature>("[Global DI Container]")
 
         // Code to execute when installing the feature.
-        override fun install(pipeline: Application, configure: Kodein.MainBuilder.() -> Unit): KodeinFeature {
+        override fun install(pipeline: Application, configure: DI.MainBuilder.() -> Unit): DIFeature {
             val application = pipeline
 
             val applicationToken = erased<Application>()
 
-            val kodeinInstance = Kodein {
+            val diInstance = DI {
                 Bind<Application>(erased()) with InstanceBinding(applicationToken, application)
                 configure()
             }
 
-            return KodeinFeature().apply {
-                configureKodein(pipeline, kodeinInstance)
+            return DIFeature().apply {
+                configureDI(pipeline, diInstance)
             }
         }
     }
 }
 
 /**
- * Gets or installs a [KodeinFeature] feature for the this [Application] and runs a [configuration] script on it
+ * Gets or installs a [DIFeature] feature for the this [Application] and runs a [configuration] script on it
  */
-@Deprecated(DEPRECATE_7X)
-fun Application.kodein(configuration: Kodein.MainBuilder.() -> Unit) = install(KodeinFeature, configuration)
+fun Application.di(configuration: DI.MainBuilder.() -> Unit) = install(DIFeature, configuration)
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di(configuration)"), DeprecationLevel.ERROR)
+fun Application.kodein(configuration: DI.MainBuilder.() -> Unit) = di(configuration)

@@ -1,6 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
@@ -15,7 +15,7 @@ class ErasedJvmTests_01_Thread {
     // Only the JVM supports threads
     @Test
     fun test_00_ThreadSingletonBindingGetInstance() {
-        val kodein = Kodein { bind<Person>() with singleton(ref = threadLocal) { Person() } }
+        val kodein = DI { bind<Person>() with singleton(ref = threadLocal) { Person() } }
 
         lateinit var tp1: Person
 
@@ -39,7 +39,7 @@ class ErasedJvmTests_01_Thread {
     // Only the JVM supports threads
     @Test
     fun test_01_ThreadSingletonBindingGetProvider() {
-        val kodein = Kodein { bind<Person>() with singleton(ref = threadLocal) { Person() } }
+        val kodein = DI { bind<Person>() with singleton(ref = threadLocal) { Person() } }
 
         lateinit var tp1: Person
         lateinit var tp2: () -> Person
@@ -65,7 +65,7 @@ class ErasedJvmTests_01_Thread {
     // Only the JVM supports threads
     @Test
     fun test_02_threadMultiton() {
-        val kodein = Kodein { bind() from multiton(ref = threadLocal) { name: String -> Person(name) } }
+        val kodein = DI { bind() from multiton(ref = threadLocal) { name: String -> Person(name) } }
 
         lateinit var tp1: Person
         lateinit var tp3: Person

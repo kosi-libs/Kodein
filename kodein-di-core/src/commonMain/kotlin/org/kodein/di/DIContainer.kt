@@ -1,22 +1,23 @@
 package org.kodein.di
 
 import org.kodein.di.bindings.ContextTranslator
-import org.kodein.di.bindings.KodeinBinding
-import org.kodein.di.internal.newLinkedList
+import org.kodein.di.bindings.DIBinding
+
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIContainer"), DeprecationLevel.ERROR)
+typealias KodeinContainer = DIContainer
 
 /**
- * The Container is the entry point for retrieval without Kodein's inline & reified shenanigans.
+ * The Container is the entry point for retrieval without DI's inline & reified shenanigans.
  *
- * In kodein, every binding is stored as a factory.
+ * In DI, every binding is stored as a factory.
  * Providers are special classes of factories that take Unit as parameter.
  */
-@Deprecated(DEPRECATE_7X)
-interface KodeinContainer {
+interface DIContainer {
 
     /**
      * The tree that contains all bindings.
      */
-    val tree: KodeinTree
+    val tree: DITree
 
     /**
      * Retrieve a factory for the given key.
@@ -28,10 +29,10 @@ interface KodeinContainer {
      * @param context The context to pass to the binding.
      * @param overrideLevel 0 if looking for a regular binding, 1 or more if looking for a binding that has been overridden.
      * @return The found factory.
-     * @throws Kodein.NotFoundException If no factory was found.
-     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     * @throws DI.NotFoundException If no factory was found.
+     * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C, A, T: Any> factory(key: Kodein.Key<C, A, T>, context: C, overrideLevel: Int = 0): (A) -> T
+    fun <C, A, T: Any> factory(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): (A) -> T
 
     /**
      * Retrieve a factory for the given key, or null if none is found.
@@ -43,9 +44,9 @@ interface KodeinContainer {
      * @param context The context to pass to the binding.
      * @param overrideLevel 0 if looking for the regular binding, 1 or more if looking for a binding that has been overridden.
      * @return The found factory, or null if no factory was found.
-     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C, A, T: Any> factoryOrNull(key: Kodein.Key<C, A, T>, context: C, overrideLevel: Int = 0): ((A) -> T)?
+    fun <C, A, T: Any> factoryOrNull(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): ((A) -> T)?
 
     /**
      * Retrieve all factories that match the given key.
@@ -57,10 +58,10 @@ interface KodeinContainer {
      * @param context The context to pass to the bindings.
      * @param overrideLevel 0 if looking for regular bindings, 1 or more if looking for bindings that have been overridden.
      * @return A list of matching factories.
-     * @throws Kodein.NotFoundException If no factory was found.
-     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     * @throws DI.NotFoundException If no factory was found.
+     * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C, A, T: Any> allFactories(key: Kodein.Key<C, A, T>, context: C, overrideLevel: Int = 0): List<(A) -> T>
+    fun <C, A, T: Any> allFactories(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): List<(A) -> T>
 
     /**
      * Retrieve a provider for the given key.
@@ -71,10 +72,10 @@ interface KodeinContainer {
      * @param context The context to pass to the binding.
      * @param overrideLevel 0 if looking for the regular binding, 1 or more if looking for a binding that has been overridden.
      * @return The found provider.
-     * @throws Kodein.NotFoundException If no provider was found.
-     * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     * @throws DI.NotFoundException If no provider was found.
+     * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <C, T: Any> provider(key: Kodein.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): () -> T =
+    fun <C, T: Any> provider(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): () -> T =
             factory(key, context).toProvider { Unit }
 
     /**
@@ -86,9 +87,9 @@ interface KodeinContainer {
      * @param context The context to pass to the binding.
      * @param overrideLevel 0 if looking for the regular binding, 1 or more if looking for a binding that has been overridden.
      * @return The found provider, or null if no provider was found.
-     * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <C, T: Any> providerOrNull(key: Kodein.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): (() -> T)? =
+    fun <C, T: Any> providerOrNull(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): (() -> T)? =
             factoryOrNull(key, context)?.toProvider { Unit }
 
     /**
@@ -100,10 +101,10 @@ interface KodeinContainer {
      * @param context The context to pass to the bindings.
      * @param overrideLevel 0 if looking for regular bindings, 1 or more if looking for bindings that have been overridden.
      * @return A list of matching providers.
-     * @throws Kodein.NotFoundException If no factory was found.
-     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     * @throws DI.NotFoundException If no factory was found.
+     * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C, T: Any> allProviders(key: Kodein.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): List<() -> T> =
+    fun <C, T: Any> allProviders(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): List<() -> T> =
             allFactories(key, context).map { it.toProvider { Unit } }
 
     /**
@@ -121,23 +122,23 @@ interface KodeinContainer {
          * @param key The key to bind.
          * @param binding The binding to bind.
          * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
-         * @throws Kodein.OverridingException If this bindings overrides an existing binding and is not allowed to.
+         * @throws DI.OverridingException If this bindings overrides an existing binding and is not allowed to.
          */
-        fun <C, A, T: Any> bind(key: Kodein.Key<C, A, T>, binding: KodeinBinding<in C, in A, out T>, fromModule: String? = null, overrides: Boolean? = null)
+        fun <C, A, T: Any> bind(key: DI.Key<C, A, T>, binding: DIBinding<in C, in A, out T>, fromModule: String? = null, overrides: Boolean? = null)
 
         /**
-         * Imports all bindings defined in the given [KodeinContainer] into this builder.
+         * Imports all bindings defined in the given [DIContainer] into this builder.
          *
          * Note that this preserves scopes, meaning that a singleton-bound in the container argument will continue to exist only once.
          * Both containers will share the same instance.
          *
          * @param container The container object to import.
          * @param allowOverride Whether this module is allowed to override existing bindings.
-         *                      If it is not, overrides (even explicit) will throw an [Kodein.OverridingException].
-         * @throws Kodein.OverridingException If this kodein overrides an existing binding and is not allowed to
+         *                      If it is not, overrides (even explicit) will throw an [DI.OverridingException].
+         * @throws DI.OverridingException If this DI overrides an existing binding and is not allowed to
          *                                    OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(container: KodeinContainer, allowOverride: Boolean = false, copy: Set<Kodein.Key<*, *, *>> = emptySet())
+        fun extend(container: DIContainer, allowOverride: Boolean = false, copy: Set<DI.Key<*, *, *>> = emptySet())
 
         /**
          * Creates a sub builder that will register its bindings to the same map.
@@ -148,11 +149,11 @@ interface KodeinContainer {
         fun subBuilder(allowOverride: Boolean = false, silentOverride: Boolean = false): Builder
 
         /**
-         * Adds a callback that will be called once the Kodein object has been initialized.
+         * Adds a callback that will be called once the DI object has been initialized.
          *
          * @param cb A callback.
          */
-        fun onReady(cb: DKodein.() -> Unit)
+        fun onReady(cb: DirectDI.() -> Unit)
 
         fun registerContextTranslator(translator: ContextTranslator<*, *>)
     }

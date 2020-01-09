@@ -6,20 +6,20 @@ import org.kodein.di.jxinject.internal.JxInjectorContainer
 /**
  * Injector that allows to inject instances that use `javax.inject.*` annotations.
  *
- * @property kodein The kodein object to use to retrieve injections.
+ * @property directDI The di object to use to retrieve injections.
  */
-class JxInjector internal constructor(@Deprecated(DEPRECATE_7X) private val kodein: DKodein, private val container: JxInjectorContainer) {
+class JxInjector internal constructor(private val directDI: DirectDI, private val container: JxInjectorContainer) {
 
     /**
      * Injects all fields and methods annotated with `@Inject` in `receiver`.
      *
      * @param receiver The object to inject.
      */
-    fun inject(receiver: Any) = container.inject(kodein, receiver)
+    fun inject(receiver: Any) = container.inject(directDI, receiver)
 
     /** @suppress */
     @JvmOverloads
-    fun <T: Any> newInstance(cls: Class<T>, injectFields: Boolean = true) = container.newInstance(kodein, cls, injectFields)
+    fun <T: Any> newInstance(cls: Class<T>, injectFields: Boolean = true) = container.newInstance(directDI, cls, injectFields)
 
     /**
      * Creates a new instance of the given type.

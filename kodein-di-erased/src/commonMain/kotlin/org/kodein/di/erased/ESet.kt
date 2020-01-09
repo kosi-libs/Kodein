@@ -3,7 +3,7 @@
 package org.kodein.di.erased
 
 import org.kodein.di.AnyToken
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.bindings.ArgSetBinding
 import org.kodein.di.bindings.InSet
 import org.kodein.di.bindings.SetBinding
@@ -19,7 +19,7 @@ import org.kodein.di.erasedSet
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified T: Any> Kodein.Builder.setBinding() = SetBinding(AnyToken, erased<T>(), erasedSet<T>())
+inline fun <reified T: Any> DI.Builder.setBinding() = SetBinding(AnyToken, erased<T>(), erasedSet<T>())
 
 /**
  * Creates a set: multiple bindings can be added in this set.
@@ -31,7 +31,7 @@ inline fun <reified T: Any> Kodein.Builder.setBinding() = SetBinding(AnyToken, e
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified A, reified T: Any> Kodein.Builder.argSetBinding() = ArgSetBinding(AnyToken, erased<A>(), erased<T>(), erasedSet<T>())
+inline fun <reified A, reified T: Any> DI.Builder.argSetBinding() = ArgSetBinding(AnyToken, erased<A>(), erased<T>(), erasedSet<T>())
 
 /**
  * Defines that the binding will be saved in a set binding.
@@ -40,4 +40,4 @@ inline fun <reified A, reified T: Any> Kodein.Builder.argSetBinding() = ArgSetBi
  *
  * @param T The type of the binding.
  */
-inline fun <reified T: Any> Kodein.Builder.TypeBinder<T>.inSet() = InSet(erasedSet())
+inline fun <reified T: Any> DI.Builder.TypeBinder<T>.inSet() = InSet(erasedSet())

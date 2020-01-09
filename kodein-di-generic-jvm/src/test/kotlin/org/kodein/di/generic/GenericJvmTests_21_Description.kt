@@ -13,7 +13,7 @@ class GenericJvmTests_21_Description {
 
     @Test
     fun test_00_simpleKeySimpleDescription() {
-        val key = Kodein.Key(
+        val key = DI.Key(
                 contextType = generic<Any>(),
                 argType = generic<Unit>(),
                 type = generic<String>(),
@@ -26,7 +26,7 @@ class GenericJvmTests_21_Description {
 
     @Test
     fun test_01_simpleKeyFullDescription() {
-        val key = Kodein.Key(
+        val key = DI.Key(
                 contextType = generic<Any>(),
                 argType = generic<Unit>(),
                 type = generic<String>(),
@@ -39,7 +39,7 @@ class GenericJvmTests_21_Description {
 
     @Test
     fun test_02_complexKeySimpleDescription() {
-        val key = Kodein.Key(
+        val key = DI.Key(
                 contextType = generic<String>(),
                 argType = generic<Multi2<String, String>>(),
                 type = generic<IntRange>(),
@@ -52,7 +52,7 @@ class GenericJvmTests_21_Description {
 
     @Test
     fun test_03_complexKeyFullDescription() {
-        val key = Kodein.Key(
+        val key = DI.Key(
                 contextType = generic<String>(),
                 argType = generic<Multi2<String, String>>(),
                 type = generic<IntRange>(),
@@ -68,7 +68,7 @@ class GenericJvmTests_21_Description {
     @Test
     fun test_04_BindingsDescription() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<IPerson>() with provider { Person() }
             bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
@@ -92,7 +92,7 @@ class GenericJvmTests_21_Description {
     @Test
     fun test_05_BindingsFullDescription() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<IPerson>() with provider { Person() }
             bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
@@ -115,7 +115,7 @@ class GenericJvmTests_21_Description {
 
     @Test
     fun test_06_RegisteredBindings() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<IPerson>() with provider { Person() }
             bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
@@ -125,12 +125,12 @@ class GenericJvmTests_21_Description {
         }
 
         assertEquals(6, kodein.container.tree.bindings.size)
-        assertEquals("provider", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().binding.factoryName())
-        assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
-        assertEquals("singleton", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
-        assertEquals("factory", kodein.container.tree.bindings[Kodein.Key(AnyToken, generic<String>(), generic<IPerson>(), "factory")]!!.first().binding.factoryName())
-        assertEquals("instance", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "instance")]!!.first().binding.factoryName())
-        assertEquals("instance", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<Int>(), "answer")]!!.first().binding.factoryName())
+        assertEquals("provider", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().binding.factoryName())
+        assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
+        assertEquals("singleton", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
+        assertEquals("factory", kodein.container.tree.bindings[DI.Key(AnyToken, generic<String>(), generic<IPerson>(), "factory")]!!.first().binding.factoryName())
+        assertEquals("instance", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), "instance")]!!.first().binding.factoryName())
+        assertEquals("instance", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<Int>(), "answer")]!!.first().binding.factoryName())
     }
 
     open class A

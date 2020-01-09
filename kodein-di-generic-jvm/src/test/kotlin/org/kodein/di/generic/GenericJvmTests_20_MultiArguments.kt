@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.Multi2
 import org.kodein.di.direct
 import org.kodein.di.test.*
@@ -11,83 +11,83 @@ class GenericJvmTests_20_MultiArguments {
 
     @Test
     fun test_00_multiArgumentsFactory() {
-        val kodein = Kodein {
+        val di = DI {
             bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
         }
 
-        val i: FullName by kodein.instance(arg = M("Salomon", "BRYS"))
-        val ni: FullName? by kodein.instanceOrNull(arg = M("Salomon", 42))
-        val nni: FullName? by kodein.instanceOrNull(arg = M("Salomon", "BRYS"))
-        val di: FullName = kodein.direct.instance(arg = M("Salomon", "BRYS"))
-        val dni: FullName? = kodein.direct.instanceOrNull(arg = M("Salomon", 42))
-        val dnni: FullName? = kodein.direct.instanceOrNull(arg = M("Salomon", "BRYS"))
-        val p: () -> FullName by kodein.provider(arg = M("Salomon", "BRYS"))
-        val np: (() -> FullName)? by kodein.providerOrNull(arg = M("Salomon", 42))
-        val nnp: (() -> FullName)? by kodein.providerOrNull(arg = M("Salomon", "BRYS"))
-        val dp: () -> FullName = kodein.direct.provider(arg = M("Salomon", "BRYS"))
-        val dnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = M("Salomon", 42))
-        val dnnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = M("Salomon", "BRYS"))
+        val i: FullName by di.instance(arg = M("Salomon", "BRYS"))
+        val ni: FullName? by di.instanceOrNull(arg = M("Salomon", 42))
+        val nni: FullName? by di.instanceOrNull(arg = M("Salomon", "BRYS"))
+        val ddi: FullName = di.direct.instance(arg = M("Salomon", "BRYS"))
+        val dni: FullName? = di.direct.instanceOrNull(arg = M("Salomon", 42))
+        val dnni: FullName? = di.direct.instanceOrNull(arg = M("Salomon", "BRYS"))
+        val p: () -> FullName by di.provider(arg = M("Salomon", "BRYS"))
+        val np: (() -> FullName)? by di.providerOrNull(arg = M("Salomon", 42))
+        val nnp: (() -> FullName)? by di.providerOrNull(arg = M("Salomon", "BRYS"))
+        val dp: () -> FullName = di.direct.provider(arg = M("Salomon", "BRYS"))
+        val dnp: (() -> FullName)? = di.direct.providerOrNull(arg = M("Salomon", 42))
+        val dnnp: (() -> FullName)? = di.direct.providerOrNull(arg = M("Salomon", "BRYS"))
 
         assertAllNull(ni, dni, np, dnp)
         assertAllNotNull(nni, dnni, nnp, dnnp)
 
-        assertAllEqual(FullName("Salomon", "BRYS"), i, nni!!, di, dnni, p(), nnp!!(), dp(), dnnp!!())
+        assertAllEqual(FullName("Salomon", "BRYS"), i, nni!!, ddi, dnni, p(), nnp!!(), dp(), dnnp!!())
     }
 
     @Test
     fun test_01_multiArgumentsMultiton() {
-        val kodein = Kodein {
+        val di = DI {
             bind<FullName>() with multiton { firstName: String, lastName: String -> FullName(firstName, lastName) }
         }
 
-        val i: FullName by kodein.instance(arg = M("Salomon", "BRYS"))
-        val ni: FullName? by kodein.instanceOrNull(arg = M("Salomon", 42))
-        val nni: FullName? by kodein.instanceOrNull(arg = M("Salomon", "BRYS"))
-        val di: FullName = kodein.direct.instance(arg = M("Salomon", "BRYS"))
-        val dni: FullName? = kodein.direct.instanceOrNull(arg = M("Salomon", 42))
-        val dnni: FullName? = kodein.direct.instanceOrNull(arg = M("Salomon", "BRYS"))
-        val p: () -> FullName by kodein.provider(arg = M("Salomon", "BRYS"))
-        val np: (() -> FullName)? by kodein.providerOrNull(arg = M("Salomon", 42))
-        val nnp: (() -> FullName)? by kodein.providerOrNull(arg = M("Salomon", "BRYS"))
-        val dp: () -> FullName = kodein.direct.provider(arg = M("Salomon", "BRYS"))
-        val dnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = M("Salomon", 42))
-        val dnnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = M("Salomon", "BRYS"))
+        val i: FullName by di.instance(arg = M("Salomon", "BRYS"))
+        val ni: FullName? by di.instanceOrNull(arg = M("Salomon", 42))
+        val nni: FullName? by di.instanceOrNull(arg = M("Salomon", "BRYS"))
+        val ddi: FullName = di.direct.instance(arg = M("Salomon", "BRYS"))
+        val dni: FullName? = di.direct.instanceOrNull(arg = M("Salomon", 42))
+        val dnni: FullName? = di.direct.instanceOrNull(arg = M("Salomon", "BRYS"))
+        val p: () -> FullName by di.provider(arg = M("Salomon", "BRYS"))
+        val np: (() -> FullName)? by di.providerOrNull(arg = M("Salomon", 42))
+        val nnp: (() -> FullName)? by di.providerOrNull(arg = M("Salomon", "BRYS"))
+        val dp: () -> FullName = di.direct.provider(arg = M("Salomon", "BRYS"))
+        val dnp: (() -> FullName)? = di.direct.providerOrNull(arg = M("Salomon", 42))
+        val dnnp: (() -> FullName)? = di.direct.providerOrNull(arg = M("Salomon", "BRYS"))
 
         assertAllNull(ni, dni, np, dnp)
         assertAllNotNull(nni, dnni, nnp, dnnp)
 
-        assertAllEqual(FullName("Salomon", "BRYS"), i, nni!!, di, dnni, p(), nnp!!(), dp(), dnnp!!())
+        assertAllEqual(FullName("Salomon", "BRYS"), i, nni!!, ddi, dnni, p(), nnp!!(), dp(), dnnp!!())
     }
 
     @Test
     fun test_02_multiArgumentsFactoryBadType() {
-        val kodein = Kodein {
+        val di = DI {
             bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
         }
 
-        assertFailsWith<Kodein.NotFoundException> {
+        assertFailsWith<DI.NotFoundException> {
             @Suppress("UNUSED_VARIABLE")
-            val fullName: FullName = kodein.direct.instance(arg = M("Salomon", 42))
+            val fullName: FullName = di.direct.instance(arg = M("Salomon", 42))
         }
     }
 
     @Test
     fun test_03_multipleMultiArgumentsFactories() {
-        val kodein = Kodein {
+        val di = DI {
             bind<Name>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
             bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
             bind<Name>() with factory { name: String, age: Int -> FullInfos(name, "BRYS", age) }
             bind<String>() with factory { firstName: String, lastName: String -> "Mr $firstName $lastName" }
         }
 
-        val f by kodein.allFactories<Multi2<String, String>, Name>()
-        val df = kodein.direct.allFactories<Multi2<String, String>, Name>()
-        val p by kodein.allProviders<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
-        val dp = kodein.direct.allProviders<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
-        val i by kodein.allInstances<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
-        val di = kodein.direct.allInstances<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val f by di.allFactories<Multi2<String, String>, Name>()
+        val df = di.direct.allFactories<Multi2<String, String>, Name>()
+        val p by di.allProviders<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val dp = di.direct.allProviders<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val i by di.allInstances<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val ddi = di.direct.allInstances<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
 
-        assertAllEqual(2, f.size, df.size, p.size, dp.size, i.size, di.size)
+        assertAllEqual(2, f.size, df.size, p.size, dp.size, i.size, ddi.size)
 
         val values =
                 f.map { it(M("Salomon", "BRYS")) } +
@@ -95,14 +95,14 @@ class GenericJvmTests_20_MultiArguments {
                         p.map { it() } +
                         dp.map { it() } +
                         i +
-                        di
+                        ddi
 
         assertAllEqual(FullName("Salomon", "BRYS"), *values.toTypedArray())
     }
 
     @Test
     fun test_04_BigMultiArgumentsFactories() {
-        val kodein = Kodein {
+        val di = DI {
             bind<String>() with factory { a: String -> "Mr $a" }
             bind<String>() with factory { a: String, b: String -> "Mr $a $b" }
             bind<String>() with factory { a: String, b: String, c: String -> "Mr $a $b of $c" }
@@ -110,16 +110,16 @@ class GenericJvmTests_20_MultiArguments {
             bind<String>() with factory { a: String, b: String, c: String, d: String, e: String -> "Mr $a $b of $c, $d in $e" }
         }
 
-        assertEquals("Mr Salomon", kodein.direct.instance(arg = "Salomon"))
-        assertEquals("Mr Salomon BRYS", kodein.direct.instance(arg = M("Salomon", "BRYS")))
-        assertEquals("Mr Salomon BRYS of Paris", kodein.direct.instance(arg = M("Salomon", "BRYS", "Paris")))
-        assertEquals("Mr Salomon BRYS of Paris, France", kodein.direct.instance(arg = M("Salomon", "BRYS", "Paris", "France")))
-        assertEquals("Mr Salomon BRYS of Paris, France in Europe", kodein.direct.instance(arg = M("Salomon", "BRYS", "Paris", "France", "Europe")))
+        assertEquals("Mr Salomon", di.direct.instance(arg = "Salomon"))
+        assertEquals("Mr Salomon BRYS", di.direct.instance(arg = M("Salomon", "BRYS")))
+        assertEquals("Mr Salomon BRYS of Paris", di.direct.instance(arg = M("Salomon", "BRYS", "Paris")))
+        assertEquals("Mr Salomon BRYS of Paris, France", di.direct.instance(arg = M("Salomon", "BRYS", "Paris", "France")))
+        assertEquals("Mr Salomon BRYS of Paris, France in Europe", di.direct.instance(arg = M("Salomon", "BRYS", "Paris", "France", "Europe")))
     }
 
     @Test
     fun test_05_MultiArgumentsFactoryFunction() {
-        val kodein = Kodein {
+        val di = DI {
             bind<String>() with factory { a: String -> "Mr $a" }
             bind<String>() with factory { a: String, b: String -> "Mr $a $b" }
             bind<String>() with factory { a: String, b: String, c: String -> "Mr $a $b of $c" }
@@ -127,16 +127,16 @@ class GenericJvmTests_20_MultiArguments {
             bind<String>() with factory { a: String, b: String, c: String, d: String, e: String -> "Mr $a $b of $c, $d in $e" }
         }
 
-        val f1: (String) -> String by kodein.factory()
-        val f2: (String, String) -> String by kodein.factory2()
-        val f3: (String, String, String) -> String by kodein.factory3()
-        val f4: (String, String, String, String) -> String by kodein.factory4()
-        val f5: (String, String, String, String, String) -> String by kodein.factory5()
-        val fn1: ((Int) -> String)? by kodein.factoryOrNull()
-        val fn2: ((Int, Int) -> String)? by kodein.factory2OrNull()
-        val fn3: ((Int, Int, Int) -> String)? by kodein.factory3OrNull()
-        val fn4: ((Int, Int, Int, Int) -> String)? by kodein.factory4OrNull()
-        val fn5: ((Int, Int, Int, Int, Int) -> String)? by kodein.factory5OrNull()
+        val f1: (String) -> String by di.factory()
+        val f2: (String, String) -> String by di.factory2()
+        val f3: (String, String, String) -> String by di.factory3()
+        val f4: (String, String, String, String) -> String by di.factory4()
+        val f5: (String, String, String, String, String) -> String by di.factory5()
+        val fn1: ((Int) -> String)? by di.factoryOrNull()
+        val fn2: ((Int, Int) -> String)? by di.factory2OrNull()
+        val fn3: ((Int, Int, Int) -> String)? by di.factory3OrNull()
+        val fn4: ((Int, Int, Int, Int) -> String)? by di.factory4OrNull()
+        val fn5: ((Int, Int, Int, Int, Int) -> String)? by di.factory5OrNull()
 
         assertEquals("Mr Salomon", f1("Salomon"))
         assertEquals("Mr Salomon BRYS", f2("Salomon", "BRYS"))
@@ -152,7 +152,7 @@ class GenericJvmTests_20_MultiArguments {
 
     @Test
     fun test_06_MultiArgumentsFactoryDirectFunction() {
-        val kodein = Kodein.direct {
+        val kodein = DI.direct {
             bind<String>() with factory { a: String -> "Mr $a" }
             bind<String>() with factory { a: String, b: String -> "Mr $a $b" }
             bind<String>() with factory { a: String, b: String, c: String -> "Mr $a $b of $c" }

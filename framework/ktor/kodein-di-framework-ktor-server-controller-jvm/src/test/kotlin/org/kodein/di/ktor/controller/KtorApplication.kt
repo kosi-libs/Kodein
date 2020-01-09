@@ -9,45 +9,45 @@ import org.kodein.di.ktor.*
 const val AUTHOR = "Romain Boisselle"
 const val VERSION = "1.0.0"
 
-fun Application.installKodein() = kodein {
-    bind<ApplicationController>() with singleton { ApplicationController(instance()) }
-    constant("author") with AUTHOR
-    constant("version") with VERSION
+fun Application.installDI() = di {
+          bind<ApplicationController>() with singleton { ApplicationController(instance()) }
+          constant("author") with AUTHOR
+          constant("version") with VERSION
+        }
+
+fun Application.diAbsControllerSuccess() {
+    install(DefaultHeaders)
+    installDI()
+    install(DIControllerFeature)
 }
 
-fun Application.kodeinAbsControllerSuccess() {
+fun Application.diAbsControllerFailure() {
     install(DefaultHeaders)
-    installKodein()
-    install(KodeinControllerFeature)
+    install(DIControllerFeature)
+    installDI()
 }
 
-fun Application.kodeinAbsControllerFailure() {
+fun Application.diControllerImplSuccess() {
     install(DefaultHeaders)
-    install(KodeinControllerFeature)
-    installKodein()
+    installDI()
+    install(DIControllerFeature)
 }
 
-fun Application.kodeinControllerImplSuccess() {
+fun Application.dicontrollerImplFailure() {
     install(DefaultHeaders)
-    installKodein()
-    install(KodeinControllerFeature)
+    install(DIControllerFeature)
+    installDI()
 }
 
-fun Application.kodeincontrollerImplFailure() {
+fun Application.diControllerSuccess() {
     install(DefaultHeaders)
-    install(KodeinControllerFeature)
-    installKodein()
-}
-
-fun Application.kodeinControllerSuccess() {
-    install(DefaultHeaders)
-    installKodein()
+    installDI()
     routing {
 
-        controller { KodeinControllerImpl(instance()) }
+        controller { DIControllerImpl(instance()) }
 
         route("/first") {
-            controller { KodeinControllerImpl(instance()) }
+            controller { DIControllerImpl(instance()) }
 
             route("/second") {
                 controller { ApplicationController(instance()) }
@@ -58,6 +58,6 @@ fun Application.kodeinControllerSuccess() {
             }
         }
 
-        controller("/protected") { KodeinControllerImpl(instance()) }
+        controller("/protected") { DIControllerImpl(instance()) }
     }
 }

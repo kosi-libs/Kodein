@@ -1,6 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.SearchDSL
 import org.kodein.di.erased
 
@@ -12,18 +12,18 @@ import org.kodein.di.erased
  * @param T The type to bind.
  * @param tag The tag to bind.
  * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
- * @return The binder: call `Kodein.Builder.TypeBinder.with` on it to finish the binding syntax and register the binding.
+ * @return The binder: call `DI.Builder.TypeBinder.with` on it to finish the binding syntax and register the binding.
  */
-inline fun <reified T : Any> Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null): Kodein.Builder.TypeBinder<T> = Bind(erased(), tag, overrides)
+inline fun <reified T : Any> DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null): DI.Builder.TypeBinder<T> = Bind(erased(), tag, overrides)
 
 /**
  * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
  *
  * @param tag The tag to bind.
  * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
- * @return The binder: call [Kodein.Builder.DirectBinder.from]) on it to finish the binding syntax and register the binding.
+ * @return The binder: call [DI.Builder.DirectBinder.from]) on it to finish the binding syntax and register the binding.
  */
-fun Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null): Kodein.Builder.DirectBinder = Bind(tag, overrides)
+fun DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null): DI.Builder.DirectBinder = Bind(tag, overrides)
 
 /**
  * Binds the previously given tag to the given instance.
@@ -33,7 +33,7 @@ fun Kodein.Builder.bind(tag: Any? = null, overrides: Boolean? = null): Kodein.Bu
  * @param T The type of value to bind.
  * @param value The instance to bind.
  */
-inline infix fun <reified T : Any> Kodein.Builder.ConstantBinder.with(value: T) = With(erased(), value)
+inline infix fun <reified T : Any> DI.Builder.ConstantBinder.with(value: T) = With(erased(), value)
 
 /**
  * Creates a return type constrained spec.

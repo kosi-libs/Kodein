@@ -1,20 +1,20 @@
 package org.kodein.di.bindings
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 
 /**
- * An external source can provide to an answer to a retrieval that do not correspond to any binding that is registered in Kodein.
+ * An external source can provide to an answer to a retrieval that do not correspond to any binding that is registered in DI.
  */
 interface ExternalSource {
 
     /**
-     * This method is called when Kodein do not find a binding for a requested retrieval.
+     * This method is called when DI do not find a binding for a requested retrieval.
      *
-     * @param kodein The kodein object used for retrieval.
+     * @param di The DI object used for retrieval.
      * @param key Holds all information that are necessary to select an answer.
      * @return A factory method, which will be passed the argument of the retrieval, and must return the answer, or null if the external source itself cannot find an answer.
      */
-    fun getFactory(kodein: BindingKodein<*>, key: Kodein.Key<*, *, *>): ((Any?) -> Any)?
+    fun getFactory(di: BindingDI<*>, key: DI.Key<*, *, *>): ((Any?) -> Any)?
 
     companion object {
         /**
@@ -22,8 +22,8 @@ interface ExternalSource {
          *
          * @param f The function that takes a Key and return a factory.
          */
-        inline operator fun invoke(crossinline f: BindingKodein<*>.(Kodein.Key<*, *, *>) -> ((Any?) -> Any)?) = object : ExternalSource {
-            override fun getFactory(kodein: BindingKodein<*>, key: Kodein.Key<*, *, *>): ((Any?) -> Any)? = kodein.f(key)
+        inline operator fun invoke(crossinline f: BindingDI<*>.(DI.Key<*, *, *>) -> ((Any?) -> Any)?) = object : ExternalSource {
+            override fun getFactory(di: BindingDI<*>, key: DI.Key<*, *, *>): ((Any?) -> Any)? = di.f(key)
         }
     }
 }

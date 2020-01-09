@@ -11,10 +11,10 @@ package org.kodein.di
  * @param type The type of object to retrieve with the factories.
  * @param tag The bound tag, if any.
  * @return A list of factories of [T].
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-fun <A, T : Any> KodeinAware.AllFactories(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): KodeinProperty<List<(A) -> T>> =
-        KodeinProperty(kodeinTrigger, kodeinContext) { ctx, _ -> kodein.container.allFactories(Kodein.Key(ctx.anyType, argType, type, tag), ctx.value) }
+fun <A, T : Any> DIAware.AllFactories(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): DIProperty<List<(A) -> T>> =
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allFactories(DI.Key(ctx.anyType, argType, type, tag), ctx.value) }
 
 /**
  * Gets all providers that match the the given return type and tag.
@@ -23,10 +23,10 @@ fun <A, T : Any> KodeinAware.AllFactories(argType: TypeToken<in A>, type: TypeTo
  * @param type The type of object to retrieve with the providers.
  * @param tag The bound tag, if any.
  * @return A list of providers of [T].
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-fun <T : Any> KodeinAware.AllProviders(type: TypeToken<out T>, tag: Any? = null): KodeinProperty<List<() -> T>> =
-        KodeinProperty(kodeinTrigger, kodeinContext) { ctx, _ -> kodein.container.allProviders(Kodein.Key(ctx.anyType, UnitToken, type, tag), ctx.value) }
+fun <T : Any> DIAware.AllProviders(type: TypeToken<out T>, tag: Any? = null): DIProperty<List<() -> T>> =
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allProviders(DI.Key(ctx.anyType, UnitToken, type, tag), ctx.value) }
 
 /**
  * Gets all providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -38,10 +38,10 @@ fun <T : Any> KodeinAware.AllProviders(type: TypeToken<out T>, tag: Any? = null)
  * @param tag The bound tag, if any.
  * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return A list of providers of [T].
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-fun <A, T : Any> KodeinAware.AllProviders(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): KodeinProperty<List<() -> T>> =
-        KodeinProperty(kodeinTrigger, kodeinContext) { ctx, _ -> kodein.container.allFactories(Kodein.Key(ctx.anyType, argType, type, tag), ctx.value).map { it.toProvider(arg) } }
+fun <A, T : Any> DIAware.AllProviders(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): DIProperty<List<() -> T>> =
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allFactories(DI.Key(ctx.anyType, argType, type, tag), ctx.value).map { it.toProvider(arg) } }
 
 /**
  * Gets all instances from providers that match the the given return type and tag.
@@ -50,10 +50,10 @@ fun <A, T : Any> KodeinAware.AllProviders(argType: TypeToken<in A>, type: TypeTo
  * @param type The type of object to retrieve with the providers.
  * @param tag The bound tag, if any.
  * @return A list of [T] instances.
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-fun <T : Any> KodeinAware.AllInstances(type: TypeToken<out T>, tag: Any? = null): KodeinProperty<List<T>> =
-        KodeinProperty(kodeinTrigger, kodeinContext) { ctx, _ -> kodein.container.allProviders(Kodein.Key(ctx.anyType, UnitToken, type, tag), ctx.value).map { it.invoke() } }
+fun <T : Any> DIAware.AllInstances(type: TypeToken<out T>, tag: Any? = null): DIProperty<List<T>> =
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allProviders(DI.Key(ctx.anyType, UnitToken, type, tag), ctx.value).map { it.invoke() } }
 
 /**
  * Gets all instances from providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -65,7 +65,7 @@ fun <T : Any> KodeinAware.AllInstances(type: TypeToken<out T>, tag: Any? = null)
  * @param tag The bound tag, if any.
  * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return A list of [T] instances.
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-fun <A, T : Any> KodeinAware.AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): KodeinProperty<List<T>> =
-        KodeinProperty(kodeinTrigger, kodeinContext) { ctx, _ -> kodein.container.allFactories(Kodein.Key(ctx.anyType, argType, type, tag), ctx.value).map { it.invoke(arg()) } }
+fun <A, T : Any> DIAware.AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): DIProperty<List<T>> =
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allFactories(DI.Key(ctx.anyType, argType, type, tag), ctx.value).map { it.invoke(arg()) } }

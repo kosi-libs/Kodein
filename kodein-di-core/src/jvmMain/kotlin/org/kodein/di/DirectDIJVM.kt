@@ -1,8 +1,7 @@
 package org.kodein.di
 
 @Suppress("FunctionName")
-@Deprecated(DEPRECATE_7X)
-actual interface DKodein : DKodeinBase {
+actual interface DirectDI : DirectDIBase {
     /**
      * Gets all factories that can return a `T` for the given argument type, return type and tag.
      *
@@ -12,7 +11,7 @@ actual interface DKodein : DKodeinBase {
      * @param type The type of object to retrieve with the returned factory.
      * @param tag The bound tag, if any.
      * @return A list of matching factories of `T`.
-     * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+     * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     fun <A, T : Any> AllFactories(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null): List<(A) -> T>
 
@@ -23,7 +22,7 @@ actual interface DKodein : DKodeinBase {
      * @param type The type of object to retrieve with the returned factory.
      * @param tag The bound tag, if any.
      * @return A list of matching providers of `T`.
-     * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+     * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     fun <T : Any> AllProviders(type: TypeToken<T>, tag: Any? = null): List<() -> T>
 
@@ -37,7 +36,7 @@ actual interface DKodein : DKodeinBase {
      * @param tag The bound tag, if any.
      * @param arg A function that returns the argument that will be given to the factory when curried.
      * @return A list of matching providers of `T`.
-     * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+     * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     fun <A, T : Any> AllProviders(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): List<() -> T>
 
@@ -48,7 +47,7 @@ actual interface DKodein : DKodeinBase {
      * @param type The type of object to retrieve with the returned factory.
      * @param tag The bound tag, if any.
      * @return A list of matching instances of `T`.
-     * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+     * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     fun <T : Any> AllInstances(type: TypeToken<T>, tag: Any? = null): List<T>
 
@@ -62,7 +61,7 @@ actual interface DKodein : DKodeinBase {
      * @param tag The bound tag, if any.
      * @param arg A function that returns the argument that will be given to the factory when curried.
      * @return A list of matching instances of `T`.
-     * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+     * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     fun <A, T : Any> AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: A): List<T>
 }

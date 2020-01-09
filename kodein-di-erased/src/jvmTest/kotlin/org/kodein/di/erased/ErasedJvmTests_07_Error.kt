@@ -10,15 +10,15 @@ class ErasedJvmTests_07_Error {
     @Test
     fun test_00_DependencyLoopFullDescription() {
 
-        val kodein = Kodein {
+        val di = DI {
             fullDescriptionOnError = true
             bind<A>() with singleton { A(instance()) }
             bind<B>() with singleton { B(instance()) }
             bind<C>() with singleton { C(instance()) }
         }
 
-        val ex = assertFailsWith<Kodein.DependencyLoopException> {
-            kodein.direct.instance<A>()
+        val ex = assertFailsWith<DI.DependencyLoopException> {
+            di.direct.instance<A>()
         }
 
         assertEquals("""
@@ -35,11 +35,11 @@ Dependency recursion:
     @Test
     fun test_01_TypeNotFoundFullDescription() {
 
-        val kodein = Kodein.direct {
+        val di = DI.direct {
             fullDescriptionOnError = true
         }
 
-        assertEquals("No binding found for bind<org.kodein.di.test.Person>() with ? { ? }\nRegistered in this Kodein container:\n", assertFailsWith<Kodein.NotFoundException> { kodein.instance<Person>() }.message)
+        assertEquals("No binding found for bind<org.kodein.di.test.Person>() with ? { ? }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
     }
 
 

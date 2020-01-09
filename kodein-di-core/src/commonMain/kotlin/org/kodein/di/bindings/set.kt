@@ -1,7 +1,7 @@
 package org.kodein.di.bindings
 
 import org.kodein.di.*
-import org.kodein.di.internal.KodeinBuilderImpl
+import org.kodein.di.internal.DIBuilderImpl
 
 /**
  * Base class for binding set.
@@ -10,15 +10,13 @@ import org.kodein.di.internal.KodeinBuilderImpl
  * @param A The argument type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
-@Deprecated(DEPRECATE_7X)
-abstract class BaseMultiBinding<C, A, T: Any> : KodeinBinding<C, A, Set<T>> {
-    internal abstract val set: MutableSet<KodeinBinding<C, A, T>>
+abstract class BaseMultiBinding<C, A, T: Any> : DIBinding<C, A, Set<T>> {
+    internal abstract val set: MutableSet<DIBinding<C, A, T>>
 
     override fun factoryName(): String = "bindingSet"
 }
 
-@Deprecated(DEPRECATE_7X)
-private class SetBindingKodein<out C>(private val _base: BindingKodein<C>) : BindingKodein<C> by _base {
+private class SetBindingDI<out C>(private val _base: BindingDI<C>) : BindingDI<C> by _base {
     override fun overriddenFactory() = throw IllegalStateException("Cannot access overrides in a Set binding")
     override fun overriddenFactoryOrNull() = throw IllegalStateException("Cannot access overrides in a Set binding")
 }
@@ -31,21 +29,20 @@ private class SetBindingKodein<out C>(private val _base: BindingKodein<C>) : Bin
  * @param A The argument type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
-@Deprecated(DEPRECATE_7X)
 class ArgSetBinding<C, A, T: Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : BaseMultiBinding<C, A, T>() {
 
-    override val set = LinkedHashSet<KodeinBinding<C, A, T>>()
+    override val set = LinkedHashSet<DIBinding<C, A, T>>()
 
-    override fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, A, Set<T>>): (A) -> Set<T> {
-        val subKodein = SetBindingKodein(kodein)
-        val subKey = Kodein.Key(key.contextType, key.argType, _elementType, key.tag)
-        val factories = set.map { it.getFactory(subKodein, subKey) }
+    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, Set<T>>): (A) -> Set<T> {
+        val subDI = SetBindingDI(di)
+        val subKey = DI.Key(key.contextType, key.argType, _elementType, key.tag)
+        val factories = set.map { it.getFactory(subDI, subKey) }
         return { arg ->
             factories.asSequence().map { it.invoke(arg) } .toSet()
         }
     }
 
-    override val copier = KodeinBinding.Copier { builder ->
+    override val copier = DIBinding.Copier { builder ->
         ArgSetBinding(contextType, argType, _elementType, createdType).also {
             it.set.addAll(set.map { it.copier?.copy(builder) ?: it })
         }
@@ -58,22 +55,21 @@ class ArgSetBinding<C, A, T: Any>(override val contextType: TypeToken<in C>, ove
  * @param C The context type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
-@Deprecated(DEPRECATE_7X)
-class SetBinding<C, T: Any>(override val contextType: TypeToken<in C>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : NoArgKodeinBinding<C, Set<T>>, BaseMultiBinding<C, Unit, T>() {
+class SetBinding<C, T: Any>(override val contextType: TypeToken<in C>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : NoArgDIBinding<C, Set<T>>, BaseMultiBinding<C, Unit, T>() {
 
     @Suppress("UNCHECKED_CAST")
-    override val set = LinkedHashSet<KodeinBinding<C, Unit, T>>()
+    override val set = LinkedHashSet<DIBinding<C, Unit, T>>()
 
-    override fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, Unit, Set<T>>): (Unit) -> Set<T> {
-        val subKodein = SetBindingKodein(kodein)
-        val subKey = Kodein.Key(key.contextType, UnitToken, _elementType, key.tag)
-        val providers = set.map { it.getFactory(subKodein, subKey) }
+    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, Unit, Set<T>>): (Unit) -> Set<T> {
+        val subDI = SetBindingDI(di)
+        val subKey = DI.Key(key.contextType, UnitToken, _elementType, key.tag)
+        val providers = set.map { it.getFactory(subDI, subKey) }
         return {
             providers.asSequence().map { it.invoke(Unit) }.toSet()
         }
     }
 
-    override val copier = KodeinBinding.Copier { builder ->
+    override val copier = DIBinding.Copier { builder ->
         SetBinding(contextType, _elementType, createdType).also {
             it.set.addAll(set.map { it.copier?.copy(builder) ?: it })
         }
@@ -85,8 +81,7 @@ class SetBinding<C, T: Any>(override val contextType: TypeToken<in C>, private v
  *
  * @param T The type of the binding in the set.
  */
-@Deprecated(DEPRECATE_7X)
-class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _binder: Kodein.Builder.TypeBinder<T>, private val _colTypeToken: TypeToken<S>) {
+class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _binder: DI.Builder.TypeBinder<T>, private val _colTypeToken: TypeToken<S>) {
 
     /**
      * Second part of the `bind<Type>().inSet() with binding` syntax.
@@ -95,14 +90,14 @@ class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _bind
      * @param binding The binding to add in the set.
      */
     @Suppress("UNCHECKED_CAST")
-    infix fun <C> with(binding: KodeinBinding<in C, *, out T>) {
-        _binder as KodeinBuilderImpl.TypeBinder
-        val setKey = Kodein.Key(binding.contextType, binding.argType, _colTypeToken, _binder.tag)
+    infix fun <C> with(binding: DIBinding<in C, *, out T>) {
+        _binder as DIBuilderImpl.TypeBinder
+        val setKey = DI.Key(binding.contextType, binding.argType, _colTypeToken, _binder.tag)
         val setBinding = _binder.containerBuilder.bindingsMap[setKey]?.first() ?: throw IllegalStateException("No set binding to $setKey")
 
         setBinding.binding as? BaseMultiBinding<C, *, T> ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
 
-        (setBinding.binding.set as MutableSet<KodeinBinding<*, *, *>>).add(binding)
+        (setBinding.binding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
     }
 }
 
@@ -115,5 +110,4 @@ class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _bind
  * @param setTypeToken The type of the bound set.
  */
 @Suppress("FunctionName")
-@Deprecated(DEPRECATE_7X)
-fun <T: Any> Kodein.Builder.TypeBinder<T>.InSet(setTypeToken: TypeToken<Set<T>>) = TypeBinderInSet(this, setTypeToken)
+fun <T: Any> DI.Builder.TypeBinder<T>.InSet(setTypeToken: TypeToken<Set<T>>) = TypeBinderInSet(this, setTypeToken)

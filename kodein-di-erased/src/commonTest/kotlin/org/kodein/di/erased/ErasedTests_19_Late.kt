@@ -1,9 +1,9 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.KodeinTrigger
-import org.kodein.di.LateInitKodein
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.DITrigger
+import org.kodein.di.LateInitDI
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import kotlin.test.Test
@@ -13,8 +13,8 @@ import kotlin.test.assertFails
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ErasedTests_19_Late {
 
-    class LateInit : KodeinAware {
-        override lateinit var kodein: Kodein
+    class LateInit : DIAware {
+        override lateinit var di: DI
 
         val name: String by instance()
     }
@@ -24,7 +24,7 @@ class ErasedTests_19_Late {
 
         val test = LateInit()
 
-        test.kodein = Kodein {
+        test.di = DI {
             bind() from instance("Salomon")
         }
 
@@ -42,11 +42,11 @@ class ErasedTests_19_Late {
     @Test
     fun test_02_LateLocal() {
 
-        val kodein = LateInitKodein()
+        val kodein = LateInitDI()
 
         val name: String by kodein.instance()
 
-        kodein.baseKodein = Kodein {
+        kodein.baseDI = DI {
             bind() from instance("Salomon")
         }
 
@@ -56,7 +56,7 @@ class ErasedTests_19_Late {
     @Test
     fun test_03_LateLocalFail() {
 
-        val kodein = LateInitKodein()
+        val kodein = LateInitDI()
 
         val name: String by kodein.instance()
 
@@ -66,13 +66,13 @@ class ErasedTests_19_Late {
     @Test
     fun test_04_LateLocalTrigger() {
 
-        val trigger = KodeinTrigger()
-        val base = LateInitKodein()
+        val trigger = DITrigger()
+        val base = LateInitDI()
         val kodein = base.on(trigger = trigger)
 
         val name: String by kodein.instance()
 
-        base.baseKodein = Kodein {
+        base.baseDI = DI {
             bind() from instance("Salomon")
         }
 
@@ -84,8 +84,8 @@ class ErasedTests_19_Late {
     @Test
     fun test_05_LateLocalTriggerFail() {
 
-        val trigger = KodeinTrigger()
-        val base = LateInitKodein()
+        val trigger = DITrigger()
+        val base = LateInitDI()
         val kodein = base.on(trigger = trigger)
 
         @Suppress("UNUSED_VARIABLE")

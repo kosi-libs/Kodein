@@ -1,7 +1,7 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
+import org.kodein.di.DI
+import org.kodein.di.DIAware
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import kotlin.test.*
@@ -11,7 +11,7 @@ class GenericJvmTests_23_Context {
 
     @Test
     fun test_00_lazyOnContext() {
-        val kodein = Kodein{
+        val kodein = DI{
             bind<String>() with contexted<String>().provider { "Salomon $context" }
         }
 
@@ -24,9 +24,9 @@ class GenericJvmTests_23_Context {
         assertTrue(contextRetrieved)
     }
 
-    class T01(override val kodein: Kodein) : KodeinAware {
+    class T01(override val di: DI) : DIAware {
         var contextRetrieved = false
-        override val kodeinContext = kcontext {
+        override val diContext = diContext {
             contextRetrieved = true
             "BRYS"
         }
@@ -35,7 +35,7 @@ class GenericJvmTests_23_Context {
 
     @Test
     fun test_01_lazyKContext() {
-        val kodein = Kodein{
+        val kodein = DI{
             bind<String>() with contexted<String>().provider { "Salomon $context" }
         }
 

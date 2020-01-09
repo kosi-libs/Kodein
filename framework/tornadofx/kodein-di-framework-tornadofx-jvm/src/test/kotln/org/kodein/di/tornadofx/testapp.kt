@@ -13,7 +13,7 @@ import kotlin.test.*
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class AppTest {
     companion object {
-        val kodein = Kodein {
+        val kodeinDI = DI {
             installTornadoSource()
         }
 
@@ -28,8 +28,8 @@ class AppTest {
 
     @Test
     fun test_00_instanceCheck() {
-        val controller1: C by kodein.instance()
-        val controller2: C by kodein.instance()
+        val controller1: C by kodeinDI.instance()
+        val controller2: C by kodeinDI.instance()
 
         assertNotNull(controller1)
         assertNotNull(controller2)
@@ -39,14 +39,14 @@ class AppTest {
     @Test
     fun test_01_scope() {
         val scope1 = PersonScope()
-        val controller1: C by kodein.on(scope1).instance()
-        val controller2: C by kodein.on(scope1).instance()
+        val controller1: C by kodeinDI.on(scope1).instance()
+        val controller2: C by kodeinDI.on(scope1).instance()
 
         assertNotNull(controller1)
         assertSame(controller1, controller2)
 
         val scope2 = PersonScope()
-        val controller3: C by kodein.on(scope2).instance()
+        val controller3: C by kodeinDI.on(scope2).instance()
 
         assertNotNull(controller3)
         assertNotSame(controller1, controller3)
@@ -57,8 +57,8 @@ class AppTest {
     fun test_02_scopedControllerAndViewModel() {
         val scope1 = PersonScope()
 
-        val fragment1: F by kodein.on(scope1).instance()
-        val fragment2: F by kodein.on(scope1).instance()
+        val fragment1: F by kodeinDI.on(scope1).instance()
+        val fragment2: F by kodeinDI.on(scope1).instance()
 
         assertNotNull(fragment1)
         assertNotNull(fragment2)
@@ -67,7 +67,7 @@ class AppTest {
         assertSame(fragment1.vm, fragment2.vm)
 
         val scope2 = PersonScope()
-        val fragment3: F by kodein.on(scope2).instance()
+        val fragment3: F by kodeinDI.on(scope2).instance()
 
         assertNotNull(fragment3)
 

@@ -3,11 +3,13 @@ package org.kodein.di
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.ExternalSource
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DITree"), DeprecationLevel.ERROR)
+typealias KodeinTree = DITree
+
 /**
  * Tree where the bindings and their factories are sorted & stored.
  */
-@Deprecated(DEPRECATE_7X)
-interface KodeinTree {
+interface DITree {
 
     /**
      * An immutable view of the bindings map. *For inspection & debug*.
@@ -34,14 +36,14 @@ interface KodeinTree {
      * @param overrideLevel 0 if looking for regular bindings, 1 or more if looking for bindings that have been overridden.
      * @return A list of keys and their definition.
      */
-    fun <C, A, T : Any> find(key: Kodein.Key<C, A, T>, overrideLevel: Int = 0, all: Boolean = false): List<Triple<Kodein.Key<Any, A, T>, KodeinDefinition<Any, A, T>, ContextTranslator<C, Any>?>>
+    fun <C, A, T : Any> find(key: DI.Key<C, A, T>, overrideLevel: Int = 0, all: Boolean = false): List<Triple<DI.Key<Any, A, T>, DIDefinition<Any, A, T>, ContextTranslator<C, Any>?>>
 
     /**
      * Finds all keys and definitions that match the given specs.
      *
      * @return A list of keys and their definition.
      */
-    fun find(search: SearchSpecs): List<Triple<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>, ContextTranslator<*, *>?>>
+    fun find(search: SearchSpecs): List<Triple<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>, ContextTranslator<*, *>?>>
 
     /**
      * Gets a List of definition for an exact key representing a binding and all its overrides.
@@ -52,6 +54,6 @@ interface KodeinTree {
      * @param key The exact key to look for.
      * @return The binding and all it's overrides, or null if this key is not registered.
      */
-    operator fun <C, A, T: Any> get(key: Kodein.Key<C, A, T>): Triple<Kodein.Key<Any, A, T>, List<KodeinDefinition<Any, A, T>>, ContextTranslator<C, Any>?>?
+    operator fun <C, A, T: Any> get(key: DI.Key<C, A, T>): Triple<DI.Key<Any, A, T>, List<DIDefinition<Any, A, T>>, ContextTranslator<C, Any>?>?
 
 }

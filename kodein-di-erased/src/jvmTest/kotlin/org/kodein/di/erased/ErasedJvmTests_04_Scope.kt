@@ -1,6 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.bindings.Scope
 import org.kodein.di.bindings.ScopeRegistry
 import org.kodein.di.bindings.StandardScopeRegistry
@@ -27,7 +27,7 @@ class ErasedJvmTests_04_Scope {
             override fun getRegistry(context: AbstractSession) = registries.getOrPut(context.id, ::StandardScopeRegistry)
         }
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
             registerContextTranslator { r: AbstractRequest -> r.session }
         }

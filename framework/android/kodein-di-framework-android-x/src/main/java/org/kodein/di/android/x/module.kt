@@ -6,13 +6,13 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
 import androidx.loader.content.Loader
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.android.androidCoreContextTranslators
 import org.kodein.di.android.androidCoreModule
 import org.kodein.di.bindings.SimpleContextTranslator
 import org.kodein.di.erased
 
-val androidXContextTranslators = Kodein.Module("\u2063androidXContextTranslators") {
+val androidXContextTranslators = DI.Module("\u2063androidXContextTranslators") {
     importOnce(androidCoreContextTranslators)
 
     RegisterContextTranslator(SimpleContextTranslator<Fragment, Activity>(erased(), erased()) { it.requireActivity() })
@@ -20,7 +20,7 @@ val androidXContextTranslators = Kodein.Module("\u2063androidXContextTranslators
     RegisterContextTranslator(SimpleContextTranslator<AndroidViewModel, Application>(erased(), erased()) { it.getApplication() })
 }
 
-fun androidXModule(app: Application) = Kodein.Module("\u2063androidXModule") {
+fun androidXModule(app: Application) = DI.Module("\u2063androidXModule") {
     importOnce(androidXContextTranslators)
     importOnce(androidCoreModule(app))
 }

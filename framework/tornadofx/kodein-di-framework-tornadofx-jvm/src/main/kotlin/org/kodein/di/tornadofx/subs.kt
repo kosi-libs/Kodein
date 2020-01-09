@@ -5,16 +5,18 @@ import org.kodein.di.*
 import tornadofx.*
 
 /**
- * Extend the global [Kodein] container (from the App)
+ * Extend the global [DI] container (from the App)
  */
-@Deprecated(DEPRECATE_7X)
-inline fun Component.subKodein(allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: Kodein.MainBuilder.() -> Unit) = subKodein(kodein(), allowSilentOverride, copy, init)
+inline fun Component.subDI(allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: DI.MainBuilder.() -> Unit) = subDI(kodeinDI(), allowSilentOverride, copy, init)
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("subDI(allowSilentOverride, copy, init)"), DeprecationLevel.ERROR)
+inline fun Component.subKodein(allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: DI.MainBuilder.() -> Unit) = subDI(allowSilentOverride, copy, init)
 
 /**
- * Extend the nearest [Kodein] container, Local (from a parent Node) or Global (from the App)
+ * Extend the nearest [DI] container, Local (from a parent Node) or Global (from the App)
  */
-@Deprecated(DEPRECATE_7X)
-inline fun Node.subKodein(allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: Kodein.MainBuilder.() -> Unit) {
-    val nearestKodein = kodein()
-    addKodeinProperty(subKodein(nearestKodein, allowSilentOverride, copy, init))
+inline fun Node.subDI(allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: DI.MainBuilder.() -> Unit) {
+    val nearestDI = kodeinDI()
+    addKodeinDIProperty(subDI(nearestDI, allowSilentOverride, copy, init))
 }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("subDI(allowSilentOverride, copy, init)"), DeprecationLevel.ERROR)
+inline fun Node.subKodein(allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: DI.MainBuilder.() -> Unit) = subDI(allowSilentOverride, copy, init)

@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.test.*
 import kotlin.test.*
@@ -11,7 +11,7 @@ class GenericJvmTests_04_NullBinding {
     @Test
     fun test_00_NullBindingProviderAndInstance() {
 
-        val kodein = Kodein {}
+        val kodein = DI {}
 
         val i: Person? by kodein.instanceOrNull()
         val di: Person? = kodein.direct.instanceOrNull()
@@ -24,7 +24,7 @@ class GenericJvmTests_04_NullBinding {
     @Test
     fun test_01_NullBindingGetFactory() {
 
-        val kodein = Kodein {}
+        val kodein = DI {}
 
         val f: ((String) -> Person)? by kodein.factoryOrNull()
         val df: ((String) -> Person)? = kodein.direct.factoryOrNull()
@@ -42,7 +42,7 @@ class GenericJvmTests_04_NullBinding {
     @Test
     fun test_02_NonNullBindingProviderAndInstance() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<String>() with provider { "Salomon" }
         }
 
@@ -58,7 +58,7 @@ class GenericJvmTests_04_NullBinding {
     @Test
     fun test_03_NonNullBindingGetFactory() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<String>() with factory { name: String -> "$name BRYS" }
         }
 

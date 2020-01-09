@@ -7,22 +7,22 @@ import org.kodein.di.ktor.*
 
 
 /**
- * Allow to install a [KodeinController] and defined [Route]s into the routing system
- * e.g. Route.controller { KodeinControllerImpl() }
+ * Allow to install a [DIController] and defined [Route]s into the routing system
+ * e.g. Route.controller { DIControllerImpl() }
  */
 @ContextDsl
-fun Route.controller(init: DKodein.() -> KodeinController) = run {
-    val kodeinController by kodein().newInstance { init() }
-    kodeinController.apply { installRoutes() }
+fun Route.controller(init: DirectDI.() -> DIController) = run {
+    val diController by di().newInstance { init() }
+    diController.apply { installRoutes() }
 }
 
 /**
- * Allow to install a [KodeinController] and defined [Route]s into the routing system
+ * Allow to install a [DIController] and defined [Route]s into the routing system
  * inside a specific route
- * e.g. Route.controller("/protected") { KodeinControllerImpl() }
+ * e.g. Route.controller("/protected") { DIControllerImpl() }
  */
 @ContextDsl
-fun Route.controller(endpoint: String, init: DKodein.() -> KodeinController) = run {
+fun Route.controller(endpoint: String, init: DirectDI.() -> DIController) = run {
     route(endpoint){
         controller(init)
     }

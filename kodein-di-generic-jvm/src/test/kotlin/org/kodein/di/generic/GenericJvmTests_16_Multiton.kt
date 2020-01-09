@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.bindings.SingleItemScopeRegistry
 import org.kodein.di.bindings.UnboundedScope
 import org.kodein.di.test.CloseableData
@@ -14,7 +14,7 @@ class GenericJvmTests_16_Multiton {
 
     @Test
     fun test_00_Multiton() {
-        val kodein = Kodein { bind() from multiton { name: String -> Person(name) } }
+        val kodein = DI { bind() from multiton { name: String -> Person(name) } }
 
         val p1: Person by kodein.instance(arg = "Salomon")
         val p2: Person by kodein.instance(fArg = { "Salomon" })
@@ -34,7 +34,7 @@ class GenericJvmTests_16_Multiton {
     fun test_01_MultitonWithSingleItemScope() {
         val myScope = UnboundedScope(SingleItemScopeRegistry())
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<CloseableData>() with scoped(myScope).multiton { name: String -> CloseableData(name) }
         }
 
@@ -56,7 +56,7 @@ class GenericJvmTests_16_Multiton {
 
     @Test
     fun test_02_NonSyncedMultiton() {
-        val kodein = Kodein { bind() from multiton(sync = false) { name: String -> Person(name) } }
+        val kodein = DI { bind() from multiton(sync = false) { name: String -> Person(name) } }
 
         val p1: Person by kodein.instance(arg = "Salomon")
         val p2: Person by kodein.instance(fArg = { "Salomon" })

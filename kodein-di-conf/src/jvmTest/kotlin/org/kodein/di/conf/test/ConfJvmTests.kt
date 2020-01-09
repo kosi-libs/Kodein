@@ -4,7 +4,7 @@ import org.kodein.di.*
 import org.kodein.di.bindings.ExternalSource
 import org.kodein.di.bindings.Factory
 import org.kodein.di.bindings.externalFactory
-import org.kodein.di.conf.ConfigurableKodein
+import org.kodein.di.conf.ConfigurableDI
 import org.kodein.di.erased.bind
 import org.kodein.di.erased.instance
 import org.kodein.di.erased.instanceOrNull
@@ -47,25 +47,25 @@ class ConfJvmTests {
 
     // Only the JVM supports generics
     @Test fun test_00_GenericOverride() {
-        val kodein = ConfigurableKodein(true)
+        val di = ConfigurableDI(true)
 
-        kodein.addConfig {
+        di.addConfig {
             Bind<String>(erased()) with Factory(AnyToken, erased(), erased()) { l: List<*> -> l.first().toString() + " *" }
         }
 
-        assertEquals("Salomon *", kodein.direct.Factory<List<String>, String>(erased(), erased(), null).invoke(listOf("Salomon", "BRYS")))
+        assertEquals("Salomon *", di.direct.Factory<List<String>, String>(erased(), erased(), null).invoke(listOf("Salomon", "BRYS")))
 
-        kodein.addConfig {
+        di.addConfig {
             Bind<String>(erased()) with Factory(AnyToken, generic(), erased()) { l: List<String> -> l[0] + " " + l[1] }
         }
 
-        assertEquals("Salomon BRYS", kodein.direct.Factory<List<String>, String>(generic(), erased(), null).invoke(listOf("Salomon", "BRYS")))
-        assertEquals("42 *", kodein.direct.Factory<List<Int>, String>(generic(), erased(), null).invoke(listOf(42)))
+        assertEquals("Salomon BRYS", di.direct.Factory<List<String>, String>(generic(), erased(), null).invoke(listOf("Salomon", "BRYS")))
+        assertEquals("42 *", di.direct.Factory<List<Int>, String>(generic(), erased(), null).invoke(listOf(42)))
     }
 
     @Test fun test_01_ExternalSource() {
-        val kodein = ConfigurableKodein(mutable = true)
-        kodein.addConfig {
+        val di = ConfigurableDI(mutable = true)
+        di.addConfig {
             externalSources += ExternalSource { key ->
                 if (key.type.jvmType == String::class.java && key.tag == "foo")
                     externalFactory { "bar" }
@@ -74,14 +74,14 @@ class ConfJvmTests {
             }
         }
 
-        assertEquals("bar", kodein.direct.instance(tag = "foo"))
-        assertNull(kodein.direct.instanceOrNull<String>())
+        assertEquals("bar", di.direct.instance(tag = "foo"))
+        assertNull(di.direct.instanceOrNull<String>())
 
-        kodein.addConfig {
+        di.addConfig {
             bind() from provider { "def" }
         }
 
-        assertEquals("bar", kodein.direct.instance(tag = "foo"))
-        assertEquals("def", kodein.direct.instance())
+        assertEquals("bar", di.direct.instance(tag = "foo"))
+        assertEquals("def", di.direct.instance())
     }
 }

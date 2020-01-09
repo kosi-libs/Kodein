@@ -11,7 +11,7 @@ import kotlin.test.*
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KtorControllerTests {
     @Test
-    fun test_00_successAbstractKodeinControllerFeature(): Unit = withTestApplication(Application::kodeinAbsControllerSuccess) {
+    fun test_00_successAbstractDIControllerFeature(): Unit = withTestApplication(Application::diAbsControllerSuccess) {
         handleRequest(HttpMethod.Get, ROUTE_VERSION).apply {
             assertEquals(VERSION, response.content)
         }
@@ -21,14 +21,14 @@ class KtorControllerTests {
     }
 
     @Test
-    fun test_01_failureAbstractKodeinControllerFeature() {
+    fun test_01_failureAbstractDIControllerFeature() {
         assertFailsWith(MissingApplicationFeatureException::class) {
-            withTestApplication(Application::kodeinAbsControllerFailure) {}
+            withTestApplication(Application::diAbsControllerFailure) {}
         }
     }
 
     @Test
-    fun test_02_successKodeinControllerImplFeature(): Unit = withTestApplication(Application::kodeinControllerImplSuccess) {
+    fun test_02_successDIControllerImplFeature(): Unit = withTestApplication(Application::diControllerImplSuccess) {
         handleRequest(HttpMethod.Get, ROUTE_VERSION).apply {
             assertEquals(VERSION, response.content)
         }
@@ -38,14 +38,14 @@ class KtorControllerTests {
     }
 
     @Test
-    fun test_03_failureKodeinControllerImplFeature() {
+    fun test_03_failureDIControllerImplFeature() {
         assertFailsWith(MissingApplicationFeatureException::class) {
-            withTestApplication(Application::kodeincontrollerImplFailure) {}
+            withTestApplication(Application::dicontrollerImplFailure) {}
         }
     }
 
     @Test
-    fun test_00_successKodeinControllerAutoConfiguration(): Unit = withTestApplication(Application::kodeinControllerSuccess) {
+    fun test_00_successDIControllerAutoConfiguration(): Unit = withTestApplication(Application::diControllerSuccess) {
 
         val ROUTE_PROTECTED = "/protected"
         val ROUTE_FIRST = "/first"

@@ -14,7 +14,7 @@ class ErasedTests_20_1_MultiArguments_deprecated {
 
     @Test
     fun test_00_MultiArgumentsFactory() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
         }
 
@@ -39,7 +39,7 @@ class ErasedTests_20_1_MultiArguments_deprecated {
 
     @Test
     fun test_01_MultiArgumentsMultiton() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<FullName>() with multiton { firstName: String, lastName: String -> FullName(firstName, lastName) }
         }
 
@@ -64,11 +64,11 @@ class ErasedTests_20_1_MultiArguments_deprecated {
 
     @Test
     fun test_02_MultiArgumentsFactoryBadType() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
         }
 
-        assertFailsWith<Kodein.NotFoundException> {
+        assertFailsWith<DI.NotFoundException> {
             @Suppress("UNUSED_VARIABLE")
             val fullName: FullName = kodein.direct.instance(arg = M("Salomon", 42))
         }
@@ -76,7 +76,7 @@ class ErasedTests_20_1_MultiArguments_deprecated {
 
     @Test
     fun test_03_BigMultiArgumentsFactories() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<String>() with factory { a: String -> "Mr $a" }
             bind<String>() with factory { a: String, b: String -> "Mr $a $b" }
             bind<String>() with factory { a: String, b: String, c: String -> "Mr $a $b of $c" }
@@ -93,7 +93,7 @@ class ErasedTests_20_1_MultiArguments_deprecated {
 
     @Test
     fun test_04_MultiArgumentsFactoryFunction() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<String>() with factory { a: String -> "Mr $a" }
             bind<String>() with factory { a: String, b: String -> "Mr $a $b" }
             bind<String>() with factory { a: String, b: String, c: String -> "Mr $a $b of $c" }
@@ -126,7 +126,7 @@ class ErasedTests_20_1_MultiArguments_deprecated {
 
     @Test
     fun test_05_MultiArgumentsFactoryDirectFunction() {
-        val kodein = Kodein.direct {
+        val kodein = DI.direct {
             bind<String>() with factory { a: String -> "Mr $a" }
             bind<String>() with factory { a: String, b: String -> "Mr $a $b" }
             bind<String>() with factory { a: String, b: String, c: String -> "Mr $a $b of $c" }

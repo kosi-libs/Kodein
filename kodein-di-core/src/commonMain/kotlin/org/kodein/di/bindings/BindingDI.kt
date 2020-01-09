@@ -23,23 +23,24 @@ interface WithContext<out C> {
     val context: C
 }
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("SimpleBindingDI<C>"), DeprecationLevel.ERROR)
+typealias SimpleBindingKodein<C> = SimpleBindingDI<C>
 /**
- * Direct Kodein interface to be passed to factory methods that hold references.
+ * Direct DI interface to be passed to factory methods that hold references.
  *
  * It is augmented to allow such methods to access the context of the retrieval, as well as a factory from the binding it is overriding (if it is overriding).
  *
  * @param C The type of the context
  */
-@Kodein.KodeinDsl
-@Deprecated(DEPRECATE_7X)
-interface SimpleBindingKodein<out C> : DKodein, WithContext<C> {
+@DI.DIDsl
+interface SimpleBindingDI<out C> : DirectDI, WithContext<C> {
 
     /**
      * Gets a factory from the overridden binding.
      *
      * @return A factory yielded by the overridden binding.
-     * @throws Kodein.NotFoundException if this binding does not override an existing binding.
-     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     * @throws DI.NotFoundException if this binding does not override an existing binding.
+     * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
     fun overriddenFactory(): (Any?) -> Any
 
@@ -47,38 +48,40 @@ interface SimpleBindingKodein<out C> : DKodein, WithContext<C> {
      * Gets a factory from the overridden binding, if this binding overrides an existing binding.
      *
      * @return A factory yielded by the overridden binding, or null if this binding does not override an existing binding.
-     * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+     * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
     fun overriddenFactoryOrNull(): ((Any?) -> Any)?
 }
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("BindingDI<C>"), DeprecationLevel.ERROR)
+typealias BindingKodein<C> = BindingDI<C>
 /**
- * Direct Kodein interface to be passed to factory methods that do **not** hold references (i.e. that recreate a new instance every time).
+ * Direct DI interface to be passed to factory methods that do **not** hold references (i.e. that recreate a new instance every time).
  *
  * It is augmented to allow such methods to access the context of the retrieval, as well as a factory from the binding it is overriding (if it is overriding).
  *
  * @param C The type of the context
  */
-@Deprecated(DEPRECATE_7X)
-interface BindingKodein<out C> : SimpleBindingKodein<C>
+interface BindingDI<out C> : SimpleBindingDI<C>
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("NoArgSimpleBindingDI<C>"), DeprecationLevel.ERROR)
+typealias NoArgSimpleBindingKodein<C> = NoArgSimpleBindingDI<C>
 /**
- * Direct Kodein interface to be passed to provider methods that hold references.
+ * Direct DI interface to be passed to provider methods that hold references.
  *
  * It is augmented to allow such methods to access the context of the retrieval, as well as a provider or instance from the binding it is overriding (if it is overriding).
  *
  * @param C The type of the context
  */
-@Kodein.KodeinDsl
-@Deprecated(DEPRECATE_7X)
-interface NoArgSimpleBindingKodein<out C> : DKodein, WithContext<C> {
+@DI.DIDsl
+interface NoArgSimpleBindingDI<out C> : DirectDI, WithContext<C> {
 
     /**
      * Gets a provider from the overridden binding.
      *
      * @return A provider yielded by the overridden binding.
-     * @throws Kodein.NotFoundException if this binding does not override an existing binding.
-     * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     * @throws DI.NotFoundException if this binding does not override an existing binding.
+     * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
     fun overriddenProvider(): () -> Any
 
@@ -86,7 +89,7 @@ interface NoArgSimpleBindingKodein<out C> : DKodein, WithContext<C> {
      * Gets a provider from the overridden binding, if this binding overrides an existing binding.
      *
      * @return A provider yielded by the overridden binding, or null if this binding does not override an existing binding.
-     * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
     fun overriddenProviderOrNull(): (() -> Any)?
 
@@ -94,8 +97,8 @@ interface NoArgSimpleBindingKodein<out C> : DKodein, WithContext<C> {
      * Gets an instance from the overridden binding.
      *
      * @return An instance yielded by the overridden binding.
-     * @throws Kodein.NotFoundException if this binding does not override an existing binding.
-     * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
+     * @throws DI.NotFoundException if this binding does not override an existing binding.
+     * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
      */
     fun overriddenInstance(): Any /*= overriddenProvider().invoke()*/
 
@@ -103,25 +106,28 @@ interface NoArgSimpleBindingKodein<out C> : DKodein, WithContext<C> {
      * Gets an instance from the overridden binding, if this binding overrides an existing binding.
      *
      * @return An instance yielded by the overridden binding, or null if this binding does not override an existing binding.
-     * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
+     * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
      */
     fun overriddenInstanceOrNull(): Any? /*= overriddenProviderOrNull()?.invoke()*/
 }
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("NoArgBindingDI<C>"), DeprecationLevel.ERROR)
+typealias NoArgBindingKodein<C> = NoArgBindingDI<C>
 /**
- * Direct Kodein interface to be passed to provider methods that do **not** hold references (i.e. that recreate a new instance every time).
+ * Direct DI interface to be passed to provider methods that do **not** hold references (i.e. that recreate a new instance every time).
  *
  * It is augmented to allow such methods to access the context of the retrieval, as well as a provider or instance from the binding it is overriding (if it is overriding).
  *
  * @param C The type of the context
  */
-@Deprecated(DEPRECATE_7X)
-interface NoArgBindingKodein<out C> : NoArgSimpleBindingKodein<C>
+interface NoArgBindingDI<out C> : NoArgSimpleBindingDI<C>
 
-@Deprecated(DEPRECATE_7X)
-internal class NoArgBindingKodeinWrap<out C>(private val _kodein: BindingKodein<C>) : NoArgBindingKodein<C>, DKodein by _kodein, WithContext<C> by _kodein {
-    override fun overriddenProvider() = _kodein.overriddenFactory().toProvider { Unit }
-    override fun overriddenProviderOrNull() = _kodein.overriddenFactoryOrNull()?.toProvider { Unit }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("NoArgBindingDIWrap<C>"), DeprecationLevel.ERROR)
+internal typealias NoArgBindingKodeinWrap<C> = NoArgBindingDIWrap<C>
+
+internal class NoArgBindingDIWrap<out C>(private val _di: BindingDI<C>) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
+    override fun overriddenProvider() = _di.overriddenFactory().toProvider { Unit }
+    override fun overriddenProviderOrNull() = _di.overriddenFactoryOrNull()?.toProvider { Unit }
     override fun overriddenInstance() = overriddenProvider().invoke()
     override fun overriddenInstanceOrNull() = overriddenProviderOrNull()?.invoke()
 }

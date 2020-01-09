@@ -1,7 +1,7 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
+import org.kodein.di.DI
+import org.kodein.di.DIAware
 import org.kodein.di.bindings.subTypes
 import org.kodein.di.direct
 import org.kodein.di.jvmType
@@ -14,7 +14,7 @@ class GenericJvmTests_00_Factory {
     @Test
     fun test_00_FactoryBindingGetFactory() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind() from factory { name: String -> Person(name) }
         }
 
@@ -27,7 +27,7 @@ class GenericJvmTests_00_Factory {
     @Test
     fun test_01_WithFactoryGetProvider() {
 
-        val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
+        val kodein = DI { bind<Person>() with factory { name: String -> Person(name) } }
 
         val p: () -> Person by kodein.provider(arg = "Salomon")
         val dp: () -> Person = kodein.direct.provider(arg = "Salomon")
@@ -43,7 +43,7 @@ class GenericJvmTests_00_Factory {
     @Test
     fun test_02_WithFactoryGetInstance() {
 
-        val kodein = Kodein { bind<Person>() with factory { name: String -> Person(name) } }
+        val kodein = DI { bind<Person>() with factory { name: String -> Person(name) } }
 
         val p: Person by kodein.instance(arg = "Salomon")
 
@@ -57,7 +57,7 @@ class GenericJvmTests_00_Factory {
     @Test
     fun test_03_WithSubFactoryGetInstance() {
 
-        val kodein = Kodein { bind<Person>() with factory { p: Name -> Person(p.firstName) } }
+        val kodein = DI { bind<Person>() with factory { p: Name -> Person(p.firstName) } }
 
         val p: Person by kodein.instance(arg = FullName("Salomon", "BRYS"))
 
@@ -67,7 +67,7 @@ class GenericJvmTests_00_Factory {
     @Test
     fun test_04_WithGenericFactoryGetInstance() {
 
-        val kodein = Kodein { bind<Person>() with factory { l: List<*> -> Person(l.first().toString()) } }
+        val kodein = DI { bind<Person>() with factory { l: List<*> -> Person(l.first().toString()) } }
 
         val p: Person by kodein.instance(arg = listOf("Salomon", "BRYS"))
 
@@ -77,7 +77,7 @@ class GenericJvmTests_00_Factory {
     @Test
     fun test_05_WithItfFactoryGetInstance() {
 
-        val kodein = Kodein { bind<Person>() with factory { p: IName -> Person(p.firstName) } }
+        val kodein = DI { bind<Person>() with factory { p: IName -> Person(p.firstName) } }
 
         val p: Person by kodein.instance(arg = FullName("Salomon", "BRYS"))
 
@@ -87,19 +87,19 @@ class GenericJvmTests_00_Factory {
     @Test
     fun test_06_WithTwoItfFactoryGetInstance() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with factory { p: IName -> Person(p.firstName) }
             bind<Person>() with factory { p: IFullName -> Person(p.firstName + " " + p.lastName) }
         }
 
         val p: Person by kodein.instance(arg = FullInfos("Salomon", "BRYS", 30))
 
-        assertFailsWith<Kodein.NotFoundException> { p.name }
+        assertFailsWith<DI.NotFoundException> { p.name }
     }
 
     @Test
     fun test_07_withFactoryLambdaArgument() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Runnable>() with factory { f: () -> Unit -> Runnable(f) }
         }
 
@@ -116,13 +116,13 @@ class GenericJvmTests_00_Factory {
 
     class FakeLoggerImpl(override val cls: Class<*>) : FakeLogger
 
-    class AwareTest(override val kodein: Kodein) : KodeinAware {
+    class AwareTest(override val di: DI) : DIAware {
         val logger: FakeLogger by instance(arg = javaClass)
     }
 
     @Test
     fun test_08_StarFactory() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<FakeLogger>() with factory { cls: Class<*> -> FakeLoggerImpl(cls) }
         }
 
@@ -133,7 +133,7 @@ class GenericJvmTests_00_Factory {
 
     @Test
     fun test_09_subTypeFactory() {
-        val kodein = Kodein.direct {
+        val kodein = DI.direct {
             bind<IName>().subTypes() with { type ->
                 when (type.jvmType) {
                     FullName::class.java -> singleton { FullName("Salomon", "BRYS") }

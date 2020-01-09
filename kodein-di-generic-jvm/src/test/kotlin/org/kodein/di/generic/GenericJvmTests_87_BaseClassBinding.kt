@@ -10,7 +10,7 @@ class GenericJvmTests_87_BaseClassBinding {
     open class Resource1
     open class Resource2 : Resource1()
 
-    val kodein00 = Kodein {
+    val kodein00 = DI {
         bind<Resource1>() with singleton { Resource1() }
         bind<Resource2>() with singleton { Resource2() }
     }
@@ -23,7 +23,7 @@ class GenericJvmTests_87_BaseClassBinding {
         assertSame(localResource1, instanceLevelResource1)
     }
 
-    val kodein01 = Kodein {
+    val kodein01 = DI {
         bind<Resource1>() with contexted<String>().provider { Resource1() }
         bind<Resource2>() with singleton { Resource2() }
     }

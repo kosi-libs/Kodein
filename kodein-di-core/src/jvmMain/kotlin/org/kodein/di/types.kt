@@ -21,6 +21,8 @@ private val _needGATWrapper: Boolean by lazy {
     t1 != t2
 }
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIWrappedType"), DeprecationLevel.ERROR)
+typealias KodeinWrappedType = DIWrappedType
 /**
  * Wraps a ParameterizedType and implements hashCode / equals.
  *
@@ -29,8 +31,7 @@ private val _needGATWrapper: Boolean by lazy {
  *
  * @property type The type object to wrap.
  */
-@Deprecated(DEPRECATE_7X)
-class KodeinWrappedType(val type: Type) : Type {
+class DIWrappedType(val type: Type) : Type {
 
     private var _hashCode: Int = 0
 
@@ -54,7 +55,7 @@ class KodeinWrappedType(val type: Type) : Type {
 
     /** @suppress */
     override fun toString(): String {
-        return "KodeinWrappedType{$type}"
+        return "DIWrappedType{$type}"
     }
 
     private object Func {
@@ -125,7 +126,7 @@ class KodeinWrappedType(val type: Type) : Type {
 /**
  * The JVM type that is wrapped by a TypeToken.
  *
- * Note that this function may return a [KodeinWrappedType].
+ * Note that this function may return a [DIWrappedType].
  * If you only want Java types, you should call [javaType] on the result.
  */
 val TypeToken<*>.jvmType: Type get() =
@@ -136,9 +137,9 @@ val TypeToken<*>.jvmType: Type get() =
         }
 
 /**
- * The true Java `Type` if this is a [KodeinWrappedType], or itself if this is already a true Java `Type`.
+ * The true Java `Type` if this is a [DIWrappedType], or itself if this is already a true Java `Type`.
  */
-val Type.javaType: Type get() = (this as? KodeinWrappedType)?.type ?: this
+val Type.javaType: Type get() = (this as? DIWrappedType)?.type ?: this
 
 
 internal abstract class JVMTypeToken<T> : TypeToken<T> {
@@ -197,8 +198,8 @@ internal class ParameterizedTypeToken<T>(val trueType: Type) : JVMTypeToken<T>()
         when {
             !_needPTWrapper && !_needGATWrapper -> trueType
             trueType is Class<*> -> trueType
-            _needPTWrapper && trueType is ParameterizedType -> KodeinWrappedType(trueType)
-            _needGATWrapper && trueType is GenericArrayType -> KodeinWrappedType(trueType)
+            _needPTWrapper && trueType is ParameterizedType -> DIWrappedType(trueType)
+            _needGATWrapper && trueType is GenericArrayType -> DIWrappedType(trueType)
             else -> trueType
         }.also { _type = it }
     }

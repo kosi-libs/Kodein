@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.IPerson
 import org.kodein.di.test.MethodSorters
@@ -13,7 +13,7 @@ class GenericJvmTests_06_Constant {
     @Test
     fun test_00_ConstantBindingGetInstance() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             constant(tag = "answer") with 42
         }
 
@@ -27,7 +27,7 @@ class GenericJvmTests_06_Constant {
     @Test
     fun test_01_ConstantBindingGetProvider() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             constant(tag = "answer") with 42
         }
 
@@ -39,7 +39,7 @@ class GenericJvmTests_06_Constant {
     @Test
     fun test_02_ConstantBindingGetProviderPolymorphic() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             constant(tag = "salomon") with Person("Salomon") as IPerson
         }
 

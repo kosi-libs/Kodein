@@ -1,6 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.Multi2
 import org.kodein.di.erased
 import org.kodein.di.erasedComp2
@@ -14,7 +14,7 @@ class ErasedTests_21_Description {
 
     @Test
     fun test_00_SimpleKeySimpleDescription() {
-        val key = Kodein.Key(
+        val key = DI.Key(
                 contextType = erased<Any>(),
                 argType = erased<Unit>(),
                 type = erased<String>(),
@@ -27,7 +27,7 @@ class ErasedTests_21_Description {
 
     @Test
     fun test_01_ComplexKeySimpleDescription() {
-        val key = Kodein.Key(
+        val key = DI.Key(
                 contextType = erased<String>(),
                 argType = erasedComp2<Multi2<String, String>, String, String>(),
                 type = erased<IntRange>(),

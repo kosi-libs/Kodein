@@ -4,29 +4,29 @@ import org.kodein.di.*
 import org.kodein.di.internal.maySynchronized
 import org.kodein.di.internal.synchronizedIfNull
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("ConfigurableDI"), DeprecationLevel.ERROR)
+typealias ConfigurableKodein = ConfigurableDI
 /**
- * A class that can be used to configure a kodein object and as a kodein object.
+ * A class that can be used to configure a DI object and as a DI object.
  *
  * If you want it to be mutable, the [mutable] property needs to be set **before** any dependency retrieval.
  * The non-mutable configuration methods ([addImport], [addExtend] & [addConfig]) needs to happen **before** any dependency retrieval.
  */
-@Deprecated(DEPRECATE_7X)
-class ConfigurableKodein : Kodein {
+class ConfigurableDI : DI {
 //    override val container: KodeinContainer
 //        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
     /** @suppress */
-    @Deprecated(DEPRECATE_7X)
-    override val kodein: Kodein get() = this
+    override val di: DI get() = this
 
     private val _lock = Any()
 
     /**
-     * Whether this ConfigurableKodein can be mutated.
+     * Whether this Configurabledi can be mutated.
      *
      * `null` = not set yet. `true` = can be mutated. `false` = cannot be mutated.
      *
-     * Note that if not set, this field will be set to false on `first` Kodein retrieval.
+     * Note that if not set, this field will be set to false on `first` DI retrieval.
      */
     var mutable: Boolean? = null
         set(value) {
@@ -45,7 +45,7 @@ class ConfigurableKodein : Kodein {
     /**
      * Convenient constructor to directly set the mutability.
      *
-     * @param mutable Whether this Kodein can be mutated.
+     * @param mutable Whether this DI can be mutated.
      */
     constructor(mutable: Boolean) {
         this.mutable = mutable
@@ -54,22 +54,22 @@ class ConfigurableKodein : Kodein {
     /**
      * Configuration lambdas.
      *
-     * When constructing the Kodein instance (upon first retrieval), all configuration lambdas will be applied.
+     * When constructing the DI instance (upon first retrieval), all configuration lambdas will be applied.
      */
-    private var _configs: MutableList<Kodein.MainBuilder.() -> Unit>? = ArrayList()
+    private var _configs: MutableList<DI.MainBuilder.() -> Unit>? = ArrayList()
 
     /**
-     * Kodein instance. If it is not null, than it cannot be configured anymore.
+     * DI instance. If it is not null, than it cannot be configured anymore.
      */
     @Volatile
-    private var _instance: Kodein? = null
+    private var _instance: DI? = null
 
     /**
-     * Get the kodein instance if it has already been constructed, or construct it if not.
+     * Get the DI instance if it has already been constructed, or construct it if not.
      *
      * The first time this function is called is the end of the configuration.
      */
-    fun getOrConstruct(): Kodein {
+    fun getOrConstruct(): DI {
         return synchronizedIfNull(
                 lock = _lock,
                 predicate = { _instance },
@@ -81,27 +81,27 @@ class ConfigurableKodein : Kodein {
                     val configs = checkNotNull(_configs) { "recursive initialization detected" }
                     _configs = null
 
-                    val (kodein, init) = Kodein.withDelayedCallbacks {
+                    val (di, init) = DI.withDelayedCallbacks {
                         for (config in configs)
                             config()
                     }
 
-                    _instance = kodein
+                    _instance = di
 
                     init()
-                    kodein
+                    di
                 }
         )
     }
 
     /**
-     * Clear all the bindings of the Kodein instance. Needs [mutable] to be true.
+     * Clear all the bindings of the DI instance. Needs [mutable] to be true.
      *
      * @throws IllegalStateException if [mutable] is not `true`.
      */
     fun clear() {
         if (mutable != true)
-            throw IllegalStateException("ConfigurableKodein is not mutable, you cannot clear bindings.")
+            throw IllegalStateException("Configurabledi is not mutable, you cannot clear bindings.")
 
         maySynchronized(_lock) {
             val configs = _configs
@@ -117,22 +117,22 @@ class ConfigurableKodein : Kodein {
     }
 
     /**
-     * Whether or not this Kodein can be configured (meaning that it has not been used for retrieval yet).
+     * Whether or not this DI can be configured (meaning that it has not been used for retrieval yet).
      */
     val canConfigure: Boolean get() = _instance == null
 
     /**
-     * Adds a configuration to the bindings that will be applied when the Kodein is constructed.
+     * Adds a configuration to the bindings that will be applied when the DI is constructed.
      *
-     * @param config The lambda to be applied when the kodein instance is constructed.
-     * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
+     * @param config The lambda to be applied when the DI instance is constructed.
+     * @exception IllegalStateException When calling this function after [getOrConstruct] or any `DI` retrieval function.
      */
-    fun addConfig(config: Kodein.MainBuilder.() -> Unit) {
+    fun addConfig(config: DI.MainBuilder.() -> Unit) {
         maySynchronized(_lock) {
             val configs = _configs
             if (configs == null) {
                 if (mutable != true)
-                    throw IllegalStateException("The non-mutable ConfigurableKodein has been accessed and therefore constructed, you cannot add bindings after first retrieval.")
+                    throw IllegalStateException("The non-mutable Configurabledi has been accessed and therefore constructed, you cannot add bindings after first retrieval.")
                 val previous = _instance
                 _instance = null
                 _configs = ArrayList()
@@ -144,23 +144,23 @@ class ConfigurableKodein : Kodein {
     }
 
     /**
-     * Adds a module to the bindings that will be applied when the Kodein is constructed.
+     * Adds a module to the bindings that will be applied when the DI is constructed.
      *
-     * @param module The module to apply when the kodein instance is constructed.
+     * @param module The module to apply when the DI instance is constructed.
      * @param allowOverride Whether this module is allowed to override existing bindings.
-     * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
+     * @exception IllegalStateException When calling this function after [getOrConstruct] or any `DI` retrieval function.
      */
-    fun addImport(module: Kodein.Module, allowOverride: Boolean = false) = addConfig { import(module, allowOverride) }
+    fun addImport(module: DI.Module, allowOverride: Boolean = false) = addConfig { import(module, allowOverride) }
 
     /**
-     * Adds the bindings of an existing kodein instance to the bindings that will be applied when the Kodein is constructed.
+     * Adds the bindings of an existing DI instance to the bindings that will be applied when the DI is constructed.
      *
-     * @param kodein The existing kodein instance whose bindings to be apply when the kodein instance is constructed.
+     * @param di The existing DI instance whose bindings to be apply when the DI instance is constructed.
      * @param allowOverride Whether these bindings are allowed to override existing bindings.
-     * @exception IllegalStateException When calling this function after [getOrConstruct] or any `Kodein` retrieval function.
+     * @exception IllegalStateException When calling this function after [getOrConstruct] or any `DI` retrieval function.
      */
-    fun addExtend(kodein: Kodein, allowOverride: Boolean = false) = addConfig { extend(kodein, allowOverride) }
+    fun addExtend(di: DI, allowOverride: Boolean = false) = addConfig { extend(di, allowOverride) }
 
     /** @suppress */
-    override val container: KodeinContainer get() = getOrConstruct().container
+    override val container: DIContainer get() = getOrConstruct().container
 }

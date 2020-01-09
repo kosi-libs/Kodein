@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.test.A
 import org.kodein.di.test.B
@@ -17,7 +17,7 @@ class GenericJvmTests_08_Erasure {
         val la = listOf(A(null))
         val lb = listOf(B(null))
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<List<A>>() with instance(la)
             bind<List<B>>() with instance(lb)
         }

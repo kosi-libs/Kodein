@@ -14,7 +14,7 @@ import java.util.*
 fun Application.main() {
     install(DefaultHeaders)
 
-    kodein {
+    di {
         bind() from scoped(SessionScope).singleton { Random() }
         bind() from scoped(CallScope).singleton { Random() }
 
@@ -24,7 +24,7 @@ fun Application.main() {
     sessionModule()
     requestModule()
     closestModule()
-    subKodeinModule()
+    subDIModule()
 }
 
 const val ROUTE_SESSION = "/session"
@@ -41,7 +41,7 @@ const val NO_SESSION = "NO_SESSION"
 
 const val AUTHOR = "romain boisselle"
 
-data class MockSession(val counter: Int = 0) : KodeinSession {
+data class MockSession(val counter: Int = 0) : KodeinDISession {
     override fun getSessionId() = counter
 }
 
@@ -62,11 +62,11 @@ private fun Application.sessionModule() {
 
         route(ROUTE_SESSION) {
             get {
-                application.log.info("${kodein()}")
+                application.log.info("${di()}")
                 val session = call.sessions.get<MockSession>() ?: MockSession(0)
-                val random by kodein().on(session).instance<Random>()
+                val random by di().on(session).instance<Random>()
 
-                application.log.info("${call.info()} / Session: $session / Kodein ${kodein().container} / Random instance: $random")
+                application.log.info("${call.info()} / Session: $session / DI ${di().container} / Random instance: $random")
 
                 call.respondText("$random")
             }
@@ -100,9 +100,9 @@ fun Application.requestModule() {
                     applicationCall: ApplicationCall,
                     proceed: suspend () -> Unit
             ) {
-                val random by kodein().on(applicationCall).instance<Random>()
+                val random by di().on(applicationCall).instance<Random>()
                 randomDto.randomInstances.add(phase to "$random")
-                log.info("Context $applicationCall / Kodein ${kodein().container} / $phase Random instance: $random")
+                log.info("Context $applicationCall / DI ${di().container} / $phase Random instance: $random")
                 proceed()
             }
 
@@ -124,8 +124,8 @@ fun Application.requestModule() {
             }
 
             get {
-                val random by kodein().on(context).instance<Random>()
-                application.log.info("Kodein ${kodein().container} / Random instance: $random")
+                val random by di().on(context).instance<Random>()
+                application.log.info("DI ${di().container} / Random instance: $random")
                 logPhase("[GET]", context) {
                     call.respondText(randomDto.randomInstances.joinToString { "${it.first}=${it.second}" })
                 }
@@ -136,43 +136,43 @@ fun Application.requestModule() {
 
 
 fun Application.closestModule() {
-    val kodeinInstances = mutableListOf<Kodein>()
+    val kodeinInstances = mutableListOf<DI>()
     routing {
-        kodeinInstances.add(kodein().baseKodein)
+        kodeinInstances.add(di().baseDI)
         route(ROUTE_CLOSEST) {
-            kodeinInstances.add(kodein().baseKodein)
+            kodeinInstances.add(di().baseDI)
             get {
-                kodeinInstances.add(kodein().baseKodein)
+                kodeinInstances.add(di().baseDI)
                 call.respondText(kodeinInstances.joinToString())
             }
         }
     }
 }
 
-fun Application.subKodeinModule() {
-    val kodeinInstances = mutableListOf<Kodein>()
+fun Application.subDIModule() {
+    val kodeinInstances = mutableListOf<DI>()
     routing {
         route(ROUTE_SUBKODEIN) {
-            kodeinInstances.add(kodein().baseKodein)
+            kodeinInstances.add(di().baseDI)
 
             route(ROUTE_SUB_LOWER) {
                 get {
-                    val author: String by kodein().instance("author")
+                    val author: String by di().instance("author")
                     call.respondText(author)
                 }
             }
 
             route(ROUTE_SUB_UPPER) {
-                subKodein(allowSilentOverride = true) {
+                subDI(allowSilentOverride = true, init = {
                     constant("author") with AUTHOR.toUpperCase()
-                }
+                })
 
                 get {
-                    val author: String by kodein().instance("author")
+                    val author: String by di().instance("author")
                     call.respondText(author)
                 }
                 post {
-                    kodeinInstances.add(kodein().baseKodein)
+                    kodeinInstances.add(di().baseDI)
                     call.respondText(kodeinInstances.joinToString())
                 }
             }

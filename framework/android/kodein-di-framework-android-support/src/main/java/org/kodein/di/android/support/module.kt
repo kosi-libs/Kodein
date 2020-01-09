@@ -6,13 +6,13 @@ import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.content.Loader
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.android.androidCoreContextTranslators
 import org.kodein.di.android.androidCoreModule
 import org.kodein.di.bindings.SimpleContextTranslator
 import org.kodein.di.erased
 
-val androidSupportContextTranslators = Kodein.Module("\u2063androidSupportContextTranslators") {
+val androidSupportContextTranslators = DI.Module("\u2063androidSupportContextTranslators") {
     importOnce(androidCoreContextTranslators)
 
     RegisterContextTranslator(SimpleContextTranslator<Fragment, Activity>(erased(), erased()) { it.requireActivity() })
@@ -20,7 +20,7 @@ val androidSupportContextTranslators = Kodein.Module("\u2063androidSupportContex
     RegisterContextTranslator(SimpleContextTranslator<AndroidViewModel, Application>(erased(), erased()) { it.getApplication() })
 }
 
-fun androidSupportModule(app: Application) = Kodein.Module("\u2063androidSupportModule") {
+fun androidSupportModule(app: Application) = DI.Module("\u2063androidSupportModule") {
     importOnce(androidSupportContextTranslators)
     importOnce(androidCoreModule(app))
 }

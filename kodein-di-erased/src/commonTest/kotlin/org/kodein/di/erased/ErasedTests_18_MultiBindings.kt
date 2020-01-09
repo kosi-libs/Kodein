@@ -9,7 +9,7 @@ class ErasedTests_18_MultiBindings {
 
     @Test
     fun test_00_MultiSet() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind() from setBinding<IPerson>()
 
             bind<IPerson>().inSet() with singleton { Person("Salomon") }
@@ -40,7 +40,7 @@ class ErasedTests_18_MultiBindings {
 
     @Test
     fun test_01_MultiMap() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind() from setBinding<PersonEntry>()
 
             bind<PersonEntry>().inSet() with singleton { "so" to Person("Salomon") }

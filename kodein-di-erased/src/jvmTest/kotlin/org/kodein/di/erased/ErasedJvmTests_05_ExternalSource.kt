@@ -1,6 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.bindings.ExternalSource
 import org.kodein.di.bindings.externalFactory
 import org.kodein.di.jvmType
@@ -15,7 +15,7 @@ class ErasedJvmTests_05_ExternalSource {
     // Only the JVM supports class.java
     @Test
     fun test_00_ExternalSource() {
-        val kodein = Kodein.direct {
+        val di = DI.direct {
             bind(tag = "him") from singleton { Person("Salomon") }
 
             val laila = Person("Laila")
@@ -34,18 +34,18 @@ class ErasedJvmTests_05_ExternalSource {
             }
         }
 
-        assertNotNull(kodein.instanceOrNull<Person>())
+        assertNotNull(di.instanceOrNull<Person>())
 
-        assertNull(kodein.instanceOrNull<Person>(tag = "no-one"))
+        assertNull(di.instanceOrNull<Person>(tag = "no-one"))
 
-        assertNotNull(kodein.instanceOrNull<Person>(tag = "him"))
-        assertSame(kodein.instanceOrNull<Person>(tag = "him"), kodein.instanceOrNull<Person>(tag = "him"))
+        assertNotNull(di.instanceOrNull<Person>(tag = "him"))
+        assertSame(di.instanceOrNull<Person>(tag = "him"), di.instanceOrNull<Person>(tag = "him"))
 
-        assertNotNull(kodein.instanceOrNull<Person>(tag = "her"))
-        assertSame(kodein.instanceOrNull<Person>(tag = "her"), kodein.instanceOrNull<Person>(tag = "her"))
+        assertNotNull(di.instanceOrNull<Person>(tag = "her"))
+        assertSame(di.instanceOrNull<Person>(tag = "her"), di.instanceOrNull<Person>(tag = "her"))
 
-        assertNotSame(kodein.instanceOrNull<Person>(), kodein.instanceOrNull<Person>())
-        assertEquals(kodein.instanceOrNull<Person>(), kodein.instanceOrNull<Person>())
+        assertNotSame(di.instanceOrNull<Person>(), di.instanceOrNull<Person>())
+        assertEquals(di.instanceOrNull<Person>(), di.instanceOrNull<Person>())
     }
 
 }

@@ -2,17 +2,19 @@ package org.kodein.di
 
 import kotlin.reflect.KProperty
 
-const val DEPRECATE_7X = "!!! THIS WILL BE REMOVE FROM 7.0 !!! As soon as you will move on _Kodein-DI 7.x_, we highly recommend that you take some time to move from the old API named _Kodein_ to the new API with _DI_ named objects."
+const val DEPRECATED_KODEIN_7X = "!!! THIS HAS BEEN REMOVED FROM 7.0 !!! As soon as you are using _Kodein-DI 7.x_, the old API named _Kodein_ API is broken. we highly recommend that you take some time to move from it to the new API with _DI_ named objects."
+
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DITrigger"), DeprecationLevel.ERROR)
+typealias KodeinTrigger = DITrigger
 
 /**
  * A trigger is used to force retrieval at a given time rather than at first property access.
  *
- * 1. Set a trigger to [KodeinAware.kodeinTrigger].
+ * 1. Set a trigger to [DIAware.diTrigger].
  * 2. When you want retrieval to happen, call [trigger].
  */
 @Suppress("unused")
-@Deprecated(DEPRECATE_7X)
-class KodeinTrigger {
+class DITrigger {
 
     /**
      * All properties that will be retrieved when the trigger happens.
@@ -31,25 +33,28 @@ interface LazyDelegate<out V> {
     operator fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V>
 }
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIProperty<V>"), DeprecationLevel.ERROR)
+typealias KodeinProperty<V> = DIProperty<V>
 /**
- * A property delegate provider for Kodein retrieval.
- * Provides a `Lazy` value that, when accessed, retrieve the value from Kodein.
+ * A property delegate provider for DI retrieval.
+ * Provides a `Lazy` value that, when accessed, retrieve the value from DI.
  *
- * In essence, the Kodein object is accessed only upon retrieving.
+ * In essence, the DI object is accessed only upon retrieving.
  */
-@Deprecated(DEPRECATE_7X)
-class KodeinProperty<out V>(internal val trigger: KodeinTrigger?, val originalContext: KodeinContext<*>, private val get: (KodeinContext<*>, String) -> V) : LazyDelegate<V> {
+class DIProperty<out V>(internal val trigger: DITrigger?, val originalContext: DIContext<*>, private val get: (DIContext<*>, String) -> V) : LazyDelegate<V> {
 
     override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy {
         @Suppress("UNCHECKED_CAST")
-        val context = if (receiver != null && originalContext === AnyKodeinContext) KodeinContext(TTOf(receiver) as TypeToken<in Any>, receiver) else originalContext
+        val context = if (receiver != null && originalContext === AnyDIContext) DIContext(TTOf(receiver) as TypeToken<in Any>, receiver) else originalContext
         get(context, prop.name) } .also { trigger?.properties?.add(it)
     }
 
 }
 
-@Deprecated(DEPRECATE_7X)
-class KodeinPropertyMap<in I, out O>(private val base: KodeinProperty<I>, private val map: (I) -> O) : LazyDelegate<O> {
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIPropertyMap<I,O>"), DeprecationLevel.ERROR)
+typealias KodeinPropertyMap<I,O> = DIPropertyMap<I,O>
+
+class DIPropertyMap<in I, out O>(private val base: DIProperty<I>, private val map: (I) -> O) : LazyDelegate<O> {
 
     override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<O> = lazy { map(base.provideDelegate(receiver, prop).value) }.also { base.trigger?.properties?.add(it) }
 

@@ -152,43 +152,43 @@ class KtorTests {
 
     @Test
     fun test_05_closest(): Unit = withTestApplication(Application::main) {
-        val kodeinInstance = this.application.attributes[KodeinKey]
+        val diInstance = this.application.attributes[KodeinDIKey]
 
-        assertSame(kodeinInstance, kodein { this.application }.baseKodein)
+        assertSame(diInstance, di { this.application }.baseDI)
 
         handleRequest(HttpMethod.Get, ROUTE_CLOSEST) {
-            assertSame(kodeinInstance, kodein { this.call.application }.baseKodein)
+            assertSame(diInstance, di { this.call.application }.baseDI)
         }.apply {
             assertNotNull(response.content)
 
             response.content?.let {
-                val kodeinInstances = it.split(",").map { it.trim() }
-                assertEquals(1, kodeinInstances.distinct().size)
-                assertEquals("$kodeinInstance", kodeinInstances.first())
+                val diInstances = it.split(",").map { it.trim() }
+                assertEquals(1, diInstances.distinct().size)
+                assertEquals("$diInstance", diInstances.first())
             }
 
-            assertSame(kodeinInstance, kodein().baseKodein)
+            assertSame(diInstance, di().baseDI)
         }
     }
 
     @Test
     fun test_06_subKodein(): Unit = withTestApplication(Application::main) {
-        val kodeinInstance = this.application.attributes[KodeinKey]
+        val diInstance = this.application.attributes[KodeinDIKey]
 
-        assertSame(kodeinInstance, kodein { this.application }.baseKodein)
+        assertSame(diInstance, di { this.application }.baseDI)
 
         handleRequest(HttpMethod.Post, "$ROUTE_SUBKODEIN$ROUTE_SUB_UPPER") {
-            assertSame(kodeinInstance, kodein { this.call.application }.baseKodein)
+            assertSame(diInstance, di { this.call.application }.baseDI)
         }.apply {
             assertNotNull(response.content)
 
             response.content?.let {
-                val kodeinInstances = it.split(",").map { it.trim() }
-                assertEquals(2, kodeinInstances.distinct().size)
-                assertEquals("$kodeinInstance", kodeinInstances.first())
+                val diInstances = it.split(",").map { it.trim() }
+                assertEquals(2, diInstances.distinct().size)
+                assertEquals("$diInstance", diInstances.first())
             }
 
-            assertSame(kodeinInstance, kodein().baseKodein)
+            assertSame(diInstance, di().baseDI)
         }
 
         val lowerAuthor: String

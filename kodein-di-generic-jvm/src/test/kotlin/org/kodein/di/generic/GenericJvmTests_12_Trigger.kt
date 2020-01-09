@@ -1,8 +1,8 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.KodeinTrigger
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.DITrigger
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
@@ -11,8 +11,8 @@ import kotlin.test.*
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class GenericJvmTests_12_Trigger {
 
-    class T00(override val kodein: Kodein): KodeinAware {
-        override val kodeinTrigger = KodeinTrigger()
+    class T00(override val di: DI): DIAware {
+        override val diTrigger = DITrigger()
         val newPerson: () -> Person by provider()
         val salomon: Person by instance(tag = "named")
         val pFactory: (String) -> Person by factory(tag = "factory")
@@ -22,7 +22,7 @@ class GenericJvmTests_12_Trigger {
 
     @Test
     fun test_00_SimpleTrigger() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
             bind<Person>(tag = "factory") with factory { name: String -> Person(name) }
@@ -30,7 +30,7 @@ class GenericJvmTests_12_Trigger {
 
         val injected = T00(kodein)
 
-        injected.kodeinTrigger.trigger()
+        injected.diTrigger.trigger()
         assertNotSame(injected.newPerson(), injected.newPerson())
         assertEquals("Salomon", injected.salomon.name)
         assertSame(injected.salomon, injected.salomon)
@@ -42,8 +42,8 @@ class GenericJvmTests_12_Trigger {
         assertSame(injected.instance, injected.instance)
     }
 
-    class T01(override val kodein: Kodein): KodeinAware {
-        override val kodeinTrigger = KodeinTrigger()
+    class T01(override val di: DI): DIAware {
+        override val diTrigger = DITrigger()
         @Suppress("unused")
         val person: Person by instance()
     }
@@ -51,14 +51,14 @@ class GenericJvmTests_12_Trigger {
     @Test
     fun test_01_CreatedAtTrigger() {
         var created = false
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with singleton { created = true; Person() }
         }
 
         val container = T01(kodein)
 
         assertFalse(created)
-        container.kodeinTrigger.trigger()
+        container.diTrigger.trigger()
         assertTrue(created)
     }
 

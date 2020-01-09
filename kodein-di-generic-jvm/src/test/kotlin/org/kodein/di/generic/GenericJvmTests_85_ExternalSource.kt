@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.bindings.ExternalSource
 import org.kodein.di.bindings.externalFactory
 import org.kodein.di.jvmType
@@ -14,7 +14,7 @@ class GenericJvmTests_85_ExternalSource {
 
     @Test
     fun test_00_ExternalSource() {
-        val kodein = Kodein.direct {
+        val kodein = DI.direct {
             bind(tag = "him") from singleton { Person("Salomon") }
 
             val laila = Person("Laila")

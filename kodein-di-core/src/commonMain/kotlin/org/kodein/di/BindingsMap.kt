@@ -2,37 +2,38 @@ package org.kodein.di
 
 import org.kodein.di.bindings.*
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIDefining<C,A,T>"), DeprecationLevel.ERROR)
+typealias KodeinDefining<C,A,T> = DIDefining<C,A,T>
+
 /**
- * A binding that is being defined inside a [Kodein.Builder] bloc.
+ * A binding that is being defined inside a [DI.Builder] bloc.
  *
- * The associated [KodeinTree] has not be created yet.
+ * The associated [DITree] has not be created yet.
  *
  * @property binding The binding
  * @property fromModule The module name that defined the binding (for debug)
  */
-@Deprecated(DEPRECATE_7X)
-open class KodeinDefining<C, A, T: Any>(val binding: KodeinBinding<C, A, T>, val fromModule: String?)
+open class DIDefining<C, A, T: Any>(val binding: DIBinding<C, A, T>, val fromModule: String?)
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIDefinition<C,A,T>"), DeprecationLevel.ERROR)
+typealias KodeinDefinition<C,A,T> = DIDefinition<C,A,T>
 /**
- * A definition is a binding that is associated to a [KodeinTree].
+ * A definition is a binding that is associated to a [DITree].
  *
  * @property binding The binding
  * @property fromModule The module name that defined the binding (for debug)
  * @property tree The tree that this binding relates to.
  */
-@Deprecated(DEPRECATE_7X)
-class KodeinDefinition<C, A, T: Any>(binding: KodeinBinding<C, A, T>, fromModule: String?, val tree: KodeinTree) : KodeinDefining<C, A, T>(binding, fromModule)
+class DIDefinition<C, A, T: Any>(binding: DIBinding<C, A, T>, fromModule: String?, val tree: DITree) : DIDefining<C, A, T>(binding, fromModule)
 
 /**
  * A Map containing all bindings associated to their keys
  */
-@Deprecated(DEPRECATE_7X)
-typealias BindingsMap = Map<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>
+typealias BindingsMap = Map<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>>
 
-@Deprecated(DEPRECATE_7X)
-private fun BindingsMap.descriptionImpl(withOverrides: Boolean, ident: Int, keyBindDisp: Kodein.Key<*, *, *>.() -> String, bindingDisp: KodeinBinding<*, *, *>.() -> String): String {
+private fun BindingsMap.descriptionImpl(withOverrides: Boolean, ident: Int, keyBindDisp: DI.Key<*, *, *>.() -> String, bindingDisp: DIBinding<*, *, *>.() -> String): String {
 
-    fun StringBuilder.appendBindings(ident: Int, entries: List<Map.Entry<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>>>) =
+    fun StringBuilder.appendBindings(ident: Int, entries: List<Map.Entry<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>>>) =
             entries.forEach {
                 val keyDescription = it.key.keyBindDisp()
                 append("${" ".repeat(ident)}$keyDescription with ${it.value.first().binding.bindingDisp()}")
@@ -65,13 +66,11 @@ private fun BindingsMap.descriptionImpl(withOverrides: Boolean, ident: Int, keyB
  *
  * @receiver The bindings map.
  */
-@Deprecated(DEPRECATE_7X)
-fun BindingsMap.description(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, Kodein.Key<*, *, *>::bindDescription, KodeinBinding<*, *, *>::description)
+fun BindingsMap.description(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, DI.Key<*, *, *>::bindDescription, DIBinding<*, *, *>::description)
 
 /**
  * The description of all bindings in this map, using type full display names.
  *
  * @receiver The bindings map.
  */
-@Deprecated(DEPRECATE_7X)
-fun BindingsMap.fullDescription(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, Kodein.Key<*, *, *>::bindFullDescription, KodeinBinding<*, *, *>::fullDescription)
+fun BindingsMap.fullDescription(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, DI.Key<*, *, *>::bindFullDescription, DIBinding<*, *, *>::fullDescription)

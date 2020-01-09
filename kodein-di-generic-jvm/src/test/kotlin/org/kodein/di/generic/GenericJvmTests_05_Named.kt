@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.named
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
@@ -12,7 +12,7 @@ class GenericJvmTests_05_Named {
 
     @Test
     fun test_00_NamedProviderBindingGetInstance() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with provider { Person("Salomon") }
         }
@@ -26,7 +26,7 @@ class GenericJvmTests_05_Named {
 
     @Test
     fun test_01_NamedProviderBindingGetProvider() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with provider { Person("Salomon") }
         }
@@ -39,7 +39,7 @@ class GenericJvmTests_05_Named {
     }
 
     @Test fun test_02_NamedSingletonBindingGetInstance() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with singleton { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
         }
@@ -52,7 +52,7 @@ class GenericJvmTests_05_Named {
     }
 
     @Test fun test_03_NamedSingletonBindingGetProvider() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with singleton { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
         }
@@ -66,7 +66,7 @@ class GenericJvmTests_05_Named {
 
     @Test fun test_04_NamedInstanceBindingGetInstance() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with instance(Person())
             bind<Person>(tag = "named") with instance(Person("Salomon"))
         }
@@ -83,7 +83,7 @@ class GenericJvmTests_05_Named {
 
     @Test fun test_05_NamedInstanceBindingGetProvider() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with instance(Person())
             bind<Person>(tag = "named") with instance(Person("Salomon"))
         }

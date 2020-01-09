@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.test.*
 import kotlin.test.*
@@ -10,7 +10,7 @@ class GenericJvmTests_18_MultiBindings {
 
     @Test
     fun test_00_MultiSet() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind() from setBinding<IPerson>()
 
             bind<IPerson>().inSet() with singleton { Person("Salomon") }
@@ -41,7 +41,7 @@ class GenericJvmTests_18_MultiBindings {
 
     @Test
     fun test_01_MultiMap() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind() from setBinding<PersonEntry>()
 
             bind<PersonEntry>().inSet() with singleton { "so" to Person("Salomon") }

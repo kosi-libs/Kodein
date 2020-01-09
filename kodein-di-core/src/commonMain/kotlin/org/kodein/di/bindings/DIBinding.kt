@@ -20,15 +20,18 @@ interface Binding<C, A, T: Any> {
      *
      * Whether it's a new instance or not entirely depends on implementation.
      *
-     * @param kodein: A Kodein instance (augmented for the binding) to use for transitive dependencies.
+     * @param di: A DI instance (augmented for the binding) to use for transitive dependencies.
      * @param key: The key of the instance to get.
      * @return The instance of the requested type.
      */
-    fun getFactory(kodein: BindingKodein<C>, key: Kodein.Key<C, A, T>): (A) -> T
+    fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, T>): (A) -> T
 }
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIBinding<C,A,T>"), DeprecationLevel.ERROR)
+typealias KodeinBinding<C,A,T> = DIBinding<C,A,T>
+
 /**
- * Binding that is registered inside a Kodein object.
+ * Binding that is registered inside a DI object.
  *
  * It is augmented to allow scoping, contextualizing, debugging, etc.
  *
@@ -36,8 +39,7 @@ interface Binding<C, A, T: Any> {
  * @param A The type of argument used to create or retrieve an instance.
  * @param T The type of instance this factory creates or retrieves.
  */
-@Deprecated(DEPRECATE_7X)
-interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
+interface DIBinding<C, A, T : Any> : Binding<C, A, T> {
 
     /**
      * The name of this factory, *used for debug print only*.
@@ -105,7 +107,7 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
          * @param builder The builder used when copying, can be used to register hooks.
          * @return A copy of the binding.
          */
-        fun copy(builder: KodeinContainer.Builder): KodeinBinding<C, A, T>
+        fun copy(builder: DIContainer.Builder): DIBinding<C, A, T>
 
         companion object {
             /**
@@ -114,8 +116,8 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
              * @param f The [Copier.copy] implementation.
              * @return A copier with the given implementation.
              */
-            operator fun <C, A, T: Any> invoke(f: (KodeinContainer.Builder) -> KodeinBinding<C, A, T>) = object : Copier<C, A, T> {
-                override fun copy(builder: KodeinContainer.Builder) = f(builder)
+            operator fun <C, A, T: Any> invoke(f: (DIContainer.Builder) -> DIBinding<C, A, T>) = object : Copier<C, A, T> {
+                override fun copy(builder: DIContainer.Builder) = f(builder)
             }
         }
     }
@@ -132,13 +134,14 @@ interface KodeinBinding<C, A, T : Any> : Binding<C, A, T> {
     val supportSubTypes: Boolean get() = false
 }
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("NoArgDIBinding<C,T>"), DeprecationLevel.ERROR)
+typealias NoArgKodeinBinding<C,T> = NoArgDIBinding<C,T>
 /**
- * [KodeinBinding] specialization that has no argument.
+ * [DIBinding] specialization that has no argument.
  *
  * As a factory does need an argument, it uses `Unit` as its argument.
  */
-@Deprecated(DEPRECATE_7X)
-interface NoArgKodeinBinding<C, T: Any> : KodeinBinding<C, Unit, T>, Binding<C, Unit, T> {
+interface NoArgDIBinding<C, T: Any> : DIBinding<C, Unit, T>, Binding<C, Unit, T> {
 
     override val argType get() = UnitToken
 

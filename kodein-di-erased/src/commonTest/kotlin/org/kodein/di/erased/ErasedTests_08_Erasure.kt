@@ -1,6 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.erasedComp1
 import org.kodein.di.test.A
@@ -19,7 +19,7 @@ class ErasedTests_08_Erasure {
         val la = listOf(A(null))
         val lb = listOf(B(null))
 
-        val kodein = Kodein {
+        val kodein = DI {
             Bind(erasedComp1<List<A>, A>()) with instance(la)
             Bind(erasedComp1<List<B>, B>()) with instance(lb)
         }

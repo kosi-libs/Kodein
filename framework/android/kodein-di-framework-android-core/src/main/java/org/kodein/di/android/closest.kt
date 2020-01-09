@@ -12,137 +12,159 @@ import android.view.View
 import org.kodein.di.*
 import kotlin.reflect.KProperty
 
-@Deprecated(DEPRECATE_7X)
-private fun kodein(thisRef: Any?, rootContext: Context): Kodein {
+private fun di(thisRef: Any?, rootContext: Context): DI {
     var context: Context? = rootContext
     while (context != null) {
-        if (context != thisRef && context is KodeinAware) {
-            return context.kodein
+        if (context != thisRef && context is DIAware) {
+            return context.di
         }
         context = if (context is ContextWrapper) context.baseContext else null
     }
-    return (rootContext.applicationContext as KodeinAware).kodein
+    return (rootContext.applicationContext as DIAware).di
 }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di(thisRef, rootContext)"), DeprecationLevel.ERROR)
+private fun kodein(thisRef: Any?, rootContext: Context): DI = di(thisRef, rootContext)
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIPropertyDelegateProvider<T>"), DeprecationLevel.ERROR)
+typealias KodeinPropertyDelegateProvider<T> = DIPropertyDelegateProvider<T>
 /**
- * Provides a `Lazy<Kodein>`, to be used as a property delegate.
+ * Provides a `Lazy<DI>`, to be used as a property delegate.
  *
  * @param T The receiver type.
  */
-@Deprecated(DEPRECATE_7X)
-interface KodeinPropertyDelegateProvider<in T> {
+interface DIPropertyDelegateProvider<in T> {
     /** @suppress */
-    operator fun provideDelegate(thisRef: T, property: KProperty<*>?): Lazy<Kodein>
+    operator fun provideDelegate(thisRef: T, property: KProperty<*>?): Lazy<DI>
 }
 
-@Deprecated(DEPRECATE_7X)
-private class ContextKodeinPropertyDelegateProvider : KodeinPropertyDelegateProvider<Context> {
-    override operator fun provideDelegate(thisRef: Context, property: KProperty<*>?) = lazy { kodein(thisRef, thisRef) }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("ContextDIPropertyDelegateProvider"), DeprecationLevel.ERROR)
+private typealias ContextKodeinPropertyDelegateProvider = ContextDIPropertyDelegateProvider
+
+private class ContextDIPropertyDelegateProvider : DIPropertyDelegateProvider<Context> {
+    override operator fun provideDelegate(thisRef: Context, property: KProperty<*>?) = lazy { di(thisRef, thisRef) }
 }
 
-@Deprecated(DEPRECATE_7X)
-private class LazyContextKodeinPropertyDelegateProvider(private val getContext: () -> Context) : KodeinPropertyDelegateProvider<Any?> {
-    override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>?) = lazy { kodein(thisRef, getContext()) }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("LazyContextDIPropertyDelegateProvider"), DeprecationLevel.ERROR)
+private typealias LazyContextKodeinPropertyDelegateProvider = LazyContextDIPropertyDelegateProvider
+
+private class LazyContextDIPropertyDelegateProvider(private val getContext: () -> Context) : DIPropertyDelegateProvider<Any?> {
+    override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>?) = lazy { di(thisRef, getContext()) }
 }
 
 /**
- * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
+ * Returns the closest DI (or the app DI, if no closest DI could be found).
  *
  * To be used on Android's `Context` classes, such as `Activity` or `Service`.
  */
-@Deprecated(DEPRECATE_7X)
-fun kodein(): KodeinPropertyDelegateProvider<Context> = ContextKodeinPropertyDelegateProvider()
+fun di(): DIPropertyDelegateProvider<Context> = ContextDIPropertyDelegateProvider()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun kodein(): DIPropertyDelegateProvider<Context> = ContextDIPropertyDelegateProvider()
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun closestKodein() = kodein()
+fun closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun closestKodein() = di()
 
 /**
- * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
+ * Returns the closest DI (or the app DI, if no closest DI could be found).
  *
  * @param context The Android context to use to walk up the context hierarchy.
  */
-@Deprecated(DEPRECATE_7X)
-fun kodein(context: Context): KodeinPropertyDelegateProvider<Any?> = LazyContextKodeinPropertyDelegateProvider { context }
+fun di(context: Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider { context }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di(context)"), DeprecationLevel.ERROR)
+fun kodein(context: Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider { context }
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun closestKodein(context: Context) = kodein(context)
+fun closestDI(context: Context) = di(context)
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI(context)"), DeprecationLevel.ERROR)
+fun closestKodein(context: Context) = di(context)
 
 /**
- * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
+ * Returns the closest DI (or the app DI, if no closest DI could be found).
  *
  * @param getContext A function that returns the Android context to use to walk up the context hierarchy.
  */
-@Deprecated(DEPRECATE_7X)
-fun kodein(getContext: () -> Context): KodeinPropertyDelegateProvider<Any?> = LazyContextKodeinPropertyDelegateProvider(getContext)
+fun di(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider(getContext)
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di(getContext)"), DeprecationLevel.ERROR)
+fun kodein(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider(getContext)
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun closestKodein(getContext: () -> Context) = kodein(getContext)
+fun closestDI(getContext: () -> Context) = di(getContext)
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI(getContext)"), DeprecationLevel.ERROR)
+fun closestKodein(getContext: () -> Context) = di(getContext)
 
 /**
- * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
+ * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-@Deprecated(DEPRECATE_7X)
-fun Fragment.kodein() = kodein { activity }
+fun Fragment.di() = di { activity }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun Fragment.kodein() = di { activity }
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun Fragment.closestKodein() = kodein()
+fun Fragment.closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun Fragment.closestKodein() = di()
 
 /**
- * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
+ * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-@Deprecated(DEPRECATE_7X)
-fun Dialog.kodein() = kodein { context }
+fun Dialog.di() = di { context }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun Dialog.kodein() = di { context }
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun Dialog.closestKodein() = kodein()
+fun Dialog.closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun Dialog.closestKodein() = di()
 
 /**
- * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
+ * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-@Deprecated(DEPRECATE_7X)
-fun View.kodein() = kodein { context }
+fun View.di() = di { context }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun View.kodein() = di { context }
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun View.closestKodein() = kodein()
+fun View.closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun View.closestKodein() = di()
 
 /**
- * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
+ * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-@Deprecated(DEPRECATE_7X)
-fun AbstractThreadedSyncAdapter.kodein() = kodein { context }
+fun AbstractThreadedSyncAdapter.di() = di { context }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun AbstractThreadedSyncAdapter.kodein() = di { context }
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun AbstractThreadedSyncAdapter.closestKodein() = kodein()
+fun AbstractThreadedSyncAdapter.closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun AbstractThreadedSyncAdapter.closestKodein() = di()
 
 /**
- * Returns the closest Kodein (or the app Kodein, if no closest Kodein could be found).
+ * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-@Deprecated(DEPRECATE_7X)
-fun Loader<*>.kodein() = kodein { context }
+fun Loader<*>.di() = di { context }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun Loader<*>.kodein() = di { context }
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun Loader<*>.closestKodein() = kodein()
+fun Loader<*>.closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun Loader<*>.closestKodein() = di()

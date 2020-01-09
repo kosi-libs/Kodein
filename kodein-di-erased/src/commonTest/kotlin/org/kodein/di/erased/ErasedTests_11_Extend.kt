@@ -1,7 +1,7 @@
 package org.kodein.di.erased
 
 import org.kodein.di.Copy
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
@@ -12,13 +12,13 @@ import kotlin.test.*
 class ErasedTests_11_Extend {
 
     @Test
-    fun test_00_KodeinExtend() {
+    fun test_00_DIExtend() {
 
-        val parent = Kodein {
+        val parent = DI {
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
         }
 
-        val child = Kodein {
+        val child = DI {
             extend(parent)
             bind<Person>() with provider { Person() }
         }
@@ -29,13 +29,13 @@ class ErasedTests_11_Extend {
     }
 
     @Test
-    fun test_01_KodeinExtendOverride() {
+    fun test_01_DIExtendOverride() {
 
-        val parent = Kodein {
+        val parent = DI {
             bind<String>() with singleton { "parent" }
         }
 
-        val child = Kodein {
+        val child = DI {
             extend(parent)
             bind<String>(overrides = true) with singleton { "child" }
         }
@@ -45,17 +45,17 @@ class ErasedTests_11_Extend {
     }
 
     @Test
-    fun test_02_KodeinExtendOverriddenInstance() {
+    fun test_02_DIExtendOverriddenInstance() {
 
         data class Foo(val name: String)
         data class Bar(val foo: Foo)
 
-        val root = Kodein.direct {
+        val root = DI.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
             bind<Bar>() with provider { Bar(instance()) }
         }
 
-        val sub = Kodein.direct {
+        val sub = DI.direct {
             extend(root, allowOverride = true, copy = Copy.None)
             bind<Foo>(overrides = true) with provider { Foo("subFoo") }
         }
@@ -68,17 +68,17 @@ class ErasedTests_11_Extend {
     }
 
     @Test
-    fun test_03_KodeinExtendOverriddenInstanceCopy() {
+    fun test_03_DIExtendOverriddenInstanceCopy() {
 
         data class Foo(val name: String)
         data class Bar(val foo: Foo)
 
-        val root = Kodein.direct {
+        val root = DI.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
             bind<Bar>() with provider { Bar(instance()) }
         }
 
-        val sub = Kodein.direct {
+        val sub = DI.direct {
             extend(root, allowOverride = true, copy = Copy.All)
             bind<Foo>(overrides = true) with provider { Foo("subFoo") }
         }
@@ -91,17 +91,17 @@ class ErasedTests_11_Extend {
     }
 
     @Test
-    fun test_04_KodeinExtendOverriddenSingletonSame() {
+    fun test_04_DIExtendOverriddenSingletonSame() {
 
         data class Foo(val name: String)
         data class Bar(val foo: Foo)
 
-        val root = Kodein.direct {
+        val root = DI.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
             bind<Bar>() with singleton { Bar(instance()) }
         }
 
-        val sub = Kodein.direct {
+        val sub = DI.direct {
             extend(root, allowOverride = true)
             bind<Foo>(overrides = true) with provider { Foo("subFoo") }
         }
@@ -114,16 +114,16 @@ class ErasedTests_11_Extend {
     }
 
     @Test
-    fun test_05_KodeinExtendOverriddenSingletonCopy() {
+    fun test_05_DIExtendOverriddenSingletonCopy() {
         data class Foo(val name: String)
         data class Bar(val foo: Foo)
 
-        val root = Kodein.direct {
+        val root = DI.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
             bind<Bar>() with singleton { Bar(instance()) }
         }
 
-        val sub = Kodein.direct {
+        val sub = DI.direct {
             extend(root, allowOverride = true, copy = Copy {
                 copy all binding<Bar>()
             })
@@ -139,16 +139,16 @@ class ErasedTests_11_Extend {
     }
 
     @Test
-    fun test_06_KodeinExtendCopyAllBut() {
+    fun test_06_DIExtendCopyAllBut() {
         data class Foo(val name: String)
         data class Bar(val foo: Foo)
 
-        val root = Kodein.direct {
+        val root = DI.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
             bind<Bar>() with singleton { Bar(instance()) }
         }
 
-        val sub = Kodein.direct {
+        val sub = DI.direct {
             extend(root, allowOverride = true, copy = Copy.allBut {
                 ignore all binding<Bar>()
             })

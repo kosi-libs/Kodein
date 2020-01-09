@@ -5,69 +5,79 @@ import org.kodein.di.*
 import tornadofx.*
 
 /**
- * Getting the global [Kodein] container from the [App] parameter if its [KodeinAware]
+ * Getting the global [DI] container from the [App] parameter if its [DIAware]
  */
-@Deprecated(DEPRECATE_7X)
-private fun kodein(getApplication: () -> App) = LazyKodein { (getApplication() as KodeinAware).kodein }
+private fun kodeinDI(getApplication: () -> App) = LazyDI { (getApplication() as DIAware).di }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di(getApplication)"), DeprecationLevel.ERROR)
+private fun kodein(getApplication: () -> App) = kodeinDI(getApplication)
+
 
 /**
- * Getting a global [Kodein] container from the running [App]
+ * Getting a global [DI] container from the running [App]
  */
-@Deprecated(DEPRECATE_7X)
-fun Component.kodein() = kodein { app }
+fun Component.kodeinDI() = kodeinDI { app }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("kodeinDI()"), DeprecationLevel.ERROR)
+fun Component.kodein() = kodeinDI()
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun Component.closestKodein() = kodein()
+fun Component.closestKodeinDI() = kodeinDI()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestKodeinDI()"), DeprecationLevel.ERROR)
+fun Component.closestKodein() = kodeinDI()
 
 /**
- * Unique value to be able to set a [Kodein] container into Node#properties
+ * Unique value to be able to set a [DI] container into Node#properties
  */
-@Deprecated(DEPRECATE_7X)
-private const val KODEIN_KEY = "KODEIN_KEY"
+private const val KODEIN_DI_KEY = "KODEIN_DI_KEY"
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("KODEIN_DI_KEY"), DeprecationLevel.ERROR)
+private const val KODEIN_KEY = "KODEIN_DI_KEY"
 
 /**
- * Installing a [Kodein] container into Node#properties if there is none
+ * Installing a [DI] container into Node#properties if there is none
  */
-@Deprecated(DEPRECATE_7X)
-fun Node.kodein(init: Kodein.MainBuilder.() -> Unit) = addKodeinProperty(Kodein { init() })
+fun Node.kodeinDI(init: DI.MainBuilder.() -> Unit) = addKodeinDIProperty(DI { init() })
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("kodeinDI(init)"), DeprecationLevel.ERROR)
+fun Node.kodein(init: DI.MainBuilder.() -> Unit) = kodeinDI(init)
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun Node.closestKodein(init: Kodein.MainBuilder.() -> Unit) = kodein(init)
+fun Node.closestKodeinDI(init: DI.MainBuilder.() -> Unit) = kodeinDI(init)
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestKodeinDI(init)"), DeprecationLevel.ERROR)
+fun Node.closestKodein(init: DI.MainBuilder.() -> Unit) = kodeinDI(init)
 
 /**
- * Installing a [Kodein] container into Node#properties if there is none
+ * Installing a [DI] container into Node#properties if there is none
  */
-@Deprecated(DEPRECATE_7X)
-fun Node.addKodeinProperty(kodein: Kodein) {
-    if (properties[KODEIN_KEY] != null)
-        throw IllegalArgumentException("There is already a Kodein container for the node ${this}")
+fun Node.addKodeinDIProperty(di: DI) {
+    if (properties[KODEIN_DI_KEY] != null)
+        throw IllegalArgumentException("There is already a DI container for the node ${this}")
 
-    properties[KODEIN_KEY] = kodein
+    properties[KODEIN_DI_KEY] = di
 }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("addKodeinDIProperty(di)"), DeprecationLevel.ERROR)
+fun Node.addKodeinProperty(di: DI) = addKodeinDIProperty(di)
 
 /**
- * Getting the nearest [Kodein] container in the Node hierarchy,
- * going from parent to parent and retrieve the first [Kodein] container encountered
+ * Getting the nearest [DI] container in the Node hierarchy,
+ * going from parent to parent and retrieve the first [DI] container encountered
  *
- * If no [Kodein] container is not found in the hierarchy, we try to retrieve the one from the App if there is one
+ * If no [DI] container is not found in the hierarchy, we try to retrieve the one from the App if there is one
  */
-@Deprecated(DEPRECATE_7X)
-fun Node.kodein(): LazyKodein = when {
-    properties[KODEIN_KEY] != null -> LazyKodein { properties[KODEIN_KEY] as Kodein }
-    else -> parent?.kodein() ?: when {
-        FX.application is KodeinAware -> LazyKodein { (FX.application as KodeinAware).kodein }
-        else -> throw IllegalStateException("No kodein container found for [${this}]")
+fun Node.kodeinDI(): LazyDI = when {
+    properties[KODEIN_DI_KEY] != null -> LazyDI { properties[KODEIN_DI_KEY] as DI }
+    else -> parent?.kodeinDI() ?: when {
+        FX.application is DIAware -> LazyDI { (FX.application as DIAware).di }
+        else -> throw IllegalStateException("No DI container found for [${this}]")
     }
 }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("kodeinDI()"), DeprecationLevel.ERROR)
+fun Node.kodein(): LazyDI = kodeinDI()
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun Node.closestKodein() = kodein()
+fun Node.closestKodeinDI() = kodeinDI()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestKodeinDI"), DeprecationLevel.ERROR)
+fun Node.closestKodein() = kodeinDI()

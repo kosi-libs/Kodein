@@ -19,7 +19,7 @@ class ErasedJvmTests_03_Description {
     @Test
     fun test_00_BindingsDescription() {
 
-        val kodein = Kodein {
+        val di = DI {
             bind<IPerson>() with provider { Person() }
             bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
@@ -29,7 +29,7 @@ class ErasedJvmTests_03_Description {
             constant(tag = "answer") with 42
         }
 
-        val lines = kodein.container.tree.bindings.description().trim().lineSequence().map(String::trim).toList()
+        val lines = di.container.tree.bindings.description().trim().lineSequence().map(String::trim).toList()
         assertEquals(7, lines.size)
         assertTrue("bind<IPerson>() with provider { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"thread-singleton\") with singleton(ref = threadLocal) { Person }" in lines)
@@ -44,7 +44,7 @@ class ErasedJvmTests_03_Description {
     @Test
     fun test_01_BindingsFullDescription() {
 
-        val kodein = Kodein {
+        val di = DI {
             bind<IPerson>() with provider { Person() }
             bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
@@ -54,7 +54,7 @@ class ErasedJvmTests_03_Description {
             constant(tag = "answer") with 42
         }
 
-        val lines = kodein.container.tree.bindings.fullDescription().trim().lineSequence().map(String::trim).toList()
+        val lines = di.container.tree.bindings.fullDescription().trim().lineSequence().map(String::trim).toList()
         assertEquals(7, lines.size)
         assertTrue("bind<org.kodein.di.test.IPerson>() with provider { org.kodein.di.test.Person }" in lines)
         assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"thread-singleton\") with singleton(ref = org.kodein.di.threadLocal) { org.kodein.di.test.Person }" in lines)
@@ -67,7 +67,7 @@ class ErasedJvmTests_03_Description {
 
     // Only the JVM supports precise description
     @Test fun test_02_RegisteredBindings() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<IPerson>() with provider { Person() }
             bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
             bind<IPerson>(tag = "singleton") with singleton { Person("s") }
@@ -77,12 +77,12 @@ class ErasedJvmTests_03_Description {
         }
 
         assertEquals(6, kodein.container.tree.bindings.size)
-        assertEquals("provider", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().binding.factoryName())
-        assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
-        assertEquals("singleton", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
-        assertEquals("factory", kodein.container.tree.bindings[Kodein.Key(AnyToken, generic<String>(), generic<IPerson>(), "factory")]!!.first().binding.factoryName())
-        assertEquals("instance", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<IPerson>(), "instance")]!!.first().binding.factoryName())
-        assertEquals("instance", kodein.container.tree.bindings[Kodein.Key(AnyToken, UnitToken, generic<Int>(), "answer")]!!.first().binding.factoryName())
+        assertEquals("provider", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().binding.factoryName())
+        assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
+        assertEquals("singleton", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
+        assertEquals("factory", kodein.container.tree.bindings[DI.Key(AnyToken, generic<String>(), generic<IPerson>(), "factory")]!!.first().binding.factoryName())
+        assertEquals("instance", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), "instance")]!!.first().binding.factoryName())
+        assertEquals("instance", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<Int>(), "answer")]!!.first().binding.factoryName())
     }
 
     open class A
@@ -128,7 +128,7 @@ class ErasedJvmTests_03_Description {
 
     // Only the JVM supports precise description
     @Test fun test_05_simpleKeyFullDescription() {
-        val key = Kodein.Key(
+        val key = DI.Key(
                 contextType = erased<Any>(),
                 argType = erased<Unit>(),
                 type = erased<String>(),
@@ -141,7 +141,7 @@ class ErasedJvmTests_03_Description {
 
     // Only the JVM supports precise description
     @Test fun test_06_complexKeyFullDescription() {
-        val key = Kodein.Key(
+        val key = DI.Key(
                 contextType = erased<String>(),
                 argType = erasedComp2<Multi2<String, String>, String, String>(),
                 type = erased<IntRange>(),

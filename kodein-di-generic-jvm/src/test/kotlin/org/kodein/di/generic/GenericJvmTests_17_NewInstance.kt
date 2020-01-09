@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.newInstance
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
@@ -14,7 +14,7 @@ class GenericJvmTests_17_NewInstance {
 
     @Test
     fun test_00_NewInstance() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>(tag = "Author") with singleton { Person("Salomon") }
             bind<Person>(tag = "Spouse") with singleton { Person("Laila") }
         }
@@ -26,7 +26,7 @@ class GenericJvmTests_17_NewInstance {
 
     @Test
     fun test_01_DirectNewInstance() {
-        val kodein = Kodein.direct {
+        val kodein = DI.direct {
             bind<Person>(tag = "Author") with singleton { Person("Salomon") }
             bind<Person>(tag = "Spouse") with singleton { Person("Laila") }
         }

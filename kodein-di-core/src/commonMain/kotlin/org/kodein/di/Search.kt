@@ -3,7 +3,7 @@ package org.kodein.di
 import org.kodein.di.bindings.ContextTranslator
 
 /**
- * Defines the specs to search bindings from (in)complete data with [CopySpecs] or [KodeinTree.find].
+ * Defines the specs to search bindings from (in)complete data with [CopySpecs] or [DITree.find].
  *
  * @property contextType The type of context the bindings must take.
  * @property argType The type of argument the bindings must take.
@@ -133,8 +133,7 @@ class FindDSL : SearchDSL() {
 /**
  * Used to find bindings that match a particular [SearchSpecs].
  */
-@Deprecated(DEPRECATE_7X)
-fun KodeinTree.findAllBindings(f: FindDSL.() -> Unit): List<Triple<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>, ContextTranslator<*, *>?>> {
+fun DITree.findAllBindings(f: FindDSL.() -> Unit): List<Triple<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>, ContextTranslator<*, *>?>> {
     val dsl = FindDSL()
     dsl.f()
     return find(dsl.specs)

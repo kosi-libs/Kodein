@@ -1,6 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
@@ -13,7 +13,7 @@ class ErasedTests_14_Override {
 
     @Test
     fun test_00_ExplicitOverride() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<String>(tag = "name") with instance("Benjamin")
             bind<String>(tag = "name", overrides = true) with instance("Salomon")
         }
@@ -23,7 +23,7 @@ class ErasedTests_14_Override {
 
     @Test
     fun test_01_SilentOverride() {
-        val kodein = Kodein(allowSilentOverride = true) {
+        val kodein = DI(allowSilentOverride = true) {
             bind<String>(tag = "name") with instance("Benjamin")
             bind<String>(tag = "name") with instance("Salomon")
         }
@@ -33,10 +33,10 @@ class ErasedTests_14_Override {
 
     @Test
     fun test_02_SilentOverrideNotAllowed() {
-        Kodein {
+        DI {
             bind<String>(tag = "name") with instance("Benjamin")
 
-            assertFailsWith<Kodein.OverridingException> {
+            assertFailsWith<DI.OverridingException> {
                 bind<String>(tag = "name") with instance("Salomon")
             }
         }
@@ -44,10 +44,10 @@ class ErasedTests_14_Override {
 
     @Test
     fun test_03_MustNotOverride() {
-        Kodein(allowSilentOverride = true) {
+        DI(allowSilentOverride = true) {
             bind<String>(tag = "name") with instance("Benjamin")
 
-            assertFailsWith<Kodein.OverridingException> {
+            assertFailsWith<DI.OverridingException> {
                 bind<String>(tag = "name", overrides = false) with instance("Salomon")
             }
         }
@@ -55,7 +55,7 @@ class ErasedTests_14_Override {
 
     @Test
     fun test_04_OverrideWithSuper() {
-        val kodein = Kodein(allowSilentOverride = true) {
+        val kodein = DI(allowSilentOverride = true) {
             bind<String>(tag = "name") with instance("Salomon")
             bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " BRYS" }
             bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " of France" }
@@ -67,7 +67,7 @@ class ErasedTests_14_Override {
     @Test
     fun test_05_DependencyLoopWithOverrides() {
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<String>(tag = "name") with singleton { instance<String>(tag = "title") + " Salomon " }
             bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " BRYS " }
             bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " of France" }
@@ -75,7 +75,7 @@ class ErasedTests_14_Override {
 
         }
 
-        assertFailsWith<Kodein.DependencyLoopException> {
+        assertFailsWith<DI.DependencyLoopException> {
             @Suppress("UNUSED_VARIABLE")
             kodein.direct.instance<String>(tag = "name")
         }
@@ -83,11 +83,11 @@ class ErasedTests_14_Override {
 
     @Test
     fun test_06_ModuleOverride() {
-        val module = Kodein.Module("test") {
+        val module = DI.Module("test") {
             bind<String>(tag = "name", overrides = true) with instance("Salomon")
         }
 
-        val kodein = Kodein {
+        val kodein = DI {
             bind<String>(tag = "name") with instance("Benjamin")
             import(module, allowOverride = true)
         }
@@ -97,14 +97,14 @@ class ErasedTests_14_Override {
 
     @Test
     fun test_07_ModuleForbiddenOverride() {
-        val module = Kodein.Module("test") {
+        val module = DI.Module("test") {
             bind<String>(tag = "name", overrides = true) with instance("Salomon")
         }
 
-        Kodein {
+        DI {
             bind<String>(tag = "name") with instance("Benjamin")
 
-            assertFailsWith<Kodein.OverridingException> {
+            assertFailsWith<DI.OverridingException> {
                 import(module)
             }
         }
@@ -112,16 +112,16 @@ class ErasedTests_14_Override {
 
     @Test
     fun test_08_ModuleImportsForbiddenOverride() {
-        val subModule = Kodein.Module("test1") {
+        val subModule = DI.Module("test1") {
             bind<String>(tag = "name", overrides = true) with instance("Salomon")
         }
 
-        val module = Kodein.Module("test2") { import(subModule, allowOverride = true) }
+        val module = DI.Module("test2") { import(subModule, allowOverride = true) }
 
-        Kodein {
+        DI {
             bind<String>(tag = "name") with instance("Benjamin")
 
-            assertFailsWith<Kodein.OverridingException> {
+            assertFailsWith<DI.OverridingException> {
                 import(module)
             }
         }

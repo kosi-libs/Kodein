@@ -4,12 +4,12 @@ import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import org.kodein.di.generic.*
-import org.kodein.di.ktor.kodein
+import org.kodein.di.ktor.*
 
 const val ROUTE_VERSION = "/version"
 const val ROUTE_AUTHOR = "/author"
 
-class ApplicationController(application: Application) : AbstractKodeinController(application) {
+class ApplicationController(application: Application) : AbstractDIController(application) {
     override fun Route.getRoutes() {
         route(ROUTE_VERSION) {
             get {
@@ -26,9 +26,9 @@ class ApplicationController(application: Application) : AbstractKodeinController
     }
 }
 
-class KodeinControllerImpl(application: Application) : KodeinController {
-    override val kodein by kodein { application }
-    override fun Route.getRoutes() {
+class DIControllerImpl(application: Application) : DIController {
+    override val di by di { application }
+  override fun Route.getRoutes() {
         route(ROUTE_VERSION) {
             get {
                 val version: String by instance("version")

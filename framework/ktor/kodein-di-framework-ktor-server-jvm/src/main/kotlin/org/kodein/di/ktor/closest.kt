@@ -8,91 +8,105 @@ import org.kodein.di.*
 
 
 // attribute key for storing injector in a call
-@Deprecated(DEPRECATE_7X)
-val KodeinKey = AttributeKey<Kodein>("kodein")
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("KodeinDIKey"), DeprecationLevel.ERROR)
+val KodeinKey = AttributeKey<DI>("KodeinDI")
+val KodeinDIKey = AttributeKey<DI>("KodeinDI")
 
 /**
- * Getting the global [Kodein] container from the [Application]
+ * Getting the global [DI] container from the [Application]
  */
-@Deprecated(DEPRECATE_7X)
-fun Application.kodein() = LazyKodein { attributes[KodeinKey] }
+fun Application.di() = LazyDI { attributes[KodeinDIKey] }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun Application.kodein() = LazyDI { attributes[KodeinDIKey] }
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun Application.closestKodein() = kodein()
+fun Application.closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun Application.closestKodein() = di()
 
 /**
- * Getting the global [Kodein] container from the [Application] parameter
+ * Getting the global [DI] container from the [Application] parameter
  */
-@Deprecated(DEPRECATE_7X)
-fun kodein(getApplication: () -> Application) = getApplication().kodein()
+fun di(getApplication: () -> Application) = getApplication().di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di(getApplication)"), DeprecationLevel.ERROR)
+fun kodein(getApplication: () -> Application) = di(getApplication)
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun closestKodein(getApplication: () -> Application) = kodein(getApplication)
+fun closestDI(getApplication: () -> Application) = di(getApplication)
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI(getApplication)"), DeprecationLevel.ERROR)
+fun closestKodein(getApplication: () -> Application) = di(getApplication)
 
 /**
- * Getting the global [Kodein] container from the [ApplicationCall]
+ * Getting the global [DI] container from the [ApplicationCall]
  */
-@Deprecated(DEPRECATE_7X)
-fun ApplicationCall.kodein() = kodein { application }
+fun ApplicationCall.di() = di { application }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun ApplicationCall.kodein() = di { application }
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun ApplicationCall.closestKodein() = kodein()
+fun ApplicationCall.closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun ApplicationCall.closestKodein() = di()
 
 /**
- * Getting the global [Kodein] container from the [Routing] feature
+ * Getting the global [DI] container from the [Routing] feature
  */
-@Deprecated(DEPRECATE_7X)
-fun Routing.kodein() = kodein { application }
+fun Routing.di() = di { application }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun Routing.kodein() = di { application }
+
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun Routing.closestKodein() = kodein()
+fun Routing.closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun Routing.closestKodein() = di()
 
 /**
- * Getting the global or local (if extended) [Kodein] container from the current [Route]
+ * Getting the global or local (if extended) [DI] container from the current [Route]
  * by browsering all the routing tree until we get to the root level, the [Routing] feature
  *
- * @throws IllegalStateException if there is no [Kodein] container
+ * @throws IllegalStateException if there is no [DI] container
  */
-@Deprecated(DEPRECATE_7X)
-fun Route.kodein(): LazyKodein {
-    // Is there an inner Kodein container for this Route ?
-    val routeKodein = this.attributes.getOrNull(KodeinKey)
+fun Route.di(): LazyDI {
+    // Is there an inner DI container for this Route ?
+    val routeDI = this.attributes.getOrNull(KodeinDIKey)
     return when {
-        routeKodein != null -> routeKodein as LazyKodein
-        this is Routing -> kodein()
-        else -> parent?.kodein() ?: throw IllegalStateException("No kodein container found for [$this]")
+        routeDI != null -> routeDI as LazyDI
+        this is Routing -> di()
+        else -> parent?.di() ?: throw IllegalStateException("No DI container found for [$this]")
     }
 }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun Route.kodein() = di()
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun Route.closestKodein() = kodein()
+fun Route.closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun Route.closestKodein() = di()
 
 /**
- * Getting the global [Kodein] container from the [ApplicationCall]
+ * Getting the global [DI] container from the [ApplicationCall]
  */
-@Deprecated(DEPRECATE_7X)
-fun PipelineContext<*, ApplicationCall>.kodein(): LazyKodein {
+fun PipelineContext<*, ApplicationCall>.di(): LazyDI {
     val routingCall = (this.call as RoutingApplicationCall)
-    return routingCall.route.kodein()
+    return routingCall.route.di()
 }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di()"), DeprecationLevel.ERROR)
+fun PipelineContext<*, ApplicationCall>.kodein() = di()
 
 /**
- * Alias to `kodein`
+ * Alias to `di`
  */
-@Deprecated(DEPRECATE_7X)
-fun PipelineContext<*, ApplicationCall>.closestKodein() = kodein()
+fun PipelineContext<*, ApplicationCall>.closestDI() = di()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("closestDI()"), DeprecationLevel.ERROR)
+fun PipelineContext<*, ApplicationCall>.closestKodein() = di()

@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
@@ -14,7 +14,7 @@ class GenericJvmTests_03_Instance {
 
         val p = Person()
 
-        val kodein = Kodein { bind() from instance(p) }
+        val kodein = DI { bind() from instance(p) }
 
         val p1: Person by kodein.instance()
         val p2: Person by kodein.instance()
@@ -28,7 +28,7 @@ class GenericJvmTests_03_Instance {
 
         val p = Person()
 
-        val kodein = Kodein { bind<Person>() with instance(p) }
+        val kodein = DI { bind<Person>() with instance(p) }
 
         val p1: () -> Person by kodein.provider()
         val p2: () -> Person by kodein.provider()

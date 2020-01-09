@@ -11,8 +11,8 @@ import org.kodein.di.*
  * @param A The type of argument the factory takes.
  * @param T The type of object the factory returns.
  * @return A factory.
- * @throws Kodein.NotFoundException if no factory was found.
- * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ * @throws DI.NotFoundException if no factory was found.
+ * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> Named.factory() = Factory<A, T>(erased(), erased())
 
@@ -25,7 +25,7 @@ inline fun <reified A, reified T : Any> Named.factory() = Factory<A, T>(erased()
  * @param A The type of argument the factory takes.
  * @param T The type of object the factory returns.
  * @return A factory, or null if no factory was found.
- * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> Named.factoryOrNull() = FactoryOrNull<A, T>(erased(), erased())
 
@@ -37,8 +37,8 @@ inline fun <reified A, reified T : Any> Named.factoryOrNull() = FactoryOrNull<A,
  *
  * @param T The type of object the provider returns.
  * @return A provider.
- * @throws Kodein.NotFoundException if no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+ * @throws DI.NotFoundException if no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified T : Any> Named.provider() = Provider<T>(erased())
 
@@ -52,8 +52,8 @@ inline fun <reified T : Any> Named.provider() = Provider<T>(erased())
  * @param T The type of object to retrieve with the returned provider.
  * @param arg The argument that will be given to the factory when curried.
  * @return A provider of [T].
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> Named.provider(arg: A) = Provider<A, T>(erased(), erased()) { arg }
 
@@ -67,8 +67,8 @@ inline fun <reified A, reified T : Any> Named.provider(arg: A) = Provider<A, T>(
  * @param T The type of object to retrieve with the returned provider.
  * @param arg The argument that will be given to the factory when curried.
  * @return A provider of [T].
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 inline fun <A, reified T : Any> Named.provider(arg: Typed<A>) = Provider<A, T>(arg.type, erased()) { arg.value }
 
@@ -82,8 +82,8 @@ inline fun <A, reified T : Any> Named.provider(arg: Typed<A>) = Provider<A, T>(a
  * @param T The type of object to retrieve with the returned provider.
  * @param fArg A function that returns the argument that will be given to the factory when curried.
  * @return A provider of [T].
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> Named.provider(noinline fArg: () -> A) = Provider<A, T>(erased(), erased(), fArg)
 
@@ -95,7 +95,7 @@ inline fun <reified A, reified T : Any> Named.provider(noinline fArg: () -> A) =
  *
  * @param T The type of object the provider returns.
  * @return A provider, or null if no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
 inline fun <reified T : Any> Named.providerOrNull() = ProviderOrNull<T>(erased())
 
@@ -109,7 +109,7 @@ inline fun <reified T : Any> Named.providerOrNull() = ProviderOrNull<T>(erased()
  * @param T The type of object to retrieve with the returned provider.
  * @param arg The argument that will be given to the factory when curried.
  * @return A provider of [T], or null if no factory was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> Named.providerOrNull(arg: A) = ProviderOrNull<A, T>(erased(), erased(), { arg })
 
@@ -125,7 +125,7 @@ inline fun <reified A, reified T : Any> Named.providerOrNull(arg: A) = ProviderO
  * @param T The type of object to retrieve with the returned provider.
  * @param arg The argument that will be given to the factory when curried.
  * @return A provider of [T], or null if no factory was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 inline fun <A, reified T : Any> Named.providerOrNull(arg: Typed<A>) = ProviderOrNull<A, T>(arg.type, erased(), { arg.value })
 
@@ -139,7 +139,7 @@ inline fun <A, reified T : Any> Named.providerOrNull(arg: Typed<A>) = ProviderOr
  * @param T The type of object to retrieve with the returned provider.
  * @param fArg A function that returns the argument that will be given to the factory when curried.
  * @return A provider of [T], or null if no factory was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> Named.providerOrNull(noinline fArg: () -> A) = ProviderOrNull<A, T>(erased(), erased(), fArg)
 
@@ -151,8 +151,8 @@ inline fun <reified A, reified T : Any> Named.providerOrNull(noinline fArg: () -
  *
  * @param T The type of object to retrieve.
  * @return An instance.
- * @throws Kodein.NotFoundException if no provider was found.
- * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
+ * @throws DI.NotFoundException if no provider was found.
+ * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
 inline fun <reified T : Any> Named.instance() = Instance<T>(erased())
 
@@ -166,8 +166,8 @@ inline fun <reified T : Any> Named.instance() = Instance<T>(erased())
  * @param T The type of object to retrieve.
  * @param arg The argument that will be given to the factory when curried.
  * @return An instance of [T].
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> Named.instance(arg: A) = Instance<A, T>(erased(), erased()) { arg }
 
@@ -183,8 +183,8 @@ inline fun <reified A, reified T : Any> Named.instance(arg: A) = Instance<A, T>(
  * @param T The type of object to retrieve.
  * @param arg The argument that will be given to the factory when curried.
  * @return An instance of [T].
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 inline fun <A, reified T : Any> Named.instance(arg: Typed<A>) = Instance<A, T>(arg.type, erased()) { arg.value }
 
@@ -198,8 +198,8 @@ inline fun <A, reified T : Any> Named.instance(arg: Typed<A>) = Instance<A, T>(a
  * @param T The type of object to retrieve.
  * @param fArg A function that returns the argument that will be given to the factory when curried.
  * @return An instance of [T].
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> Named.instance(noinline fArg: () -> A) = Instance<A, T>(erased(), erased(), fArg)
 
@@ -211,7 +211,7 @@ inline fun <reified A, reified T : Any> Named.instance(noinline fArg: () -> A) =
  *
  * @param T The type of object to retrieve.
  * @return An instance, or null if no provider was found.
- * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
 inline fun <reified T : Any> Named.instanceOrNull() = InstanceOrNull<T>(erased())
 
@@ -225,7 +225,7 @@ inline fun <reified T : Any> Named.instanceOrNull() = InstanceOrNull<T>(erased()
  * @param T The type of object to retrieve.
  * @param arg The argument that will be given to the factory when curried.
  * @return An instance of [T], or null if no factory was found.
- * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> Named.instanceOrNull(arg: A) = InstanceOrNull<A, T>(erased(), erased()) { arg }
 
@@ -241,7 +241,7 @@ inline fun <reified A, reified T : Any> Named.instanceOrNull(arg: A) = InstanceO
  * @param T The type of object to retrieve.
  * @param arg The argument that will be given to the factory when curried.
  * @return An instance of [T], or null if no factory was found.
- * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 inline fun <A, reified T : Any> Named.instanceOrNull(arg: Typed<A>) = InstanceOrNull<A, T>(arg.type, erased()) { arg.value }
 
@@ -255,7 +255,7 @@ inline fun <A, reified T : Any> Named.instanceOrNull(arg: Typed<A>) = InstanceOr
  * @param T The type of object to retrieve.
  * @param fArg A function that returns the argument that will be given to the factory when curried.
  * @return An instance of [T], or null if no factory was found.
- * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 inline fun <reified A, reified T : Any> Named.instanceOrNull(noinline fArg: () -> A) = InstanceOrNull<A, T>(erased(), erased(), fArg)
 
@@ -266,7 +266,7 @@ inline fun <reified A, reified T : Any> Named.instanceOrNull(noinline fArg: () -
  *
  * @param T The type of object to retrieve.
  * @return An instance of [T].
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException If the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> KodeinAware.constant() = Constant<T>(erased())
+inline fun <reified T : Any> DIAware.constant() = Constant<T>(erased())

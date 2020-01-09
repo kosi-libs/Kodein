@@ -1,7 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.Kodein
-import org.kodein.di.direct
+import org.kodein.di.DI
 import org.kodein.di.test.*
 import kotlin.test.*
 
@@ -11,10 +10,10 @@ class ErasedTests_01_Provider {
     @Test
     fun test_00_ProviderBindingGetInstance() {
 
-        val kodein = Kodein { bind<Person>() with provider { Person() } }
+        val di = DI { bind<Person>() with provider { Person() } }
 
-        val p1: Person by kodein.instance()
-        val p2: Person by kodein.instance()
+        val p1: Person by di.instance()
+        val p2: Person by di.instance()
 
         assertNotSame(p1, p2)
     }
@@ -22,10 +21,10 @@ class ErasedTests_01_Provider {
     @Test
     fun test_01_ProviderBindingGetProvider() {
 
-        val kodein = Kodein { bind<Person>() with provider { Person() } }
+        val di = DI { bind<Person>() with provider { Person() } }
 
-        val p1 by kodein.provider<Person>()
-        val p2 by kodein.provider<Person>()
+        val p1 by di.provider<Person>()
+        val p2 by di.provider<Person>()
 
         assertNotSame(p1(), p2())
     }

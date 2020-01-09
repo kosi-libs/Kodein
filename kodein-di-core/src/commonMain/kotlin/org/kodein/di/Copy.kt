@@ -1,7 +1,7 @@
 package org.kodein.di
 
 /**
- * Defines which bindings are to be copied from a parent Kodein to a child Kodein.
+ * Defines which bindings are to be copied from a parent DI to a child DI.
  *
  * @property all Whether the specs are describing multiple matching bindings or only one.
  */
@@ -16,27 +16,27 @@ interface Copy {
      *
      * @param tree The tree that contains bindings to copy.
      */
-    fun keySet(tree: KodeinTree): Set<Kodein.Key<*, *, *>>
+    fun keySet(tree: DITree): Set<DI.Key<*, *, *>>
 
     /**
      * A [Copy] spec that copies all bindings.
      */
     object All: Copy {
-        override fun keySet(tree: KodeinTree) = tree.bindings.keys
+        override fun keySet(tree: DITree) = tree.bindings.keys
     }
 
     /**
      * A [Copy] spec that copies no bindings.
      */
     object None: Copy {
-        override fun keySet(tree: KodeinTree) = emptySet<Kodein.Key<*, *, *>>()
+        override fun keySet(tree: DITree) = emptySet<DI.Key<*, *, *>>()
     }
 
     /**
      * A [Copy] spec that copies only the bindings that retain no status / reference.
      */
     object NonCached: Copy {
-        override fun keySet(tree: KodeinTree) = tree.bindings.filter { it.value.first().binding.copier == null } .keys
+        override fun keySet(tree: DITree) = tree.bindings.filter { it.value.first().binding.copier == null } .keys
     }
 
     companion object {
@@ -50,13 +50,13 @@ interface Copy {
          */
         fun allBut(f: AllButDSL.() -> Unit) = AllButDSL().apply(f)
 
-        internal fun specsToKeys(tree: KodeinTree, it: CopySpecs): List<Kodein.Key<*, *, *>> {
+        internal fun specsToKeys(tree: DITree, it: CopySpecs): List<DI.Key<*, *, *>> {
             val list = tree.find(it)
             if (list.isEmpty()) {
-                throw Kodein.NoResultException(it, "No binding found that match this search: $it")
+                throw DI.NoResultException(it, "No binding found that match this search: $it")
             }
             if (!it.all && list.size > 1) {
-                throw Kodein.NoResultException(it, "There were ${list.size} matches for this search: $it\n${list.associate { it.first to it.second }.description(false)}")
+                throw DI.NoResultException(it, "There were ${list.size} matches for this search: $it\n${list.associate { it.first to it.second }.description(false)}")
             }
             return list.map { it.first }
         }
@@ -109,7 +109,7 @@ interface Copy {
      * [Copy] DSL.
      */
     class DSL : BaseDSL() {
-        override fun keySet(tree: KodeinTree): Set<Kodein.Key<*, *, *>> {
+        override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> {
             val ignored = ignoreSpecs.flatMap { specsToKeys(tree, it) }
             return copySpecs
                     .flatMap { specsToKeys(tree, it) }
@@ -122,7 +122,7 @@ interface Copy {
      * [Copy.allBut] DSL
      */
     class AllButDSL : BaseDSL() {
-        override fun keySet(tree: KodeinTree): Set<Kodein.Key<*, *, *>> {
+        override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> {
             val kept = copySpecs.flatMap { specsToKeys(tree, it) }
             val ignored = ignoreSpecs
                     .flatMap { specsToKeys(tree, it) }

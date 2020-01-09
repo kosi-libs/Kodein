@@ -11,9 +11,9 @@ import org.kodein.di.*
  * @param T The type of object to retrieve with the returned factory.
  * @param tag The bound tag, if any.
  * @return A list of matching factories of `T`.
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.allFactories(tag: Any? = null) = dkodein.AllFactories<A, T>(erased(), erased(), tag)
+inline fun <reified A, reified T : Any> DirectDIAware.allFactories(tag: Any? = null) = directDI.AllFactories<A, T>(erased(), erased(), tag)
 
 /**
  * Gets all providers that can return a `T` for the given type and tag.
@@ -23,9 +23,9 @@ inline fun <reified A, reified T : Any> DKodeinAware.allFactories(tag: Any? = nu
  * @param T The type of object to retrieve with the returned factory.
  * @param tag The bound tag, if any.
  * @return A list of matching providers of `T`.
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodeinAware.allProviders(tag: Any? = null) = dkodein.AllProviders<T>(erased(), tag)
+inline fun <reified T : Any> DirectDIAware.allProviders(tag: Any? = null) = directDI.AllProviders<T>(erased(), tag)
 
 /**
  * Gets all providers that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -37,9 +37,9 @@ inline fun <reified T : Any> DKodeinAware.allProviders(tag: Any? = null) = dkode
  * @param tag The bound tag, if any.
  * @param arg The argument that will be given to the factory when curried.
  * @return A list of matching providers of `T`.
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, arg: A) = dkodein.AllProviders<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, arg: A) = directDI.AllProviders<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets all providers that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -53,9 +53,9 @@ inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = nu
  * @param tag The bound tag, if any.
  * @param arg The argument that will be given to the factory when curried.
  * @return A list of matching providers of `T`.
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, arg: Typed<A>) = dkodein.AllProviders<A, T>(arg.type, erased(), tag) { arg.value }
+inline fun <A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, arg: Typed<A>) = directDI.AllProviders<A, T>(arg.type, erased(), tag) { arg.value }
 
 /**
  * Gets all providers that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -67,9 +67,9 @@ inline fun <A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, arg:
  * @param tag The bound tag, if any.
  * @param fArg A function that returns the argument that will be given to the factory when curried.
  * @return A list of matching providers of `T`.
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = dkodein.AllProviders<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = directDI.AllProviders<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets all instances that can return a `T` for the given type and tag.
@@ -79,9 +79,9 @@ inline fun <reified A, reified T : Any> DKodeinAware.allProviders(tag: Any? = nu
  * @param T The type of object to retrieve with the returned factory.
  * @param tag The bound tag, if any.
  * @return A list of matching instances of `T`.
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodeinAware.allInstances(tag: Any? = null) = dkodein.AllInstances<T>(erased(), tag)
+inline fun <reified T : Any> DirectDIAware.allInstances(tag: Any? = null) = directDI.AllInstances<T>(erased(), tag)
 
 /**
  * Gets all instances that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -93,9 +93,9 @@ inline fun <reified T : Any> DKodeinAware.allInstances(tag: Any? = null) = dkode
  * @param tag The bound tag, if any.
  * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return A list of matching instances of `T`.
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.allInstances(tag: Any? = null, arg: A) = dkodein.AllInstances<A, T>(erased(), erased(), tag, arg)
+inline fun <reified A, reified T : Any> DirectDIAware.allInstances(tag: Any? = null, arg: A) = directDI.AllInstances<A, T>(erased(), erased(), tag, arg)
 
 /**
  * Gets all instances that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -109,7 +109,7 @@ inline fun <reified A, reified T : Any> DKodeinAware.allInstances(tag: Any? = nu
  * @param tag The bound tag, if any.
  * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return A list of matching instances of `T`.
- * @throws Kodein.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DKodeinAware.allInstances(tag: Any? = null, arg: Typed<A>) = dkodein.AllInstances<A, T>(arg.type, erased(), tag, arg.value)
+inline fun <A, reified T : Any> DirectDIAware.allInstances(tag: Any? = null, arg: Typed<A>) = directDI.AllInstances<A, T>(arg.type, erased(), tag, arg.value)
 

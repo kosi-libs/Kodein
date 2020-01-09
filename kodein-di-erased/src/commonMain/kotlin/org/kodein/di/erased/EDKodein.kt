@@ -1,7 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.DKodeinAware
-import org.kodein.di.DKodeinBase
+import org.kodein.di.DirectDIAware
 import org.kodein.di.Typed
 import org.kodein.di.erased
 
@@ -14,10 +13,10 @@ import org.kodein.di.erased
  * @param T The type of object the factory returns.
  * @param tag The bound tag, if any.
  * @return A factory.
- * @throws Kodein.NotFoundException if no factory was found.
- * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ * @throws DI.NotFoundException if no factory was found.
+ * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.factory(tag: Any? = null) = dkodein.Factory<A, T>(erased(), erased(), tag)
+inline fun <reified A, reified T : Any> DirectDIAware.factory(tag: Any? = null) = directDI.Factory<A, T>(erased(), erased(), tag)
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
@@ -28,9 +27,9 @@ inline fun <reified A, reified T : Any> DKodeinAware.factory(tag: Any? = null) =
  * @param T The type of object the factory returns.
  * @param tag The bound tag, if any.
  * @return A factory, or null if no factory was found.
- * @throws Kodein.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.factoryOrNull(tag: Any? = null) = dkodein.FactoryOrNull<A, T>(erased(), erased(), tag)
+inline fun <reified A, reified T : Any> DirectDIAware.factoryOrNull(tag: Any? = null) = directDI.FactoryOrNull<A, T>(erased(), erased(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -40,10 +39,10 @@ inline fun <reified A, reified T : Any> DKodeinAware.factoryOrNull(tag: Any? = n
  * @param T The type of object the provider returns.
  * @param tag The bound tag, if any.
  * @return A provider.
- * @throws Kodein.NotFoundException if no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+ * @throws DI.NotFoundException if no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodeinAware.provider(tag: Any? = null) = dkodein.Provider<T>(erased(), tag)
+inline fun <reified T : Any> DirectDIAware.provider(tag: Any? = null) = directDI.Provider<T>(erased(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -55,10 +54,10 @@ inline fun <reified T : Any> DKodeinAware.provider(tag: Any? = null) = dkodein.P
  * @param tag The bound tag, if any.
  * @param arg The argument that will be given to the factory when curried.
  * @return A provider of `T`.
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: A) = dkodein.Provider<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: A) = directDI.Provider<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -72,10 +71,10 @@ inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, 
  * @param tag The bound tag, if any.
  * @param arg The argument that will be given to the factory when curried.
  * @return A provider of `T`.
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: Typed<A>) = dkodein.Provider<A, T>(arg.type, erased(), tag) { arg.value }
+inline fun <A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: Typed<A>) = directDI.Provider<A, T>(arg.type, erased(), tag) { arg.value }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -87,10 +86,10 @@ inline fun <A, reified T : Any> DKodeinAware.provider(tag: Any? = null, arg: Typ
  * @param tag The bound tag, if any.
  * @param fArg A function that returns the argument that will be given to the factory when curried.
  * @return A provider of `T`.
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, noinline fArg: () -> A) = dkodein.Provider<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A, reified T : Any> DirectDIAware.provider(tag: Any? = null, noinline fArg: () -> A) = directDI.Provider<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -100,10 +99,10 @@ inline fun <reified A, reified T : Any> DKodeinAware.provider(tag: Any? = null, 
  * @param T The type of object the provider returns.
  * @param tag The bound tag, if any.
  * @return A provider, or null if no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null) = dkodein.ProviderOrNull<T>(erased(), tag)
+inline fun <reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null) = directDI.ProviderOrNull<T>(erased(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -115,9 +114,9 @@ inline fun <reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null) = dko
  * @param tag The bound tag, if any.
  * @param arg The argument that will be given to the factory when curried.
  * @return A provider of `T`, or null if no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, arg: A) = dkodein.ProviderOrNull<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: A) = directDI.ProviderOrNull<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -131,9 +130,9 @@ inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = 
  * @param tag The bound tag, if any.
  * @param arg The argument that will be given to the factory when curried.
  * @return A provider of `T`, or null if no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, arg: Typed<A>) = dkodein.ProviderOrNull<A, T>(arg.type, erased(), tag) { arg.value }
+inline fun <A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: Typed<A>) = directDI.ProviderOrNull<A, T>(arg.type, erased(), tag) { arg.value }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -145,9 +144,9 @@ inline fun <A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, ar
  * @param tag The bound tag, if any.
  * @param fArg A function that returns the argument that will be given to the factory when curried.
  * @return A provider of `T`, or null if no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = dkodein.ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = directDI.ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -157,10 +156,10 @@ inline fun <reified A, reified T : Any> DKodeinAware.providerOrNull(tag: Any? = 
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
  * @return An instance.
- * @throws Kodein.NotFoundException if no provider was found.
- * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
+ * @throws DI.NotFoundException if no provider was found.
+ * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodeinAware.instance(tag: Any? = null) = dkodein.Instance<T>(erased(), tag)
+inline fun <reified T : Any> DirectDIAware.instance(tag: Any? = null) = directDI.Instance<T>(erased(), tag)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument.
@@ -172,10 +171,10 @@ inline fun <reified T : Any> DKodeinAware.instance(tag: Any? = null) = dkodein.I
  * @param tag The bound tag, if any.
  * @param arg The argument that will be given to the factory when curried.
  * @return An instance of `T`.
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: A) = dkodein.Instance<A, T>(erased(), erased(), tag, arg)
+inline fun <reified A, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: A) = directDI.Instance<A, T>(erased(), erased(), tag, arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument.
@@ -189,10 +188,10 @@ inline fun <reified A, reified T : Any> DKodeinAware.instance(tag: Any? = null, 
  * @param tag The bound tag, if any.
  * @param arg The argument that will be given to the factory when curried.
  * @return An instance of `T`.
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: Typed<A>) = dkodein.Instance<A, T>(arg.type, erased(), tag, arg.value)
+inline fun <A, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: Typed<A>) = directDI.Instance<A, T>(arg.type, erased(), tag, arg.value)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -202,9 +201,9 @@ inline fun <A, reified T : Any> DKodeinAware.instance(tag: Any? = null, arg: Typ
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
  * @return An instance, or null if no provider was found.
- * @throws Kodein.DependencyLoopException If the instance construction triggered a dependency loop.
+ * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null) = dkodein.InstanceOrNull<T>(erased(), tag)
+inline fun <reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null) = directDI.InstanceOrNull<T>(erased(), tag)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -216,10 +215,10 @@ inline fun <reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null) = dko
  * @param tag The bound tag, if any.
  * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return A instance of `T`, or null if no provider was found.
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: A) = dkodein.InstanceOrNull<A, T>(erased(), erased(), tag, arg)
+inline fun <reified A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: A) = directDI.InstanceOrNull<A, T>(erased(), erased(), tag, arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -231,15 +230,15 @@ inline fun <reified A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = 
  * @param tag The bound tag, if any.
  * @param arg A function that returns the argument that will be given to the factory when curried.
  * @return A instance of `T`, or null if no provider was found.
- * @throws Kodein.NotFoundException If no provider was found.
- * @throws Kodein.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DKodeinAware.instanceOrNull(tag: Any? = null, arg: Typed<A>) = dkodein.InstanceOrNull<A, T>(arg.type, erased(), tag, arg.value)
+inline fun <A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: Typed<A>) = directDI.InstanceOrNull<A, T>(arg.type, erased(), tag, arg.value)
 
 /**
- * Returns a `DKodein` with its context and/or receiver changed.
+ * Returns a `DirectDI` with its context and/or receiver changed.
  *
- * @param context The new context for the new DKodein.
- * @param receiver The new receiver for the new DKodein.
+ * @param context The new context for the new DirectDI.
+ * @param receiver The new receiver for the new DirectDI.
  */
-inline fun <reified C> DKodeinAware.on(context: C) = dkodein.On(kcontext(context))
+inline fun <reified C> DirectDIAware.on(context: C) = directDI.On(diContext(context))

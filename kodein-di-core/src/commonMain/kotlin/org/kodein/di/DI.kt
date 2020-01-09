@@ -2,17 +2,20 @@ package org.kodein.di
 
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.ExternalSource
-import org.kodein.di.bindings.KodeinBinding
+import org.kodein.di.bindings.DIBinding
 import org.kodein.di.bindings.Scope
-import org.kodein.di.internal.KodeinImpl
+import org.kodein.di.internal.DIImpl
+
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DI"), DeprecationLevel.ERROR)
+typealias Kodein = DI
 
 /**
  * KOtlin DEpendency INjection.
  *
- * To construct a Kodein instance, simply use [it's block constructor][Kodein.invoke] and define your bindings in it :
+ * To construct a DI instance, simply use [it's block constructor][DI.invoke] and define your bindings in it :
  *
  * ```kotlin
- * val kodein = Kodein {
+ * val di = DI {
  *     bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
  *     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
  *     bind<Random>() with provider { SecureRandom() }
@@ -20,8 +23,7 @@ import org.kodein.di.internal.KodeinImpl
  * }
  * ```
  */
-@Deprecated(DEPRECATE_7X)
-interface Kodein : KodeinAware {
+interface DI : DIAware {
 
     /**
      * Exception thrown when there is a dependency loop.
@@ -55,13 +57,13 @@ interface Kodein : KodeinAware {
      */
     class OverridingException(message: String) : RuntimeException(message)
 
-    override val kodein: Kodein get() = this
+    override val di: DI get() = this
 
     /**
-     * In Kodein, each [KodeinBinding] is bound to a Key. A Key holds all information necessary to retrieve a factory (and therefore an instance).
+     * In DI, each [DIBinding] is bound to a Key. A Key holds all information necessary to retrieve a factory (and therefore an instance).
      *
      * A key contains many types & a tag.
-     * It defines the types of the values that will be passed to and retrieved from Kodein, not the values themselves.
+     * It defines the types of the values that will be passed to and retrieved from DI, not the values themselves.
      *
      * @param C The in context type.
      * @param A The in argument type (`Unit` for a provider).
@@ -149,11 +151,12 @@ interface Kodein : KodeinAware {
     }
 
     /**
-     * Defines a kodein DSL function
+     * Defines a di DSL function
      */
     @DslMarker
-    @Deprecated(DEPRECATE_7X)
+    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIDsl"), DeprecationLevel.ERROR)
     annotation class KodeinDsl
+    annotation class DIDsl
 
     /**
      * Base builder DSL interface that allows to define scoped and context bindings.
@@ -194,16 +197,16 @@ interface Kodein : KodeinAware {
     }
 
     /**
-     * Allows for the DSL inside the block argument of the constructor of `Kodein` and `Kodein.Module`.
+     * Allows for the DSL inside the block argument of the constructor of `DI` and `DI.Module`.
      *
-     * Methods of this classes are really just proxies to the [KodeinContainer.Builder] methods.
+     * Methods of this classes are really just proxies to the [DIContainer.Builder] methods.
      *
      * @property containerBuilder Every methods eventually ends up to a call to this builder.
      */
-    @KodeinDsl
+    @DIDsl
     interface Builder : BindBuilder.WithContext<Any?>, BindBuilder.WithScope<Any?> {
 
-        val containerBuilder: KodeinContainer.Builder
+        val containerBuilder: DIContainer.Builder
 
         /**
          * Left part of the type-binding syntax (`bind(type, tag)`).
@@ -217,7 +220,7 @@ interface Kodein : KodeinAware {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun <C, A> with(binding: KodeinBinding<in C, in A, out T>)
+            infix fun <C, A> with(binding: DIBinding<in C, in A, out T>)
         }
 
         /**
@@ -227,12 +230,12 @@ interface Kodein : KodeinAware {
             /**
              * Binds the previously given tag to the given binding.
              *
-             * The bound type will be the [KodeinBinding.createdType].
+             * The bound type will be the [DIBinding.createdType].
              *
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun <C, A, T: Any> from(binding: KodeinBinding<in C, in A, out T>)
+            infix fun <C, A, T: Any> from(binding: DIBinding<in C, in A, out T>)
         }
 
         /**
@@ -284,9 +287,9 @@ interface Kodein : KodeinAware {
         fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder
 
         /**
-         * Imports all bindings defined in the given [Kodein.Module] into this builder's definition.
+         * Imports all bindings defined in the given [DI.Module] into this builder's definition.
          *
-         * Note that modules are *definitions*, they will re-declare their bindings in each kodein instance you use.
+         * Note that modules are *definitions*, they will re-declare their bindings in each di instance you use.
          *
          * @param module The module object to import.
          * @param allowOverride Whether this module is allowed to override existing bindings.
@@ -297,9 +300,9 @@ interface Kodein : KodeinAware {
         fun import(module: Module, allowOverride: Boolean = false)
 
         /**
-         * Imports all bindings defined in the given [Kodein.Module]s into this builder's definition.
+         * Imports all bindings defined in the given [DI.Module]s into this builder's definition.
          *
-         * Note that modules are *definitions*, they will re-declare their bindings in each kodein instance you use.
+         * Note that modules are *definitions*, they will re-declare their bindings in each di instance you use.
          *
          * @param modules The module objects to import.
          * @param allowOverride Whether this module is allowed to override existing bindings.
@@ -310,9 +313,9 @@ interface Kodein : KodeinAware {
         fun importAll(vararg modules: Module, allowOverride: Boolean = false)
 
         /**
-         * Imports all bindings defined in the given [Kodein.Module]s into this builder's definition.
+         * Imports all bindings defined in the given [DI.Module]s into this builder's definition.
          *
-         * Note that modules are *definitions*, they will re-declare their bindings in each kodein instance you use.
+         * Note that modules are *definitions*, they will re-declare their bindings in each di instance you use.
          *
          * @param modules The module objects to import.
          * @param allowOverride Whether this module is allowed to override existing bindings.
@@ -332,17 +335,17 @@ interface Kodein : KodeinAware {
         fun importOnce(module: Module, allowOverride: Boolean = false)
 
         /**
-         * Adds a callback that will be called once the Kodein object is configured and instantiated.
+         * Adds a callback that will be called once the DI object is configured and instantiated.
          *
          * @param cb The callback.
          */
-        fun onReady(cb: DKodein.() -> Unit)
+        fun onReady(cb: DirectDI.() -> Unit)
 
         fun RegisterContextTranslator(translator: ContextTranslator<*, *>)
     }
 
     /**
-     * Builder to create a [Kodein] object.
+     * Builder to create a [DI] object.
      */
     interface MainBuilder : Builder {
 
@@ -362,54 +365,54 @@ interface Kodein : KodeinAware {
         var fullDescriptionOnError: Boolean
 
         /**
-         * The external source is repsonsible for fetching / creating a value when Kodein cannot find a matching binding.
+         * The external source is repsonsible for fetching / creating a value when DI cannot find a matching binding.
          */
         val externalSources: MutableList<ExternalSource>
 
         /**
-         * Imports all bindings defined in the given [Kodein] into this builder.
+         * Imports all bindings defined in the given [DI] into this builder.
          *
-         * Note that this preserves scopes, meaning that a singleton-bound in the kodein argument will continue to exist only once.
-         * Both kodein objects will share the same instance.
+         * Note that this preserves scopes, meaning that a singleton-bound in the di argument will continue to exist only once.
+         * Both di objects will share the same instance.
          *
-         * Note that externalSource **will be overeridden** if defined in the extended Kodein.
+         * Note that externalSource **will be overeridden** if defined in the extended DI.
          *
-         * @param kodein The kodein object to import.
+         * @param di The di object to import.
          * @param allowOverride Whether this module is allowed to override existing bindings.
          *   If it is not, overrides (even explicit) will throw an [OverridingException].
          * @param copy The copy specifications, that defines which bindings will be copied to the new container.
          *   All bindings from the extended container will be accessible in the new container, but only the copied bindings are able to access overridden bindings in this new container.
          *   By default, all bindings that do not hold references (e.g. not singleton or multiton) are copied.
-         * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
+         * @throws OverridingException If this di overrides an existing binding and is not allowed to
          *   OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(kodein: Kodein, allowOverride: Boolean = false, copy: Copy = Copy.NonCached)
+        fun extend(di: DI, allowOverride: Boolean = false, copy: Copy = Copy.NonCached)
 
         /**
-         * Imports all bindings defined in the given [Kodein] into this builder.
+         * Imports all bindings defined in the given [DI] into this builder.
          *
-         * Note that this preserves scopes, meaning that a singleton-bound in the kodein argument will continue to exist only once.
-         * Both kodein objects will share the same instance.
+         * Note that this preserves scopes, meaning that a singleton-bound in the di argument will continue to exist only once.
+         * Both di objects will share the same instance.
          *
-         * Note that externalSource **will be overeridden** if defined in the extended Kodein.
+         * Note that externalSource **will be overeridden** if defined in the extended DI.
          *
-         * @param dkodein The direct kodein object to import.
+         * @param directDI The direct di object to import.
          * @param allowOverride Whether this module is allowed to override existing bindings.
          *   If it is not, overrides (even explicit) will throw an [OverridingException].
          * @param copy The copy specifications, that defines which bindings will be copied to the new container.
          *   All bindings from the extended container will be accessible in the new container, but only the copied bindings are able to access overridden bindings in this new container.
          *   By default, all bindings that do not hold references (e.g. not singleton or multiton) are copied.
-         * @throws OverridingException If this kodein overrides an existing binding and is not allowed to
+         * @throws OverridingException If this di overrides an existing binding and is not allowed to
          *   OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(dkodein: DKodein, allowOverride: Boolean = false, copy: Copy = Copy.NonCached)
+        fun extend(directDI: DirectDI, allowOverride: Boolean = false, copy: Copy = Copy.NonCached)
     }
 
     /**
-     * A module is constructed the same way as in [Kodein] is:
+     * A module is constructed the same way as in [DI] is:
      *
      * ```kotlinprivate
-     * val module = Kodein.Module {
+     * val module = DI.Module {
      *     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
      * }
      * ```
@@ -426,51 +429,51 @@ interface Kodein : KodeinAware {
     /**
      * Every methods eventually ends up to a call to this container.
      */
-    val container: KodeinContainer
+    val container: DIContainer
 
     companion object {
 
         /**
-         * Creates a [Kodein] instance.
+         * Creates a [DI] instance.
          *
          * @param allowSilentOverride Whether the configuration block is allowed to non-explicit overrides.
          * @param init The block of configuration.
-         * @return The new Kodein object, freshly created, and ready for hard work!
+         * @return The new DI object, freshly created, and ready for hard work!
          */
-        operator fun invoke(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): Kodein = KodeinImpl(allowSilentOverride, init)
+        operator fun invoke(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DI = DIImpl(allowSilentOverride, init)
 
         /**
-         * Creates a [Kodein] instance that will be lazily created upon first access.
+         * Creates a [DI] instance that will be lazily created upon first access.
          *
          * @param allowSilentOverride Whether the configuration block is allowed to non-explicit overrides.
          * @param init The block of configuration.
-         * @return A lazy property that will yield, when accessed, the new Kodein object, freshly created, and ready for hard work!
+         * @return A lazy property that will yield, when accessed, the new DI object, freshly created, and ready for hard work!
          */
-        fun lazy(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): LazyKodein = LazyKodein { KodeinImpl(allowSilentOverride, init) }
+        fun lazy(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): LazyDI = LazyDI { DIImpl(allowSilentOverride, init) }
 
         /**
-         * Creates a direct [DKodein] instance that will be lazily created upon first access.
+         * Creates a direct [DirectDI] instance that will be lazily created upon first access.
          *
          * @param allowSilentOverride Whether the configuration block is allowed to non-explicit overrides.
          * @param init The block of configuration.
-         * @return The new DKodein object, freshly created, and ready for hard work!
+         * @return The new DirectDI object, freshly created, and ready for hard work!
          */
-        fun direct(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DKodein = KodeinImpl(allowSilentOverride, init).direct
+        fun direct(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DirectDI = DIImpl(allowSilentOverride, init).direct
 
         /**
-         * Creates a Kodein object but without directly calling onReady callbacks.
+         * Creates a DI object but without directly calling onReady callbacks.
          *
-         * Instead, returns both the kodein instance and the callbacks.
-         * Note that the returned kodein object should not be used before calling the callbacks.
+         * Instead, returns both the di instance and the callbacks.
+         * Note that the returned di object should not be used before calling the callbacks.
          *
-         * This is an **internal** function that exists primarily to prevent Kodein.global recursion.
+         * This is an **internal** function that exists primarily to prevent DI.global recursion.
          *
          * @param allowSilentOverride Whether the configuration block is allowed to non-explicit overrides.
          * @param init The block of configuration.
-         * @return a Pair with the Kodein object, and the callbacks function to call.
-         *   Note that you *should not* use the Kodein object before calling the callbacks function.
+         * @return a Pair with the DI object, and the callbacks function to call.
+         *   Note that you *should not* use the DI object before calling the callbacks function.
          */
-        fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): Pair<Kodein, () -> Unit> = KodeinImpl.withDelayedCallbacks(allowSilentOverride, init)
+        fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): Pair<DI, () -> Unit> = DIImpl.withDelayedCallbacks(allowSilentOverride, init)
 
         var defaultFullDescriptionOnError: Boolean = false
     }

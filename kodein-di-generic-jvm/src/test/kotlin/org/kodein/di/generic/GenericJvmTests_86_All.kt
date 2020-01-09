@@ -1,6 +1,6 @@
 package org.kodein.di.generic
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import org.kodein.di.direct
 import org.kodein.di.test.*
 import kotlin.test.*
@@ -10,7 +10,7 @@ class GenericJvmTests_86_All {
 
     @Test
     fun test_00_allInstances() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Person>() with provider { Person("Salomon") }
             bind<String>() with provider { "Laila" }
         }
@@ -22,7 +22,7 @@ class GenericJvmTests_86_All {
 
     @Test
     fun test_01_allFactories() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Name>() with factory { name: String -> Name(name) }
             bind<FullName>() with factory { name: String -> FullName(name, "BRYS") }
             bind<String>() with factory { name: String -> "Mr $name BRYS" }
@@ -58,7 +58,7 @@ class GenericJvmTests_86_All {
 
     @Test
     fun test_02_allProviders() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Name>() with provider { Name("Salomon") }
             bind<FullName>() with provider { FullName("Salomon", "BRYS") }
             bind<String>() with provider { "Mr Salomon BRYS" }
@@ -85,7 +85,7 @@ class GenericJvmTests_86_All {
 
     @Test
     fun test_03_allInstances() {
-        val kodein = Kodein {
+        val kodein = DI {
             bind<Name>() with provider { Name("Salomon") }
             bind<FullName>() with provider { FullName("Salomon", "BRYS") }
             bind<String>() with provider { "Mr Salomon BRYS" }

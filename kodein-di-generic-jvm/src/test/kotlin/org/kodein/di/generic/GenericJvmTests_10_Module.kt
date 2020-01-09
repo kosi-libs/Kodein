@@ -7,22 +7,22 @@ import kotlin.test.*
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class GenericJvmTests_10_Module {
 
-    class PersonContainer(kodein: Kodein) {
-        val newPerson: () -> Person by kodein.provider()
-        val salomon: Person by kodein.instance(tag = "named")
-        val factory: (String) -> Person by kodein.factory(tag = "factory")
+    class PersonContainer(di: DI) {
+        val newPerson: () -> Person by di.provider()
+        val salomon: Person by di.instance(tag = "named")
+        val factory: (String) -> Person by di.factory(tag = "factory")
     }
 
     @Test
     fun test_00_ModuleImport() {
 
-        val personModule = Kodein.Module("test") {
+        val personModule = DI.Module("test") {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
             bind<Person>(tag = "factory") with factory { name: String -> Person(name) }
         }
 
-        val kodein = Kodein {
+        val kodein = DI {
             import(personModule)
         }
 
@@ -33,7 +33,7 @@ class GenericJvmTests_10_Module {
         assertNotSame(container.factory("Laila"), container.factory("Laila"))
         assertEquals("Laila", container.factory("Laila").name)
 
-        val kodein2 = Kodein {
+        val kodein2 = DI {
             import(personModule)
         }
 
@@ -45,10 +45,10 @@ class GenericJvmTests_10_Module {
     @Test
     fun test_01_ModuleImportTwice() {
 
-        val module = Kodein.Module("test") {}
+        val module = DI.Module("test") {}
 
         val ex = assertFailsWith<IllegalStateException> {
-            Kodein {
+            DI {
                 import(module)
                 import(module)
             }
@@ -60,11 +60,11 @@ class GenericJvmTests_10_Module {
     @Test
     fun test_02_ModuleOnce() {
 
-        val module = Kodein.Module("test") {
+        val module = DI.Module("test") {
             bind<String>() with instance("Salomon")
         }
 
-        val kodein = Kodein {
+        val kodein = DI {
             importOnce(module)
             importOnce(module)
         }
@@ -75,20 +75,20 @@ class GenericJvmTests_10_Module {
     @Test
     fun test_03_ModuleOverExtend() {
         val salomon = "Salomon"
-        val module = Kodein.Module("test") {
+        val module = DI.Module("test") {
             bind<String>() with instance(salomon)
         }
 
-        val container1 = Kodein {
+        val container1 = DI {
             importOnce(module)
         }
 
-        val container2 = Kodein {
+        val container2 = DI {
             extend(container1)
             importOnce(module)
         }
 
-        val container3 = Kodein {
+        val container3 = DI {
             extend(container2)
             importOnce(module)
         }

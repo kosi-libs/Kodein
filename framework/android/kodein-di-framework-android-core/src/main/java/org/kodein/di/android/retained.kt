@@ -7,11 +7,24 @@ import android.app.Fragment
 import android.os.Bundle
 import org.kodein.di.*
 
-/** @suppress */
-@Deprecated(DEPRECATE_7X)
-class RetainedKodeinFragment : Fragment() {
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("RetainedDIFragment"), DeprecationLevel.ERROR)
+typealias RetainedKodeinFragment = RetainedDIFragment
 
-    var kodein: Kodein? = null
+/** @suppress */
+class RetainedDIFragment : Fragment() {
+
+    private var _di: DI? = null
+    var di: DI?
+        get() = _di
+        set(value) {
+            _di = value
+        }
+//    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di"), DeprecationLevel.ERROR)
+//    var kodein: DI?
+//        get() = _di
+//        set(value) {
+//            _di = value
+//        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,23 +34,23 @@ class RetainedKodeinFragment : Fragment() {
 
 }
 
-@Deprecated(DEPRECATE_7X)
-private const val kodeinRetainedFragmentTag = "org.kodein.di.android.RetainedKodeinFragment"
+private const val diRetainedFragmentTag = "org.kodein.di.android.RetainedDIFragment"
 
 /**
- * A Kodein instance that will be retained between activity changes.
+ * A DI instance that will be retained between activity changes.
  *
  * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
  * @property init The block of configuration for this module.
  */
-@Deprecated(DEPRECATE_7X)
-fun Activity.retainedKodein(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Lazy<Kodein> = lazy {
-    (fragmentManager.findFragmentByTag(kodeinRetainedFragmentTag) as? RetainedKodeinFragment)?.kodein?.let { return@lazy it }
+fun Activity.retainedDI(allowSilentOverride: Boolean = false, init: DI.MainBuilder.() -> Unit): Lazy<DI> = lazy {
+    (fragmentManager.findFragmentByTag(diRetainedFragmentTag) as? RetainedDIFragment)?.di?.let { return@lazy it }
 
-    val kodein = Kodein(allowSilentOverride, init)
-    val fragment = RetainedKodeinFragment()
-    fragment.kodein = kodein
-    fragmentManager.beginTransaction().add(fragment, kodeinRetainedFragmentTag).commit()
+    val di = DI(allowSilentOverride, init)
+    val fragment = RetainedDIFragment()
+    fragment.di = di
+    fragmentManager.beginTransaction().add(fragment, diRetainedFragmentTag).commit()
 
-    return@lazy kodein
+    return@lazy di
 }
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("retainedDI(allowSilentOverride, init)"), DeprecationLevel.ERROR)
+fun Activity.retainedKodein(allowSilentOverride: Boolean = false, init: DI.MainBuilder.() -> Unit): Lazy<DI> = retainedDI(allowSilentOverride, init)

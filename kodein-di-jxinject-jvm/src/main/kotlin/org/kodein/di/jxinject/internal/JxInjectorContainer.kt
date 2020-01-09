@@ -1,6 +1,6 @@
 package org.kodein.di.jxinject.internal
 
-import org.kodein.di.DKodein
+import org.kodein.di.DirectDI
 import org.kodein.di.TT
 import org.kodein.di.TypeToken
 import org.kodein.di.jxinject.*
@@ -15,9 +15,9 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
 
     private val _qualifiers = qualifiers.associate { it.cls to it.tagProvider }
 
-    private val _setters = ConcurrentHashMap<Class<*>, List<DKodein.(Any) -> Any>>()
+    private val _setters = ConcurrentHashMap<Class<*>, List<DirectDI.(Any) -> Any>>()
 
-    private val _constructors = ConcurrentHashMap<Class<*>, DKodein.() -> Any>()
+    private val _constructors = ConcurrentHashMap<Class<*>, DirectDI.() -> Any>()
 
     private fun getTagFromQualifier(el: AnnotatedElement): Any? {
         _qualifiers.forEach {
@@ -38,7 +38,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
         override fun toString(): String
     }
 
-    private fun getter(element: Element): DKodein.() -> Any? {
+    private fun getter(element: Element): DirectDI.() -> Any? {
         val tag = getTagFromQualifier(element)
 
         val shouldErase = element.isAnnotationPresent(ErasedBinding::class.java)
@@ -51,7 +51,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
 
         val isOptional = element.isAnnotationPresent(OrNull::class.java)
 
-        fun getterFunction(getter: DKodein.() -> Any?) = getter
+        fun getterFunction(getter: DirectDI.() -> Any?) = getter
 
         return when {
             element.classType == Lazy::class.java -> { // Must be first
@@ -111,7 +111,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
             members: Array<M>,
             elements: M.() -> Array<Element>,
             call: M.(Any, Array<Any?>) -> Unit,
-            setters: MutableList<DKodein.(Any) -> Any>
+            setters: MutableList<DirectDI.(Any) -> Any>
     ) {
         members
             .filter { it.isAnnotationPresent(Inject::class.java) }
@@ -138,7 +138,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
             }
     }
 
-    private tailrec fun fillMembersSetters(cls: Class<*>, setters: MutableList<DKodein.(Any) -> Any>) {
+    private tailrec fun fillMembersSetters(cls: Class<*>, setters: MutableList<DirectDI.(Any) -> Any>) {
         if (cls == Any::class.java)
             return
 
@@ -178,19 +178,19 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
         return fillMembersSetters(cls.superclass, setters)
     }
 
-    private fun createSetters(cls: Class<*>): List<DKodein.(Any) -> Any> {
-        val setters = ArrayList<DKodein.(Any) -> Any>()
+    private fun createSetters(cls: Class<*>): List<DirectDI.(Any) -> Any> {
+        val setters = ArrayList<DirectDI.(Any) -> Any>()
         fillMembersSetters(cls, setters)
         return setters
     }
 
-    private fun findSetters(cls: Class<*>): List<DKodein.(Any) -> Any> = _setters.getOrPut(cls) { createSetters(cls) }
+    private fun findSetters(cls: Class<*>): List<DirectDI.(Any) -> Any> = _setters.getOrPut(cls) { createSetters(cls) }
 
-    internal fun inject(kodein: DKodein, receiver: Any) {
-        findSetters(receiver.javaClass).forEach { kodein.it(receiver) }
+    internal fun inject(di: DirectDI, receiver: Any) {
+        findSetters(receiver.javaClass).forEach { di.it(receiver) }
     }
 
-    private fun createConstructor(cls: Class<*>): DKodein.() -> Any {
+    private fun createConstructor(cls: Class<*>): DirectDI.() -> Any {
         val constructor = cls.declaredConstructors.firstOrNull { it.isAnnotationPresent(Inject::class.java) }
                           ?:  if (cls.declaredConstructors.size == 1) cls.declaredConstructors[0]
                           else throw IllegalArgumentException("Class ${cls.name} must either have only one constructor or an @Inject annotated constructor")
@@ -225,14 +225,14 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
 
     /** @suppress */
     @JvmOverloads
-    internal fun <T: Any> newInstance(kodein: DKodein, cls: Class<T>, injectFields: Boolean = true): T {
+    internal fun <T: Any> newInstance(di: DirectDI, cls: Class<T>, injectFields: Boolean = true): T {
         val constructor = findConstructor(cls)
 
         @Suppress("UNCHECKED_CAST")
-        val instance = kodein.constructor() as T
+        val instance = di.constructor() as T
 
         if (injectFields)
-            inject(kodein, instance)
+            inject(di, instance)
 
         return instance
     }

@@ -3,23 +3,24 @@ package org.kodein.di.conf
 import org.kodein.di.*
 
 
-private val oneTrueKodein = ConfigurableKodein()
+private val oneTrueDI = ConfigurableDI()
 
 /**
- * A global One True Kodein.
+ * A global One True DI.
  */
 @Suppress("unused")
-val Kodein.Companion.global: ConfigurableKodein get() = oneTrueKodein
+val DI.Companion.global: ConfigurableDI get() = oneTrueDI
 
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIGlobalAware"), DeprecationLevel.ERROR)
+typealias KodeinGlobalAware = DIGlobalAware
 /**
- * A `KodeinAware` class that needs no implementation because the kodein used will be the [global] One True Kodein.
+ * A `DIAware` class that needs no implementation because the DI container used will be the [global] One True DI.
  */
-@Deprecated(DEPRECATE_7X)
-interface KodeinGlobalAware : KodeinAware {
+interface DIGlobalAware : DIAware {
 
     /**
-     * The global One True Kodein.
+     * The global One True DI.
      */
-    override val kodein: Kodein get() = Kodein.global
+    override val di: DI get() = DI.global
 
 }

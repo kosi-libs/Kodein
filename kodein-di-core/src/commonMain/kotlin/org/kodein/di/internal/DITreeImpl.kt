@@ -24,15 +24,17 @@ private typealias ContextTypeTree = MutableMap<TypeChecker.Down, ArgumentTypeTre
 
 private typealias ArgumentTypeTree = MutableMap<TypeChecker.Down, TagTree>
 
-private typealias TagTree = MutableMap<Any?, Kodein.Key<*, *, *>>
+private typealias TagTree = MutableMap<Any?, DI.Key<*, *, *>>
 
-@Deprecated(DEPRECATE_7X)
-internal class KodeinTreeImpl(
-        map: Map<Kodein.Key<*, *, *>, List<KodeinDefining<*, *, *>>>,
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DITreeImpl"), DeprecationLevel.ERROR)
+internal typealias KodeinTreeImpl = DITreeImpl
+
+internal class DITreeImpl(
+        map: Map<DI.Key<*, *, *>, List<DIDefining<*, *, *>>>,
         override val externalSources: List<ExternalSource>,
         override val registeredTranslators: List<ContextTranslator<*, *>>
-): KodeinTree {
-    private val _cache: MutableMap<Kodein.Key<*, *, *>, Triple<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>, ContextTranslator<*, *>?>> = newConcurrentMap()
+): DITree {
+    private val _cache: MutableMap<DI.Key<*, *, *>, Triple<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>, ContextTranslator<*, *>?>> = newConcurrentMap()
     private val _typeTree: BoundTypeTree = HashMap()
 
     override val bindings: BindingsMap
@@ -43,8 +45,8 @@ internal class KodeinTreeImpl(
         map.forEach { (key, bindings) ->
             val definitions = bindings.map {
                 when (it) {
-                    is KodeinDefinition<*, *, *> -> it
-                    else -> KodeinDefinition(it.binding, it.fromModule, this)
+                    is DIDefinition<*, *, *> -> it
+                    else -> DIDefinition(it.binding, it.fromModule, this)
                 }
             }
             _cache[key] = Triple(key, definitions, null)
@@ -74,7 +76,7 @@ internal class KodeinTreeImpl(
         }
     }
 
-    private fun findBySpecs(specs: SearchSpecs): List<Pair<Kodein.Key<*, *, *>, ContextTranslator<*, *>?>> {
+    private fun findBySpecs(specs: SearchSpecs): List<Pair<DI.Key<*, *, *>, ContextTranslator<*, *>?>> {
         var bindSeq: Sequence<Map.Entry<TypeChecker, ContextTypeTree>> = _typeTree.asSequence()
         val specsBindType = specs.type
         if (specsBindType != null && specsBindType != AnyToken) {
@@ -104,7 +106,7 @@ internal class KodeinTreeImpl(
             argSeq = argSeq.filter { (argType) -> argType.check(specsArgType) } // Filter argument types that are super-types of this specs argument type
         }
 
-        var tagSeq: Sequence<Triple<Any?, Kodein.Key<*, *, *>, ContextTranslator<*, *>?>> = argSeq.flatMap { (_, tagTree, translator) -> tagTree.asSequence().map { Triple(it.key, it.value, translator) } } // Get all corresponding tags
+        var tagSeq: Sequence<Triple<Any?, DI.Key<*, *, *>, ContextTranslator<*, *>?>> = argSeq.flatMap { (_, tagTree, translator) -> tagTree.asSequence().map { Triple(it.key, it.value, translator) } } // Get all corresponding tags
         val specsTag = specs.tag
         if (specsTag != SearchSpecs.NoDefinedTag) {
             tagSeq = tagSeq.filter { (tag) -> tag == specsTag } // Filter tags that match this specs tag
@@ -115,12 +117,12 @@ internal class KodeinTreeImpl(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C, A, T : Any> find(key: Kodein.Key<C, A, T>, overrideLevel: Int, all: Boolean): List<Triple<Kodein.Key<Any, A, T>, KodeinDefinition<Any, A, T>, ContextTranslator<C, Any>?>> {
+    override fun <C, A, T : Any> find(key: DI.Key<C, A, T>, overrideLevel: Int, all: Boolean): List<Triple<DI.Key<Any, A, T>, DIDefinition<Any, A, T>, ContextTranslator<C, Any>?>> {
 
         if (!all) {
             _cache[key]?.let { (realKey, list, translator) ->
                 val definition = list.getOrNull(overrideLevel) ?: return emptyList()
-                return listOf(Triple(realKey as Kodein.Key<Any, A, T>, definition as KodeinDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?))
+                return listOf(Triple(realKey as DI.Key<Any, A, T>, definition as DIDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?))
             }
 
             if (key.contextType != AnyToken) {
@@ -131,20 +133,20 @@ internal class KodeinTreeImpl(
                         return@let
                     _cache[key] = triple
                     val definition = list.getOrNull(overrideLevel) ?: return emptyList()
-                    return listOf(Triple(realKey as Kodein.Key<Any, A, T>, definition as KodeinDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?))
+                    return listOf(Triple(realKey as DI.Key<Any, A, T>, definition as DIDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?))
                 }
             }
 
             val applicableTranslators = translators.filter { it.contextType == key.contextType } + translators.filter { it.contextType == AnyToken } // Ensure Any translators are at the end of the list.
             for (translator in applicableTranslators) {
-                val translatedKey = Kodein.Key(translator.scopeType, key.argType, key.type, key.tag)
+                val translatedKey = DI.Key(translator.scopeType, key.argType, key.type, key.tag)
                 _cache[translatedKey]?.takeIf { it.third == null }?.let { triple ->
                     if (triple.third != null)
                         return@let
                     _cache[key] = triple.copy(third = translator)
                     val (realKey, list) = triple
                     val definition = list.getOrNull(overrideLevel) ?: return emptyList()
-                    return listOf(Triple(realKey as Kodein.Key<Any, A, T>, definition as KodeinDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?))
+                    return listOf(Triple(realKey as DI.Key<Any, A, T>, definition as DIDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?))
                 }
             }
         }
@@ -158,20 +160,20 @@ internal class KodeinTreeImpl(
         return result.mapNotNull { (realKey, translator) ->
             val (_, definitions, _) = _cache[realKey] ?: throw notInMap(realKey, key)
             val definition = definitions.getOrNull(overrideLevel) ?: return@mapNotNull null
-            Triple(realKey as Kodein.Key<Any, A, T>, definition as KodeinDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?)
+            Triple(realKey as DI.Key<Any, A, T>, definition as DIDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?)
         }
     }
 
-    private fun notInMap(result: Kodein.Key<*, *, *>, request: Kodein.Key<*, *, *>) = IllegalStateException("Tree returned key ${result.internalDescription} that is not in cache when searching for ${request.internalDescription}.\nKeys in cache:\n${_cache.keys.joinToString("\n") { it.internalDescription }}")
+    private fun notInMap(result: DI.Key<*, *, *>, request: DI.Key<*, *, *>) = IllegalStateException("Tree returned key ${result.internalDescription} that is not in cache when searching for ${request.internalDescription}.\nKeys in cache:\n${_cache.keys.joinToString("\n") { it.internalDescription }}")
 
     @Suppress("UNCHECKED_CAST")
-    override fun find(search: SearchSpecs): List<Triple<Kodein.Key<*, *, *>, List<KodeinDefinition<*, *, *>>, ContextTranslator<*, *>?>> {
+    override fun find(search: SearchSpecs): List<Triple<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>, ContextTranslator<*, *>?>> {
         val result = findBySpecs(search)
         @Suppress("UselessCallOnCollection")
         return result.map { (key, translator) -> Triple(key, _cache[key]!!.second, translator) }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C, A, T: Any> get(key: Kodein.Key<C, A, T>) = _cache[key] as Triple<Kodein.Key<Any, A, T>, List<KodeinDefinition<Any, A, T>>, ContextTranslator<C, Any>?>?
+    override fun <C, A, T: Any> get(key: DI.Key<C, A, T>) = _cache[key] as Triple<DI.Key<Any, A, T>, List<DIDefinition<Any, A, T>>, ContextTranslator<C, Any>?>?
 
 }
