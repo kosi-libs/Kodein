@@ -4,8 +4,8 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version:6.6.0
-:branch:6.6
+:version:7.0.0
+:branch:7.0
 
 Kodein (for KOtlin DEpendency INjection) is a DI framework.
 It allows you to bind your business unit interfaces with their implementation and thus having each business unit being independent.

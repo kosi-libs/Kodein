@@ -2,7 +2,9 @@ name: Snapshot
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+      - 'snapshot/[0-9]+.[0-9]+'
 
 jobs:
   snapshot-version:

@@ -4,7 +4,7 @@ plugins {
 
 allprojects {
     group = "org.kodein.di"
-    version = "6.6.0"
+    version = "7.0.0"
 }
 
 kodeinPublications {
