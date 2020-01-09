@@ -1,8 +1,6 @@
 package org.kodein.di.internal
 
-import org.kodein.di.DKodein
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinContainer
+import org.kodein.di.*
 import org.kodein.di.bindings.BindingKodein
 
 /**

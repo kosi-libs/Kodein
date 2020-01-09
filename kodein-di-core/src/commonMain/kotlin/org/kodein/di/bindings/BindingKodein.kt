@@ -1,8 +1,6 @@
 package org.kodein.di.bindings
 
-import org.kodein.di.DKodein
-import org.kodein.di.Kodein
-import org.kodein.di.toProvider
+import org.kodein.di.*
 
 
 // /!\
