@@ -475,6 +475,10 @@ interface DI : DIAware {
          */
         fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): Pair<DI, () -> Unit> = DIImpl.withDelayedCallbacks(allowSilentOverride, init)
 
+        fun from(modules: List<Module>): DI = DI {
+            modules.forEach { import(it) }
+        }
+
         var defaultFullDescriptionOnError: Boolean = false
     }
 
