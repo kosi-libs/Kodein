@@ -5,7 +5,7 @@ import org.kodein.di.test.*
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_20_2_MultiArguments {
+class ErasedTests_20_MultiArguments {
 
     private data class Person(val firstName: String, val lastName: String)
     private data class MultiArgElement(val a1: String = "", val a2: String = "", val a3: String = "", val a4: String = "", val a5: String = "") {

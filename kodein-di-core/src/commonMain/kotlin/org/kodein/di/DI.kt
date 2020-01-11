@@ -349,16 +349,6 @@ interface DI : DIAware {
      */
     interface MainBuilder : Builder {
 
-        // Deprecated since 6.3
-        @Deprecated("Use externalSources instead")
-        var externalSource: ExternalSource?
-            get() = externalSources.firstOrNull()
-            set(value) {
-                externalSources.clear()
-                if (value != null)
-                    externalSources += value
-            }
-
         /**
          * If true, exceptions thrown will contain qualified names.
          */

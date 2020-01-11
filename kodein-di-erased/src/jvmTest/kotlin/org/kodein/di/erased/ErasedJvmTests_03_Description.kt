@@ -143,13 +143,13 @@ class ErasedJvmTests_03_Description {
     @Test fun test_06_complexKeyFullDescription() {
         val key = DI.Key(
                 contextType = erased<String>(),
-                argType = erasedComp2<Multi2<String, String>, String, String>(),
+                argType = erasedComp2<Pair<String, String>, String, String>(),
                 type = erased<IntRange>(),
                 tag = "tag"
         )
 
         assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\")", key.bindFullDescription)
-        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") with ?<kotlin.String>().? { org.kodein.di.Multi2<kotlin.String, kotlin.String> -> ? }", key.fullDescription)
+        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") with ?<kotlin.String>().? { kotlin.Pair<kotlin.String, kotlin.String> -> ? }", key.fullDescription)
     }
 
 }

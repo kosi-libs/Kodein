@@ -48,13 +48,6 @@ typealias KodeinController = DIController
  */
 interface DIController : DIAware {
     /**
-     * Define the getRoutes that may be applied by installing [DIControllerFeature]
-     */
-    // Deprecated Since 6.4
-    @Deprecated(message = "As [KodeinControllerFeature] will be deprectated we will not need this anymore",
-            replaceWith = ReplaceWith("Route.installRoutes()"))
-    fun Routing.installRoutes() = getRoutes()
-    /**
      * Install the controller's routes into the [Routing] feature
      */
     fun Route.installRoutes() = getRoutes()

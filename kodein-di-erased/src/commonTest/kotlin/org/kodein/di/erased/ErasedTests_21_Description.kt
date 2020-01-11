@@ -1,7 +1,6 @@
 package org.kodein.di.erased
 
 import org.kodein.di.DI
-import org.kodein.di.Multi2
 import org.kodein.di.erased
 import org.kodein.di.erasedComp2
 import org.kodein.di.test.FixMethodOrder
@@ -29,13 +28,13 @@ class ErasedTests_21_Description {
     fun test_01_ComplexKeySimpleDescription() {
         val key = DI.Key(
                 contextType = erased<String>(),
-                argType = erasedComp2<Multi2<String, String>, String, String>(),
+                argType = erasedComp2<Pair<String, String>, String, String>(),
                 type = erased<IntRange>(),
                 tag = "tag"
         )
 
         assertEquals("bind<IntRange>(tag = \"tag\")", key.bindDescription)
-        assertEquals("bind<IntRange>(tag = \"tag\") with ?<String>().? { Multi2<String, String> -> ? }", key.description)
+        assertEquals("bind<IntRange>(tag = \"tag\") with ?<String>().? { Pair<String, String> -> ? }", key.description)
     }
 
 }

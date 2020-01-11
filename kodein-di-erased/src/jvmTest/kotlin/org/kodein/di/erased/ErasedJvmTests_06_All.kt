@@ -23,24 +23,23 @@ class ErasedJvmTests_06_All {
     @Test
     fun test_01_MultipleMultiArgumentsAllFactories() {
         val di = DI {
-            bind<Name>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
-            bind<FullName>() with factory { firstName: String, lastName: String -> FullName(firstName, lastName) }
-            bind<Name>() with factory { name: String, age: Int -> FullInfos(name, "BRYS", age) }
-            bind<String>() with factory { firstName: String, lastName: String -> "Mr $firstName $lastName" }
+            bind<Name>() with factory { name: Pair<String, String> -> FullName(name.first, name.second) }
+            bind<FullName>() with factory { name: Pair<String, String> -> FullName(name.first, name.second) }
+            bind<String>() with factory { name: Pair<String, String> -> "Mr ${name.first} ${name.second}" }
         }
 
-        val f by di.AllFactories<Multi2<String, String>, Name>(Multi2.erased(), erased())
-        val df = di.direct.AllFactories<Multi2<String, String>, Name>(Multi2.erased(), erased())
-        val p by di.allProviders<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
-        val dp = di.direct.allProviders<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
-        val i by di.allInstances<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
-        val ddi = di.direct.allInstances<Multi2<String, String>, Name>(arg = M("Salomon", "BRYS"))
+        val f by di.AllFactories<Pair<String, String>, Name>(erasedComp2<Pair<String, String>, String, String>(), erased())
+        val df = di.direct.AllFactories<Pair<String, String>, Name>(erasedComp2<Pair<String, String>, String, String>(), erased())
+        val p by di.allProviders<Pair<String, String>, Name>(arg = Pair("Salomon", "BRYS"))
+        val dp = di.direct.allProviders<Pair<String, String>, Name>(arg = Pair("Salomon", "BRYS"))
+        val i by di.allInstances<Pair<String, String>, Name>(arg = Pair("Salomon", "BRYS"))
+        val ddi = di.direct.allInstances<Pair<String, String>, Name>(arg = Pair("Salomon", "BRYS"))
 
         assertAllEqual(2, f.size, df.size, p.size, dp.size, i.size, ddi.size)
 
         val values =
-                f.map { it(M("Salomon", "BRYS")) } +
-                        df.map { it(M("Salomon", "BRYS")) } +
+                f.map { it(Pair("Salomon", "BRYS")) } +
+                        df.map { it(Pair("Salomon", "BRYS")) } +
                         p.map { it() } +
                         dp.map { it() } +
                         i +

@@ -23,13 +23,6 @@ actual inline fun <reified T> erased(): TypeToken<T> {
 }
 
 /**
- * Gives a [TypeToken] representing the given `Class`.
- */
-// Deprecated since 6.3
-@Deprecated("Use with KClass", ReplaceWith("TT(cls.kotlin)"))
-fun <T: Any> TT(cls: JsClass<T>): TypeToken<T> = TT(cls.kotlin)
-
-/**
  * Gives a [TypeToken] representing the given `KClass`.
  */
 fun <T: Any> TT(cls: KClass<T>): TypeToken<T> = JSTypeToken(cls)
