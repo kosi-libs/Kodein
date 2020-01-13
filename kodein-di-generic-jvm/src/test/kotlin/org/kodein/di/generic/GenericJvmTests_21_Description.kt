@@ -37,30 +37,32 @@ class GenericJvmTests_21_Description {
         assertEquals("bind<kotlin.String>() with ? { ? }", key.fullDescription)
     }
 
+    private data class MultiArgs(val s1: String, val s2: String)
+
     @Test
     fun test_02_complexKeySimpleDescription() {
         val key = DI.Key(
                 contextType = generic<String>(),
-                argType = generic<Multi2<String, String>>(),
+                argType = generic<MultiArgs>(),
                 type = generic<IntRange>(),
                 tag = "tag"
         )
 
         assertEquals("bind<IntRange>(tag = \"tag\")", key.bindDescription)
-        assertEquals("bind<IntRange>(tag = \"tag\") with ?<String>().? { Multi2<String, String> -> ? }", key.description)
+        assertEquals("bind<IntRange>(tag = \"tag\") with ?<String>().? { GenericJvmTests_21_Description.MultiArgs -> ? }", key.description)
     }
 
     @Test
     fun test_03_complexKeyFullDescription() {
         val key = DI.Key(
                 contextType = generic<String>(),
-                argType = generic<Multi2<String, String>>(),
+                argType = generic<MultiArgs>(),
                 type = generic<IntRange>(),
                 tag = "tag"
         )
 
         assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\")", key.bindFullDescription)
-        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") with ?<kotlin.String>().? { org.kodein.di.Multi2<kotlin.String, kotlin.String> -> ? }", key.fullDescription)
+        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") with ?<kotlin.String>().? { org.kodein.di.generic.GenericJvmTests_21_Description.MultiArgs -> ? }", key.fullDescription)
     }
 
     object TestScope : UnboundedScope()

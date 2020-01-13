@@ -11,40 +11,6 @@ import kotlin.test.*
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KtorControllerTests {
     @Test
-    fun test_00_successAbstractDIControllerFeature(): Unit = withTestApplication(Application::diAbsControllerSuccess) {
-        handleRequest(HttpMethod.Get, ROUTE_VERSION).apply {
-            assertEquals(VERSION, response.content)
-        }
-        handleRequest(HttpMethod.Get, ROUTE_AUTHOR).apply {
-            assertEquals(AUTHOR, response.content)
-        }
-    }
-
-    @Test
-    fun test_01_failureAbstractDIControllerFeature() {
-        assertFailsWith(MissingApplicationFeatureException::class) {
-            withTestApplication(Application::diAbsControllerFailure) {}
-        }
-    }
-
-    @Test
-    fun test_02_successDIControllerImplFeature(): Unit = withTestApplication(Application::diControllerImplSuccess) {
-        handleRequest(HttpMethod.Get, ROUTE_VERSION).apply {
-            assertEquals(VERSION, response.content)
-        }
-        handleRequest(HttpMethod.Get, ROUTE_AUTHOR).apply {
-            assertEquals(AUTHOR, response.content)
-        }
-    }
-
-    @Test
-    fun test_03_failureDIControllerImplFeature() {
-        assertFailsWith(MissingApplicationFeatureException::class) {
-            withTestApplication(Application::dicontrollerImplFailure) {}
-        }
-    }
-
-    @Test
     fun test_00_successDIControllerAutoConfiguration(): Unit = withTestApplication(Application::diControllerSuccess) {
 
         val ROUTE_PROTECTED = "/protected"

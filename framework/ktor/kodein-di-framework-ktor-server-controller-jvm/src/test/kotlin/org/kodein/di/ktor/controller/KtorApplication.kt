@@ -18,24 +18,10 @@ fun Application.installDI() = di {
 fun Application.diAbsControllerSuccess() {
     install(DefaultHeaders)
     installDI()
-    install(DIControllerFeature)
-}
-
-fun Application.diAbsControllerFailure() {
-    install(DefaultHeaders)
-    install(DIControllerFeature)
-    installDI()
 }
 
 fun Application.diControllerImplSuccess() {
     install(DefaultHeaders)
-    installDI()
-    install(DIControllerFeature)
-}
-
-fun Application.dicontrollerImplFailure() {
-    install(DefaultHeaders)
-    install(DIControllerFeature)
     installDI()
 }
 
