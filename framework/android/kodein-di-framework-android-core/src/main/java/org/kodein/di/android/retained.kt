@@ -19,12 +19,12 @@ class RetainedDIFragment : Fragment() {
         set(value) {
             _di = value
         }
-//    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di"), DeprecationLevel.ERROR)
-//    var kodein: DI?
-//        get() = _di
-//        set(value) {
-//            _di = value
-//        }
+    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di"), DeprecationLevel.ERROR)
+    var kodein: DI?
+        get() = _di
+        set(value) {
+            _di = value
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

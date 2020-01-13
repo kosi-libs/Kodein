@@ -67,8 +67,8 @@ interface DIAware {
      * A DI Aware class must be within reach of a [DI] object.
      */
     val di: DI
-//    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di"), DeprecationLevel.ERROR)
-//    val kodein: DI get() = di
+    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di"), DeprecationLevel.ERROR)
+    val kodein: DI get() = di
 
     /**
      * A DI Aware class can define a context that is for all retrieval by overriding this property.
@@ -76,8 +76,8 @@ interface DIAware {
      * Note that even if you override this property, all bindings that do not use a Context or are not scoped will still work!
      */
     val diContext: DIContext<*> get() = AnyDIContext
-//    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diContext"), DeprecationLevel.ERROR)
-//    val kodeinContext: DIContext<*> get() = diContext
+    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diContext"), DeprecationLevel.ERROR)
+    val kodeinContext: DIContext<*> get() = diContext
 
     /**
      * Trigger to use that define when the retrieval will be done.
@@ -86,8 +86,8 @@ interface DIAware {
      * However, you can use a [DITrigger] to force retrieval at a given time of your choice.
      */
     val diTrigger: DITrigger? get() = null
-//    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diTrigger"), DeprecationLevel.ERROR)
-//    val kodeinTrigger: DITrigger? get() = diTrigger
+    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diTrigger"), DeprecationLevel.ERROR)
+    val kodeinTrigger: DITrigger? get() = diTrigger
 }
 
 /**

@@ -11,8 +11,8 @@ interface DirectDIAware {
      * A Direct DI Aware class must be within reach of a [DirectDI] object.
      */
     val directDI: DirectDI
-//    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("directDI"), DeprecationLevel.ERROR)
-//    val dkodein get() = directDI
+    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("directDI"), DeprecationLevel.ERROR)
+    val dkodein get() = directDI
 }
 
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DirectDIBase"), DeprecationLevel.ERROR)
@@ -38,8 +38,8 @@ interface DirectDIBase : DirectDIAware {
      * Returns a regular [DI] instance (DI is lazy by default).
      */
     val di: DI get() = lazy
-//    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di"), DeprecationLevel.ERROR)
-//    val kodein: DI get() = di
+    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di"), DeprecationLevel.ERROR)
+    val kodein: DI get() = di
 
     /**
      * Returns a [DirectDI] with its context changed.
