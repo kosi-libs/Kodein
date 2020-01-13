@@ -11,7 +11,7 @@ repositories {
 
 kodeinLib {
     dependencies {
-        api(project(":kodein-di-core") target "jvm")
+        api(project(":kodein-di") target "jvm")
     }
 }
 

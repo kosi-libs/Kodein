@@ -15,7 +15,7 @@ apply { plugin("org.kodein.settings") }
 rootProject.name = "Kodein-DI"
 
 include(
-        ":kodein-di-core",
+        ":kodein-di",
 
         ":test-utils",
 

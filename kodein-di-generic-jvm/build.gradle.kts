@@ -4,7 +4,7 @@ plugins {
 
 kodeinLib {
     dependencies {
-        api(project(":kodein-di-core") target "jvm")
+        api(project(":kodein-di") target "jvm")
 
         testImplementation("com.google.inject:guice:4.1.0")
         testImplementation(project(":test-utils"))

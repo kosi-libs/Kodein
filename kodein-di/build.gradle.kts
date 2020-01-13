@@ -15,6 +15,6 @@ kodein {
 }
 
 kodeinUpload {
-    name = "Kodein-DI-Core"
+    name = "Kodein-DI"
     description = "KODEIN Dependency Injection Core"
 }

@@ -7,7 +7,7 @@ kodein {
 
         common {
             main.dependencies {
-                api(project(":kodein-di-core"))
+                api(project(":kodein-di"))
             }
 
             test.dependencies {
