@@ -10,23 +10,23 @@
 KOtlin DEpendency INjection
 ===========================
 
-Kodein is a very simple and yet very useful dependency retrieval container. it is very easy to use and configure.
+**_Kodein-DI_** is a very simple and yet very useful dependency retrieval container. it is very easy to use and configure.
 
-Kodein works:
+**_Kodein-DI_** works:
 
 - On the JVM.
 - On Android.
 - On Javascript (both in the browser and on Node.js).
 - On Native platforms (such as iOS).
 
-Kodein allows you to:
+**_Kodein-DI_** allows you to:
 
 - Lazily instantiate your dependencies when needed
 - Stop caring about dependency initialization order
 - Easily bind classes or interfaces to their instance or provider
 - Easily debug your dependency bindings and recursions
 
-Kodein provides extensions to be integrable into:
+**_Kodein-DI_** provides extensions to be integrable into:
 
 - [Android](https://developer.android.com/)
 - [Ktor](https://ktor.io/)
@@ -35,17 +35,17 @@ Kodein provides extensions to be integrable into:
 An example is always better than a thousand words:
 
 ```kotlin
-val kodein = Kodein {
+val di = DI {
     bind<Dice>() with provider { RandomDice(0, 5) }
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 }
 
-class Controller(private kodein: Kodein) {
-    private val ds: DataSource by kodein.instance()
+class Controller(private di: DI) {
+    private val ds: DataSource by di.instance()
 }
 ```
 
-Kodein is a good choice because:
+**_Kodein-DI_** is a good choice because:
 
 - It proposes a very simple and readable declarative DSL
 - It is not subject to type erasure (as Java is)
@@ -59,7 +59,8 @@ Kotlin & JVM compatibility
 
 |Kodein-DI|Kotlin|JDK
 |:---:|:---:|:---:|
-|7.0+|1.3.70|min 1.8
+|7.0+|1.3.71|min 1.8
+|6.5.4|1.3.71|min 1.8
 |6.5.3|1.3.70|min 1.8
 |6.5.0|1.3.61|min 1.8
 |6.4.1|1.3.50|min 1.8
@@ -78,9 +79,9 @@ You can find samples for MPP project here https://github.com/Kodein-Framework/Ko
 Read more
 ---------
 
-Kodein 6 is the current major version, but documentation is available for previous versions.
+**_Kodein-DI_** 6 is the current major version, but documentation is available for previous versions.
 
-**[Kodein documentation](http://kodein.org/Kodein-DI/)**
+**[Kodein-DI documentation](http://kodein.org/Kodein-DI/)**
 
 
 Support
@@ -167,4 +168,4 @@ Testimonies
 
 &nbsp;
 
-If you are using Kodein, please [let me know](mailto:contact@kodein.net)!
+If you are using Kodein-DI, please [let us know](mailto:contact@kodein.net)!
