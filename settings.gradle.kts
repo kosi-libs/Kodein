@@ -17,8 +17,6 @@ rootProject.name = "Kodein-DI"
 include(
         ":test-utils",
         ":kodein-di",
-//        ":kodein-di-generic-jvm",
-//        ":kodein-di-erased",
         ":kodein-di-conf",
         ":kodein-di-jxinject-jvm",
         ""

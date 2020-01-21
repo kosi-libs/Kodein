@@ -32,7 +32,6 @@ tasks.withType<Test> {
 
 dependencies {
     implementation("no.tornado:tornadofx:1.7.19")
-//    testImplementation(project(":kodein-di-generic-jvm"))
     testImplementation("org.testfx:testfx-core:4.0.4-alpha")
     testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
 }
