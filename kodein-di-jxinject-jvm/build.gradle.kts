@@ -8,7 +8,7 @@ kodeinLib {
         api("javax.inject:javax.inject:1")
 
         testImplementation(project(":test-utils"))
-        testImplementation(project(":kodein-di-generic-jvm"))
+//        testImplementation(project(":kodein-di-generic-jvm"))
     }
 }
 

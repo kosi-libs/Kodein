@@ -5,6 +5,11 @@ plugins {
 kodein {
     kotlin {
 
+        common {
+            test.dependencies {
+                implementation(project(":test-utils"))
+            }
+        }
         add(kodeinTargets.jvm.jvm) {
             target.setCompileClasspath()
         }

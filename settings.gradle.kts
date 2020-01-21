@@ -15,18 +15,12 @@ apply { plugin("org.kodein.settings") }
 rootProject.name = "Kodein-DI"
 
 include(
-        ":kodein-di",
-
         ":test-utils",
-
-        ":kodein-di-generic-jvm",
-
-        ":kodein-di-erased",
-
+        ":kodein-di",
+//        ":kodein-di-generic-jvm",
+//        ":kodein-di-erased",
         ":kodein-di-conf",
-
         ":kodein-di-jxinject-jvm",
-
         ""
 )
 

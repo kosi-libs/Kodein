@@ -12,7 +12,7 @@ kodein {
 
             test.dependencies {
                 implementation(project(":test-utils"))
-                implementation(project(":kodein-di-erased"))
+//                implementation(project(":kodein-di"))
             }
         }
 
