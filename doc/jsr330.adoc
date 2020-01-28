@@ -10,16 +10,16 @@ Salomon BRYS <salomon.brys@gmail.com>
 
 == Introduction
 
-Kodein offers a module that implements reflexivity injection based on the JSR-330 `javax.inject.*` annotations.
+Kodein-DI offers a module that implements reflexivity injection based on the JSR-330 `javax.inject.*` annotations.
 There are two reasons to use this module:
 
 - You are moving a code base from a Java injection library (such as Guice or Dagger) and want the Java code to work the same while there still is injected java code.
-- You want to easilly use Kodein in a Java code.
+- You want to easilly use Kodein-DI in a Java code.
 - That's it!
 
 Using this module with Kotlin code means adding a lot of reflexivity at run-time that can easily be avoided in Kotlin (but not in Java).
 
-CAUTION: Every-thing that is described here is *a lot less performant* than using classic Kodein injection methods.
+CAUTION: Every-thing that is described here is *a lot less performant* than using classic DI injection methods.
          PLEASE DO NOT USE ON KOTLIN CLASSES.
          Kittens *will* die painfully if you do!
 
@@ -56,12 +56,12 @@ IMPORTANT: Do not remove the "kodein-generic-jvm" (or "kodein-erased-jvm") depen
 [[import-module]]
 === Import the module.
 
-In your kodein binding configuration add the `jxInjectorModule`
+In your di binding configuration add the `jxInjectorModule`
 
 [source, kotlin]
 .Example: importing the JxInjector module
 ----
-val kodein = Kodein {
+val di = DI {
     import(jxInjectorModule)
     /* Other bindings */
 }
@@ -91,18 +91,18 @@ public class MyJavaController {
 }
 ----
 
-You can then create instances of such classes by using `kodein.jx` in Kotlin, or `Jx.of(kodein)` in Java.
+You can then create instances of such classes by using `di.jx` in Kotlin, or `Jx.of(di)` in Java.
 
 .Example: Creating a new instance in Kotlin
 [source, kotlin]
 ----
-val controller = kodein.jx.newInstance<MyJavaController>()
+val controller = di.jx.newInstance<MyJavaController>()
 ----
 
 .Example: Creating a new instance in Java
 [source, java]
 ----
-MyJavaController controller = Jx.of(kodein).newInstance(MyJavaController.class);
+MyJavaController controller = Jx.of(di).newInstance(MyJavaController.class);
 ----
 
 === Field injection
@@ -123,20 +123,20 @@ public class MyJavaController {
 }
 ----
 
-You can then inject existing instances of such classes by using `kodein.jx` in Kotlin, or `Jx.of(kodein)` in Java.
+You can then inject existing instances of such classes by using `di.jx` in Kotlin, or `Jx.of(di)` in Java.
 
 .Example: Injecting an existing instance in Kotlin
 [source, kotlin]
 ----
 val controller = MyJavaController()
-kodein.jx.inject(controller)
+di.jx.inject(controller)
 ----
 
 .Example: Injecting an existing instance in Java
 [source, java]
 ----
 MyJavaController controller = new MyJavaController();
-Jx.of(kodein).inject(controller);
+Jx.of(di).inject(controller);
 ----
 
 === Method injection
@@ -158,16 +158,16 @@ public class MyJavaController {
 }
 ----
 
-You know the drill, use `kodein.jx` in Kotlin or `Jx.of(kodein)` in Java the exact same way as for field injection.
+You know the drill, use `di.jx` in Kotlin or `Jx.of(di)` in Java the exact same way as for field injection.
 
 
 == Being specific
 
 === Qualifiers annotations
 
-`javax.inject` libraries use the concept of "qualifier annotations", which serves the same purpose as Kodein's tag system.
+`javax.inject` libraries use the concept of "qualifier annotations", which serves the same purpose as DI's tag system.
 
-The `@Named` annotation is a qualifier provided by default, and is supported by default in Kodein-JxInject.
+The `@Named` annotation is a qualifier provided by default, and is supported by default in Kodein-DI-JxInject.
 In Java, any field or method / constructor parameter annotated with `@Named("whatever")` will use the `String` value as tag.
 
 .Example: Java class which uses named injection.
@@ -183,14 +183,14 @@ public class MyJavaController {
 <1>: Field injection.
 <2>: Method injection.
 
-To inject the `connection` field, Kodein will essentially retrive as `kodein.instance<Connection>(tag = "SQL")`.
+To inject the `connection` field, DI will essentially retrieve as `di.instance<Connection>(tag = "SQL")`.
 
 For any other qualifier annotation, you need to provide a function that will transform a qualifier annotation to a tag.
 
 .Example: Registering a qualifier annotation
 [source, kotlin]
 ----
-val kodein = Kodein {
+val di = DI {
     import(jxInjectorModule)
 
     /* Other bindings */
@@ -198,7 +198,7 @@ val kodein = Kodein {
     jxQualifier<MyQualifier> { MyTag(it.value) } <1>
 }
 ----
-<1>: Transforms a `MyQualifier` qualifier annotation into a `MyTag` Kodein tag.
+<1>: Transforms a `MyQualifier` qualifier annotation into a `MyTag` DI tag.
 
 === Using erased bindings
 

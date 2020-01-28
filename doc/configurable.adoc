@@ -10,12 +10,12 @@ Salomon BRYS <salomon.brys@gmail.com>
 
 == Introduction
 
-The Configurable Kodein Plugin gives you :
+The Configurable DI Plugin gives you :
 
-- A `ConfigurableKodein` class that you can pass around and have different sections of your code configure its bindings.
-- A `Kodein.global` instance that allows to have "one true" source.
+- A `ConfigurableDI` class that you can pass around and have different sections of your code configure its bindings.
+- A `DI.global` instance that allows to have "one true" source.
 
-The Configurable Kodein Plugin is an extension that is not proposed  _by default_, this paradigm is in a separate module.
+The Configurable DI Plugin is an extension that is not proposed  _by default_, this paradigm is in a separate module.
 
 NOTE: Using or not using this is a matter of taste and is neither recommended nor discouraged.
 
@@ -66,110 +66,110 @@ IMPORTANT: Do not remove the `kodein-generic-js` (or `kodein-erased-js`) depende
 - Add the library to your project.
 
 
-== ConfigurableKodein
+== ConfigurableDI
 
 === Configuring
 
-You can import modules, extend kodein objects, or add bindings inside this `ConfigurableKodein` using `addImport`, `addExtend` and `addConfig`.
+You can import modules, extend DI objects, or add bindings inside this `ConfigurableDI` using `addImport`, `addExtend` and `addConfig`.
 
 [source, kotlin]
-.Example: adding a module inside the global Kodein
+.Example: adding a module inside the global DI
 ----
 fun test() {
-    val kodein = ConfigurableKodein()
+    val di = ConfigurableDI()
 
-    kodein.addModule(aModule)
-    kodein.addExtend(otherKodein)
+    di.addModule(aModule)
+    di.addExtend(otherDI)
 
-    kodein.addConfig {
+    di.addConfig {
         bind<Dice>() with provider { RandomDice(0, 5) }
         bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
     }
 }
 ----
 
-CAUTION: The `Kodein` underlying instance will effectively be constructed on first retrieval.
+CAUTION: The `DI` underlying instance will effectively be constructed on first retrieval.
          Once it is constructed, trying to configure it will throw an `IllegalStateException`.
 
 
 === Retrieving
 
-You can use a `ConfigurableKodein` object like any `Kodein` object.
+You can use a `ConfigurableDI` object like any `DI` object.
 
-CAUTION: Once you have retrieved the first value with a `ConfigurableKodein`, trying to configure it will throw an `IllegalStateException`.
+CAUTION: Once you have retrieved the first value with a `ConfigurableDI`, trying to configure it will throw an `IllegalStateException`.
 
 
 === Mutating
 
-A `ConfigurableKodein` can be mutable.
+A `ConfigurableDI` can be mutable.
 
 [source, kotlin]
-.Example: Creating a mutable ConfigurableKodein
+.Example: Creating a mutable ConfigurableDI
 ----
-val kodein = ConfigurableKodein(mutable = true)
+val di = ConfigurableDI(mutable = true)
 ----
 
 [WARNING]
 ====
-Using a mutable `ConfigurableKodein` can lead to *very bad code practice* and *very difficult bugs*. +
-Therefore, using a mutable `ConfigurableKodein` *IS discouraged*. +
-Note that every time a `ConfigurableKodein` is mutated, its cache is entirely flushed, meaning that it has a real impact on performance! +
+Using a mutable `ConfigurableDI` can lead to *very bad code practice* and *very difficult bugs*. +
+Therefore, using a mutable `ConfigurableDI` *IS discouraged*. +
+Note that every time a `ConfigurableDI` is mutated, its cache is entirely flushed, meaning that it has a real impact on performance! +
 Please use the mutating feature only if you truly need it, know what you're doing, and see no other way.
 ====
 
-A mutable `ConfigurableKodein` can be configured even _after first retrieval_.
+A mutable `ConfigurableDI` can be configured even _after first retrieval_.
 
 [source, kotlin]
-.Example: mutating a mutable ConfigurableKodein
+.Example: mutating a mutable ConfigurableDI
 ----
 fun test() {
-    val kodein = ConfigurableKodein(mutable = true)
+    val di = ConfigurableDI(mutable = true)
 
-    kodein.addModule(aModule)
+    di.addModule(aModule)
 
-    val ds: DataSource by kodein.instance()
+    val ds: DataSource by di.instance()
 
-    kodein.addModule(anotherModule) <1>
+    di.addModule(anotherModule) <1>
 }
 ----
-<1> This would have failed if the ConfigurableKodein was not mutable.
+<1> This would have failed if the ConfigurableDI was not mutable.
 
 You can also use the `clear` method to remove all bindings.
 
 
-== The god complex: One True Kodein
+== The god complex: One True DI
 
-Sometimes, you want one static Kodein for your entire application.
-E.g. you don't want to have to hold & pass a Kodein instance throughout your application.
+Sometimes, you want one static DI for your entire application.
+E.g. you don't want to have to hold & pass a DI instance throughout your application.
 
-For these cases, the `kodein-conf` module proposes a static `Kodein.global` instance.
+For these cases, the `di-conf` module proposes a static `DI.global` instance.
 
 [source,kotlin]
-.Example creating, configuring and using the global one true Kodein.
+.Example creating, configuring and using the global one true DI.
 ----
 fun test() {
-    Kodein.global.addModule(apiModule)
-    Kodein.global.addModule(dbModule)
+    DI.global.addModule(apiModule)
+    DI.global.addModule(dbModule)
 
-    val ds: DataSource by Kodein.global.instance()
+    val ds: DataSource by DI.global.instance()
 }
 ----
 
 [CAUTION]
 ====
-Just like any `ConfigurableKodein`, `Kodein.global` must be configured *before* being used for retrieval, or an `IllegalStateException` will be thrown.
-It is possible to set `Kodein.global` to be mutable by setting `Kodein.global.mutable = true` but it *must* be set *before* any retrieval!
+Just like any `ConfigurableDI`, `DI.global` must be configured *before* being used for retrieval, or an `IllegalStateException` will be thrown.
+It is possible to set `DI.global` to be mutable by setting `DI.global.mutable = true` but it *must* be set *before* any retrieval!
 ====
 
 
 === Being globally aware
 
-You can use the `GlobalKodeinAware` interface that needs no implementation to be aware of the global kodein.
+You can use the `GlobalDIAware` interface that needs no implementation to be aware of the global di.
 
 [source, kotlin]
-.Example: a KodeinGlobalAware class
+.Example: a DIGlobalAware class
 ----
-class MyManager() : KodeinGlobalAware {
+class MyManager() : DIGlobalAware {
     val ds: DataSource by instance()
 }
 ----

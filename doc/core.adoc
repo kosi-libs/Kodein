@@ -1,4 +1,4 @@
-= KODEIN DI: KOtlin DEpendency INjection
+= KODEIN-DI: Painless Kotlin Dependency Injection
 Salomon BRYS <salomon.brys@gmail.com>
 :toc: left
 :toc-position: left
@@ -14,15 +14,15 @@ image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kod
 === Description
 
 [.lead]
-Kodein is a very useful dependency injection / retrieval container, it is very easy to use and configure.
+Kodein-DI is a very useful dependency injection / retrieval container, it is very easy to use and configure.
 
-.Kodein allows you to:
+.Kodein-DI allows you to:
 - Lazily instantiate your dependencies when needed.
 - Stop caring about dependency initialization order.
 - Easily bind classes or interfaces to their instance, provider or factory.
 - Easily debug your dependency bindings and recursions.
 
-.Kodein is a good choice because:
+.Kodein-DI is a good choice because:
 - It is small, fast and optimized (makes extensive use of `inline`).
 - It proposes a very simple and readable declarative DSL.
 - It is not subject to type erasure (like Java).
@@ -38,13 +38,13 @@ Kodein makes it very easy to bind a type:
 [source,kotlin]
 .Example bindings:
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Dice>() with provider { RandomDice(0, 5) }
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 }
 ----
 
-Once bindings are declared, Kodein allows you to either inject or retrieve the dependencies for a class.
+Once bindings are declared, Kodein-DI allows you to either inject or retrieve the dependencies for a class.
 
 If you want your class to be unaware of dependency retrieval, then you can *inject* dependencies at construction:
 
@@ -54,7 +54,7 @@ If you want your class to be unaware of dependency retrieval, then you can *inje
 class Controller(private val ds: DataSource) {
     /*...*/
 }
-val controller by kodein.newInstance { Controller(instance()) }
+val controller by di.newInstance { Controller(instance()) }
 ----
 
 If you want your class to handle it's dependencies by itself, then you can have it easily *retrieve* them:
@@ -62,7 +62,7 @@ If you want your class to handle it's dependencies by itself, then you can have 
 [source,kotlin]
 .Using Kodein's dependency injection via construction:
 ----
-class Controller(override val kodein: Kodein): KodeinAware {
+class Controller(override val di: DI): DIAware {
     private val ds: DataSource by instance()
 }
 ----
@@ -70,7 +70,7 @@ class Controller(override val kodein: Kodein): KodeinAware {
 
 == Platform compatibility & Genericity
 
-Kodein is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
+Kodein-DI is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
 
 On the JVM & compatible (Android), you need to choose to use either the `erased` or the `generic` version. +
 On the Javascript and Native targets, only the `erased` version is available.
@@ -81,7 +81,7 @@ The difference is very simple: the `generic` version is *NOT* subject to type er
 
 Of course, it is a little bit more complicated! +
 To be able to circumvent the type erasure that's inherent to the JVM bytecode, the `generic` version uses a trix that makes heavy use of reflexivity.
-Because the `erased` version does not use that trix, handling generic types in Kodein are a lot more complex to use.
+Because the `erased` version does not use that trix, handling generic types in Kodein-DI are a lot more complex to use.
 
 [options="header"]
 |=======
@@ -96,7 +96,7 @@ Yes, #perfmatters. However, the humble opinion of the author is that:
 
 - There is a balance to be found between performance, readability, security and debuggability.
 - Optimisation is important *in critical path*, not _everywhere_.
-- Kodein is already pretty optimized ;)
+- Kodein-DI is already pretty optimized ;)
 - In the vast majority of cases, using the erased version will result in **no significant performance change** to your application, as IoC happens once and is not a performance pitfall!
 
 Therefore, please make sure that, using the erased version is right for your use case, before blindly using it ;).
@@ -176,7 +176,7 @@ NOTE: Use `kodein-di-generic-jvm` or `kodein-di-erased-jvm`.
 
 === JavaScript (Gradle)
 
-Because Kodein for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
+Because Kodein-DI for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
 
 * In a browser:
 ** as an AMD module (for example with RequireJS) (See index.html in the demo project).
@@ -206,7 +206,7 @@ dependencies {
 
 === Native (Gradle)
 
-NOTE: Kodein supports the following targets: +
+NOTE: Kodein-DI supports the following targets: +
       androidArm32, androidArm64, iosArm32, iosArm64, iosX64, linuxArm32Hfp, linuxMips32, linuxMipsel32, linuxX64, macosX64, mingwX64
 
 Kodein-DI uses the new gradle native dependency model.
@@ -243,16 +243,16 @@ kotlin {
 == Bindings: Declaring dependencies
 
 [source,kotlin]
-.Example: initialization of a Kodein container
+.Example: initialization of a DI container
 ----
-val kodein = Kodein {
+val di = DI {
 	/* Bindings */
 }
 ----
 
-Bindings are declared inside a Kodein initialization block.
+Bindings are declared inside a DI initialization block.
 
-NOTE: If you are using `kodein-di-generic-jvm`, Kodein *not* subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>`).
+NOTE: If you are using `kodein-di-generic-jvm`, Kodein-DI *not* subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>`).
 
 CAUTION: This is *NOT* the case when using `kodein-di-erased-jvm`, `kodein-erased-js` or `kodein-erased-native`.
          With the `erased` version by default, binding `List<Int>` and `List<String>` actually means binding `List<*>` twice.
@@ -271,7 +271,7 @@ All bindings can be tagged to allow you to bind different instances of the same 
 [source,kotlin]
 .Example: different Dice bindings
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Dice>() with ... // <1>
     bind<Dice>(tag = "DnD10") with ... // <2>
     bind<Dice>(tag = "DnD20") with ... // <2>
@@ -296,7 +296,7 @@ The provided function will be called *each time* you need an instance of the bou
 [source,kotlin]
 .Example: creates a new 6 sided Dice entry each time you need one
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Dice>() with provider { RandomDice(6) }
 }
 ----
@@ -310,7 +310,7 @@ Therefore, the provided function will be called *only once*: the first time an i
 [source,kotlin]
 .Example: creates a DataSource singleton that will be initialized on first access
 ----
-val kodein = Kodein {
+val di = DI {
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
 }
 ----
@@ -319,8 +319,8 @@ val kodein = Kodein {
 ==== Non-synced singleton
 
 By definition, there can be only one instance of a singleton, which means only one instance can be constructed.
-To achieve this certainty, Kodein synchronizes construction.
-This means that, when a singleton instance is requested and not available, Kodein uses a synchronization mutex to ensure that other request to the same type will wait for this instance to be constructed.
+To achieve this certainty, Kodein-DI synchronizes construction.
+This means that, when a singleton instance is requested and not available, Kodein-DI uses a synchronization mutex to ensure that other request to the same type will wait for this instance to be constructed.
 
 While this behaviour is the only way to ensure the singleton's correctness, it is also costly (due to the mutex) and degrades startup performance.
 
@@ -329,7 +329,7 @@ If you need to improve startup performance, _if you know what you are doing_, yo
 [source,kotlin]
 .Example: creates a DataSource non synced singleton
 ----
-val kodein = Kodein {
+val di = DI {
     bind<DataSource>() with singleton(sync = false) { SqliteDS.open("path/to/file") }
 }
 ----
@@ -343,13 +343,13 @@ Using `sync = false` means that:
 
 ==== Eager singleton
 
-This is the same as a regular singleton, except that the provided function will be called as soon as the Kodein instance is created and all bindings are defined.
+This is the same as a regular singleton, except that the provided function will be called as soon as the DI instance is created and all bindings are defined.
 
 [source,kotlin]
 .Example: creates a DataSource singleton that will be initialized as soon as the binding block ends
 ----
-val kodein = Kodein {
-    // The SQLite connection will be opened as soon as the kodein instance is ready
+val di = DI {
+    // The SQLite connection will be opened as soon as the di instance is ready
     bind<DataSource>() with eagerSingleton { SqliteDS.open("path/to/file") }
 }
 ----
@@ -363,7 +363,7 @@ The provided function will be called *each time* you need an instance of the bou
 [source,kotlin]
 .Example: creates a new Dice each time you need one, according to an Int representing the number of sides
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
 }
 ----
@@ -379,7 +379,7 @@ A factory can take multiple (up to 5) arguments:
 [source,kotlin]
 .Example: creates a new Dice each time you need one, according to an Int representing the number of sides
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Dice>() with factory { startNumber: Int, sides: Int -> RandomDice(sides) }
 }
 ----
@@ -395,7 +395,7 @@ Thus this mechanism will be deprecate soon. So we highly recommend that you migr
 ----
 data class DiceParams(val startNumber: Int, val sides: Int)
 
-val kodein = Kodein {
+val di = DI {
     bind<Dice>() with factory { params: DiceParams -> RandomDice(params) }
 }
 ----
@@ -409,7 +409,7 @@ In other words, for a given argument, the first time a multiton is called with t
 [source,kotlin]
 .Example: creates one random generator for each value
 ----
-val kodein = Kodein {
+val di = DI {
     bind<RandomGenerator>() with multiton { max: Int -> SecureRandomGenerator(max) }
 }
 ----
@@ -423,7 +423,7 @@ Just like a singleton, a multiton synchronization can be disabled:
 [source,kotlin]
 .Example: non-synced multiton
 ----
-val kodein = Kodein {
+val di = DI {
     bind<RandomGenerator>(sync = false) with multiton { max: Int -> SecureRandomGenerator(max) }
 }
 ----
@@ -437,7 +437,7 @@ A referenced multiton is an object that is guaranteed to be single for the same 
 A referenced singleton or multiton needs a "reference maker" in addition to the classic construction function that determines the type of reference that will be used.
 
 [.lead]
-Kodein comes with three reference makers for the JVM:
+Kodein-DI comes with three reference makers for the JVM:
 
 
 ==== JVM: Soft & weak
@@ -450,7 +450,7 @@ Therefore, the provided function *may or may not* be called multiple times durin
 [source,kotlin]
 .Example: creates a Cache object that will exist only once at a given time
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Map>() with singleton(ref = softReference) { WorldMap() } <1>
     bind<Client>() with singleton(ref = weakReference) { id -> clientFromDB(id) } <2>
 }
@@ -469,7 +469,7 @@ Therefore, the provided function will be called *once per thread* that needs the
 [source,kotlin]
 .Example: creates a Cache object that will exist once per thread
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Cache>() with singleton(ref = threadLocal) { LRUCache(16 * 1024) }
 }
 ----
@@ -486,7 +486,7 @@ This binds a type to an instance that *already exist*.
 [source,kotlin]
 .Example: a DataSource binding to an already existing instance.
 ----
-val kodein = Kodein {
+val di = DI {
     bind<DataSource>() with instance(SqliteDataSource.open("path/to/file")) // <1>
 }
 ----
@@ -503,7 +503,7 @@ NOTE: Constants are always <<tagged-bindings,tagged>>.
 [source,kotlin]
 .Example: two constants
 ----
-val kodein = Kodein {
+val di = DI {
     constant(tag = "maxThread") with 8 // <1>
     constant(tag = "serverURL") with "https://my.server.url" // <1>
 }
@@ -522,7 +522,7 @@ For this use case, you can transform any `bind<Type>() with ...` to `bind() from
 [source,kotlin]
 .Example: direct bindings
 ----
-val kodein = Kodein {
+val di = DI {
     bind() from singleton { RandomDice(6) }
     bind("DnD20") from provider { RandomDice(20) }
     bind() from instance(SqliteDataSource.open("path/to/file"))
@@ -540,13 +540,13 @@ NOTE: If you are using Kodein/Native, because of https://github.com/JetBrains/ko
 
 === Subtypes bindings
 
-Kodein allows you register a "subtype bindings factory".
+Kodein-DI allows you register a "subtype bindings factory".
 These are big words for a simple concept that's best explained with an example:
 
 [source,kotlin]
 .Example: direct bindings
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Controller>().subtypes() with { type ->
         when (type.jvmType) { <1>
             MySpecialController::class.java -> singleton { MySpecialController() }
@@ -557,14 +557,14 @@ val kodein = Kodein {
 ----
 <1> As `type` is a `TypeToken<*>`, you can use `.jvmType` to get the JVM type (e.g. `Class` or `ParameterizedType`).
 
-In essence, `bind<Whatever>().subtypes() with { type -> binding }` allows you to register, in Kodein, a binding factory that will be called for subtypes of the provided type.
+In essence, `bind<Whatever>().subtypes() with { type -> binding }` allows you to register, in Kodein-DI, a binding factory that will be called for subtypes of the provided type.
 
 
 === Transitive dependencies
 
 With those lazily instantiated dependencies, a dependency (very) often needs another dependency.
 Such classes can have their dependencies passed to their constructor.
-Thanks to Kotlin's _killer_ type inference engine, Kodein makes retrieval of transitive dependencies really easy.
+Thanks to Kotlin's _killer_ type inference engine, Kodein-DI makes retrieval of transitive dependencies really easy.
 
 [source, kotlin]
 .Example: a class that needs transitive dependencies
@@ -579,7 +579,7 @@ It is really easy to bind this `RandomDice` with its transitive dependencies, by
 [source, kotlin]
 .Example: bindings of a Dice and of its transitive dependencies
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Dice>() with singleton { Dice(instance(), instance(tag = "max")) } // <1>
 
     bind<Random>() with provider { SecureRandom() } // <2>
@@ -602,7 +602,7 @@ Maybe you need a dependency to use one of its functions to create the bound type
 [source, kotlin]
 .Example: using a DataSource to create a Connection.
 ----
-val kodein = Kodein {
+val di = DI {
     bind<DataSource>() with singleton { MySQLDataSource() }
     bind<Connection>() with provider { instance<DataSource>().openConnection() } <1>
 }
@@ -612,16 +612,16 @@ val kodein = Kodein {
 
 === Being responsible for its own retrieval
 
-If the bound class is <<kodein-aware,KodeinAware>>, you can pass the `kodein` object to the class so it can itself use the Kodein container to retrieve its own dependencies.
+If the bound class is <<di-aware,DIAware>>, you can pass the `di` object to the class so it can itself use the DI container to retrieve its own dependencies.
 
 [source, kotlin]
 .Example: bindings of Manager that is responsible for retrieving its own dependencies
 ----
-val kodein = Kodein {
-    bind<Manager>() with singleton { ManagerImpl(kodein) } // <1>
+val di = DI {
+    bind<Manager>() with singleton { ManagerImpl(di) } // <1>
 }
 ----
-<1> ManagerImpl is given a Kodein instance.
+<1> ManagerImpl is given a DI instance.
 
 
 == Bindings separation
@@ -630,33 +630,33 @@ val kodein = Kodein {
 
 ==== Definition
 
-Kodein allows you to export your bindings in modules.
+Kodein-DI allows you to export your bindings in modules.
 It is very useful to have separate modules defining their own bindings instead of having only one central binding definition.
-A module is an object that you can construct the exact same way as you construct a Kodein instance.
+A module is an object that you can construct the exact same way as you construct a DI instance.
 
 
 [source, kotlin]
 .Example: a simple module
 ----
-val apiModule = Kodein.Module(name = "API") {
+val apiModule = DI.Module(name = "API") {
     bind<API>() with singleton { APIImpl() }
     /* other bindings */
 }
 ----
 
-Then, in your Kodein binding block:
+Then, in your DI binding block:
 
 [source, kotlin]
 .Example: imports the module
 ----
-val kodein = Kodein {
+val di = DI {
     import(apiModule)
     /* other bindings */
 }
 ----
 
-NOTE: Modules are *definitions*, they will re-declare their bindings in each Kodein instance you use.
-      If you create a module that defines a singleton and import that module into two different Kodein instances, then the singleton object will exist twice: once in each Kodein instance.
+NOTE: Modules are *definitions*, they will re-declare their bindings in each DI instance you use.
+      If you create a module that defines a singleton and import that module into two different DI instances, then the singleton object will exist twice: once in each DI instance.
 
 
 [[module-uniqueness]]
@@ -664,10 +664,10 @@ NOTE: Modules are *definitions*, they will re-declare their bindings in each Kod
 
 Each module name should only be imported once.
 
-If a second module with the name of an already imported module is imported, then Kodein will fail.
+If a second module with the name of an already imported module is imported, then Kodein-DI will fail.
 
 However, you cannot always ensure that every module name is unique: you may need to import modules that are defined outside of your code.
-Kodein offers two ways to mitigate that:
+Kodein-DI offers two ways to mitigate that:
 
 1. Rename a module: +
    Use when you are importing a module whose name already exists.
@@ -675,7 +675,7 @@ Kodein offers two ways to mitigate that:
 [source, kotlin]
 .Example: imports a renamed module
 ----
-val kodein = Kodein {
+val di = DI {
     import(apiModule.copy(name = "otherAPI"))
 }
 ----
@@ -686,7 +686,7 @@ val kodein = Kodein {
 [source, kotlin]
 .Example: imports a module with a prefix for sub-modules
 ----
-val kodein = Kodein {
+val di = DI {
     import(apiModule.copy(prefix = "otherAPI-"))
 }
 ----
@@ -695,14 +695,14 @@ val kodein = Kodein {
 ==== Import once
 
 You may define a module which you know depends on another module, so it would be great to import that dependency inside the module that has the dependency.
-However, each module can only be imported once, so if every module that depends on another module imports it, Kodein will fail at the second module that imports it.
+However, each module can only be imported once, so if every module that depends on another module imports it, Kodein-DI will fail at the second module that imports it.
 
-To support this, Kodein offers `importOnce`: it imports the module if no module with that name was previously imported.
+To support this, Kodein-DI offers `importOnce`: it imports the module if no module with that name was previously imported.
 
 [source, kotlin]
 .Example: importing a module only once
 ----
-val appModule = Kodein.Module {
+val appModule = DI.Module {
     importOnce(apiModule)
 }
 ----
@@ -710,24 +710,24 @@ val appModule = Kodein.Module {
 
 === Extension (composition)
 
-Kodein allows you to create a new Kodein instance by extending an existing one.
+Kodein-DI allows you to create a new DI instance by extending an existing one.
 
 [source, kotlin]
-.Example: extends an already existing Kodein instance
+.Example: extends an already existing DI instance
 ----
-val subKodein = Kodein {
-    extend(appKodein)
+val subDI = DI {
+    extend(appDI)
     /* other bindings */
 }
 ----
 
-NOTE: This *preserves bindings*, meaning that a singleton in the parent Kodein will continue to exist only once.
-      Both parent and child Kodein objects will give the same instance.
+NOTE: This *preserves bindings*, meaning that a singleton in the parent DI will continue to exist only once.
+      Both parent and child DI objects will give the same instance.
 
 
 === Overriding
 
-By default, overriding a binding is not allowed in Kodein.
+By default, overriding a binding is not allowed in Kodein-DI.
 That is because accidentally binding twice the same (class,tag) to different instances/providers/factories can cause real headaches to debug.
 
 However, when intended, it can be really interesting to override a binding, especially when creating a testing environment.
@@ -736,7 +736,7 @@ You can override an existing binding by specifying explicitly that it is an over
 [source, kotlin]
 .Example: binds twice the same type, the second time explitly specifying an override
 ----
-val kodein = Kodein {
+val di = DI {
     bind<API>() with singleton { APIImpl() }
     /* ... */
     bind<API>(overrides = true) with singleton { OtherAPIImpl() }
@@ -749,7 +749,7 @@ You can allow a module to override some of your bindings when you import it (the
 [source, kotlin]
 .Example: imports a module and giving it the right to override existing bindings.
 ----
-val kodein = Kodein {
+val di = DI {
     /* ... */
     import(testEnvModule, allowOverride = true)
 }
@@ -763,7 +763,7 @@ Those cases should be rare and you should know what you are doing.
 [source, kotlin]
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
-val testModule = Kodein.Module(name = "test", allowSilentOverride = true) {
+val testModule = DI.Module(name = "test", allowSilentOverride = true) {
     bind<EmailClient>() with singleton { MockEmailClient() } <1>
 }
 ----
@@ -775,7 +775,7 @@ This is useful if you want to "enhance" a binding (for example, using the decora
 [source, kotlin]
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
-val testModule = Kodein.Module(name = "test") {
+val testModule = DI.Module(name = "test") {
     bind<Logger>(overrides = true) with singleton { FileLoggerWrapper("path/to/file", overriddenInstance()) } <1>
 }
 ----
@@ -789,12 +789,12 @@ Let's consider the following code :
 [source, kotlin]
 .Example: Mixing overriding & extension
 ----
-val parent = Kodein {
+val parent = DI {
     bind<Foo>() with provider { Foo1() }
     bind<Bar>() with singleton { Bar(foo = instance<Foo>()) }
 }
 
-val child = Kodein {
+val child = DI {
     extend(parent)
     bind<Foo>(overrides = true) with provider { Foo2() }
 }
@@ -803,7 +803,7 @@ val foo = child.instance<Bar>().foo
 ----
 
 In this example, the `foo` variable will be of type `Foo1`.
-Because the `Bar` binding is a `singleton` and is declared in the `parent` Kodein, it *does not have access to bindings declared in `child`.*
+Because the `Bar` binding is a `singleton` and is declared in the `parent` Kodein-DI, it *does not have access to bindings declared in `child`.*
 In this example, both `parent.instance<Bar>().foo` and `child.instance<Bar>().foo` will yield a `Foo1` object.
 
 NOTE: This is because `Bar` is bound to a `singleton`, the first access would define the container used (`parent` or `child`).
@@ -816,7 +816,7 @@ If you want the `Bar` singleton to have access to the overridden `Foo` binding, 
 [source, kotlin]
 .Example: Copying the bar binding into the child container
 ----
-val child = Kodein {
+val child = DI {
     extend(parent, copy = Copy {
         copy the binding<Bar>() <1>
     })
@@ -832,11 +832,11 @@ If the binding you need to copy is bound by a context (such as a scoped singleto
 [source, kotlin]
 .Example: Copying a tagged scoped singleton
 ----
-val parent = Kodein {
+val parent = DI {
     bind<Session>(tag = "req") with scoped(requestScope).singleton { context.session() }
 }
 
-val child = Kodein {
+val child = DI {
     extend(parent, copy = Copy {
         copy the binding<Session>() with scope(requestScope) and tag("req")
     })
@@ -851,7 +851,7 @@ You can also copy all bindings that matches a particular definition :
 [source, kotlin]
 .Example: Copying all that matches
 ----
-val child = Kodein {
+val child = DI {
     extend(parent, copy = Copy {
         copy all binding<String>() <1>
         copy all scope(requestScope) <2>
@@ -866,7 +866,7 @@ Finally, you can simply copy *all* bindings:
 [source, kotlin]
 .Example: Copying all
 ----
-val child = Kodein {
+val child = DI {
     extend(parent, copy = Copy.All)
 }
 ----
@@ -876,7 +876,7 @@ Or you can decide that none are copied (if you do want existing bindings to have
 [source, kotlin]
 .Example: Copying none
 ----
-val child = Kodein {
+val child = DI {
     extend(parent, copy = Copy.None)
 }
 ----
@@ -887,7 +887,7 @@ val child = Kodein {
 [source, kotlin]
 .Example bindings that are used throughout the chapter:
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
     bind<Random>() with provider { SecureRandom() }
@@ -915,11 +915,11 @@ When dependencies are *injected*, the class is _provided_ its dependencies at co
 When dependencies are *retrieved*, the class is _responsible_ for getting its own dependencies.
 
 Using dependency *injection* is a bit more cumbersome, but your classes are "pure": they are unaware of the dependency container.
-Using dependency *retrieval* is easier (and allows more tooling), but it does binds your classes to the Kodein API.
+Using dependency *retrieval* is easier (and allows more tooling), but it does binds your classes to the Kodein-DI API.
 
 Finally, in retrieval, *everything is lazy by default*, while there can be no lazy-loading using injection.
 
-TIP: If you are developing a library, then you probably should use dependency *injection*, to avoid forcing the users of your library to use Kodein as well. +
+TIP: If you are developing a library, then you probably should use dependency *injection*, to avoid forcing the users of your library to use Kodein-DI as well. +
      If you are developing an application, then you should consider using dependency *retrieval*, as it is easier to use and provides more tooling.
 
 
@@ -952,7 +952,7 @@ instance(tag = "whatever").
 To use dependency injection,
 
 1. Declare your dependencies in the constructor of your classes.
-2. Use Kodein's `newInstance` method to create an object of such class.
+2. Use Kodein-DI's `newInstance` method to create an object of such class.
 
 
 ==== Simple case
@@ -966,11 +966,11 @@ class MainController(val ds: DataSource, val rnd: Random) { /*...*/ }
 [source, kotlin]
 .Example: Creating a MainController by injecting its dependencies.
 ----
-val controller by kodein.newInstance { MainController(instance(), instance(tag = "whatever")) } <1>
+val controller by di.newInstance { MainController(instance(), instance(tag = "whatever")) } <1>
 ----
 <1> Note the use of the `instance` function that will inject the correct dependency.
 
-WARNING: When injecting a type that was not bound, a `Kodein.NotFoundException` will be thrown.
+WARNING: When injecting a type that was not bound, a `DI.NotFoundException` will be thrown.
 
 If you are not sure (or simply do not know) if the type has been bound, you can use `*OrNull` methods.
 
@@ -984,7 +984,7 @@ the arguments must be wrapped inside a *data class*:
 .Example: Creating a FileController by injecting a multi-argument bound dependency.
 ----
 data class ControllerParams(val path: String, val timeout: Int)
-val controller by kodein.newInstance { FileController(instance(args = ControllerParams("path/to/file", 0))) }
+val controller by di.newInstance { FileController(instance(args = ControllerParams("path/to/file", 0))) }
 ----
 
 
@@ -1001,7 +1001,7 @@ class RollController(val dice: Dice) { /*...*/ }
 [source, kotlin]
 .Example: Creating a RollController by injecting its dependency.
 ----
-val controller by kodein.newInstance { RollController(instance(arg = 6)) }
+val controller by di.newInstance { RollController(instance(arg = 6)) }
 ----
 
 Note that if you want to bind a factory with multiple argument, you need to use a *data class* to pass multiple arguments:
@@ -1010,7 +1010,7 @@ Note that if you want to bind a factory with multiple argument, you need to use 
 .Example: Creating a multi-argument RollController by injecting its dependency.
 ----
 data class Params(val arg1: Int, val arg2: Int)
-val controller by kodein.newInstance { RollController(instance(arg = Params(60, 6))) }
+val controller by di.newInstance { RollController(instance(arg = Params(60, 6))) }
 ----
 
 TIP: The `arg` argument should always be named.
@@ -1024,7 +1024,7 @@ For this, you can use the `on` method:
 [source, kotlin]
 .Example: Setting a global context.
 ----
-val controller by kodein.on(context = myContext).newInstance { OtherController(instance(arg = 6), instance()) }
+val controller by di.on(context = myContext).newInstance { OtherController(instance(arg = 6), instance()) }
 ----
 
 TIP: The `context` argument should always be named.
@@ -1035,12 +1035,12 @@ When that happens, you can define a lazy context that will be accessed only when
 [source, kotlin]
 .Example: Setting a global context.
 ----
-val controller by kodein.on { requireActivity() } .newInstance { OtherController(instance(arg = 6), instance()) }
+val controller by di.on { requireActivity() } .newInstance { OtherController(instance(arg = 6), instance()) }
 ----
 
 
 
-=== Retrieval: the Kodein container
+=== Retrieval: the DI container
 
 ==== everything is lazy by default!
 
@@ -1055,38 +1055,38 @@ This allows:
 If you want "direct" retrieval, well, there's a section named <<direct-retrieval,direct retrieval>>, how about that!
 
 
-==== Kodein methods
+==== Kodein-DI methods
 
-You can retrieve a bound type via a Kodein instance.
+You can retrieve a bound type via a DI instance.
 
 [source, kotlin]
 .Example: retrieving bindings
 ----
-val diceFactory: (Int) -> Dice by kodein.factory()
-val dataSource: DataSource by kodein.instance()
-val randomProvider: () -> Random by kodein.provider()
-val answerConstant: String by kodein.instance(tag = "answer")
+val diceFactory: (Int) -> Dice by di.factory()
+val dataSource: DataSource by di.instance()
+val randomProvider: () -> Random by di.provider()
+val answerConstant: String by di.instance(tag = "answer")
 ----
 
 Note the use of the `by`.
-Kodein uses https://kotlinlang.org/docs/reference/delegated-properties.html::[delegated properties] to enable:
+Kodein-DI uses https://kotlinlang.org/docs/reference/delegated-properties.html::[delegated properties] to enable:
 
 - Lazy loading
 - Accessing the receiver
 
 NOTE: When using a provider function (`() -> T`), whether this function will give each time a new instance or the same depends on the binding.
 
-WARNING: When asking for a type that was not bound, a `Kodein.NotFoundException` will be thrown.
+WARNING: When asking for a type that was not bound, a `DI.NotFoundException` will be thrown.
 
 If you are not sure (or simply do not know) if the type has been bound, you can use `*OrNull` methods.
 
 [source, kotlin]
 .Example: retrieving bindings that may not have been bound
 ----
-val diceFactory: ((Int) -> Dice)? by kodein.factoryOrNull()
-val dataSource: DataSource? by kodein.instanceOrNull()
-val randomProvider: (() -> Random)? by kodein.providerOrNull()
-val answerConstant: String? by kodein.instanceOrNull(tag = "answer")
+val diceFactory: ((Int) -> Dice)? by di.factoryOrNull()
+val dataSource: DataSource? by di.instanceOrNull()
+val randomProvider: (() -> Random)? by di.providerOrNull()
+val answerConstant: String? by di.instanceOrNull(tag = "answer")
 ----
 
 
@@ -1097,7 +1097,7 @@ If you bound <<constant-binding,constants>>, you can easily retrieve them with t
 [source, kotlin]
 .Example: retrieving a constant
 ----
-val answer: String by kodein.constant()
+val answer: String by di.constant()
 ----
 
 
@@ -1108,7 +1108,7 @@ If you used <<tagged-bindings,tagged bindings>>, if the tag is a `String` and th
 [source, kotlin]
 .Example: retrieving a named binding
 ----
-val answer: String by kodein.named.instance()
+val answer: String by di.named.instance()
 ----
 
 
@@ -1120,7 +1120,7 @@ When retrieving a value that was bound with a <<multi-argument-factories,multi-a
 .Example: Creating a MainController by injecting a multi-argument bound dependency.
 ----
 data class FileParams(val path: String, val maxSize: Int)
-val fileAccess: FileAccess by kodein.instance(args = FileParams("/path/to/file", 0))
+val fileAccess: FileAccess by di.instance(args = FileParams("/path/to/file", 0))
 ----
 
 ===== Factory retrieval
@@ -1130,7 +1130,7 @@ Instead of retrieving a value, you can retrieve a factory, that can call as much
 [source, kotlin]
 .Example: Retrieving factory.
 ----
-val f1: (Int) -> Int by kodein.factory() <1>
+val f1: (Int) -> Int by di.factory() <1>
 ----
 <1> retrieving a factory that takes 1 argument (Int) and return an Int
 
@@ -1141,8 +1141,8 @@ You can retrieve a provider or an instance from a factory bound type by using th
 [source, kotlin]
 .Example: currying factories
 ----
-val sixSideDiceProvider: () -> Dice by kodein.provider(arg = 6)
-val twentySideDice: Dice by kodein.instance(arg = 20)
+val sixSideDiceProvider: () -> Dice by di.provider(arg = 6)
+val twentySideDice: Dice by di.instance(arg = 20)
 ----
 
 Note that if you bound a factory with multiple arguments, you need to use a *data class* to pass multiple arguments:
@@ -1151,7 +1151,7 @@ Note that if you bound a factory with multiple arguments, you need to use a *dat
 .Example: Creating a multi-argument Dice by injecting its dependency.
 ----
 data class DiceParams(val startNumber: Int, val sides: Int)
-val sixtyToSixtySixDice: Dice by kodein.instance(arg = DiceParams(60, 6)) <1>
+val sixtyToSixtySixDice: Dice by di.instance(arg = DiceParams(60, 6)) <1>
 ----
 <1> Bonus points if you can say the variable name 5 times in less than 5 seconds ;)
 
@@ -1165,16 +1165,16 @@ Whether you are using a scoped singleton/multiton or using a context in the targ
 [source, kotlin]
 .Example: Getting a Session after setting the Request context.
 ----
-val session: Session by kodein.on(context = request).instance()
+val session: Session by di.on(context = request).instance()
 ----
 
-If you retrieve multiple dependencies all using the same context, you can create a new `Kodein` object with the context set:
+If you retrieve multiple dependencies all using the same context, you can create a new `DI` object with the context set:
 
 [source, kotlin]
-.Example: creating a Kodein object with the Request context.
+.Example: creating a DI object with the Request context.
 ----
-val reqKodein = kodein.on(context = request)
-val session: Session by reqKodein.instance()
+val reqDI = di.on(context = request)
+val session: Session by reqDI.instance()
 ----
 
 TIP: The `context` argument should always be named.
@@ -1191,22 +1191,22 @@ This mechanism is called a Trigger.
 [source, kotlin]
 .Example: using a trigger.
 ----
-val trigger = KodeinTrigger()
-val dice: Dice by kodein.on(trigger = trigger).instance()
+val trigger = DITrigger()
+val dice: Dice by di.on(trigger = trigger).instance()
 /*...*/
 trigger.trigger() <1>
 ----
 <1> Retrieval happens now.
 
 You can, of course, assign multiple properties to the same trigger.
-You can also create a Kodein object that has a given trigger by default:
+You can also create a DI object that has a given trigger by default:
 
 [source, kotlin]
-.Example: creating a Kodein object with a trigger.
+.Example: creating a DI object with a trigger.
 ----
-val trigger = KodeinTrigger()
-val injectKodein = kodein.on(trigger = trigger)
-val dice: Dice by injectKodein.instance()
+val trigger = DITrigger()
+val injectDI = di.on(trigger = trigger)
+val dice: Dice by injectDI.instance()
 /*...*/
 trigger.trigger()
 ----
@@ -1219,108 +1219,108 @@ NOTE: A trigger allows you to "force" retrieval.
 
 ==== Lazy access
 
-Kodein proposes a `LazyKodein` object that allows you to lazily access the Kodein object only when needed.
+Kodein-DI proposes a `LazyDI` object that allows you to lazily access the DI object only when needed.
 This is useful if:
 
-- You need to defined a lazily retrieved dependency before having access to a Kodein container.
-- You don't know if you'll ever need to access a Kodein object.
+- You need to defined a lazily retrieved dependency before having access to a DI container.
+- You don't know if you'll ever need to access a DI object.
 
-For this, you can use a `LazyKodein`:
+For this, you can use a `LazyDI`:
 
 [source, kotlin]
-.Example: Using a LazyKodein.
+.Example: Using a LazyDI.
 ----
-val kodein = LazyKodein { /* access to a kodein instance */ }
-val ds: DataSource by kodein.instance()
+val di = LazyDI { /* access to a di instance */ }
+val ds: DataSource by di.instance()
 /*...*/
 dice.roll() <1>
 ----
-<1> Only then will the Kodein instance will itself be retrieved.
+<1> Only then will the DI instance will itself be retrieved.
 
-Note that you can also lazily create a `Kodein` object so that the bindings definition function will only be called when the first retrieved property is needed:
+Note that you can also lazily create a `DI` object so that the bindings definition function will only be called when the first retrieved property is needed:
 
 [source, kotlin]
-.Example: Using a lazy Kodein.
+.Example: Using a lazy DI.
 ----
-val kodein by Kodein.lazy {
+val di by DI.lazy {
     bind<Env>() with instance(Env.getInstance())
 }
-val env: Env by kodein.instance()
+val env: Env by di.instance()
 /*...*/
 env.doSomething() <1>
 ----
-<1> Only then will the Kodein instance will itself be created, and the bindings definition function ran.
+<1> Only then will the DI instance will itself be created, and the bindings definition function ran.
 
 
 ==== Late init
 
-Kodein proposes a `LateInitKodein` that allows you to define a Kodein object _after_ some lazy retrieval:
+Kodein-DI proposes a `LateInitDI` that allows you to define a DI object _after_ some lazy retrieval:
 
 [source, kotlin]
-.Example: Using a LateInitKodein.
+.Example: Using a LateInitDI.
 ----
-val kodein = LateInitKodein()
-val env: Env by kodein.instance()
+val di = LateInitDI()
+val env: Env by di.instance()
 /*...*/
-kodein.baseKodein = /* access to a kodein instance */ <1>
+di.baseDI = /* access to a di instance */ <1>
 /*...*/
 env.doSomething() <2>
 ----
-<1> Setting the real Kodein object.
-<2> If this was run before setting `kodein.baseKodein`, an `UninitializedPropertyAccessException` would be thrown.
+<1> Setting the real DI object.
+<2> If this was run before setting `di.baseDI`, an `UninitializedPropertyAccessException` would be thrown.
 
 
 ==== All matches
 
-Kodein allows you to retrieve all instances that matches a given type:
+Kodein-DI allows you to retrieve all instances that matches a given type:
 
 [source, kotlin]
 .Example: all instances of Foo.
 ----
-val instances: List<Foo> by kodein.allInstances() <1>
+val instances: List<Foo> by di.allInstances() <1>
 ----
 <1> Will return all instances that are for bindings of sub-classes of `Foo`
 
 NOTE: Of course, `allProviders` and `allFactories` are also provided ;)
 
 
-[[kodein-aware]]
-=== Retrieval: being KodeinAware
+[[di-aware]]
+=== Retrieval: being DIAware
 
 ==== Simple retrieval
 
-You can have classes that implement the interface `KodeinAware`. +
+You can have classes that implement the interface `DIAware`. +
 Doing so has the benefit of getting a simpler syntax for retrieval.
 
 [source, kotlin]
-.Example: a KodeinAware class
+.Example: a DIAware class
 ----
-class MyManager(override val kodein: Kodein) : KodeinAware {
+class MyManager(override val di: DI) : DIAware {
     private val diceFactory: ((Int) -> Dice)? by factoryOrNull()
     private val dataSource: DataSource? by instanceOrNull()
     private val randomProvider: (() -> Random)? by providerOrNull()
     private val answerConstant: String? by instanceOrNull(tag = "answer")
-    private val sixSideDiceProvider: () -> Dice by kodein.provider(arg = 6)
-    private val twentySideDice: Dice by kodein.instance(arg = 20)
+    private val sixSideDiceProvider: () -> Dice by di.provider(arg = 6)
+    private val twentySideDice: Dice by di.instance(arg = 20)
 }
 ----
 
-All methods that are available to the Kodein container are available to a `KodeinAware` class.
+All methods that are available to the DI container are available to a `DIAware` class.
 
 
 ==== Class global context
 
-In a `KodeinAware` class, to define a context that's valid for the entire class, you can simply override the `kodeinContext` property:
+In a `DIAware` class, to define a context that's valid for the entire class, you can simply override the `diContext` property:
 
 [source, kotlin]
-.Example: a KodeinAware class with a context
+.Example: a DIAware class with a context
 ----
-class MyManager(override val kodein: Kodein) : KodeinAware {
-    override val kodeinContext = kcontext(whatever) <1>
+class MyManager(override val di: DI) : DIAware {
+    override val diContext = kcontext(whatever) <1>
     /*...*/
 }
 ----
-<1> Note the use of the `kcontext` function that creates a `KodeinContext` with the given value.
+<1> Note the use of the `diContext` function that creates a `DIContext` with the given value.
 
 NOTE: Using a global context does not forces you to use only bindings that are declared with this type of context.
       Because the default context is `Any?`, all non-contexted bindings will still be available with a global context set.
@@ -1329,10 +1329,10 @@ Sometimes, the context is not available directly at construction.
 When that happens, you can define a lazy context that will be accessed only when needed.
 
 [source, kotlin]
-.Example: a KodeinAware class with a context
+.Example: a DIAware class with a context
 ----
-class MyManager(override val kodein: Kodein) : KodeinAware {
-    override val kodeinContext = kcontext { requireActivity }
+class MyManager(override val di: DI) : DIAware {
+    override val diContext = kcontext { requireActivity }
     /*...*/
 }
 ----
@@ -1341,17 +1341,17 @@ class MyManager(override val kodein: Kodein) : KodeinAware {
 ==== Class global trigger
 
 If you want to have all dependency properties retrieved at once, you can use a class global trigger.
-Simply override the `kodeinTrigger` property:
+Simply override the `diTrigger` property:
 
 [source, kotlin]
-.Example: a KodeinAware class with a trigger
+.Example: a DIAware class with a trigger
 ----
-class MyManager(override val kodein: Kodein) : KodeinAware {
-    override val kodeinTrigger = KodeinTrigger()
+class MyManager(override val di: DI) : DIAware {
+    override val diTrigger = DITrigger()
     val ds: DataSource by instance()
     /*...*/
     fun onReady() {
-        kodeinTrigger.trigger() <1>
+        diTrigger.trigger() <1>
     }
 }
 ----
@@ -1360,48 +1360,48 @@ class MyManager(override val kodein: Kodein) : KodeinAware {
 
 ==== Lazy access
 
-Some classes (such as Android Activities) do not have access to a `Kodein` instance at the time of construction, but only later when they have been properly connected to their environment (Android context). +
-Because Kodein is lazy by default, this does not cause any issue: simply have the kodein property be lazy by itself:
+Some classes (such as Android Activities) do not have access to a `DI` instance at the time of construction, but only later when they have been properly connected to their environment (Android context). +
+Because DI is lazy by default, this does not cause any issue: simply have the `di` property be lazy by itself:
 
 [source, kotlin]
-.Example: an Activity class with a lazy-loaded kodein
+.Example: an Activity class with a lazy-loaded `di`
 ----
-class MyActivity : Activity(), KodeinAware {
-    override val kodein by lazy { (applicationContext as MyApplication).kodein }
+class MyActivity : Activity(), DIAware {
+    override val di by lazy { (applicationContext as MyApplication).di }
     val ds: DataSource by instance() <1>
 }
 ----
-<1> Because `ds` is lazily retrieved, access to the `kodein` property will only happen at first retrieval.
+<1> Because `ds` is lazily retrieved, access to the `di` property will only happen at first retrieval.
 
-NOTE: There is an official module to ease the use of Kodein in Android, you can read more about it on http://kodein.org/Kodein-DI/?{branch}/android[the dedicated document].
+NOTE: There is an official module to ease the use of DI in Android, you can read more about it on http://kodein.org/Kodein-DI/?{branch}/android[the dedicated document].
 
 
 ==== Lateinit
 
-Because everything is lazy and, in a KodeinAware class, the Kodein object is not accessed until needed, you can easily declare the `kodein` field as lateinit.
+Because everything is lazy and, in a DIAware class, the DI object is not accessed until needed, you can easily declare the `di` field as lateinit.
 
 [source, kotlin]
-.Example: an Activity class with a lateinit kodein
+.Example: an Activity class with a lateinit `di`
 ----
-class MyActivity : Activity(), KodeinAware {
-    override val lateinit kodein: Kodein
+class MyActivity : Activity(), DIAware {
+    override val lateinit di: DI
     val ds: DataSource by instance() <1>
     override fun onCreate(savedInstanceState: Bundle?) {
-        kodein = (applicationContext as MyApplication).kodein
+        di = (applicationContext as MyApplication).di
     }
 }
 ----
-<1> Because `ds` is lazily retrieved, access to the `kodein` property will only happen at first retrieval.
+<1> Because `ds` is lazily retrieved, access to the `di` property will only happen at first retrieval.
 
 
 ==== All matches
 
-Kodein allows you to retrieve all instances that matches a given type:
+Kodein-DI allows you to retrieve all instances that matches a given type:
 
 [source, kotlin]
 .Example: all instances of Foo.
 ----
-val instances: List<Foo> = dkodein.allInstances() <1>
+val instances: List<Foo> = di.allInstances() <1>
 ----
 <1> Will return all instances that are for bindings of sub-classes of `Foo`
 
@@ -1411,33 +1411,33 @@ NOTE: Of course, `allProviders` and `allFactories` are also provided ;)
 [[direct-retrieval]]
 === Retrieval: Direct
 
-If you don't want to use delegated properties, Kodein has you covered.
-Most of the features available to `Kodein` are available to `DKodein` (D is for Direct).
-`DKodein` allows you to directly get a new instance or dependency.
+If you don't want to use delegated properties, Kodein-DI has you covered.
+Most of the features available to `DI` are available to `DirectDI`.
+`DirectDI` allows you to directly get a new instance or dependency.
 
-However, because it is direct, `DKodein` does *NOT* feature:
+However, because it is direct, `DirectDI` does *NOT* feature:
 
 - Laziness: the instance/provider/factory is fetched at call time.
 - Receiver awareness: receiver is defined by the Kotlin's delegated properties mechanism.
 
 [source, kotlin]
-.Example: using a DKodein
+.Example: using a DirectDI
 ----
-val dk = kodein.direct
+val directDI = di.direct
 
-val ds: Datasource = dk.instance()
+val ds: Datasource = directDI.instance()
 
-val controller = dk.newInstance { MainController(instance(), instance(tag = "whatever")) }
+val controller = directDI.newInstance { MainController(instance(), instance(tag = "whatever")) }
 ----
 
 [TIP]
 ====
-If you only plan to use direct access, you can define your main kodein object to be a `DKodein`:
+If you only plan to use direct access, you can define your main di object to be a `DirectDI`:
 
 [source, kotlin]
-.Example: using a DKodein
+.Example: using a DirectDI
 ----
-val kodein = Kodein.direct { <1>
+val di = DI.direct { <1>
         /* bindings */
     }
 ----
@@ -1445,31 +1445,31 @@ val kodein = Kodein.direct { <1>
 ====
 
 
-==== Being DKodeinAware
+==== Being DirectDIAware
 
-Much like `Kodein` offers `KodeinAware`, `DKodein` offers `DKodeinAware`
+Much like `DI` offers `DIAware`, `DirectDI` offers `DirectDIAware`
 
 [source, kotlin]
-.Example: a DKodeinAware class
+.Example: a DirectDIAware class
 ----
-class MyManager(override val dkodein: DKodein) : DKodeinAware {
+class MyManager(override val directDI: DirectDI) : DirectDIAware {
     private val diceFactory: ((Int) -> Dice)? = factoryOrNull()
     private val dataSource: DataSource? = instanceOrNull()
     private val randomProvider: (() -> Random)? = providerOrNull()
     private val answerConstant: String? = instanceOrNull(tag = "answer")
-    private val sixSideDiceProvider: () -> Dice = kodein.provider(arg = 6)
-    private val twentySideDice: Dice = kodein.instance(arg = 20)
+    private val sixSideDiceProvider: () -> Dice = di.provider(arg = 6)
+    private val twentySideDice: Dice = di.instance(arg = 20)
 }
 ----
 
 
 ==== In Java
 
-While Kodein does not allow you to declare modules or dependencies in Java, it does allow you to retrieve dependencies via `DKodein`.
-Simply give the DKodein instance to your Java classes, use Kodein in Java with the `TT` static function:
+While Kodein-DI does not allow you to declare modules or dependencies in Java, it does allow you to retrieve dependencies via `DirectDI`.
+Simply give the DirectDI instance to your Java classes, use Kodein-DI in Java with the `TT` static function:
 
 [source, java]
-.Example: using Kodein in Java
+.Example: using Kodein-DI in Java
 ----
 import static org.kodein.di.TypesKt.TT;
 
@@ -1479,11 +1479,11 @@ public class JavaClass {
     private final Function0<Random> randomProvider;
     private final String answerConstant;
 
-    public JavaClass(DKodein kodein) {
-        diceFactory = kodein.Factory(TT(Integer.class), TT(Dice.class), null);
-        dataSource = kodein.Instance(TT(Datasource.class), null);
-        randomProvider = kodein.Provider(TT(Random.class), null);
-        answerConstant = kodein.Instance(TT(String.class), "answer");
+    public JavaClass(DirectDI di) {
+        diceFactory = di.Factory(TT(Integer.class), TT(Dice.class), null);
+        dataSource = di.Instance(TT(Datasource.class), null);
+        randomProvider = di.Provider(TT(Random.class), null);
+        answerConstant = di.Instance(TT(String.class), "answer");
     }}
 ----
 
@@ -1498,8 +1498,8 @@ Therefore, if you registered a generic Class binding such as `bind<List<String>>
 class JavaClass {
     private final List<String> list;
 
-    public JavaClass(TKodein kodein) {
-        list = kodein.Instance(TT(new TypeReference<List<String>>() {}), null);
+    public JavaClass(TypeDI di) {
+        list = di.Instance(TT(new TypeReference<List<String>>() {}), null);
     }
 }
 ----
@@ -1508,26 +1508,26 @@ class JavaClass {
 
 === Error messages
 
-By default, Kodein error messages contains the classes simple names (e.g. `View`), which makes it easily readable. +
+By default, Kodein-DI error messages contains the classes simple names (e.g. `View`), which makes it easily readable. +
 If you want the error to contain classes full names (e.g. `com.company.app.UserController.View`), you can set `fullDescriptionOnError`:
 
 [source, kotlin]
 .Example: showing qualified names in errors
 ----
-val kodein = Kodein {
+val di = DI {
     fullDescriptionOnError = true
 }
 ----
 
-If you are using multiple Kodein instances, you can set the default value `fullDescriptionOnError` for all subsequently created Kodein instances:
+If you are using multiple DI instances, you can set the default value `fullDescriptionOnError` for all subsequently created DI instances:
 
 [source, kotlin]
-.Example: showing qualified names in all kodein instances errors
+.Example: showing qualified names in all di instances errors
 ----
-Kodein.defaultFullDescriptionOnError = true
+DI.defaultFullDescriptionOnError = true
 ----
 
-CAUTION: `Kodein.defaultFullDescriptionOnError` must be set *before* creating a Kodein instance.
+CAUTION: `DI.defaultFullDescriptionOnError` must be set *before* creating a DI instance.
 
 
 == Using the environment
@@ -1556,7 +1556,7 @@ TIP: When in doubt, use a factory with an argument instead of a provider with a 
 [source, kotlin]
 .Example: binding in a context
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Writer>() with contexted<Request>.provider { context.response.writer } <1>
 }
 ----
@@ -1567,7 +1567,7 @@ val kodein = Kodein {
 
 [NOTE]
 ====
-Kodein provides only 1 scope by default, but:
+Kodein-DI provides only 1 scope by default, but:
 
 - It is easy to create your own scopes.
 - All `kodein-framework-*` modules provide more scopes that are specific to the target framework.
@@ -1584,7 +1584,7 @@ Therefore, the provided function will be called *once per session*.
 [source, kotlin]
 .Example: binding a User in a Session scope.
 ----
-val kodein = Kodein {
+val di = DI {
     bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) } <1>
 }
 ----
@@ -1595,7 +1595,7 @@ In this example, `SessionScope` is of type `Scope<Session>`, so to access this b
 [source, kotlin]
 .Example: binding in a context
 ----
-val user by kodein.on(session).instance()
+val user by di.on(session).instance()
 ----
 
 NOTE: Please read the <<scope-creation>> section if you want to create your own scopes.
@@ -1615,7 +1615,7 @@ If a value implements `ScopeCloseable`, it's `close` function will be called whe
 ====
 The `ScopeCloseable.close` method will only be called:
 
-- By scopes that explicitely *support* that feature (not all scopes do, all scopes provided by the Kodein Framework do *except WeakContextScope*).
+- By scopes that explicitely *support* that feature (not all scopes do, all scopes provided by the Kodein-DI Framework do *except WeakContextScope*).
 - If the value does *not* use `WeakRef` or `SoftRef` references. +
   If the value does, the close method _may or may not_ be called (it will be called if the reference has not expired).
 ====
@@ -1628,7 +1628,7 @@ Yes, you can...
 [source, kotlin]
 .Example: JVM scoped weak references.
 ----
-val kodein = Kodein {
+val di = DI {
     bind<User>() with scoped(requestScope).singleton(ref = weakReference) {
         instance<DataSource>().createUser(context.session.id)
     } <1>
@@ -1638,7 +1638,7 @@ val kodein = Kodein {
 
 ==== Weak Context Scope
 
-Kodein provides the `WeakContextScope` scope.
+Kodein-DI provides the `WeakContextScope` scope.
 This is a particular scope, as the context it holds on are weak references.
 
 CAUTION: WeakContextScope is *NOT* compatible with `ScopeCloseable`.
@@ -1648,7 +1648,7 @@ You can use this scope when it makes sense to have a scope on a context that is 
 [source, kotlin]
 .Example: controller scoped to an Activity with WeakContextScope.
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Controller>() with scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } <1>
 }
 ----
@@ -1674,7 +1674,7 @@ As each `Request` is associated with a `Session`, you can register a context tra
 [source, kotlin]
 .Example:
 ----
-val kodein = Kodein {
+val di = DI {
     bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) }
 
     registerContextTranslator { r: Request -> r.session }
@@ -1688,8 +1688,8 @@ This allows you to retrieve a `User` instance:
 [source, kotlin]
 .Example: retriving with a global context
 ----
-class MyController(override val kodein: Kodein, request: Request): KodeinAware {
-    override val kodeinContext = kcontext(request)
+class MyController(override val di: DI, request: Request): DIAware {
+    override val diContext = kcontext(request)
 
     val user: User by instance()
 }
@@ -1699,7 +1699,7 @@ class MyController(override val kodein: Kodein, request: Request): KodeinAware {
 [source, kotlin]
 .Example: retriving with a global context
 ----
-class MySpecialRequest(override val kodein: Kodein): Request(), KodeinAware {
+class MySpecialRequest(override val di: DI): Request(), DIAware {
     val user: User by instance()
 }
 ----
@@ -1714,7 +1714,7 @@ For example, if you are in a thread-based server where each request is assigned 
 [source, kotlin]
 .Example:
 ----
-val kodein = Kodein {
+val di = DI {
     bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) }
 
     registerContextFinder { ThreadLocalSession.get() }
@@ -1794,7 +1794,7 @@ In this simple example, when the session expires, then all of its associates req
 
 == Multi-binding
 
-Kodein allows multi bindings via a binding set.
+Kodein-DI allows multi bindings via a binding set.
 
 
 [[set-bindings]]
@@ -1810,7 +1810,7 @@ To have multiple bindings in a set, you need to:
 [source,kotlin]
 .Example creating a set of `Configuration` bindings.
 ----
-val kodein = Kodein {
+val di = DI {
     bind() from setBinding<Configuration>() <1>
 
     bind<Configuration>().inSet() with provider { FooConfiguration() } <2>
@@ -1833,7 +1833,7 @@ You can also bind multiple bindings with arguments (such as `factory` or `multit
 [source,kotlin]
 .Example creating a set of `Result` bindings.
 ----
-val kodein = Kodein {
+val di = DI {
     bind() from argSetBinding<Query, Result>()
 
     bind<Result>().inSet() with factory { q: Query -> Foo.query(q) }
@@ -1850,7 +1850,7 @@ Therefore, you need to retrieve a `Set`:
 [source,kotlin]
 .Example retrieving set of `Configuration` with the generic version.
 ----
-val configurations: Set<Configuration> by kodein.instance()
+val configurations: Set<Configuration> by di.instance()
 ----
 
 if you are using the `erased` version, you need to retrieve thusly:
@@ -1858,13 +1858,13 @@ if you are using the `erased` version, you need to retrieve thusly:
 [source,kotlin]
 .Example retrieving set of `Configuration` with the erased version.
 ----
-val configurations: Set<Configuration> by kodein.Instance(erasedSet())
+val configurations: Set<Configuration> by di.Instance(erasedSet())
 ----
 
 
 === In a map
 
-Kodein does not directly support map multi-binding.
+Kodein-DI does not directly support map multi-binding.
 However, it is very easy to create a binding map by using a binding set.
 
 First, create the following primitive:
@@ -1881,7 +1881,7 @@ Then, bind with keys:
 [source,kotlin]
 .Example binding as in a map multibinding.
 ----
-val kodein = Kodein {
+val di = DI {
     bind() from setBinding<ConfigurationEntry>()
 
     bind<ConfigurationEntry>().inSet() with factory { "foo" to FooConfiguration() }
@@ -1894,7 +1894,7 @@ Finally, retrieve the map:
 [source,kotlin]
 .Example retrieving a map multibinding.
 ----
-val configurations by kodein.instance<ConfigurationEntries>().toMap()
+val configurations by di.instance<ConfigurationEntries>().toMap()
 ----
 
 
@@ -1903,11 +1903,11 @@ val configurations by kodein.instance<ConfigurationEntries>().toMap()
 
 === Print bindings
 
-You can easily print bindings with `println(kodein.container.tree.bindings.description)`.
+You can easily print bindings with `println(di.container.tree.bindings.description)`.
 
 Here's an example of what this prints:
 
-.An example of kodein.container.tree.bindings.description:
+.An example of di.container.tree.bindings.description:
 ----
         bind<Dice>() with factory { Int -> RandomDice }
         bind<DataSource>() with singleton { SQLiteDataSource }
@@ -1918,18 +1918,18 @@ Here's an example of what this prints:
 As you can see, it's really easy to understand which type with which tag is bound to which implementation inside which scope.
 
 NOTE: Description prints type names in a "kotlin-esque" way.
-      Because Kodein does not depend on `kotlin-reflect`, it uses java `Type` objects that do not contain nullability information.
+      Because Kodein-DI does not depend on `kotlin-reflect`, it uses java `Type` objects that do not contain nullability information.
       As such, the type display does not include nullability. Still, it's easier to read `List<*>` than `List<? extends Object>`.
 
 
 === Recursive dependency loop
 
-When it detects a recursive dependency, Kodein will throw a `Kodein.DependencyLoopException`.
+When it detects a recursive dependency, Kodein-DI will throw a `DI.DependencyLoopException`.
 The message of the exception explains how the loop happened.
 
 .An example of recursive dependency loop:
 ----
-Kodein$DependencyLoopException: Dependency recursion:
+DI$DependencyLoopException: Dependency recursion:
      bind<Database>()
     ╔╩>bind<User>()
     ║  ╚>bind<Repository>(tag = "users")
@@ -1943,13 +1943,13 @@ Kodein$DependencyLoopException: Dependency recursion:
 
 == OnReady callbacks
 
-You can define callbacks to be called once the kodein instance is ready and all bindings are defined.
+You can define callbacks to be called once the di instance is ready and all bindings are defined.
 This can be useful to do some "starting" jobs.
 
 [source, kotlin]
 .Example: registering a callback at binding time
 ----
-val appModule = Kodein.Module(name = "app") {
+val appModule = DI.Module(name = "app") {
     import(engineModule)
     onReady {
         val engine = instance<Engine>()
@@ -1962,14 +1962,14 @@ val appModule = Kodein.Module(name = "app") {
 
 == External Source
 
-An external source is responsible for providing an answer when Kodein cannot find one.
+An external source is responsible for providing an answer when Kodein-DI cannot find one.
 
-When Kodein cannot find a binding for the required type/argument/context, then it calls the external source.
+When Kodein-DI cannot find a binding for the required type/argument/context, then it calls the external source.
 
 [source, kotlin]
 .Example: an external source
 ----
-val kodein = Kodein {
+val di = DI {
     externalSource = ExternalSource { key ->
         when (key.type.jvmType) { <1>
             Whatever::class.java -> when (key.argType.jvmType) { <2>
@@ -2012,20 +2012,20 @@ Note that if no argument is provided, the argument to the lambda will be `Unit`.
 
 === The type erasure problem
 
-When using the `generic` version on the JVM, Kodein is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
-Similarly, `kodein.instance<List<String>>()` and `kodein.instance<List<Int>>()` will yield two different list.
+When using the `generic` version on the JVM, Kodein-DI is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
+Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
 
 To be erasure immune, the `generic` JVM version relies heavily on the `generic` function, which is known to be slow.
 
-To improve performance, you can use the `erased` JVM Kodein version, which is faster, but do suffer from type erasure!
+To improve performance, you can use the `erased` JVM Kodein-DI version, which is faster, but do suffer from type erasure!
 
 Furthermore, on Javascript and Native platforms, there's no choice: `erased` is the only version available!
 
 
 === Using generic and erased function forms
 
-Each kodein function that handles a type exists in two form: as inline (lowercased first letter) and as regular function (uppercased first letter). +
-For example, the `kodein.instance` function also exists as `kodein.Instance`.
+Each DI function that handles a type exists in two form: as inline (lowercased first letter) and as regular function (uppercased first letter). +
+For example, the `di.instance` function also exists as `di.Instance`.
 
 The uppercase functions need `TypeToken` parameters that define the type being bound / retrieved and maybe the factory's argument. +
 You can easily use these functions with the `generic` or `erased` functions:
@@ -2033,13 +2033,13 @@ You can easily use these functions with the `generic` or `erased` functions:
 [source, kotlin]
 .Example: using the `erased` function
 ----
-val ds: DataSource by kodein.Instance(erased())
+val ds: DataSource by di.Instance(erased())
 ----
 
 By default, all inline functions are aliases to their uppercase counterparts using the `generic` function. +
-For example, the `kodein.instance()` function is an alias to `kodein.Instance(generic())`
+For example, the `di.instance()` function is an alias to `di.Instance(generic())`
 
-So, when you know that you inject a type that is *not generic*, you can use `kodein.Instance(erased())`.
+So, when you know that you inject a type that is *not generic*, you can use `di.Instance(erased())`.
 
 
 === Erased parameterized generic types
@@ -2047,7 +2047,7 @@ So, when you know that you inject a type that is *not generic*, you can use `kod
 When using the `erased` function or using erased by default (either by choice on the JVM or by necessity elsewhere), you cannot represent a generic type. +
 For example, `erased<Set<String>>` will yield a `TypeToken` representing `Set<*>`.
 
-Kodein provides a way to represent a generic type in an erased way:
+Kodein-DI provides a way to represent a generic type in an erased way:
 
 [source, kotlin]
 .Example: generic type tokens, using erased
@@ -2072,13 +2072,13 @@ CAUTION: Please be cautious when using this knowledge, as other less thorough re
 
 == Hack the container!
 
-The KodeinContainer is the sacred Kodein object that contains all bindings and is responsible for retrieval.
-You can access it with `kodein.container`.
-In it, each `Binding` is bound to a `Kodein.Key`.
+The DIContainer is the sacred DI object that contains all bindings and is responsible for retrieval.
+You can access it with `di.container`.
+In it, each `Binding` is bound to a `DI.Key`.
 
-In fact, all Kodein functions are proxies to this container API.
+In fact, all DI functions are proxies to this container API.
 
-When defining bindings, in the `Kodein.Builder`, you can access the `container` property to bind factories to a `Kodein.Key` or a `Kodein.Bind`.
+When defining bindings, in the `DI.Builder`, you can access the `container` property to bind factories to a `DI.Key` or a `DI.Bind`.
 
 
 === Tag vs context vs argument
@@ -2094,8 +2094,8 @@ When defining bindings, in the `Kodein.Builder`, you can access the `container` 
 
 === Explore bindings
 
-You can access a *copy* of the bindings map with `kodein.container.bindings`. +
-From this `Map<Kodein.Key, Factory<*, *>>`, you can explore all bindings, their keys and factories.
+You can access a *copy* of the bindings map with `di.container.bindings`. +
+From this `Map<DI.Key, Factory<*, *>>`, you can explore all bindings, their keys and factories.
 
 
 == Community

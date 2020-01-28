@@ -1,4 +1,4 @@
-= Kodein DI on Ktor
+= Kodein-DI on Ktor
 Romain BOISSELLE <romain@boisselle.dev>
 :toc: left
 :toc-position: left
@@ -7,16 +7,16 @@ Romain BOISSELLE <romain@boisselle.dev>
 :version:7.0.0
 :branch:7.0
 
-You can use Kodein as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-framework-ktor-server-jvm` or `kodein-di-framework-ktor-server-controller-jvm`.
+You can use Kodein-DI as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-framework-ktor-server-jvm` or `kodein-di-framework-ktor-server-controller-jvm`.
 
-NOTE: Kodein does work on Ktor as-is.
+NOTE: Kodein-DI does work on Ktor as-is.
       The `kodein-di-framework-ktor-server-jvm` / `kodein-di-framework-ktor-server-controller-jvm` extensions add multiple ktor-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
-NOTE: Ktor is a multiplatform project, meaning you can use it for JVM, JS and Native projects.
-      Please note that, at the moment, Kodein utilities are only available for the JVM platform, for the server cases precisely
+NOTE: Ktor is a multi-platform project, meaning you can use it for JVM, JS and Native projects.
+      Please note that, at the moment, Kodein-DI utilities are only available for the JVM platform, for the server cases precisely.
 
-Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-ktor[Ktor demo project] to help you going further!
+Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-ktor[Ktor demo project] to help you to go further!
 
 [[install]]
 == Install
@@ -40,153 +40,153 @@ implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:{version}")
 +
 IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-framework-ktor-server-jvm` package.
 +
-. Declare a Kodein container in your application or use the <<kodeinfeature>>
+. Declare a DI container in your application or use the <<difeature>>
 +
 [source, kotlin]
-.Example: a Ktor Application declaration, installing the `KodeinFeature` (via the extension function `Application.kodein`).
+.Example: a Ktor Application declaration, installing the `DIFeature` (via the extension function `Application.di()`).
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
-        kodein {
+        di {
             /* bindings */
         }
    }.start(true)
 }
 ----
 
-. In your application, routes, etc. retrieve your Kodein object!
+. In your application, routes, etc. retrieve your DI object!
 
 . Retrieve your dependencies!
 
-[[kodeinfeature]]
-== `KodeinFeature`
+[[difeature]]
+== `DIFeature`
 
-As a Ktor https://ktor.io/servers/application.html[Application] is based on extensions we cannot use the `KodeinAware` mechanism on it.
-So, we had to find another, elegant, way to provide a global Kodein container. That's where the `KodeinFeature` stands.
-It allows developers to create an instance of a Kodein container, that will be available from anywhere in their Ktor app.
+As a Ktor https://ktor.io/servers/application.html[Application] is based on extensions we cannot use the `DIAware` mechanism on it.
+So, we had to find another, elegant, way to provide a global DI container. That's where the `DIFeature` stands.
+It allows developers to create an instance of a DI container, that will be available from anywhere in their Ktor app.
 
 To help with that, the `kodein-di-framework-ktor-server-jvm` provides a https://ktor.io/advanced/features.html[custom feature]
-that will create and register an instance of a Kodein container in the application's https://ktor.io/advanced/pipeline/attributes.html[attributes].
-Thus, the Kodein will be reachable from multiple places in your Ktor application.
+that will create and register an instance of a DI container in the application's https://ktor.io/advanced/pipeline/attributes.html[attributes].
+Thus, the DI will be reachable from multiple places in your Ktor application.
 
 [source, kotlin]
-.Example: a Ktor Application declaration, installing the `KodeinFeature`
+.Example: a Ktor Application declaration, installing the `DIFeature`
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
-        kodein { // <1>
+        di { // <1>
             bind<Random>() with singleton { SecureRandom() } // <2>
         }
    }.start(true)
 }
 ----
-<1> Install the `KodeinFeature` (under the hood we are applying `install(KodeinFeature, configuration)`)
-<2> Lambda that represent a Kodein builder, accepting Kodein core features
+<1> Install the `DIFeature` (under the hood we are applying `install(DIFeature, configuration)`)
+<2> Lambda that represent a DI builder, accepting DI core features
 
-WARNING: If you install multiple `KodeinFeature` on the same Ktor `Application`, only one will be taken into account, obviously the last one that has been declared.
+WARNING: If you install multiple `DIFeature` on the same Ktor `Application`, only one will be taken into account, obviously the last one that has been declared.
 
-=== Closest Kodein pattern
+=== Closest DI pattern
 
-The idea behind this concept, is to be able to retrieve a Kodein container, from an outer class. The `KodeinFeature`
-help us with that by defining a Kodein container that can be retrieve from multiple places, like:
+The idea behind this concept, is to be able to retrieve a DI container, from an outer class. The `DIFeature`
+help us with that by defining a DI container that can be retrieve from multiple places, like:
 
 - Application
 - ApplicationCall
 - Routing / Routes
 
 [source, kotlin]
-.Example: a Ktor Application declaration, installing the `KodeinFeature`, and retrieving it from routes
+.Example: a Ktor Application declaration, installing the `DIFeature`, and retrieving it from routes
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
-        kodein { // <1>
+        di { // <1>
             bind<Random>() with singleton { SecureRandom() } // <2>
         }
 
         routing {
             get("/") {
-                val random by kodein().instance<Random>() // <3>
+                val random by di().instance<Random>() // <3>
                 /* logic here */
             }
         }
    }.start(true)
 }
 ----
-<1> Install the `KodeinFeature`
-<2> Lambda that represent a Kodein builder, accepting Kodein core features
-<3> retrieving the Kodein container from the Application by calling `PipelineContext<*, ApplicationCall>.kodein` extension function
+<1> Install the `DIFeature`
+<2> Lambda that represent a DI builder, accepting DI core features
+<3> retrieving the DI container from the Application by calling `PipelineContext<*, ApplicationCall>.di` extension function
 
-.Available `kodein()` extension function receivers
+.Available `di()` extension function receivers
 - https://ktor.io/servers/application.html#application[Application]
 
     fun Application.main() {
         /* usage */
-        val kodein = kodein()
+        val di = di()
 
         /* other usage */
-        val random by kodein().instance<Random>()
+        val random by di().instance<Random>()
     }
 
 - https://ktor.io/advanced/pipeline.html#interceptors-and-the-pipelinecontext[PipelineContext<*, ApplicationCall>]
 
     get {
         /* usage */
-        val kodein = kodein()
+        val di = di()
 
         /* other usage */
-        val random by kodein().instance<Random>()
+        val random by di().instance<Random>()
     }
 
 - https://ktor.io/servers/calls.html[ApplicationCall]
 
     get("/") {
         /* usage */
-        val kodein = call.kodein()
+        val di = call.di()
 
         /* other usage */
-        val random by call.kodein().instance<Random>()
+        val random by call.di().instance<Random>()
     }
 
 - https://ktor.io/servers/features/routing.html[Routing]
 
     routing {
         /* usage */
-        val kodein = kodein()
+        val di = di()
 
         /* other usage */
-        val random by kodein().instance<Random>()
+        val random by di().instance<Random>()
     }
 
-NOTE: Because of those extension functions you can always get the Kodein object by using:
-    - `kodein()` inside a Ktor class (such as `Application`, `ApplicationCall`, `Route`, etc.)
-    - `kodein { application }` inside another class, where application is the running Ktor application.
+NOTE: Because of those extension functions you can always get the DI object by using:
+    - `di()` inside a Ktor class (such as `Application`, `ApplicationCall`, `Route`, etc.)
+    - `di { application }` inside another class, where application is the running Ktor application.
 
-WARNING: The `kodein()` extension function will only work if your Ktor `Application` has the `KodeinFeature` installed, or if you handle the installation manually.
+WARNING: The `di()` extension function will only work if your Ktor `Application` has the `DIFeature` installed, or if you handle the installation manually.
 
-=== Extending the nearest Kodein container
+=== Extending the nearest DI container
 
-In some cases we might want to extend our global Kodein container for local needs. For example, we could extend the Kodein container for a login `Route`, by adding credentials bindings, thus they would be only available in the login `Route` and its children.
+In some cases we might want to extend our global DI container for local needs. For example, we could extend the DI container for a login `Route`, by adding credentials bindings, thus they would be only available in the login `Route` and its children.
 
-We can easily achieve this goal, as we have facilities to retrieve our Kodein container with the previously defined extension functions,
-To do so we have a function `subKodein` available for the `Routing` / `Route` classes.
+We can easily achieve this goal, as we have facilities to retrieve our DI container with the previously defined extension functions,
+To do so we have a function `subDI` available for the `Routing` / `Route` classes.
 
 [source, kotlin]
-.Example: a Ktor Application declaration, installing the `KodeinFeature`, and retrieving it from routes
+.Example: a Ktor Application declaration, installing the `DIFeature`, and retrieving it from routes
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
-        kodein { // <1>
+        di { // <1>
             bind<Random>() with singleton { SecureRandom() } // <2>
         }
 
         routing {
             route("/login") {
-                subKodein {
+                subDI {
                     bind<CredentialsDao> with singleton { CredentialsDao() } // <3>
                 }
 
                 post {
-                    val dao by kodein().instance<CredentialsDao>() // <4>
+                    val dao by di().instance<CredentialsDao>() // <4>
                     /* logic here */
                 }
             }
@@ -194,37 +194,37 @@ fun main(args: Array<String>) {
    }.start(true)
 }
 ----
-<1> Install the `KodeinFeature`
-<2> Lambda that represent a Kodein builder, accepting Kodein core features
+<1> Install the `DIFeature`
+<2> Lambda that represent a DI builder, accepting DI core features
 <3> Adding new binding that will be only available for the children of the `/login` route
-<4> Retrieve the `CredentialsDao` from the nearest Kodein container
+<4> Retrieve the `CredentialsDao` from the nearest DI container
 
-WARNING: If you define multiple `routing { }` features, Ktor have a specific way of joining the different routing definition, finally there is only one `Routing` object. Thus, if you define multiple `subKodein { }` in your different `routing { }` declaration, only one `subKodein` will be taking into account.
+WARNING: If you define multiple `routing { }` features, Ktor have a specific way of joining the different routing definition, finally there is only one `Routing` object. Thus, if you define multiple `subDI { }` in your different `routing { }` declaration, only one `subDI` will be taking into account.
 
-WARNING: The `subKodein` mechanism will only work if your Ktor `Application` has the `KodeinFeature` installed, or if you handle the installation manually.
+WARNING: The `subDI` mechanism will only work if your Ktor `Application` has the `DIFeature` installed, or if you handle the installation manually.
 
-NOTE: On the contrary you can define a `subKodein { }` object for each of your `Route`s as each of them will be able to embbed a Kodein instance.
+NOTE: On the contrary you can define a `subDI { }` object for each of your `Route`s as each of them will be able to embbed a DI instance.
 
 .*Copying bindings*
 
-With this feature we can extend our Kodein container. This extension is made by copying the none singleton / multiton,
+With this feature we can extend our DI container. This extension is made by copying the none singleton / multiton,
 but we have the possibility to copy all the binding (including singleton / multiton).
 
 [source, kotlin]
 .Example: Copying all the bindings
 ----
-Kodein {
+DI {
     bind<Foo>() with provider { Foo("rootFoo") }
     bind<Bar>() with singleton { Bar(instance()) }
 }
 
-subKodein(copy = Copy.All) { // <1>
+subDI(copy = Copy.All) { // <1>
     /** new bindings / overrides **/
 }
 ----
 <1> Copying all the bindings, with the singletons / multitons
 
-WARNING: By doing a `Copy.All` your original singleton / multiton won't be available anymore, in the new Kodein container, they will exist as new instances.
+WARNING: By doing a `Copy.All` your original singleton / multiton won't be available anymore, in the new DI container, they will exist as new instances.
 
 .*Overriding bindings*
 
@@ -233,20 +233,20 @@ Sometimes, It might be interesting to replace an existing dependency (by overrid
 [source, kotlin]
 .Example: overriding bindings
 ----
-Kodein {
+DI {
     bind<Foo>() with provider { Foo("rootFoo") }
     bind<Bar>() with singleton { Bar(instance()) }
 }
 
-subKodein {
+subDI {
     bind<Foo>(overrides = true) with provider { Foo("explicitFoo") } // <1>
 }
-subKodein(allowSilentOverrides = true) { // <2>
+subDI(allowSilentOverrides = true) { // <2>
     bind<Foo> with provider { Foo("implicitFoo") } 
 }
 ----
 <1> Overriding the `Foo` binding
-<2> Overriding in the `subKodein` will be implicit
+<2> Overriding in the `subDI` will be implicit
 
 This feature is restricted to the `Routing` / `Route` and can be used like:
 
@@ -256,22 +256,22 @@ This feature is restricted to the `Routing` / `Route` and can be used like:
 - https://ktor.io/servers/features/routing.html[Routing]
     routing {
         /* usage */
-        val subKodein = subKodein { /** new bindings / overrides **/ } <1>
+        val subDI = subDI { /** new bindings / overrides **/ } <1>
 
         route("/books") {
             /* usage */
-            subKodein { /** new bindings / overrides **/ } <2>
+            subDI { /** new bindings / overrides **/ } <2>
 
             route("/author") {
                 /* usage */
-                subKodein { /** new bindings / overrides **/ } <3>
+                subDI { /** new bindings / overrides **/ } <3>
             }
         }
     }
 ----
-<1> extending the nearest Kodein instance, most likely the Application's one
-<2> extending the nearest Kodein instance, the one created in <1>
-<3> extending the nearest Kodein instance, the one created in <2>
+<1> extending the nearest DI instance, most likely the Application's one
+<2> extending the nearest DI instance, the one created in <1>
+<3> extending the nearest DI instance, the one created in <2>
 
 == Ktor scopes
 
@@ -279,12 +279,12 @@ This feature is restricted to the `Routing` / `Route` and can be used like:
 
 With the `kodein-di-framework-ktor-server-jvm` utils you can scope your dependencies upon your Ktor sessions. To do that you'll have to follow the steps:
 
-. Defining your session by implementing `KodeinSession`
+. Defining your session by implementing `DISession`
 +
 [source, kotlin]
 .Example: Defining the session
 ----
-data class UserSession(val user: User) : KodeinSession { <1>
+data class UserSession(val user: User) : DISession { <1>
     override fun getSessionId() = user.id <2>
 }
 ----
@@ -302,7 +302,7 @@ fun main(args: Array<String>) {
         install(Sessions) { <1>
             cookie<UserSession>("SESSION_FEATURE_SESSION_ID") <2>
         }
-        kodein {
+        di {
             bind<Random>() with scoped(SessionScope).singleton { SecureRandom() } <3>
             /* binding */
         }
@@ -324,7 +324,7 @@ embeddedServer(Netty, port = 8000) {
     routing {
         get("/random") {
             val session = call.sessions.get<UserSession>() ?: error("no session found!") <1>
-            val random by kodein().on(session).instance<Random>() <2>
+            val random by di().on(session).instance<Random>() <2>
             call.responText("Hello ${session.user.name", your random number is ${random.nextInt()}")
         }
     }
@@ -332,7 +332,7 @@ embeddedServer(Netty, port = 8000) {
 ----
 +
 <1> Retrieve the `session` from the request context or fail
-<2> retrieve a `Random` object from the `Kodein` object scoped by `session`
+<2> retrieve a `Random` object from the `DI` object scoped by `session`
 
 . Clear the scope as long as the sessions are no longer used
 +
@@ -355,12 +355,12 @@ IMPORTANT:  A Ktor session is cleared by calling the function `CurrentSession.cl
 .When working with multiple server instances you should be careful of what you are doing.
 You should be aware that using the same session over multiple servers won't give you the same instance of your scoped dependencies.
 In that context you might consider using a mechanism that always redirect a session request on the same server.
-This mechanism will not be provided by Ktor or Kodein.
+This mechanism will not be provided by Ktor or Kodein-DI.
 ====
 
 === Call scope
 
-Kodein provides a standard scope for any object (Ktor or not).
+Kodein-DI provides a standard scope for any object (Ktor or not).
 The `WeakContextScope` will keep singleton and multiton instances as long as the context (= object) lives.
 
 That's why the `CallScope` is just a wrapper upon `WeakContextScope` with the target `ApplicationCall`, that lives only along the Request (HTTP or Websocket).
@@ -368,7 +368,7 @@ That's why the `CallScope` is just a wrapper upon `WeakContextScope` with the ta
 [source, kotlin]
 .Example: Defining call scoped dependencies
 ----
-val kodein = Kodein {
+val di = DI {
     bind<Random>() with scoped(CallScope).singleton { SecureRandom() } <1>
 }
 ----
@@ -378,11 +378,11 @@ val kodein = Kodein {
 .Example: Retrieving call scoped dependencies
 ----
  get {
-    val random by kodein().on(context).instance<Random>()
+    val random by di().on(context).instance<Random>()
 }
 ----
 
-== Kodein Controllers
+== DI Controllers
 
 To help those who want to implement a Ktor application base on a "MVC-like" architecture, we provide a https://ktor.io/advanced/features.html[custom feature]. This feature is a specific module called `kodein-di-framework-ktor-server-controller-jvm`. To enable it, add this line in your `dependencies` block in your application `build.gradle(.kts)` file:
 
@@ -404,15 +404,15 @@ IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declar
 
 NOTE:  the `kodein-di-framework-ktor-server-controller-jvm` already have  the `kodein-di-framework-ktor-server-jvm` as transitive dependency, so you don't need to declare both.
 
-===  Defining your controllers, by implementing `KodeinController`, or extending `AbstractKodeinController`
+===  Defining your controllers, by implementing `DIController`, or extending `AbstractDIController`
 + 
-To define your controllers you need, either to implement the interface `KodeinController`, or to extend the class `AbstractKodeinController` and implement the function `Route.getRoutes()`.
+To define your controllers you need, either to implement the interface `DIController`, or to extend the class `AbstractDIController` and implement the function `Route.getRoutes()`.
 +
 [source, kotlin]
-.Example: Implementing KodeinController
+.Example: Implementing DIController
 ----
-class MyController(application: Application) : KodeinController { <1>
-    override val kodein by kodein { application } <2>
+class MyController(application: Application) : DIController { <1>
+    override val di by di { application } <2>
     private val repository: DataRepository by instance("dao") <3>
 
     override fun Route.getRoutes() { <4>
@@ -422,17 +422,17 @@ class MyController(application: Application) : KodeinController { <1>
         }
     }
 ----
-<1> Implement `KodeinController` and provide a `Application` instance (from constructor)
-<2> Override the `Kodein` container, from the provided `Application`
-<3> Use your `Kodein` container as in any `KodeinAware` class
+<1> Implement `DIController` and provide a `Application` instance (from constructor)
+<2> Override the `DI` container, from the provided `Application`
+<3> Use your `DI` container as in any `DIAware` class
 <4> Override the function `Route.getRoutes` and define some routes
-<5> This route will be automatically register by the `KodeinControllerFeature`
-<6> Use your `Kodein` container as in any `KodeinAware` class
+<5> This route will be automatically register by the `DIControllerFeature`
+<6> Use your `DI` container as in any `DIAware` class
 +
 [source, kotlin]
-.Example: Extending AbstractKodeinController
+.Example: Extending AbstractDIController
 ----
-class MyController(application: Application) : AbstractKodeinController(application) { <1>
+class MyController(application: Application) : AbstractDIController(application) { <1>
     private val repository: DataRepository by instance("dao") <2>
 
     override fun Routing.installRoutes() { <3>
@@ -442,47 +442,47 @@ class MyController(application: Application) : AbstractKodeinController(applicat
         }
     }
 ----
-<1> Extend `AbstractKodeinController` and provide a `Application` instance (from constructor)
-<2> Use your `Kodein` container as in any `KodeinAware` class
+<1> Extend `AbstractDIController` and provide a `Application` instance (from constructor)
+<2> Use your `DI` container as in any `DIAware` class
 <3> Override the function `Routing.installRoutes` and define some routes
-<4> This route will be automatically register by the `KodeinControllerFeature`
-<5> Use your `Kodein` container as in any `KodeinAware` class
+<4> This route will be automatically register by the `DIControllerFeature`
+<5> Use your `DI` container as in any `DIAware` class
 
-NOTE:   Using `KodeinController` or `AbstractKodeinController` depends on your needs.
+NOTE:   Using `DIController` or `AbstractDIController` depends on your needs.
         +
-        If you don't need to use inheritance on your controllers, then you could benefit from using `AbstractKodeinController`.
+        If you don't need to use inheritance on your controllers, then you could benefit from using `AbstractDIController`.
         +
-        On the contrary, if you want to use inheritance for your controllers you should implement `KodeinController` and override the `Kodein` container by yourself. 
+        On the contrary, if you want to use inheritance for your controllers you should implement `DIController` and override the `DI` container by yourself.
 
-WARNING: Using the `KodeinControllerFeature` *must* be used in addition of the `KodeinFeature`
+WARNING: Using the `DIControllerFeature` *must* be used in addition of the `DIFeature`
 
-WARNING: In your code, the `KodeinControllerFeature` *must* be declared *after* the `KodeinFeature`, as in the previous snippet *4* is declared after *1*, unless you'll see a `MissingApplicationFeatureException` fired
+WARNING: In your code, the `DIControllerFeature` *must* be declared *after* the `DIFeature`, as in the previous snippet *4* is declared after *1*, unless you'll see a `MissingApplicationFeatureException` fired
 
-- Install your `KodeinController`s routes directly into the routing system
+- Install your `DIController`s routes directly into the routing system
 +
-To leverage the use of `KodeinController`, you *could* use the `Route.controller` extension functions.
-Those functions will automatically install the routes defined in your `KodeinController` into the Ktor routing system.
+To leverage the use of `DIController`, you *could* use the `Route.controller` extension functions.
+Those functions will automatically install the routes defined in your `DIController` into the Ktor routing system.
 +
 [source, kotlin]
 .Example: Route.controller extension functions
 ----
 routing {
 // ...
-controller { MyFirstKodeinController(instance()) } <1>
-controller("/protected") { `MySecondKodeinController`(instance()) } <2>
+controller { MyFirstDIController(instance()) } <1>
+controller("/protected") { `MySecondDIController`(instance()) } <2>
 // ...
 }
 ----
-<1> install the routes of MyFirstKodeinController` inside the routing system
-<2> install the routes of `MyFirstKodeinController` inside the routing system, as child of a `Route`, under "/protected"
+<1> install the routes of MyFirstDIController` inside the routing system
+<2> install the routes of `MyFirstDIController` inside the routing system, as child of a `Route`, under "/protected"
 +
-Doing that the `MyFirstKodeinController` and `MyFirstKodeinController` will added to the routing system but not autowired, neither bound to the Kodein container.
+Doing that the `MyFirstDIController` and `MyFirstDIController` will added to the routing system but not autowired, neither bound to the DI container.
 Only their routes defined in the `Route.getRoutes` will be reachable on the web server (e.g. `http://localhost:8080/version`).
 
 
 [CAUTION]
 ====
-`Route.controller` extension functions and `KodeinControllerFeature` can be used at the same time but we recommand that you *should not*
-Declaring controllers in the `Route.controller` extension functions and the `KodeinControllerFeature` might install the same route multiple times, thus leading to exceptions.
+`Route.controller` extension functions and `DIControllerFeature` can be used at the same time but we recommand that you *should not*
+Declaring controllers in the `Route.controller` extension functions and the `DIControllerFeature` might install the same route multiple times, thus leading to exceptions.
 ====
 

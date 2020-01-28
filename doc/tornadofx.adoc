@@ -1,4 +1,4 @@
-= Kodein DI on TornadoFX
+= Kodein-DI on TornadoFX
 Romain BOISSELLE <romain@boisselle.dev>
 :toc: left
 :toc-position: left
@@ -7,10 +7,10 @@ Romain BOISSELLE <romain@boisselle.dev>
 :version:7.0.0
 :branch:7.0
 
-You can use Kodein as-is in your TornadoFX project, but you can level-up your game by using the libraries `kodein-di-framework-tornadofx-jvm`.
+You can use Kodein-DI as-is in your TornadoFX project, but you can level-up your game by using the libraries `kodein-di-framework-tornadofx-jvm`.
 
-NOTE: Kodein does work on TornadoFX as-is.
-      The `kodein-di-framework-tornadofx-jvm` extensions add multiple TornadoFX-specific utilities to Kodein. +
+NOTE: Kodein-DI does work on TornadoFX as-is.
+      The `kodein-di-framework-tornadofx-jvm` extensions add multiple TornadoFX-specific utilities to Kodein-DI. +
       Using or not using this extension really depends on your needs.
 
 Have a look at the https://github.com/Kodein-Framework/Kodein-Samples/tree/master/di/tornadofx[TornadoFX demo project] to help you going further!
@@ -37,35 +37,35 @@ implementation("kodein-di-framework-tornadofx-jvm:{version}")
 +
 IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-framework-tornadofx-jvm` package.
 +
-. Declare your `App` as `KodeinAware` and implement a Kodein container
+. Declare your `App` as `DIAware` and implement a DI container
 +
 [source, kotlin]
-.Example: a TornadoFX Application declaration, `KodeinAware`, using TornadoFX DI as external source
+.Example: a TornadoFX Application declaration, `DIAware`, using TornadoFX DI as external source
 ----
-class TornadoApplication : App(MainView::class), KodeinAware { // <1>
-    override val kodein: Kodein get() = Kodein { // <2>
+class TornadoApplication : App(MainView::class), DIAware { // <1>
+    override val di: DI get() = DI { // <2>
         installTornadoSource() // <3>
      } 
 
 }
 ----
-<1> Setting the `App` as `KodeinAware` will help you define a global Kodein container
-<2> Define a Kodein container, accessible from almost anywhere in your application
-<3> Branch Kodein upon TornadoFX dependency injection, to be able to access those dependencies through your Kodein container (see https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[documentation])
+<1> Setting the `App` as `DIAware` will help you define a global DI container
+<2> Define a DI container, accessible from almost anywhere in your application
+<3> Branch DI upon TornadoFX dependency injection, to be able to access those dependencies through your DI container (see https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[documentation])
 
-WARNING: In order to leverage the power of Kodein and the helpers we made, you should really consider making your `App` as `KodeinAware`.
+WARNING: In order to leverage the power of DI and the helpers we made, you should really consider making your `App` as `DIAware`.
 
 [[retrieving]]
 == Retrieving
 
-If you defined your `App` as `KodeinAware`, you will normally be able to retrieve a Kodein container, and dependencies, from almost anywhere in your code.
+If you defined your `App` as `DIAware`, you will normally be able to retrieve a DI container, and dependencies, from almost anywhere in your code.
 
-CAUTION: You may also want to access your TornadoFX components (such as `View`, `Fragment`, `Controller`, etc) through a Kodein container, to help you with that check the https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[external source] section.
+CAUTION: You may also want to access your TornadoFX components (such as `View`, `Fragment`, `Controller`, etc) through a DI container, to help you with that check the https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[external source] section.
 
-[[closest-kodein]]
-=== Closest Kodein pattern
+[[closest-di]]
+=== Closest DI pattern
 
-The idea behind this concept, is to be able to retrieve a Kodein container, from an outer class. For example, making our `App` as `KodeinAware` give us the ability to have a global Kodein container that can be retrieve from multiple places, like:
+The idea behind this concept, is to be able to retrieve a DI container, from an outer class. For example, making our `App` as `DIAware` give us the ability to have a global DI container that can be retrieve from multiple places, like:
 
 - Components (`View`, `Fragment`, `Controller`, etc)
 - Nodes, graphical object of the `App`
@@ -73,14 +73,14 @@ The idea behind this concept, is to be able to retrieve a Kodein container, from
 [[closest-tfx]]
 ==== From a TornadoFX perspective
 
-In TornadoFX there is no hierarchy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available through the DI container of TornadoFX (and the one of Kodein if you use https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[external source] helper), and they all have a reference to the `App`.
+In TornadoFX there is no hierarchy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available through the DI container of TornadoFX (and the one of DI if you use https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[external source] helper), and they all have a reference to the `App`.
 
-So, if we made our `App` as `KodeinAware`, we can get the global `Kodein` container from any `Component` thanks to:
+So, if we made our `App` as `DIAware`, we can get the global `DI` container from any `Component` thanks to:
 
 [source, kotlin]
-.Code: Extension function on `Component` that get the Kodein container from the `App`, if its `KodeinAware`
+.Code: Extension function on `Component` that get the DI container from the `App`, if its `DIAware`
 ----
-fun Component.kodein() = kodein { app }
+fun Component.kodeinDI() = kodeinDI { app }
 ----
 
 [NOTE]
@@ -93,63 +93,63 @@ TornadoFX `Component` are:
 - ViewModel
 ====
 
-In your code you can access the global Kodein container like the following snippets.
+In your code you can access the global DI container like the following snippets.
 
 [source, kotlin]
-.Example: retrieving dependency through closest Kodein container from a `Controller`
+.Example: retrieving dependency through closest DI container from a `Controller`
 ----
 class PersonController : Controller() {
-    val repository: PersonRepository by kodein().instance() // <1>
+    val repository: PersonRepository by kodeinDI().instance() // <1>
 }
 ----
-<1> The `kodein()` function that will get the nearest Kodein container, from the `App` 
+<1> The `kodeinDI()` function that will get the nearest DI container, from the `App`
 
 [source, kotlin]
-.Example: retrieving dependency through the closest Kodein container from a `View`
+.Example: retrieving dependency through the closest DI container from a `View`
 ----
 class PersonEditorView : View() {
-    val controller: PersonController by kodein().instance() // <1>
+    val controller: PersonController by kodeinDI().instance() // <1>
 }
 ----
-<1> The `kodein()` function will get the nearest Kodein container, from the `App`
+<1> The `kodeinDI()` function will get the nearest DI container, from the `App`
 
-CAUTION: All TornadoFX `Component` can access the global Kodein container ) by calling the function `kodein()`,
-but in order to do that your `App` *must* be `KodeinAware`.
+CAUTION: All TornadoFX `Component` can access the global DI container ) by calling the function `kodeinDI()`,
+but in order to do that your `App` *must* be `DIAware`.
 
 [[closest-jfx]]
 ==== From a JavaFX perspective
 
 In JavaFX, an `Application` is made of a `Stage` (the window), a `Scene` (the container for all content) and a graph of `Node`. All `Node` are grouped by view (in the case of TornadoFX: `View` or `Fragment`). 
 
-So, the `Node` hierarchy can apply to the closest Kodein pattern, limited to the scope of a `View` or `Fragment` for now. If none of the parent `Node` have a `Kodein` container, thanks to the TornadoFX facilities, we can fallback onto the global Kodein container from the `App`.
+So, the `Node` hierarchy can apply to the closest DI pattern, limited to the scope of a `View` or `Fragment` for now. If none of the parent `Node` have a `DI` container, thanks to the TornadoFX facilities, we can fallback onto the global DI container from the `App`.
 
 [source, kotlin]
-.Example: retrieving dependency through the closest Kodein container from a `Node`
+.Example: retrieving dependency through the closest DI container from a `Node`
 ----
 class EditorTabFragment : Fragment() {
     override val root = hbox {
         form {
-            val author: String by kodein().instance("author") // <1>
+            val author: String by kodeinDI().instance("author") // <1>
             label { author }
         }
     }
 }
 ----
-<1> The `kodein()` function will get the nearest Kodein container, from the parent `Node`, or from the `App`
+<1> The `kodeinDI()` function will get the nearest DI container, from the parent `Node`, or from the `App`
 
-CAUTION: If none of the parent nodes have a Kodein container, we try to get to the one in the `App`, only if this `App` is `KodeinAware`.
+CAUTION: If none of the parent nodes have a DI container, we try to get to the one in the `App`, only if this `App` is `DIAware`.
 
 [[kodeinaware]]
-==== Being KodeinAware
+==== Being DIAware
 
-Having your classes set as `KodeinAware` have multiple advantages. For example this allow to cache the Kodein container or simplify the way we retrieve our dependencies.
+Having your classes set as `DIAware` have multiple advantages. For example this allow to cache the DI container or simplify the way we retrieve our dependencies.
 
 [source, kotlin]
-.Example: A KodeinAware TornadoFX Controller
+.Example: A DIAware TornadoFX Controller
 ----
 
-class PersonListController : Controller(), KodeinAware { <1>
-    override val kodein: Kodein = kodein() <2>
+class PersonListController : Controller(), DIAware { <1>
+    override val di: DI = kodeinDI() <2>
 
     val personEditorController: PersonEditorController by instance() <3>
 
@@ -160,78 +160,78 @@ class PersonListController : Controller(), KodeinAware { <1>
 }
 ----
 <1> Set the Controller as `KodeeinAware`
-<2> Retrieve the `App` Kodein container from the `kodein()` extension function
-<3> Retrieve dependency using the `instance()` function, as the Kodein container is part of the context
+<2> Retrieve the `App` DI container from the `kodeinDI()` extension function
+<3> Retrieve dependency using the `instance()` function, as the DI container is part of the context
 <4> Use the dependency
 
-NOTE: Because Kodein is lazy, the container and the dependencies will be retrieve at call site only.
+NOTE: Because DI is lazy, the container and the dependencies will be retrieve at call site only.
 
-NOTE: To benefit from the Kodein optimization, and the facilities we provide, we highly recommend
-that you make your classes `KodeinAware` when its possible.
+NOTE: To benefit from the DI optimization, and the facilities we provide, we highly recommend
+that you make your classes `DIAware` when its possible.
 
-[[kodein-extension]]
-== Extension of Kodein
+[[di-extension]]
+== Extension of Kodein-DI
 
-This section will cover how we can extend the use of Kodein in a TornadoFX application, like:
+This section will cover how we can extend the use of DI container in a TornadoFX application, like:
 
 - Getting control of dependency injection over TornadoFX
 
-- Defining specific Kodein containers in a TornadoFX / JavaFX graph
+- Defining specific DI containers in a TornadoFX / JavaFX graph
 
-- Overriding a parent Kodein container in a TornadoFX component / JavaFX node
+- Overriding a parent DI container in a TornadoFX component / JavaFX node
 
 [[external-source]]
 === Using TornadoFX Dependency Injection as external source
 
 TornadoFX integrates a dependency injection mechanism to work with its `Component`.
-This section will show you how you can interact with the Tornado DI container, by using Kodein.
-Our goal is to provide you some tools to be able to integrate Kodein as your main DI container,
+This section will show you how you can interact with the Tornado DI container, by using Kodein-DI.
+Our goal is to provide you some tools to be able to integrate Kodein-DI as your main DI container,
 thus by learning and knowing only one mechanism.
 
 - Defining the external source
 +
-In order to use Kodein upon TornadoFX you should make your `App` as `KodeinAware`,
-then by using the `installTornadoSource()` extension function, in your `kodein` property override,
+In order to use Kodein-DI upon TornadoFX you should make your `App` as `DIAware`,
+then by using the `installTornadoSource()` extension function, in your `di` property override,
 you'll be able to get through the external source from anywhere in your `App`.
 +
 [source, kotlin]
-.Example: Installing the TornadoFX DI container as external source for Kodein
+.Example: Installing the TornadoFX DI container as external source for Kodein-DI
 ----
-class TornadoApplication : App(MainView::class), KodeinAware {
-    override val kodein: Kodein = Kodein {
+class TornadoApplication : App(MainView::class), DIAware {
+    override val di: DI = DI {
         installTornadoSource() // <1>
      }
 
 }
 ----
-<1> Branch Kodein upon TornadoFX dependency injection, to be able to access those dependencies through your Kodein container
+<1> Branch DI upon TornadoFX dependency injection, to be able to access those dependencies through your DI container
 +
-WARNING: We highly recommend that you make your `App` as `KodeinAware` in order to benefit from the use of Kodein upon TornadoFX DI container.
+WARNING: We highly recommend that you make your `App` as `DIAware` in order to benefit from the use of Kodein-DI upon TornadoFX DI container.
 
-- Retrieving TornadoFX `Component` through Kodein
+- Retrieving TornadoFX `Component` through Kodein-DI
 +
-Once you'll have installed the TornadoFX source, you will be able to retrieve transparently TornadoFX `Component` through Kodein,
+Once you'll have installed the TornadoFX source, you will be able to retrieve transparently TornadoFX `Component` through Kodein-DI,
 as it were one of your own dependencies.
 +
 [source, kotlin]
-.Example: Retrieving a Component from Kodein
+.Example: Retrieving a Component from DI
 ----
 class PersonListController : Controller() { ... } <1>
 class PersonListView : View() {
-    private val listController: PersonListController by kodein().instance() <2>
+    private val listController: PersonListController by kodeinDI().instance() <2>
 }
 ----
-<1> `PersonListController` is not bound on the Kodein container, but as a `Controller` its accessible from TornadoFX DI container
-<2>  Retrieve `PersonListController` through the Kodein external source
+<1> `PersonListController` is not bound on the DI container, but as a `Controller` its accessible from TornadoFX DI container
+<2>  Retrieve `PersonListController` through the DI external source
 
 - Using TornadoFX scopes to retrieve binding through the external source
 +
-Like Kodein, TornadoFX as scopes to contextualize and attach state to its dependencies.
-As we can retrieve TornadoFX dependencies through Kodein external source,
-we also can retrieve them using scopes with Kodein.
+Like Kodein-DI, TornadoFX as scopes to contextualize and attach state to its dependencies.
+As we can retrieve TornadoFX dependencies through DI external source,
+we also can retrieve them using scopes with DI.
 +
 [source, kotlin]
-.Example: Retrieving a Component from Kodein with a Scope
+.Example: Retrieving a Component from DI with a Scope
 ----
 class PersonScope(person: Person) : Scope() { <1>
     val model = PersonModel(person)
@@ -241,7 +241,7 @@ class EditorTabFragment : Fragment() {
     override val scope = super.scope as PersonScope <2>
 }
 //...
-val editor: EditorTabFragment by kodein().on(personScope).instance() <3>
+val editor: EditorTabFragment by kodeinDI().on(personScope).instance() <3>
 //...
 ----
 <1> Define a `Scope` that will help contextualize `Component`
@@ -249,47 +249,47 @@ val editor: EditorTabFragment by kodein().on(personScope).instance() <3>
 <3> We can retrieve a scoped instance of `EditorTabFragment` with the function `on(personScope)`, where personScope is a `PersonScope`
 
 [[fx-container]]
-=== Defining Kodein container in FX's `Node`
+=== Defining DI container in FX's `Node`
 
-For some need we could want to define Kodein containers into the `Node` hierarchy. To do so we provide an extension function to create a Kodein container attached to a `Node`. This is done by adding the Kodein container to the properties of the `Node`, thus we will be able to access it from any child in the hierarchy.
+For some need we could want to define DI containers into the `Node` hierarchy. To do so we provide an extension function to create a DI container attached to a `Node`. This is done by adding the DI container to the properties of the `Node`, thus we will be able to access it from any child in the hierarchy.
 
 [source, kotlin]
-.Example: Defining and using a Kodein container from a `Node`
+.Example: Defining and using a DI container from a `Node`
 ----
 class MyView : View() {
     override val root = hbox { // <1>
-        kodein { // <2>
+        kodeinDI { // <2>
             bind<Random>() with singleton { SecureRandom() }
         }
         
         form { // <3>
-            val random by kodein().instance<Random>() // <4>
+            val random by kodeinDI().instance<Random>() // <4>
         }
     }
 }
 ----
 <1> Defining the root `Node` for a `View`
-<2> Declaring a *new* Kodein container into the root `Node`, with its binding
+<2> Declaring a *new* DI container into the root `Node`, with its binding
 <3> Defining a child `Node`
-<4> Calling the `kodein()` extension function to access the nearest Kodein container, in this case the one defined at <2>, then retrieve a dependency
+<4> Calling the `kodeinDI()` extension function to access the nearest DI container, in this case the one defined at <2>, then retrieve a dependency
 
-IMPORTANT: This feature will provide a *new* Kodein container, meaning it won't be linked to other Kodein container, such as your global one.
-To keep your binding from the global Kodein container you can use https://kodein.org/Kodein-DI/?{branch}/tornadofx#kodein-extension[extension] or following the next about https://kodein.org/Kodein-DI/?{branch}/tornadofx#sub-kodein[subKodein]
+IMPORTANT: This feature will provide a *new* DI container, meaning it won't be linked to other DI container, such as your global one.
+To keep your binding from the global DI container you can use https://kodein.org/Kodein-DI/?{branch}/tornadofx#kodein-extension[extension] or following the next about https://kodein.org/Kodein-DI/?{branch}/tornadofx#sub-kodein[subDI]
 
-[[sub-kodein]]
-=== Extending the nearest Kodein container
+[[sub-di]]
+=== Extending the nearest DI container
 
-Some times, we might want to extend an existing Kodein container in a dedicated area, without impacting the whole application. For example, in a login form, we might want to have credentials binding, that would be only available on this form and its children.
+Some times, we might want to extend an existing DI container in a dedicated area, without impacting the whole application. For example, in a login form, we might want to have credentials binding, that would be only available on this form and its children.
 
-To do so, we have facilities to extend a Kodein container by calling the `subKodein` extension function, available on `Component` and `Node` classes.
+To do so, we have facilities to extend a DI container by calling the `subDI` extension function, available on `Component` and `Node` classes.
 
 . In the case of a `Component`
 +
 [source, kotlin]
-.Example: Extending the nearest Kodein container for a `Component`
+.Example: Extending the nearest DI container for a `Component`
 ----
-class LoginController : Controller(), KodeinAware { // <1>
-    override val kodein: Kodein = subKodein { // <2>
+class LoginController : Controller(), DIAware { // <1>
+    override val di: DI = subDI { // <2>
             bind<CredentialsDao> with singleton { CredentialsDao() } <3>
     }
     
@@ -298,41 +298,41 @@ class LoginController : Controller(), KodeinAware { // <1>
     val dao by instance<CredentialsDao>() // <4>
 }
 ----
-<1> Defining your `Component` as `KodeinAware` will help keeping track of your extended Kodein container
-<2> Extending the nearest Kodein container, here the `App` one
-<3> Defining binding only available for the extended Kodein container
-<4> Retrieve the `CredentialsDao` from the local Kodein container
+<1> Defining your `Component` as `DIAware` will help keeping track of your extended DI container
+<2> Extending the nearest DI container, here the `App` one
+<3> Defining binding only available for the extended DI container
+<4> Retrieve the `CredentialsDao` from the local DI container
 +
-NOTE: Making your `Component` as `KodeinAware` is *optional*, but it will help you keeping track of your extended container. Otherwise, you might want to store a reference of your extended container in a local variable.
+NOTE: Making your `Component` as `DIAware` is *optional*, but it will help you keeping track of your extended container. Otherwise, you might want to store a reference of your extended container in a local variable.
 
 . In the case of a `Node` hierarchy 
 +
 [source, kotlin]
-.Example: Extending the nearest Kodein container for a `Node`
+.Example: Extending the nearest DI container for a `Node`
 ----
 class LoginView : View() {
     override val root = hbox { // <1>
-        subKodein { // <2>
+        subDI { // <2>
             bind<LoginController>() with singleton { instance() } // <3>
         }
         
         form {
-            val controller by kodein().instance<LoginController>() <4>
+            val controller by kodeinDI().instance<LoginController>() <4>
         }
     }
 }
 ----
 <1> Defining the root `Node` for a `View`
-<2> Extending the nearest Kodein container, here the `App` one, but stored in the `Node` properties
-<3> Defining binding only available for the extended Kodein container
-<4> Retrieve the `CredentialsDao` from the nearest Kodein container, in that case the extended container stored in the *hbox* properties
+<2> Extending the nearest DI container, here the `App` one, but stored in the `Node` properties
+<3> Defining binding only available for the extended DI container
+<4> Retrieve the `CredentialsDao` from the nearest DI container, in that case the extended container stored in the *hbox* properties
 
-IMPORTANT: In the case of a `Component` you have to handle the reference of the extended container yourself. But, in the case of a `Node` the `subKodein` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the https://kodein.org/Kodein-DI/?{branch}/tornadofx#fx-container[FX container feature]
+IMPORTANT: In the case of a `Component` you have to handle the reference of the extended container yourself. But, in the case of a `Node` the `subDI` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the https://kodein.org/Kodein-DI/?{branch}/tornadofx#fx-container[FX container feature]
 
 [[scopes]]
 == TornadoFX scopes
 
-Kodein provides a standard scope for any object (TornadoFX or not).
+DI-DI provides a standard scope for any object (TornadoFX or not).
 The `WeakContextScope` will keep singleton and multiton instances as long as the context (= object) lives.
 
 That's why the `ComponentScope` and `NodeScope` are just wrappers upon `WeakContextScope` with the respective targets `Component` and `Node`.
@@ -342,7 +342,7 @@ That's why the `ComponentScope` and `NodeScope` are just wrappers upon `WeakCont
 [source, kotlin]
 .Example: Defining `Component` scoped dependencies
 ----
-val kodein = Kodein {
+val di = DI {
     bind<EditingState>() with scoped(ComponentScope).singleton { EditingState() } <1>
 }
 ----
@@ -352,7 +352,7 @@ val kodein = Kodein {
 .Example: Retrieving `Component scoped dependencies
 ----
 class EditorTabFragment : Fragment() {
-    private val editingState: EditingState by kodein().on(this).instance() <1>
+    private val editingState: EditingState by kodeinDI().on(this).instance() <1>
 }
 ----
 <1> Scope is `this`
@@ -362,7 +362,7 @@ class EditorTabFragment : Fragment() {
 [source, kotlin]
 .Example: Defining `Node` scoped dependencies
 ----
-val kodein = Kodein {
+val di = DI {
     bind<EditingState>() with scoped(NodeScope).singleton { EditingState() } <1>
 }
 ----
@@ -372,11 +372,11 @@ val kodein = Kodein {
 .Example: Retrieving `Node scoped dependencies
 ----
 class PersonEditorController : Controller() {
-    val personEditorView: PersonEditorView by kodein().instance()
+    val personEditorView: PersonEditorView by kodeinDI().instance()
 
     fun editPerson(person: Person) {
         val tab = personEditorView.tabPane.tab("Tab Title")
-        val editingState: EditingState by kodein().on(tab).instance() <1>
+        val editingState: EditingState by kodeinDI().on(tab).instance() <1>
     }
 }
 ----
