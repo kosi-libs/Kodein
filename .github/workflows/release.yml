@@ -34,9 +34,9 @@ jobs:
         java-version: 11
     - name: Build
       env:
-        EXCLUDE_ANDROID: false
-        EXCLUDE_KTOR: false
-        EXCLUDE_TFX: false
+        EXCLUDE_ANDROID: true
+        EXCLUDE_KTOR: true
+        EXCLUDE_TFX: true
         BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
         BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
         BINTRAY_USER_ORG: ${{ secrets.BINTRAY_USER_ORG }}
