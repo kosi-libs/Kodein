@@ -1,3 +1,13 @@
+#### 6.5.3 (04-03-2020)
+
+- CORE
+  * Kotlin `1.3.70`
+  
+#### 6.5.2 (19-02-2020)
+
+- CORE
+  * tvOS and watchOS compatibility    
+
 #### 6.5.1 (09-12-2019)
 
 - CORE
