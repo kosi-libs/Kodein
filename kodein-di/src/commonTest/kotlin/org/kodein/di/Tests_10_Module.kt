@@ -1,11 +1,11 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.*
+import org.kodein.di.erased.*
 import org.kodein.di.test.*
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_10_Module {
+class Tests_10_Module {
 
     class PersonContainer(di: DI) {
         val newPerson: () -> Person by di.provider()
@@ -22,11 +22,11 @@ class ErasedTests_10_Module {
             bind<Person>(tag = "factory") with factory { name: String -> Person(name) }
         }
 
-        val kodein = DI {
+        val di = DI {
             import(personModule)
         }
 
-        val container = PersonContainer(kodein)
+        val container = PersonContainer(di)
         assertNotSame(container.newPerson(), container.newPerson())
         assertEquals("Salomon", container.salomon.name)
         assertSame(container.salomon, container.salomon)
@@ -37,9 +37,9 @@ class ErasedTests_10_Module {
             import(personModule)
         }
 
-        assertSame(kodein.direct.instance<Person>(tag = "named"), kodein.direct.instance(tag = "named"))
+        assertSame(di.direct.instance<Person>(tag = "named"), di.direct.instance(tag = "named"))
         assertSame(kodein2.direct.instance<Person>(tag = "named"), kodein2.direct.instance(tag = "named"))
-        assertNotSame(kodein.direct.instance<Person>(tag = "named"), kodein2.direct.instance(tag = "named"))
+        assertNotSame(di.direct.instance<Person>(tag = "named"), kodein2.direct.instance(tag = "named"))
     }
 
     @Test
@@ -64,12 +64,12 @@ class ErasedTests_10_Module {
             bind<String>() with instance("Salomon")
         }
 
-        val kodein = DI {
+        val di = DI {
             importOnce(module)
             importOnce(module)
         }
 
-        assertEquals("Salomon", kodein.direct.instance())
+        assertEquals("Salomon", di.direct.instance())
     }
 
     @Test

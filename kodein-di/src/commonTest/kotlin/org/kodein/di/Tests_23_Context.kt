@@ -1,7 +1,6 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.DI
-import org.kodein.di.DIAware
+import org.kodein.di.erased.*
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import kotlin.test.Test
@@ -10,17 +9,17 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_23_Context {
+class Tests_23_Context {
 
     @Test
     fun test_00_lazyOnContext() {
-        val kodein = DI{
+        val di = DI{
             bind<String>() with contexted<String>().provider { "Salomon $context" }
         }
 
         var contextRetrieved = false
 
-        val name: String by kodein.on { contextRetrieved = true ; "BRYS" } .instance()
+        val name: String by di.on { contextRetrieved = true ; "BRYS" } .instance()
 
         assertFalse(contextRetrieved)
         assertEquals("Salomon BRYS", name)
@@ -29,7 +28,7 @@ class ErasedTests_23_Context {
 
     class T01(override val di: DI) : DIAware {
         var contextRetrieved = false
-        override val diContext = diContext {
+        override val diContext = org.di.di.erased.diContext {
             contextRetrieved = true
             "BRYS"
         }
@@ -38,11 +37,11 @@ class ErasedTests_23_Context {
 
     @Test
     fun test_01_lazyKContext() {
-        val kodein = DI{
+        val di = DI{
             bind<String>() with contexted<String>().provider { "Salomon $context" }
         }
 
-        val t = T01(kodein)
+        val t = T01(di)
 
         assertFalse(t.contextRetrieved)
         assertEquals("Salomon BRYS", t.name)

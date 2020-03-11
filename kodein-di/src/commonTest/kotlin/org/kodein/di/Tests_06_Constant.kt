@@ -1,6 +1,9 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.DI
+import org.kodein.di.erased.constant
+import org.kodein.di.erased.instance
+import org.kodein.di.erased.provider
+import org.kodein.di.erased.with
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.IPerson
 import org.kodein.di.test.MethodSorters
@@ -9,17 +12,17 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_06_Constant {
+class Tests_06_Constant {
 
     @Test
     fun test_00_ConstantBindingGetInstance() {
 
-        val kodein = DI {
+        val di = DI {
             constant(tag = "answer") with 42
         }
 
-        val c: Int by kodein.instance(tag = "answer")
-        val answer: Int by kodein.constant()
+        val c: Int by di.instance(tag = "answer")
+        val answer: Int by di.constant()
 
         assertEquals(42, c)
         assertEquals(42, answer)
@@ -28,11 +31,11 @@ class ErasedTests_06_Constant {
     @Test
     fun test_01_ConstantBindingGetProvider() {
 
-        val kodein = DI {
+        val di = DI {
             constant(tag = "answer") with 42
         }
 
-        val c: () -> Int by kodein.provider(tag = "answer")
+        val c: () -> Int by di.provider(tag = "answer")
 
         assertEquals(42, c())
     }
@@ -40,12 +43,12 @@ class ErasedTests_06_Constant {
     @Test
     fun test_02_ConstantBindingGetPolymorphic() {
 
-        val kodein = DI {
+        val di = DI {
             constant(tag = "salomon") with Person("Salomon") as IPerson
         }
 
-        val p: IPerson by kodein.instance(tag = "salomon")
-        val salomon: IPerson by kodein.constant()
+        val p: IPerson by di.instance(tag = "salomon")
+        val salomon: IPerson by di.constant()
 
         assertEquals(Person("Salomon"), p)
         assertEquals(Person("Salomon"), salomon)

@@ -1,6 +1,9 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.DI
+import org.kodein.di.erased.bind
+import org.kodein.di.erased.instance
+import org.kodein.di.erased.singleton
+import org.kodein.di.erased.with
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
@@ -9,7 +12,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_15_OnReady {
+class Tests_15_OnReady {
 
     @Test
     fun test_00_OnReadyCallback() {

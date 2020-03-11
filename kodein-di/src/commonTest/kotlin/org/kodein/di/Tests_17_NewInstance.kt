@@ -1,7 +1,8 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.DI
-import org.kodein.di.newInstance
+import org.kodein.di.erased.bind
+import org.kodein.di.erased.instance
+import org.kodein.di.erased.singleton
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
@@ -9,7 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_17_NewInstance {
+class Tests_17_NewInstance {
 
     class Wedding(val him: Person, val her: Person)
 

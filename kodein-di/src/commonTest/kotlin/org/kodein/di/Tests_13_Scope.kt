@@ -1,14 +1,12 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.DI
-import org.kodein.di.DIAware
 import org.kodein.di.bindings.*
-import org.kodein.di.direct
+import org.kodein.di.erased.*
 import org.kodein.di.test.*
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_13_Scope {
+class Tests_13_Scope {
 
     @Test
     fun test_00_AnyScopeSingleton() {
@@ -209,7 +207,7 @@ class ErasedTests_13_Scope {
 
     @Test
     fun test_08_CircularScopes() {
-        val kodein = DI.direct {
+        val di = DI.direct {
             bind() from contexted<A>().provider { context.str }
             bind() from contexted<B>().provider { context.int }
             bind() from contexted<C>().provider { context.char }
@@ -225,12 +223,12 @@ class ErasedTests_13_Scope {
         b.c = c
         c.a = a
 
-        val str1: String = kodein.on(b).instance()
-        val str2: String = kodein.on(c).instance()
-        val int1: Int = kodein.on(a).instance()
-        val int2: Int = kodein.on(c).instance()
-        val char1: Char = kodein.on(a).instance()
-        val char2: Char = kodein.on(b).instance()
+        val str1: String = di.on(b).instance()
+        val str2: String = di.on(c).instance()
+        val int1: Int = di.on(a).instance()
+        val int2: Int = di.on(c).instance()
+        val char1: Char = di.on(a).instance()
+        val char2: Char = di.on(b).instance()
 
         assertAllEqual("test", str1, str2)
         assertAllEqual(42, int1, int2)
@@ -239,14 +237,14 @@ class ErasedTests_13_Scope {
 
     @Test
     fun test_09_ContextTranslatorAndReceiver() {
-        val kodein = DI.direct {
+        val di = DI.direct {
             bind() from contexted<Name>().provider { FullName(context.firstName, "BRYS") }
             registerContextFinder { Name("Salomon") }
             registerContextTranslator { name: String -> Name(name) }
         }
 
-        val fn1: FullName = kodein.instance()
-        val fn2: FullName = kodein.on("Laila").instance()
+        val fn1: FullName = di.instance()
+        val fn2: FullName = di.on("Laila").instance()
 
         assertEquals(FullName("Salomon", "BRYS"), fn1)
         assertEquals(FullName("Laila", "BRYS"), fn2)

@@ -1,11 +1,11 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.*
+import org.kodein.di.erased.*
 import org.kodein.di.test.*
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_20_MultiArguments {
+class Tests_20_MultiArguments {
 
     private data class Person(val firstName: String, val lastName: String)
     private data class MultiArgElement(val a1: String = "", val a2: String = "", val a3: String = "", val a4: String = "", val a5: String = "") {
@@ -25,18 +25,18 @@ class ErasedTests_20_MultiArguments {
             bind<FullName>() with factory { p: Person -> FullName(p.firstName, p.lastName) }
         }
 
-        val i: FullName by kodein.instance(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
+        val i: FullName by kodein.instance(arg = Person(firstName = "Salomon", lastName = "BRYS"))
         val ni: FullName? by kodein.instanceOrNull(arg = Person(name = "Salomon"))
-        val nni: FullName? by kodein.instanceOrNull(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
-        val di: FullName = kodein.direct.instance(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
+        val nni: FullName? by kodein.instanceOrNull(arg = Person(firstName = "Salomon", lastName = "BRYS"))
+        val di: FullName = kodein.direct.instance(arg = Person(firstName = "Salomon", lastName = "BRYS"))
         val dni: FullName? = kodein.direct.instanceOrNull(arg = Person(name = "Salomon"))
-        val dnni: FullName? = kodein.direct.instanceOrNull(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
-        val p: () -> FullName by kodein.provider(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
+        val dnni: FullName? = kodein.direct.instanceOrNull(arg = Person(firstName = "Salomon", lastName = "BRYS"))
+        val p: () -> FullName by kodein.provider(arg = Person(firstName = "Salomon", lastName = "BRYS"))
         val np: (() -> FullName)? by kodein.providerOrNull(arg = Person(name = "Salomon"))
-        val nnp: (() -> FullName)? by kodein.providerOrNull(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
-        val dp: () -> FullName = kodein.direct.provider(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
+        val nnp: (() -> FullName)? by kodein.providerOrNull(arg = Person(firstName = "Salomon", lastName = "BRYS"))
+        val dp: () -> FullName = kodein.direct.provider(arg = Person(firstName = "Salomon", lastName = "BRYS"))
         val dnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = Person(name = "Salomon"))
-        val dnnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
+        val dnnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = Person(firstName = "Salomon", lastName = "BRYS"))
 
         assertAllNull(ni, dni, np, dnp)
         assertAllNotNull(nni, dnni, nnp, dnnp)
@@ -50,18 +50,18 @@ class ErasedTests_20_MultiArguments {
             bind<FullName>() with multiton { p: Person -> FullName(p.firstName, p.lastName) }
         }
 
-        val i: FullName by kodein.instance(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
+        val i: FullName by kodein.instance(arg = Person(firstName = "Salomon", lastName = "BRYS"))
         val ni: FullName? by kodein.instanceOrNull(arg = Person(name = "Salomon"))
-        val nni: FullName? by kodein.instanceOrNull(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
-        val di: FullName = kodein.direct.instance(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
+        val nni: FullName? by kodein.instanceOrNull(arg = Person(firstName = "Salomon", lastName = "BRYS"))
+        val di: FullName = kodein.direct.instance(arg = Person(firstName = "Salomon", lastName = "BRYS"))
         val dni: FullName? = kodein.direct.instanceOrNull(arg = Person(name = "Salomon"))
-        val dnni: FullName? = kodein.direct.instanceOrNull(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
-        val p: () -> FullName by kodein.provider(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
+        val dnni: FullName? = kodein.direct.instanceOrNull(arg = Person(firstName = "Salomon", lastName = "BRYS"))
+        val p: () -> FullName by kodein.provider(arg = Person(firstName = "Salomon", lastName = "BRYS"))
         val np: (() -> FullName)? by kodein.providerOrNull(arg = Person(name = "Salomon"))
-        val nnp: (() -> FullName)? by kodein.providerOrNull(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
-        val dp: () -> FullName = kodein.direct.provider(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
+        val nnp: (() -> FullName)? by kodein.providerOrNull(arg = Person(firstName = "Salomon", lastName = "BRYS"))
+        val dp: () -> FullName = kodein.direct.provider(arg = Person(firstName = "Salomon", lastName = "BRYS"))
         val dnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = Person(name = "Salomon"))
-        val dnnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = Person(firstName = "Salomon",lastName =  "BRYS"))
+        val dnnp: (() -> FullName)? = kodein.direct.providerOrNull(arg = Person(firstName = "Salomon", lastName = "BRYS"))
 
         assertAllNull(ni, dni, np, dnp)
         assertAllNotNull(nni, dnni, nnp, dnnp)

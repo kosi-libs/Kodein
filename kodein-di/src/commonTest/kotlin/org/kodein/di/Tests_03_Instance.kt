@@ -1,11 +1,13 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.DI
+import org.kodein.di.erased.bind
+import org.kodein.di.erased.instance
+import org.kodein.di.erased.provider
 import org.kodein.di.test.*
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_03_Instance {
+class Tests_03_Instance {
 
     @Test fun test_00_InstanceBindingGetInstance() {
 

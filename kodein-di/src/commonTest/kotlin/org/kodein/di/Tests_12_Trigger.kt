@@ -1,15 +1,13 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.DITrigger
+import org.kodein.di.erased.*
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_12_Trigger {
+class Tests_12_Trigger {
 
     class T00(override val di: DI): DIAware {
         override val diTrigger = DITrigger()
@@ -22,13 +20,13 @@ class ErasedTests_12_Trigger {
 
     @Test
     fun test_00_SimpleTrigger() {
-        val kodein = DI {
+        val di = DI {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
             bind<Person>(tag = "factory") with factory { name: String -> Person(name) }
         }
 
-        val injected = T00(kodein)
+        val injected = T00(di)
 
         injected.diTrigger.trigger()
         assertNotSame(injected.newPerson(), injected.newPerson())
@@ -51,11 +49,11 @@ class ErasedTests_12_Trigger {
     @Test
     fun test_01_CreatedAtTrigger() {
         var created = false
-        val kodein = DI {
+        val di = DI {
             bind<Person>() with singleton { created = true; Person() }
         }
 
-        val container = T01(kodein)
+        val container = T01(di)
 
         assertFalse(created)
         container.diTrigger.trigger()

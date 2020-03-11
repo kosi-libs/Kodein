@@ -1,15 +1,13 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.Copy
-import org.kodein.di.DI
-import org.kodein.di.direct
+import org.kodein.di.erased.*
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_11_Extend {
+class Tests_11_Extend {
 
     @Test
     fun test_00_DIExtend() {

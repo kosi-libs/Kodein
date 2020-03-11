@@ -1,4 +1,4 @@
-package org.kodein.di.erased
+package org.kodein.di
 
 import org.kodein.di.DI
 import org.kodein.di.erased
@@ -9,7 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_21_Description {
+class Tests_21_Description {
 
     @Test
     fun test_00_SimpleKeySimpleDescription() {

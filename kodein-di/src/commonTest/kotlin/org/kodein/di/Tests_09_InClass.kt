@@ -1,6 +1,6 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.DI
+import org.kodein.di.erased.*
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
@@ -10,7 +10,7 @@ import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_09_InClass {
+class Tests_09_InClass {
 
     class PersonContainer(di: DI) {
         val newPerson: () -> Person by di.provider()
@@ -20,13 +20,13 @@ class ErasedTests_09_InClass {
 
     @Test
     fun test_00_Class() {
-        val kodein = DI {
+        val di = DI {
             bind<Person>() with provider { Person() }
             bind<Person>(tag = "named") with singleton { Person("Salomon") }
             bind<Person>(tag = "factory") with factory { name: String -> Person(name) }
         }
 
-        val container = PersonContainer(kodein)
+        val container = PersonContainer(di)
         assertNotSame(container.newPerson(), container.newPerson())
         assertEquals("Salomon", container.salomon.name)
         assertSame(container.salomon, container.salomon)

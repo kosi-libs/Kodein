@@ -1,9 +1,8 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.DITrigger
-import org.kodein.di.LateInitDI
+import org.kodein.di.erased.bind
+import org.kodein.di.erased.instance
+import org.kodein.di.erased.on
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import kotlin.test.Test
@@ -11,7 +10,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFails
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_19_Late {
+class Tests_19_Late {
 
     class LateInit : DIAware {
         override lateinit var di: DI
@@ -42,11 +41,11 @@ class ErasedTests_19_Late {
     @Test
     fun test_02_LateLocal() {
 
-        val kodein = LateInitDI()
+        val di = LateInitDI()
 
-        val name: String by kodein.instance()
+        val name: String by di.instance()
 
-        kodein.baseDI = DI {
+        di.baseDI = DI {
             bind() from instance("Salomon")
         }
 
@@ -56,9 +55,9 @@ class ErasedTests_19_Late {
     @Test
     fun test_03_LateLocalFail() {
 
-        val kodein = LateInitDI()
+        val di = LateInitDI()
 
-        val name: String by kodein.instance()
+        val name: String by di.instance()
 
         assertFails { name.length }
     }
@@ -68,9 +67,9 @@ class ErasedTests_19_Late {
 
         val trigger = DITrigger()
         val base = LateInitDI()
-        val kodein = base.on(trigger = trigger)
+        val di = base.on(trigger = trigger)
 
-        val name: String by kodein.instance()
+        val name: String by di.instance()
 
         base.baseDI = DI {
             bind() from instance("Salomon")
@@ -86,10 +85,10 @@ class ErasedTests_19_Late {
 
         val trigger = DITrigger()
         val base = LateInitDI()
-        val kodein = base.on(trigger = trigger)
+        val di = base.on(trigger = trigger)
 
         @Suppress("UNUSED_VARIABLE")
-        val name: String by kodein.instance()
+        val name: String by di.instance()
 
         assertFails { trigger.trigger() }
     }

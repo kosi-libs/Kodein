@@ -1,8 +1,11 @@
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.DI
 import org.kodein.di.bindings.SingleItemScopeRegistry
 import org.kodein.di.bindings.UnboundedScope
+import org.kodein.di.erased.bind
+import org.kodein.di.erased.instance
+import org.kodein.di.erased.multiton
+import org.kodein.di.erased.scoped
 import org.kodein.di.test.CloseableData
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
@@ -10,16 +13,16 @@ import org.kodein.di.test.Person
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ErasedTests_16_Multiton {
+class Tests_16_Multiton {
 
     @Test
     fun test_00_Multiton() {
-        val kodein = DI { bind() from multiton { name: String -> Person(name) } }
+        val di = DI { bind() from multiton { name: String -> Person(name) } }
 
-        val p1: Person by kodein.instance(arg = "Salomon")
-        val p2: Person by kodein.instance(fArg = { "Salomon" })
-        val p3: Person by kodein.instance(arg = "Laila")
-        val p4: Person by kodein.instance(fArg = { "Laila" })
+        val p1: Person by di.instance(arg = "Salomon")
+        val p2: Person by di.instance(fArg = { "Salomon" })
+        val p3: Person by di.instance(arg = "Laila")
+        val p4: Person by di.instance(fArg = { "Laila" })
 
         assertSame(p1, p2)
         assertSame(p3, p4)
@@ -34,20 +37,20 @@ class ErasedTests_16_Multiton {
     fun test_01_MultitonWithSingleItemScope() {
         val myScope = UnboundedScope(SingleItemScopeRegistry())
 
-        val kodein = DI {
+        val di = DI {
             bind<CloseableData>() with scoped(myScope).multiton { name: String -> CloseableData(name) }
         }
 
-        val a: CloseableData by kodein.instance(arg = "one")
-        val b: CloseableData by kodein.instance(arg = "one")
+        val a: CloseableData by di.instance(arg = "one")
+        val b: CloseableData by di.instance(arg = "one")
         assertSame(a, b)
-        val c: CloseableData by kodein.instance(arg = "two")
+        val c: CloseableData by di.instance(arg = "two")
 
         assertNotSame(a, c)
         assertTrue(a.closed)
         assertFalse(c.closed)
 
-        val d: CloseableData by kodein.instance(arg = "one")
+        val d: CloseableData by di.instance(arg = "one")
         assertNotSame(c, d)
         assertNotSame(a, d)
         assertTrue(c.closed)
@@ -56,12 +59,12 @@ class ErasedTests_16_Multiton {
 
     @Test
     fun test_02_NonSyncedMultiton() {
-        val kodein = DI { bind() from multiton(sync = false) { name: String -> Person(name) } }
+        val di = DI { bind() from multiton(sync = false) { name: String -> Person(name) } }
 
-        val p1: Person by kodein.instance(arg = "Salomon")
-        val p2: Person by kodein.instance(fArg = { "Salomon" })
-        val p3: Person by kodein.instance(arg = "Laila")
-        val p4: Person by kodein.instance(fArg = { "Laila" })
+        val p1: Person by di.instance(arg = "Salomon")
+        val p2: Person by di.instance(fArg = { "Salomon" })
+        val p3: Person by di.instance(arg = "Laila")
+        val p4: Person by di.instance(fArg = { "Laila" })
 
         assertSame(p1, p2)
         assertSame(p3, p4)
