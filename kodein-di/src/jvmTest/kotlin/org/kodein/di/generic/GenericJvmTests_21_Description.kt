@@ -127,12 +127,12 @@ class GenericJvmTests_21_Description {
         }
 
         assertEquals(6, kodein.container.tree.bindings.size)
-        assertEquals("provider", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), null)]!!.first().binding.factoryName())
-        assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
-        assertEquals("singleton", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
-        assertEquals("factory", kodein.container.tree.bindings[DI.Key(AnyToken, generic<String>(), generic<IPerson>(), "factory")]!!.first().binding.factoryName())
-        assertEquals("instance", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<IPerson>(), "instance")]!!.first().binding.factoryName())
-        assertEquals("instance", kodein.container.tree.bindings[DI.Key(AnyToken, UnitToken, generic<Int>(), "answer")]!!.first().binding.factoryName())
+        assertEquals("provider", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, generic<IPerson>(), null)]!!.first().binding.factoryName())
+        assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
+        assertEquals("singleton", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
+        assertEquals("factory", kodein.container.tree.bindings[DI.Key(TypeToken.Any, generic<String>(), generic<IPerson>(), "factory")]!!.first().binding.factoryName())
+        assertEquals("instance", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, generic<IPerson>(), "instance")]!!.first().binding.factoryName())
+        assertEquals("instance", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, generic<Int>(), "answer")]!!.first().binding.factoryName())
     }
 
     open class A

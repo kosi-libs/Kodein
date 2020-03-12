@@ -1,7 +1,6 @@
 package org.kodein.di
 
 import org.kodein.di.bindings.*
-import org.kodein.di.erased.*
 import org.kodein.di.test.*
 import kotlin.test.*
 

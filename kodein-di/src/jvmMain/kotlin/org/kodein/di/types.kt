@@ -1,5 +1,6 @@
 package org.kodein.di
 
+import org.kodein.type.TypeToken
 import java.lang.reflect.*
 import kotlin.reflect.KClass
 
@@ -309,7 +310,7 @@ internal class ClassTypeToken<T>(override val jvmType: Class<T>) : JVMTypeToken<
 }
 
 @Suppress("UNCHECKED_CAST")
-actual inline fun <reified T : Any> erased(): TypeToken<T> = ClassTypeToken((T::class as KClass<*>).java as Class<T>)
+actual inline fun <reified T : Any> generic(): TypeToken<T> = ClassTypeToken((T::class as KClass<*>).java as Class<T>)
 
 /**
  * Gives a [TypeToken] representing the given `Class`.

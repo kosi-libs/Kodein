@@ -1,5 +1,8 @@
 package org.kodein.di
 
+import org.kodein.type.erasedComp
+import org.kodein.type.generic
+
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
  *
@@ -8,7 +11,8 @@ package org.kodein.di
  * @param T The main type represented by this type token.
  * @param A1 The type parameter of the main type.
  */
-inline fun <reified T : Any, reified A1 : Any> erasedComp1() = CompositeTypeToken(erased<T>(), erased<A1>())
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp()", "org.kodein.type"), DeprecationLevel.ERROR)
+inline fun <reified T : Any, reified A1 : Any> erasedComp1() = Any()
 
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
@@ -19,7 +23,8 @@ inline fun <reified T : Any, reified A1 : Any> erasedComp1() = CompositeTypeToke
  * @param A1 The first type parameter of the main type.
  * @param A2 The second type parameter of the main type.
  */
-inline fun <reified T : Any, reified A1 : Any, reified A2 : Any> erasedComp2() = CompositeTypeToken(erased<T>(), erased<A1>(), erased<A2>())
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp()", "org.kodein.type"), DeprecationLevel.ERROR)
+inline fun <reified T : Any, reified A1 : Any, reified A2 : Any> erasedComp2() = Any()
 
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
@@ -29,7 +34,8 @@ inline fun <reified T : Any, reified A1 : Any, reified A2 : Any> erasedComp2() =
  * @param A2 The second type parameter of the main type.
  * @param A3 The third type parameter of the main type.
  */
-inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : Any> erasedComp3() = CompositeTypeToken(erased<T>(), erased<A1>(), erased<A2>(), erased<A3>())
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp()", "org.kodein.type"), DeprecationLevel.ERROR)
+inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : Any> erasedComp3() = Any()
 
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
@@ -40,7 +46,8 @@ inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : An
  * @param A3 The third type parameter of the main type.
  * @param A4 The fourth type parameter of the main type.
  */
-inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : Any, reified A4 : Any> erasedComp4() = CompositeTypeToken(erased<T>(), erased<A1>(), erased<A2>(), erased<A3>(), erased<A4>())
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp()", "org.kodein.type"), DeprecationLevel.ERROR)
+inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : Any, reified A4 : Any> erasedComp4() = Any()
 
 /**
  * Creates a [CompositeTypeToken] for an erased generic type.
@@ -54,21 +61,24 @@ inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : An
  * @param A4 The fourth type parameter of the main type.
  * @param A5 The fifth type parameter of the main type.
  */
-inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : Any, reified A4 : Any, reified A5 : Any> erasedComp5() = CompositeTypeToken(erased<T>(), erased<A1>(), erased<A2>(), erased<A3>(), erased<A4>(), erased<A5>())
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp()", "org.kodein.type"), DeprecationLevel.ERROR)
+inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : Any, reified A4 : Any, reified A5 : Any> erasedComp5() = Any()
 
 /**
  * Creates a [CompositeTypeToken] that defines a `Set<T>`.
  *
  * @param T The parameter type of the Set.
  */
-inline fun <reified T : Any> erasedSet() = erasedComp1<Set<T>, T>()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp(Set::class, generic<T>())", "org.kodein.type"))
+inline fun <reified T : Any> erasedSet() = erasedComp(Set::class, generic<T>())
 
 /**
  * Creates a [CompositeTypeToken] that defines a `List<T>`.
  *
  * @param T The parameter type of the List.
  */
-inline fun <reified T : Any> erasedList() = erasedComp1<List<T>, T>()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp(List::class, generic<T>())", "org.kodein.type"))
+inline fun <reified T : Any> erasedList() = erasedComp(List::class, generic<T>())
 
 /**
  * Creates a [CompositeTypeToken] that defines a `Map<K, V>`.
@@ -76,4 +86,5 @@ inline fun <reified T : Any> erasedList() = erasedComp1<List<T>, T>()
  * @param K The key parameter type of the Map.
  * @param V The value parameter type of the Map.
  */
-inline fun <reified K : Any, reified V : Any> erasedMap() = erasedComp2<Map<K, V>, K, V>()
+@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp(Map::class, generic<K>(), generic<V>())", "org.kodein.type"))
+inline fun <reified K : Any, reified V : Any> erasedMap() = erasedComp(Map::class, generic<K>(), generic<V>())

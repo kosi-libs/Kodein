@@ -1,6 +1,5 @@
 package org.kodein.di
 
-import org.kodein.di.erased.*
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person

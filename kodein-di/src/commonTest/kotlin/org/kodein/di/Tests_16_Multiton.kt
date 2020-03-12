@@ -2,10 +2,6 @@ package org.kodein.di
 
 import org.kodein.di.bindings.SingleItemScopeRegistry
 import org.kodein.di.bindings.UnboundedScope
-import org.kodein.di.erased.bind
-import org.kodein.di.erased.instance
-import org.kodein.di.erased.multiton
-import org.kodein.di.erased.scoped
 import org.kodein.di.test.CloseableData
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters

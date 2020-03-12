@@ -1,5 +1,7 @@
 package org.kodein.di
 
+import org.kodein.type.TypeToken
+
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DirectDIAware"), DeprecationLevel.ERROR)
 typealias DKodeinAware = DirectDIAware
 

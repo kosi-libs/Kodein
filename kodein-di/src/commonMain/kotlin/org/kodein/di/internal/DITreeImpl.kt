@@ -2,6 +2,7 @@ package org.kodein.di.internal
 
 import org.kodein.di.*
 import org.kodein.di.bindings.*
+import org.kodein.type.TypeToken
 
 
 private sealed class TypeChecker {
@@ -9,12 +10,12 @@ private sealed class TypeChecker {
     abstract fun check(other: TypeToken<*>): Boolean
 
     data class Down(override val type: TypeToken<*>) : TypeChecker() {
-        val isAny = (type == AnyToken)
+        val isAny = (type == TypeToken.Any)
         override fun check(other: TypeToken<*>) = isAny || type.isAssignableFrom(other)
     }
 
     data class Up(override val type: TypeToken<*>) : TypeChecker() {
-        override fun check(other: TypeToken<*>) = other == AnyToken || other.isAssignableFrom(type)
+        override fun check(other: TypeToken<*>) = other == TypeToken.Any || other.isAssignableFrom(type)
     }
 }
 
@@ -79,7 +80,7 @@ internal class DITreeImpl(
     private fun findBySpecs(specs: SearchSpecs): List<Pair<DI.Key<*, *, *>, ContextTranslator<*, *>?>> {
         var bindSeq: Sequence<Map.Entry<TypeChecker, ContextTypeTree>> = _typeTree.asSequence()
         val specsBindType = specs.type
-        if (specsBindType != null && specsBindType != AnyToken) {
+        if (specsBindType != null && specsBindType != TypeToken.Any) {
             bindSeq = bindSeq.filter { (bindType) -> bindType.check(specsBindType) } // Filter keys that are for sub-types of this specs bind type
         }
 
@@ -125,8 +126,8 @@ internal class DITreeImpl(
                 return listOf(Triple(realKey as DI.Key<Any, A, T>, definition as DIDefinition<Any, A, T>, translator as ContextTranslator<C, Any>?))
             }
 
-            if (key.contextType != AnyToken) {
-                val anyContextKey = key.copy(contextType = AnyToken)
+            if (key.contextType != TypeToken.Any) {
+                val anyContextKey = key.copy(contextType = TypeToken.Any)
                 _cache[anyContextKey]?.let { triple ->
                     val (realKey, list, translator) = triple
                     if (translator != null && translator.contextType != key.contextType)
@@ -137,7 +138,7 @@ internal class DITreeImpl(
                 }
             }
 
-            val applicableTranslators = translators.filter { it.contextType == key.contextType } + translators.filter { it.contextType == AnyToken } // Ensure Any translators are at the end of the list.
+            val applicableTranslators = translators.filter { it.contextType == key.contextType } + translators.filter { it.contextType == TypeToken.Any } // Ensure Any translators are at the end of the list.
             for (translator in applicableTranslators) {
                 val translatedKey = DI.Key(translator.scopeType, key.argType, key.type, key.tag)
                 _cache[translatedKey]?.takeIf { it.third == null }?.let { triple ->

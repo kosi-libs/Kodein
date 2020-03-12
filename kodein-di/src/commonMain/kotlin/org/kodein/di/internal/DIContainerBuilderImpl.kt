@@ -109,8 +109,8 @@ internal class DIContainerBuilderImpl(
     }
 
     override fun <C : Any, A, T: Any> bind(key: DI.Key<C, A, T>, binding: DIBinding<*,*,*>, fromModule: String?, overrides: Boolean?) {
-        key.type.checkIsReified(key)
-        key.argType.checkIsReified(key)
+        // key.type.checkIsReified(key) todo
+        // key.argType.checkIsReified(key) todo
         checkOverrides(key, overrides)
 
         val bindings = bindingsMap.getOrPut(key) { newLinkedList() }

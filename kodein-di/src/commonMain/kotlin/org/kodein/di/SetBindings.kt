@@ -1,14 +1,13 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "UNCHECKED_CAST")
 
-package org.kodein.di.erased
+package org.kodein.di
 
-import org.kodein.di.AnyToken
-import org.kodein.di.DI
 import org.kodein.di.bindings.ArgSetBinding
 import org.kodein.di.bindings.InSet
 import org.kodein.di.bindings.SetBinding
-import org.kodein.di.erased
-import org.kodein.di.erasedSet
+import org.kodein.type.TypeToken
+import org.kodein.type.erasedComp
+import org.kodein.type.generic
 
 /**
  * Creates a set: multiple bindings can be added in this set.
@@ -19,7 +18,7 @@ import org.kodein.di.erasedSet
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified T: Any> DI.Builder.setBinding() = SetBinding(AnyToken, erased<T>(), erasedSet<T>())
+inline fun <reified T: Any> DI.Builder.setBinding() = SetBinding(TypeToken.Any, generic<T>(), erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
 
 /**
  * Creates a set: multiple bindings can be added in this set.
@@ -31,7 +30,7 @@ inline fun <reified T: Any> DI.Builder.setBinding() = SetBinding(AnyToken, erase
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified A : Any, reified T: Any> DI.Builder.argSetBinding() = ArgSetBinding(AnyToken, erased<A>(), erased<T>(), erasedSet<T>())
+inline fun <reified A : Any, reified T: Any> DI.Builder.argSetBinding() = ArgSetBinding(TypeToken.Any, generic<A>(), generic<T>(), erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
 
 /**
  * Defines that the binding will be saved in a set binding.
@@ -40,4 +39,4 @@ inline fun <reified A : Any, reified T: Any> DI.Builder.argSetBinding() = ArgSet
  *
  * @param T The type of the binding.
  */
-inline fun <reified T: Any> DI.Builder.TypeBinder<T>.inSet() = InSet(erasedSet())
+inline fun <reified T: Any> DI.Builder.TypeBinder<T>.inSet() = InSet(erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)

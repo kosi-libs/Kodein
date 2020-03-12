@@ -2,6 +2,7 @@ package org.kodein.di.bindings
 
 import org.kodein.di.*
 import org.kodein.di.internal.DIBuilderImpl
+import org.kodein.type.TypeToken
 
 /**
  * Base class for binding set.
@@ -62,7 +63,7 @@ class SetBinding<C : Any, T: Any>(override val contextType: TypeToken<in C>, pri
 
     override fun getFactory(di: BindingDI<C>, key: DI.Key<C, Unit, Set<T>>): (Unit) -> Set<T> {
         val subDI = SetBindingDI(di)
-        val subKey = DI.Key(key.contextType, UnitToken, _elementType, key.tag)
+        val subKey = DI.Key(key.contextType, TypeToken.Unit, _elementType, key.tag)
         val providers = set.map { it.getFactory(subDI, subKey) }
         return {
             providers.asSequence().map { it.invoke(Unit) }.toSet()

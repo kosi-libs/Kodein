@@ -54,11 +54,11 @@ import org.kodein.di.bindings.*
 import java.io.File
 
 val androidCoreContextTranslators = DI.Module(name = "\u2063androidCoreContextTranslators") {
-    RegisterContextTranslator(SimpleContextTranslator<Fragment, Activity>(erased(), erased()) { it.activity })
-    RegisterContextTranslator(SimpleContextTranslator<Dialog, Context>(erased(), erased()) { it.context })
-    RegisterContextTranslator(SimpleContextTranslator<View, Context>(erased(), erased()) { it.context })
-    RegisterContextTranslator(SimpleContextTranslator<Loader<*>, Context>(erased(), erased()) { it.context })
-    RegisterContextTranslator(SimpleContextTranslator<AbstractThreadedSyncAdapter, Context>(erased(), erased()) { it.context })
+    RegisterContextTranslator(SimpleContextTranslator<Fragment, Activity>(generic(), erased()) { it.activity })
+    RegisterContextTranslator(SimpleContextTranslator<Dialog, Context>(generic(), erased()) { it.context })
+    RegisterContextTranslator(SimpleContextTranslator<View, Context>(generic(), erased()) { it.context })
+    RegisterContextTranslator(SimpleContextTranslator<Loader<*>, Context>(generic(), erased()) { it.context })
+    RegisterContextTranslator(SimpleContextTranslator<AbstractThreadedSyncAdapter, Context>(generic(), erased()) { it.context })
 }
 
 /**
@@ -74,7 +74,7 @@ fun androidCoreModule(app: Application) = DI.Module(name = "\u2063androidModule"
 
     val contextToken = erased<Context>()
 
-    Bind() from Provider(AnyToken, erased()) { app }
+    Bind() from Provider(TypeToken.Any, erased()) { app }
 
     Bind() from Provider(contextToken, erased()) { context.assets }
     Bind() from Provider(contextToken, erased()) { context.contentResolver }
@@ -85,16 +85,16 @@ fun androidCoreModule(app: Application) = DI.Module(name = "\u2063androidModule"
     Bind() from Provider(contextToken, erased()) { context.theme }
 
     Bind() from Provider(contextToken, erased()) { PreferenceManager.getDefaultSharedPreferences(context) }
-    Bind() from Factory(contextToken, erased(), erased()) { name: String -> context.getSharedPreferences(name, Context.MODE_PRIVATE) }
+    Bind() from Factory(contextToken, generic(), erased()) { name: String -> context.getSharedPreferences(name, Context.MODE_PRIVATE) }
 
-    Bind<File>(erased(), tag = "cache") with Provider(contextToken, erased()) { context.cacheDir }
-    Bind<File>(erased(), tag = "externalCache") with Provider(contextToken, erased()) { context.externalCacheDir }
-    Bind<File>(erased(), tag = "files") with Provider(contextToken, erased()) { context.filesDir }
-    Bind<File>(erased(), tag = "obb") with Provider(contextToken, erased()) { context.obbDir }
+    Bind<File>(generic(), tag = "cache") with Provider(contextToken, erased()) { context.cacheDir }
+    Bind<File>(generic(), tag = "externalCache") with Provider(contextToken, erased()) { context.externalCacheDir }
+    Bind<File>(generic(), tag = "files") with Provider(contextToken, erased()) { context.filesDir }
+    Bind<File>(generic(), tag = "obb") with Provider(contextToken, erased()) { context.obbDir }
 
-    Bind<String>(erased(), tag = "packageCodePath") with Provider(contextToken, erased()) { context.packageCodePath }
-    Bind<String>(erased(), tag = "packageName") with Provider(contextToken, erased()) { context.packageName }
-    Bind<String>(erased(), tag = "packageResourcePath") with Provider(contextToken, erased()) { context.packageResourcePath }
+    Bind<String>(generic(), tag = "packageCodePath") with Provider(contextToken, erased()) { context.packageCodePath }
+    Bind<String>(generic(), tag = "packageName") with Provider(contextToken, erased()) { context.packageName }
+    Bind<String>(generic(), tag = "packageResourcePath") with Provider(contextToken, erased()) { context.packageResourcePath }
 
     Bind() from Provider(contextToken, erased()) { context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager }
     Bind() from Provider(contextToken, erased()) { context.getSystemService(Context.ACCOUNT_SERVICE) as AccountManager }

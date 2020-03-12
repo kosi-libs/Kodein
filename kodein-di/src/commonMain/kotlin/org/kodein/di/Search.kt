@@ -1,6 +1,7 @@
 package org.kodein.di
 
 import org.kodein.di.bindings.ContextTranslator
+import org.kodein.type.TypeToken
 
 /**
  * Defines the specs to search bindings from (in)complete data with [CopySpecs] or [DITree.find].

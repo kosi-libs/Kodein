@@ -13,7 +13,7 @@ import org.kodein.di.*
  * @return A list of factories of [T].
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.allFactories(tag: Any? = null) = AllFactories<A, T>(erased(), erased(), tag)
+inline fun <reified A : Any, reified T : Any> DIAware.allFactories(tag: Any? = null) = AllFactories<A, T>(generic(), generic(), tag)
 
 /**
  * Gets all providers that match the the given return type and tag.
@@ -25,7 +25,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.allFactories(tag: Any? = n
  * @return A list of providers of [T].
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DIAware.allProviders(tag: Any? = null) = AllProviders<T>(erased(), tag)
+inline fun <reified T : Any> DIAware.allProviders(tag: Any? = null) = AllProviders<T>(generic(), tag)
 
 /**
  * Gets all providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -39,7 +39,7 @@ inline fun <reified T : Any> DIAware.allProviders(tag: Any? = null) = AllProvide
  * @return A list of providers of [T].
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.allProviders(tag: Any? = null, arg: A) = AllProviders<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A : Any, reified T : Any> DIAware.allProviders(tag: Any? = null, arg: A) = AllProviders<A, T>(generic(), generic(), tag) { arg }
 
 /**
  * Gets all providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -55,7 +55,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.allProviders(tag: Any? = n
  * @return A list of providers of [T].
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DIAware.allProviders(tag: Any? = null, arg: Typed<A>) = AllProviders<A, T>(arg.type, erased(), tag) { arg.value }
+inline fun <A, reified T : Any> DIAware.allProviders(tag: Any? = null, arg: Typed<A>) = AllProviders<A, T>(arg.type, generic(), tag) { arg.value }
 
 /**
  * Gets all providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -69,7 +69,7 @@ inline fun <A, reified T : Any> DIAware.allProviders(tag: Any? = null, arg: Type
  * @return A list of providers of [T].
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = AllProviders<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A : Any, reified T : Any> DIAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = AllProviders<A, T>(generic(), generic(), tag, fArg)
 
 /**
  * Gets all instances from providers that match the the given return type and tag.
@@ -81,7 +81,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.allProviders(tag: Any? = n
  * @return A list of [T] instances.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DIAware.allInstances(tag: Any? = null) = AllInstances<T>(erased(), tag)
+inline fun <reified T : Any> DIAware.allInstances(tag: Any? = null) = AllInstances<T>(generic(), tag)
 
 /**
  * Gets all instances from providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -95,7 +95,7 @@ inline fun <reified T : Any> DIAware.allInstances(tag: Any? = null) = AllInstanc
  * @return A list of [T] instances.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.allInstances(tag: Any? = null, arg: A) = AllInstances<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A : Any, reified T : Any> DIAware.allInstances(tag: Any? = null, arg: A) = AllInstances<A, T>(generic(), generic(), tag) { arg }
 
 /**
  * Gets all instances from providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -111,7 +111,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.allInstances(tag: Any? = n
  * @return A list of [T] instances.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DIAware.allInstances(tag: Any? = null, arg: Typed<A>) = AllInstances<A, T>(arg.type, erased(), tag) { arg.value }
+inline fun <A, reified T : Any> DIAware.allInstances(tag: Any? = null, arg: Typed<A>) = AllInstances<A, T>(arg.type, generic(), tag) { arg.value }
 
 /**
  * Gets all instances from providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -125,4 +125,4 @@ inline fun <A, reified T : Any> DIAware.allInstances(tag: Any? = null, arg: Type
  * @return A list of [T] instances.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.allInstances(tag: Any? = null, noinline fArg: () -> A) = AllInstances<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A : Any, reified T : Any> DIAware.allInstances(tag: Any? = null, noinline fArg: () -> A) = AllInstances<A, T>(generic(), generic(), tag, fArg)

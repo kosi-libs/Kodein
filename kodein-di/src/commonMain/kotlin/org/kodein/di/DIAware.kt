@@ -3,6 +3,7 @@
 package org.kodein.di
 
 import org.kodein.di.internal.DirectDIImpl
+import org.kodein.type.TypeToken
 
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIContext<C>"), DeprecationLevel.ERROR)
 typealias KodeinContext<C> = DIContext<C>
@@ -45,7 +46,7 @@ interface DIContext<C : Any> {
 internal inline val DIContext<*>.anyType get() = type as TypeToken<in Any>
 
 private object Contexes {
-    val AnyDIContext = DIContext<Any>(AnyToken, Any())
+    val AnyDIContext = DIContext<Any>(TypeToken.Any, Any())
 }
 
 /**
@@ -130,7 +131,7 @@ fun <A, T : Any> DIAware.FactoryOrNull(argType: TypeToken<in A>, type: TypeToken
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 fun <T : Any> DIAware.Provider(type: TypeToken<out T>, tag: Any? = null): DIProperty<() -> T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.provider(DI.Key(ctx.anyType, UnitToken, type, tag), ctx.value) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -158,7 +159,7 @@ fun <A, T : Any> DIAware.Provider(argType: TypeToken<in A>, type: TypeToken<out 
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 fun <T : Any> DIAware.ProviderOrNull(type: TypeToken<out T>, tag: Any? = null): DIProperty<(() -> T)?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.providerOrNull(DI.Key(ctx.anyType, UnitToken, type, tag), ctx.value) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -186,7 +187,7 @@ fun <A, T : Any> DIAware.ProviderOrNull(argType: TypeToken<in A>, type: TypeToke
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 fun <T : Any> DIAware.Instance(type: TypeToken<out T>, tag: Any? = null): DIProperty<T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.provider(DI.Key(ctx.anyType, UnitToken, type, tag), ctx.value).invoke() }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value).invoke() }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -213,7 +214,7 @@ fun <A, T : Any> DIAware.Instance(argType: TypeToken<in A>, type: TypeToken<T>, 
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 fun <T : Any> DIAware.InstanceOrNull(type: TypeToken<out T>, tag: Any? = null): DIProperty<T?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.providerOrNull(DI.Key(ctx.anyType, UnitToken, type, tag), ctx.value)?.invoke() }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value)?.invoke() }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.

@@ -1,10 +1,11 @@
 package org.kodein.di
 
-import org.kodein.di.erased.instance
 import org.kodein.di.test.A
 import org.kodein.di.test.B
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
+import org.kodein.type.erasedComp
+import org.kodein.type.generic
 import kotlin.test.Test
 import kotlin.test.assertSame
 
@@ -18,12 +19,12 @@ class Tests_08_Erasure {
         val lb = listOf(B(null))
 
         val di = DI {
-            Bind(erasedComp1<List<A>, A>()) with instance(la)
-            Bind(erasedComp1<List<B>, B>()) with instance(lb)
+            Bind(erasedComp(List::class, generic<A>())) with instance(la)
+            Bind(erasedComp(List::class, generic<B>())) with instance(lb)
         }
 
-        assertSame(di.direct.Instance(erasedComp1<List<A>, A>(), null), la)
-        assertSame(di.direct.Instance(erasedComp1<List<B>, B>(), null), lb)
+        assertSame(di.direct.Instance(erasedComp(List::class, generic<A>()), null), la)
+        assertSame(di.direct.Instance(erasedComp(List::class, generic<B>()), null), lb)
     }
 
 

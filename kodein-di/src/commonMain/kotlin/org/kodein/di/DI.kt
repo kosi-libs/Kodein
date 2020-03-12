@@ -5,6 +5,7 @@ import org.kodein.di.bindings.ExternalSource
 import org.kodein.di.bindings.DIBinding
 import org.kodein.di.bindings.Scope
 import org.kodein.di.internal.DIImpl
+import org.kodein.type.TypeToken
 
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DI"), DeprecationLevel.ERROR)
 typealias Kodein = DI
@@ -109,11 +110,11 @@ interface DI : DIAware {
          */
         private fun StringBuilder.appendDescription(dispString: TypeToken<*>.() -> String) {
             append(" with ")
-            if (contextType != AnyToken) {
+            if (contextType != TypeToken.Any) {
                 append("?<${contextType.dispString()}>().")
             }
             append("? { ")
-            if (argType != UnitToken) {
+            if (argType != TypeToken.Unit) {
                 append(argType.dispString())
                 append(" -> ")
             }
@@ -129,7 +130,7 @@ interface DI : DIAware {
         /**
          * Description using full type names. The description is as close as possible to the code used to create this bind.
          */
-        val bindFullDescription: String get() = "bind<${type.fullDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
+        val bindFullDescription: String get() = "bind<${type.qualifiedDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
 
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this key.
@@ -146,7 +147,7 @@ interface DI : DIAware {
          */
         val fullDescription: String get() = buildString {
             append(bindFullDescription)
-            appendDescription(TypeToken<*>::fullDispString)
+            appendDescription(TypeToken<*>::qualifiedDispString)
         }
     }
 

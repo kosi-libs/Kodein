@@ -1,13 +1,12 @@
 package org.kodein.di.bindings
 
-import org.kodein.di.AnyToken
 import org.kodein.di.DIContext
-import org.kodein.di.TypeToken
 import org.kodein.di.Volatile
 import org.kodein.di.internal.maySynchronized
 import org.kodein.di.internal.newConcurrentMap
 import org.kodein.di.internal.synchronizedIfNotNull
 import org.kodein.di.internal.synchronizedIfNull
+import org.kodein.type.TypeToken
 
 interface ScopeCloseable {
     fun close()
@@ -182,7 +181,7 @@ class SimpleContextTranslator<in C : Any, S: Any>(override val contextType: Type
 }
 
 class SimpleAutoContextTranslator<S: Any>(override val scopeType: TypeToken<in S>, private val t: () -> S) : ContextTranslator<Any, S> {
-    override val contextType get() = AnyToken
+    override val contextType get() = TypeToken.Any
     override fun translate(ctx: Any): S = t()
     override fun toString() = "(${scopeType.simpleDispString()} -> ${contextType.simpleDispString()})"
 }

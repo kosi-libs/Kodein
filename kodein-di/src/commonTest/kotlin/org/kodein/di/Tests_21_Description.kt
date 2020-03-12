@@ -1,10 +1,9 @@
 package org.kodein.di
 
-import org.kodein.di.DI
-import org.kodein.di.erased
-import org.kodein.di.erasedComp2
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
+import org.kodein.type.erasedComp
+import org.kodein.type.generic
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,9 +13,9 @@ class Tests_21_Description {
     @Test
     fun test_00_SimpleKeySimpleDescription() {
         val key = DI.Key(
-                contextType = erased<Any>(),
-                argType = erased<Unit>(),
-                type = erased<String>(),
+                contextType = generic<Any>(),
+                argType = generic<Unit>(),
+                type = generic<String>(),
                 tag = null
         )
 
@@ -27,9 +26,9 @@ class Tests_21_Description {
     @Test
     fun test_01_ComplexKeySimpleDescription() {
         val key = DI.Key(
-                contextType = erased<String>(),
-                argType = erasedComp2<Pair<String, String>, String, String>(),
-                type = erased<IntRange>(),
+                contextType = generic<String>(),
+                argType = erasedComp(Pair::class, generic<String>(), generic<String>()),
+                type = generic<IntRange>(),
                 tag = "tag"
         )
 

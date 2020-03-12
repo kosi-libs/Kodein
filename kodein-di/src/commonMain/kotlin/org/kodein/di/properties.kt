@@ -1,5 +1,6 @@
 package org.kodein.di
 
+import org.kodein.type.TypeToken
 import kotlin.reflect.KProperty
 
 const val DEPRECATED_KODEIN_7X = "!!! THIS HAS BEEN REMOVED FROM 7.0 !!! As soon as you are using _Kodein-DI 7.x_, the old API named _Kodein_ API is broken. we highly recommend that you take some time to move from it to the new API with _DI_ named objects."

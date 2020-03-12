@@ -2,7 +2,7 @@
 
 package org.kodein.di.generic
 
-import org.kodein.di.AnyToken
+import org.kodein.di.TypeToken.Any
 import org.kodein.di.DI
 import org.kodein.di.bindings.ArgSetBinding
 import org.kodein.di.bindings.InSet
@@ -18,7 +18,7 @@ import org.kodein.di.generic
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified T: Any> DI.Builder.setBinding() = SetBinding(AnyToken, generic<T>(), generic<Set<T>>())
+inline fun <reified T: Any> DI.Builder.setBinding() = SetBinding(TypeToken.Any, generic<T>(), generic<Set<T>>())
 
 /**
  * Creates a set: multiple bindings can be added in this set.
@@ -30,7 +30,7 @@ inline fun <reified T: Any> DI.Builder.setBinding() = SetBinding(AnyToken, gener
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified A, reified T: Any> DI.Builder.argSetBinding() = ArgSetBinding(AnyToken, generic<A>(), generic<T>(), generic<Set<T>>())
+inline fun <reified A, reified T: Any> DI.Builder.argSetBinding() = ArgSetBinding(TypeToken.Any, generic<A>(), generic<T>(), generic<Set<T>>())
 
 /**
  * Defines that the binding will be saved in a set binding.

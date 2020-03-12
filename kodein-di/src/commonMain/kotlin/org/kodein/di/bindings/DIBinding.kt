@@ -1,6 +1,7 @@
 package org.kodein.di.bindings
 
 import org.kodein.di.*
+import org.kodein.type.TypeToken
 
 /**
  * Base class that knows how to get an instance.
@@ -79,9 +80,9 @@ interface DIBinding<C : Any, A, T : Any> : Binding<C, A, T> {
      * The description of this factory (using simple type names), *used for debug print only*.
      */
     val description: String get() {
-        val arg = if (argType != UnitToken) "${argType.simpleDispString()} -> " else ""
+        val arg = if (argType != TypeToken.Unit) "${argType.simpleDispString()} -> " else ""
         val scope = if (scope is NoScope) null else scope
-        val context = scope?.let { "scoped(${TTOf(it).simpleDispString()})." } ?: if (contextType != AnyToken) "contexted<${contextType.simpleDispString()}>()." else ""
+        val context = scope?.let { "scoped(${TTOf(it).simpleDispString()})." } ?: if (contextType != TypeToken.Any) "contexted<${contextType.simpleDispString()}>()." else ""
         return "$context${factoryName()} { $arg${createdType.simpleDispString()} }"
     }
 
@@ -89,10 +90,10 @@ interface DIBinding<C : Any, A, T : Any> : Binding<C, A, T> {
      * The description of this factory (using full type names), *used for debug print only*.
      */
     val fullDescription: String get() {
-        val arg = if (argType != UnitToken) "${argType.fullDispString()} -> " else ""
+        val arg = if (argType != TypeToken.Unit) "${argType.qualifiedDispString()} -> " else ""
         val scope = if (scope is NoScope) null else scope
-        val context = scope?.let { "scoped(${TTOf(it).fullDispString()})." } ?: if (contextType != AnyToken) "contexted<${contextType.fullDispString()}>()." else ""
-        return "$context${factoryFullName()} { $arg${createdType.fullDispString()} }"
+        val context = scope?.let { "scoped(${TTOf(it).qualifiedDispString()})." } ?: if (contextType != TypeToken.Any) "contexted<${contextType.qualifiedDispString()}>()." else ""
+        return "$context${factoryFullName()} { $arg${createdType.qualifiedDispString()} }"
     }
 
     /**
@@ -143,6 +144,6 @@ typealias NoArgKodeinBinding<C,T> = NoArgDIBinding<C,T>
  */
 interface NoArgDIBinding<C : Any, T: Any> : DIBinding<C, Unit, T>, Binding<C, Unit, T> {
 
-    override val argType get() = UnitToken
+    override val argType get() = TypeToken.Unit
 
 }

@@ -1,8 +1,5 @@
 package org.kodein.di
 
-import org.kodein.di.erased.bind
-import org.kodein.di.erased.instance
-import org.kodein.di.erased.singleton
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import kotlin.test.Test

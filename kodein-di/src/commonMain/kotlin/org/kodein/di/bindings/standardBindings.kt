@@ -3,6 +3,7 @@ package org.kodein.di.bindings
 import org.kodein.di.*
 import org.kodein.di.internal.BindingDIImpl
 import org.kodein.di.internal.synchronizedIfNull
+import org.kodein.type.TypeToken
 
 /**
  * Concrete factory: each time an instance is needed, the function creator function will be called.
@@ -58,7 +59,7 @@ class Multiton<C : Any, A, T: Any>(override val scope: Scope<C>, override val co
     override fun factoryFullName(): String {
         val params = ArrayList<String>(2)
         if (_refMaker != SingletonReference)
-            params.add("ref = ${TTOf(_refMaker).fullDispString()}")
+            params.add("ref = ${TTOf(_refMaker).qualifiedDispString()}")
         return factoryName(params)
     }
 
@@ -119,7 +120,7 @@ class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override val cont
     override fun factoryFullName(): String {
         val params = ArrayList<String>(2)
         if (_refMaker != SingletonReference)
-            params.add("ref = ${TTOf(_refMaker).fullDispString()}")
+            params.add("ref = ${TTOf(_refMaker).qualifiedDispString()}")
         return factoryName(params)
     }
 
@@ -146,7 +147,7 @@ class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override val cont
  */
 class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdType: TypeToken<out T>, val creator: NoArgSimpleBindingDI<Any>.() -> T) : NoArgDIBinding<Any, T> {
 
-    override val contextType = AnyToken
+    override val contextType = TypeToken.Any
 
     @Volatile private var _instance: T? = null
     private val _lock = Any()
@@ -172,7 +173,7 @@ class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdT
     override fun factoryName() = "eagerSingleton"
 
     init {
-        val key = DI.Key(AnyToken, UnitToken, createdType, null)
+        val key = DI.Key(TypeToken.Any, TypeToken.Unit, createdType, null)
         builder.onReady { getFactory(BindingDIImpl(this, key, Any(), 0)).invoke(Unit) }
     }
 
@@ -188,7 +189,7 @@ class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdT
  */
 class InstanceBinding<T: Any>(override val createdType: TypeToken<out T>, val instance: T) : NoArgDIBinding<Any, T> {
     override fun factoryName() = "instance"
-    override val contextType = AnyToken
+    override val contextType = TypeToken.Any
 
     /**
      * @see [DIBinding.getFactory]
@@ -196,5 +197,5 @@ class InstanceBinding<T: Any>(override val createdType: TypeToken<out T>, val in
     override fun getFactory(di: BindingDI<Any>, key: DI.Key<Any, Unit, T>): (Unit) -> T = { this.instance }
 
     override val description: String get() = "${factoryName()} ( ${createdType.simpleDispString()} ) "
-    override val fullDescription: String get() = "${factoryFullName()} ( ${createdType.fullDispString()} ) "
+    override val fullDescription: String get() = "${factoryFullName()} ( ${createdType.qualifiedDispString()} ) "
 }

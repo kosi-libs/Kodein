@@ -2,6 +2,7 @@ package org.kodein.di.internal
 
 import org.kodein.di.*
 import org.kodein.di.bindings.*
+import org.kodein.type.TypeToken
 
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIBuilderImpl"), DeprecationLevel.ERROR)
 internal typealias KodeinBuilderImpl = DIBuilderImpl
@@ -13,7 +14,7 @@ internal open class DIBuilderImpl internal constructor(
         override val containerBuilder: DIContainerBuilderImpl
 ) : DI.Builder {
 
-    override val contextType = AnyToken
+    override val contextType = TypeToken.Any
 
     override val scope: Scope<Any?> get() = NoScope() // Recreating a new NoScope every-time *on purpose*!
 
@@ -25,7 +26,7 @@ internal open class DIBuilderImpl internal constructor(
 
     inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) : DI.Builder.DirectBinder {
         override infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>) {
-            if (binding.createdType == UnitToken) {
+            if (binding.createdType == TypeToken.Unit) {
                 throw IllegalArgumentException("Using `bind() from` with a *Unit* ${binding.factoryName()} is most likely an error. If you are sure you want to bind the Unit type, please use `bind<Unit>() with ${binding.factoryName()}`.")
             }
             containerBuilder.bind(DI.Key(binding.contextType, binding.argType, binding.createdType, _tag), binding, moduleName, _overrides)

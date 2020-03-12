@@ -1,9 +1,5 @@
 package org.kodein.di
 
-import org.kodein.di.erased.constant
-import org.kodein.di.erased.instance
-import org.kodein.di.erased.provider
-import org.kodein.di.erased.with
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.IPerson
 import org.kodein.di.test.MethodSorters

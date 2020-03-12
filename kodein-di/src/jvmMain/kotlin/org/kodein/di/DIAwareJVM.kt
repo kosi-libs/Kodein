@@ -26,7 +26,7 @@ fun <A, T : Any> DIAware.AllFactories(argType: TypeToken<in A>, type: TypeToken<
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 fun <T : Any> DIAware.AllProviders(type: TypeToken<out T>, tag: Any? = null): DIProperty<List<() -> T>> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allProviders(DI.Key(ctx.anyType, UnitToken, type, tag), ctx.value) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allProviders(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
 
 /**
  * Gets all providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -53,7 +53,7 @@ fun <A, T : Any> DIAware.AllProviders(argType: TypeToken<in A>, type: TypeToken<
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 fun <T : Any> DIAware.AllInstances(type: TypeToken<out T>, tag: Any? = null): DIProperty<List<T>> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allProviders(DI.Key(ctx.anyType, UnitToken, type, tag), ctx.value).map { it.invoke() } }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allProviders(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value).map { it.invoke() } }
 
 /**
  * Gets all instances from providers that match the the given return type and tag, curried from factories that take an argument [A].

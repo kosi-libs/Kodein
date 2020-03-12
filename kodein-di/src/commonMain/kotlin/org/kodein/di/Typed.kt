@@ -1,5 +1,7 @@
 package org.kodein.di
 
+import org.kodein.type.TypeToken
+
 /**
  * Used as an argument for currying functions, allows to define a value and its type.
  */
