@@ -14,7 +14,7 @@ import org.kodein.di.*
  * @throws DI.NotFoundException if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.factory() = Factory<A, T>(erased(), erased())
+inline fun <reified A : Any, reified T : Any> Named.factory() = Factory<A, T>(erased(), erased())
 
 /**
  * Gets a factory of `T` for the given argument type and return type, or nul if none is found.
@@ -27,7 +27,7 @@ inline fun <reified A, reified T : Any> Named.factory() = Factory<A, T>(erased()
  * @return A factory, or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.factoryOrNull() = FactoryOrNull<A, T>(erased(), erased())
+inline fun <reified A : Any, reified T : Any> Named.factoryOrNull() = FactoryOrNull<A, T>(erased(), erased())
 
 /**
  * Gets a provider of `T` for the given type.
@@ -55,7 +55,7 @@ inline fun <reified T : Any> Named.provider() = Provider<T>(erased())
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.provider(arg: A) = Provider<A, T>(erased(), erased()) { arg }
+inline fun <reified A : Any, reified T : Any> Named.provider(arg: A) = Provider<A, T>(erased(), erased()) { arg }
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A].
@@ -70,7 +70,7 @@ inline fun <reified A, reified T : Any> Named.provider(arg: A) = Provider<A, T>(
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> Named.provider(arg: Typed<A>) = Provider<A, T>(arg.type, erased()) { arg.value }
+inline fun <A : Any, reified T : Any> Named.provider(arg: Typed<A>) = Provider<A, T>(arg.type, erased()) { arg.value }
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A].
@@ -85,7 +85,7 @@ inline fun <A, reified T : Any> Named.provider(arg: Typed<A>) = Provider<A, T>(a
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.provider(noinline fArg: () -> A) = Provider<A, T>(erased(), erased(), fArg)
+inline fun <reified A : Any, reified T : Any> Named.provider(noinline fArg: () -> A) = Provider<A, T>(erased(), erased(), fArg)
 
 /**
  * Gets a provider of `T` for the given type, or null if none is found.
@@ -111,7 +111,7 @@ inline fun <reified T : Any> Named.providerOrNull() = ProviderOrNull<T>(erased()
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.providerOrNull(arg: A) = ProviderOrNull<A, T>(erased(), erased(), { arg })
+inline fun <reified A : Any, reified T : Any> Named.providerOrNull(arg: A) = ProviderOrNull<A, T>(erased(), erased(), { arg })
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -141,7 +141,7 @@ inline fun <A, reified T : Any> Named.providerOrNull(arg: Typed<A>) = ProviderOr
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.providerOrNull(noinline fArg: () -> A) = ProviderOrNull<A, T>(erased(), erased(), fArg)
+inline fun <reified A : Any, reified T : Any> Named.providerOrNull(noinline fArg: () -> A) = ProviderOrNull<A, T>(erased(), erased(), fArg)
 
 /**
  * Gets an instance of `T` for the given type.
@@ -169,7 +169,7 @@ inline fun <reified T : Any> Named.instance() = Instance<T>(erased())
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.instance(arg: A) = Instance<A, T>(erased(), erased()) { arg }
+inline fun <reified A : Any, reified T : Any> Named.instance(arg: A) = Instance<A, T>(erased(), erased()) { arg }
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A].
@@ -201,7 +201,7 @@ inline fun <A, reified T : Any> Named.instance(arg: Typed<A>) = Instance<A, T>(a
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.instance(noinline fArg: () -> A) = Instance<A, T>(erased(), erased(), fArg)
+inline fun <reified A : Any, reified T : Any> Named.instance(noinline fArg: () -> A) = Instance<A, T>(erased(), erased(), fArg)
 
 /**
  * Gets an instance of `T` for the given type, or null if none is found.
@@ -227,7 +227,7 @@ inline fun <reified T : Any> Named.instanceOrNull() = InstanceOrNull<T>(erased()
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.instanceOrNull(arg: A) = InstanceOrNull<A, T>(erased(), erased()) { arg }
+inline fun <reified A : Any, reified T : Any> Named.instanceOrNull(arg: A) = InstanceOrNull<A, T>(erased(), erased()) { arg }
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -257,7 +257,7 @@ inline fun <A, reified T : Any> Named.instanceOrNull(arg: Typed<A>) = InstanceOr
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.instanceOrNull(noinline fArg: () -> A) = InstanceOrNull<A, T>(erased(), erased(), fArg)
+inline fun <reified A : Any, reified T : Any> Named.instanceOrNull(noinline fArg: () -> A) = InstanceOrNull<A, T>(erased(), erased(), fArg)
 
 /**
  * Gets a constant of type [T] and tag whose tag is the name of the receiving property.

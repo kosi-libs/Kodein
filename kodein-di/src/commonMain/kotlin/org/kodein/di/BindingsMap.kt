@@ -13,7 +13,7 @@ typealias KodeinDefining<C,A,T> = DIDefining<C,A,T>
  * @property binding The binding
  * @property fromModule The module name that defined the binding (for debug)
  */
-open class DIDefining<C, A, T: Any>(val binding: DIBinding<C, A, T>, val fromModule: String?)
+open class DIDefining<C : Any, A, T: Any>(val binding: DIBinding<C, A, T>, val fromModule: String?)
 
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIDefinition<C,A,T>"), DeprecationLevel.ERROR)
 typealias KodeinDefinition<C,A,T> = DIDefinition<C,A,T>
@@ -24,7 +24,7 @@ typealias KodeinDefinition<C,A,T> = DIDefinition<C,A,T>
  * @property fromModule The module name that defined the binding (for debug)
  * @property tree The tree that this binding relates to.
  */
-class DIDefinition<C, A, T: Any>(binding: DIBinding<C, A, T>, fromModule: String?, val tree: DITree) : DIDefining<C, A, T>(binding, fromModule)
+class DIDefinition<C : Any, A, T: Any>(binding: DIBinding<C, A, T>, fromModule: String?, val tree: DITree) : DIDefining<C, A, T>(binding, fromModule)
 
 /**
  * A Map containing all bindings associated to their keys

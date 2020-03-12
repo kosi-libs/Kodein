@@ -13,8 +13,7 @@ class Tests_00_Factory {
 
     @Test
     fun test_00_FactoryBindingGetFactory() {
-
-            val di = DI {
+        val di = DI {
             bind() from factory { name: String -> Person(name) }
         }
 

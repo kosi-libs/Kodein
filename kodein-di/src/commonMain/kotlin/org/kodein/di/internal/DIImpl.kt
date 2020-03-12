@@ -39,7 +39,7 @@ internal open class DIImpl internal constructor(private val _container: DIContai
 internal typealias BindingKodeinImpl<C,A,T> = BindingDIImpl<C,A,T>
 
 @Suppress("UNCHECKED_CAST")
-internal open class BindingDIImpl<out C, out A, out T: Any> internal constructor(
+internal open class BindingDIImpl<out C : Any, out A, out T: Any> internal constructor(
         override val directDI: DirectDI,
         private val _key: DI.Key<C, A, T>,
         override val context: C,

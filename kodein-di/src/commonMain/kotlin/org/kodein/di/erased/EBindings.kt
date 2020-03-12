@@ -10,14 +10,14 @@ import org.kodein.di.erased
  * @param EC The scope's environment context type.
  * @param BC The scope's Binding context type.
  */
-inline fun <reified C> DI.Builder.scoped(scope: Scope<C>): DI.BindBuilder.WithScope<C> = DI.BindBuilder.WithScope.Impl(erased(), scope)
+inline fun <reified C : Any> DI.Builder.scoped(scope: Scope<C>): DI.BindBuilder.WithScope<C> = DI.BindBuilder.WithScope.Impl(erased(), scope)
 
 /**
  * Used to define bindings with a context: `bind<MyType>() with contexted<MyContext>().provider { /*...*/ }`
  *
  * @param C The context type.
  */
-inline fun <reified C> DI.Builder.contexted(): DI.BindBuilder.WithContext<C> = DI.BindBuilder.WithContext.Impl(erased())
+inline fun <reified C : Any> DI.Builder.contexted(): DI.BindBuilder.WithContext<C> = DI.BindBuilder.WithContext.Impl(erased())
 
 
 /**
@@ -30,7 +30,7 @@ inline fun <reified C> DI.Builder.contexted(): DI.BindBuilder.WithContext<C> = D
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  * @return A factory ready to be bound.
  */
-inline fun <C, reified A, reified T: Any> DI.BindBuilder.WithContext<C>.factory(noinline creator: BindingDI<C>.(A) -> T) = Factory<C, A, T>(contextType, erased(), erased(), creator)
+inline fun <C : Any, reified A : Any, reified T: Any> DI.BindBuilder.WithContext<C>.factory(noinline creator: BindingDI<C>.(A) -> T) = Factory<C, A, T>(contextType, erased(), erased(), creator)
 
 /**
  * Creates a factory: each time an instance is needed, the function [creator] function will be called.
@@ -43,7 +43,7 @@ inline fun <C, reified A, reified T: Any> DI.BindBuilder.WithContext<C>.factory(
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  * @return A provider ready to be bound.
  */
-inline fun <C, reified T: Any> DI.BindBuilder.WithContext<C>.provider(noinline creator: NoArgBindingDI<C>.() -> T) = Provider(contextType, erased(), creator)
+inline fun <C : Any, reified T: Any> DI.BindBuilder.WithContext<C>.provider(noinline creator: NoArgBindingDI<C>.() -> T) = Provider(contextType, erased(), creator)
 
 /**
  * Creates a singleton: will create an instance on first request and will subsequently always return the same instance.
@@ -54,7 +54,7 @@ inline fun <C, reified T: Any> DI.BindBuilder.WithContext<C>.provider(noinline c
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  * @return A singleton ready to be bound.
  */
-inline fun <C, reified T: Any> DI.BindBuilder.WithScope<C>.singleton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: NoArgSimpleBindingDI<C>.() -> T) = Singleton(scope, contextType, erased(), ref, sync, creator)
+inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.singleton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: NoArgSimpleBindingDI<C>.() -> T) = Singleton(scope, contextType, erased(), ref, sync, creator)
 
 /**
  * Creates a multiton: will create an instance on first request for each different argument and will subsequently always return the same instance for the same argument.
@@ -66,7 +66,7 @@ inline fun <C, reified T: Any> DI.BindBuilder.WithScope<C>.singleton(ref: RefMak
  * @param creator The function that will be called the first time an instance is requested with a new argument. Guaranteed to be called only once per argument. Should create a new instance.
  * @return A multiton ready to be bound.
  */
-inline fun <C, reified A, reified T: Any> DI.BindBuilder.WithScope<C>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingDI<C>.(A) -> T) = Multiton<C, A, T>(scope, contextType, erased(), erased(), ref, sync, creator)
+inline fun <C : Any, reified A : Any, reified T: Any> DI.BindBuilder.WithScope<C>.multiton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: SimpleBindingDI<C>.(A) -> T) = Multiton<C, A, T>(scope, contextType, erased(), erased(), ref, sync, creator)
 
 /**
  * Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.
@@ -77,7 +77,7 @@ inline fun <C, reified A, reified T: Any> DI.BindBuilder.WithScope<C>.multiton(r
  * @param creator The function that will be called as soon as DI is ready. Guaranteed to be called only once. Should create a new instance.
  * @return An eager singleton ready to be bound.
  */
-inline fun <reified T: Any> DI.Builder.eagerSingleton(noinline creator: NoArgSimpleBindingDI<Any?>.() -> T) = EagerSingleton(containerBuilder, erased(), creator)
+inline fun <reified T: Any> DI.Builder.eagerSingleton(noinline creator: NoArgSimpleBindingDI<Any>.() -> T) = EagerSingleton(containerBuilder, erased(), creator)
 
 /**
  * Creates an instance provider: will always return the given instance.

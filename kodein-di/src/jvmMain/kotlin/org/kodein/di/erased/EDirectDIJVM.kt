@@ -13,7 +13,7 @@ import org.kodein.di.*
  * @return A list of matching factories of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.allFactories(tag: Any? = null) = directDI.AllFactories<A, T>(erased(), erased(), tag)
+inline fun <reified A: Any, reified T : Any> DirectDIAware.allFactories(tag: Any? = null) = directDI.AllFactories<A, T>(erased(), erased(), tag)
 
 /**
  * Gets all providers that can return a `T` for the given type and tag.
@@ -39,7 +39,7 @@ inline fun <reified T : Any> DirectDIAware.allProviders(tag: Any? = null) = dire
  * @return A list of matching providers of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, arg: A) = directDI.AllProviders<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A : Any, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, arg: A) = directDI.AllProviders<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets all providers that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -69,7 +69,7 @@ inline fun <A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, arg
  * @return A list of matching providers of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = directDI.AllProviders<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A: Any, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = directDI.AllProviders<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets all instances that can return a `T` for the given type and tag.
@@ -95,7 +95,7 @@ inline fun <reified T : Any> DirectDIAware.allInstances(tag: Any? = null) = dire
  * @return A list of matching instances of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.allInstances(tag: Any? = null, arg: A) = directDI.AllInstances<A, T>(erased(), erased(), tag, arg)
+inline fun <reified A: Any, reified T : Any> DirectDIAware.allInstances(tag: Any? = null, arg: A) = directDI.AllInstances<A, T>(erased(), erased(), tag, arg)
 
 /**
  * Gets all instances that can return a `T` for the given type and tag, curried from factories for the given argument.

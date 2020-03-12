@@ -3,7 +3,7 @@ package org.kodein.di.internal
 import org.kodein.di.*
 
 @Suppress("UNCHECKED_CAST")
-private inline val DIContext<*>.anyType get() = type as TypeToken<in Any?>
+private inline val DIContext<*>.anyType get() = type as TypeToken<in Any>
 
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DirectDIBaseImpl"), DeprecationLevel.ERROR)
 internal typealias DirectKodeinBaseImpl = DirectDIBaseImpl

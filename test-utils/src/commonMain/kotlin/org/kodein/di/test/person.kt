@@ -7,6 +7,15 @@ data class Person(override val name: String? = null ) : IPerson
 data class A(var b: B?, val str: String = "")
 data class B(var c: C?, val int: Int = 0)
 data class C(var a: A?, val char: Char = ' ')
+data class D(val str: String = "") {
+    lateinit var e: E
+}
+data class E(val int: Int = 0) {
+    lateinit var f: F
+}
+data class F(val char: Char = ' ') {
+    lateinit var d: D
+}
 
 interface IName {
     val firstName: String

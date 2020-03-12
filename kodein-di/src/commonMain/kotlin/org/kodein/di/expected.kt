@@ -17,7 +17,7 @@ expect fun <T: Any> TTOf(obj: T): TypeToken<out T>
  *
  * @param T The type to represent erased.
  */
-expect inline fun <reified T> erased(): TypeToken<T>
+expect inline fun <reified T : Any> erased(): TypeToken<T>
 
 /** @suppress */
 @Target(AnnotationTarget.FIELD)

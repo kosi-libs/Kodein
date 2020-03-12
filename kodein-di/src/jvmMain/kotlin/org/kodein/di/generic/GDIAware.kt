@@ -388,15 +388,15 @@ inline fun <reified A, reified T : Any> DIAware.allInstances(tag: Any? = null, n
  * Defines a context and its type to be used by DI.
  */
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diContext(context)"), DeprecationLevel.ERROR)
-inline fun <reified C> kcontext(context: C) = DIContext(generic(), context)
-inline fun <reified C> diContext(context: C) = DIContext(generic(), context)
+inline fun <reified C : Any> kcontext(context: C) = DIContext(generic(), context)
+inline fun <reified C : Any> diContext(context: C) = DIContext(generic(), context)
 
 /**
  * Defines a context and its type to be used by DI.
  */
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diContext(getContext)"), DeprecationLevel.ERROR)
-inline fun <reified C> kcontext(crossinline getContext: () -> C) = DIContext<C>(generic()) { getContext() }
-inline fun <reified C> diContext(crossinline getContext: () -> C) = DIContext<C>(generic()) { getContext() }
+inline fun <reified C : Any> kcontext(crossinline getContext: () -> C) = DIContext<C>(generic()) { getContext() }
+inline fun <reified C : Any> diContext(crossinline getContext: () -> C) = DIContext<C>(generic()) { getContext() }
 
 /**
  * Allows to create a new DI object with a context and/or a trigger set.
@@ -405,7 +405,7 @@ inline fun <reified C> diContext(crossinline getContext: () -> C) = DIContext<C>
  * @param trigger The new trigger of the new DI.
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
-inline fun <reified C> DIAware.on(context: C, trigger: DITrigger? = this.diTrigger) = On(diContext(context), trigger)
+inline fun <reified C : Any> DIAware.on(context: C, trigger: DITrigger? = this.diTrigger) = On(diContext(context), trigger)
 
 /**
  * Allows to create a new DI object with a context and/or a trigger set.
@@ -414,7 +414,7 @@ inline fun <reified C> DIAware.on(context: C, trigger: DITrigger? = this.diTrigg
  * @param trigger The new trigger of the new DI.
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
-inline fun <reified C> DIAware.on(trigger: DITrigger? = this.diTrigger, crossinline getContext: () -> C) = On(diContext(getContext), trigger)
+inline fun <reified C : Any> DIAware.on(trigger: DITrigger? = this.diTrigger, crossinline getContext: () -> C) = On(diContext(getContext), trigger)
 
 /**
  * Allows to create a new DI object with a trigger set.

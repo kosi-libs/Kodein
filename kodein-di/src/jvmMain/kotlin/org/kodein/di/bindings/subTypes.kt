@@ -11,7 +11,7 @@ import org.kodein.di.TypeToken
  * @param T The provided type of all bindings in the set.
  * @param block A function that provides a binding for each subtype.
  */
-class SubTypes<C, A, T : Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val block: (TypeToken<out T>) -> DIBinding<in C, in A, out T>): DIBinding<C, A, T> {
+class SubTypes<C: Any, A, T : Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val block: (TypeToken<out T>) -> DIBinding<in C, in A, out T>): DIBinding<C, A, T> {
 
     private val bindings = HashMap<TypeToken<out T>, DIBinding<in C, in A, out T>>()
 
@@ -40,7 +40,7 @@ class TypeBinderSubTypes<T: Any> internal constructor(private val _binder: DI.Bu
      * @param binding The binding to add in the set.
      */
     @Suppress("UNCHECKED_CAST", "FunctionName")
-    fun <C, A> With(contextType: TypeToken<in C>, argType: TypeToken<in A>, createdType: TypeToken<out T>, block: (TypeToken<out T>) -> DIBinding<in C, in A, out T>) {
+    fun <C: Any, A> With(contextType: TypeToken<in C>, argType: TypeToken<in A>, createdType: TypeToken<out T>, block: (TypeToken<out T>) -> DIBinding<in C, in A, out T>) {
         _binder with SubTypes(contextType, argType, createdType, block)
     }
 }

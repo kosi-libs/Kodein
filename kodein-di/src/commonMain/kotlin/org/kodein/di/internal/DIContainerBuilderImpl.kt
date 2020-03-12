@@ -108,7 +108,7 @@ internal class DIContainerBuilderImpl(
         }
     }
 
-    override fun <C, A, T: Any> bind(key: DI.Key<C, A, T>, binding: DIBinding<in C, in A, out T>, fromModule: String?, overrides: Boolean?) {
+    override fun <C : Any, A, T: Any> bind(key: DI.Key<C, A, T>, binding: DIBinding<*,*,*>, fromModule: String?, overrides: Boolean?) {
         key.type.checkIsReified(key)
         key.argType.checkIsReified(key)
         checkOverrides(key, overrides)

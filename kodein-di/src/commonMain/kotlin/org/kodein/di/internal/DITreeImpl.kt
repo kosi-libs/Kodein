@@ -117,7 +117,7 @@ internal class DITreeImpl(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C, A, T : Any> find(key: DI.Key<C, A, T>, overrideLevel: Int, all: Boolean): List<Triple<DI.Key<Any, A, T>, DIDefinition<Any, A, T>, ContextTranslator<C, Any>?>> {
+    override fun <C : Any, A, T : Any> find(key: DI.Key<C, A, T>, overrideLevel: Int, all: Boolean): List<Triple<DI.Key<Any, A, T>, DIDefinition<Any, A, T>, ContextTranslator<C, Any>?>> {
 
         if (!all) {
             _cache[key]?.let { (realKey, list, translator) ->
@@ -174,6 +174,6 @@ internal class DITreeImpl(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C, A, T: Any> get(key: DI.Key<C, A, T>) = _cache[key] as Triple<DI.Key<Any, A, T>, List<DIDefinition<Any, A, T>>, ContextTranslator<C, Any>?>?
+    override fun <C : Any, A, T: Any> get(key: DI.Key<C, A, T>) = _cache[key] as Triple<DI.Key<Any, A, T>, List<DIDefinition<Any, A, T>>, ContextTranslator<C, Any>?>?
 
 }

@@ -12,7 +12,7 @@ import org.kodein.di.*
  * @param A The type of argument used to create or retrieve an instance.
  * @param T The type of instance this factory creates or retrieves.
  */
-interface Binding<C, A, T: Any> {
+interface Binding<C : Any, A, T: Any> {
 
     /**
      * Returns a factory for the given key.
@@ -39,7 +39,7 @@ typealias KodeinBinding<C,A,T> = DIBinding<C,A,T>
  * @param A The type of argument used to create or retrieve an instance.
  * @param T The type of instance this factory creates or retrieves.
  */
-interface DIBinding<C, A, T : Any> : Binding<C, A, T> {
+interface DIBinding<C : Any, A, T : Any> : Binding<C, A, T> {
 
     /**
      * The name of this factory, *used for debug print only*.
@@ -100,7 +100,7 @@ interface DIBinding<C, A, T : Any> : Binding<C, A, T> {
      *
      * Note that the copy **must** "reset" any reference or status of the binding.
      */
-    interface Copier<C, A, T: Any> {
+    interface Copier<C : Any, A, T: Any> {
         /**
          * Copy the binding this Copier is attached to.
          *
@@ -116,7 +116,7 @@ interface DIBinding<C, A, T : Any> : Binding<C, A, T> {
              * @param f The [Copier.copy] implementation.
              * @return A copier with the given implementation.
              */
-            operator fun <C, A, T: Any> invoke(f: (DIContainer.Builder) -> DIBinding<C, A, T>) = object : Copier<C, A, T> {
+            operator fun <C : Any, A, T: Any> invoke(f: (DIContainer.Builder) -> DIBinding<C, A, T>) = object : Copier<C, A, T> {
                 override fun copy(builder: DIContainer.Builder) = f(builder)
             }
         }
@@ -141,7 +141,7 @@ typealias NoArgKodeinBinding<C,T> = NoArgDIBinding<C,T>
  *
  * As a factory does need an argument, it uses `Unit` as its argument.
  */
-interface NoArgDIBinding<C, T: Any> : DIBinding<C, Unit, T>, Binding<C, Unit, T> {
+interface NoArgDIBinding<C : Any, T: Any> : DIBinding<C, Unit, T>, Binding<C, Unit, T> {
 
     override val argType get() = UnitToken
 

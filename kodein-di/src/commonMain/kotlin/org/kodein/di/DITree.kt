@@ -36,7 +36,7 @@ interface DITree {
      * @param overrideLevel 0 if looking for regular bindings, 1 or more if looking for bindings that have been overridden.
      * @return A list of keys and their definition.
      */
-    fun <C, A, T : Any> find(key: DI.Key<C, A, T>, overrideLevel: Int = 0, all: Boolean = false): List<Triple<DI.Key<Any, A, T>, DIDefinition<Any, A, T>, ContextTranslator<C, Any>?>>
+    fun <C : Any, A, T : Any> find(key: DI.Key<C, A, T>, overrideLevel: Int = 0, all: Boolean = false): List<Triple<DI.Key<Any, A, T>, DIDefinition<Any, A, T>, ContextTranslator<C, Any>?>>
 
     /**
      * Finds all keys and definitions that match the given specs.
@@ -54,6 +54,6 @@ interface DITree {
      * @param key The exact key to look for.
      * @return The binding and all it's overrides, or null if this key is not registered.
      */
-    operator fun <C, A, T: Any> get(key: DI.Key<C, A, T>): Triple<DI.Key<Any, A, T>, List<DIDefinition<Any, A, T>>, ContextTranslator<C, Any>?>?
+    operator fun <C : Any, A, T: Any> get(key: DI.Key<C, A, T>): Triple<DI.Key<Any, A, T>, List<DIDefinition<Any, A, T>>, ContextTranslator<C, Any>?>?
 
 }

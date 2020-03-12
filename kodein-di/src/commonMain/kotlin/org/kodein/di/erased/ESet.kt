@@ -31,7 +31,7 @@ inline fun <reified T: Any> DI.Builder.setBinding() = SetBinding(AnyToken, erase
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified A, reified T: Any> DI.Builder.argSetBinding() = ArgSetBinding(AnyToken, erased<A>(), erased<T>(), erasedSet<T>())
+inline fun <reified A : Any, reified T: Any> DI.Builder.argSetBinding() = ArgSetBinding(AnyToken, erased<A>(), erased<T>(), erasedSet<T>())
 
 /**
  * Defines that the binding will be saved in a set binding.

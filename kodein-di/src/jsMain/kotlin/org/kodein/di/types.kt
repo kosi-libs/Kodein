@@ -12,7 +12,7 @@ internal class JSTypeToken<T>(type: KClass<*>) : AbstractKClassTypeToken<T>(type
 }
 
 @Suppress("UNCHECKED_CAST", "UNCHECKED_CAST_TO_NATIVE_INTERFACE")
-actual inline fun <reified T> erased(): TypeToken<T> {
+actual inline fun <reified T : Any> erased(): TypeToken<T> {
     try {
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         return JSTypeToken(T::class)

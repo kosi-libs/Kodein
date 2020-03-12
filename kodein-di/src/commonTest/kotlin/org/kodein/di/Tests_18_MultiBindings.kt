@@ -49,7 +49,7 @@ class Tests_18_MultiBindings {
             Bind<Map<String, Person>>(erasedMap()) with provider { Instance<PersonEntries>(erasedSet(), null).toMap() }
         }
 
-        val persons: Map<String, Person> = di.direct.Instance(erasedMap(), null)
+        val persons: Map<String, Person> = di.direct.Instance(erasedMap<String, Person>(), null)
 
         assertEquals(Person("Salomon"), persons["so"])
         assertEquals(Person("Laila"), persons["loulou"])

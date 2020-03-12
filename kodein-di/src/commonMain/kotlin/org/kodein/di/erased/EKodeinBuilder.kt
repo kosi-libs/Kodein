@@ -46,9 +46,9 @@ inline fun <reified T : Any> SearchDSL.binding(tag: Any? = null) = SearchDSL.Bin
 /**
  * Creates a context constrained spec.
  */
-inline fun <reified T> SearchDSL.context() = Context(erased<T>())
+inline fun <reified T : Any> SearchDSL.context() = Context(erased<T>())
 
 /**
  * Creates an argument constrained spec.
  */
-inline fun <reified T> SearchDSL.argument() = Argument(erased<T>())
+inline fun <reified T : Any> SearchDSL.argument() = Argument(erased<T>())

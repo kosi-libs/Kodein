@@ -26,7 +26,7 @@ class GenericJvmTests_22_Search {
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            kodein.container.factory(key as DI.Key<Any?, Any?, Any>, null).invoke(Unit)
+            kodein.container.factory(key as DI.Key<Any, Any?, Any>, Any()).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)
@@ -50,7 +50,7 @@ class GenericJvmTests_22_Search {
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            kodein.container.factory(key as DI.Key<Any?, Unit, Any>, null).invoke(Unit)
+            kodein.container.factory(key as DI.Key<Any, Unit, Any>, Any()).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)
@@ -74,7 +74,7 @@ class GenericJvmTests_22_Search {
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            kodein.container.factory(key as DI.Key<Any?, Any?, Any>, null).invoke(Unit)
+            kodein.container.factory(key as DI.Key<Any, Any?, Any>, Any()).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)

@@ -20,11 +20,11 @@ internal open class DIBuilderImpl internal constructor(
     inner class TypeBinder<T : Any> internal constructor(val type: TypeToken<out T>, val tag: Any?, val overrides: Boolean?) : DI.Builder.TypeBinder<T> {
         internal val containerBuilder get() = this@DIBuilderImpl.containerBuilder
 
-        override infix fun <C, A> with(binding: DIBinding<in C, in A, out T>) = containerBuilder.bind(DI.Key(binding.contextType, binding.argType, type, tag), binding, moduleName, overrides)
+        override infix fun <C : Any, A> with(binding: DIBinding<in C, in A, out T>) = containerBuilder.bind(DI.Key(binding.contextType, binding.argType, type, tag), binding, moduleName, overrides)
     }
 
     inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) : DI.Builder.DirectBinder {
-        override infix fun <C, A, T: Any> from(binding: DIBinding<in C, in A, out T>) {
+        override infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>) {
             if (binding.createdType == UnitToken) {
                 throw IllegalArgumentException("Using `bind() from` with a *Unit* ${binding.factoryName()} is most likely an error. If you are sure you want to bind the Unit type, please use `bind<Unit>() with ${binding.factoryName()}`.")
             }

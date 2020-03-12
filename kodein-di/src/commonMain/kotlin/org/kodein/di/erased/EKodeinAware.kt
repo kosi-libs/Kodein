@@ -14,7 +14,7 @@ import org.kodein.di.*
  * @throws DI.NotFoundException if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DIAware.factory(tag: Any? = null) = Factory<A, T>(erased(), erased(), tag)
+inline fun <reified A : Any, reified T : Any> DIAware.factory(tag: Any? = null) = Factory<A, T>(erased(), erased(), tag)
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
@@ -27,7 +27,7 @@ inline fun <reified A, reified T : Any> DIAware.factory(tag: Any? = null) = Fact
  * @return A factory, or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DIAware.factoryOrNull(tag: Any? = null) = FactoryOrNull<A, T>(erased(), erased(), tag)
+inline fun <reified A : Any, reified T : Any> DIAware.factoryOrNull(tag: Any? = null) = FactoryOrNull<A, T>(erased(), erased(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -55,7 +55,7 @@ inline fun <reified T : Any> DIAware.provider(tag: Any? = null) = Provider<T>(er
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DIAware.provider(tag: Any? = null, arg: A) = Provider<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A : Any, reified T : Any> DIAware.provider(tag: Any? = null, arg: A) = Provider<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -85,7 +85,7 @@ inline fun <A, reified T : Any> DIAware.provider(tag: Any? = null, arg: Typed<A>
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DIAware.provider(tag: Any? = null, noinline fArg: () -> A) = Provider<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A : Any, reified T : Any> DIAware.provider(tag: Any? = null, noinline fArg: () -> A) = Provider<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -111,7 +111,7 @@ inline fun <reified T : Any> DIAware.providerOrNull(tag: Any? = null) = Provider
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DIAware.providerOrNull(tag: Any? = null, arg: A) = ProviderOrNull<A, T>(erased(), erased(), tag, { arg })
+inline fun <reified A : Any, reified T : Any> DIAware.providerOrNull(tag: Any? = null, arg: A) = ProviderOrNull<A, T>(erased(), erased(), tag, { arg })
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -141,7 +141,7 @@ inline fun <A, reified T : Any> DIAware.providerOrNull(tag: Any? = null, arg: Ty
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A : Any, reified T : Any> DIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -169,7 +169,7 @@ inline fun <reified T : Any> DIAware.instance(tag: Any? = null) = Instance<T>(er
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DIAware.instance(tag: Any? = null, arg: A) = Instance<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A : Any, reified T : Any> DIAware.instance(tag: Any? = null, arg: A) = Instance<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -201,7 +201,7 @@ inline fun <A, reified T : Any> DIAware.instance(tag: Any? = null, arg: Typed<A>
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DIAware.instance(tag: Any? = null, noinline fArg: () -> A) = Instance<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A : Any, reified T : Any> DIAware.instance(tag: Any? = null, noinline fArg: () -> A) = Instance<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -227,7 +227,7 @@ inline fun <reified T : Any> DIAware.instanceOrNull(tag: Any? = null) = Instance
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, arg: A) = InstanceOrNull<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A : Any, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, arg: A) = InstanceOrNull<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -257,21 +257,21 @@ inline fun <A, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, arg: Ty
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, noinline fArg: () -> A) = InstanceOrNull<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A : Any, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, noinline fArg: () -> A) = InstanceOrNull<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Defines a context and its type to be used by DI.
  */
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diContext(context)"), DeprecationLevel.ERROR)
-inline fun <reified C> kcontext(context: C) = DIContext(erased(), context)
-inline fun <reified C> diContext(context: C) = DIContext(erased(), context)
+inline fun <reified C : Any> kcontext(context: C) = DIContext(erased(), context)
+inline fun <reified C : Any> diContext(context: C) = DIContext(erased(), context)
 
 /**
  * Defines a context and its type to be used by DI.
  */
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diContext(getContext)"), DeprecationLevel.ERROR)
-inline fun <reified C> kcontext(crossinline getContext: () -> C) = DIContext<C>(erased()) { getContext() }
-inline fun <reified C> diContext(crossinline getContext: () -> C) = DIContext<C>(erased()) { getContext() }
+inline fun <reified C : Any> kcontext(crossinline getContext: () -> C) = DIContext<C>(erased()) { getContext() }
+inline fun <reified C : Any> diContext(crossinline getContext: () -> C) = DIContext<C>(erased()) { getContext() }
 
 /**
  * Allows to create a new DI object with a context and/or a trigger set.
@@ -280,7 +280,7 @@ inline fun <reified C> diContext(crossinline getContext: () -> C) = DIContext<C>
  * @param trigger The new trigger of the new DI.
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
-inline fun <reified C> DIAware.on(context: C, trigger: DITrigger? = this.diTrigger) = On(diContext(context), trigger)
+inline fun <reified C : Any> DIAware.on(context: C, trigger: DITrigger? = this.diTrigger) = On(diContext(context), trigger)
 
 /**
  * Allows to create a new DI object with a context and/or a trigger set.
@@ -289,7 +289,7 @@ inline fun <reified C> DIAware.on(context: C, trigger: DITrigger? = this.diTrigg
  * @param trigger The new trigger of the new DI.
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
-inline fun <reified C> DIAware.on(trigger: DITrigger? = this.diTrigger, crossinline getContext: () -> C) = On(diContext(getContext), trigger)
+inline fun <reified C : Any> DIAware.on(trigger: DITrigger? = this.diTrigger, crossinline getContext: () -> C) = On(diContext(getContext), trigger)
 
 /**
  * Allows to create a new DI object with a trigger set.

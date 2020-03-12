@@ -16,7 +16,7 @@ import org.kodein.di.*
  *
  * @param C The type of the context
  */
-interface WithContext<out C> {
+interface WithContext<out C : Any> {
     /**
      * The context that was given at retrieval.
      */
@@ -33,7 +33,7 @@ typealias SimpleBindingKodein<C> = SimpleBindingDI<C>
  * @param C The type of the context
  */
 @DI.DIDsl
-interface SimpleBindingDI<out C> : DirectDI, WithContext<C> {
+interface SimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
 
     /**
      * Gets a factory from the overridden binding.
@@ -62,7 +62,7 @@ typealias BindingKodein<C> = BindingDI<C>
  *
  * @param C The type of the context
  */
-interface BindingDI<out C> : SimpleBindingDI<C>
+interface BindingDI<out C : Any> : SimpleBindingDI<C>
 
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("NoArgSimpleBindingDI<C>"), DeprecationLevel.ERROR)
 typealias NoArgSimpleBindingKodein<C> = NoArgSimpleBindingDI<C>
@@ -74,7 +74,7 @@ typealias NoArgSimpleBindingKodein<C> = NoArgSimpleBindingDI<C>
  * @param C The type of the context
  */
 @DI.DIDsl
-interface NoArgSimpleBindingDI<out C> : DirectDI, WithContext<C> {
+interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
 
     /**
      * Gets a provider from the overridden binding.
@@ -120,12 +120,12 @@ typealias NoArgBindingKodein<C> = NoArgBindingDI<C>
  *
  * @param C The type of the context
  */
-interface NoArgBindingDI<out C> : NoArgSimpleBindingDI<C>
+interface NoArgBindingDI<out C : Any> : NoArgSimpleBindingDI<C>
 
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("NoArgBindingDIWrap<C>"), DeprecationLevel.ERROR)
 internal typealias NoArgBindingKodeinWrap<C> = NoArgBindingDIWrap<C>
 
-internal class NoArgBindingDIWrap<out C>(private val _di: BindingDI<C>) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
+internal class NoArgBindingDIWrap<out C : Any>(private val _di: BindingDI<C>) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
     override fun overriddenProvider() = _di.overriddenFactory().toProvider { Unit }
     override fun overriddenProviderOrNull() = _di.overriddenFactoryOrNull()?.toProvider { Unit }
     override fun overriddenInstance() = overriddenProvider().invoke()

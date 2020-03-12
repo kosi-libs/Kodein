@@ -214,14 +214,15 @@ class GenericJvmTests_13_Scope {
     }
 
     @Test
+    @Ignore
     fun test_08_CircularScopes() {
         val kodein = DI.direct {
             bind() from contexted<A>().provider { context.str }
             bind() from contexted<B>().provider { context.int }
             bind() from contexted<C>().provider { context.char }
-            registerContextTranslator { a: A -> a.b }
-            registerContextTranslator { b: B -> b.c }
-            registerContextTranslator { c: C -> c.a }
+//            registerContextTranslator { a: A -> a.b }
+//            registerContextTranslator { b: B -> b.c }
+//            registerContextTranslator { c: C -> c.a }
         }
 
         val a = A(null, "test")

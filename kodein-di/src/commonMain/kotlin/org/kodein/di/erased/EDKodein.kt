@@ -16,7 +16,7 @@ import org.kodein.di.erased
  * @throws DI.NotFoundException if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.factory(tag: Any? = null) = directDI.Factory<A, T>(erased(), erased(), tag)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.factory(tag: Any? = null) = directDI.Factory<A, T>(erased(), erased(), tag)
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
@@ -29,7 +29,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.factory(tag: Any? = null) 
  * @return A factory, or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.factoryOrNull(tag: Any? = null) = directDI.FactoryOrNull<A, T>(erased(), erased(), tag)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.factoryOrNull(tag: Any? = null) = directDI.FactoryOrNull<A, T>(erased(), erased(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -57,7 +57,7 @@ inline fun <reified T : Any> DirectDIAware.provider(tag: Any? = null) = directDI
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: A) = directDI.Provider<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: A) = directDI.Provider<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -89,7 +89,7 @@ inline fun <A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: Ty
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.provider(tag: Any? = null, noinline fArg: () -> A) = directDI.Provider<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(tag: Any? = null, noinline fArg: () -> A) = directDI.Provider<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -116,7 +116,7 @@ inline fun <reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null) = di
  * @return A provider of `T`, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: A) = directDI.ProviderOrNull<A, T>(erased(), erased(), tag) { arg }
+inline fun <reified A : Any, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: A) = directDI.ProviderOrNull<A, T>(erased(), erased(), tag) { arg }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -146,7 +146,7 @@ inline fun <A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, a
  * @return A provider of `T`, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = directDI.ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = directDI.ProviderOrNull<A, T>(erased(), erased(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -174,7 +174,7 @@ inline fun <reified T : Any> DirectDIAware.instance(tag: Any? = null) = directDI
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: A) = directDI.Instance<A, T>(erased(), erased(), tag, arg)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: A) = directDI.Instance<A, T>(erased(), erased(), tag, arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument.
@@ -218,7 +218,7 @@ inline fun <reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null) = di
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: A) = directDI.InstanceOrNull<A, T>(erased(), erased(), tag, arg)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: A) = directDI.InstanceOrNull<A, T>(erased(), erased(), tag, arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -241,4 +241,4 @@ inline fun <A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, a
  * @param context The new context for the new DirectDI.
  * @param receiver The new receiver for the new DirectDI.
  */
-inline fun <reified C> DirectDIAware.on(context: C) = directDI.On(diContext(context))
+inline fun <reified C : Any> DirectDIAware.on(context: C) = directDI.On(diContext(context))

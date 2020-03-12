@@ -118,13 +118,13 @@ internal class DIContainerImpl private constructor(
 
     }
 
-    private fun <C, A, T: Any> bindingDI(key: DI.Key<C, A, T>, context: DIContext<C>, tree: DITree, overrideLevel: Int) : BindingDI<C> {
+    private fun <C : Any, A, T: Any> bindingDI(key: DI.Key<C, A, T>, context: DIContext<C>, tree: DITree, overrideLevel: Int) : BindingDI<C> {
         val container = DIContainerImpl(tree, Node(key, overrideLevel, node, fullDescriptionOnError), fullDescriptionOnError)
         return BindingDIImpl(DirectDIImpl(container, context), key, context.value, overrideLevel)
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C, A, T: Any> factoryOrNull(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): ((A) -> T)? {
+    override fun <C : Any, A, T: Any> factoryOrNull(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): ((A) -> T)? {
         tree.find(key, 0).let {
             if (it.size == 1) {
                 val (_, definition, translator) = it[0]
@@ -149,7 +149,7 @@ internal class DIContainerImpl private constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C, A, T: Any> factory(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): (A) -> T {
+    override fun <C : Any, A, T: Any> factory(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): (A) -> T {
         val result = tree.find(key, overrideLevel)
 
         if (result.size == 1) {
@@ -196,7 +196,7 @@ internal class DIContainerImpl private constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C, A, T: Any> allFactories(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): List<(A) -> T> {
+    override fun <C : Any, A, T: Any> allFactories(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): List<(A) -> T> {
         val result = tree.find(key, overrideLevel, all = true)
 
         return result.map { (_, definition, translator) ->

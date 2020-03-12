@@ -18,7 +18,7 @@ internal class NativeTypeToken<T>(type: KClass<*>) : AbstractKClassTypeToken<T>(
  * @return The type object representing `T`.
  */
 @Suppress("UNCHECKED_CAST", "UNCHECKED_CAST_TO_NATIVE_INTERFACE")
-actual inline fun <reified T> erased(): TypeToken<T> = NativeTypeToken(T::class)
+actual inline fun <reified T : Any> erased(): TypeToken<T> = NativeTypeToken(T::class)
 
 /**
  * Gives a [TypeToken] representing the given class.

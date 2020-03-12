@@ -13,7 +13,7 @@ import org.kodein.di.internal.synchronizedIfNull
  * @param createdType The type of objects created by this factory.
  * @property creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-class Factory<C, A, T: Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, private val creator: BindingDI<C>.(A) -> T) : DIBinding<C, A, T> {
+class Factory<C : Any, A, T: Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, private val creator: BindingDI<C>.(A) -> T) : DIBinding<C, A, T> {
 
     override fun factoryName() = "factory"
 
@@ -24,7 +24,7 @@ class Factory<C, A, T: Any>(override val contextType: TypeToken<in C>, override 
 private typealias BindingContextedKodein<C>  = BindingContextedDI<C>
 
 @Suppress("UNCHECKED_CAST")
-private class BindingContextedDI<out C>(val base: BindingDI<*>, override val context: C) : BindingDI<C> by (base as BindingDI<C>)
+private class BindingContextedDI<out C : Any>(val base: BindingDI<*>, override val context: C) : BindingDI<C> by (base as BindingDI<C>)
 
 private data class ScopeKey<out A>(val scopeId: Any, val arg: A)
 
@@ -37,7 +37,7 @@ private data class ScopeKey<out A>(val scopeId: Any, val arg: A)
  * @property createdType The type of the created object, *used for debug print only*.
  * @property creator The function that will be called the first time an instance is requested. Guaranteed to be called only once per argument. Should create a new instance.
  */
-class Multiton<C, A, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, val sync: Boolean = true, private val creator: SimpleBindingDI<C>.(A) -> T) : DIBinding<C, A, T> {
+class Multiton<C : Any, A, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, val sync: Boolean = true, private val creator: SimpleBindingDI<C>.(A) -> T) : DIBinding<C, A, T> {
     private val _refMaker = refMaker ?: SingletonReference
 
     private val _scopeId = Any()
@@ -82,7 +82,7 @@ class Multiton<C, A, T: Any>(override val scope: Scope<C>, override val contextT
  * @param createdType The type of objects created by this provider, *used for debug print only*.
  * @property creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-class Provider<C, T: Any>(override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, val creator: NoArgBindingDI<C>.() -> T) : NoArgDIBinding<C, T> {
+class Provider<C : Any, T: Any>(override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, val creator: NoArgBindingDI<C>.() -> T) : NoArgDIBinding<C, T> {
     override fun factoryName() = "provider"
 
     /**
@@ -98,7 +98,7 @@ class Provider<C, T: Any>(override val contextType: TypeToken<in C>, override va
  * @param createdType The type of the created object, *used for debug print only*.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
-class Singleton<C, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, val sync: Boolean = true, val creator: NoArgSimpleBindingDI<C>.() -> T) : NoArgDIBinding<C, T> {
+class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, val sync: Boolean = true, val creator: NoArgSimpleBindingDI<C>.() -> T) : NoArgDIBinding<C, T> {
     @Suppress("UNCHECKED_CAST")
     private val _refMaker = refMaker ?: SingletonReference
     private val _scopeKey = ScopeKey(Any(), Unit)
@@ -144,14 +144,14 @@ class Singleton<C, T: Any>(override val scope: Scope<C>, override val contextTyp
  * @param createdType The type of the created object.
  * @param creator The function that will be called as soon as DI is ready. Guaranteed to be called only once. Should create a new instance.
  */
-class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdType: TypeToken<out T>, val creator: NoArgSimpleBindingDI<Any?>.() -> T) : NoArgDIBinding<Any?, T> {
+class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdType: TypeToken<out T>, val creator: NoArgSimpleBindingDI<Any>.() -> T) : NoArgDIBinding<Any, T> {
 
     override val contextType = AnyToken
 
     @Volatile private var _instance: T? = null
     private val _lock = Any()
 
-    private fun getFactory(di: BindingDI<Any?>): (Unit) -> T {
+    private fun getFactory(di: BindingDI<Any>): (Unit) -> T {
         return { _ ->
             synchronizedIfNull(
                     lock = _lock,
@@ -167,13 +167,13 @@ class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdT
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(di: BindingDI<Any?>, key: DI.Key<Any?, Unit, T>) = getFactory(di)
+    override fun getFactory(di: BindingDI<Any>, key: DI.Key<Any, Unit, T>) = getFactory(di)
 
     override fun factoryName() = "eagerSingleton"
 
     init {
         val key = DI.Key(AnyToken, UnitToken, createdType, null)
-        builder.onReady { getFactory(BindingDIImpl(this, key, null, 0)).invoke(Unit) }
+        builder.onReady { getFactory(BindingDIImpl(this, key, Any(), 0)).invoke(Unit) }
     }
 
     override val copier = DIBinding.Copier { builder -> EagerSingleton(builder, createdType, creator) }
@@ -186,14 +186,14 @@ class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdT
  * @param createdType The type of the object, *used for debug print only*.
  * @property instance The object that will always be returned.
  */
-class InstanceBinding<T: Any>(override val createdType: TypeToken<out T>, val instance: T) : NoArgDIBinding<Any?, T> {
+class InstanceBinding<T: Any>(override val createdType: TypeToken<out T>, val instance: T) : NoArgDIBinding<Any, T> {
     override fun factoryName() = "instance"
     override val contextType = AnyToken
 
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(di: BindingDI<Any?>, key: DI.Key<Any?, Unit, T>): (Unit) -> T = { this.instance }
+    override fun getFactory(di: BindingDI<Any>, key: DI.Key<Any, Unit, T>): (Unit) -> T = { this.instance }
 
     override val description: String get() = "${factoryName()} ( ${createdType.simpleDispString()} ) "
     override val fullDescription: String get() = "${factoryFullName()} ( ${createdType.fullDispString()} ) "

@@ -28,7 +28,7 @@ class Tests_23_Context {
 
     class T01(override val di: DI) : DIAware {
         var contextRetrieved = false
-        override val diContext = org.di.di.erased.diContext {
+        override val diContext = diContext {
             contextRetrieved = true
             "BRYS"
         }

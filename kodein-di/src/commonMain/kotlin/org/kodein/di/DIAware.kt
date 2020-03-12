@@ -10,7 +10,7 @@ typealias KodeinContext<C> = DIContext<C>
 /**
  * Defines a context and its type to be used by Di
  */
-interface DIContext<C> {
+interface DIContext<C : Any> {
         /**
          * The type of the context, used to lookup corresponding bindings.
          */
@@ -24,28 +24,28 @@ interface DIContext<C> {
     /**
      * Defines a context and its type to be used by DI
      */
-    data class Value<C>(override val type: TypeToken<in C>, override val value: C) : DIContext<C>
+    data class Value<C : Any>(override val type: TypeToken<in C>, override val value: C) : DIContext<C>
 
     /**
      * Defines a context and its type to be used by DI
      */
-    class Lazy<C>(override val type: TypeToken<in C>, val getValue: () -> C) : DIContext<C> {
+    class Lazy<C : Any>(override val type: TypeToken<in C>, val getValue: () -> C) : DIContext<C> {
         override val value by lazy(getValue)
     }
 
     companion object {
-        operator fun <C> invoke(type: TypeToken<in C>, value: C): DIContext<C> = Value(type, value)
-        operator fun <C> invoke(type: TypeToken<in C>, getValue: () -> C): DIContext<C> = Lazy(type, getValue)
+        operator fun <C : Any> invoke(type: TypeToken<in C>, value: C): DIContext<C> = Value(type, value)
+        operator fun <C : Any> invoke(type: TypeToken<in C>, getValue: () -> C): DIContext<C> = Lazy(type, getValue)
     }
 }
 
 
 
 @Suppress("UNCHECKED_CAST")
-internal inline val DIContext<*>.anyType get() = type as TypeToken<in Any?>
+internal inline val DIContext<*>.anyType get() = type as TypeToken<in Any>
 
 private object Contexes {
-    val AnyDIContext = DIContext<Any?>(AnyToken, null)
+    val AnyDIContext = DIContext<Any>(AnyToken, Any())
 }
 
 /**

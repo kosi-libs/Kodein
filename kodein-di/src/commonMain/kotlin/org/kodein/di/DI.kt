@@ -74,7 +74,7 @@ interface DI : DIAware {
      * @property tag The associated tag.
      */
     @Suppress("EqualsOrHashCode")
-    data class Key<in C, in A, out T: Any>(
+    data class Key<in C : Any, in A, out T: Any>(
             val contextType: TypeToken<in C>,
             val argType: TypeToken<in A>,
             val type: TypeToken<out T>,
@@ -163,7 +163,7 @@ interface DI : DIAware {
      *
      * @param C The context type.
      */
-    interface BindBuilder<C> {
+    interface BindBuilder<C : Any> {
         /**
          * The context type that will be used by all bindings that are defined in this DSL context.
          */
@@ -174,9 +174,9 @@ interface DI : DIAware {
          *
          * @param C The context type.
          */
-        interface WithContext<C> : BindBuilder<C> {
+        interface WithContext<C : Any> : BindBuilder<C> {
             /** @suppress */
-            class Impl<C>(override val contextType: TypeToken<C>) : WithContext<C>
+            class Impl<C : Any>(override val contextType: TypeToken<C>) : WithContext<C>
         }
 
         /**
@@ -184,7 +184,7 @@ interface DI : DIAware {
          *
          * @param C The scope's Context.
          */
-        interface WithScope<C> : BindBuilder<C> {
+        interface WithScope<C : Any> : BindBuilder<C> {
 
             /**
              * The scope that will be used by all bindings that are defined in this DSL context.
@@ -192,7 +192,7 @@ interface DI : DIAware {
             val scope: Scope<C>
 
             /** @suppress */
-            class Impl<C>(override val contextType: TypeToken<C>, override val scope: Scope<C>) : WithScope<C>
+            class Impl<C : Any>(override val contextType: TypeToken<C>, override val scope: Scope<C>) : WithScope<C>
         }
     }
 
@@ -204,7 +204,7 @@ interface DI : DIAware {
      * @property containerBuilder Every methods eventually ends up to a call to this builder.
      */
     @DIDsl
-    interface Builder : BindBuilder.WithContext<Any?>, BindBuilder.WithScope<Any?> {
+    interface Builder : BindBuilder.WithContext<Any>, BindBuilder.WithScope<Any> {
 
         val containerBuilder: DIContainer.Builder
 
@@ -220,7 +220,7 @@ interface DI : DIAware {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun <C, A> with(binding: DIBinding<in C, in A, out T>)
+            infix fun <C : Any, A> with(binding: DIBinding<in C, in A, out T>)
         }
 
         /**
@@ -235,7 +235,7 @@ interface DI : DIAware {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun <C, A, T: Any> from(binding: DIBinding<in C, in A, out T>)
+            infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>)
         }
 
         /**

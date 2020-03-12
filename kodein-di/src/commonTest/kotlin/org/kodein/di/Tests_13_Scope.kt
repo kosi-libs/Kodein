@@ -208,27 +208,27 @@ class Tests_13_Scope {
     @Test
     fun test_08_CircularScopes() {
         val di = DI.direct {
-            bind() from contexted<A>().provider { context.str }
-            bind() from contexted<B>().provider { context.int }
-            bind() from contexted<C>().provider { context.char }
-            registerContextTranslator { a: A -> a.b }
-            registerContextTranslator { b: B -> b.c }
-            registerContextTranslator { c: C -> c.a }
+            bind() from contexted<D>().provider { context.str }
+            bind() from contexted<E>().provider { context.int }
+            bind() from contexted<F>().provider { context.char }
+            registerContextTranslator { d: D -> d.e }
+            registerContextTranslator { e: E -> e.f }
+            registerContextTranslator { f: F -> f.d }
         }
 
-        val a = A(null, "test")
-        val b = B(null, 42)
-        val c = C(null, 'S')
-        a.b = b
-        b.c = c
-        c.a = a
+        val d = D( "test")
+        val e = E( 42)
+        val f = F('S')
+        d.e = e
+        e.f = f
+        f.d = d
 
-        val str1: String = di.on(b).instance()
-        val str2: String = di.on(c).instance()
-        val int1: Int = di.on(a).instance()
-        val int2: Int = di.on(c).instance()
-        val char1: Char = di.on(a).instance()
-        val char2: Char = di.on(b).instance()
+        val str1: String = di.on(e).instance()
+        val str2: String = di.on(f).instance()
+        val int1: Int = di.on(d).instance()
+        val int2: Int = di.on(f).instance()
+        val char1: Char = di.on(d).instance()
+        val char2: Char = di.on(e).instance()
 
         assertAllEqual("test", str1, str2)
         assertAllEqual(42, int1, int2)

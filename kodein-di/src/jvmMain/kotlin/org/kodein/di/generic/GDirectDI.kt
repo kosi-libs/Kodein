@@ -350,4 +350,4 @@ inline fun <A, reified T : Any> DirectDIAware.allInstances(tag: Any? = null, arg
  * @param context The new context for the new DirectDI.
  * @param receiver The new receiver for the new DirectDI.
  */
-inline fun <reified C> DirectDIAware.on(context: C) = directDI.On(diContext(context))
+inline fun <reified C : Any> DirectDIAware.on(context: C) = directDI.On(diContext(context))

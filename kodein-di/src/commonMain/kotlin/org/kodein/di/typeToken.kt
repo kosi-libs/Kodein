@@ -159,7 +159,7 @@ class CompositeTypeToken<T>(val main: TypeToken<T>, vararg val params: TypeToken
 
 private object Tokens {
     val UnitToken = erased<Unit>()
-    val AnyToken = erased<Any?>()
+    val AnyToken = erased<Any>()
 }
 
 abstract class AbstractKClassTypeToken<T>(protected val type: KClass<*>): TypeToken<T> {
