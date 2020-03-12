@@ -6,7 +6,7 @@ buildscript {
         maven(url = "https://dl.bintray.com/kodein-framework/Kodein-Internal-Gradle")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.10.3")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.11.0")
     }
 }
 
