@@ -6,7 +6,7 @@ buildscript {
         maven(url = "https://dl.bintray.com/kodein-framework/Kodein-Internal-Gradle")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.11.0")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:2.12.0")
     }
 }
 
@@ -28,11 +28,11 @@ android.include(
         ":framework:android:kodein-di-framework-android-x"
 )
 
-framework("KTOR").include(
+framework("ktor").include(
         ":framework:ktor:kodein-di-framework-ktor-server-jvm",
         ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm"
 )
 
-framework("TFX").include(
+framework("tfx").include(
         ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
 )
