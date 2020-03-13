@@ -124,7 +124,7 @@ interface DIContainer {
          * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          * @throws DI.OverridingException If this bindings overrides an existing binding and is not allowed to.
          */
-        fun <C : Any, A, T: Any> bind(key: DI.Key<C, A, T>, binding: DIBinding<*,*,*>, fromModule: String? = null, overrides: Boolean? = null)
+        fun <C : Any, A, T: Any> bind(key: DI.Key<C, A, T>, binding: DIBinding<in C, in A, out T>, fromModule: String? = null, overrides: Boolean? = null)
 
         /**
          * Imports all bindings defined in the given [DIContainer] into this builder.

@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package org.kodein.di.erased
 
 import org.kodein.di.*
@@ -39,11 +41,11 @@ inline fun <reified T: Any> DI.Builder.instance(instance: T) = InstanceBinding(g
 @Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 inline fun <reified C : Any, reified S : Any> contextTranslator(noinline t: (C) -> S): ContextTranslator<C, S> = SimpleContextTranslator(generic(), generic(), t)
 @Deprecated(DEPRECATED_ERASED_GENERIC_7X)
-inline fun <reified C : Any, reified S : Any> DI.Builder.registerContextTranslator(noinline t: (C) -> S) = RegisterContextTranslator(contextTranslator(t))
+inline fun <reified C : Any, reified S : Any> DI.Builder.registerContextTranslator(noinline t: (C) -> S) = RegisterContextTranslator(org.kodein.di.contextTranslator(t))
 @Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 inline fun <reified S : Any> contextFinder(noinline t: () -> S) : ContextTranslator<Any, S> = SimpleAutoContextTranslator(generic(), t)
 @Deprecated(DEPRECATED_ERASED_GENERIC_7X)
-inline fun <reified S : Any> DI.Builder.registerContextFinder(noinline t: () -> S) = RegisterContextTranslator(contextFinder(t))
+inline fun <reified S : Any> DI.Builder.registerContextFinder(noinline t: () -> S) = RegisterContextTranslator(org.kodein.di.contextFinder(t))
 @Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 inline fun <reified A : Any, reified T : Any> DIAware.factory(tag: Any? = null) = Factory<A, T>(generic(), generic(), tag)
 @Deprecated(DEPRECATED_ERASED_GENERIC_7X)

@@ -215,7 +215,7 @@ class Tests_13_Scope {
             registerContextTranslator { f: F -> f.d }
         }
 
-        val d = D( "test")
+        val d = D("test")
         val e = E( 42)
         val f = F('S')
         d.e = e

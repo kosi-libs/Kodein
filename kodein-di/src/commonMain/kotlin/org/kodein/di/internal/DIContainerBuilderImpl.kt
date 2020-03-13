@@ -108,13 +108,14 @@ internal class DIContainerBuilderImpl(
         }
     }
 
-    override fun <C : Any, A, T: Any> bind(key: DI.Key<C, A, T>, binding: DIBinding<*,*,*>, fromModule: String?, overrides: Boolean?) {
+    @Suppress("UNCHECKED_CAST")
+    override fun <C : Any, A, T: Any> bind(key: DI.Key<C, A, T>, binding: DIBinding<in C, in A, out T>, fromModule: String?, overrides: Boolean?) {
         // key.type.checkIsReified(key) todo
         // key.argType.checkIsReified(key) todo
         checkOverrides(key, overrides)
 
         val bindings = bindingsMap.getOrPut(key) { newLinkedList() }
-        bindings.add(0, DIDefining(binding, fromModule))
+        bindings.add(0, DIDefining(binding as DIBinding<C, A, T>, fromModule))
     }
 
     /**
