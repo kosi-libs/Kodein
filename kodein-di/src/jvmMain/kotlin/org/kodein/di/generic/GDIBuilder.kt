@@ -14,7 +14,7 @@ import org.kodein.di.generic
  * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
  * @return The binder: call `DI.Builder.TypeBinder.with` on it to finish the binding syntax and register the binding.
  */
-inline fun <reified T : Any> DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null) = Bind<T>(generic(), tag, overrides)
+inline fun <reified T : Any> DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null) = Bind<T>(org.kodein.type.generic(), tag, overrides)
 
 /**
  * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
@@ -42,14 +42,14 @@ inline infix fun <reified T: Any> DI.Builder.ConstantBinder.with(value: T) = Wit
  * @property tag An optional tag constraint.
  */
 @Suppress("unused")
-inline fun <reified T: Any> SearchDSL.binding(tag: Any? = null) = SearchDSL.Binding(generic<T>(), tag)
+inline fun <reified T: Any> SearchDSL.binding(tag: Any? = null) = SearchDSL.Binding(org.kodein.type.generic<T>(), tag)
 
 /**
  * Creates a context constrained spec.
  */
-inline fun <reified T> SearchDSL.context() = Context(generic<T>())
+inline fun <reified T : Any> SearchDSL.context() = Context(org.kodein.type.generic<T>())
 
 /**
  * Creates an argument constrained spec.
  */
-inline fun <reified T> SearchDSL.argument() = Argument(generic<T>())
+inline fun <reified T : Any> SearchDSL.argument() = Argument(org.kodein.type.generic<T>())

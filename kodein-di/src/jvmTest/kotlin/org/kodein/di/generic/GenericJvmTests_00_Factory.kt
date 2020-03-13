@@ -4,8 +4,8 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.bindings.subTypes
 import org.kodein.di.direct
-import org.kodein.di.jvmType
 import org.kodein.di.test.*
+import org.kodein.type.jvmType
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

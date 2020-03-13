@@ -14,7 +14,7 @@ import org.kodein.di.*
  * @throws DI.NotFoundException if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDI.factory(tag: Any? = null) = Factory<A, T>(generic(), generic(), tag)
+inline fun <reified A : Any, reified T : Any> DirectDI.factory(tag: Any? = null) = Factory<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag)
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
@@ -27,7 +27,7 @@ inline fun <reified A, reified T : Any> DirectDI.factory(tag: Any? = null) = Fac
  * @return A factory, or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.factoryOrNull(tag: Any? = null) = directDI.FactoryOrNull<A, T>(generic(), generic(), tag)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.factoryOrNull(tag: Any? = null) = directDI.FactoryOrNull<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag)
 
 /**
  * Gets all factories that can return a `T` for the given argument type, return type and tag.
@@ -40,7 +40,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.factoryOrNull(tag: Any? = 
  * @return A list of matching factories of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDI.allFactories(tag: Any? = null) = AllFactories<A, T>(generic(), generic(), tag)
+inline fun <reified A : Any, reified T : Any> DirectDI.allFactories(tag: Any? = null) = AllFactories<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -53,7 +53,7 @@ inline fun <reified A, reified T : Any> DirectDI.allFactories(tag: Any? = null) 
  * @throws DI.NotFoundException if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DirectDIAware.provider(tag: Any? = null) = directDI.Provider<T>(generic(), tag)
+inline fun <reified T : Any> DirectDIAware.provider(tag: Any? = null) = directDI.Provider<T>(org.kodein.type.generic(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -68,7 +68,7 @@ inline fun <reified T : Any> DirectDIAware.provider(tag: Any? = null) = directDI
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: A) = directDI.Factory<A, T>(generic(), generic(), tag).toProvider { arg }
+inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: A) = directDI.Factory<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag).toProvider { arg }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -85,7 +85,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.provider(tag: Any? = null,
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: Typed<A>) = directDI.Factory<A, T>(arg.type, generic(), tag).toProvider { arg.value }
+inline fun <A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: Typed<A>) = directDI.Factory<A, T>(arg.type, org.kodein.type.generic(), tag).toProvider { arg.value }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -100,7 +100,7 @@ inline fun <A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: Ty
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.provider(tag: Any? = null, noinline fArg: () -> A) = directDI.Factory<A, T>(generic(), generic(), tag).toProvider(fArg)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(tag: Any? = null, noinline fArg: () -> A) = directDI.Factory<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag).toProvider(fArg)
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -113,7 +113,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.provider(tag: Any? = null,
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null) = directDI.ProviderOrNull<T>(generic(), tag)
+inline fun <reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null) = directDI.ProviderOrNull<T>(org.kodein.type.generic(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -127,7 +127,7 @@ inline fun <reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null) = di
  * @return A provider of `T`, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: A) = directDI.FactoryOrNull<A, T>(generic(), generic(), tag)?.toProvider { arg }
+inline fun <reified A : Any, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: A) = directDI.FactoryOrNull<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag)?.toProvider { arg }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -143,7 +143,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? =
  * @return A provider of `T`, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: Typed<A>) = directDI.FactoryOrNull<A, T>(arg.type, generic(), tag)?.toProvider { arg.value }
+inline fun <A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: Typed<A>) = directDI.FactoryOrNull<A, T>(arg.type, org.kodein.type.generic(), tag)?.toProvider { arg.value }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -157,7 +157,7 @@ inline fun <A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, a
  * @return A provider of `T`, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = directDI.FactoryOrNull<A, T>(generic(), generic(), tag)?.toProvider(fArg)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = directDI.FactoryOrNull<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag)?.toProvider(fArg)
 
 /**
  * Gets all providers that can return a `T` for the given type and tag.
@@ -169,7 +169,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? =
  * @return A list of matching providers of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DirectDIAware.allProviders(tag: Any? = null) = directDI.AllProviders<T>(generic(), tag)
+inline fun <reified T : Any> DirectDIAware.allProviders(tag: Any? = null) = directDI.AllProviders<T>(org.kodein.type.generic(), tag)
 
 /**
  * Gets all providers that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -183,7 +183,7 @@ inline fun <reified T : Any> DirectDIAware.allProviders(tag: Any? = null) = dire
  * @return A list of matching providers of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, arg: A) = directDI.AllFactories<A, T>(generic(), generic(), tag).map { it.toProvider { arg } }
+inline fun <reified A : Any, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, arg: A) = directDI.AllFactories<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag).map { it.toProvider { arg } }
 
 /**
  * Gets all providers that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -199,7 +199,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.allProviders(tag: Any? = n
  * @return A list of matching providers of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, arg: Typed<A>) = directDI.AllFactories<A, T>(arg.type, generic(), tag).map { it.toProvider { arg.value } }
+inline fun <A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, arg: Typed<A>) = directDI.AllFactories<A, T>(arg.type, org.kodein.type.generic(), tag).map { it.toProvider { arg.value } }
 
 /**
  * Gets all providers that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -213,7 +213,7 @@ inline fun <A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, arg
  * @return A list of matching providers of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = directDI.AllFactories<A, T>(generic(), generic(), tag).map { it.toProvider(fArg) }
+inline fun <reified A : Any, reified T : Any> DirectDIAware.allProviders(tag: Any? = null, noinline fArg: () -> A) = directDI.AllFactories<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag).map { it.toProvider(fArg) }
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -226,7 +226,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.allProviders(tag: Any? = n
  * @throws DI.NotFoundException if no provider was found.
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DirectDIAware.instance(tag: Any? = null) = directDI.Instance<T>(generic(), tag)
+inline fun <reified T : Any> DirectDIAware.instance(tag: Any? = null) = directDI.Instance<T>(org.kodein.type.generic(), tag)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument.
@@ -241,7 +241,7 @@ inline fun <reified T : Any> DirectDIAware.instance(tag: Any? = null) = directDI
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: A) = directDI.Factory<A, T>(generic(), generic(), tag).invoke(arg)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: A) = directDI.Factory<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag).invoke(arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument.
@@ -258,7 +258,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.instance(tag: Any? = null,
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: Typed<A>) = directDI.Factory<A, T>(arg.type, generic(), tag).invoke(arg.value)
+inline fun <A, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: Typed<A>) = directDI.Factory<A, T>(arg.type, org.kodein.type.generic(), tag).invoke(arg.value)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -270,7 +270,7 @@ inline fun <A, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: Ty
  * @return An instance, or null if no provider was found.
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null) = directDI.InstanceOrNull<T>(generic(), tag)
+inline fun <reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null) = directDI.InstanceOrNull<T>(org.kodein.type.generic(), tag)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -285,7 +285,7 @@ inline fun <reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null) = di
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: A) = directDI.FactoryOrNull<A, T>(generic(), generic(), tag)?.invoke(arg)
+inline fun <reified A : Any, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: A) = directDI.FactoryOrNull<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag)?.invoke(arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -300,7 +300,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? =
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: Typed<A>) = directDI.FactoryOrNull<A, T>(arg.type, generic(), tag)?.invoke(arg.value)
+inline fun <A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: Typed<A>) = directDI.FactoryOrNull<A, T>(arg.type, org.kodein.type.generic(), tag)?.invoke(arg.value)
 
 /**
  * Gets all instances that can return a `T` for the given type and tag.
@@ -312,7 +312,7 @@ inline fun <A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, a
  * @return A list of matching instances of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DirectDIAware.allInstances(tag: Any? = null) = directDI.AllInstances<T>(generic(), tag)
+inline fun <reified T : Any> DirectDIAware.allInstances(tag: Any? = null) = directDI.AllInstances<T>(org.kodein.type.generic(), tag)
 
 /**
  * Gets all instances that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -326,7 +326,7 @@ inline fun <reified T : Any> DirectDIAware.allInstances(tag: Any? = null) = dire
  * @return A list of matching instances of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> DirectDIAware.allInstances(tag: Any? = null, arg: A) = directDI.AllFactories<A, T>(generic(), generic(), tag).map { it.invoke(arg) }
+inline fun <reified A : Any, reified T : Any> DirectDIAware.allInstances(tag: Any? = null, arg: A) = directDI.AllFactories<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), tag).map { it.invoke(arg) }
 
 /**
  * Gets all instances that can return a `T` for the given type and tag, curried from factories for the given argument.
@@ -342,7 +342,7 @@ inline fun <reified A, reified T : Any> DirectDIAware.allInstances(tag: Any? = n
  * @return A list of matching instances of `T`.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DirectDIAware.allInstances(tag: Any? = null, arg: Typed<A>) = directDI.AllFactories<A, T>(arg.type, generic(), tag).map { it.invoke(arg.value) }
+inline fun <A, reified T : Any> DirectDIAware.allInstances(tag: Any? = null, arg: Typed<A>) = directDI.AllFactories<A, T>(arg.type, org.kodein.type.generic(), tag).map { it.invoke(arg.value) }
 
 /**
  * Returns a `DirectDI` with its context and/or receiver changed.

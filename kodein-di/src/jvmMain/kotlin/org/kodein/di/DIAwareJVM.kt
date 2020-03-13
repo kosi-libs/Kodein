@@ -2,6 +2,8 @@
 
 package org.kodein.di
 
+import org.kodein.type.TypeToken
+
 /**
  * Gets all factories that match the the given argument type, return type and tag.
  *

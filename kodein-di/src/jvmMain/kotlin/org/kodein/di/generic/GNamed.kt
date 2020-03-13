@@ -14,7 +14,7 @@ import org.kodein.di.*
  * @throws DI.NotFoundException if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.factory() = Factory<A, T>(generic(), generic())
+inline fun <reified A : Any, reified T : Any> Named.factory() = Factory<A, T>(org.kodein.type.generic(), org.kodein.type.generic())
 
 /**
  * Gets a factory of `T` for the given argument type and return type, or nul if none is found.
@@ -27,7 +27,7 @@ inline fun <reified A, reified T : Any> Named.factory() = Factory<A, T>(generic(
  * @return A factory, or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.factoryOrNull() = FactoryOrNull<A, T>(generic(), generic())
+inline fun <reified A : Any, reified T : Any> Named.factoryOrNull() = FactoryOrNull<A, T>(org.kodein.type.generic(), org.kodein.type.generic())
 
 /**
  * Gets a provider of `T` for the given type.
@@ -40,7 +40,7 @@ inline fun <reified A, reified T : Any> Named.factoryOrNull() = FactoryOrNull<A,
  * @throws DI.NotFoundException if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> Named.provider() = Provider<T>(generic())
+inline fun <reified T : Any> Named.provider() = Provider<T>(org.kodein.type.generic())
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A].
@@ -55,7 +55,7 @@ inline fun <reified T : Any> Named.provider() = Provider<T>(generic())
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.provider(arg: A) = Provider<A, T>(generic(), generic()) { arg }
+inline fun <reified A : Any, reified T : Any> Named.provider(arg: A) = Provider<A, T>(org.kodein.type.generic(), org.kodein.type.generic()) { arg }
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A].
@@ -70,7 +70,7 @@ inline fun <reified A, reified T : Any> Named.provider(arg: A) = Provider<A, T>(
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> Named.provider(arg: Typed<A>) = Provider<A, T>(arg.type, generic()) { arg.value }
+inline fun <A, reified T : Any> Named.provider(arg: Typed<A>) = Provider<A, T>(arg.type, org.kodein.type.generic()) { arg.value }
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A].
@@ -85,7 +85,7 @@ inline fun <A, reified T : Any> Named.provider(arg: Typed<A>) = Provider<A, T>(a
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.provider(noinline fArg: () -> A) = Provider<A, T>(generic(), generic(), fArg)
+inline fun <reified A : Any, reified T : Any> Named.provider(noinline fArg: () -> A) = Provider<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), fArg)
 
 /**
  * Gets a provider of `T` for the given type, or null if none is found.
@@ -97,7 +97,7 @@ inline fun <reified A, reified T : Any> Named.provider(noinline fArg: () -> A) =
  * @return A provider, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> Named.providerOrNull() = ProviderOrNull<T>(generic())
+inline fun <reified T : Any> Named.providerOrNull() = ProviderOrNull<T>(org.kodein.type.generic())
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -111,7 +111,7 @@ inline fun <reified T : Any> Named.providerOrNull() = ProviderOrNull<T>(generic(
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.providerOrNull(arg: A) = ProviderOrNull<A, T>(generic(), generic(), { arg })
+inline fun <reified A : Any, reified T : Any> Named.providerOrNull(arg: A) = ProviderOrNull<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), { arg })
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -127,7 +127,7 @@ inline fun <reified A, reified T : Any> Named.providerOrNull(arg: A) = ProviderO
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> Named.providerOrNull(arg: Typed<A>) = ProviderOrNull<A, T>(arg.type, generic(), { arg.value })
+inline fun <A, reified T : Any> Named.providerOrNull(arg: Typed<A>) = ProviderOrNull<A, T>(arg.type, org.kodein.type.generic(), { arg.value })
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -141,7 +141,7 @@ inline fun <A, reified T : Any> Named.providerOrNull(arg: Typed<A>) = ProviderOr
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.providerOrNull(noinline fArg: () -> A) = ProviderOrNull<A, T>(generic(), generic(), fArg)
+inline fun <reified A : Any, reified T : Any> Named.providerOrNull(noinline fArg: () -> A) = ProviderOrNull<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), fArg)
 
 /**
  * Gets an instance of `T` for the given type.
@@ -154,7 +154,7 @@ inline fun <reified A, reified T : Any> Named.providerOrNull(noinline fArg: () -
  * @throws DI.NotFoundException if no provider was found.
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> Named.instance() = Instance<T>(generic())
+inline fun <reified T : Any> Named.instance() = Instance<T>(org.kodein.type.generic())
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A].
@@ -169,7 +169,7 @@ inline fun <reified T : Any> Named.instance() = Instance<T>(generic())
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.instance(arg: A) = Instance<A, T>(generic(), generic()) { arg }
+inline fun <reified A : Any, reified T : Any> Named.instance(arg: A) = Instance<A, T>(org.kodein.type.generic(), org.kodein.type.generic()) { arg }
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A].
@@ -186,7 +186,7 @@ inline fun <reified A, reified T : Any> Named.instance(arg: A) = Instance<A, T>(
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> Named.instance(arg: Typed<A>) = Instance<A, T>(arg.type, generic()) { arg.value }
+inline fun <A, reified T : Any> Named.instance(arg: Typed<A>) = Instance<A, T>(arg.type, org.kodein.type.generic()) { arg.value }
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A].
@@ -201,7 +201,7 @@ inline fun <A, reified T : Any> Named.instance(arg: Typed<A>) = Instance<A, T>(a
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.instance(noinline fArg: () -> A) = Instance<A, T>(generic(), generic(), fArg)
+inline fun <reified A : Any, reified T : Any> Named.instance(noinline fArg: () -> A) = Instance<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), fArg)
 
 /**
  * Gets an instance of `T` for the given type, or null if none is found.
@@ -213,7 +213,7 @@ inline fun <reified A, reified T : Any> Named.instance(noinline fArg: () -> A) =
  * @return An instance, or null if no provider was found.
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> Named.instanceOrNull() = InstanceOrNull<T>(generic())
+inline fun <reified T : Any> Named.instanceOrNull() = InstanceOrNull<T>(org.kodein.type.generic())
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -227,7 +227,7 @@ inline fun <reified T : Any> Named.instanceOrNull() = InstanceOrNull<T>(generic(
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.instanceOrNull(arg: A) = InstanceOrNull<A, T>(generic(), generic()) { arg }
+inline fun <reified A : Any, reified T : Any> Named.instanceOrNull(arg: A) = InstanceOrNull<A, T>(org.kodein.type.generic(), org.kodein.type.generic()) { arg }
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -243,7 +243,7 @@ inline fun <reified A, reified T : Any> Named.instanceOrNull(arg: A) = InstanceO
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> Named.instanceOrNull(arg: Typed<A>) = InstanceOrNull<A, T>(arg.type, generic()) { arg.value }
+inline fun <A, reified T : Any> Named.instanceOrNull(arg: Typed<A>) = InstanceOrNull<A, T>(arg.type, org.kodein.type.generic()) { arg.value }
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -257,7 +257,7 @@ inline fun <A, reified T : Any> Named.instanceOrNull(arg: Typed<A>) = InstanceOr
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A, reified T : Any> Named.instanceOrNull(noinline fArg: () -> A) = InstanceOrNull<A, T>(generic(), generic(), fArg)
+inline fun <reified A : Any, reified T : Any> Named.instanceOrNull(noinline fArg: () -> A) = InstanceOrNull<A, T>(org.kodein.type.generic(), org.kodein.type.generic(), fArg)
 
 /**
  * Gets a constant of type [T] and tag whose tag is the name of the receiving property.
@@ -269,4 +269,4 @@ inline fun <reified A, reified T : Any> Named.instanceOrNull(noinline fArg: () -
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DIAware.constant() = Constant<T>(generic())
+inline fun <reified T : Any> DIAware.constant() = Constant<T>(org.kodein.type.generic())

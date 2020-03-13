@@ -1,9 +1,10 @@
 package org.kodein.di.internal
 
 import org.kodein.di.*
+import org.kodein.type.TypeToken
 
 @Suppress("UNCHECKED_CAST")
-private val DIContext<*>.anyType get() = type as TypeToken<in Any?>
+private val DIContext<*>.anyType get() = type as TypeToken<in Any>
 
 @Suppress("FunctionName")
 internal actual class DirectDIImpl actual constructor(container: DIContainer, context: DIContext<*>) : DirectDIBaseImpl(container, context), DirectDI {

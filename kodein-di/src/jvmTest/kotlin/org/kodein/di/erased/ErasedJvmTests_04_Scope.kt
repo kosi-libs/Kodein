@@ -1,6 +1,6 @@
 package org.kodein.di.erased
 
-import org.kodein.di.DI
+import org.kodein.di.*
 import org.kodein.di.bindings.Scope
 import org.kodein.di.bindings.ScopeRegistry
 import org.kodein.di.bindings.StandardScopeRegistry

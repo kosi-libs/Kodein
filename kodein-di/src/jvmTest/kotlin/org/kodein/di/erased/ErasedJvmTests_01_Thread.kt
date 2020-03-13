@@ -1,11 +1,9 @@
 package org.kodein.di.erased
 
-import org.kodein.di.DI
-import org.kodein.di.direct
+import org.kodein.di.*
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
-import org.kodein.di.threadLocal
 import kotlin.concurrent.thread
 import kotlin.test.*
 

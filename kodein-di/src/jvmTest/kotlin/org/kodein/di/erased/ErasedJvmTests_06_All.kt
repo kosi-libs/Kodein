@@ -28,18 +28,18 @@ class ErasedJvmTests_06_All {
             bind<String>() with factory { name: Pair<String, String> -> "Mr ${name.first} ${name.second}" }
         }
 
-        val f by di.AllFactories<Pair<String, String>, Name>(erasedComp2<Pair<String, String>, String, String>(), erased())
-        val df = di.direct.AllFactories<Pair<String, String>, Name>(erasedComp2<Pair<String, String>, String, String>(), erased())
+//        val f by di.AllFactories<Pair<String, String>, Name>(erasedComp2<Pair<String, String>, String, String>(), erased())
+//        val df = di.direct.AllFactories<Pair<String, String>, Name>(erasedComp2<Pair<String, String>, String, String>(), erased())
         val p by di.allProviders<Pair<String, String>, Name>(arg = Pair("Salomon", "BRYS"))
         val dp = di.direct.allProviders<Pair<String, String>, Name>(arg = Pair("Salomon", "BRYS"))
         val i by di.allInstances<Pair<String, String>, Name>(arg = Pair("Salomon", "BRYS"))
         val ddi = di.direct.allInstances<Pair<String, String>, Name>(arg = Pair("Salomon", "BRYS"))
 
-        assertAllEqual(2, f.size, df.size, p.size, dp.size, i.size, ddi.size)
+        assertAllEqual(2, /*f.size, df.size, */p.size, dp.size, i.size, ddi.size)
 
         val values =
-                f.map { it(Pair("Salomon", "BRYS")) } +
-                        df.map { it(Pair("Salomon", "BRYS")) } +
+//                f.map { it(Pair("Salomon", "BRYS")) } +
+//                        df.map { it(Pair("Salomon", "BRYS")) } +
                         p.map { it() } +
                         dp.map { it() } +
                         i +

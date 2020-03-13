@@ -67,7 +67,7 @@ class GenericJvmTests_22_Search {
         }
 
         val bindings = kodein.container.tree.findAllBindings {
-            +context<Any?>()
+            +context<Any>()
         }
 
         assertEquals(2, bindings.size)

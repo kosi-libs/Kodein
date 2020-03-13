@@ -1,12 +1,12 @@
 package org.kodein.di.erased
 
-import org.kodein.di.DI
+import org.kodein.di.*
 import org.kodein.di.bindings.ExternalSource
 import org.kodein.di.bindings.externalFactory
-import org.kodein.di.jvmType
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
+import org.kodein.type.jvmType
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

@@ -1,9 +1,9 @@
 package org.kodein.di.erased
 
-import org.kodein.di.DI
+import org.kodein.di.*
 import org.kodein.di.bindings.subTypes
-import org.kodein.di.jvmType
 import org.kodein.di.test.*
+import org.kodein.type.jvmType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -39,7 +39,7 @@ class ErasedJvmTests_00_Factory {
                 when (type.jvmType) {
                     FullName::class.java -> singleton { FullName("Salomon", "BRYS") }
                     Name::class.java -> factory { _: Unit -> Name("Salomon") }
-                    else -> throw IllegalStateException("Unknown type ${type.fullDispString()}")
+                    else -> throw IllegalStateException("Unknown type ${type.qualifiedDispString()}")
                 }
             }
         }

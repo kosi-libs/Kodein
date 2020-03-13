@@ -1,5 +1,7 @@
 package org.kodein.di
 
+import org.kodein.type.TypeToken
+
 @Suppress("FunctionName")
 actual interface DirectDI : DirectDIBase {
     /**

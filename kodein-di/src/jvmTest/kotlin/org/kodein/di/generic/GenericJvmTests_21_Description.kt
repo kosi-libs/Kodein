@@ -6,6 +6,7 @@ import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.IPerson
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
+import org.kodein.type.TypeToken
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -14,9 +15,9 @@ class GenericJvmTests_21_Description {
     @Test
     fun test_00_simpleKeySimpleDescription() {
         val key = DI.Key(
-                contextType = generic<Any>(),
-                argType = generic<Unit>(),
-                type = generic<String>(),
+                contextType = org.kodein.type.generic<Any>(),
+                argType = org.kodein.type.generic<Unit>(),
+                type = org.kodein.type.generic<String>(),
                 tag = null
         )
 
@@ -27,9 +28,9 @@ class GenericJvmTests_21_Description {
     @Test
     fun test_01_simpleKeyFullDescription() {
         val key = DI.Key(
-                contextType = generic<Any>(),
-                argType = generic<Unit>(),
-                type = generic<String>(),
+                contextType = org.kodein.type.generic<Any>(),
+                argType = org.kodein.type.generic<Unit>(),
+                type = org.kodein.type.generic<String>(),
                 tag = null
         )
 
@@ -42,9 +43,9 @@ class GenericJvmTests_21_Description {
     @Test
     fun test_02_complexKeySimpleDescription() {
         val key = DI.Key(
-                contextType = generic<String>(),
-                argType = generic<MultiArgs>(),
-                type = generic<IntRange>(),
+                contextType = org.kodein.type.generic<String>(),
+                argType = org.kodein.type.generic<MultiArgs>(),
+                type = org.kodein.type.generic<IntRange>(),
                 tag = "tag"
         )
 
@@ -55,9 +56,9 @@ class GenericJvmTests_21_Description {
     @Test
     fun test_03_complexKeyFullDescription() {
         val key = DI.Key(
-                contextType = generic<String>(),
-                argType = generic<MultiArgs>(),
-                type = generic<IntRange>(),
+                contextType = org.kodein.type.generic<String>(),
+                argType = org.kodein.type.generic<MultiArgs>(),
+                type = org.kodein.type.generic<IntRange>(),
                 tag = "tag"
         )
 
@@ -127,12 +128,12 @@ class GenericJvmTests_21_Description {
         }
 
         assertEquals(6, kodein.container.tree.bindings.size)
-        assertEquals("provider", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, generic<IPerson>(), null)]!!.first().binding.factoryName())
-        assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
-        assertEquals("singleton", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
-        assertEquals("factory", kodein.container.tree.bindings[DI.Key(TypeToken.Any, generic<String>(), generic<IPerson>(), "factory")]!!.first().binding.factoryName())
-        assertEquals("instance", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, generic<IPerson>(), "instance")]!!.first().binding.factoryName())
-        assertEquals("instance", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, generic<Int>(), "answer")]!!.first().binding.factoryName())
+        assertEquals("provider", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<IPerson>(), null)]!!.first().binding.factoryName())
+        assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
+        assertEquals("singleton", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
+        assertEquals("factory", kodein.container.tree.bindings[DI.Key(TypeToken.Any, org.kodein.type.generic<String>(), org.kodein.type.generic<IPerson>(), "factory")]!!.first().binding.factoryName())
+        assertEquals("instance", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<IPerson>(), "instance")]!!.first().binding.factoryName())
+        assertEquals("instance", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<Int>(), "answer")]!!.first().binding.factoryName())
     }
 
     open class A
@@ -142,36 +143,36 @@ class GenericJvmTests_21_Description {
 
     @Test
     fun test_07_SimpleDispString() {
-        assertEquals("Int", generic<Int>().simpleDispString())
+        assertEquals("Int", org.kodein.type.generic<Int>().simpleDispString())
 
-        assertEquals("Array<Char>", generic<Array<Char>>().simpleDispString())
+        assertEquals("Array<Char>", org.kodein.type.generic<Array<Char>>().simpleDispString())
 
-        assertEquals("List<*>", generic<List<*>>().simpleDispString())
-        assertEquals("List<out String>", generic<List<String>>().simpleDispString())
+        assertEquals("List<*>", org.kodein.type.generic<List<*>>().simpleDispString())
+        assertEquals("List<out String>", org.kodein.type.generic<List<String>>().simpleDispString())
 
-        assertEquals("Map<String, *>", generic<Map<String, *>>().simpleDispString())
-        assertEquals("Map<String, out String>", generic<Map<String, String>>().simpleDispString())
+        assertEquals("Map<String, *>", org.kodein.type.generic<Map<String, *>>().simpleDispString())
+        assertEquals("Map<String, out String>", org.kodein.type.generic<Map<String, String>>().simpleDispString())
 
-        assertEquals("GenericJvmTests_21_Description.G<*>", generic<G<*>>().simpleDispString())
-        assertEquals("GenericJvmTests_21_Description.G<*>", generic<G<A>>().simpleDispString())
-        assertEquals("GenericJvmTests_21_Description.G<out GenericJvmTests_21_Description.B>", generic<G<B>>().simpleDispString())
+        assertEquals("GenericJvmTests_21_Description.G<*>", org.kodein.type.generic<G<*>>().simpleDispString())
+        assertEquals("GenericJvmTests_21_Description.G<*>", org.kodein.type.generic<G<A>>().simpleDispString())
+        assertEquals("GenericJvmTests_21_Description.G<out GenericJvmTests_21_Description.B>", org.kodein.type.generic<G<B>>().simpleDispString())
     }
 
     @Test
     fun test_08_FullDispString() {
-        assertEquals("kotlin.Int", generic<Int>().fullDispString())
+        assertEquals("kotlin.Int", org.kodein.type.generic<Int>().qualifiedDispString())
 
-        assertEquals("kotlin.Array<kotlin.Char>", generic<Array<Char>>().fullDispString())
+        assertEquals("kotlin.Array<kotlin.Char>", org.kodein.type.generic<Array<Char>>().qualifiedDispString())
 
-        assertEquals("kotlin.collections.List<*>", generic<List<*>>().fullDispString())
-        assertEquals("kotlin.collections.List<out kotlin.String>", generic<List<String>>().fullDispString())
+        assertEquals("kotlin.collections.List<*>", org.kodein.type.generic<List<*>>().qualifiedDispString())
+        assertEquals("kotlin.collections.List<out kotlin.String>", org.kodein.type.generic<List<String>>().qualifiedDispString())
 
-        assertEquals("kotlin.collections.Map<kotlin.String, *>", generic<Map<String, *>>().fullDispString())
-        assertEquals("kotlin.collections.Map<kotlin.String, out kotlin.String>", generic<Map<String, String>>().fullDispString())
+        assertEquals("kotlin.collections.Map<kotlin.String, *>", org.kodein.type.generic<Map<String, *>>().qualifiedDispString())
+        assertEquals("kotlin.collections.Map<kotlin.String, out kotlin.String>", org.kodein.type.generic<Map<String, String>>().qualifiedDispString())
 
-        assertEquals("org.kodein.di.generic.GenericJvmTests_21_Description.G<*>", generic<G<*>>().fullDispString())
-        assertEquals("org.kodein.di.generic.GenericJvmTests_21_Description.G<*>", generic<G<A>>().fullDispString())
-        assertEquals("org.kodein.di.generic.GenericJvmTests_21_Description.G<out org.kodein.di.generic.GenericJvmTests_21_Description.B>", generic<G<B>>().fullDispString())
+        assertEquals("org.kodein.di.generic.GenericJvmTests_21_Description.G<*>", org.kodein.type.generic<G<*>>().qualifiedDispString())
+        assertEquals("org.kodein.di.generic.GenericJvmTests_21_Description.G<*>", org.kodein.type.generic<G<A>>().qualifiedDispString())
+        assertEquals("org.kodein.di.generic.GenericJvmTests_21_Description.G<out org.kodein.di.generic.GenericJvmTests_21_Description.B>", org.kodein.type.generic<G<B>>().qualifiedDispString())
     }
 
 }

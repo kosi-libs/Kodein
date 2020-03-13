@@ -1,7 +1,7 @@
 package org.kodein.di.bindings
 
 import org.kodein.di.DI
-import org.kodein.di.TypeToken
+import org.kodein.type.TypeToken
 
 /**
  * Binding that holds multiple bindings for subtypes of [T].
