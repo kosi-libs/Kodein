@@ -7,7 +7,7 @@ kodein {
 
         common {
             main.dependencies {
-                api("org.kodein.type:kodein-type:0.2.0")
+                api("org.kodein.type:kodein-type:1.0.0")
             }
             test.dependencies {
                 implementation(project(":test-utils"))
