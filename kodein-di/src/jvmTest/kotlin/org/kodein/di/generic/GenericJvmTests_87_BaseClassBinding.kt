@@ -1,10 +1,14 @@
 package org.kodein.di.generic
 
+import org.junit.FixMethodOrder
+import org.junit.runners.MethodSorters
 import org.kodein.di.*
+import org.kodein.di.erased.DEPRECATED_ERASED_GENERIC_7X
 import org.kodein.di.test.*
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 class GenericJvmTests_87_BaseClassBinding {
 
     open class Resource1

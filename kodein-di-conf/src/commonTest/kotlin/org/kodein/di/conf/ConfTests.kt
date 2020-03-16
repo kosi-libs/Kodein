@@ -2,9 +2,7 @@
 
 package org.kodein.di.conf
 
-import org.kodein.di.DI
-import org.kodein.di.direct
-import org.kodein.di.erased.*
+import org.kodein.di.*
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.FullName
 import org.kodein.di.test.MethodSorters

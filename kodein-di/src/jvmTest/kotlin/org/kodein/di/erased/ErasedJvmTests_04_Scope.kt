@@ -12,6 +12,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 class ErasedJvmTests_04_Scope {
 
     // Only the JVM supports up-casting

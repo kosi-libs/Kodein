@@ -8,6 +8,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 class ErasedJvmTests_00_Factory {
 
     // Only the JVM supports up-casting

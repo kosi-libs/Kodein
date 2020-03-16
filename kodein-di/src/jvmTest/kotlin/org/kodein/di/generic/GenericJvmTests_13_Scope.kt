@@ -4,10 +4,12 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.bindings.*
 import org.kodein.di.direct
+import org.kodein.di.erased.DEPRECATED_ERASED_GENERIC_7X
 import org.kodein.di.test.*
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 class GenericJvmTests_13_Scope {
 
     @Test

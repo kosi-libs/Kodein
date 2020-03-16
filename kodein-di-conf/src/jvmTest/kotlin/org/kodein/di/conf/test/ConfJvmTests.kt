@@ -5,12 +5,10 @@ import org.kodein.di.bindings.ExternalSource
 import org.kodein.di.bindings.Factory
 import org.kodein.di.bindings.externalFactory
 import org.kodein.di.conf.ConfigurableDI
-import org.kodein.di.erased.bind
-import org.kodein.di.erased.instance
-import org.kodein.di.erased.instanceOrNull
-import org.kodein.di.erased.provider
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
+import org.kodein.type.TypeToken
+import org.kodein.type.jvmType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

@@ -8,6 +8,7 @@ import kotlin.concurrent.thread
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 class ErasedJvmTests_01_Thread {
 
     // Only the JVM supports threads

@@ -2,6 +2,7 @@ package org.kodein.di.tornadofx
 
 import org.kodein.di.*
 import org.kodein.di.bindings.*
+import org.kodein.type.jvmType
 import tornadofx.*
 import tornadofx.Scope
 import kotlin.reflect.*

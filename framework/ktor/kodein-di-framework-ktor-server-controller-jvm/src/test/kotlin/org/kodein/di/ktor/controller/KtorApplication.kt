@@ -3,7 +3,7 @@ package org.kodein.di.ktor.controller
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.routing.*
-import org.kodein.di.generic.*
+import org.kodein.di.*
 import org.kodein.di.ktor.*
 
 const val AUTHOR = "Romain Boisselle"

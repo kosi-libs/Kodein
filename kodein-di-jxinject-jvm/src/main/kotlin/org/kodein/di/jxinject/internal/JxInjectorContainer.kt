@@ -1,9 +1,9 @@
 package org.kodein.di.jxinject.internal
 
 import org.kodein.di.DirectDI
-import org.kodein.di.TT
-import org.kodein.di.TypeToken
 import org.kodein.di.jxinject.*
+import org.kodein.type.TypeToken
+import org.kodein.type.typeToken
 import java.lang.reflect.*
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -69,7 +69,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
                 if (element.classType != Function0::class.java)
                     throw IllegalArgumentException("When visiting $element, @ProviderFun annotated members must be of type Function0 () -> T")
                 @Suppress("UNCHECKED_CAST")
-                val boundType = TT((element.genericType as ParameterizedType).actualTypeArguments[0].boundType()) as TypeToken<out Any>
+                val boundType = typeToken((element.genericType as ParameterizedType).actualTypeArguments[0].boundType()) as TypeToken<out Any>
                 when (isOptional) {
                     true  -> getterFunction { ProviderOrNull(boundType, tag) }
                     false -> getterFunction { Provider(boundType, tag) }
@@ -77,7 +77,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
             }
             element.classType == Provider::class.java -> {
                 @Suppress("UNCHECKED_CAST")
-                val boundType = TT((element.genericType as ParameterizedType).actualTypeArguments[0].boundType()) as TypeToken<out Any>
+                val boundType = typeToken((element.genericType as ParameterizedType).actualTypeArguments[0].boundType()) as TypeToken<out Any>
                 fun (() -> Any).toJavaxProvider() = javax.inject.Provider { invoke() }
                 when (isOptional) {
                     true  -> getterFunction { ProviderOrNull(boundType, tag)?.toJavaxProvider() }
@@ -88,9 +88,9 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
                 if (element.classType != Function1::class.java)
                     throw IllegalArgumentException("When visiting $element, @FactoryFun annotated members must be of type Function1 (A) -> T")
                 val fieldType = element.genericType as ParameterizedType
-                val argType = TT(fieldType.actualTypeArguments[0].lower())
+                val argType = typeToken(fieldType.actualTypeArguments[0].lower())
                 @Suppress("UNCHECKED_CAST")
-                val boundType = TT(fieldType.actualTypeArguments[1].boundType()) as TypeToken<out Any>
+                val boundType = typeToken(fieldType.actualTypeArguments[1].boundType()) as TypeToken<out Any>
                 when (isOptional) {
                     true  -> getterFunction { FactoryOrNull(argType, boundType, tag) }
                     false -> getterFunction { Factory(argType, boundType, tag) }
@@ -98,7 +98,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
             }
             else -> {
                 @Suppress("UNCHECKED_CAST")
-                val boundType = if (shouldErase) TT(element.classType) else TT(element.genericType) as TypeToken<out Any>
+                val boundType = if (shouldErase) typeToken(element.classType) as TypeToken<out Any> else typeToken(element.genericType) as TypeToken<out Any>
                 when (isOptional) {
                     true  -> getterFunction { InstanceOrNull(boundType, tag) }
                     false -> getterFunction { Instance(boundType, tag) }

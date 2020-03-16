@@ -7,7 +7,6 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.sessions.*
 import org.kodein.di.*
-import org.kodein.di.generic.*
 import java.util.*
 
 // Test Ktor Application

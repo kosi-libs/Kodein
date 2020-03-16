@@ -6,6 +6,7 @@ import org.kodein.type.erasedComp
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 class ErasedJvmTests_06_All {
 
     @Test

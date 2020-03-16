@@ -10,6 +10,7 @@ import org.kodein.type.jvmType
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 class ErasedJvmTests_05_ExternalSource {
 
     // Only the JVM supports class.java

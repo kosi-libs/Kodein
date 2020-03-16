@@ -13,6 +13,7 @@ import kotlin.test.assertTrue
 import kotlin.test.Test
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 class ErasedJvmTests_03_Description {
 
     object TestScope : UnboundedScope()
