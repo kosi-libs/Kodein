@@ -1,4 +1,4 @@
-name: Snapshot
+name: Build and deploy a snapshot
 
 on:
   push:
@@ -7,79 +7,57 @@ on:
       - 'snapshot/[0-9]+.[0-9]+'
 
 jobs:
-  snapshot-version:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Generate build number
-        id: buildnumber
-        uses: einaregilsson/build-number@v2
-        with:
-          token: ${{secrets.github_token}}
-      - name: Upload build number
-        uses: actions/upload-artifact@v1
-        with:
-          name: BUILD_NUMBER
-          path: BUILD_NUMBER
-  build-deploy-unix:
-    needs: snapshot-version
+  native-all:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest]
-    env:
-      EXCLUDE_ANDROID: false
-      EXCLUDE_KTOR: false
-      EXCLUDE_TFX: false
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
-      - name: Download build number
-        uses: actions/download-artifact@v1
-        with:
-          name: BUILD_NUMBER
-      - name: Restore build number
-        id: buildnumber
-        uses: einaregilsson/build-number@v2
-      - uses: actions/checkout@v1
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Build
-        run: ./gradlew build -x jsTest
+      - name: Excluding JVM and JS targets
+        run: echo excludeTargets = jvm,js >> gradle.properties
         shell: bash
-      - name: Deploy
+      - name: Assemble
+        run: |
+          ./gradlew :kodein-di:assemble
+          ./gradlew :kodein-di-conf:assemble
+        shell: bash
+      - name: Test
+        run: |
+          ./gradlew :kodein-di:check
+          ./gradlew :kodein-di-conf:check
+        shell: bash
+      - name: Upload snapshot to Bintray
         env:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
           BINTRAY_USER_ORG: ${{ secrets.BINTRAY_USER_ORG }}
-        run: ./gradlew bintrayUpload -PsnapshotNumber=$BUILD_NUMBER
+        run: |
+          ./gradlew :kodein-di:bintrayUpload -PsnapshotNumber=${{ github.run_number }}
+          ./gradlew :kodein-di-conf:bintrayUpload -PsnapshotNumber=${{ github.run_number }}
         shell: bash
-  build-deploy-windows:
-    needs: snapshot-version
-    runs-on: windows-latest
-    env:
-      EXCLUDE_ANDROID: true
-      EXCLUDE_KTOR: true
-      EXCLUDE_TFX: true
+  jvm-and-js:
+    runs-on: ubuntu-latest
     steps:
-      - name: Download build number
-        uses: actions/download-artifact@v1
-        with:
-          name: BUILD_NUMBER
-      - name: Restore build number
-        id: buildnumber
-        uses: einaregilsson/build-number@v2
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Build
-        run: ./gradlew build
-        shell: bash
-      - name: Deploy
+      - name: Excluding Native targets
+        run: echo "excludeTargets = native" >> gradle.properties
+      - name: Assemble
+        run: ./gradlew assemble
+      - name: Test
+        run: ./gradlew check
+      - name: Upload snapshot to Bintray
         env:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
           BINTRAY_USER_ORG: ${{ secrets.BINTRAY_USER_ORG }}
-        run: ./gradlew bintrayUpload -PsnapshotNumber=$BUILD_NUMBER
-        shell: bash
+        run: ./gradlew bintrayUpload -PsnapshotNumber=${{ github.run_number }}
