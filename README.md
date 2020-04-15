@@ -59,6 +59,7 @@ Kotlin & JVM compatibility
 
 |Kodein-DI|Kotlin|JDK
 |:---:|:---:|:---:|
+|6.5.5|1.3.72|min 1.8/
 |6.5.4|1.3.71|min 1.8/
 |6.5.3|1.3.70|min 1.8/
 |6.4.2|1.3.60|min 1.8/
