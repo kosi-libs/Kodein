@@ -14,15 +14,15 @@ image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kod
 === Description
 
 [.lead]
-Kodein-DI is a very useful dependency injection / retrieval container, it is very easy to use and configure.
+_Kodein-DI_ is a very useful dependency injection / retrieval container, it is very easy to use and configure.
 
-.Kodein-DI allows you to:
+._Kodein-DI_ allows you to:
 - Lazily instantiate your dependencies when needed.
 - Stop caring about dependency initialization order.
 - Easily bind classes or interfaces to their instance, provider or factory.
 - Easily debug your dependency bindings and recursions.
 
-.Kodein-DI is a good choice because:
+._Kodein-DI_ is a good choice because:
 - It is small, fast and optimized (makes extensive use of `inline`).
 - It proposes a very simple and readable declarative DSL.
 - It is not subject to type erasure (like Java).
@@ -44,7 +44,7 @@ val di = DI {
 }
 ----
 
-Once bindings are declared, Kodein-DI allows you to either inject or retrieve the dependencies for a class.
+Once bindings are declared, _Kodein-DI_ allows you to either inject or retrieve the dependencies for a class.
 
 If you want your class to be unaware of dependency retrieval, then you can *inject* dependencies at construction:
 
@@ -70,25 +70,18 @@ class Controller(override val di: DI): DIAware {
 
 == Platform compatibility & Genericity
 
-Kodein-DI is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
-
-On the JVM & compatible (Android), you need to choose to use either the `erased` or the `generic` version. +
-On the Javascript and Native targets, only the `erased` version is available.
-
 IMPORTANT: From `6.3.0` On the JVM, you must be targeting `JDK 1.8` minimum!
 
-The difference is very simple: the `generic` version is *NOT* subject to type erasure while the `erased` version *IS*.
+_Kodein-DI_ is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
 
-Of course, it is a little bit more complicated! +
-To be able to circumvent the type erasure that's inherent to the JVM bytecode, the `generic` version uses a trix that makes heavy use of reflexivity.
-Because the `erased` version does not use that trix, handling generic types in Kodein-DI are a lot more complex to use.
+Since `7.0.0`, a new https://github.com/Kodein-Framework/Kodein-Type[type system] has been designed and included to _Kodein-DI_.
+Thus, it appears to the developer that there is no differences between platforms, you no longer have to choose between `erased` or `generic` dependencies.
+Starting from `7.0.0`, _Kodein-DI_ is using the `generic` version of the type system, meaning you should be able to bind generics easily for _Kotlin/Multiplatform_ projects.
 
-[options="header"]
-|=======
-| &nbsp;    | Type erasure | Optimized | Non-generic bindings | Generic bindings
-| *generic* | *immune*     | no        | *simple*             | *simple*
-| *erased*  | subject      | *yes*     | *simple*             | complex
-|=======
+=== The JVM case
+
+However, you should be aware that under the hood, this new type system uses the new function `typeOf()` from Kotlin, for every platforms, except for the JVM that still have it's own `generic` implementation.
+Meaning that the JVM counterpart of the type system makes a heavy use of reflection, so it's _less optimized_.
 
 [WARNING]
 ====
@@ -96,12 +89,25 @@ Yes, #perfmatters. However, the humble opinion of the author is that:
 
 - There is a balance to be found between performance, readability, security and debuggability.
 - Optimisation is important *in critical path*, not _everywhere_.
-- Kodein-DI is already pretty optimized ;)
+- _Kodein-DI_ is already pretty optimized ;)
 - In the vast majority of cases, using the erased version will result in **no significant performance change** to your application, as IoC happens once and is not a performance pitfall!
 
 Therefore, please make sure that, using the erased version is right for your use case, before blindly using it ;).
 *Do profile your code*!
 ====
+
+The difference is very simple: the `generic` version is *NOT* subject to type erasure while the `erased` version *IS*.
+
+Of course, it is a little bit more complicated! +
+To be able to circumvent the type erasure that's inherent to the JVM bytecode, the `generic` version uses a trix that makes heavy use of reflexivity.
+Because the `erased` version does not use that trix, handling generic types in _Kodein-DI_ are a lot more complex to use.
+
+[options="header"]
+|=======
+| &nbsp;    | Type erasure | Optimized | Non-generic bindings | Generic bindings
+| *generic* | *immune*     | no        | *simple*             | *simple*
+| *erased*  | subject      | *yes*     | *simple*             | complex
+|=======
 
 On the JVM, you might prefer the erased version if:
 
@@ -111,8 +117,9 @@ On the JVM, you might prefer the erased version if:
 If you profile your code and find that injection is a performance pitfall, then it probably is instanciation: you are creating too many objects in critical paths.
 Reusing objects in critical paths will enhance performance both in dependency injection / retrieval and in GC!
 
-If you are using the erased version, either by choice on the JVM, or by default on JS & Native, you should read <<erased-version,erased version pitfalls>>.
+NOTE: Even if by default _Kodein-DI_ uses a `generic` type system, you still can use the `erased` one manually. (see *TODO*)
 
+If you are using the `erased` version, either by choice on the JVM, or by default on JS & Native, you should read <<erased-version,erased version pitfalls>>.
 
 [[install]]
 == Install
@@ -140,13 +147,13 @@ Then add the dependency:
 &lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;org.kodein.di&lt;/groupId&gt;
-        &lt;artifactId&gt;kodein-di-generic-jvm&lt;/artifactId&gt;
+        &lt;artifactId&gt;kodein-di-jvm&lt;/artifactId&gt;
         &lt;version&gt;{version}&lt;/version&gt;
     &lt;/dependency&gt;
 &lt;/dependencies&gt;
 ----
 
-NOTE: Use `kodein-di-generic-jvm` or `kodein-di-erased-jvm`.
+WARNING: Use `kodein-di-jvm`, as _Kotlin/Multiplatform_ projects does not work with Maven
 
 
 ==== With Gradle
@@ -167,16 +174,13 @@ Then add the dependency:
 [source,groovy,subs="attributes"]
 ----
 dependencies {
-    implementation 'org.kodein.di:kodein-di-generic-jvm:{version}'
+    implementation 'org.kodein.di:kodein-di:{version}'
 }
 ----
 
-NOTE: Use `kodein-di-generic-jvm` or `kodein-di-erased-jvm`.
-
-
 === JavaScript (Gradle)
 
-Because Kodein-DI for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
+Because _Kodein-DI_ for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
 
 * In a browser:
 ** as an AMD module (for example with RequireJS) (See index.html in the demo project).
@@ -199,17 +203,17 @@ Then add the dependency:
 [source,groovy,subs="attributes"]
 ----
 dependencies {
-    compile 'org.kodein.di:kodein-di-erased-js:{version}'
+    compile 'org.kodein.di:kodein-di-js:{version}'
 }
 ----
 
 
 === Native (Gradle)
 
-NOTE: Kodein-DI supports the following targets: +
+NOTE: _Kodein-DI_ supports the following targets: +
       androidArm32, androidArm64, iosArm32, iosArm64, iosX64, linuxArm32Hfp, linuxMips32, linuxMipsel32, linuxX64, macosX64, mingwX64
 
-Kodein-DI uses the new gradle native dependency model.
+_Kodein-DI_ uses the new gradle native dependency model.
 Because that model is experimental in gradle, it is not forward compatible with next versions of Gradle.
 
 Add the JCenter repository:
@@ -231,7 +235,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation "org.kodein.di:kodein-di-erased:{version}"
+                implementation "org.kodein.di:kodein-di:{version}"
             }
         }
     }
@@ -251,11 +255,6 @@ val di = DI {
 ----
 
 Bindings are declared inside a DI initialization block.
-
-NOTE: If you are using `kodein-di-generic-jvm`, Kodein-DI *not* subject to type erasure (e.g. You can bind both a `List<Int>` and a `List<String>`).
-
-CAUTION: This is *NOT* the case when using `kodein-di-erased-jvm`, `kodein-erased-js` or `kodein-erased-native`.
-         With the `erased` version by default, binding `List<Int>` and `List<String>` actually means binding `List<*>` twice.
 
 A binding always starts with `bind<TYPE>() with`.
 
@@ -319,8 +318,8 @@ val di = DI {
 ==== Non-synced singleton
 
 By definition, there can be only one instance of a singleton, which means only one instance can be constructed.
-To achieve this certainty, Kodein-DI synchronizes construction.
-This means that, when a singleton instance is requested and not available, Kodein-DI uses a synchronization mutex to ensure that other request to the same type will wait for this instance to be constructed.
+To achieve this certainty, _Kodein-DI_ synchronizes construction.
+This means that, when a singleton instance is requested and not available, _Kodein-DI_ uses a synchronization mutex to ensure that other request to the same type will wait for this instance to be constructed.
 
 While this behaviour is the only way to ensure the singleton's correctness, it is also costly (due to the mutex) and degrades startup performance.
 
@@ -384,9 +383,9 @@ val di = DI {
 }
 ----
 
-NOTE: We recommand to use `data classes` instead!
+NOTE: We recommend to use `data classes` instead!
 
-Regarding our users feedbacks, we find out that multi-arguments factories was difficult to use.
+Regarding our users feedback, we find out that multi-arguments factories was difficult to use.
 
 Thus this mechanism will be deprecate soon. So we highly recommend that you migrate your multi-args factories to simple factories by using *data classes*.
 
@@ -437,7 +436,7 @@ A referenced multiton is an object that is guaranteed to be single for the same 
 A referenced singleton or multiton needs a "reference maker" in addition to the classic construction function that determines the type of reference that will be used.
 
 [.lead]
-Kodein-DI comes with three reference makers for the JVM:
+_Kodein-DI_ comes with three reference makers for the JVM:
 
 
 ==== JVM: Soft & weak
@@ -517,7 +516,7 @@ CAUTION: You should only use constant bindings for very simple types without inh
 
 Sometimes, it may seem overkill to specify the type to `bind` if you are binding the same type as you are creating.
 
-For this use case, you can transform any `bind<Type>() with ...` to `bind() from ...`.
+For this use case, you can transform any `bind<TYPE>() with ...` to `bind() from ...`.
 
 [source,kotlin]
 .Example: direct bindings
@@ -531,7 +530,7 @@ val di = DI {
 
 CAUTION: *This should be used with care* as binding a concrete class and, therefore, having concrete dependencies is an _anti-pattern_ that later prevents modularisation and mocking / testing.
 
-WARNING: When using `kodein-generic-*` and binding a generic type, the bound type will be the specialized type, +
+WARNING: When binding a generic type, the bound type will be the specialized type, +
          e.g. `bind() from singleton { listOf(1, 2, 3, 4) }` registers the binding to `List<Int>`.
 
 NOTE: If you are using Kodein/Native, because of https://github.com/JetBrains/kotlin-native/issues/1290[this bug], you need to use the uppercase version: `Bind() from`.
@@ -540,7 +539,7 @@ NOTE: If you are using Kodein/Native, because of https://github.com/JetBrains/ko
 
 === Subtypes bindings
 
-Kodein-DI allows you register a "subtype bindings factory".
+_Kodein-DI_ allows you register a "subtype bindings factory".
 These are big words for a simple concept that's best explained with an example:
 
 [source,kotlin]
@@ -557,14 +556,14 @@ val di = DI {
 ----
 <1> As `type` is a `TypeToken<*>`, you can use `.jvmType` to get the JVM type (e.g. `Class` or `ParameterizedType`).
 
-In essence, `bind<Whatever>().subtypes() with { type -> binding }` allows you to register, in Kodein-DI, a binding factory that will be called for subtypes of the provided type.
+In essence, `bind<Whatever>().subtypes() with { type -> binding }` allows you to register, in _Kodein-DI_, a binding factory that will be called for subtypes of the provided type.
 
 
 === Transitive dependencies
 
 With those lazily instantiated dependencies, a dependency (very) often needs another dependency.
 Such classes can have their dependencies passed to their constructor.
-Thanks to Kotlin's _killer_ type inference engine, Kodein-DI makes retrieval of transitive dependencies really easy.
+Thanks to Kotlin's _killer_ type inference engine, _Kodein-DI_ makes retrieval of transitive dependencies really easy.
 
 [source, kotlin]
 .Example: a class that needs transitive dependencies
@@ -583,7 +582,7 @@ val di = DI {
     bind<Dice>() with singleton { Dice(instance(), instance(tag = "max")) } // <1>
 
     bind<Random>() with provider { SecureRandom() } // <2>
-    constant(tag "max") with 5 // <2>
+    constant(tag="max") with 5 // <2>
 }
 ----
 <1> Binding of `Dice`. It gets its transitive dependencies by using `instance()` and `instance(tag)`.
@@ -630,7 +629,7 @@ val di = DI {
 
 ==== Definition
 
-Kodein-DI allows you to export your bindings in modules.
+_Kodein-DI_ allows you to export your bindings in modules.
 It is very useful to have separate modules defining their own bindings instead of having only one central binding definition.
 A module is an object that you can construct the exact same way as you construct a DI instance.
 
@@ -664,10 +663,10 @@ NOTE: Modules are *definitions*, they will re-declare their bindings in each DI 
 
 Each module name should only be imported once.
 
-If a second module with the name of an already imported module is imported, then Kodein-DI will fail.
+If a second module with the name of an already imported module is imported, then _Kodein-DI_ will fail.
 
 However, you cannot always ensure that every module name is unique: you may need to import modules that are defined outside of your code.
-Kodein-DI offers two ways to mitigate that:
+_Kodein-DI_ offers two ways to mitigate that:
 
 1. Rename a module: +
    Use when you are importing a module whose name already exists.
@@ -695,9 +694,9 @@ val di = DI {
 ==== Import once
 
 You may define a module which you know depends on another module, so it would be great to import that dependency inside the module that has the dependency.
-However, each module can only be imported once, so if every module that depends on another module imports it, Kodein-DI will fail at the second module that imports it.
+However, each module can only be imported once, so if every module that depends on another module imports it, _Kodein-DI_ will fail at the second module that imports it.
 
-To support this, Kodein-DI offers `importOnce`: it imports the module if no module with that name was previously imported.
+To support this, _Kodein-DI_ offers `importOnce`: it imports the module if no module with that name was previously imported.
 
 [source, kotlin]
 .Example: importing a module only once
@@ -710,7 +709,7 @@ val appModule = DI.Module {
 
 === Extension (composition)
 
-Kodein-DI allows you to create a new DI instance by extending an existing one.
+_Kodein-DI_ allows you to create a new DI instance by extending an existing one.
 
 [source, kotlin]
 .Example: extends an already existing DI instance
@@ -727,7 +726,7 @@ NOTE: This *preserves bindings*, meaning that a singleton in the parent DI will 
 
 === Overriding
 
-By default, overriding a binding is not allowed in Kodein-DI.
+By default, overriding a binding is not allowed in _Kodein-DI_.
 That is because accidentally binding twice the same (class,tag) to different instances/providers/factories can cause real headaches to debug.
 
 However, when intended, it can be really interesting to override a binding, especially when creating a testing environment.
@@ -803,7 +802,7 @@ val foo = child.instance<Bar>().foo
 ----
 
 In this example, the `foo` variable will be of type `Foo1`.
-Because the `Bar` binding is a `singleton` and is declared in the `parent` Kodein-DI, it *does not have access to bindings declared in `child`.*
+Because the `Bar` binding is a `singleton` and is declared in the `parent` _Kodein-DI_, it *does not have access to bindings declared in `child`.*
 In this example, both `parent.instance<Bar>().foo` and `child.instance<Bar>().foo` will yield a `Foo1` object.
 
 NOTE: This is because `Bar` is bound to a `singleton`, the first access would define the container used (`parent` or `child`).
@@ -915,11 +914,11 @@ When dependencies are *injected*, the class is _provided_ its dependencies at co
 When dependencies are *retrieved*, the class is _responsible_ for getting its own dependencies.
 
 Using dependency *injection* is a bit more cumbersome, but your classes are "pure": they are unaware of the dependency container.
-Using dependency *retrieval* is easier (and allows more tooling), but it does binds your classes to the Kodein-DI API.
+Using dependency *retrieval* is easier (and allows more tooling), but it does binds your classes to the _Kodein-DI_ API.
 
 Finally, in retrieval, *everything is lazy by default*, while there can be no lazy-loading using injection.
 
-TIP: If you are developing a library, then you probably should use dependency *injection*, to avoid forcing the users of your library to use Kodein-DI as well. +
+TIP: If you are developing a library, then you probably should use dependency *injection*, to avoid forcing the users of your library to use _Kodein-DI_ as well. +
      If you are developing an application, then you should consider using dependency *retrieval*, as it is easier to use and provides more tooling.
 
 
@@ -952,7 +951,7 @@ instance(tag = "whatever").
 To use dependency injection,
 
 1. Declare your dependencies in the constructor of your classes.
-2. Use Kodein-DI's `newInstance` method to create an object of such class.
+2. Use _Kodein-DI_'s `newInstance` method to create an object of such class.
 
 
 ==== Simple case
@@ -1055,7 +1054,7 @@ This allows:
 If you want "direct" retrieval, well, there's a section named <<direct-retrieval,direct retrieval>>, how about that!
 
 
-==== Kodein-DI methods
+==== _Kodein-DI_ methods
 
 You can retrieve a bound type via a DI instance.
 
@@ -1069,7 +1068,7 @@ val answerConstant: String by di.instance(tag = "answer")
 ----
 
 Note the use of the `by`.
-Kodein-DI uses https://kotlinlang.org/docs/reference/delegated-properties.html::[delegated properties] to enable:
+_Kodein-DI_ uses https://kotlinlang.org/docs/reference/delegated-properties.html::[delegated properties] to enable:
 
 - Lazy loading
 - Accessing the receiver
@@ -1219,7 +1218,7 @@ NOTE: A trigger allows you to "force" retrieval.
 
 ==== Lazy access
 
-Kodein-DI proposes a `LazyDI` object that allows you to lazily access the DI object only when needed.
+_Kodein-DI_ proposes a `LazyDI` object that allows you to lazily access the DI object only when needed.
 This is useful if:
 
 - You need to defined a lazily retrieved dependency before having access to a DI container.
@@ -1254,7 +1253,7 @@ env.doSomething() <1>
 
 ==== Late init
 
-Kodein-DI proposes a `LateInitDI` that allows you to define a DI object _after_ some lazy retrieval:
+_Kodein-DI_ proposes a `LateInitDI` that allows you to define a DI object _after_ some lazy retrieval:
 
 [source, kotlin]
 .Example: Using a LateInitDI.
@@ -1272,7 +1271,7 @@ env.doSomething() <2>
 
 ==== All matches
 
-Kodein-DI allows you to retrieve all instances that matches a given type:
+_Kodein-DI_ allows you to retrieve all instances that matches a given type:
 
 [source, kotlin]
 .Example: all instances of Foo.
@@ -1396,7 +1395,7 @@ class MyActivity : Activity(), DIAware {
 
 ==== All matches
 
-Kodein-DI allows you to retrieve all instances that matches a given type:
+_Kodein-DI_ allows you to retrieve all instances that matches a given type:
 
 [source, kotlin]
 .Example: all instances of Foo.
@@ -1411,7 +1410,7 @@ NOTE: Of course, `allProviders` and `allFactories` are also provided ;)
 [[direct-retrieval]]
 === Retrieval: Direct
 
-If you don't want to use delegated properties, Kodein-DI has you covered.
+If you don't want to use delegated properties, _Kodein-DI_ has you covered.
 Most of the features available to `DI` are available to `DirectDI`.
 `DirectDI` allows you to directly get a new instance or dependency.
 
@@ -1465,11 +1464,11 @@ class MyManager(override val directDI: DirectDI) : DirectDIAware {
 
 ==== In Java
 
-While Kodein-DI does not allow you to declare modules or dependencies in Java, it does allow you to retrieve dependencies via `DirectDI`.
-Simply give the DirectDI instance to your Java classes, use Kodein-DI in Java with the `TT` static function:
+While _Kodein-DI_ does not allow you to declare modules or dependencies in Java, it does allow you to retrieve dependencies via `DirectDI`.
+Simply give the DirectDI instance to your Java classes, use _Kodein-DI_ in Java with the `TT` static function:
 
 [source, java]
-.Example: using Kodein-DI in Java
+.Example: using _Kodein-DI_ in Java
 ----
 import static org.kodein.di.TypesKt.TT;
 
@@ -1508,7 +1507,7 @@ class JavaClass {
 
 === Error messages
 
-By default, Kodein-DI error messages contains the classes simple names (e.g. `View`), which makes it easily readable. +
+By default, _Kodein-DI_ error messages contains the classes simple names (e.g. `View`), which makes it easily readable. +
 If you want the error to contain classes full names (e.g. `com.company.app.UserController.View`), you can set `fullDescriptionOnError`:
 
 [source, kotlin]
@@ -1567,7 +1566,7 @@ val di = DI {
 
 [NOTE]
 ====
-Kodein-DI provides only 1 scope by default, but:
+_Kodein-DI_ provides only 1 scope by default, but:
 
 - It is easy to create your own scopes.
 - All `kodein-framework-*` modules provide more scopes that are specific to the target framework.
@@ -1615,7 +1614,7 @@ If a value implements `ScopeCloseable`, it's `close` function will be called whe
 ====
 The `ScopeCloseable.close` method will only be called:
 
-- By scopes that explicitely *support* that feature (not all scopes do, all scopes provided by the Kodein-DI Framework do *except WeakContextScope*).
+- By scopes that explicitely *support* that feature (not all scopes do, all scopes provided by the _Kodein-DI_ Framework do *except WeakContextScope*).
 - If the value does *not* use `WeakRef` or `SoftRef` references. +
   If the value does, the close method _may or may not_ be called (it will be called if the reference has not expired).
 ====
@@ -1638,7 +1637,7 @@ val di = DI {
 
 ==== Weak Context Scope
 
-Kodein-DI provides the `WeakContextScope` scope.
+_Kodein-DI_ provides the `WeakContextScope` scope.
 This is a particular scope, as the context it holds on are weak references.
 
 CAUTION: WeakContextScope is *NOT* compatible with `ScopeCloseable`.
@@ -1794,7 +1793,7 @@ In this simple example, when the session expires, then all of its associates req
 
 == Multi-binding
 
-Kodein-DI allows multi bindings via a binding set.
+_Kodein-DI_ allows multi bindings via a binding set.
 
 
 [[set-bindings]]
@@ -1864,7 +1863,7 @@ val configurations: Set<Configuration> by di.Instance(erasedSet())
 
 === In a map
 
-Kodein-DI does not directly support map multi-binding.
+_Kodein-DI_ does not directly support map multi-binding.
 However, it is very easy to create a binding map by using a binding set.
 
 First, create the following primitive:
@@ -1918,13 +1917,13 @@ Here's an example of what this prints:
 As you can see, it's really easy to understand which type with which tag is bound to which implementation inside which scope.
 
 NOTE: Description prints type names in a "kotlin-esque" way.
-      Because Kodein-DI does not depend on `kotlin-reflect`, it uses java `Type` objects that do not contain nullability information.
+      Because _Kodein-DI_ does not depend on `kotlin-reflect`, it uses java `Type` objects that do not contain nullability information.
       As such, the type display does not include nullability. Still, it's easier to read `List<*>` than `List<? extends Object>`.
 
 
 === Recursive dependency loop
 
-When it detects a recursive dependency, Kodein-DI will throw a `DI.DependencyLoopException`.
+When it detects a recursive dependency, _Kodein-DI_ will throw a `DI.DependencyLoopException`.
 The message of the exception explains how the loop happened.
 
 .An example of recursive dependency loop:
@@ -1962,9 +1961,9 @@ val appModule = DI.Module(name = "app") {
 
 == External Source
 
-An external source is responsible for providing an answer when Kodein-DI cannot find one.
+An external source is responsible for providing an answer when _Kodein-DI_ cannot find one.
 
-When Kodein-DI cannot find a binding for the required type/argument/context, then it calls the external source.
+When _Kodein-DI_ cannot find a binding for the required type/argument/context, then it calls the external source.
 
 [source, kotlin]
 .Example: an external source
@@ -2012,12 +2011,12 @@ Note that if no argument is provided, the argument to the lambda will be `Unit`.
 
 === The type erasure problem
 
-When using the `generic` version on the JVM, Kodein-DI is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
+When using the `generic` version on the JVM, _Kodein-DI_ is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
 
 To be erasure immune, the `generic` JVM version relies heavily on the `generic` function, which is known to be slow.
 
-To improve performance, you can use the `erased` JVM Kodein-DI version, which is faster, but do suffer from type erasure!
+To improve performance, you can use the `erased` JVM _Kodein-DI_ version, which is faster, but do suffer from type erasure!
 
 Furthermore, on Javascript and Native platforms, there's no choice: `erased` is the only version available!
 
@@ -2047,7 +2046,7 @@ So, when you know that you inject a type that is *not generic*, you can use `di.
 When using the `erased` function or using erased by default (either by choice on the JVM or by necessity elsewhere), you cannot represent a generic type. +
 For example, `erased<Set<String>>` will yield a `TypeToken` representing `Set<*>`.
 
-Kodein-DI provides a way to represent a generic type in an erased way:
+_Kodein-DI_ provides a way to represent a generic type in an erased way:
 
 [source, kotlin]
 .Example: generic type tokens, using erased
