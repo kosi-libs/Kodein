@@ -29,5 +29,5 @@ jobs:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
           BINTRAY_USER_ORG: ${{ secrets.BINTRAY_USER_ORG }}
-        run: ./gradlew bintrayUpload -PsnapshotNumber=${{ github.run_id }}${{ github.run_number }}
+        run: ./gradlew bintrayUpload -PsnapshotNumber=${{ github.run_number }}
         shell: bash
