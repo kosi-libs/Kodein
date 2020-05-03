@@ -1,5 +1,5 @@
 = Changes & Migration from _Kodein-DI 6_ to _Kodein-DI 7_
-Romain BOISELLES <romain@kodein.net>
+Romain BOISSELLE <romain@kodein.net>
 :toc: left
 :toc-position: left
 :toclevels: 5
