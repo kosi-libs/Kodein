@@ -6,7 +6,7 @@ import org.kodein.type.generic
 /**
  * Gets a factory of `T` for the given argument type, return type and tag.
  *
- * A & T generics will be erased!
+ * A & T generics will be preserved!
  *
  * @param A The type of argument the factory takes.
  * @param T The type of object the factory returns.
@@ -20,7 +20,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.factory(tag: Any? = null) 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
  *
- * A & T generics will be erased!
+ * A & T generics will be preserved!
  *
  * @param A The type of argument the factory takes.
  * @param T The type of object the factory returns.
@@ -33,7 +33,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.factoryOrNull(tag: Any? = 
 /**
  * Gets a provider of `T` for the given type and tag.
  *
- * T generics will be erased!
+ * T generics will be preserved!
  *
  * @param T The type of object the provider returns.
  * @param tag The bound tag, if any.
@@ -46,7 +46,7 @@ inline fun <reified T : Any> DIAware.provider(tag: Any? = null) = Provider<T>(ge
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
  *
- * A & T generics will be erased!
+ * A & T generics will be preserved!
  *
  * @param A The type of argument the curried factory takes.
  * @param T The type of object to retrieve with the returned provider.
@@ -61,7 +61,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.provider(tag: Any? = null,
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
  *
- * A & T generics will be erased!
+ * A & T generics will be preserved!
  *
  * @param A The type of argument the curried factory takes.
  * @param T The type of object to retrieve with the returned provider.
@@ -76,7 +76,7 @@ inline fun <A, reified T : Any> DIAware.provider(tag: Any? = null, arg: Typed<A>
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
  *
- * A & T generics will be erased!
+ * A & T generics will be preserved!
  *
  * @param A The type of argument the curried factory takes.
  * @param T The type of object to retrieve with the returned provider.
@@ -91,7 +91,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.provider(tag: Any? = null,
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
  *
- * T generics will be erased!
+ * T generics will be preserved!
  *
  * @param T The type of object the provider returns.
  * @param tag The bound tag, if any.
@@ -103,7 +103,7 @@ inline fun <reified T : Any> DIAware.providerOrNull(tag: Any? = null) = Provider
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
  *
- * A & T generics will be erased!
+ * A & T generics will be preserved!
  *
  * @param A The type of argument the curried factory takes.
  * @param T The type of object to retrieve with the returned provider.
@@ -119,7 +119,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.providerOrNull(tag: Any? =
  *
  * The argument type is extracted from the `Typed.type` of the argument.
  *
- * A & T generics will be erased!
+ * A & T generics will be preserved!
  *
  * @param A The type of argument the curried factory takes.
  * @param T The type of object to retrieve with the returned provider.
@@ -133,7 +133,7 @@ inline fun <A, reified T : Any> DIAware.providerOrNull(tag: Any? = null, arg: Ty
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
  *
- * A & T generics will be erased!
+ * A & T generics will be preserved!
  *
  * @param A The type of argument the curried factory takes.
  * @param T The type of object to retrieve with the returned provider.
@@ -147,7 +147,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.providerOrNull(tag: Any? =
 /**
  * Gets an instance of `T` for the given type and tag.
  *
- * T generics will be erased!
+ * T generics will be preserved!
  *
  * @param T The type of object to retrieve.
  * @param tag The bound tag, if any.
@@ -160,7 +160,7 @@ inline fun <reified T : Any> DIAware.instance(tag: Any? = null) = Instance<T>(ge
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
  *
- * A & T generics will be erased!
+ * A & T generics will be preserved!
  *
  * @param A The type of argument the curried factory takes.
  * @param T The type of object to retrieve.
@@ -299,6 +299,8 @@ inline fun <reified C : Any> DIAware.on(trigger: DITrigger? = this.diTrigger, cr
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
 fun DIAware.on(trigger: DITrigger?) = On(diContext, trigger)
+
+
 //endregion
 
 //region Direct retrieving

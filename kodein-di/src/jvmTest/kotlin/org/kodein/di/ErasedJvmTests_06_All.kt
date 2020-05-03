@@ -1,8 +1,5 @@
 package org.kodein.di
 
-import org.kodein.di.erased.allFactories
-import org.kodein.di.erased.allInstances
-import org.kodein.di.erased.allProviders
 import org.kodein.di.test.*
 import org.kodein.type.erasedComp
 import kotlin.test.Test

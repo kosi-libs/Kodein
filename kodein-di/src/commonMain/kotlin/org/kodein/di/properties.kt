@@ -4,6 +4,7 @@ import org.kodein.type.TypeToken
 import kotlin.reflect.KProperty
 
 const val DEPRECATED_KODEIN_7X = "!!! THIS HAS BEEN REMOVED FROM 7.0 !!! As soon as you are using _Kodein-DI 7.x_, the old API named _Kodein_ API is broken. we highly recommend that you take some time to move from it to the new API with _DI_ named objects."
+const val DEPRECATED_ERASED_GENERIC_7X = "!!! This will be removed from 7.1 !!! As soon as you are using _Kodein-DI 7.x_, you must move from this implementation to the new one, defined in the package org.kodein.di."
 
 @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DITrigger"), DeprecationLevel.ERROR)
 typealias KodeinTrigger = DITrigger

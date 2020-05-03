@@ -2,8 +2,8 @@ package org.kodein.di
 
 import org.kodein.type.TypeToken
 import org.kodein.type.typeToken
-import java.lang.reflect.*
-import kotlin.reflect.KClass
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
 /**
  * Class used to get a generic type at runtime.
@@ -11,6 +11,7 @@ import kotlin.reflect.KClass
  * @param T The type to extract.
  * @see generic
  */
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X)
 abstract class TypeReference<T> {
 
     /**
@@ -26,7 +27,7 @@ abstract class TypeReference<T> {
  * @return The type object representing `T`.
  */
 @Suppress("UNCHECKED_CAST")
-@Deprecated(DEPRECATED_KODEIN_7X)
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X, ReplaceWith("org.kodein.type.generic<T>()"))
 inline fun <reified T : Any> generic(): TypeToken<T> = org.kodein.type.generic<T>()
 
 /**
@@ -37,10 +38,12 @@ fun <T> TT(cls: Class<T>): TypeToken<T> = org.kodein.type.erased(cls)
 /**
  * Gives a [TypeToken] representing the given type.
  */
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X, ReplaceWith("typeToken(type)", "org.kodein.type"))
 fun TT(type: Type): TypeToken<*> = typeToken(type)
 
 /**
  * Gives a [TypeToken] representing the given [TypeReference].
  */
 @Suppress("UNCHECKED_CAST")
-fun <T> TT(ref: TypeReference<T>): TypeToken<T> = TT(ref.superType) as TypeToken<T>
+@Deprecated(DEPRECATED_ERASED_GENERIC_7X, ReplaceWith("typeToken(ref.superType)", "org.kodein.type"))
+fun <T> TT(ref: TypeReference<T>): TypeToken<T> = typeToken(ref.superType) as TypeToken<T>

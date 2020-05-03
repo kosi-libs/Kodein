@@ -48,17 +48,17 @@ class ConfJvmTests {
         val di = ConfigurableDI(true)
 
         di.addConfig {
-            Bind<String>(erased()) with Factory(TypeToken.Any, generic(), erased()) { l: List<*> -> l.first().toString() + " *" }
+            Bind<String>(erased()) with Factory(TypeToken.Any, org.kodein.type.generic(), erased()) { l: List<*> -> l.first().toString() + " *" }
         }
 
-        assertEquals("Salomon *", di.direct.Factory<List<String>, String>(generic(), generic(), null).invoke(listOf("Salomon", "BRYS")))
+        assertEquals("Salomon *", di.direct.Factory<List<String>, String>(org.kodein.type.generic(), org.kodein.type.generic(), null).invoke(listOf("Salomon", "BRYS")))
 
         di.addConfig {
-            Bind<String>(erased()) with Factory(TypeToken.Any, generic(), erased()) { l: List<String> -> l[0] + " " + l[1] }
+            Bind<String>(erased()) with Factory(TypeToken.Any, org.kodein.type.generic(), erased()) { l: List<String> -> l[0] + " " + l[1] }
         }
 
-        assertEquals("Salomon BRYS", di.direct.Factory<List<String>, String>(generic(), generic(), null).invoke(listOf("Salomon", "BRYS")))
-        assertEquals("42 *", di.direct.Factory<List<Int>, String>(generic(), generic(), null).invoke(listOf(42)))
+        assertEquals("Salomon BRYS", di.direct.Factory<List<String>, String>(org.kodein.type.generic(), org.kodein.type.generic(), null).invoke(listOf("Salomon", "BRYS")))
+        assertEquals("42 *", di.direct.Factory<List<Int>, String>(org.kodein.type.generic(), org.kodein.type.generic(), null).invoke(listOf(42)))
     }
 
     @Test fun test_01_ExternalSource() {
