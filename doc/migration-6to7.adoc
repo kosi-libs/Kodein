@@ -1,0 +1,142 @@
+= Changes & Migration from _Kodein-DI 6_ to _Kodein-DI 7_
+Romain BOISELLES <romain@kodein.net>
+:toc: left
+:toc-position: left
+:toclevels: 5
+
+:version:7.0.0
+:branch:7.0
+
+This guide will help you migrate from Kodein-DI 6 to Kodein-DI 7+.
+
+- The first part explains the changes and their reasoning.
+- The second part gives steps to follow to port your code to Kodein-DI 7+.
+
+== Changes
+
+=== New type system
+
+As Kotlin evolves, we are trying to keep the pace. So, we have introduced a new type system to empower *Kodein-DI* and other libraries, using new features of Kotlin.
+You can find it on https://github.com/Kodein-Framework/Kodein-Type[Github].
+
+It gives us the ability to handle generic types for all the platforms, including Kotlin/Native and Kotlin/JS, by using the inline function https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/type-of.html[`typeOf()'].
+for the JVM, the mechanism remains the same as before, by using reflection.
+
+We still have both implementations with `generic` and `erased` types, but by default, *Kodein-DI* is using the `generic` version.
+
+TIP: Checkout the link:core.adoc[full documentation] for more details.
+
+=== New modules
+
+This new type system ha permitted us to simplify the core libraries.
+Before `7.0` you had to use `kodein-di-core` and either `kodein-di-erased` (for all platforms) or `kodein-di-generic-jvm` (for the JVM / Android).
+
+Now you just need to import on single module, to get the core features of *Kodein-DI*:
+
+[subs="attributes"]
+.Gradle Kotlin script
+----
+implementation("org.kodein.di:kodein-di:{version}")
+----
+
+=== Class renaming: *Kodein* -> *DI*
+
+New libraries have been released under the *Kodein Frameowrk*, like *Kodein-DB*.
+Thus, we thought that is was legit to change the `Kodein` part of our class names, in the benefit of an more explicit one `DI`.
+
+Basically, every classes that were named after `Kodein` have been renamed with `DI`, like `KodeinAware` -> `DIAware`.
+
+=== Deprecated package: `erased` / `generic`
+
+Another side effect of the new type system, there is no more differences between `erased`/ `generic` implementations.
+So, the whole packages `org.kodein.di.erased` and `org.kodein.di.generic` have been deprecated.
+Implementation are now in the root package ``org.kodein.di`, and as told before, are based on the generic counterpart of the type system.
+
+== Migration
+
+=== New modules
+
+Module names have changed, but also there number. If you want to use core features of *Kodein-DI*, you no longer have to import multiple modules.
+
+[options="header",width="50%"]
+|=======
+| Old name                  | New name
+| `kodein-di-core`          | `kodein-di`
+| `kodein-di-generic-jvm`   | `kodein-di`
+| `kodein-di-erased`        | `kodein-di`
+|=======
+
+If you have enable the use of Gradle Metadata with `enableFeaturePreview("GRADLE_METADATA")`, or even *Gradle 6+*. Just use this import:
+
+[subs="attributes"]
+.Gradle Kotlin script
+----
+implementation("org.kodein.di:kodein-di:{version}")
+----
+
+Otherwise use the specific import, depending on your target:
+
+[subs="attributes"]
+.Gradle Kotlin script
+----
+implementation("org.kodein.di:kodein-di-jvm:{version}")
+implementation("org.kodein.di:kodein-di-js:{version}")
+implementation("org.kodein.di:kodein-di-linuxx64:{version}")
+implementation("org.kodein.di:kodein-di-macosx64:{version}")
+implementation("org.kodein.di:kodein-di-mingwx64:{version}")
+// ...
+----
+
+=== Class renaming: *Kodein* -> *DI*
+
+Here comes the tricky part of the migration. Our internals are using companions objects and nested classes,
+thus we could not just duplicate them and deprecated the old ones. We had to use some tricks like typealiases.
+Doing so we may have broke some old APIs, and the migration from *6* to *7* made those changes not optional.
+
+Sometimes IDEA will provide you with some nice actions like replacing all the occurrences automatically,
+but sometimes you may have to do this manually.
+
+As said before, all the classes / objects named after *Kodein* have been renamed with *DI*.
+Here is the table of all the correspondences, for the public classes:
+
+[options="header",width="50%"]
+|=======
+| Old name                     | New name
+| `Kodein`                     | `DI`
+| `KodeinAware`                | `DIAware`
+| `DKodein`                    | `DirectDI`
+| `DKodeinAware`               | `DirectDIAware`
+| `KodeinContainer`            | `DIContainer`
+| `KodeinDefining`             | `DIDefining`
+| `KodeinDefinition`           | `DIDefinition`
+| `KodeinContext`              | `DIContext`
+| `KodeinWrapper`              | `DIWrapper`
+| `KodeinTree`                 | `DITree`
+| `LateInitKodein`             | `LateInitDI`
+| `LazyKodein`                 | `LazyDI`
+| `KodeinProperty`             | `DIProperty`
+| `KodeinPropertyMap`          | `DIPropertyMap`
+| `BindingKodein`              | `BindingDI`
+| `SimpleBindingKodein`        | `SimpleBindingDI`
+| `NoArgSimpleBindingKodein`   | `NoArgSimpleBindingDI`
+| `NoArgBindingKodein`         | `NoArgBindingDI`
+| `SetBindingKodein`           | `SetBindingDI`
+| `KodeinBinding`              | `DIBinding`
+| `NoArgKodeinBinding`         | `NoArgDIBinding`
+| `BindingContextedKodein`     | `BindingContextedDI`
+|=======
+
+=== Deprecated package: `erased` / `generic`
+
+Packages `org.kodein.di.erased` and `org.kodein.di.generic` are fully deprecated.
+Everything that was inside those packages have been move into `org.kodein.di`
+
+You should get a replace action from IDEA for most of those implementation.
+But, if for some reasons IDEA does not provide you this action, you should just remove those packages from your imports.
+
+[options="header",width="50%"]
+|=======
+| Old package name        | Replace with
+| `org.kodein.di.generic` | `org.kodein.di`
+| `org.kodein.di.erased`  | `org.kodein.di`
+|=======

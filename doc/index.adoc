@@ -26,6 +26,7 @@ image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kod
 
 == Migrations
 
+- https://kodein.org/Kodein-DI/?{branch}/migration-6to7[Kodein version 6 to version 7]
 - https://kodein.org/Kodein-DI/?{branch}/migration-j2k[JSR-330 to Kodein-DI]
 - https://kodein.org/Kodein-DI/?{branch}/migration-4to5[Kodein version 4 to version 5]
 
