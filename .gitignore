@@ -1,5 +1,6 @@
 # INTELLIJ
-.idea/*
+**/.idea/*
+!.idea/icon.png
 !.idea/vcs.xml
 *.ipr
 *.iml
