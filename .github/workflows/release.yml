@@ -1,11 +1,11 @@
-name: Build and deploy a release
+name: build and deploy a release
 
 on:
   release:
     types: [published]
 
 jobs:
-  all:
+  publish-all:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -16,16 +16,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Assemble
-        run: ./gradlew assemble
-        shell: bash
-      - name: Test
-        run: ./gradlew check
-        shell: bash
-      - name: Upload to Bintray
+      - name: Publish
         env:
-          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-          BINTRAY_APIKEY: ${{ secrets.BINTRAY_APIKEY }}
-          BINTRAY_USER_ORG: ${{ secrets.BINTRAY_USER_ORG }}
-        run: ./gradlew bintrayUpload
+          BINTRAY_USER: ${{ secrets.bintray_user }}
+          BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
+          BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
+        run: |
+          if [ "$RUNNER_OS" != "Linux" ]
+          then
+             ./gradlew publish -x publishLinuxX64PublicationToBintrayRepository -x publishLinuxArm32HfpPublicationToBintrayRepository -PsnapshotNumber=${{ github.run_number }}
+          else
+             ./gradlew publish -PsnapshotNumber=${{ github.run_number }}
+          fi
         shell: bash

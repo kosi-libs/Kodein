@@ -1,17 +1,31 @@
-name: Build and test
+name: assemble and check
 
 on:
   push:
     branches-ignore:
-      - stable
       - master
       - '[0-9]+.[0-9]+'
       - 'snapshot/[0-9]+.[0-9]+'
+    paths-ignore:
+      - '**.md'
+      - '**.adoc'
+      - '**/.gitignore'
+      - './github/**'
+      - '!./github/workflow/test.yml'
   pull_request:
-    branches: ['**']
+    branches:
+      - stable
+      - master
+    paths-ignore:
+      - '**.md'
+      - '**.adoc'
+      - '**/.gitignore'
+      - './github/**'
+      - '!./github/workflow/test.yml'
+
 
 jobs:
-  all:
+  build-check-all:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -23,8 +37,10 @@ jobs:
         with:
           java-version: 11
       - name: Assemble
-        run: ./gradlew assemble
-        shell: bash
-      - name: Test
-        run: ./gradlew check
-        shell: bash
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: assemble
+      - name: Check
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: check
