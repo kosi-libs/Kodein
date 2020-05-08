@@ -32,19 +32,6 @@ jobs:
         uses: eskatos/gradle-command-action@v1
         with:
           arguments: check
-#      - name: Publish
-#        env:
-#          BINTRAY_USER: ${{ secrets.bintray_user }}
-#          BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
-#          BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
-#        run: |
-#          if [ "$RUNNER_OS" != "Linux" ]
-#          then
-#             ./gradlew publish -x publishLinuxX64PublicationToBintrayRepository -x publishLinuxArm32HfpPublicationToBintrayRepository -PsnapshotNumber=${{ github.run_number }}
-#          else
-#             ./gradlew publish -PsnapshotNumber=${{ github.run_number }}
-#          fi
-#        shell: bash
   windows-publishing:
     needs: build-check-all
     runs-on: windows-latest
@@ -74,7 +61,6 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - run: ./gradlew tasks --all
       - uses: eskatos/gradle-command-action@v1
         env:
           BINTRAY_USER: ${{ secrets.bintray_user }}
