@@ -24,7 +24,7 @@ jobs:
       - name: Check
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: check --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: check --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
       - name: Publish
         uses: eskatos/gradle-command-action@v1
         env:
@@ -32,7 +32,7 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
         with:
-          arguments: publish -PsnapshotNumber=${{ github.run_number }} --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: publish --no-daemon -PsnapshotNumber=${{ github.run_number }} --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
   macos-and-windows-targets:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -47,7 +47,7 @@ jobs:
       - name: Check
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: hostOnlyTest --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: hostOnlyTest --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
       - name: Publish
         uses: eskatos/gradle-command-action@v1
         env:
@@ -55,4 +55,4 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
         with:
-          arguments: hostOnlyPublish -PsnapshotNumber=${{ github.run_number }} --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: hostOnlyPublish --no-daemon -PsnapshotNumber=${{ github.run_number }} --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
