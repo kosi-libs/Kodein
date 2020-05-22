@@ -4,8 +4,8 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version:7.0.0
-:branch:7.0
+:version: 7.0.0
+:branch: 7.0
 
 Kodein-DI is a *Dependency Injection* library.
 It allows you to bind your business unit interfaces with their implementation and thus having each business unit being independent.
