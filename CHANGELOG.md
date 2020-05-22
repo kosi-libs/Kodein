@@ -1,3 +1,30 @@
+#### 7.0.0 (22-05-2020)
+
+  - DOCUMENTATION
+    * Updated http://kodein.org/Kodein-DI/
+        * New type system
+        * Module refactoring
+        * Code refactoring
+    * Migration from version 6 to 7: http://kodein.org/Kodein-DI/?7.0/migration-6to7
+
+  - CORE
+    * Modules refactoring: `org.kodein.di.generic-jvm` / `org.kodein.di.erased` combined into `org.kodein.di` 
+    * New [type system](https://github.com/Kodein-Framework/Kodein-Type) with `typeOf` to handle generics, for non JVM targets only.
+    * Package deprecation: `org.kodein.di.generic`, `org.kodein.di.erased`.
+    * Internals: non nullable context types / test re-organization / fixes
+    * Deprecation cycle
+    
+  - FRAMEWORKS
+    * Android / Ktor / TornadoFX : Migration from 6 to 7 
+    
+  - DEMOS
+    * Migrating the [Kodein-DI samples]( https://github.com/Kodein-Framework/Kodein-Samples) projects from 6 to 7
+
+  - BUILD
+    * Gradle 6.3   
+    * New Internal Gradle Plugin   
+    * Github Actions   
+
 #### 6.5.5 (15-04-2020)
 
 - CORE
