@@ -23,7 +23,6 @@ Have a look at the https://github.com/Kodein-Framework/Kodein-Samples/tree/maste
 +
 [subs="attributes"]
 ----
-implementation 'org.kodein.di:kodein-di-generic-jvm:{version}'
 implementation 'org.kodein.di:kodein-di-framework-android-???:{version}'
 ----
 +
@@ -35,8 +34,6 @@ Kodein-DI offers support for:
 | *Android + Support library*  | `kodein-di-framework-android-support`
 | *Android + AndroidX library* | `kodein-di-framework-android-x`
 |=======
-+
-IMPORTANT: Either `kodein-di-generic-jvm` or `kodein-di-erased-jvm` *must* be declared in addition to the Kodein-DI-Android package.
 +
 IMPORTANT: From `6.3.0` On the JVM, you must be targeting `JDK 1.8` minimum!
 +

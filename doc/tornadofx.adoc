@@ -24,18 +24,14 @@ Have a look at the https://github.com/Kodein-Framework/Kodein-Samples/tree/maste
 [subs="attributes"]
 .Gradle Groovy script
 ----
-implementation 'org.kodein.di:kodein-di-generic-jvm:{version}'
 implementation 'kodein-di-framework-tornadofx-jvm:{version}'
 ----
 +
 [subs="attributes"]
 .Gradle Kotlin script
 ----
-implementation("org.kodein.di:kodein-di-generic-jvm:{version}")
 implementation("kodein-di-framework-tornadofx-jvm:{version}")
 ----
-+
-IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-framework-tornadofx-jvm` package.
 +
 . Declare your `App` as `DIAware` and implement a DI container
 +

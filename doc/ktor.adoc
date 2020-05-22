@@ -27,18 +27,14 @@ Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/d
 [subs="attributes"]
 .Gradle Groovy script
 ----
-implementation 'org.kodein.di:kodein-di-generic-jvm:{version}'
 implementation 'org.kodein.di:kodein-di-framework-ktor-server-jvm:{version}'
 ----
 +
 [subs="attributes"]
 .Gradle Kotlin script
 ----
-implementation("org.kodein.di:kodein-di-generic-jvm:{version}")
 implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:{version}")
 ----
-+
-IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-framework-ktor-server-jvm` package.
 +
 . Declare a DI container in your application or use the <<difeature>>
 +

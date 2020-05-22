@@ -75,7 +75,7 @@ IMPORTANT: From `6.3.0` On the JVM, you must be targeting `JDK 1.8` minimum!
 _Kodein-DI_ is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
 
 Since `7.0.0`, a new https://github.com/Kodein-Framework/Kodein-Type[type system] has been designed and included to _Kodein-DI_.
-Thus, it appears to the developer that there is no differences between platforms, you no longer have to choose between `erased` or `generic` dependencies.
+Thus, it appears to the developer that there is no more _obvious_ differences between platforms, you no longer have to choose between `erased` or `generic` dependencies.
 Starting from `7.0.0`, _Kodein-DI_ is using the `generic` version of the type system, meaning you should be able to bind generics easily for _Kotlin/Multiplatform_ projects.
 
 === The JVM case
@@ -96,30 +96,31 @@ Therefore, please make sure that, using the erased version is right for your use
 *Do profile your code*!
 ====
 
-The difference is very simple: the `generic` version is *NOT* subject to type erasure while the `erased` version *IS*.
-
-Of course, it is a little bit more complicated! +
-To be able to circumvent the type erasure that's inherent to the JVM bytecode, the `generic` version uses a trix that makes heavy use of reflexivity.
-Because the `erased` version does not use that trix, handling generic types in _Kodein-DI_ are a lot more complex to use.
-
-[options="header"]
-|=======
-| &nbsp;    | Type erasure | Optimized | Non-generic bindings | Generic bindings
-| *generic* | *immune*     | no        | *simple*             | *simple*
-| *erased*  | subject      | *yes*     | *simple*             | complex
-|=======
-
-On the JVM, you might prefer the erased version if:
-
-- You are confident you are not binding / injecting / retrieving generic types and you are sure *none of the libraries you are using are*.
-- You are not using <<set-bindings,set bindings>>.
-
-If you profile your code and find that injection is a performance pitfall, then it probably is instanciation: you are creating too many objects in critical paths.
-Reusing objects in critical paths will enhance performance both in dependency injection / retrieval and in GC!
+//The difference is very simple: the `generic` version is *NOT* subject to type erasure while the `erased` version *IS*.
+//
+//Of course, it is a little bit more complicated! +
+//To be able to circumvent the type erasure that's inherent to the JVM bytecode, the `generic` version uses a trix that makes heavy use of reflexivity.
+//Because the `erased` version does not use that trix, handling generic types in _Kodein-DI_ are a lot more complex to use.
+//
+//[options="header"]
+//|=======
+//| &nbsp;    | Type erasure | Optimized | Non-generic bindings | Generic bindings
+//| *generic* | *immune*     | no        | *simple*             | *simple*
+//| *erased*  | subject      | *yes*     | *simple*             | complex
+//|=======
+//
+//On the JVM, you might prefer the erased version if:
+//
+//- You are confident you are not binding / injecting / retrieving generic types and you are sure *none of the libraries you are using are*.
+//- You are not using <<set-bindings,set bindings>>.
+//
+//If you profile your code and find that injection is a performance pitfall, then it probably is instanciation: you are creating too many objects in critical paths.
+//Reusing objects in critical paths will enhance performance both in dependency injection / retrieval and in GC!
+//
+//If you are using the `erased` version, either by choice on the JVM, or by default on JS & Native, you should read <<erased-version,erased version pitfalls>>.
 
 NOTE: Even if by default _Kodein-DI_ uses a `generic` type system, you still can use the `erased` one manually. (see *TODO*)
 
-If you are using the `erased` version, either by choice on the JVM, or by default on JS & Native, you should read <<erased-version,erased version pitfalls>>.
 
 [[install]]
 == Install
@@ -214,7 +215,18 @@ NOTE: _Kodein-DI_ supports the following targets: +
       androidArm32, androidArm64, iosArm32, iosArm64, iosX64, linuxArm32Hfp, linuxMips32, linuxMipsel32, linuxX64, macosX64, mingwX64
 
 _Kodein-DI_ uses the new gradle native dependency model.
-Because that model is experimental in gradle, it is not forward compatible with next versions of Gradle.
+
+[TIP]
+====
+If you are *NOT* using *Gradle 6+*, you should declare the use of the Gralde Metadata experimental feature
+
+[subs="attributes"]
+.settings.gradle.kts
+----
+enableFeaturePreview("GRADLE_METADATA")
+----
+
+====
 
 Add the JCenter repository:
 
@@ -2014,11 +2026,12 @@ Note that if no argument is provided, the argument to the lambda will be `Unit`.
 When using the `generic` version on the JVM, _Kodein-DI_ is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
 
-To be erasure immune, the `generic` JVM version relies heavily on the `generic` function, which is known to be slow.
+Even if generics are now available for every platforms (targeted by Kotlin compiler), the JVM version relies heavily on the a specific implementation, which is known to be slow.
 
-To improve performance, you can use the `erased` JVM _Kodein-DI_ version, which is faster, but do suffer from type erasure!
+To improve performance, you can use the `erased` function from _Kodein-DI_, which is faster, but do suffer from type erasure!
 
-Furthermore, on Javascript and Native platforms, there's no choice: `erased` is the only version available!
+Since *7.0*, _Kodein-DI_ can use `generic` for non JVM platforms, thus it is now the default implementation.
+However you still can force the use of `erased` with the generic and erased function forms!
 
 
 === Using generic and erased function forms
@@ -2051,9 +2064,9 @@ _Kodein-DI_ provides a way to represent a generic type in an erased way:
 [source, kotlin]
 .Example: generic type tokens, using erased
 ----
-erasedComp1<Set<String>, String>()                         // Represents a Set<String>
-erasedComp2<Map<Int, String>, Int, String>()               // Represents a Map<Int, String>
-erasedComp3<Triple<Int, String, Int>, Int, String, Int>()  // Represents a Triple<Int, String, Int>
+erasedComp(Set::class, erased(String::class))                                               // Represents a Set<String>
+erasedComp(Map::class, erased(Int::class), erased(String::class))                           // Represents a Map<Int, String>
+erasedComp(Triple::class, erased(Int::class), erased(String::class), erased(Int::class))    // Represents a Triple<Int, String, Int>
 ----
 
 NOTE: The type parameter themselves are erased, meaning that you cannot represent a multi-level generic type.
