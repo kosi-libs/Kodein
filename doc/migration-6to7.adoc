@@ -39,6 +39,14 @@ Now you just need to import on single module, to get the core features of *Kodei
 implementation("org.kodein.di:kodein-di:{version}")
 ----
 
+=== Deprecated package: `erased` / `generic`
+
+Another side effect of the new type system, there is not so much differences made between `erased`/ `generic` implementations, as `generic` is now the default usage in *Kodein-DI*.
+So, the whole packages `org.kodein.di.erased` and `org.kodein.di.generic` have been deprecated.
+Implementation are now in the root package ``org.kodein.di`, and as told before, are based on the generic counterpart of the type system.
+
+TIP: Differences are subtle, please read the link:core.adoc[full documentation] for more details.
+
 === Class renaming: *Kodein* -> *DI*
 
 New libraries have been released under the *Kodein Frameowrk*, like *Kodein-DB*.
@@ -46,17 +54,14 @@ Thus, we thought that is was legit to change the `Kodein` part of our class name
 
 Basically, every classes that were named after `Kodein` have been renamed with `DI`, like `KodeinAware` -> `DIAware`.
 
-=== Deprecated package: `erased` / `generic`
-
-Another side effect of the new type system, there is no more differences between `erased`/ `generic` implementations.
-So, the whole packages `org.kodein.di.erased` and `org.kodein.di.generic` have been deprecated.
-Implementation are now in the root package ``org.kodein.di`, and as told before, are based on the generic counterpart of the type system.
-
 == Migration
+
+This section is aimed to guide you through the migration to +Kodein-DI 7.0*.
 
 === New modules
 
 Module names have changed, but also there number. If you want to use core features of *Kodein-DI*, you no longer have to import multiple modules.
+Just grab the new `kodein-di` module! If you are using frameworks, you should find more details down below.
 
 [options="header",width="50%"]
 |=======
@@ -74,7 +79,7 @@ If you have enable the use of Gradle Metadata with `enableFeaturePreview("GRADLE
 implementation("org.kodein.di:kodein-di:{version}")
 ----
 
-Otherwise use the specific import, depending on your target:
+Otherwise, use the specific import, depending on your target:
 
 [subs="attributes"]
 .Gradle Kotlin script
@@ -87,14 +92,105 @@ implementation("org.kodein.di:kodein-di-mingwx64:{version}")
 // ...
 ----
 
+=== Deprecated package: `erased` / `generic`
+
+Packages `org.kodein.di.erased` and `org.kodein.di.generic` are fully deprecated.
+Everything that was inside those packages have been move into `org.kodein.di`
+
+You should get a replace action from IDEA for most of those implementation.
+But, if for some reasons IDEA does not provide you this action, you should just remove those packages from your imports.
+
+[options="header",width="50%"]
+|=======
+| Old package name        | Replace with
+| `org.kodein.di.generic` | `org.kodein.di`
+| `org.kodein.di.erased`  | `org.kodein.di`
+|=======
+
 === Class renaming: *Kodein* -> *DI*
 
 Here comes the tricky part of the migration. Our internals are using companions objects and nested classes,
-thus we could not just duplicate them and deprecated the old ones. We had to use some tricks like typealiases.
-Doing so we may have broke some old APIs, and the migration from *6* to *7* made those changes not optional.
+thus we could not just duplicate them and deprecated the old ones. We had to use some tricks, like typealiases.
+Doing so we may have broke some (old) APIs, and the migration from *6.0* to *7.0* made those changes not optional.
 
 Sometimes IDEA will provide you with some nice actions like replacing all the occurrences automatically,
-but sometimes you may have to do this manually.
+but sometimes you may have to do this manually. Here is a bunch of use cases that you may encounter:
+
+==== Kodein interface
+
+When migrating to *Kodein-DI 7+*, you will quickly notice some compile / deprecation errors.
+The first one might be on the `Kodein` interface.
+
+Sometimes, IDEA will encourage you to refactor your code with some actions:
+
+.With Alt+Enter / Cmd+Enter
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-to-di.png[Kodein to DI]
+.In the import section (Alt+Enter / Cmd+Enter)
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-to-di-2.png[Kodein to DI]
+
+Sometimes it won't resolve the problem, but will still have some action to replace the deprecated interface...
+
+.With Alt+Enter / Cmd+Enter
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-builder.png[Kodein-DI builder]
+
+==== KodeinAware interface
+
+The second most important type in Kodein-DI is `KodeinAware`, that we will need to refactor to ... `DIAware`.
+
+If you were using `KodeinAware` in your projects, you might end up with something like this:
+
+.Both interface implementation and the class implementing it are with errors.
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-1.png[DIAware]
+
+First thing, replace `KodeinAware` with `DIAware`:
+
+.With Alt+Enter / Cmd+Enter
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-2.png[DIAware]
+
+After that, you will need to make changes to the class that is implementing `DIAware`.
+We also had renamed the properties from KodeinAware`.
+
+[options="header",width="50%"]
+|=======
+| Old name                     | New name
+| `kodein`                     | `di`
+| `kodeinContext`              | `diContext`
+| `kodeinTrigger`              | `diTrigger`
+|=======
+
+.Unfortunately, IDEA won't help you for migrating those properties, you will have to do it manually
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-3.png[DIAware]
+
+So, you need to replace `override kodein: Kodein` by `override di: DI`, either in the constructor or in the member implementation.
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-4.png[DIAware]
+
+.Finally, no more errors!
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-5.png[DIAware]
+
+.The same manipulation goes for `kodeinContext` and `kodeinTrigger`
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kcontext.png[kcontext]
+
+[IMPORTANT]
+====
+.In the cases of `kodeinContext`, the property AND the expression might worth changing
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/dicontext.png[dicontext]
+====
+
+==== Binding & retrieval
+
+Binding and retrieval are really easier as they just have been deprecated and moved to `org.kodein.di`.
+
+.No error here ;)
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-1.png[Builder]
+.Deprecation message suggest to use the functions defined in `org.kodein.di`.
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-2.png[Builder]
+.Once again IDEA won't help you there, just drop the imports `org.kodein.di.erased` / `org.kodein.di.generic`
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-3.png[Builder]
+
+IMPORTANT: Removing the package imports `org.kodein.di.erased` / `org.kodein.di.generic` should help you in lot of cases.
+
+.Otherwise, just re-import the right package!
+image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-4.png[Builder]
 
 As said before, all the classes / objects named after *Kodein* have been renamed with *DI*.
 Here is the table of all the correspondences, for the public classes:
@@ -110,6 +206,7 @@ Here is the table of all the correspondences, for the public classes:
 | `KodeinDefining`             | `DIDefining`
 | `KodeinDefinition`           | `DIDefinition`
 | `KodeinContext`              | `DIContext`
+| `KodeinTrigger`              | `DITrigger`
 | `KodeinWrapper`              | `DIWrapper`
 | `KodeinTree`                 | `DITree`
 | `LateInitKodein`             | `LateInitDI`
@@ -126,17 +223,85 @@ Here is the table of all the correspondences, for the public classes:
 | `BindingContextedKodein`     | `BindingContextedDI`
 |=======
 
-=== Deprecated package: `erased` / `generic`
+== What about your favorite framework?
 
-Packages `org.kodein.di.erased` and `org.kodein.di.generic` are fully deprecated.
-Everything that was inside those packages have been move into `org.kodein.di`
+=== Android
 
-You should get a replace action from IDEA for most of those implementation.
-But, if for some reasons IDEA does not provide you this action, you should just remove those packages from your imports.
+Importing the *Android* modules of *Kodein-DI* are now easier. You don't need to chose between `erased` and `generic` anymore.
+A simple gradle dependency will do :)
+
+[subs="attributes"]
+.Gradle Kotlin script
+----
+implementation("org.kodein.di:kodein-di-framework-android-core:{version}")
+// OR
+implementation("org.kodein.di:kodein-di-framework-android-support:{version}")
+// OR
+implementation("org.kodein.di:kodein-di-framework-android-x:{version}")
+----
+
+Here is the table of all the correspondences, for the public classes / functions, by module:
+
+.Core module
+[options="header",width="50%"]
+|=======
+| Old name                     | New name
+| `RetainedKodeinFragment`     | `RetainedDIFragment`
+| `closestKodein()`            | `closestDI()`
+| `kodein()`                   | `di()`
+| `retainedKodein()`           | `retainedDI()`
+| `subKodein()`                | `subDI()`
+| `retainedSubKodein()`        | `retainedSubDI()`
+|=======
+
+.Support module
+[options="header",width="50%"]
+|=======
+| Old name                     | New name
+| `closestKodein()`            | `closestDI()`
+| `kodein()`                   | `di()`
+|=======
+
+.AndroidX module
+[options="header",width="50%"]
+|=======
+| Old name                     | New name
+| `closestKodein()`            | `closestDI()`
+| `kodein()`                   | `di()`
+|=======
+
+=== Ktor
+
+Here is the table of all the correspondences, for the public classes / functions:
+
+.Ktor server module
+[options="header",width="50%"]
+|=======
+| Old name                     | New name
+| `KodeinFeature`              | `DIFeature`
+| `KodeinSession`              | `KodeinDISession`
+| `kodein { }`                 | `di { }`
+| `closestKodein()`            | `closestDI()`
+| `kodein()`                   | `di()`
+| `subKodein()`                | `subDI()`
+|=======
+
+.Ktor server controller module
+[options="header",width="50%"]
+|=======
+| Old name                     | New name
+| `AbstractKodeinController`   | `AbstractDIController`
+| `KodeinController`           | `DIController`
+|=======
+
+=== TornadoFX
+
+Here is the table of all the correspondences, for the public classes / functions:
 
 [options="header",width="50%"]
 |=======
-| Old package name        | Replace with
-| `org.kodein.di.generic` | `org.kodein.di`
-| `org.kodein.di.erased`  | `org.kodein.di`
+| Old name                     | New name
+| `closestKodein()`            | `closestKodeinDI()`
+| `kodein()`                   | `kodeinDI()`
+| `subKodein()`                | `subDI()`
 |=======

@@ -20,7 +20,7 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
         with:
-          arguments: publish --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: publish --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
   macos-and-windows:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -39,4 +39,4 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
         with:
-          arguments: hostOnlyPublish --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: hostOnlyPublish --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
