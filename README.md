@@ -83,7 +83,7 @@ You can find samples for MPP project here https://github.com/Kodein-Framework/Ko
 Read more
 ---------
 
-**_Kodein-DI_** 6 is the current major version, but documentation is available for previous versions.
+**_Kodein-DI_** 7+ is the current major version, but documentation is available for previous versions.
 
 **[Kodein-DI documentation](http://kodein.org/Kodein-DI/)**
 
