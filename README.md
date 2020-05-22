@@ -1,6 +1,6 @@
 <img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/6.1/Kodein-DI-logo.png" width="700">
 
-[![Kotlin 1.3.61](https://img.shields.io/badge/Kotlin-1.3.61-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
+[![Kotlin 1.3.72](https://img.shields.io/badge/Kotlin-1.3.61-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
 [![JCenter](https://api.bintray.com/packages/kodein-framework/Kodein-DI/Kodein-DI-Core/images/download.svg)](https://bintray.com/kodein-framework/Kodein-DI)
 [![Github Actions](https://img.shields.io/github/workflow/status/Kodein-Framework/Kodein-DI/Snapshot/master?logo=github)](https://github.com/Kodein-Framework/Kodein-DI/actions)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Kodein-Framework/Kodein-DI/blob/master/LICENSE.txt)
@@ -53,6 +53,9 @@ class Controller(private di: DI) {
 - It proposes a very kotlin-esque idiomatic API
 - It is fast and optimized (makes extensive use of `inline`)
 - It can be used in plain Java
+
+### Looking for **Kodein-DI 7.0** migration guide?
+> Folow this us [here](https://kodein.org/Kodein-DI/?7.0/migration-6to7).
 
 Kotlin & JVM compatibility
 ---------
