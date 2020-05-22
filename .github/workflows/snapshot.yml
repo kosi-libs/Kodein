@@ -13,7 +13,7 @@ on:
       - '!./github/workflow/snapshot.yml'
 
 jobs:
-  ubuntu-and-platform-independent-targets:
+  platform-independent-targets:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
       - name: Check
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: check --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: check -PexcludeTargets=native --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
       - name: Publish
         uses: eskatos/gradle-command-action@v1
         env:
@@ -32,29 +32,12 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
         with:
-          arguments: publish -PsnapshotNumber=${{ github.run_number }} --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
-  windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Check
-        uses: eskatos/gradle-command-action@v1
-        with:
-          arguments: hostOnlyTest --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
-      - name: Publish
-        uses: eskatos/gradle-command-action@v1
-        env:
-          BINTRAY_USER: ${{ secrets.bintray_user }}
-          BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
-          BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
-        with:
-          arguments: hostOnlyPublish --no-daemon -PsnapshotNumber=${{ github.run_number }} --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
-  macos:
-    runs-on: macOS-latest
+          arguments: publish -PsnapshotNumber=${{ github.run_number }} -PexcludeTargets=native --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+  all-native:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
