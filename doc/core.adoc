@@ -77,6 +77,14 @@ _Kodein-DI_ is compatible with all platforms that the Kotlin language compiles t
 Since `7.0.0`, a new https://github.com/Kodein-Framework/Kodein-Type[type system] has been designed and included to _Kodein-DI_.
 Thus, it appears to the developer that there is no more _obvious_ differences between platforms, you no longer have to choose between `erased` or `generic` dependencies.
 Starting from `7.0.0`, _Kodein-DI_ is using the `generic` version of the type system, meaning you should be able to bind generics easily for _Kotlin/Multiplatform_ projects.
+So, whatever platform you are targeting, `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
+Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
+
+[INFO]
+====
+Since *7.0*, _Kodein-DI_ can use `generic` for non JVM platforms, thus it is now the default implementation.
+However you still can force the use of `erased` with the generic and erased function forms!
+====
 
 === The JVM case
 
@@ -2020,19 +2028,6 @@ Note that if no argument is provided, the argument to the lambda will be `Unit`.
 
 [[erased-version]]
 == Erased version pitfalls
-
-=== The type erasure problem
-
-When using the `generic` version on the JVM, _Kodein-DI_ is immune to type erasure, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
-Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
-
-Even if generics are now available for every platforms (targeted by Kotlin compiler), the JVM version relies heavily on the a specific implementation, which is known to be slow.
-
-To improve performance, you can use the `erased` function from _Kodein-DI_, which is faster, but do suffer from type erasure!
-
-Since *7.0*, _Kodein-DI_ can use `generic` for non JVM platforms, thus it is now the default implementation.
-However you still can force the use of `erased` with the generic and erased function forms!
-
 
 === Using generic and erased function forms
 

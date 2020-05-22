@@ -23,6 +23,7 @@ It gives us the ability to handle generic types for all the platforms, including
 for the JVM, the mechanism remains the same as before, by using reflection.
 
 We still have both implementations with `generic` and `erased` types, but by default, *Kodein-DI* is using the `generic` version.
+This means that *Native* and *JS* targets are now compatible with generics, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings.
 
 TIP: Checkout the link:core.adoc[full documentation] for more details.
 
@@ -119,36 +120,39 @@ but sometimes you may have to do this manually. Here is a bunch of use cases tha
 ==== Kodein interface
 
 When migrating to *Kodein-DI 7+*, you will quickly notice some compile / deprecation errors.
-The first one might be on the `Kodein` interface.
 
-Sometimes, IDEA will encourage you to refactor your code with some actions:
+The first one might be on the more import type in _Kodein-DI_, `Kodein`.
 
-.With Alt+Enter / Cmd+Enter
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-to-di.png[Kodein to DI]
-.In the import section (Alt+Enter / Cmd+Enter)
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-to-di-2.png[Kodein to DI]
+Sometimes, _IntelliJ IDEA_ will encourage you to refactor your code with some actions, with _Alt+Enter_ / _Cmd+Enter_.
 
-Sometimes it won't resolve the problem, but will still have some action to replace the deprecated interface...
-
-.With Alt+Enter / Cmd+Enter
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-builder.png[Kodein-DI builder]
+[cols="65%,<.^35%a",grid="none",frame="none"]
+|===
+|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-to-di.png[Kodein to DI, 800]
+|Either from your code
+|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-to-di-2.png[Kodein to DI, 800]
+|Or in the import section
+|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-builder.png[Kodein-DI builder, 500]
+|Sometimes it won't resolve the deprecation annotations, but will still have some actions to replace the deprecated interface...
+|===
 
 ==== KodeinAware interface
 
-The second most important type in Kodein-DI is `KodeinAware`, that we will need to refactor to ... `DIAware`.
+The second most important type in _Kodein-DI_ is `KodeinAware`, that we will need to refactor to ... `DIAware`.
 
 If you were using `KodeinAware` in your projects, you might end up with something like this:
 
-.Both interface implementation and the class implementing it are with errors.
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-1.png[DIAware]
+[cols="65%,<.^35%a",grid="none",frame="none"]
+|===
+|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-1.png[DIAware, 800]
+|Both interface implementation and the class implementing it are with errors.
+|===
 
-First thing, replace `KodeinAware` with `DIAware`:
+First thing, replace `KodeinAware` with `DIAware` (_Alt+Enter_ / _Cmd+Enter_ is your best friend here):
 
-.With Alt+Enter / Cmd+Enter
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-2.png[DIAware]
+image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-2.png[DIAware, 800]
 
-After that, you will need to make changes to the class that is implementing `DIAware`.
-We also had renamed the properties from KodeinAware`.
+After that, you will need to make changes to the class that is implementing `DIAware`. +
+Because we also had renamed the properties from `KodeinAware`, you might have some errors on the following properties.
 
 [options="header",width="50%"]
 |=======
@@ -158,39 +162,50 @@ We also had renamed the properties from KodeinAware`.
 | `kodeinTrigger`              | `diTrigger`
 |=======
 
-.Unfortunately, IDEA won't help you for migrating those properties, you will have to do it manually
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-3.png[DIAware]
+image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-3.png[DIAware, 800]
 
-So, you need to replace `override kodein: Kodein` by `override di: DI`, either in the constructor or in the member implementation.
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-4.png[DIAware]
+Unfortunately, _IntelliJ IDEA_ won't help you for migrating those properties, you will have to do it manually. +
 
-.Finally, no more errors!
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-5.png[DIAware]
+[cols="65%,<.^35%a",grid="none",frame="none"]
+|===
+|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-4.png[DIAware, 800]
+|Replace `override kodein: Kodein` by `override di: DI`, either in the constructor or in the member implementation.
+|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-5.png[DIAware, 800]
+|Here we are, nice and fresh!
+|===
 
-.The same manipulation goes for `kodeinContext` and `kodeinTrigger`
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kcontext.png[kcontext]
+The same manipulation goes for `kodeinContext` and `kodeinTrigger`
+
+image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kcontext.png[kcontext, 800]
 
 [IMPORTANT]
 ====
-.In the cases of `kodeinContext`, the property AND the expression might worth changing
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/dicontext.png[dicontext]
+In the cases of `kodeinContext`, the property AND the expression might worth changing
+image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/dicontext.png[dicontext]
 ====
 
 ==== Binding & retrieval
 
 Binding and retrieval are really easier as they just have been deprecated and moved to `org.kodein.di`.
 
-.No error here ;)
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-1.png[Builder]
-.Deprecation message suggest to use the functions defined in `org.kodein.di`.
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-2.png[Builder]
-.Once again IDEA won't help you there, just drop the imports `org.kodein.di.erased` / `org.kodein.di.generic`
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-3.png[Builder]
+
+[cols="65%,<.^35%a",grid="none",frame="none"]
+|===
+|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-1.png[Builder]
+|No error here ;)
+|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-2.png[Builder]
+|Deprecation message suggest to use the functions defined in `org.kodein.di`.
+|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-3.png[Builder]
+|Once again _IntelliJ IDEA_ won't help you there, just drop the imports `org.kodein.di.erased` / `org.kodein.di.generic`
+|===
 
 IMPORTANT: Removing the package imports `org.kodein.di.erased` / `org.kodein.di.generic` should help you in lot of cases.
 
-.Otherwise, just re-import the right package!
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-4.png[Builder]
+Otherwise, just re-import the right package!
+
+image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-4.png[Builder]
+
+==== All the matches
 
 As said before, all the classes / objects named after *Kodein* have been renamed with *DI*.
 Here is the table of all the correspondences, for the public classes:
@@ -224,6 +239,11 @@ Here is the table of all the correspondences, for the public classes:
 |=======
 
 == What about your favorite framework?
+
+Each one of the framework modules relies heavily on the core library of _Kodein-DI_, `kodein-di`.
+So, there is not so much migration here, mostly extensions functions to access easily to the DI container.
+
+You will find the table of correspondence for each framework right below.
 
 === Android
 
