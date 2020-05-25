@@ -24,7 +24,7 @@ jobs:
       - name: Check
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: check -PexcludeTargets=native --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: check --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
       - name: Publish
         uses: eskatos/gradle-command-action@v1
         env:
@@ -32,12 +32,12 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
         with:
-          arguments: publish -PsnapshotNumber=${{ github.run_number }} -PexcludeTargets=native --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: publish -PsnapshotNumber=${{ github.run_number }} --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
   all-native:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
