@@ -6,9 +6,6 @@ import org.kodein.type.TypeToken
 @Suppress("UNCHECKED_CAST")
 private inline val DIContext<*>.anyType get() = type as TypeToken<in Any>
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DirectDIBaseImpl"), DeprecationLevel.ERROR)
-internal typealias DirectKodeinBaseImpl = DirectDIBaseImpl
-
 @Suppress("FunctionName")
 internal abstract class DirectDIBaseImpl protected constructor(override val container: DIContainer, val context: DIContext<*>) : DirectDI {
 
@@ -38,6 +35,4 @@ internal abstract class DirectDIBaseImpl protected constructor(override val cont
 
     override fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?, arg: A): T? = container.factoryOrNull(DI.Key(context.anyType, argType, type, tag), context.value)?.invoke(arg)
 }
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DirectDIImpl"), DeprecationLevel.ERROR)
-internal typealias DKodeinImpl = DirectDIImpl
 internal expect class DirectDIImpl(container: DIContainer, context: DIContext<*>) : DirectDI

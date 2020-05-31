@@ -3,8 +3,6 @@ package org.kodein.di.internal
 import org.kodein.di.*
 import org.kodein.di.bindings.BindingDI
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIImpl"), DeprecationLevel.ERROR)
-internal typealias KodeinImpl = DIImpl
 /**
  * DI implementation.
  *
@@ -34,9 +32,6 @@ internal open class DIImpl internal constructor(private val _container: DIContai
     }
 
 }
-
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("BindingDIImpl<C,A,T>"), DeprecationLevel.ERROR)
-internal typealias BindingKodeinImpl<C,A,T> = BindingDIImpl<C,A,T>
 
 @Suppress("UNCHECKED_CAST")
 internal open class BindingDIImpl<out C : Any, out A, out T: Any> internal constructor(

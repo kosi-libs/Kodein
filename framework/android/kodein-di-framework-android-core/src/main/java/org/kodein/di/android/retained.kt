@@ -7,20 +7,11 @@ import android.app.Fragment
 import android.os.Bundle
 import org.kodein.di.*
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("RetainedDIFragment"), DeprecationLevel.ERROR)
-typealias RetainedKodeinFragment = RetainedDIFragment
-
 /** @suppress */
 class RetainedDIFragment : Fragment() {
 
     private var _di: DI? = null
     var di: DI?
-        get() = _di
-        set(value) {
-            _di = value
-        }
-    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di"), DeprecationLevel.ERROR)
-    var kodein: DI?
         get() = _di
         set(value) {
             _di = value
@@ -52,5 +43,3 @@ fun Activity.retainedDI(allowSilentOverride: Boolean = false, init: DI.MainBuild
 
     return@lazy di
 }
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("retainedDI(allowSilentOverride, init)"), DeprecationLevel.ERROR)
-fun Activity.retainedKodein(allowSilentOverride: Boolean = false, init: DI.MainBuilder.() -> Unit): Lazy<DI> = retainedDI(allowSilentOverride, init)

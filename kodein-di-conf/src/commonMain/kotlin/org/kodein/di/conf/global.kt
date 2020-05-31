@@ -11,8 +11,6 @@ private val oneTrueDI = ConfigurableDI()
 @Suppress("unused")
 val DI.Companion.global: ConfigurableDI get() = oneTrueDI
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIGlobalAware"), DeprecationLevel.ERROR)
-typealias KodeinGlobalAware = DIGlobalAware
 /**
  * A `DIAware` class that needs no implementation because the DI container used will be the [global] One True DI.
  */

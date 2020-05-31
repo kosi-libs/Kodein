@@ -23,8 +23,6 @@ interface WithContext<out C : Any> {
     val context: C
 }
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("SimpleBindingDI<C>"), DeprecationLevel.ERROR)
-typealias SimpleBindingKodein<C> = SimpleBindingDI<C>
 /**
  * Direct DI interface to be passed to factory methods that hold references.
  *
@@ -53,8 +51,6 @@ interface SimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
     fun overriddenFactoryOrNull(): ((Any?) -> Any)?
 }
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("BindingDI<C>"), DeprecationLevel.ERROR)
-typealias BindingKodein<C> = BindingDI<C>
 /**
  * Direct DI interface to be passed to factory methods that do **not** hold references (i.e. that recreate a new instance every time).
  *
@@ -64,8 +60,6 @@ typealias BindingKodein<C> = BindingDI<C>
  */
 interface BindingDI<out C : Any> : SimpleBindingDI<C>
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("NoArgSimpleBindingDI<C>"), DeprecationLevel.ERROR)
-typealias NoArgSimpleBindingKodein<C> = NoArgSimpleBindingDI<C>
 /**
  * Direct DI interface to be passed to provider methods that hold references.
  *
@@ -111,8 +105,6 @@ interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
     fun overriddenInstanceOrNull(): Any? /*= overriddenProviderOrNull()?.invoke()*/
 }
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("NoArgBindingDI<C>"), DeprecationLevel.ERROR)
-typealias NoArgBindingKodein<C> = NoArgBindingDI<C>
 /**
  * Direct DI interface to be passed to provider methods that do **not** hold references (i.e. that recreate a new instance every time).
  *
@@ -121,9 +113,6 @@ typealias NoArgBindingKodein<C> = NoArgBindingDI<C>
  * @param C The type of the context
  */
 interface NoArgBindingDI<out C : Any> : NoArgSimpleBindingDI<C>
-
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("NoArgBindingDIWrap<C>"), DeprecationLevel.ERROR)
-internal typealias NoArgBindingKodeinWrap<C> = NoArgBindingDIWrap<C>
 
 internal class NoArgBindingDIWrap<out C : Any>(private val _di: BindingDI<C>) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
     override fun overriddenProvider() = _di.overriddenFactory().toProvider { Unit }

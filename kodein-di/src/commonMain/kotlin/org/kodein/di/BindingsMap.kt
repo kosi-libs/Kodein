@@ -2,9 +2,6 @@ package org.kodein.di
 
 import org.kodein.di.bindings.*
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIDefining<C,A,T>"), DeprecationLevel.ERROR)
-typealias KodeinDefining<C,A,T> = DIDefining<C,A,T>
-
 /**
  * A binding that is being defined inside a [DI.Builder] bloc.
  *
@@ -15,8 +12,6 @@ typealias KodeinDefining<C,A,T> = DIDefining<C,A,T>
  */
 open class DIDefining<C : Any, A, T: Any>(val binding: DIBinding<C, A, T>, val fromModule: String?)
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIDefinition<C,A,T>"), DeprecationLevel.ERROR)
-typealias KodeinDefinition<C,A,T> = DIDefinition<C,A,T>
 /**
  * A definition is a binding that is associated to a [DITree].
  *

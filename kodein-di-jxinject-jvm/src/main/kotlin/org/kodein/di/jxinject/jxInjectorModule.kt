@@ -4,6 +4,7 @@ import org.kodein.di.*
 import org.kodein.di.bindings.*
 import org.kodein.di.jxinject.internal.JxInjectorContainer
 import org.kodein.type.TypeToken
+import org.kodein.type.erased
 import javax.inject.Named
 
 /**

@@ -20,8 +20,7 @@ fun DI.MainBuilder.installTornadoSource() {
 
             // If there is a context it must be of type Scope
             // then we try to find the right Component for the given Scope
-            if (scope != null &&
-                    Scope::class.java.isAssignableFrom(scope::class.java))
+            if (Scope::class.java.isAssignableFrom(scope::class.java))
                 externalFactory { find(type = componentType, scope = scope as Scope) }
             else
                 externalFactory { find(componentType) } // The context is null or not of type Scope

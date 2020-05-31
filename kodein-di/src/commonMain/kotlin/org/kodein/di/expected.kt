@@ -11,23 +11,8 @@ import kotlin.reflect.KClass
  * @param obj An object whose actual type will be extract.
  */
 @Suppress("FunctionName")
+@Deprecated("Has been reimplemented in Kodein-Type", ReplaceWith("erasedOf(obj)", "org.kodein.type"))
 fun <T: Any> TTOf(obj: T): TypeToken<out T> = erasedOf(obj)
-
-/**
- * Gives a [TypeToken] representing the given class.
- */
-fun <T: Any> TT(cls: KClass<T>): TypeToken<T> = org.kodein.type.erased(cls)
-
-/**
- * Returns an **erased** type representation of the given type.
- *
- * - `erased<Whatever>()` -> `TypeToken<Whatever>`
- * - `erased<List<Whatever>>()` -> `TypeToken<List<*>>`
- *
- * @param T The type to represent erased.
- */
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("generic()", "org.kodein.type"))
-inline fun <reified T : Any> erased(): TypeToken<T> = org.kodein.type.generic()
 
 /** @suppress */
 @Target(AnnotationTarget.FIELD)

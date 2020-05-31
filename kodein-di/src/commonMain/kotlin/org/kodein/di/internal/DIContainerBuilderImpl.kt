@@ -4,8 +4,6 @@ import org.kodein.di.*
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.DIBinding
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIContainerBuilderImpl"), DeprecationLevel.ERROR)
-internal typealias KodeinContainerBuilderImpl = DIContainerBuilderImpl
 /**
  * This is where you configure the bindings.
  *

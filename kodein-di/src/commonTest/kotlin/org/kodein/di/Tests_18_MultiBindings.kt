@@ -1,9 +1,6 @@
 package org.kodein.di
 
-import org.kodein.di.erased.*
 import org.kodein.di.test.*
-import org.kodein.type.erasedComp
-import org.kodein.type.generic
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

@@ -1,8 +1,5 @@
 package org.kodein.di
 
-import org.kodein.di.generic.allFactories
-import org.kodein.di.generic.allInstances
-import org.kodein.di.generic.allProviders
 import org.kodein.di.test.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

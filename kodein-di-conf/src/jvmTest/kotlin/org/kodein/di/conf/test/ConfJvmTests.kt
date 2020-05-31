@@ -8,6 +8,7 @@ import org.kodein.di.conf.ConfigurableDI
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.type.TypeToken
+import org.kodein.type.erased
 import org.kodein.type.jvmType
 import kotlin.test.Test
 import kotlin.test.assertEquals

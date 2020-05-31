@@ -7,9 +7,6 @@ import org.kodein.di.bindings.Scope
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DI"), DeprecationLevel.ERROR)
-typealias Kodein = DI
-
 /**
  * KOtlin DEpendency INjection.
  *
@@ -155,8 +152,6 @@ interface DI : DIAware {
      * Defines a di DSL function
      */
     @DslMarker
-    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIDsl"), DeprecationLevel.ERROR)
-    annotation class KodeinDsl
     annotation class DIDsl
 
     /**

@@ -7,67 +7,6 @@ import org.kodein.type.erasedComp
 import org.kodein.type.generic
 
 /**
- * Creates a [CompositeTypeToken] for an erased generic type.
- *
- * Example: to create an erased type token representing `Set<String>`, use `erasedComp1<Set<String>, String>()`.
- *
- * @param T The main type represented by this type token.
- * @param A1 The type parameter of the main type.
- */
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp()", "org.kodein.type"), DeprecationLevel.ERROR)
-inline fun <reified T : Any, reified A1 : Any> erasedComp1(): TypeToken<T> = error("This does no longer works. You must use the org.kodein.type.erasedComp(...).")
-
-/**
- * Creates a [CompositeTypeToken] for an erased generic type.
- *
- * Example: to create an erased type token representing `Map<Int, String>`, use `erasedComp2<Map<Int, String>, Int, String>()`.
- *
- * @param T The main type represented by this type token.
- * @param A1 The first type parameter of the main type.
- * @param A2 The second type parameter of the main type.
- */
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp()", "org.kodein.type"), DeprecationLevel.ERROR)
-inline fun <reified T : Any, reified A1 : Any, reified A2 : Any> erasedComp2(): TypeToken<T> = error("This does no longer works. You must use the org.kodein.type.erasedComp(...).")
-
-/**
- * Creates a [CompositeTypeToken] for an erased generic type.
- *
- * @param T The main type represented by this type token.
- * @param A1 The type parameter of the main type.
- * @param A2 The second type parameter of the main type.
- * @param A3 The third type parameter of the main type.
- */
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp()", "org.kodein.type"), DeprecationLevel.ERROR)
-inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : Any> erasedComp3(): TypeToken<T> = error("This does no longer works. You must use the org.kodein.type.erasedComp(...).")
-
-/**
- * Creates a [CompositeTypeToken] for an erased generic type.
- *
- * @param T The main type represented by this type token.
- * @param A1 The type parameter of the main type.
- * @param A2 The second type parameter of the main type.
- * @param A3 The third type parameter of the main type.
- * @param A4 The fourth type parameter of the main type.
- */
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp()", "org.kodein.type"), DeprecationLevel.ERROR)
-inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : Any, reified A4 : Any> erasedComp4(): TypeToken<T> = error("This does no longer works. You must use the org.kodein.type.erasedComp(...).")
-
-/**
- * Creates a [CompositeTypeToken] for an erased generic type.
- *
- * Five. Generic. Freaking. Parameters!
- *
- * @param T The main type represented by this type token.
- * @param A1 The type parameter of the main type.
- * @param A2 The second type parameter of the main type.
- * @param A3 The third type parameter of the main type.
- * @param A4 The fourth type parameter of the main type.
- * @param A5 The fifth type parameter of the main type.
- */
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("erasedComp()", "org.kodein.type"), DeprecationLevel.ERROR)
-inline fun <reified T : Any, reified A1 : Any, reified A2 : Any, reified A3 : Any, reified A4 : Any, reified A5 : Any> erasedComp5(): TypeToken<T> = error("This does no longer works. You must use the org.kodein.type.erasedComp(...).")
-
-/**
  * Creates a [CompositeTypeToken] that defines a `Set<T>`.
  *
  * @param T The parameter type of the Set.

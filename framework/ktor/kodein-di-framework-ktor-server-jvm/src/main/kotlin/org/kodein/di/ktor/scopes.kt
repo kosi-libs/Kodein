@@ -6,8 +6,6 @@ import org.kodein.di.*
 import org.kodein.di.bindings.*
 
 //region Session scope
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("KodeinDISession"), DeprecationLevel.ERROR)
-typealias KodeinSession = KodeinDISession
 /**
  * Interface that will help leverage the use of DI in the Ktor [Sessions] context
  */

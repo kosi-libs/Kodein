@@ -4,8 +4,6 @@ import org.kodein.di.*
 import org.kodein.di.internal.maySynchronized
 import org.kodein.di.internal.synchronizedIfNull
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("ConfigurableDI"), DeprecationLevel.ERROR)
-typealias ConfigurableKodein = ConfigurableDI
 /**
  * A class that can be used to configure a DI object and as a DI object.
  *

@@ -1,7 +1,6 @@
 package org.kodein.di
 
 import org.kodein.di.bindings.subTypes
-import org.kodein.di.generic.with
 import org.kodein.di.test.*
 import org.kodein.type.jvmType
 import kotlin.test.*

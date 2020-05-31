@@ -5,7 +5,6 @@ import org.junit.*
 import org.junit.Test
 import org.junit.runners.*
 import org.kodein.di.*
-import org.kodein.di.generic.*
 import org.testfx.api.*
 import tornadofx.*
 import kotlin.test.*

@@ -1,10 +1,6 @@
 package org.kodein.di.jxinject
 
-import org.kodein.di.DI
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.factory
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.provider
+import org.kodein.di.*
 
 fun test0() = DI {
     import(jxInjectorModule)

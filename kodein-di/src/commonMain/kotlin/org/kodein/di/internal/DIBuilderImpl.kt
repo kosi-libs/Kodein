@@ -4,9 +4,6 @@ import org.kodein.di.*
 import org.kodein.di.bindings.*
 import org.kodein.type.TypeToken
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIBuilderImpl"), DeprecationLevel.ERROR)
-internal typealias KodeinBuilderImpl = DIBuilderImpl
-
 internal open class DIBuilderImpl internal constructor(
         private val moduleName: String?,
         private val prefix: String,
@@ -73,9 +70,6 @@ internal open class DIBuilderImpl internal constructor(
     override fun RegisterContextTranslator(translator: ContextTranslator<*, *>) = containerBuilder.registerContextTranslator(translator)
 
 }
-
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIMainBuilderImpl"), DeprecationLevel.ERROR)
-internal typealias KodeinMainBuilderImpl= DIMainBuilderImpl
 
 internal open class DIMainBuilderImpl(allowSilentOverride: Boolean) : DIBuilderImpl(null, "", HashSet(), DIContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList())), DI.MainBuilder {
 

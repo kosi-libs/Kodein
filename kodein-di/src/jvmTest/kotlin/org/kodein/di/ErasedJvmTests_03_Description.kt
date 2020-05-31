@@ -6,6 +6,7 @@ import org.kodein.di.test.IPerson
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
 import org.kodein.type.TypeToken
+import org.kodein.type.erased
 import org.kodein.type.erasedComp
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -99,10 +100,10 @@ class ErasedJvmTests_03_Description {
         assertEquals("Array<Char>", org.kodein.type.generic<Array<Char>>().simpleDispString())
 
         assertEquals("List<*>", org.kodein.type.generic<List<*>>().simpleDispString())
-//        assertEquals("List<String>", erasedComp1<List<String>, String>().simpleDispString())
+        assertEquals("List<String>", erasedComp(List::class, erased<String>()).simpleDispString())
 
-//        assertEquals("Map<String, Any>", erasedComp2<Map<String, *>, String, Any>().simpleDispString())
-//        assertEquals("Map<String, String>", erasedComp2<Map<String, String>, String, String>().simpleDispString())
+        assertEquals("Map<String, Any>", erasedComp(Map::class, erased<String>(), erased<Any>()).simpleDispString())
+        assertEquals("Map<String, String>", erasedComp(Map::class, erased<String>(), erased<String>()).simpleDispString())
 
         assertEquals("ErasedJvmTests_03_Description.G<*>", org.kodein.type.generic<G<*>>().simpleDispString())
 //        assertEquals("ErasedJvmTests_03_Description.G<ErasedJvmTests_03_Description.A>", erasedComp1<G<A>, A>().simpleDispString())

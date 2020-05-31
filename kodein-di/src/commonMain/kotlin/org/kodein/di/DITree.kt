@@ -3,9 +3,6 @@ package org.kodein.di
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.ExternalSource
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DITree"), DeprecationLevel.ERROR)
-typealias KodeinTree = DITree
-
 /**
  * Tree where the bindings and their factories are sorted & stored.
  */

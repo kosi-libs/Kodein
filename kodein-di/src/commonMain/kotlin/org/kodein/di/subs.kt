@@ -14,8 +14,3 @@ inline fun subDI(parentDI: DI, allowSilentOverride: Boolean = false, copy: Copy 
     extend(parentDI, copy = copy)
     init()
 }
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("subDI(parentDI, allowSilentOverride, copy, init)"), DeprecationLevel.ERROR)
-inline fun subKodein(parentDI: DI, allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: DI.MainBuilder.() -> Unit) = DI.lazy(allowSilentOverride) {
-    extend(parentDI, copy = copy)
-    init()
-}

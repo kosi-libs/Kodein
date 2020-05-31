@@ -2,6 +2,7 @@ package org.kodein.di.bindings
 
 import org.kodein.di.*
 import org.kodein.type.TypeToken
+import org.kodein.type.erasedOf
 
 /**
  * Base class that knows how to get an instance.
@@ -27,9 +28,6 @@ interface Binding<C : Any, A, T: Any> {
      */
     fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, T>): (A) -> T
 }
-
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIBinding<C,A,T>"), DeprecationLevel.ERROR)
-typealias KodeinBinding<C,A,T> = DIBinding<C,A,T>
 
 /**
  * Binding that is registered inside a DI object.
@@ -82,7 +80,7 @@ interface DIBinding<C : Any, A, T : Any> : Binding<C, A, T> {
     val description: String get() {
         val arg = if (argType != TypeToken.Unit) "${argType.simpleDispString()} -> " else ""
         val scope = if (scope is NoScope) null else scope
-        val context = scope?.let { "scoped(${TTOf(it).simpleDispString()})." } ?: if (contextType != TypeToken.Any) "contexted<${contextType.simpleDispString()}>()." else ""
+        val context = scope?.let { "scoped(${erasedOf(it).simpleDispString()})." } ?: if (contextType != TypeToken.Any) "contexted<${contextType.simpleDispString()}>()." else ""
         return "$context${factoryName()} { $arg${createdType.simpleDispString()} }"
     }
 
@@ -92,7 +90,7 @@ interface DIBinding<C : Any, A, T : Any> : Binding<C, A, T> {
     val fullDescription: String get() {
         val arg = if (argType != TypeToken.Unit) "${argType.qualifiedDispString()} -> " else ""
         val scope = if (scope is NoScope) null else scope
-        val context = scope?.let { "scoped(${TTOf(it).qualifiedDispString()})." } ?: if (contextType != TypeToken.Any) "contexted<${contextType.qualifiedDispString()}>()." else ""
+        val context = scope?.let { "scoped(${erasedOf(it).qualifiedDispString()})." } ?: if (contextType != TypeToken.Any) "contexted<${contextType.qualifiedDispString()}>()." else ""
         return "$context${factoryFullName()} { $arg${createdType.qualifiedDispString()} }"
     }
 
@@ -135,8 +133,6 @@ interface DIBinding<C : Any, A, T : Any> : Binding<C, A, T> {
     val supportSubTypes: Boolean get() = false
 }
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("NoArgDIBinding<C,T>"), DeprecationLevel.ERROR)
-typealias NoArgKodeinBinding<C,T> = NoArgDIBinding<C,T>
 /**
  * [DIBinding] specialization that has no argument.
  *

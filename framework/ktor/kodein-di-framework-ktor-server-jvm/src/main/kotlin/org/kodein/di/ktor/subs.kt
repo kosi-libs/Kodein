@@ -11,5 +11,3 @@ inline fun Route.subDI(allowSilentOverride: Boolean = false, copy: Copy = Copy.N
     val parentDI = parent?.di() ?: di { application }
     this.attributes.put(KodeinDIKey, subDI(parentDI, allowSilentOverride, copy, init))
 }
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("subDI(allowSilentOverride, copy, init)"), DeprecationLevel.ERROR)
-inline fun Route.subKodein(allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: DI.MainBuilder.() -> Unit) = subDI(allowSilentOverride, copy, init)

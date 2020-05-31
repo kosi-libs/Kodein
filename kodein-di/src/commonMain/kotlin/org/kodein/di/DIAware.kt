@@ -5,9 +5,6 @@ package org.kodein.di
 import org.kodein.di.internal.DirectDIImpl
 import org.kodein.type.TypeToken
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIContext<C>"), DeprecationLevel.ERROR)
-typealias KodeinContext<C> = DIContext<C>
-
 /**
  * Defines a context and its type to be used by Di
  */
@@ -53,11 +50,6 @@ private object Contexes {
  * Default DI context, means no context.
  */
 val AnyDIContext get() = Contexes.AnyDIContext
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("AnyDIContext"), DeprecationLevel.ERROR)
-val AnyKodeinContext = AnyDIContext
-
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIAware"), DeprecationLevel.ERROR)
-typealias KodeinAware = DIAware
 
 /**
  * Any class that extends this interface can use DI "seamlessly".
@@ -68,8 +60,6 @@ interface DIAware {
      * A DI Aware class must be within reach of a [DI] object.
      */
     val di: DI
-    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di"), DeprecationLevel.ERROR)
-    val kodein: DI get() = di
 
     /**
      * A DI Aware class can define a context that is for all retrieval by overriding this property.
@@ -77,8 +67,6 @@ interface DIAware {
      * Note that even if you override this property, all bindings that do not use a Context or are not scoped will still work!
      */
     val diContext: DIContext<*> get() = AnyDIContext
-    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diContext"), DeprecationLevel.ERROR)
-    val kodeinContext: DIContext<*> get() = diContext
 
     /**
      * Trigger to use that define when the retrieval will be done.
@@ -87,8 +75,6 @@ interface DIAware {
      * However, you can use a [DITrigger] to force retrieval at a given time of your choice.
      */
     val diTrigger: DITrigger? get() = null
-    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diTrigger"), DeprecationLevel.ERROR)
-    val kodeinTrigger: DITrigger? get() = diTrigger
 }
 
 /**
@@ -234,9 +220,6 @@ fun <A, T : Any> DIAware.InstanceOrNull(argType: TypeToken<in A>, type: TypeToke
  * Return a direct [DirectDI] instance, with its receiver and context set to this DIAware receiver and context.
  */
 val DIAware.direct: DirectDI get() = DirectDIImpl(di.container, diContext)
-
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIWrapper"), DeprecationLevel.ERROR)
-private typealias KodeinWrapper = DIWrapper
 
 private class DIWrapper(
         private val _base: DI,

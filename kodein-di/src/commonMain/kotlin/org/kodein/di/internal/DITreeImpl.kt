@@ -27,9 +27,6 @@ private typealias ArgumentTypeTree = MutableMap<TypeChecker.Down, TagTree>
 
 private typealias TagTree = MutableMap<Any?, DI.Key<*, *, *>>
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DITreeImpl"), DeprecationLevel.ERROR)
-internal typealias KodeinTreeImpl = DITreeImpl
-
 internal class DITreeImpl(
         map: Map<DI.Key<*, *, *>, List<DIDefining<*, *, *>>>,
         override val externalSources: List<ExternalSource>,

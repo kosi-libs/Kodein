@@ -2,9 +2,6 @@ package org.kodein.di
 
 import org.kodein.type.TypeToken
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DirectDIAware"), DeprecationLevel.ERROR)
-typealias DKodeinAware = DirectDIAware
-
 /**
  * Any class that extends this interface can use direct DI "seamlessly".
  */
@@ -13,12 +10,7 @@ interface DirectDIAware {
      * A Direct DI Aware class must be within reach of a [DirectDI] object.
      */
     val directDI: DirectDI
-    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("directDI"), DeprecationLevel.ERROR)
-    val dkodein get() = directDI
 }
-
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DirectDIBase"), DeprecationLevel.ERROR)
-typealias DKodeinBase = DirectDIBase
 
 /**
  * @see [DirectDI]
@@ -40,8 +32,6 @@ interface DirectDIBase : DirectDIAware {
      * Returns a regular [DI] instance (DI is lazy by default).
      */
     val di: DI get() = lazy
-    @Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di"), DeprecationLevel.ERROR)
-    val kodein: DI get() = di
 
     /**
      * Returns a [DirectDI] with its context changed.
@@ -177,9 +167,6 @@ interface DirectDIBase : DirectDIAware {
      */
     fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: A): T?
 }
-
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DirectDI"), DeprecationLevel.ERROR)
-typealias DKodein = DirectDI
 
 /**
  * D stands for Direct. Direct DI!

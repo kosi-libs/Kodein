@@ -263,15 +263,11 @@ inline fun <reified A : Any, reified T : Any> DIAware.instanceOrNull(tag: Any? =
 /**
  * Defines a context and its type to be used by DI.
  */
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diContext(context)"), DeprecationLevel.ERROR)
-inline fun <reified C : Any> kcontext(context: C) = DIContext(generic(), context)
 inline fun <reified C : Any> diContext(context: C) = DIContext(generic(), context)
 
 /**
  * Defines a context and its type to be used by DI.
  */
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("diContext(getContext)"), DeprecationLevel.ERROR)
-inline fun <reified C : Any> kcontext(crossinline getContext: () -> C) = DIContext<C>(generic()) { getContext() }
 inline fun <reified C : Any> diContext(crossinline getContext: () -> C) = DIContext<C>(generic()) { getContext() }
 
 /**

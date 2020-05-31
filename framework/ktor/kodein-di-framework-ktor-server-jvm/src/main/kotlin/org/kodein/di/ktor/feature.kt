@@ -5,9 +5,8 @@ import io.ktor.util.*
 import org.kodein.di.*
 import org.kodein.di.bindings.*
 import org.kodein.di.ktor.DIFeature.*
+import org.kodein.type.erased
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIFeature"), DeprecationLevel.ERROR)
-typealias KodeinFeature = DIFeature
 /**
  * Ktor [Feature] that provide a global [DI] container
  * that would be accessible from everywhere in the Ktor application
@@ -49,5 +48,3 @@ class DIFeature private constructor() {
  * Gets or installs a [DIFeature] feature for the this [Application] and runs a [configuration] script on it
  */
 fun Application.di(configuration: DI.MainBuilder.() -> Unit) = install(DIFeature, configuration)
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("di(configuration)"), DeprecationLevel.ERROR)
-fun Application.kodein(configuration: DI.MainBuilder.() -> Unit) = di(configuration)

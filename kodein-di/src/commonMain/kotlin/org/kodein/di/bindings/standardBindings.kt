@@ -4,6 +4,7 @@ import org.kodein.di.*
 import org.kodein.di.internal.BindingDIImpl
 import org.kodein.di.internal.synchronizedIfNull
 import org.kodein.type.TypeToken
+import org.kodein.type.erasedOf
 
 /**
  * Concrete factory: each time an instance is needed, the function creator function will be called.
@@ -20,9 +21,6 @@ class Factory<C : Any, A, T: Any>(override val contextType: TypeToken<in C>, ove
 
     override fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, T>): (A) -> T = { arg -> this.creator(di, arg) }
 }
-
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("BindingContextedDI<C>"), DeprecationLevel.ERROR)
-private typealias BindingContextedKodein<C>  = BindingContextedDI<C>
 
 @Suppress("UNCHECKED_CAST")
 private class BindingContextedDI<out C : Any>(val base: BindingDI<*>, override val context: C) : BindingDI<C> by (base as BindingDI<C>)
@@ -52,14 +50,14 @@ class Multiton<C : Any, A, T: Any>(override val scope: Scope<C>, override val co
     override fun factoryName(): String {
         val params = ArrayList<String>(2)
         if (_refMaker != SingletonReference)
-            params.add("ref = ${TTOf(_refMaker).simpleDispString()}")
+            params.add("ref = ${erasedOf(_refMaker).simpleDispString()}")
         return factoryName(params)
     }
 
     override fun factoryFullName(): String {
         val params = ArrayList<String>(2)
         if (_refMaker != SingletonReference)
-            params.add("ref = ${TTOf(_refMaker).qualifiedDispString()}")
+            params.add("ref = ${erasedOf(_refMaker).qualifiedDispString()}")
         return factoryName(params)
     }
 
@@ -113,14 +111,14 @@ class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override val cont
     override fun factoryName(): String {
         val params = ArrayList<String>(2)
         if (_refMaker != SingletonReference)
-            params.add("ref = ${TTOf(_refMaker).simpleDispString()}")
+            params.add("ref = ${erasedOf(_refMaker).simpleDispString()}")
         return factoryName(params)
     }
 
     override fun factoryFullName(): String {
         val params = ArrayList<String>(2)
         if (_refMaker != SingletonReference)
-            params.add("ref = ${TTOf(_refMaker).qualifiedDispString()}")
+            params.add("ref = ${erasedOf(_refMaker).qualifiedDispString()}")
         return factoryName(params)
     }
 

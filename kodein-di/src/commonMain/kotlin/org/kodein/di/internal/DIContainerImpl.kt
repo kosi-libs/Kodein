@@ -3,9 +3,6 @@ package org.kodein.di.internal
 import org.kodein.di.*
 import org.kodein.di.bindings.*
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIContainerImpl"), DeprecationLevel.ERROR)
-internal typealias KodeinContainerImpl = DIContainerImpl
-
 internal class DIContainerImpl private constructor(
         override val tree: DITree,
         private val node: Node?,

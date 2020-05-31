@@ -3,9 +3,6 @@ package org.kodein.di
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.DIBinding
 
-@Deprecated(DEPRECATED_KODEIN_7X, ReplaceWith("DIContainer"), DeprecationLevel.ERROR)
-typealias KodeinContainer = DIContainer
-
 /**
  * The Container is the entry point for retrieval without DI's inline & reified shenanigans.
  *
