@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  platform-independent-targets:
+  linux-platform-independent-targets:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,12 +20,12 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
         with:
-          arguments: publish -PexcludeTargets=native --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
-  all-native:
+          arguments: publish --no-daemon --scan -PbuildScan.termsOfServiceAgree=yes
+  windows-macos:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -39,4 +39,4 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
         with:
-          arguments: hostOnlyPublish --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: hostOnlyPublish --no-daemon --scan -PbuildScan.termsOfServiceAgree=yes
