@@ -48,7 +48,7 @@ jobs:
       - name: Check
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: check
+          arguments: check --no-daemon
       - name: Publish
         uses: eskatos/gradle-command-action@v1
         env:
