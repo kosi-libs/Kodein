@@ -27,4 +27,4 @@ jobs:
       - name: Check
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: check --no-daemon --stacktrace --scan -PbuildScan.termsOfServiceAgree=yes
+          arguments: check
