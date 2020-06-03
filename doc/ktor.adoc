@@ -385,18 +385,14 @@ To help those who want to implement a Ktor application base on a "MVC-like" arch
 [subs="attributes"]
 .Gradle Groovy script
 ----
-implementation 'org.kodein.di:kodein-di-generic-jvm:{version}'
 implementation 'org.kodein.di:kodein-di-framework-ktor-server-controller-jvm:{version}'
 ----
 
 [subs="attributes"]
 .Gradle Kotlin script
 ----
-implementation("org.kodein.di:kodein-di-generic-jvm:{version}")
 implementation("org.kodein.di:kodein-di-framework-ktor-server-controller-jvm:{version}")
 ----
-
-IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declared in addition to the `kodein-di-framework-ktor-server-controller-jvm` package.
 
 NOTE:  the `kodein-di-framework-ktor-server-controller-jvm` already have  the `kodein-di-framework-ktor-server-jvm` as transitive dependency, so you don't need to declare both.
 
