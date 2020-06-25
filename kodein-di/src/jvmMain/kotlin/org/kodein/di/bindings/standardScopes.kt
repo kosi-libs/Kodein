@@ -7,7 +7,7 @@ import java.util.*
  *
  * In essence, the context is weak, and for a given context, its registry will be GC'd when it is itself GC'd.
  */
-open class WeakContextScope<in C>(val newRepo: () -> ScopeRegistry = { StandardScopeRegistry() }) : Scope<C> {
+public open class WeakContextScope<in C>(public val newRepo: () -> ScopeRegistry = { StandardScopeRegistry() }) : Scope<C> {
 
     private val map = WeakHashMap<C, ScopeRegistry>()
 
@@ -18,8 +18,8 @@ open class WeakContextScope<in C>(val newRepo: () -> ScopeRegistry = { StandardS
         }
     }
 
-    companion object Of : WeakContextScope<Any>() {
+    public companion object Of : WeakContextScope<Any>() {
         @Suppress("UNCHECKED_CAST")
-        fun <T> of(): Scope<T> = this as Scope<T>
+        public fun <T> of(): Scope<T> = this as Scope<T>
     }
 }

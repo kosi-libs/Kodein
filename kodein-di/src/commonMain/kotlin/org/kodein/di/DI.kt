@@ -21,14 +21,14 @@ import org.kodein.type.TypeToken
  * }
  * ```
  */
-interface DI : DIAware {
+public interface DI : DIAware {
 
     /**
      * Exception thrown when there is a dependency loop.
      *
      * @param message The message of the exception.
      */
-    class DependencyLoopException internal constructor(message: String) : RuntimeException(message)
+    public class DependencyLoopException internal constructor(message: String) : RuntimeException(message)
 
     /**
      * Exception thrown when asked for a dependency that cannot be found.
@@ -36,7 +36,7 @@ interface DI : DIAware {
      * @property key The key that was not found.
      * @param message The message of the exception.
      */
-    class NotFoundException(val key: Key<*, *, *>, message: String)
+    public class NotFoundException(public val key: Key<*, *, *>, message: String)
             : RuntimeException(message)
 
     /**
@@ -45,7 +45,7 @@ interface DI : DIAware {
      * @property search The specs that lead to no result.
      * @param message The message of the exception.
      */
-    class NoResultException(val search: SearchSpecs, message: String)
+    public class NoResultException(public val search: SearchSpecs, message: String)
         : RuntimeException(message)
 
     /**
@@ -53,7 +53,7 @@ interface DI : DIAware {
      *
      * @param message The message of the exception.
      */
-    class OverridingException(message: String) : RuntimeException(message)
+    public class OverridingException(message: String) : RuntimeException(message)
 
     override val di: DI get() = this
 
@@ -72,7 +72,7 @@ interface DI : DIAware {
      * @property tag The associated tag.
      */
     @Suppress("EqualsOrHashCode")
-    data class Key<in C : Any, in A, out T: Any>(
+    public data class Key<in C : Any, in A, out T: Any>(
             val contextType: TypeToken<in C>,
             val argType: TypeToken<in A>,
             val type: TypeToken<out T>,
@@ -98,7 +98,7 @@ interface DI : DIAware {
         /**
          * @return The [description]
          */
-        override fun toString() = description
+        override fun toString(): String = description
 
         /**
          * Right part of the description string.
@@ -152,27 +152,27 @@ interface DI : DIAware {
      * Defines a di DSL function
      */
     @DslMarker
-    annotation class DIDsl
+    public annotation class DIDsl
 
     /**
      * Base builder DSL interface that allows to define scoped and context bindings.
      *
      * @param C The context type.
      */
-    interface BindBuilder<C : Any> {
+    public interface BindBuilder<C : Any> {
         /**
          * The context type that will be used by all bindings that are defined in this DSL context.
          */
-        val contextType: TypeToken<C>
+        public val contextType: TypeToken<C>
 
         /**
          * Used to define bindings with a context.
          *
          * @param C The context type.
          */
-        interface WithContext<C : Any> : BindBuilder<C> {
+        public interface WithContext<C : Any> : BindBuilder<C> {
             /** @suppress */
-            class Impl<C : Any>(override val contextType: TypeToken<C>) : WithContext<C>
+            public class Impl<C : Any>(override val contextType: TypeToken<C>) : WithContext<C>
         }
 
         /**
@@ -180,15 +180,15 @@ interface DI : DIAware {
          *
          * @param C The scope's Context.
          */
-        interface WithScope<C : Any> : BindBuilder<C> {
+        public interface WithScope<C : Any> : BindBuilder<C> {
 
             /**
              * The scope that will be used by all bindings that are defined in this DSL context.
              */
-            val scope: Scope<C>
+            public val scope: Scope<C>
 
             /** @suppress */
-            class Impl<C : Any>(override val contextType: TypeToken<C>, override val scope: Scope<C>) : WithScope<C>
+            public class Impl<C : Any>(override val contextType: TypeToken<C>, override val scope: Scope<C>) : WithScope<C>
         }
     }
 
@@ -200,29 +200,29 @@ interface DI : DIAware {
      * @property containerBuilder Every methods eventually ends up to a call to this builder.
      */
     @DIDsl
-    interface Builder : BindBuilder.WithContext<Any>, BindBuilder.WithScope<Any> {
+    public interface Builder : BindBuilder.WithContext<Any>, BindBuilder.WithScope<Any> {
 
-        val containerBuilder: DIContainer.Builder
+        public val containerBuilder: DIContainer.Builder
 
         /**
          * Left part of the type-binding syntax (`bind(type, tag)`).
          *
          * @param T The type to bind.
          */
-        interface TypeBinder<T : Any> {
+        public interface TypeBinder<T : Any> {
             /**
              * Binds the previously given type and tag to the given binding.
              *
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun <C : Any, A> with(binding: DIBinding<in C, in A, out T>)
+            public infix fun <C : Any, A> with(binding: DIBinding<in C, in A, out T>)
         }
 
         /**
          * Left part of the direct-binding syntax (`bind(tag)`).
          */
-        interface DirectBinder {
+        public interface DirectBinder {
             /**
              * Binds the previously given tag to the given binding.
              *
@@ -231,14 +231,14 @@ interface DI : DIAware {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>)
+            public infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>)
         }
 
         /**
          * Left part of the constant-binding syntax (`constant(tag)`).
          *
          */
-        interface ConstantBinder {
+        public interface ConstantBinder {
             /**
              * Binds the previously given tag to the given instance.
              *
@@ -248,7 +248,7 @@ interface DI : DIAware {
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
             @Suppress("FunctionName")
-            fun <T: Any> With(valueType: TypeToken<out T>, value: T)
+            public fun <T: Any> With(valueType: TypeToken<out T>, value: T)
         }
 
         /**
@@ -261,7 +261,7 @@ interface DI : DIAware {
          * @return The binder: call [TypeBinder.with]) on it to finish the binding syntax and register the binding.
          */
         @Suppress("FunctionName")
-        fun <T : Any> Bind(type: TypeToken<out T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T>
+        public fun <T : Any> Bind(type: TypeToken<out T>, tag: Any? = null, overrides: Boolean? = null): TypeBinder<T>
 
         /**
          * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
@@ -271,7 +271,7 @@ interface DI : DIAware {
          * @return The binder: call [DirectBinder.from]) on it to finish the binding syntax and register the binding.
          */
         @Suppress("FunctionName")
-        fun Bind(tag: Any? = null, overrides: Boolean? = null): DirectBinder
+        public fun Bind(tag: Any? = null, overrides: Boolean? = null): DirectBinder
 
         /**
          * Starts a constant binding.
@@ -280,7 +280,7 @@ interface DI : DIAware {
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          * @return The binder: call `with` on it to finish the binding syntax and register the binding.
          */
-        fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder
+        public fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder
 
         /**
          * Imports all bindings defined in the given [DI.Module] into this builder's definition.
@@ -293,7 +293,7 @@ interface DI : DIAware {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun import(module: Module, allowOverride: Boolean = false)
+        public fun import(module: Module, allowOverride: Boolean = false)
 
         /**
          * Imports all bindings defined in the given [DI.Module]s into this builder's definition.
@@ -306,7 +306,7 @@ interface DI : DIAware {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun importAll(vararg modules: Module, allowOverride: Boolean = false)
+        public fun importAll(vararg modules: Module, allowOverride: Boolean = false)
 
         /**
          * Imports all bindings defined in the given [DI.Module]s into this builder's definition.
@@ -319,7 +319,7 @@ interface DI : DIAware {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun importAll(modules: Iterable<Module>, allowOverride: Boolean = false)
+        public fun importAll(modules: Iterable<Module>, allowOverride: Boolean = false)
 
         /**
          * Like [import] but checks that will only import each module once.
@@ -328,32 +328,32 @@ interface DI : DIAware {
          *
          * Careful: this is checked by name. If two modules share the same name, only one will be imported!
          */
-        fun importOnce(module: Module, allowOverride: Boolean = false)
+        public fun importOnce(module: Module, allowOverride: Boolean = false)
 
         /**
          * Adds a callback that will be called once the DI object is configured and instantiated.
          *
          * @param cb The callback.
          */
-        fun onReady(cb: DirectDI.() -> Unit)
+        public fun onReady(cb: DirectDI.() -> Unit)
 
-        fun RegisterContextTranslator(translator: ContextTranslator<*, *>)
+        public fun RegisterContextTranslator(translator: ContextTranslator<*, *>)
     }
 
     /**
      * Builder to create a [DI] object.
      */
-    interface MainBuilder : Builder {
+    public interface MainBuilder : Builder {
 
         /**
          * If true, exceptions thrown will contain qualified names.
          */
-        var fullDescriptionOnError: Boolean
+        public var fullDescriptionOnError: Boolean
 
         /**
          * The external source is repsonsible for fetching / creating a value when DI cannot find a matching binding.
          */
-        val externalSources: MutableList<ExternalSource>
+        public val externalSources: MutableList<ExternalSource>
 
         /**
          * Imports all bindings defined in the given [DI] into this builder.
@@ -372,7 +372,7 @@ interface DI : DIAware {
          * @throws OverridingException If this di overrides an existing binding and is not allowed to
          *   OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(di: DI, allowOverride: Boolean = false, copy: Copy = Copy.NonCached)
+        public fun extend(di: DI, allowOverride: Boolean = false, copy: Copy = Copy.NonCached)
 
         /**
          * Imports all bindings defined in the given [DI] into this builder.
@@ -391,7 +391,7 @@ interface DI : DIAware {
          * @throws OverridingException If this di overrides an existing binding and is not allowed to
          *   OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(directDI: DirectDI, allowOverride: Boolean = false, copy: Copy = Copy.NonCached)
+        public fun extend(directDI: DirectDI, allowOverride: Boolean = false, copy: Copy = Copy.NonCached)
     }
 
     /**
@@ -407,17 +407,17 @@ interface DI : DIAware {
      * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
      * @property init The block of configuration for this module.
      */
-    data class Module(val name: String, val allowSilentOverride: Boolean = false, val prefix: String = "", val init: Builder.() -> Unit) {
+    public data class Module(val name: String, val allowSilentOverride: Boolean = false, val prefix: String = "", val init: Builder.() -> Unit) {
         @Deprecated("You should name your modules, for debug purposes.", replaceWith = ReplaceWith("Module(\"module name\", allowSilentOverride, init)"))
-        constructor(allowSilentOverride: Boolean = false, init: Builder.() -> Unit) : this("", allowSilentOverride, "", init)
+        public constructor(allowSilentOverride: Boolean = false, init: Builder.() -> Unit) : this("", allowSilentOverride, "", init)
     }
 
     /**
      * Every methods eventually ends up to a call to this container.
      */
-    val container: DIContainer
+    public val container: DIContainer
 
-    companion object {
+    public companion object {
 
         /**
          * Creates a [DI] instance.
@@ -426,7 +426,7 @@ interface DI : DIAware {
          * @param init The block of configuration.
          * @return The new DI object, freshly created, and ready for hard work!
          */
-        operator fun invoke(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DI = DIImpl(allowSilentOverride, init)
+        public operator fun invoke(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DI = DIImpl(allowSilentOverride, init)
 
         /**
          * Creates a [DI] instance that will be lazily created upon first access.
@@ -435,7 +435,7 @@ interface DI : DIAware {
          * @param init The block of configuration.
          * @return A lazy property that will yield, when accessed, the new DI object, freshly created, and ready for hard work!
          */
-        fun lazy(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): LazyDI = LazyDI { DIImpl(allowSilentOverride, init) }
+        public fun lazy(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): LazyDI = LazyDI { DIImpl(allowSilentOverride, init) }
 
         /**
          * Creates a direct [DirectDI] instance that will be lazily created upon first access.
@@ -444,7 +444,7 @@ interface DI : DIAware {
          * @param init The block of configuration.
          * @return The new DirectDI object, freshly created, and ready for hard work!
          */
-        fun direct(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DirectDI = DIImpl(allowSilentOverride, init).direct
+        public fun direct(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DirectDI = DIImpl(allowSilentOverride, init).direct
 
         /**
          * Creates a DI object but without directly calling onReady callbacks.
@@ -459,13 +459,13 @@ interface DI : DIAware {
          * @return a Pair with the DI object, and the callbacks function to call.
          *   Note that you *should not* use the DI object before calling the callbacks function.
          */
-        fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): Pair<DI, () -> Unit> = DIImpl.withDelayedCallbacks(allowSilentOverride, init)
+        public fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): Pair<DI, () -> Unit> = DIImpl.withDelayedCallbacks(allowSilentOverride, init)
 
-        fun from(modules: List<Module>): DI = DI {
+        public fun from(modules: List<Module>): DI = DI {
             modules.forEach { import(it) }
         }
 
-        var defaultFullDescriptionOnError: Boolean = false
+        public var defaultFullDescriptionOnError: Boolean = false
     }
 
 }

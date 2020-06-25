@@ -15,7 +15,7 @@ import org.kodein.type.generic
  * @throws DI.NotFoundException if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.factory(tag: Any? = null) = Factory<A, T>(generic(), generic(), tag)
+public inline fun <reified A : Any, reified T : Any> DIAware.factory(tag: Any? = null): DIProperty<(A) -> T> = Factory<A, T>(generic(), generic(), tag)
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
@@ -28,7 +28,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.factory(tag: Any? = null) 
  * @return A factory, or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.factoryOrNull(tag: Any? = null) = FactoryOrNull<A, T>(generic(), generic(), tag)
+public inline fun <reified A : Any, reified T : Any> DIAware.factoryOrNull(tag: Any? = null): DIProperty<((A) -> T)?> = FactoryOrNull<A, T>(generic(), generic(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -41,7 +41,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.factoryOrNull(tag: Any? = 
  * @throws DI.NotFoundException if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DIAware.provider(tag: Any? = null) = Provider<T>(generic(), tag)
+public inline fun <reified T : Any> DIAware.provider(tag: Any? = null): DIProperty<() -> T> = Provider<T>(generic(), tag)
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -56,7 +56,7 @@ inline fun <reified T : Any> DIAware.provider(tag: Any? = null) = Provider<T>(ge
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.provider(tag: Any? = null, arg: A) = Provider<A, T>(generic(), generic(), tag) { arg }
+public inline fun <reified A : Any, reified T : Any> DIAware.provider(tag: Any? = null, arg: A): DIProperty<() -> T> = Provider<A, T>(generic(), generic(), tag) { arg }
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -71,7 +71,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.provider(tag: Any? = null,
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DIAware.provider(tag: Any? = null, arg: Typed<A>) = Provider<A, T>(arg.type, generic(), tag) { arg.value }
+public inline fun <A, reified T : Any> DIAware.provider(tag: Any? = null, arg: Typed<A>): DIProperty<() -> T> = Provider<A, T>(arg.type, generic(), tag) { arg.value }
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -86,7 +86,7 @@ inline fun <A, reified T : Any> DIAware.provider(tag: Any? = null, arg: Typed<A>
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.provider(tag: Any? = null, noinline fArg: () -> A) = Provider<A, T>(generic(), generic(), tag, fArg)
+public inline fun <reified A : Any, reified T : Any> DIAware.provider(tag: Any? = null, noinline fArg: () -> A): DIProperty<() -> T> = Provider<A, T>(generic(), generic(), tag, fArg)
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -98,7 +98,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.provider(tag: Any? = null,
  * @return A provider, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DIAware.providerOrNull(tag: Any? = null) = ProviderOrNull<T>(generic(), tag)
+public inline fun <reified T : Any> DIAware.providerOrNull(tag: Any? = null): DIProperty<(() -> T)?> = ProviderOrNull<T>(generic(), tag)
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -112,7 +112,7 @@ inline fun <reified T : Any> DIAware.providerOrNull(tag: Any? = null) = Provider
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.providerOrNull(tag: Any? = null, arg: A) = ProviderOrNull<A, T>(generic(), generic(), tag, { arg })
+public inline fun <reified A : Any, reified T : Any> DIAware.providerOrNull(tag: Any? = null, arg: A): DIProperty<(() -> T)?> = ProviderOrNull<A, T>(generic(), generic(), tag, { arg })
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -128,7 +128,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.providerOrNull(tag: Any? =
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DIAware.providerOrNull(tag: Any? = null, arg: Typed<A>) = ProviderOrNull<A, T>(arg.type, generic(), tag, { arg.value })
+public inline fun <A, reified T : Any> DIAware.providerOrNull(tag: Any? = null, arg: Typed<A>): DIProperty<(() -> T)?> = ProviderOrNull<A, T>(arg.type, generic(), tag, { arg.value })
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -142,7 +142,7 @@ inline fun <A, reified T : Any> DIAware.providerOrNull(tag: Any? = null, arg: Ty
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = ProviderOrNull<A, T>(generic(), generic(), tag, fArg)
+public inline fun <reified A : Any, reified T : Any> DIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A): DIProperty<(() -> T)?> = ProviderOrNull<A, T>(generic(), generic(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -155,7 +155,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.providerOrNull(tag: Any? =
  * @throws DI.NotFoundException if no provider was found.
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DIAware.instance(tag: Any? = null) = Instance<T>(generic(), tag)
+public inline fun <reified T : Any> DIAware.instance(tag: Any? = null): DIProperty<T> = Instance<T>(generic(), tag)
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -170,7 +170,7 @@ inline fun <reified T : Any> DIAware.instance(tag: Any? = null) = Instance<T>(ge
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.instance(tag: Any? = null, arg: A) = Instance<A, T>(generic(), generic(), tag) { arg }
+public inline fun <reified A : Any, reified T : Any> DIAware.instance(tag: Any? = null, arg: A): DIProperty<T> = Instance<A, T>(generic(), generic(), tag) { arg }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -187,7 +187,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.instance(tag: Any? = null,
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DIAware.instance(tag: Any? = null, arg: Typed<A>) = Instance<A, T>(arg.type, generic(), tag) { arg.value }
+public inline fun <A, reified T : Any> DIAware.instance(tag: Any? = null, arg: Typed<A>): DIProperty<T> = Instance<A, T>(arg.type, generic(), tag) { arg.value }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -202,7 +202,7 @@ inline fun <A, reified T : Any> DIAware.instance(tag: Any? = null, arg: Typed<A>
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.instance(tag: Any? = null, noinline fArg: () -> A) = Instance<A, T>(generic(), generic(), tag, fArg)
+public inline fun <reified A : Any, reified T : Any> DIAware.instance(tag: Any? = null, noinline fArg: () -> A): DIProperty<T> = Instance<A, T>(generic(), generic(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -214,7 +214,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.instance(tag: Any? = null,
  * @return An instance, or null if no provider was found.
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DIAware.instanceOrNull(tag: Any? = null) = InstanceOrNull<T>(generic(), tag)
+public inline fun <reified T : Any> DIAware.instanceOrNull(tag: Any? = null): DIProperty<T?> = InstanceOrNull<T>(generic(), tag)
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -228,7 +228,7 @@ inline fun <reified T : Any> DIAware.instanceOrNull(tag: Any? = null) = Instance
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, arg: A) = InstanceOrNull<A, T>(generic(), generic(), tag) { arg }
+public inline fun <reified A : Any, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, arg: A): DIProperty<T?> = InstanceOrNull<A, T>(generic(), generic(), tag) { arg }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -244,7 +244,7 @@ inline fun <reified A : Any, reified T : Any> DIAware.instanceOrNull(tag: Any? =
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, arg: Typed<A>) = InstanceOrNull<A, T>(arg.type, generic(), tag) { arg.value }
+public inline fun <A, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, arg: Typed<A>): DIProperty<T?> = InstanceOrNull<A, T>(arg.type, generic(), tag) { arg.value }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -258,17 +258,17 @@ inline fun <A, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, arg: Ty
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, noinline fArg: () -> A) = InstanceOrNull<A, T>(generic(), generic(), tag, fArg)
+public inline fun <reified A : Any, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, noinline fArg: () -> A): DIProperty<T?> = InstanceOrNull<A, T>(generic(), generic(), tag, fArg)
 
 /**
  * Defines a context and its type to be used by DI.
  */
-inline fun <reified C : Any> diContext(context: C) = DIContext(generic(), context)
+public inline fun <reified C : Any> diContext(context: C): DIContext<C> = DIContext(generic(), context)
 
 /**
  * Defines a context and its type to be used by DI.
  */
-inline fun <reified C : Any> diContext(crossinline getContext: () -> C) = DIContext<C>(generic()) { getContext() }
+public inline fun <reified C : Any> diContext(crossinline getContext: () -> C) : DIContext<C> = DIContext(generic()) { getContext() }
 
 /**
  * Allows to create a new DI object with a context and/or a trigger set.
@@ -277,7 +277,7 @@ inline fun <reified C : Any> diContext(crossinline getContext: () -> C) = DICont
  * @param trigger The new trigger of the new DI.
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
-inline fun <reified C : Any> DIAware.on(context: C, trigger: DITrigger? = this.diTrigger) = On(diContext(context), trigger)
+public inline fun <reified C : Any> DIAware.on(context: C, trigger: DITrigger? = this.diTrigger): DI = On(diContext(context), trigger)
 
 /**
  * Allows to create a new DI object with a context and/or a trigger set.
@@ -286,7 +286,7 @@ inline fun <reified C : Any> DIAware.on(context: C, trigger: DITrigger? = this.d
  * @param trigger The new trigger of the new DI.
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
-inline fun <reified C : Any> DIAware.on(trigger: DITrigger? = this.diTrigger, crossinline getContext: () -> C) = On(diContext(getContext), trigger)
+public inline fun <reified C : Any> DIAware.on(trigger: DITrigger? = this.diTrigger, crossinline getContext: () -> C): DI = On(diContext(getContext), trigger)
 
 /**
  * Allows to create a new DI object with a trigger set.
@@ -294,7 +294,7 @@ inline fun <reified C : Any> DIAware.on(trigger: DITrigger? = this.diTrigger, cr
  * @param trigger The new trigger of the new DI.
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
-fun DIAware.on(trigger: DITrigger?) = On(diContext, trigger)
+public fun DIAware.on(trigger: DITrigger?): DI = On(diContext, trigger)
 
 
 //endregion
@@ -312,7 +312,7 @@ fun DIAware.on(trigger: DITrigger?) = On(diContext, trigger)
  * @throws DI.NotFoundException if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DirectDIAware.factory(tag: Any? = null) = directDI.Factory<A, T>(generic(), generic(), tag)
+public inline fun <reified A : Any, reified T : Any> DirectDIAware.factory(tag: Any? = null): (A) -> T = directDI.Factory<A, T>(generic(), generic(), tag)
 
 /**
  * Gets a factory of `T` for the given argument type, return type and tag, or nul if none is found.
@@ -325,7 +325,7 @@ inline fun <reified A : Any, reified T : Any> DirectDIAware.factory(tag: Any? = 
  * @return A factory, or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DirectDIAware.factoryOrNull(tag: Any? = null) = directDI.FactoryOrNull<A, T>(generic(), generic(), tag)
+public inline fun <reified A : Any, reified T : Any> DirectDIAware.factoryOrNull(tag: Any? = null): ((A) -> T)? = directDI.FactoryOrNull<A, T>(generic(), generic(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -338,7 +338,7 @@ inline fun <reified A : Any, reified T : Any> DirectDIAware.factoryOrNull(tag: A
  * @throws DI.NotFoundException if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DirectDIAware.provider(tag: Any? = null) = directDI.Provider<T>(generic(), tag)
+public inline fun <reified T : Any> DirectDIAware.provider(tag: Any? = null): () -> T = directDI.Provider<T>(generic(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -353,7 +353,7 @@ inline fun <reified T : Any> DirectDIAware.provider(tag: Any? = null) = directDI
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: A) = directDI.Provider<A, T>(generic(), generic(), tag) { arg }
+public inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: A): () -> T = directDI.Provider<A, T>(generic(), generic(), tag) { arg }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -370,7 +370,7 @@ inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(tag: Any? =
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: Typed<A>) = directDI.Provider<A, T>(arg.type, generic(), tag) { arg.value }
+public inline fun <A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: Typed<A>): () -> T = directDI.Provider<A, T>(arg.type, generic(), tag) { arg.value }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument.
@@ -385,7 +385,7 @@ inline fun <A, reified T : Any> DirectDIAware.provider(tag: Any? = null, arg: Ty
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(tag: Any? = null, noinline fArg: () -> A) = directDI.Provider<A, T>(generic(), generic(), tag, fArg)
+public inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(tag: Any? = null, noinline fArg: () -> A): () -> T = directDI.Provider<A, T>(generic(), generic(), tag, fArg)
 
 /**
  * Gets a provider of `T` for the given type and tag, or null if none is found.
@@ -398,7 +398,7 @@ inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(tag: Any? =
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null) = directDI.ProviderOrNull<T>(generic(), tag)
+public inline fun <reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null): (() -> T)? = directDI.ProviderOrNull<T>(generic(), tag)
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -412,7 +412,7 @@ inline fun <reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null) = di
  * @return A provider of `T`, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: A) = directDI.ProviderOrNull<A, T>(generic(), generic(), tag) { arg }
+public inline fun <reified A : Any, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: A): (() -> T)? = directDI.ProviderOrNull<A, T>(generic(), generic(), tag) { arg }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -428,7 +428,7 @@ inline fun <reified A : Any, reified T : Any> DirectDIAware.providerOrNull(tag: 
  * @return A provider of `T`, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: Typed<A>) = directDI.ProviderOrNull<A, T>(arg.type, generic(), tag) { arg.value }
+public inline fun <A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, arg: Typed<A>): (() -> T)? = directDI.ProviderOrNull<A, T>(arg.type, generic(), tag) { arg.value }
 
 /**
  * Gets a provider of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -442,7 +442,7 @@ inline fun <A, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, a
  * @return A provider of `T`, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A) = directDI.ProviderOrNull<A, T>(generic(), generic(), tag, fArg)
+public inline fun <reified A : Any, reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null, noinline fArg: () -> A): (() -> T)? = directDI.ProviderOrNull<A, T>(generic(), generic(), tag, fArg)
 
 /**
  * Gets an instance of `T` for the given type and tag.
@@ -455,7 +455,7 @@ inline fun <reified A : Any, reified T : Any> DirectDIAware.providerOrNull(tag: 
  * @throws DI.NotFoundException if no provider was found.
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DirectDIAware.instance(tag: Any? = null) = directDI.Instance<T>(generic(), tag)
+public inline fun <reified T : Any> DirectDIAware.instance(tag: Any? = null): T = directDI.Instance<T>(generic(), tag)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument.
@@ -470,7 +470,7 @@ inline fun <reified T : Any> DirectDIAware.instance(tag: Any? = null) = directDI
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: A) = directDI.Instance<A, T>(generic(), generic(), tag, arg)
+public inline fun <reified A : Any, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: A): T = directDI.Instance<A, T>(generic(), generic(), tag, arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument.
@@ -487,7 +487,7 @@ inline fun <reified A : Any, reified T : Any> DirectDIAware.instance(tag: Any? =
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: Typed<A>) = directDI.Instance<A, T>(arg.type, generic(), tag, arg.value)
+public inline fun <A, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: Typed<A>): T = directDI.Instance<A, T>(arg.type, generic(), tag, arg.value)
 
 /**
  * Gets an instance of `T` for the given type and tag, or null if none is found.
@@ -499,7 +499,7 @@ inline fun <A, reified T : Any> DirectDIAware.instance(tag: Any? = null, arg: Ty
  * @return An instance, or null if no provider was found.
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null) = directDI.InstanceOrNull<T>(generic(), tag)
+public inline fun <reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null): T? = directDI.InstanceOrNull<T>(generic(), tag)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -514,7 +514,7 @@ inline fun <reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null) = di
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: A) = directDI.InstanceOrNull<A, T>(generic(), generic(), tag, arg)
+public inline fun <reified A : Any, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: A): T? = directDI.InstanceOrNull<A, T>(generic(), generic(), tag, arg)
 
 /**
  * Gets an instance of `T` for the given type and tag, curried from a factory for the given argument, or null if none is found.
@@ -529,7 +529,7 @@ inline fun <reified A : Any, reified T : Any> DirectDIAware.instanceOrNull(tag: 
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: Typed<A>) = directDI.InstanceOrNull<A, T>(arg.type, generic(), tag, arg.value)
+public inline fun <A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, arg: Typed<A>): T? = directDI.InstanceOrNull<A, T>(arg.type, generic(), tag, arg.value)
 
 /**
  * Returns a `DirectDI` with its context and/or receiver changed.
@@ -537,7 +537,7 @@ inline fun <A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = null, a
  * @param context The new context for the new DirectDI.
  * @param receiver The new receiver for the new DirectDI.
  */
-inline fun <reified C : Any> DirectDIAware.on(context: C) = directDI.On(diContext(context))
+public inline fun <reified C : Any> DirectDIAware.on(context: C): DirectDI = directDI.On(diContext(context))
 //endregion
 
 //region Named retrieving
@@ -553,7 +553,7 @@ inline fun <reified C : Any> DirectDIAware.on(context: C) = directDI.On(diContex
  * @throws DI.NotFoundException if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> Named.factory() = Factory<A, T>(generic(), generic())
+public inline fun <reified A : Any, reified T : Any> Named.factory(): DIProperty<(A) -> T> = Factory<A, T>(generic(), generic())
 
 /**
  * Gets a factory of `T` for the given argument type and return type, or nul if none is found.
@@ -566,7 +566,7 @@ inline fun <reified A : Any, reified T : Any> Named.factory() = Factory<A, T>(ge
  * @return A factory, or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> Named.factoryOrNull() = FactoryOrNull<A, T>(generic(), generic())
+public inline fun <reified A : Any, reified T : Any> Named.factoryOrNull(): DIProperty<((A) -> T)?> = FactoryOrNull<A, T>(generic(), generic())
 
 /**
  * Gets a provider of `T` for the given type.
@@ -579,7 +579,7 @@ inline fun <reified A : Any, reified T : Any> Named.factoryOrNull() = FactoryOrN
  * @throws DI.NotFoundException if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> Named.provider() = Provider<T>(generic())
+public inline fun <reified T : Any> Named.provider(): DIProperty<() -> T> = Provider<T>(generic())
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A].
@@ -594,7 +594,7 @@ inline fun <reified T : Any> Named.provider() = Provider<T>(generic())
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> Named.provider(arg: A) = Provider<A, T>(generic(), generic()) { arg }
+public inline fun <reified A : Any, reified T : Any> Named.provider(arg: A): DIProperty<() -> T> = Provider<A, T>(generic(), generic()) { arg }
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A].
@@ -609,7 +609,7 @@ inline fun <reified A : Any, reified T : Any> Named.provider(arg: A) = Provider<
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A : Any, reified T : Any> Named.provider(arg: Typed<A>) = Provider<A, T>(arg.type, generic()) { arg.value }
+public inline fun <A : Any, reified T : Any> Named.provider(arg: Typed<A>): DIProperty<() -> T> = Provider<A, T>(arg.type, generic()) { arg.value }
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A].
@@ -624,7 +624,7 @@ inline fun <A : Any, reified T : Any> Named.provider(arg: Typed<A>) = Provider<A
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> Named.provider(noinline fArg: () -> A) = Provider<A, T>(generic(), generic(), fArg)
+public inline fun <reified A : Any, reified T : Any> Named.provider(noinline fArg: () -> A): DIProperty<() -> T> = Provider<A, T>(generic(), generic(), fArg)
 
 /**
  * Gets a provider of `T` for the given type, or null if none is found.
@@ -636,7 +636,7 @@ inline fun <reified A : Any, reified T : Any> Named.provider(noinline fArg: () -
  * @return A provider, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> Named.providerOrNull() = ProviderOrNull<T>(generic())
+public inline fun <reified T : Any> Named.providerOrNull(): DIProperty<(() -> T)?> = ProviderOrNull<T>(generic())
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -650,7 +650,7 @@ inline fun <reified T : Any> Named.providerOrNull() = ProviderOrNull<T>(generic(
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> Named.providerOrNull(arg: A) = ProviderOrNull<A, T>(generic(), generic(), { arg })
+public inline fun <reified A : Any, reified T : Any> Named.providerOrNull(arg: A): DIProperty<(() -> T)?> = ProviderOrNull<A, T>(generic(), generic(), { arg })
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -666,7 +666,7 @@ inline fun <reified A : Any, reified T : Any> Named.providerOrNull(arg: A) = Pro
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> Named.providerOrNull(arg: Typed<A>) = ProviderOrNull<A, T>(arg.type, generic(), { arg.value })
+public inline fun <A, reified T : Any> Named.providerOrNull(arg: Typed<A>): DIProperty<(() -> T)?> = ProviderOrNull<A, T>(arg.type, generic(), { arg.value })
 
 /**
  * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -680,7 +680,7 @@ inline fun <A, reified T : Any> Named.providerOrNull(arg: Typed<A>) = ProviderOr
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> Named.providerOrNull(noinline fArg: () -> A) = ProviderOrNull<A, T>(generic(), generic(), fArg)
+public inline fun <reified A : Any, reified T : Any> Named.providerOrNull(noinline fArg: () -> A): DIProperty<(() -> T)?> = ProviderOrNull<A, T>(generic(), generic(), fArg)
 
 /**
  * Gets an instance of `T` for the given type.
@@ -693,7 +693,7 @@ inline fun <reified A : Any, reified T : Any> Named.providerOrNull(noinline fArg
  * @throws DI.NotFoundException if no provider was found.
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> Named.instance() = Instance<T>(generic())
+public inline fun <reified T : Any> Named.instance(): DIProperty<T> = Instance<T>(generic())
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A].
@@ -708,7 +708,7 @@ inline fun <reified T : Any> Named.instance() = Instance<T>(generic())
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> Named.instance(arg: A) = Instance<A, T>(generic(), generic()) { arg }
+public inline fun <reified A : Any, reified T : Any> Named.instance(arg: A): DIProperty<T> = Instance<A, T>(generic(), generic()) { arg }
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A].
@@ -725,7 +725,7 @@ inline fun <reified A : Any, reified T : Any> Named.instance(arg: A) = Instance<
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> Named.instance(arg: Typed<A>) = Instance<A, T>(arg.type, generic()) { arg.value }
+public inline fun <A, reified T : Any> Named.instance(arg: Typed<A>): DIProperty<T> = Instance<A, T>(arg.type, generic()) { arg.value }
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A].
@@ -740,7 +740,7 @@ inline fun <A, reified T : Any> Named.instance(arg: Typed<A>) = Instance<A, T>(a
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> Named.instance(noinline fArg: () -> A) = Instance<A, T>(generic(), generic(), fArg)
+public inline fun <reified A : Any, reified T : Any> Named.instance(noinline fArg: () -> A): DIProperty<T> = Instance<A, T>(generic(), generic(), fArg)
 
 /**
  * Gets an instance of `T` for the given type, or null if none is found.
@@ -752,7 +752,7 @@ inline fun <reified A : Any, reified T : Any> Named.instance(noinline fArg: () -
  * @return An instance, or null if no provider was found.
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
-inline fun <reified T : Any> Named.instanceOrNull() = InstanceOrNull<T>(generic())
+public inline fun <reified T : Any> Named.instanceOrNull(): DIProperty<T?> = InstanceOrNull<T>(generic())
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -766,7 +766,7 @@ inline fun <reified T : Any> Named.instanceOrNull() = InstanceOrNull<T>(generic(
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> Named.instanceOrNull(arg: A) = InstanceOrNull<A, T>(generic(), generic()) { arg }
+public inline fun <reified A : Any, reified T : Any> Named.instanceOrNull(arg: A): DIProperty<T?> = InstanceOrNull<A, T>(generic(), generic()) { arg }
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -782,7 +782,7 @@ inline fun <reified A : Any, reified T : Any> Named.instanceOrNull(arg: A) = Ins
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <A, reified T : Any> Named.instanceOrNull(arg: Typed<A>) = InstanceOrNull<A, T>(arg.type, generic()) { arg.value }
+public inline fun <A, reified T : Any> Named.instanceOrNull(arg: Typed<A>): DIProperty<T?> = InstanceOrNull<A, T>(arg.type, generic()) { arg.value }
 
 /**
  * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -796,7 +796,7 @@ inline fun <A, reified T : Any> Named.instanceOrNull(arg: Typed<A>) = InstanceOr
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified A : Any, reified T : Any> Named.instanceOrNull(noinline fArg: () -> A) = InstanceOrNull<A, T>(generic(), generic(), fArg)
+public inline fun <reified A : Any, reified T : Any> Named.instanceOrNull(noinline fArg: () -> A): DIProperty<T?> = InstanceOrNull<A, T>(generic(), generic(), fArg)
 
 /**
  * Gets a constant of type [T] and tag whose tag is the name of the receiving property.
@@ -808,5 +808,5 @@ inline fun <reified A : Any, reified T : Any> Named.instanceOrNull(noinline fArg
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-inline fun <reified T : Any> DIAware.constant() = Constant<T>(generic())
+public inline fun <reified T : Any> DIAware.constant(): DIProperty<T> = Constant<T>(generic())
 //endregion

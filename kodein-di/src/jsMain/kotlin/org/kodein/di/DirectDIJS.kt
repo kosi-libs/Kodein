@@ -1,3 +1,3 @@
 package org.kodein.di
 
-actual interface DirectDI : DirectDIBase
+public actual interface DirectDI : DirectDIBase

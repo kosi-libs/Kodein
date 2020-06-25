@@ -11,11 +11,11 @@ import org.kodein.type.TypeToken
  * @property type The type the bindings must return.
  * @property tag The tag the bindings must be associated with.
  */
-open class SearchSpecs(
-        var contextType: TypeToken<*>? = null,
-        var argType: TypeToken<*>? = null,
-        var type: TypeToken<*>? = null,
-        var tag: Any? = NoDefinedTag
+public open class SearchSpecs(
+        public var contextType: TypeToken<*>? = null,
+        public var argType: TypeToken<*>? = null,
+        public var type: TypeToken<*>? = null,
+        public var tag: Any? = NoDefinedTag
 ) {
     internal object NoDefinedTag
 
@@ -38,20 +38,20 @@ open class SearchSpecs(
  * DSL that facilitates the creation of a [SearchSpecs] object.
  */
 @Suppress("FunctionName")
-open class SearchDSL {
+public open class SearchDSL {
 
     /**
      * A function that modifies a [SearchSpecs] object to add its constraint.
      */
-    interface Spec {
+    public interface Spec {
         /**
          * Apply the function.
          *
          * @param specs The object to modify.
          */
-        fun apply(specs: SearchSpecs)
+        public fun apply(specs: SearchSpecs)
 
-        companion object {
+        public companion object {
             internal operator fun invoke(f: SearchSpecs.() -> Unit) = object : Spec { override fun apply(specs: SearchSpecs) = f(specs) }
         }
     }
@@ -62,7 +62,7 @@ open class SearchDSL {
      * @property type The type constraint.
      * @property tag An optional tag constraint.
      */
-    class Binding(val type: TypeToken<*>, val tag: Any? = null) : Spec {
+    public class Binding(public val type: TypeToken<*>, public val tag: Any? = null) : Spec {
         override fun apply(specs: SearchSpecs) { specs.type = type ; if (tag != null) specs.tag = tag }
     }
 
@@ -73,7 +73,7 @@ open class SearchDSL {
      *
      * @param spec The spec constraint to apply to this specs.
      */
-    infix fun SearchSpecs.with(spec: Spec): SearchSpecs = apply { spec.apply(this) }
+    public infix fun SearchSpecs.with(spec: Spec): SearchSpecs = apply { spec.apply(this) }
 
     /**
      * Allows to merge to constraints.
@@ -82,28 +82,28 @@ open class SearchDSL {
      *
      * @param spec The spec constraint to apply to this specs.
      */
-    infix fun SearchSpecs.and(spec: Spec): SearchSpecs = apply { spec.apply(this) }
+    public infix fun SearchSpecs.and(spec: Spec): SearchSpecs = apply { spec.apply(this) }
 
     /**
      * Creates a context constrained spec.
      *
      * @param contextType The context type constraint.
      */
-    fun Context(contextType: TypeToken<*>) = Spec { this.contextType = contextType }
+    public fun Context(contextType: TypeToken<*>): Spec = Spec { this.contextType = contextType }
 
     /**
      * Creates an argument constrained spec.
      *
      * @param argumentType The argument type constraint.
      */
-    fun Argument(argumentType: TypeToken<*>) = Spec { this.argType = argumentType }
+    public fun Argument(argumentType: TypeToken<*>): Spec = Spec { this.argType = argumentType }
 
     /**
      * Creates a tag constrained spec.
      *
      * @param tag The tag constraint.
      */
-    fun tag(tag: Any?) = Spec { this.tag = tag }
+    public fun tag(tag: Any?): Spec = Spec { this.tag = tag }
 }
 
 /**
@@ -118,7 +118,7 @@ open class SearchDSL {
  * }
  * ```
  */
-class FindDSL : SearchDSL() {
+public class FindDSL : SearchDSL() {
     internal val specs = SearchSpecs()
 
     /**
@@ -126,7 +126,7 @@ class FindDSL : SearchDSL() {
      *
      * @receiver The spec to register in this search.
      */
-    operator fun Spec.unaryPlus() {
+    public operator fun Spec.unaryPlus() {
         apply(specs)
     }
 }
@@ -134,7 +134,7 @@ class FindDSL : SearchDSL() {
 /**
  * Used to find bindings that match a particular [SearchSpecs].
  */
-fun DITree.findAllBindings(f: FindDSL.() -> Unit): List<Triple<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>, ContextTranslator<*, *>?>> {
+public fun DITree.findAllBindings(f: FindDSL.() -> Unit): List<Triple<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>, ContextTranslator<*, *>?>> {
     val dsl = FindDSL()
     dsl.f()
     return find(dsl.specs)

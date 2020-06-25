@@ -11,23 +11,23 @@ import kotlin.reflect.KProperty
  * 2. When you want retrieval to happen, call [trigger].
  */
 @Suppress("unused")
-class DITrigger {
+public class DITrigger {
 
     /**
      * All properties that will be retrieved when the trigger happens.
      */
-    val properties: MutableList<Lazy<*>> = ArrayList()
+    public val properties: MutableList<Lazy<*>> = ArrayList()
 
     /**
      * Trigger retrieval of all properties that are registered in [properties].
      */
-    fun trigger() = properties.forEach { it.value }
+    public fun trigger(): Unit = properties.forEach { it.value }
 
 }
 
-interface LazyDelegate<out V> {
+public interface LazyDelegate<out V> {
     /** @suppress */
-    operator fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V>
+    public operator fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V>
 }
 
 /**
@@ -36,7 +36,7 @@ interface LazyDelegate<out V> {
  *
  * In essence, the DI object is accessed only upon retrieving.
  */
-class DIProperty<out V>(internal val trigger: DITrigger?, val originalContext: DIContext<*>, private val get: (DIContext<*>, String) -> V) : LazyDelegate<V> {
+public class DIProperty<out V>(internal val trigger: DITrigger?, public val originalContext: DIContext<*>, private val get: (DIContext<*>, String) -> V) : LazyDelegate<V> {
 
     override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy {
         @Suppress("UNCHECKED_CAST")
@@ -46,7 +46,7 @@ class DIProperty<out V>(internal val trigger: DITrigger?, val originalContext: D
 
 }
 
-class DIPropertyMap<in I, out O>(private val base: DIProperty<I>, private val map: (I) -> O) : LazyDelegate<O> {
+public class DIPropertyMap<in I, out O>(private val base: DIProperty<I>, private val map: (I) -> O) : LazyDelegate<O> {
 
     override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<O> = lazy { map(base.provideDelegate(receiver, prop).value) }.also { base.trigger?.properties?.add(it) }
 

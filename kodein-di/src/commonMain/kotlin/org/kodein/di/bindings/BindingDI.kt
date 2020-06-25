@@ -16,11 +16,11 @@ import org.kodein.di.*
  *
  * @param C The type of the context
  */
-interface WithContext<out C : Any> {
+public interface WithContext<out C : Any> {
     /**
      * The context that was given at retrieval.
      */
-    val context: C
+    public val context: C
 }
 
 /**
@@ -31,7 +31,7 @@ interface WithContext<out C : Any> {
  * @param C The type of the context
  */
 @DI.DIDsl
-interface SimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
+public interface SimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
 
     /**
      * Gets a factory from the overridden binding.
@@ -40,7 +40,7 @@ interface SimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
      * @throws DI.NotFoundException if this binding does not override an existing binding.
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun overriddenFactory(): (Any?) -> Any
+    public fun overriddenFactory(): (Any?) -> Any
 
     /**
      * Gets a factory from the overridden binding, if this binding overrides an existing binding.
@@ -48,7 +48,7 @@ interface SimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
      * @return A factory yielded by the overridden binding, or null if this binding does not override an existing binding.
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun overriddenFactoryOrNull(): ((Any?) -> Any)?
+    public fun overriddenFactoryOrNull(): ((Any?) -> Any)?
 }
 
 /**
@@ -58,7 +58,7 @@ interface SimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
  *
  * @param C The type of the context
  */
-interface BindingDI<out C : Any> : SimpleBindingDI<C>
+public interface BindingDI<out C : Any> : SimpleBindingDI<C>
 
 /**
  * Direct DI interface to be passed to provider methods that hold references.
@@ -68,7 +68,7 @@ interface BindingDI<out C : Any> : SimpleBindingDI<C>
  * @param C The type of the context
  */
 @DI.DIDsl
-interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
+public interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
 
     /**
      * Gets a provider from the overridden binding.
@@ -77,7 +77,7 @@ interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
      * @throws DI.NotFoundException if this binding does not override an existing binding.
      * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun overriddenProvider(): () -> Any
+    public fun overriddenProvider(): () -> Any
 
     /**
      * Gets a provider from the overridden binding, if this binding overrides an existing binding.
@@ -85,7 +85,7 @@ interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
      * @return A provider yielded by the overridden binding, or null if this binding does not override an existing binding.
      * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun overriddenProviderOrNull(): (() -> Any)?
+    public fun overriddenProviderOrNull(): (() -> Any)?
 
     /**
      * Gets an instance from the overridden binding.
@@ -94,7 +94,7 @@ interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
      * @throws DI.NotFoundException if this binding does not override an existing binding.
      * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
      */
-    fun overriddenInstance(): Any /*= overriddenProvider().invoke()*/
+    public fun overriddenInstance(): Any /*= overriddenProvider().invoke()*/
 
     /**
      * Gets an instance from the overridden binding, if this binding overrides an existing binding.
@@ -102,7 +102,7 @@ interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
      * @return An instance yielded by the overridden binding, or null if this binding does not override an existing binding.
      * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
      */
-    fun overriddenInstanceOrNull(): Any? /*= overriddenProviderOrNull()?.invoke()*/
+    public fun overriddenInstanceOrNull(): Any? /*= overriddenProviderOrNull()?.invoke()*/
 }
 
 /**
@@ -112,7 +112,7 @@ interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
  *
  * @param C The type of the context
  */
-interface NoArgBindingDI<out C : Any> : NoArgSimpleBindingDI<C>
+public interface NoArgBindingDI<out C : Any> : NoArgSimpleBindingDI<C>
 
 internal class NoArgBindingDIWrap<out C : Any>(private val _di: BindingDI<C>) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
     override fun overriddenProvider() = _di.overriddenFactory().toProvider { Unit }

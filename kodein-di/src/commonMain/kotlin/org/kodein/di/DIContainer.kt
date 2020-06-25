@@ -9,12 +9,12 @@ import org.kodein.di.bindings.DIBinding
  * In DI, every binding is stored as a factory.
  * Providers are special classes of factories that take Unit as parameter.
  */
-interface DIContainer {
+public interface DIContainer {
 
     /**
      * The tree that contains all bindings.
      */
-    val tree: DITree
+    public val tree: DITree
 
     /**
      * Retrieve a factory for the given key.
@@ -29,7 +29,7 @@ interface DIContainer {
      * @throws DI.NotFoundException If no factory was found.
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C : Any, A, T: Any> factory(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): (A) -> T
+    public fun <C : Any, A, T: Any> factory(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): (A) -> T
 
     /**
      * Retrieve a factory for the given key, or null if none is found.
@@ -43,7 +43,7 @@ interface DIContainer {
      * @return The found factory, or null if no factory was found.
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C : Any, A, T: Any> factoryOrNull(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): ((A) -> T)?
+    public fun <C : Any, A, T: Any> factoryOrNull(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): ((A) -> T)?
 
     /**
      * Retrieve all factories that match the given key.
@@ -58,7 +58,7 @@ interface DIContainer {
      * @throws DI.NotFoundException If no factory was found.
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C : Any, A, T: Any> allFactories(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): List<(A) -> T>
+    public fun <C : Any, A, T: Any> allFactories(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): List<(A) -> T>
 
     /**
      * Retrieve a provider for the given key.
@@ -72,7 +72,7 @@ interface DIContainer {
      * @throws DI.NotFoundException If no provider was found.
      * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <C : Any, T: Any> provider(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): () -> T =
+    public fun <C : Any, T: Any> provider(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): () -> T =
             factory(key, context).toProvider { Unit }
 
     /**
@@ -86,7 +86,7 @@ interface DIContainer {
      * @return The found provider, or null if no provider was found.
      * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    fun <C : Any, T: Any> providerOrNull(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): (() -> T)? =
+    public fun <C : Any, T: Any> providerOrNull(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): (() -> T)? =
             factoryOrNull(key, context)?.toProvider { Unit }
 
     /**
@@ -101,7 +101,7 @@ interface DIContainer {
      * @throws DI.NotFoundException If no factory was found.
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    fun <C : Any, T: Any> allProviders(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): List<() -> T> =
+    public fun <C : Any, T: Any> allProviders(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): List<() -> T> =
             allFactories(key, context).map { it.toProvider { Unit } }
 
     /**
@@ -111,7 +111,7 @@ interface DIContainer {
      * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
      * @param bindingsMap The map that contains the bindings. Can be set at construction to construct a sub-builder (with different override permissions).
      */
-    interface Builder {
+    public interface Builder {
 
         /**
          * Binds the given key to the given binding.
@@ -121,7 +121,7 @@ interface DIContainer {
          * @param overrides `true` if it must override, `false` if it must not, `null` if it can but is not required to.
          * @throws DI.OverridingException If this bindings overrides an existing binding and is not allowed to.
          */
-        fun <C : Any, A, T: Any> bind(key: DI.Key<C, A, T>, binding: DIBinding<in C, in A, out T>, fromModule: String? = null, overrides: Boolean? = null)
+        public fun <C : Any, A, T: Any> bind(key: DI.Key<C, A, T>, binding: DIBinding<in C, in A, out T>, fromModule: String? = null, overrides: Boolean? = null)
 
         /**
          * Imports all bindings defined in the given [DIContainer] into this builder.
@@ -135,7 +135,7 @@ interface DIContainer {
          * @throws DI.OverridingException If this DI overrides an existing binding and is not allowed to
          *                                    OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        fun extend(container: DIContainer, allowOverride: Boolean = false, copy: Set<DI.Key<*, *, *>> = emptySet())
+        public fun extend(container: DIContainer, allowOverride: Boolean = false, copy: Set<DI.Key<*, *, *>> = emptySet())
 
         /**
          * Creates a sub builder that will register its bindings to the same map.
@@ -143,16 +143,16 @@ interface DIContainer {
          * @param allowOverride Whether or not the bindings defined by this builder or its imports are allowed to **explicitly** override existing bindings.
          * @param silentOverride Whether or not the bindings defined by this builder or its imports are allowed to **silently** override existing bindings.
          */
-        fun subBuilder(allowOverride: Boolean = false, silentOverride: Boolean = false): Builder
+        public fun subBuilder(allowOverride: Boolean = false, silentOverride: Boolean = false): Builder
 
         /**
          * Adds a callback that will be called once the DI object has been initialized.
          *
          * @param cb A callback.
          */
-        fun onReady(cb: DirectDI.() -> Unit)
+        public fun onReady(cb: DirectDI.() -> Unit)
 
-        fun registerContextTranslator(translator: ContextTranslator<*, *>)
+        public fun registerContextTranslator(translator: ContextTranslator<*, *>)
     }
 
 }

@@ -10,7 +10,7 @@ package org.kodein.di
  *   By default, all bindings that do not hold references (e.g. not singleton or multiton) are copied.
  * @param init [DI] container configuration block
  */
-inline fun subDI(parentDI: DI, allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: DI.MainBuilder.() -> Unit) = DI.lazy(allowSilentOverride) {
+public inline fun subDI(parentDI: DI, allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: DI.MainBuilder.() -> Unit): LazyDI = DI.lazy(allowSilentOverride) {
     extend(parentDI, copy = copy)
     init()
 }
