@@ -268,7 +268,7 @@ public inline fun <reified C : Any> diContext(context: C): DIContext<C> = DICont
 /**
  * Defines a context and its type to be used by DI.
  */
-public inline fun <reified C : Any> diContext(crossinline getContext: () -> C) : DIContext<C> = DIContext(generic()) { getContext() }
+public inline fun <reified C : Any> diContext(crossinline getContext: () -> C) : DIContext<C> = DIContext.Lazy(generic()) { getContext() }
 
 /**
  * Allows to create a new DI object with a context and/or a trigger set.
