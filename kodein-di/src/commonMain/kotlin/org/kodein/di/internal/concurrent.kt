@@ -1,9 +1,9 @@
 package org.kodein.di.internal
 
-internal expect inline fun <R> maySynchronized(lock: Any?, block: () -> R): R
+public expect inline fun <R> maySynchronized(lock: Any?, block: () -> R): R
 
 /** @suppress */
-internal inline fun <T: Any, R> synchronizedIfNull(lock: Any?, predicate: () -> T?, ifNotNull: (T) -> R, ifNull: () -> R): R {
+public inline fun <T: Any, R> synchronizedIfNull(lock: Any?, predicate: () -> T?, ifNotNull: (T) -> R, ifNull: () -> R): R {
     predicate()?.let {
         return ifNotNull(it)
     }
