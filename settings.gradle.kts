@@ -3,10 +3,11 @@ import org.kodein.internal.gradle.settings.*
 buildscript {
     repositories {
         mavenLocal()
+        maven(url = "https://dl.bintray.com/kodein-framework/kodein-dev")
         maven(url = "https://dl.bintray.com/kodein-framework/Kodein-Internal-Gradle")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:3.4.5")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:3.4.5-master-43")
     }
 }
 

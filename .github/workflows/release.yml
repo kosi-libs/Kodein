@@ -17,13 +17,11 @@ jobs:
         with:
           java-version: 11
       - name: Publish
-        uses: eskatos/gradle-command-action@v1
         env:
           BINTRAY_USER: ${{ secrets.bintray_user }}
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
-        with:
-          arguments: hostOnlyPublish
+        run: ./gradlew hostOnlyPublish
   platform-independent-targets:
     needs: all-native
     runs-on: ubuntu-latest
@@ -34,10 +32,8 @@ jobs:
         with:
           java-version: 11
       - name: Publish
-        uses: eskatos/gradle-command-action@v1
         env:
           BINTRAY_USER: ${{ secrets.bintray_user }}
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
-        with:
-          arguments: publish
+        run: ./gradlew publish

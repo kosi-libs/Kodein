@@ -4,7 +4,17 @@ on:
   push:
     branches-ignore:
       - master
-      - 'snapshot/[0-9]+.[0-9]+'
+      - 'snapshot/*'
+      - 'kotlin-*'
+    paths-ignore:
+      - '**.md'
+      - '**.adoc'
+      - '**/.gitignore'
+      - './github/**'
+      - '!./github/workflow/test.yml'
+  pull_request:
+    branches:
+      - master
     paths-ignore:
       - '**.md'
       - '**.adoc'
@@ -24,7 +34,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      - name: Assemble
+        run: ./gradlew assemble
       - name: Check
-        uses: eskatos/gradle-command-action@v1
-        with:
-          arguments: check --no-daemon
+        run: ./gradlew check --no-daemon
