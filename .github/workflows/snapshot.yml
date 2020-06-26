@@ -33,6 +33,7 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
         run: ./gradlew hostOnlyPublish -PsnapshotNumber="$GITHUB_RUN_NUMBER" -PgitRef="${GITHUB_REF#refs/heads/*}"
+        shell: bash
   platform-independent-targets:
     needs: all-native
     runs-on: macos-latest
@@ -50,3 +51,4 @@ jobs:
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
         run: ./gradlew publish -PsnapshotNumber="$GITHUB_RUN_NUMBER" -PgitRef="${GITHUB_REF#refs/heads/*}"
+        shell: bash

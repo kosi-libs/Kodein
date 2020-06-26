@@ -36,5 +36,7 @@ jobs:
           java-version: 11
       - name: Assemble
         run: ./gradlew assemble
+        shell: bash
       - name: Check
         run: ./gradlew check --no-daemon
+        shell: bash
