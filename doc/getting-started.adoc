@@ -17,45 +17,24 @@ NOTE: This guide assumes a JVM target.
 
 === Flavour
 
-==== The type erasure problem
+IMPORTANT: From `6.3.0` On the JVM, you must be targeting `JDK 1.8` minimum!
 
-Type erasure is the process in which all generic parameters are suppressed when compiled to bytecode.
-In essence, in JVM bytecode, `List<String>` & `List<Date>` are the same object: `List`.
-Generic parameters are for type safety only, they only exist at the source code level and their purpose is to make sure that you are not putting a `Date` in a `List<String>`.
-As this verification is done at compile time, all generic information is removed.
-This means that you cannot have `List<String>::class`, only `List<*>::class`.
+_Kodein-DI_ is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
 
-NOTE: For feature parity and simplicity, Kotlin/JS & Kotlin/Native work the same way.
+Since `7.0.0`, a new https://github.com/Kodein-Framework/Kodein-Type[type system] has been designed and included to _Kodein-DI_.
+Thus, it appears to the developer that there is no more _obvious_ differences between platforms, you no longer have to choose between `erased` or `generic` dependencies.
+Starting from `7.0.0`, _Kodein-DI_ is using the `generic` version of the type system, meaning you should be able to bind generics easily for _Kotlin/Multiplatform_ projects.
+So, whatever platform you are targeting, `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
+Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
 
-This leads to a problem, if you are using generic types in the DI container, because the compiler erases generic type information when using Kodein-DI API.
-
-
-==== Kodein-DI flavours
-
-Now, I may have lied a bit: not _all_ generic information is lost, most of it.
-There is still a way to access generic type information, but it is costly, and it only works on the JVM & Android.
-
-Kodein-DI offers two different flavours: `kodein-generic` & `kodein-erased`.
-
-[options="header"]
-|=======
-| &nbsp;    | Type erasure | Optimized | Non-generic bindings | Generic bindings
-| *generic* | *immune*     | no        | *simple*             | *simple*
-| *erased*  | subject      | *yes*     | *simple*             | complex
-|=======
-
-Which to use should, of course, be selected for your needs.
-However, here is a simple decision tree that I believe should help:
-
-* Will the application target other platform then the JVM?
-** Yes -> Use `kodein-erased` as it is the only option available for non-JVM platforms & multi-platform.
-** No, only the JVM -> Will object creation & DI be performance critical?
-*** No, standard stuff -> use `kodein-generic` as it allows for easier and more consistent code.
-*** Yes -> use `kodein-erased`, but be aware that your experience might be degraded ;)
+[INFO]
+====
+Since *7.0*, _Kodein-DI_ can use `generic` for non JVM platforms, thus it is now the default implementation.
+However you still can force the use of `erased` with the generic and erased function forms!
+====
 
 TIP: Keep in mind that it should be quite rare for DI to be performance critical.
      DI happens only once per injected object, so to measure how critical DI is, ask yourself how much time injected objects will be created, and if these creations are themselves performance critical.
-
 
 === Install
 
@@ -80,14 +59,11 @@ Then add the dependency:
 &lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;org.kodein.di&lt;/groupId&gt;
-        &lt;artifactId&gt;kodein-di-generic-jvm&lt;/artifactId&gt;
+        &lt;artifactId&gt;kodein-di-jvm&lt;/artifactId&gt;
         &lt;version&gt;{version}&lt;/version&gt;
     &lt;/dependency&gt;
 &lt;/dependencies&gt;
 ----
-
-NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
-
 
 ==== With Gradle
 
@@ -104,15 +80,42 @@ buildscript {
 
 Then add the dependency:
 
+- *Using Gradle 6+*
+
 [source,groovy,subs="attributes"]
 ----
 dependencies {
-    implementation 'org.kodein.di:kodein-di-generic-jvm:{version}'
+    implementation 'org.kodein.di:kodein-di:{version}'
 }
 ----
 
-NOTE: Use `kodein-generic-jvm` or `kodein-erased-jvm`.
+- *Using Gradle 5.x*
 
+.build.gradle.kts
+[source,kotlin,subs="attributes"]
+----
+dependencies {
+    implementation("org.kodein.di:kodein-di:{version}")
+}
+----
+
+You need to activate the preview feature `GRADLE_METADATA` in your _.setings.gradle.kts_ file.
+
+.setings.gradle.kts
+[source,kotlin,subs="attributes"]
+----
+enableFeaturePreview("GRADLE_METADATA")
+----
+
+- *Using Gradle 4.x*
+
+.build.gradle.kts
+[source,kotlin,subs="attributes"]
+----
+dependencies {
+    implementation("org.kodein.di:kodein-di-jvm:{version}")
+}
+----
 
 == Bindings
 
