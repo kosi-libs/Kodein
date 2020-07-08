@@ -21,8 +21,10 @@ jobs:
           BINTRAY_USER: ${{ secrets.bintray_user }}
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
-        run: ./gradlew hostOnlyPublish
-        shell: bash
+        uses: eskatos/gradle-command-action@v1
+        with:
+          dependencies-cache-enabled: true
+          arguments: hostOnlyPublish
   platform-independent-targets:
     needs: all-native
     runs-on: ubuntu-latest
@@ -37,5 +39,7 @@ jobs:
           BINTRAY_USER: ${{ secrets.bintray_user }}
           BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
           BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
-        run: ./gradlew publish
-        shell: bash
+        uses: eskatos/gradle-command-action@v1
+        with:
+          dependencies-cache-enabled: true
+          arguments: publish
