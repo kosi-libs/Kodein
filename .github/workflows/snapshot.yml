@@ -35,7 +35,7 @@ jobs:
         uses: eskatos/gradle-command-action@v1
         with:
           dependencies-cache-enabled: true
-          arguments: hostOnlyTest
+          arguments: hostOnlyTest --no-daemon
       - name: Publish
         env:
           BINTRAY_USER: ${{ secrets.bintray_user }}
@@ -64,7 +64,7 @@ jobs:
         uses: eskatos/gradle-command-action@v1
         with:
           dependencies-cache-enabled: true
-          arguments: check
+          arguments: check --no-daemon
       - name: Publish
         env:
           BINTRAY_USER: ${{ secrets.bintray_user }}
