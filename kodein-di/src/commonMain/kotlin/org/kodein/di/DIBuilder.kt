@@ -34,7 +34,7 @@ public fun DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null): DI.Bui
  * @param T The type of value to bind.
  * @param value The instance to bind.
  */
-public inline infix fun <reified T : Any> DI.Builder.ConstantBinder.with(value: T): Unit = With(generic(), value)
+public inline infix fun <reified T : Any> DI.Builder.ConstantBinder.with(value: T): Unit = With(generic<T>(), value)
 //endregion
 
 //region SearchDSL
@@ -131,7 +131,7 @@ public inline fun <C : Any, reified A : Any, reified T: Any> DI.BindBuilder.With
  * @param creator The function that will be called as soon as DI is ready. Guaranteed to be called only once. Should create a new instance.
  * @return An eager singleton ready to be bound.
  */
-public inline fun <reified T: Any> DI.Builder.eagerSingleton(noinline creator: NoArgSimpleBindingDI<Any>.() -> T): EagerSingleton<Any> = EagerSingleton(containerBuilder, generic(), creator)
+public inline fun <reified T: Any> DI.Builder.eagerSingleton(noinline creator: NoArgSimpleBindingDI<Any>.() -> T): EagerSingleton<T> = EagerSingleton(containerBuilder, generic(), creator)
 
 /**
  * Creates an instance provider: will always return the given instance.
