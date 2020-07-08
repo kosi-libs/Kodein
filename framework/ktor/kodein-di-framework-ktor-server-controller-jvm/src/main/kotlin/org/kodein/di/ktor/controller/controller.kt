@@ -20,8 +20,8 @@ import org.kodein.di.ktor.*
  * }
  *
  */
-abstract class AbstractDIController(val application: Application) : DIController {
-    override val di by di { application }
+public abstract class AbstractDIController(private val application: Application) : DIController {
+    public override val di: DI by di { application }
 }
 
 /**
@@ -40,13 +40,13 @@ abstract class AbstractDIController(val application: Application) : DIController
  * }
  *
  */
-interface DIController : DIAware {
+public interface DIController : DIAware {
     /**
      * Install the controller's routes into the [Routing] feature
      */
-    fun Route.installRoutes() = getRoutes()
+    public fun Route.installRoutes(): Unit = getRoutes()
     /**
      * Define the routes that may be applied into the [Routing] feature
      */
-    fun Route.getRoutes()
+    public fun Route.getRoutes()
 }

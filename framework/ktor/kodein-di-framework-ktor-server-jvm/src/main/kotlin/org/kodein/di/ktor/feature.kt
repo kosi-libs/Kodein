@@ -11,23 +11,23 @@ import org.kodein.type.erased
  * Ktor [Feature] that provide a global [DI] container
  * that would be accessible from everywhere in the Ktor application
  */
-class DIFeature private constructor() {
+public class DIFeature private constructor() {
 
     /**
      * Configure the [DI] container then put it in the [Application.attributes],
      * thus it would be easily accessible (e.g. [Application.di]
      */
-    fun configureDI(application: Application, diInstance: DI) {
+    public fun configureDI(application: Application, diInstance: DI) {
         application.attributes.put(KodeinDIKey, diInstance)
     }
 
     // Implements ApplicationFeature as a companion object.
-    companion object Feature : ApplicationFeature<Application, DI.MainBuilder, DIFeature> {
+    public companion object Feature : ApplicationFeature<Application, DI.MainBuilder, DIFeature> {
         // Creates a unique key for the feature.
-        override val key = AttributeKey<DIFeature>("[Global DI Container]")
+        public override val key: AttributeKey<DIFeature> = AttributeKey<DIFeature>("[Global DI Container]")
 
         // Code to execute when installing the feature.
-        override fun install(pipeline: Application, configure: DI.MainBuilder.() -> Unit): DIFeature {
+        public override fun install(pipeline: Application, configure: DI.MainBuilder.() -> Unit): DIFeature {
             val application = pipeline
 
             val applicationToken = erased<Application>()
@@ -47,4 +47,4 @@ class DIFeature private constructor() {
 /**
  * Gets or installs a [DIFeature] feature for the this [Application] and runs a [configuration] script on it
  */
-fun Application.di(configuration: DI.MainBuilder.() -> Unit) = install(DIFeature, configuration)
+public fun Application.di(configuration: DI.MainBuilder.() -> Unit): DIFeature = install(DIFeature, configuration)
