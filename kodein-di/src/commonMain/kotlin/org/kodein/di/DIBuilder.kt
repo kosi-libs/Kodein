@@ -97,7 +97,7 @@ public inline fun <C : Any, reified A : Any, reified T: Any> DI.BindBuilder.With
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  * @return A provider ready to be bound.
  */
-public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithContext<C>.provider(noinline creator: NoArgBindingDI<C>.() -> T): Provider<C, Any> = Provider(contextType, generic(), creator)
+public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithContext<C>.provider(noinline creator: NoArgBindingDI<C>.() -> T): Provider<C, T> = Provider(contextType, generic(), creator)
 
 /**
  * Creates a singleton: will create an instance on first request and will subsequently always return the same instance.
@@ -108,7 +108,7 @@ public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithContext<C>.provid
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  * @return A singleton ready to be bound.
  */
-public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.singleton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: NoArgSimpleBindingDI<C>.() -> T): Singleton<C, Any> = Singleton(scope, contextType, generic(), ref, sync, creator)
+public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.singleton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: NoArgSimpleBindingDI<C>.() -> T): Singleton<C, T> = Singleton(scope, contextType, generic(), ref, sync, creator)
 
 /**
  * Creates a multiton: will create an instance on first request for each different argument and will subsequently always return the same instance for the same argument.
@@ -142,7 +142,7 @@ public inline fun <reified T: Any> DI.Builder.eagerSingleton(noinline creator: N
  * @param instance The object that will always be returned.
  * @return An instance provider ready to be bound.
  */
-public inline fun <reified T: Any> DI.Builder.instance(instance: T): InstanceBinding<Any> = InstanceBinding(generic(), instance)
+public inline fun <reified T: Any> DI.Builder.instance(instance: T): InstanceBinding<T> = InstanceBinding(generic(), instance)
 //endregion
 
 //region ContextTranslator
