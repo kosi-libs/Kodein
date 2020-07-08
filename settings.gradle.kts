@@ -19,7 +19,7 @@ include(
         ":test-utils",
         ":kodein-di",
         ":kodein-di-conf",
-        ":kodein-di-jxinject-jvm",
+//        ":kodein-di-jxinject-jvm", TODO WARNING !!!!
         ""
 )
 
