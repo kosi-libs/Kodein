@@ -5,36 +5,32 @@ import org.kodein.di.bindings.*
 import org.kodein.di.jxinject.internal.JxInjectorContainer
 import org.kodein.type.TypeToken
 import org.kodein.type.erased
-import sun.security.jca.GetInstance
 import javax.inject.Named
-import javax.inject.Singleton
 
 /**
  * Module that must be imported in order to use [JxInjector].
  */
-public val jxInjectorModule DI.Module = DI.Module("JX Injector") {
-    Bind() from SetBinding<Any, JxInjectorContainer.Qualifier>(TypeToken.Any, generic(), erasedSet())
+public val jxInjectorModule: DI.Module = DI.Module("JX Injector") {
+    Bind() from SetBinding<Any, JxInjectorContainer.Qualifier>(TypeToken.Any, erased(), erasedSet())
     jxQualifier(Named::class.java) { it.value }
 
-    Bind() from Singleton(NoScope(), generic(), generic()) {
-        JxInjectorContainer(GetInstance.Instance<Set<JxInjectorContainer.Qualifier>>(erasedSet<JxInjectorContainer.Qualifier>()))
-    }
+    bind<JxInjectorContainer>() with Singleton(NoScope(), erased(), erased()) { JxInjectorContainer(Instance(erasedSet())) }
 }
 
 /**
  * Utility function to retrieve a [JxInjector].
  */
-public val DI.jx: JxInjector get() = JxInjector(direct, direct.Instance(org.kodein.type.generic(), null))
+public val DI.jx: JxInjector get() = JxInjector(direct, direct.Instance(erased(), null))
 
 /**
  * Utility function to retrieve a [JxInjector].
  */
-public val DirectDI.jx: JxInjector get() = JxInjector(this, Instance(org.kodein.type.generic(), null))
+public val DirectDI.jx: JxInjector get() = JxInjector(this, Instance(erased(), null))
 
 /** @suppress */
 @Suppress("UNCHECKED_CAST")
 public fun <T: Annotation> DI.Builder.jxQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
-    Bind(erased<JxInjectorContainer.Qualifier>()).InSet(erasedSet()) with InstanceBinding(org.kodein.type.generic(), JxInjectorContainer.Qualifier(cls, tagProvider as (Annotation) -> Any))
+    Bind(erased<JxInjectorContainer.Qualifier>()).InSet(erasedSet()) with InstanceBinding(erased(), JxInjectorContainer.Qualifier(cls, tagProvider as (Annotation) -> Any))
 }
 
 /**
