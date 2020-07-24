@@ -15,10 +15,10 @@ class SubTypes<C: Any, A, T : Any>(override val contextType: TypeToken<in C>, ov
 
     private val bindings = HashMap<TypeToken<out T>, DIBinding<in C, in A, out T>>()
 
-    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, T>): (A) -> T {
+    override fun getFactory(key: DI.Key<C, A, T>): (BindingDI<C>, A) -> T {
         @Suppress("UNCHECKED_CAST")
         val binding = bindings.getOrPut(key.type) { block(key.type) } as Binding<C, A, T>
-        return binding.getFactory(di, key)
+        return binding.getFactory(key)
     }
 
     override fun factoryName() = "subTypesBindings"

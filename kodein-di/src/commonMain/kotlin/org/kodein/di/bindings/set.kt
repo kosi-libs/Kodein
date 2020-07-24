@@ -34,12 +34,14 @@ class ArgSetBinding<C : Any, A, T: Any>(override val contextType: TypeToken<in C
 
     override val set = LinkedHashSet<DIBinding<C, A, T>>()
 
-    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, Set<T>>): (A) -> Set<T> {
-        val subDI = SetBindingDI(di)
-        val subKey = DI.Key(key.contextType, key.argType, _elementType, key.tag)
-        val factories = set.map { it.getFactory(subDI, subKey) }
-        return { arg ->
-            factories.asSequence().map { it.invoke(arg) } .toSet()
+    override fun getFactory(key: DI.Key<C, A, Set<T>>): (BindingDI<C>, A) -> Set<T> {
+        var lateInitFactories: List<(BindingDI<C>, A) -> T>? = null
+        return { di, arg ->
+            val factories = lateInitFactories ?: run {
+                val subKey = DI.Key(key.contextType, key.argType, _elementType, key.tag)
+                set.map { it.getFactory(subKey) }
+            }.also { lateInitFactories = it }
+            factories.asSequence().map { it.invoke(SetBindingDI(di), arg) } .toSet()
         }
     }
 
@@ -61,12 +63,15 @@ class SetBinding<C : Any, T: Any>(override val contextType: TypeToken<in C>, pri
     @Suppress("UNCHECKED_CAST")
     override val set = LinkedHashSet<DIBinding<C, Unit, T>>()
 
-    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, Unit, Set<T>>): (Unit) -> Set<T> {
-        val subDI = SetBindingDI(di)
-        val subKey = DI.Key(key.contextType, TypeToken.Unit, _elementType, key.tag)
-        val providers = set.map { it.getFactory(subDI, subKey) }
-        return {
-            providers.asSequence().map { it.invoke(Unit) }.toSet()
+    override fun getFactory(key: DI.Key<C, Unit, Set<T>>): (BindingDI<C>, Unit) -> Set<T> {
+        var lateInitProviders: List<(BindingDI<C>, Unit) -> T>? = null
+        return { di, _ ->
+            val providers = lateInitProviders ?: run {
+                val subKey = DI.Key(key.contextType, TypeToken.Unit, _elementType, key.tag)
+                set.map { it.getFactory(subKey) }
+            }.also { lateInitProviders = it }
+            val subDI = SetBindingDI(di)
+            providers.asSequence().map { it.invoke(subDI, Unit) }.toSet()
         }
     }
 

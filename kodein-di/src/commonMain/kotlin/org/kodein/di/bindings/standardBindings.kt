@@ -19,7 +19,7 @@ class Factory<C : Any, A, T: Any>(override val contextType: TypeToken<in C>, ove
 
     override fun factoryName() = "factory"
 
-    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, T>): (A) -> T = { arg -> this.creator(di, arg) }
+    override fun getFactory(key: DI.Key<C, A, T>): (BindingDI<C>, A) -> T = { di, arg -> this.creator(di, arg) }
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -61,9 +61,10 @@ class Multiton<C : Any, A, T: Any>(override val scope: Scope<C>, override val co
         return factoryName(params)
     }
 
-    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, T>): (A) -> T {
-        val registry = scope.getRegistry(di.context)
-        return { arg ->
+    override fun getFactory(key: DI.Key<C, A, T>): (BindingDI<C>, A) -> T {
+        var lateInitRegistry: ScopeRegistry? = null
+        return { di, arg ->
+            val registry = lateInitRegistry ?: scope.getRegistry(di.context).also { lateInitRegistry = it }
             @Suppress("UNCHECKED_CAST")
             registry.getOrCreate(ScopeKey(_scopeId, arg), sync) { _refMaker.make { BindingContextedDI(di, di.context).creator(arg) } } as T
         }
@@ -87,7 +88,7 @@ class Provider<C : Any, T: Any>(override val contextType: TypeToken<in C>, overr
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, Unit, T>): (Unit) -> T = { NoArgBindingDIWrap(di).creator() }
+    override fun getFactory(key: DI.Key<C, Unit, T>): (BindingDI<C>, Unit) -> T = { di, _ -> NoArgBindingDIWrap(di).creator() }
 }
 
 /**
@@ -125,9 +126,10 @@ class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override val cont
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, Unit, T>): (Unit) -> T {
-        val registry = scope.getRegistry(di.context)
-        return {
+    override fun getFactory(key: DI.Key<C, Unit, T>): (BindingDI<C>, Unit) -> T {
+        var lateInitRegistry: ScopeRegistry? = null
+        return { di, _ ->
+            val registry = lateInitRegistry ?: scope.getRegistry(di.context).also { lateInitRegistry = it }
             @Suppress("UNCHECKED_CAST")
             registry.getOrCreate(_scopeKey, sync) { _refMaker.make { NoArgBindingDIWrap(BindingContextedDI(di, di.context)).creator() } } as T
         }
@@ -150,8 +152,8 @@ class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdT
     @Volatile private var _instance: T? = null
     private val _lock = Any()
 
-    private fun getFactory(di: BindingDI<Any>): (Unit) -> T {
-        return { _ ->
+    private fun getFactory(): (BindingDI<Any>, Unit) -> T {
+        return { di, _ ->
             synchronizedIfNull(
                     lock = _lock,
                     predicate = this@EagerSingleton::_instance,
@@ -166,13 +168,13 @@ class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdT
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(di: BindingDI<Any>, key: DI.Key<Any, Unit, T>) = getFactory(di)
+    override fun getFactory(key: DI.Key<Any, Unit, T>) = getFactory()
 
     override fun factoryName() = "eagerSingleton"
 
     init {
         val key = DI.Key(TypeToken.Any, TypeToken.Unit, createdType, null)
-        builder.onReady { getFactory(BindingDIImpl(this, key, Any(), 0)).invoke(Unit) }
+        builder.onReady { getFactory().invoke(BindingDIImpl(this, key, Any(), 0), Unit) }
     }
 
     override val copier = DIBinding.Copier { builder -> EagerSingleton(builder, createdType, creator) }
@@ -192,7 +194,7 @@ class InstanceBinding<T: Any>(override val createdType: TypeToken<out T>, val in
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(di: BindingDI<Any>, key: DI.Key<Any, Unit, T>): (Unit) -> T = { this.instance }
+    override fun getFactory(key: DI.Key<Any, Unit, T>): (BindingDI<Any>, Unit) -> T = { _, _ -> this.instance }
 
     override val description: String get() = "${factoryName()} ( ${createdType.simpleDispString()} ) "
     override val fullDescription: String get() = "${factoryFullName()} ( ${createdType.qualifiedDispString()} ) "

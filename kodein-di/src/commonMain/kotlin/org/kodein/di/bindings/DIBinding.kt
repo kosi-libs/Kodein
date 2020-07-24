@@ -22,11 +22,11 @@ interface Binding<C : Any, A, T: Any> {
      *
      * Whether it's a new instance or not entirely depends on implementation.
      *
-     * @param di: A DI instance (augmented for the binding) to use for transitive dependencies.
+     * @param di: A DI instance (augmented for the binding). DO NOT USE IN THE RETURNED LAMBDA (would create a memory leak)!
      * @param key: The key of the instance to get.
      * @return The instance of the requested type.
      */
-    fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, T>): (A) -> T
+    fun getFactory(key: DI.Key<C, A, T>): (BindingDI<C>, A) -> T
 }
 
 /**

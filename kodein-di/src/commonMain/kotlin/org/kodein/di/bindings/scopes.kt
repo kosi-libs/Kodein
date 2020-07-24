@@ -172,11 +172,11 @@ class SingleItemScopeRegistry : ScopeRegistry() {
 interface ContextTranslator<in C : Any, S : Any> {
     val contextType: TypeToken<in C>
     val scopeType: TypeToken<in S>
-    fun translate(ctx: C): S
+    fun translate(ctx: C): S?
 }
 
-class SimpleContextTranslator<in C : Any, S: Any>(override val contextType: TypeToken<in C>, override val scopeType: TypeToken<in S>, private val t: (ctx: C) -> S) : ContextTranslator<C, S> {
-    override fun translate(ctx: C): S = t(ctx)
+class SimpleContextTranslator<in C : Any, S: Any>(override val contextType: TypeToken<in C>, override val scopeType: TypeToken<in S>, private val t: (ctx: C) -> S?) : ContextTranslator<C, S> {
+    override fun translate(ctx: C): S? = t(ctx)
     override fun toString() = "()"
 }
 
@@ -186,12 +186,12 @@ class SimpleAutoContextTranslator<S: Any>(override val scopeType: TypeToken<in S
     override fun toString() = "(${scopeType.simpleDispString()} -> ${contextType.simpleDispString()})"
 }
 
-fun <C : Any, S: Any> ContextTranslator<C, S>.toKContext(ctx: C) = DIContext(scopeType, translate(ctx))
+fun <C : Any, S: Any> ContextTranslator<C, S>.toKContext(ctx: C) = translate(ctx)?.let { DIContext(scopeType, it) }
 
 internal class CompositeContextTranslator<in C : Any, I : Any, S: Any>(val src: ContextTranslator<C, I>, val dst: ContextTranslator<I, S>) : ContextTranslator<C, S> {
     override val contextType get() = src.contextType
     override val scopeType get() = dst.scopeType
-    override fun translate(ctx: C): S = dst.translate(src.translate(ctx))
+    override fun translate(ctx: C): S? = src.translate(ctx)?.let { dst.translate(it) }
     override fun toString() = "($src -> $dst)"
 }
 
@@ -205,7 +205,7 @@ interface Scope<in C> {
 
     /**
      * Get a registry for a given context.
-     * Should always return the same registry for the same tuple envContext / bindContext.
+     * Should always return the same registry for the same context.
      *
      * @param context The context associated with the returned registry.
      * @return The registry associated with the given context.

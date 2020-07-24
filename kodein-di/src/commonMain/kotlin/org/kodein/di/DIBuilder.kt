@@ -146,9 +146,9 @@ inline fun <reified T: Any> DI.Builder.instance(instance: T) = InstanceBinding(g
 //endregion
 
 //region ContextTranslator
-inline fun <reified C : Any, reified S : Any> contextTranslator(noinline t: (C) -> S): ContextTranslator<C, S> = SimpleContextTranslator(generic(), generic(), t)
+inline fun <reified C : Any, reified S : Any> contextTranslator(noinline t: (C) -> S?): ContextTranslator<C, S> = SimpleContextTranslator(generic(), generic(), t)
 
-inline fun <reified C : Any, reified S : Any> DI.Builder.registerContextTranslator(noinline t: (C) -> S) = RegisterContextTranslator(contextTranslator(t))
+inline fun <reified C : Any, reified S : Any> DI.Builder.registerContextTranslator(noinline t: (C) -> S?) = RegisterContextTranslator(contextTranslator(t))
 
 inline fun <reified S : Any> contextFinder(noinline t: () -> S) : ContextTranslator<Any, S> = SimpleAutoContextTranslator(generic(), t)
 
