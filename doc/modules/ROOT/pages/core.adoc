@@ -4,10 +4,10 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 7.0.0
-:branch: 7.0
+:version: 7.1.0
+:branch: 7.1
 
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-DI-logo.png[KODEIN, 700, 233]
+image::Kodein-DI-logo.png[KODEIN, 700, 233]
 
 == Introduction
 
@@ -80,7 +80,7 @@ Starting from `7.0.0`, _Kodein-DI_ is using the `generic` version of the type sy
 So, whatever platform you are targeting, `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
 
-[INFO]
+[NOTE]
 ====
 Since *7.0*, _Kodein-DI_ can use `generic` for non JVM platforms, thus it is now the default implementation.
 However you still can force the use of `erased` with the generic and erased function forms!
@@ -470,8 +470,8 @@ Therefore, the provided function *may or may not* be called multiple times durin
 .Example: creates a Cache object that will exist only once at a given time
 ----
 val di = DI {
-    bind<Map>() with singleton(ref = softReference) { WorldMap() } <1>
-    bind<Client>() with singleton(ref = weakReference) { id -> clientFromDB(id) } <2>
+    bind<Map>() with singleton(ref = softReference) { WorldMap() } // <1>
+    bind<Client>() with singleton(ref = weakReference) { id -> clientFromDB(id) } // <2>
 }
 ----
 <1> Because it's bound by a soft reference, the JVM will GC it before any `OutOfMemoryException` can occur.
@@ -623,7 +623,7 @@ Maybe you need a dependency to use one of its functions to create the bound type
 ----
 val di = DI {
     bind<DataSource>() with singleton { MySQLDataSource() }
-    bind<Connection>() with provider { instance<DataSource>().openConnection() } <1>
+    bind<Connection>() with provider { instance<DataSource>().openConnection() } // <1>
 }
 ----
 <1> Using a `DataSource` as a transitive factory dependency.
@@ -783,7 +783,7 @@ Those cases should be rare and you should know what you are doing.
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
 val testModule = DI.Module(name = "test", allowSilentOverride = true) {
-    bind<EmailClient>() with singleton { MockEmailClient() } <1>
+    bind<EmailClient>() with singleton { MockEmailClient() } // <1>
 }
 ----
 <1> Maybe adding a new binding, maybe overriding an existing one, who knows?
@@ -795,7 +795,7 @@ This is useful if you want to "enhance" a binding (for example, using the decora
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
 val testModule = DI.Module(name = "test") {
-    bind<Logger>(overrides = true) with singleton { FileLoggerWrapper("path/to/file", overriddenInstance()) } <1>
+    bind<Logger>(overrides = true) with singleton { FileLoggerWrapper("path/to/file", overriddenInstance()) } // <1>
 }
 ----
 <1> `overriddenInstance()` will return the `Logger` instance retrieved by the overridden binding.
@@ -985,7 +985,7 @@ class MainController(val ds: DataSource, val rnd: Random) { /*...*/ }
 [source, kotlin]
 .Example: Creating a MainController by injecting its dependencies.
 ----
-val controller by di.newInstance { MainController(instance(), instance(tag = "whatever")) } <1>
+val controller by di.newInstance { MainController(instance(), instance(tag = "whatever")) } // <1>
 ----
 <1> Note the use of the `instance` function that will inject the correct dependency.
 
@@ -1576,7 +1576,7 @@ TIP: When in doubt, use a factory with an argument instead of a provider with a 
 .Example: binding in a context
 ----
 val di = DI {
-    bind<Writer>() with contexted<Request>.provider { context.response.writer } <1>
+    bind<Writer>() with contexted<Request>.provider { context.response.writer } // <1>
 }
 ----
 <1> note that `context` is already of type `Request`.
@@ -1604,7 +1604,7 @@ Therefore, the provided function will be called *once per session*.
 .Example: binding a User in a Session scope.
 ----
 val di = DI {
-    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) } <1>
+    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) } // <1>
 }
 ----
 <1> note that `SessionScope` does not really exist, it is an example.
@@ -1650,7 +1650,7 @@ Yes, you can...
 val di = DI {
     bind<User>() with scoped(requestScope).singleton(ref = weakReference) {
         instance<DataSource>().createUser(context.session.id)
-    } <1>
+    } // <1>
 }
 ----
 
@@ -1668,7 +1668,7 @@ You can use this scope when it makes sense to have a scope on a context that is 
 .Example: controller scoped to an Activity with WeakContextScope.
 ----
 val di = DI {
-    bind<Controller>() with scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } <1>
+    bind<Controller>() with scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } // <1>
 }
 ----
 <1> `context` is of type `Activity` because we are using the `WeakContextScope.of<Activity>()`.
@@ -1761,7 +1761,7 @@ A standard way of doing so is to use the `userData` property of the context, if 
 object SessionScope : Scope<Session> { <1>
     override fun getRegistry(context: Session): ScopeRegistry =
             context.userData as? ScopeRegistry
-                ?: StandardScopeRegistry().also { context.userData = it } <2>
+                ?: StandardScopeRegistry().also { context.userData = it } // <2>
 }
 ----
 <1> The scope's context type is `Session`.
@@ -1832,8 +1832,8 @@ To have multiple bindings in a set, you need to:
 val di = DI {
     bind() from setBinding<Configuration>() <1>
 
-    bind<Configuration>().inSet() with provider { FooConfiguration() } <2>
-    bind<Configuration>().inSet() with singleton { BarConfiguration() } <2>
+    bind<Configuration>().inSet() with provider { FooConfiguration() } // <2>
+    bind<Configuration>().inSet() with singleton { BarConfiguration() } // <2>
 }
 ----
 <1> Creating a set binding of `Configuration`.
@@ -1950,9 +1950,9 @@ The message of the exception explains how the loop happened.
 ----
 DI$DependencyLoopException: Dependency recursion:
      bind<Database>()
-    ╔╩>bind<User>()
-    ║  ╚>bind<Repository>(tag = "users")
-    ║    ╚>bind<Database>()
+    ╔╩>bind<User>() // <1>
+    ║  ╚>bind<Repository>(tag = "users") // <2>
+    ║    ╚>bind<Database>() // <3>
     ╚══════╝
 ----
 <1> `Database` depends on `User`
@@ -1990,20 +1990,20 @@ When _Kodein-DI_ cannot find a binding for the required type/argument/context, t
 ----
 val di = DI {
     externalSource = ExternalSource { key ->
-        when (key.type.jvmType) { <1>
-            Whatever::class.java -> when (key.argType.jvmType) { <2>
-                Unit::class.java -> when (key.tag) { <3>
-                    "user" -> externalFactory { existingInstance } <4>
-                    null -> externalFactory { Whatever("default-value") } <4>
-                    else -> null <6>
+        when (key.type.jvmType) { // <1>
+            Whatever::class.java -> when (key.argType.jvmType) { // <2>
+                Unit::class.java -> when (key.tag) { // <3>
+                    "user" -> externalFactory { existingInstance } // <4>
+                    null -> externalFactory { Whatever("default-value") } // <4>
+                    else -> null // <6>
                 }
-                String::class.java -> when (key.tag) { <3>
-                    null -> externalFactory { Whatever(it as String) } <5>
-                    else -> null <6>
+                String::class.java -> when (key.tag) { // <3>
+                    null -> externalFactory { Whatever(it as String) } // <5>
+                    else -> null // <6>
                 }
-                else -> null <6>
+                else -> null // <6>
             }
-            else -> null <6>
+            else -> null // <6>
         }
     }
 }

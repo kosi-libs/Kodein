@@ -4,14 +4,14 @@ Salomon BRYS <salomon.brys@gmail.com>
 :toc-position: left
 :toclevels: 5
 
-:version: 7.0.0
-:branch: 7.0
+:version: 7.1.0
+:branch: 7.1
 
 Kodein-DI is a *Dependency Injection* library.
 It allows you to bind your business unit interfaces with their implementation and thus having each business unit being independent.
 
 NOTE: This guide assumes a JVM target.
-      Kodein-DI works exactly the same on all targets that are supported by Kotlin (JVM, Android, JS, Native).
+Kodein-DI works exactly the same on all targets that are supported by Kotlin (JVM, Android, JS, Native).
 
 == Choose & Install
 
@@ -27,14 +27,14 @@ Starting from `7.0.0`, _Kodein-DI_ is using the `generic` version of the type sy
 So, whatever platform you are targeting, `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
 
-[INFO]
+[NOTE]
 ====
 Since *7.0*, _Kodein-DI_ can use `generic` for non JVM platforms, thus it is now the default implementation.
 However you still can force the use of `erased` with the generic and erased function forms!
 ====
 
 TIP: Keep in mind that it should be quite rare for DI to be performance critical.
-     DI happens only once per injected object, so to measure how critical DI is, ask yourself how much time injected objects will be created, and if these creations are themselves performance critical.
+DI happens only once per injected object, so to measure how critical DI is, ask yourself how much time injected objects will be created, and if these creations are themselves performance critical.
 
 === Install
 
