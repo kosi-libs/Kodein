@@ -4,8 +4,8 @@ Romain BOISSELLE <romain@boisselle.dev>
 :toc-position: left
 :toclevels: 5
 
-:version: 7.0.0
-:branch: 7.0
+:version: 7.1.0
+:branch: 7.1
 
 You can use Kodein-DI as-is in your TornadoFX project, but you can level-up your game by using the libraries `kodein-di-framework-tornadofx-jvm`.
 
@@ -41,7 +41,7 @@ implementation("kodein-di-framework-tornadofx-jvm:{version}")
 class TornadoApplication : App(MainView::class), DIAware { // <1>
     override val di: DI get() = DI { // <2>
         installTornadoSource() // <3>
-     } 
+     }
 
 }
 ----
@@ -115,7 +115,7 @@ but in order to do that your `App` *must* be `DIAware`.
 [[closest-jfx]]
 ==== From a JavaFX perspective
 
-In JavaFX, an `Application` is made of a `Stage` (the window), a `Scene` (the container for all content) and a graph of `Node`. All `Node` are grouped by view (in the case of TornadoFX: `View` or `Fragment`). 
+In JavaFX, an `Application` is made of a `Stage` (the window), a `Scene` (the container for all content) and a graph of `Node`. All `Node` are grouped by view (in the case of TornadoFX: `View` or `Fragment`).
 
 So, the `Node` hierarchy can apply to the closest DI pattern, limited to the scope of a `View` or `Fragment` for now. If none of the parent `Node` have a `DI` container, thanks to the TornadoFX facilities, we can fallback onto the global DI container from the `App`.
 
@@ -257,7 +257,7 @@ class MyView : View() {
         kodeinDI { // <2>
             bind<Random>() with singleton { SecureRandom() }
         }
-        
+
         form { // <3>
             val random by kodeinDI().instance<Random>() // <4>
         }
@@ -288,7 +288,7 @@ class LoginController : Controller(), DIAware { // <1>
     override val di: DI = subDI { // <2>
             bind<CredentialsDao> with singleton { CredentialsDao() } <3>
     }
-    
+
     // ...
 
     val dao by instance<CredentialsDao>() // <4>
@@ -301,7 +301,7 @@ class LoginController : Controller(), DIAware { // <1>
 +
 NOTE: Making your `Component` as `DIAware` is *optional*, but it will help you keeping track of your extended container. Otherwise, you might want to store a reference of your extended container in a local variable.
 
-. In the case of a `Node` hierarchy 
+. In the case of a `Node` hierarchy
 +
 [source, kotlin]
 .Example: Extending the nearest DI container for a `Node`
@@ -311,7 +311,7 @@ class LoginView : View() {
         subDI { // <2>
             bind<LoginController>() with singleton { instance() } // <3>
         }
-        
+
         form {
             val controller by kodeinDI().instance<LoginController>() <4>
         }
