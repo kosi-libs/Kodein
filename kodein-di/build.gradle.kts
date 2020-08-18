@@ -7,7 +7,7 @@ kodein {
 
         common {
             main.dependencies {
-                api("org.kodein.type:kodein-type:1.2.0-kotlin-1.4-rc-91")
+                api("org.kodein.type:kodein-type:1.3.0")
             }
             test.dependencies {
                 implementation(project(":test-utils"))

@@ -477,7 +477,7 @@ val di = DI {
 <1> Because it's bound by a soft reference, the JVM will GC it before any `OutOfMemoryException` can occur.
 <2> Because it's bound by a weak reference, the JVM will GC it is no more referenced.
 
-Weak singletons use JVM's `WeakReference` while soft singletons use JVM's `SoftReference`.
+Weak singletons use JVM's `Weak` while soft singletons use JVM's `Soft`.
 
 
 ==== JVM: Thread local

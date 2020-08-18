@@ -17,7 +17,7 @@ public inline class Named(public val di: DIAware) {
      * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     public fun <A, T : Any> Factory(argType: TypeToken<in A>, type: TypeToken<out T>): DIProperty<(A) -> T> =
-            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value) }
+            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx) }
 
     /**
      * Gets a factory of [T] for the given argument type and return type, or null if none is found.
@@ -31,7 +31,7 @@ public inline class Named(public val di: DIAware) {
      * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
     public fun <A, T : Any> FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<out T>): DIProperty<((A) -> T)?> =
-            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value) }
+            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx) }
 
     /**
      * Gets a provider of [T] for the given type.
@@ -44,7 +44,7 @@ public inline class Named(public val di: DIAware) {
      * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
     public fun <T : Any> Provider(type: TypeToken<out T>): DIProperty<() -> T> =
-            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
+            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx) }
 
     /**
      * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A].
@@ -60,7 +60,7 @@ public inline class Named(public val di: DIAware) {
      * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
     public fun <A, T : Any> Provider(argType: TypeToken<in A>, type: TypeToken<out T>, arg: () -> A): DIProperty<() -> T> =
-            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value).toProvider(arg) }
+            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx).toProvider(arg) }
 
     /**
      * Gets a provider of [T] for the given type, or null if none is found.
@@ -72,7 +72,7 @@ public inline class Named(public val di: DIAware) {
      * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
     public fun <T : Any> ProviderOrNull(type: TypeToken<out T>): DIProperty<(() -> T)?> =
-            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
+            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx) }
 
     /**
      * Gets a provider of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -87,7 +87,7 @@ public inline class Named(public val di: DIAware) {
      * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
     public fun <A, T : Any> ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, arg: () -> A): DIProperty<(() -> T)?> =
-            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value)?.toProvider(arg) }
+            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx)?.toProvider(arg) }
 
     /**
      * Gets an instance of [T] for the given type.
@@ -100,7 +100,7 @@ public inline class Named(public val di: DIAware) {
      * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
      */
     public fun <T : Any> Instance(type: TypeToken<out T>): DIProperty<T> =
-            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value).invoke() }
+            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx).invoke() }
 
     /**
      * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A].
@@ -116,7 +116,7 @@ public inline class Named(public val di: DIAware) {
      * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
      */
     public fun <A, T : Any> Instance(argType: TypeToken<in A>, type: TypeToken<T>, arg: () -> A): DIProperty<T> =
-            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value).invoke(arg()) }
+            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx).invoke(arg()) }
 
     /**
      * Gets an instance of [T] for the given type, or null if none is found.
@@ -127,7 +127,7 @@ public inline class Named(public val di: DIAware) {
      * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
      */
     public fun <T : Any> InstanceOrNull(type: TypeToken<out T>): DIProperty<T?> =
-            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value)?.invoke() }
+            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx)?.invoke() }
 
     /**
      * Gets an instance of [T] for the given type, curried from a factory that takes an argument [A], or null if none is found.
@@ -141,7 +141,7 @@ public inline class Named(public val di: DIAware) {
      * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
      */
     public fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, arg: () -> A): DIProperty<T?> =
-            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value)?.invoke(arg()) }
+            DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx)?.invoke(arg()) }
 
 }
 

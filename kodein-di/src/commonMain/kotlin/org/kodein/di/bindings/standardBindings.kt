@@ -19,11 +19,8 @@ public class Factory<C : Any, A, T: Any>(override val contextType: TypeToken<in 
 
     override fun factoryName(): String = "factory"
 
-    override fun getFactory(key: DI.Key<C, A, T>): (BindingDI<C>, A) -> T = { di, arg -> this.creator(di, arg) }
+    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, T>): (A) -> T = { arg -> this.creator(di, arg) }
 }
-
-@Suppress("UNCHECKED_CAST")
-private class BindingContextedDI<out C : Any>(val base: BindingDI<*>, override val context: C) : BindingDI<C> by (base as BindingDI<C>)
 
 private data class ScopeKey<out A>(val scopeId: Any, val arg: A)
 
@@ -36,9 +33,7 @@ private data class ScopeKey<out A>(val scopeId: Any, val arg: A)
  * @property createdType The type of the created object, *used for debug print only*.
  * @property creator The function that will be called the first time an instance is requested. Guaranteed to be called only once per argument. Should create a new instance.
  */
-public class Multiton<C : Any, A, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, public val sync: Boolean = true, private val creator: SimpleBindingDI<C>.(A) -> T) : DIBinding<C, A, T> {
-    private val _refMaker = refMaker ?: SingletonReference
-
+public class Multiton<C : Any, A, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, private val refMaker: Reference.Maker = Strong, private val sync: Boolean = true, private val creator: BindingDI<C>.(A) -> T) : DIBinding<C, A, T> {
     private val _scopeId = Any()
 
     private fun factoryName(params: List<String>) = buildString {
@@ -49,28 +44,27 @@ public class Multiton<C : Any, A, T: Any>(override val scope: Scope<C>, override
 
     override fun factoryName(): String {
         val params = ArrayList<String>(2)
-        if (_refMaker != SingletonReference)
-            params.add("ref = ${erasedOf(_refMaker).simpleDispString()}")
+        if (refMaker != Strong)
+            params.add("ref = ${erasedOf(refMaker).simpleDispString().removeSuffix(".Companion")}")
         return factoryName(params)
     }
 
     override fun factoryFullName(): String {
         val params = ArrayList<String>(2)
-        if (_refMaker != SingletonReference)
-            params.add("ref = ${erasedOf(_refMaker).qualifiedDispString()}")
+        if (refMaker != Strong)
+            params.add("ref = ${erasedOf(refMaker).qualifiedDispString().removeSuffix(".Companion")}")
         return factoryName(params)
     }
 
-    override fun getFactory(key: DI.Key<C, A, T>): (BindingDI<C>, A) -> T {
-        var lateInitRegistry: ScopeRegistry? = null
-        return { di, arg ->
-            val registry = lateInitRegistry ?: scope.getRegistry(di.context).also { lateInitRegistry = it }
+    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, T>): (A) -> T {
+        val registry = scope.getRegistry(di.context)
+        return { arg ->
             @Suppress("UNCHECKED_CAST")
-            registry.getOrCreate(ScopeKey(_scopeId, arg), sync) { _refMaker.make { BindingContextedDI(di, di.context).creator(arg) } } as T
+            registry.getOrCreate(ScopeKey(_scopeId, arg), sync) { refMaker.make { di.creator(arg) } } as T
         }
     }
 
-    override val copier: DIBinding.Copier<C, A, T> = DIBinding.Copier { Multiton(scope, contextType, argType, createdType, _refMaker, sync, creator) }
+    override val copier: DIBinding.Copier<C, A, T> = DIBinding.Copier { Multiton(scope, contextType, argType, createdType, refMaker, sync, creator) }
 }
 
 /**
@@ -82,13 +76,13 @@ public class Multiton<C : Any, A, T: Any>(override val scope: Scope<C>, override
  * @param createdType The type of objects created by this provider, *used for debug print only*.
  * @property creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-public class Provider<C : Any, T: Any>(override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, public val creator: NoArgBindingDI<C>.() -> T) : NoArgDIBinding<C, T> {
+public class Provider<C : Any, T: Any>(override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, private val creator: NoArgBindingDI<C>.() -> T) : NoArgDIBinding<C, T> {
     override fun factoryName(): String = "provider"
 
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(key: DI.Key<C, Unit, T>): (BindingDI<C>, Unit) -> T = { di, _ -> NoArgBindingDIWrap(di).creator() }
+    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, Unit, T>): (Unit) -> T = { NoArgBindingDIWrap(di).creator() }
 }
 
 /**
@@ -98,9 +92,7 @@ public class Provider<C : Any, T: Any>(override val contextType: TypeToken<in C>
  * @param createdType The type of the created object, *used for debug print only*.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
-public class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, public val sync: Boolean = true, public val creator: NoArgSimpleBindingDI<C>.() -> T) : NoArgDIBinding<C, T> {
-    @Suppress("UNCHECKED_CAST")
-    private val _refMaker = refMaker ?: SingletonReference
+public class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, private val refMaker: Reference.Maker = Strong, private val sync: Boolean = true, private val creator: NoArgBindingDI<C>.() -> T) : NoArgDIBinding<C, T> {
     private val _scopeKey = ScopeKey(Any(), Unit)
 
     private fun factoryName(params: List<String>) = buildString {
@@ -111,31 +103,30 @@ public class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override v
 
     override fun factoryName(): String {
         val params = ArrayList<String>(2)
-        if (_refMaker != SingletonReference)
-            params.add("ref = ${erasedOf(_refMaker).simpleDispString()}")
+        if (refMaker != Strong)
+            params.add("ref = ${erasedOf(refMaker).simpleDispString().removeSuffix(".Companion")}")
         return factoryName(params)
     }
 
     override fun factoryFullName(): String {
         val params = ArrayList<String>(2)
-        if (_refMaker != SingletonReference)
-            params.add("ref = ${erasedOf(_refMaker).qualifiedDispString()}")
+        if (refMaker != Strong)
+            params.add("ref = ${erasedOf(refMaker).qualifiedDispString().removeSuffix(".Companion")}")
         return factoryName(params)
     }
 
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(key: DI.Key<C, Unit, T>): (BindingDI<C>, Unit) -> T {
-        var lateInitRegistry: ScopeRegistry? = null
-        return { di, _ ->
-            val registry = lateInitRegistry ?: scope.getRegistry(di.context).also { lateInitRegistry = it }
+    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, Unit, T>): (Unit) -> T {
+        val registry = scope.getRegistry(di.context)
+        return {
             @Suppress("UNCHECKED_CAST")
-            registry.getOrCreate(_scopeKey, sync) { _refMaker.make { NoArgBindingDIWrap(BindingContextedDI(di, di.context)).creator() } } as T
+            registry.getOrCreate(_scopeKey, sync) { refMaker.make { NoArgBindingDIWrap(di).creator() } } as T
         }
     }
 
-    override val copier: DIBinding.Copier<C, Unit, T> = DIBinding.Copier { Singleton(scope, contextType, createdType, _refMaker, sync, creator) }
+    override val copier: DIBinding.Copier<C, Unit, T> = DIBinding.Copier { Singleton(scope, contextType, createdType, refMaker, sync, creator) }
 }
 
 /**
@@ -145,15 +136,15 @@ public class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override v
  * @param createdType The type of the created object.
  * @param creator The function that will be called as soon as DI is ready. Guaranteed to be called only once. Should create a new instance.
  */
-public class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdType: TypeToken<out T>, public val creator: NoArgSimpleBindingDI<Any>.() -> T) : NoArgDIBinding<Any, T> {
+public class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val createdType: TypeToken<out T>, private val creator: NoArgBindingDI<Any>.() -> T) : NoArgDIBinding<Any, T> {
 
     override val contextType: TypeToken<Any> = TypeToken.Any
 
     @Volatile private var _instance: T? = null
     private val _lock = Any()
 
-    private fun getFactory(): (BindingDI<Any>, Unit) -> T {
-        return { di, _ ->
+    private fun getFactory(di: BindingDI<Any>): (Unit) -> T {
+        return { _ ->
             synchronizedIfNull(
                     lock = _lock,
                     predicate = this@EagerSingleton::_instance,
@@ -168,13 +159,13 @@ public class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val c
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(key: DI.Key<Any, Unit, T>): (Unit) -> T = getFactory()
+    override fun getFactory(di: BindingDI<Any>, key: DI.Key<Any, Unit, T>): (Unit) -> T = getFactory(di)
 
     override fun factoryName(): String = "eagerSingleton"
 
     init {
         val key = DI.Key(TypeToken.Any, TypeToken.Unit, createdType, null)
-        builder.onReady { getFactory().invoke(BindingDIImpl(this, key, Any(), 0), Unit) }
+        builder.onReady { getFactory(BindingDIImpl(this, key, DIContext.Any, 0)).invoke(Unit) }
     }
 
     override val copier: DIBinding.Copier<Any, Unit, T> = DIBinding.Copier { builder -> EagerSingleton(builder, createdType, creator) }
@@ -194,7 +185,7 @@ public class InstanceBinding<T: Any>(override val createdType: TypeToken<out T>,
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(key: DI.Key<Any, Unit, T>): (BindingDI<Any>, Unit) -> T = { _, _ -> this.instance }
+    override fun getFactory(di: BindingDI<Any>, key: DI.Key<Any, Unit, T>): (Unit) -> T = { this.instance }
 
     override val description: String get() = "${factoryName()} ( ${createdType.simpleDispString()} ) "
     override val fullDescription: String get() = "${factoryFullName()} ( ${createdType.qualifiedDispString()} ) "

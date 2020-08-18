@@ -1,5 +1,6 @@
 package org.kodein.di
 
+import org.kodein.di.bindings.Strong
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import kotlin.test.Test
@@ -27,7 +28,7 @@ class GenericJvmTests_23_Context {
 
     class T01(override val di: DI) : DIAware {
         var contextRetrieved = false
-        override val diContext = diContext {
+        override val diContext = diContext(Strong) {
             contextRetrieved = true
             "BRYS"
         }

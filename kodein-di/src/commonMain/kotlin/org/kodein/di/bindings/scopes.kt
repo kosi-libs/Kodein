@@ -33,11 +33,11 @@ public sealed class ScopeRegistry : ScopeCloseable {
      * @param creator A function that creates a reference that will be stored in the registry.
      * @return A value associated to the [key], whether created by [creator] or retrieved by [Reference.next].
      */
-    public abstract fun getOrCreate(key: RegKey, sync: Boolean = true, creator: () -> Reference<Any>): Any
+    public abstract fun getOrCreate(key: RegKey, sync: Boolean = true, creator: () -> Reference.Local<Any, Reference<Any>>): Any
 
-    public abstract fun getOrNull(key: RegKey): (() -> Any?)?
+    public abstract fun getOrNull(key: RegKey): Reference<Any>?
 
-    public abstract fun values(): Iterable<Pair<RegKey, () -> Any?>>
+    public abstract fun values(): Iterable<Pair<RegKey, Reference<Any>>>
 
     public abstract fun remove(key: RegKey)
 
@@ -51,14 +51,14 @@ public sealed class ScopeRegistry : ScopeCloseable {
  */
 public class StandardScopeRegistry : ScopeRegistry() {
 
-    private val _cache = newConcurrentMap<RegKey, () -> Any?>()
+    private val _cache = newConcurrentMap<RegKey, Reference<Any>>()
 
     private val _lock = Any()
 
-    override fun getOrCreate(key: RegKey, sync: Boolean, creator: () -> Reference<Any>): Any {
+    override fun getOrCreate(key: RegKey, sync: Boolean, creator: () -> Reference.Local<Any, Reference<Any>>): Any {
         return synchronizedIfNull(
                 lock = if (sync) _lock else null,
-                predicate = { _cache[key]?.invoke() },
+                predicate = { _cache[key]?.get() },
                 ifNotNull = { it },
                 ifNull = {
                     val (current, next) = creator()
@@ -68,12 +68,12 @@ public class StandardScopeRegistry : ScopeRegistry() {
         )
     }
 
-    override fun getOrNull(key: RegKey): (() -> Any?)? = _cache[key]
+    override fun getOrNull(key: RegKey): Reference<Any>? = _cache[key]
 
-    override fun values(): List<Pair<RegKey, () -> Any?>> = _cache.map { it.toPair() }
+    override fun values(): List<Pair<RegKey, Reference<Any>>> = _cache.map { it.toPair() }
 
     override fun remove(key: RegKey) {
-        (_cache.remove(key)?.invoke() as? ScopeCloseable)?.close()
+        (_cache.remove(key)?.get() as? ScopeCloseable)?.close()
     }
 
     /**
@@ -86,7 +86,7 @@ public class StandardScopeRegistry : ScopeRegistry() {
             refs
         }
         refs.forEach {
-            (it.invoke() as? ScopeCloseable)?.close()
+            (it.get() as? ScopeCloseable)?.close()
         }
     }
 
@@ -108,12 +108,12 @@ public class StandardScopeRegistry : ScopeRegistry() {
  */
 public class SingleItemScopeRegistry : ScopeRegistry() {
     private val _lock = Any()
-    @Volatile private var _pair: Pair<RegKey, () -> Any?>? = null
+    @Volatile private var _pair: Pair<RegKey, Reference<Any>>? = null
 
-    override fun getOrCreate(key: RegKey, sync: Boolean, creator: () -> Reference<Any>): Any {
+    override fun getOrCreate(key: RegKey, sync: Boolean, creator: () -> Reference.Local<Any, Reference<Any>>): Any {
         val (oldRef, value) = synchronizedIfNull(
                 lock = if (sync) _lock else null,
-                predicate = { _pair?.let { (pKey, pRef) -> if (key == pKey) pRef() else null } },
+                predicate = { _pair?.let { (pKey, pRef) -> if (key == pKey) pRef.get() else null } },
                 ifNotNull = { null to it },
                 ifNull = {
                     val oldRef = _pair?.second
@@ -122,18 +122,18 @@ public class SingleItemScopeRegistry : ScopeRegistry() {
                     oldRef to value
                 }
         )
-        (oldRef?.invoke() as? ScopeCloseable)?.close()
+        (oldRef?.get() as? ScopeCloseable)?.close()
         return value
     }
 
-    override fun getOrNull(key: RegKey): (() -> Any?)? = _pair?.let { (pKey, pRef) -> if (key == pKey) pRef else null }
+    override fun getOrNull(key: RegKey): Reference<Any>? = _pair?.let { (pKey, pRef) -> if (key == pKey) pRef else null }
 
     /**
      * @return Whether or not this scope is empty (contains no item).
      */
     public fun isEmpty(): Boolean = _pair == null
 
-    override fun values(): List<Pair<RegKey, () -> Any?>> = _pair?.let { listOf(it) } ?: emptyList()
+    override fun values(): List<Pair<RegKey, Reference<Any>>> = _pair?.let { listOf(it) } ?: emptyList()
 
     override fun remove(key: RegKey) {
         val ref = synchronizedIfNotNull(
@@ -148,7 +148,7 @@ public class SingleItemScopeRegistry : ScopeRegistry() {
                 }
         )
 
-        (ref?.invoke() as? ScopeCloseable)?.close()
+        (ref?.get() as? ScopeCloseable)?.close()
     }
 
     /**
@@ -165,7 +165,7 @@ public class SingleItemScopeRegistry : ScopeRegistry() {
                 }
         )
 
-        (ref?.invoke() as? ScopeCloseable)?.close()
+        (ref?.get() as? ScopeCloseable)?.close()
     }
 }
 
@@ -186,7 +186,7 @@ public class SimpleAutoContextTranslator<S: Any>(override val scopeType: TypeTok
     override fun toString(): String = "(${scopeType.simpleDispString()} -> ${contextType.simpleDispString()})"
 }
 
-public fun <C : Any, S: Any> ContextTranslator<C, S>.toKContext(ctx: C): DIContext<S> = translate(ctx)?.let { DIContext(scopeType, it) }
+public fun <C : Any, S: Any> ContextTranslator<C, S>.toKContext(ctx: C, refMake: Reference.Maker): DIContext<S>? = translate(ctx)?.let { DIContext(scopeType, it, refMake) }
 
 internal class CompositeContextTranslator<in C : Any, I : Any, S: Any>(val src: ContextTranslator<C, I>, val dst: ContextTranslator<I, S>) : ContextTranslator<C, S> {
     override val contextType get() = src.contextType
@@ -233,7 +233,7 @@ public abstract class SubScope<C, PC>(private val parentScope: Scope<PC>) : Scop
     override fun getRegistry(context: C): ScopeRegistry {
         val parentRegistry = parentScope.getRegistry(getParentContext(context))
         @Suppress("UNCHECKED_CAST")
-        return parentRegistry.getOrCreate(Key(context), false) { SingletonReference.make { newRegistry() } } as ScopeRegistry
+        return parentRegistry.getOrCreate(Key(context), false) { Strong.make { newRegistry() } } as ScopeRegistry
     }
 
     public open fun newRegistry(): ScopeRegistry = StandardScopeRegistry()

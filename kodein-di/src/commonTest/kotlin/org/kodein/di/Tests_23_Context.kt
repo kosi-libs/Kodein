@@ -1,5 +1,7 @@
 package org.kodein.di
 
+import org.kodein.di.bindings.Clearable
+import org.kodein.di.bindings.Strong
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import kotlin.test.Test
@@ -12,7 +14,7 @@ class Tests_23_Context {
 
     @Test
     fun test_00_lazyOnContext() {
-        val di = DI{
+        val di = DI {
             bind<String>() with contexted<String>().provider { "Salomon $context" }
         }
 
@@ -27,7 +29,7 @@ class Tests_23_Context {
 
     class T01(override val di: DI) : DIAware {
         var contextRetrieved = false
-        override val diContext = diContext {
+        override val diContext = diContext(Strong) {
             contextRetrieved = true
             "BRYS"
         }
@@ -36,7 +38,7 @@ class Tests_23_Context {
 
     @Test
     fun test_01_lazyKContext() {
-        val di = DI{
+        val di = DI {
             bind<String>() with contexted<String>().provider { "Salomon $context" }
         }
 
@@ -45,6 +47,21 @@ class Tests_23_Context {
         assertFalse(t.contextRetrieved)
         assertEquals("Salomon BRYS", t.name)
         assertTrue(t.contextRetrieved)
+    }
+
+    @Test
+    fun test_02_ClearableContext() {
+        val di = DI {
+            bind<String>() with provider { "Salomon $context" }
+        }
+
+        val context = Clearable("foo-bar")
+
+        val result: String by di.onRef(context).instance()
+
+        context.clear()
+
+        assertEquals("Salomon NoContext", result)
     }
 
 }

@@ -1,5 +1,7 @@
 package org.kodein.di
 
+import org.kodein.di.bindings.Reference
+import org.kodein.di.bindings.Weak
 import org.kodein.type.TypeToken
 import org.kodein.type.erasedOf
 import kotlin.reflect.KProperty
@@ -36,13 +38,13 @@ public interface LazyDelegate<out V> {
  *
  * In essence, the DI object is accessed only upon retrieving.
  */
-public class DIProperty<out V>(internal val trigger: DITrigger?, public val originalContext: DIContext<*>, private val get: (DIContext<*>, String) -> V) : LazyDelegate<V> {
+public class DIProperty<out V>(internal val trigger: DITrigger?, private val originalContext: DIContext<*>, private val get: (DIContext<*>, String) -> V) : LazyDelegate<V> {
 
     override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy {
         @Suppress("UNCHECKED_CAST")
-        val context = if (receiver != null && originalContext === AnyDIContext) DIContext(erasedOf(receiver) as TypeToken<in Any>, receiver) else originalContext
-        get(context, prop.name) } .also { trigger?.properties?.add(it)
-    }
+        val context = if (receiver != null && originalContext === DIContext.Any) DIContext(erasedOf(receiver) as TypeToken<in Any>, receiver, Weak) else originalContext
+        get(context, prop.name)
+    } .also { trigger?.properties?.add(it) }
 
 }
 

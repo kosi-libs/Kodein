@@ -2,54 +2,71 @@
 
 package org.kodein.di
 
+import org.kodein.di.bindings.Reference
+import org.kodein.di.bindings.Strong
 import org.kodein.di.internal.DirectDIImpl
 import org.kodein.type.TypeToken
 
 /**
  * Defines a context and its type to be used by Di
  */
-public interface DIContext<C : Any> {
+public abstract class DIContext<C : Any> internal constructor(
         /**
          * The type of the context, used to lookup corresponding bindings.
          */
         public val type: TypeToken<in C>
+) {
 
-        /**
-         * The context itself.
-         */
-        public val value: C
+    public abstract val reference: Reference<C>
+
+    /**
+     * The context itself.
+     */
+    internal fun value(fallback: TypeToken<*>): Any {
+        val ctx = reference.get()
+        if (ctx != null) return ctx
+
+        @Suppress("UNCHECKED_CAST")
+        if (fallback == TypeToken.Any) return NoContext as C
+
+        error("Request context of type ${fallback}, but it has been garbage collected. Use a Strong reference to ensure context is kept.")
+    }
 
     /**
      * Defines a context and its type to be used by DI
      */
-    public data class Value<C : Any>(override val type: TypeToken<in C>, override val value: C) : DIContext<C>
+    internal class Value<C : Any>(type: TypeToken<in C>, override val reference: Reference<C>) : DIContext<C>(type)
 
     /**
      * Defines a context and its type to be used by DI
      */
-    public class Lazy<C : Any>(override val type: TypeToken<in C>, public val getValue: () -> C) : DIContext<C> {
-        override val value: C by lazy(getValue)
+    internal class Lazy<C : Any>(type: TypeToken<in C>, getValue: () -> Reference<C>) : DIContext<C>(type) {
+        override val reference by lazy(getValue)
+    }
+
+    public object NoContext {
+        override fun toString(): String = "NoContext"
     }
 
     public companion object {
-        public operator fun <C : Any> invoke(type: TypeToken<in C>, value: C): DIContext<C> = Value(type, value)
-        public operator fun <C : Any> invoke(type: TypeToken<in C>, getValue: () -> C): DIContext<C> = Lazy(type, getValue)
+        public operator fun <C : Any> invoke(type: TypeToken<in C>, reference: Reference<C>): DIContext<C> = Value(type, reference)
+        public operator fun <C : Any> invoke(type: TypeToken<in C>, context: C, refMaker: Reference.Maker): DIContext<C> = Value(type, refMaker.make { context }.reference)
+        public operator fun <C : Any> invoke(type: TypeToken<in C>, getReference: () -> Reference<C>): DIContext<C> = Lazy(type, getReference)
+        public operator fun <C : Any> invoke(type: TypeToken<in C>, getContext: () -> C, refMaker: Reference.Maker): DIContext<C> = Lazy(type) { refMaker.make(getContext).reference }
+
+        /**
+         * Default DI context, means no context.
+         */
+        public val Any: DIContext<Any> = DIContext(TypeToken.Any, Strong(NoContext))
     }
 }
-
-
 
 @Suppress("UNCHECKED_CAST")
 internal inline val DIContext<*>.anyType get() = type as TypeToken<in Any>
 
-private object Contexes {
-    val AnyDIContext = DIContext<Any>(TypeToken.Any, Any())
-}
-
-/**
- * Default DI context, means no context.
- */
-internal val AnyDIContext: DIContext<Any> get() = Contexes.AnyDIContext
+// Since 7.1
+@Deprecated("Moved to DIContext", ReplaceWith("DIContext.Any"))
+internal val AnyDIContext: DIContext<Any> get() = DIContext.Any
 
 /**
  * Any class that extends this interface can use DI "seamlessly".
@@ -66,7 +83,7 @@ public interface DIAware {
      *
      * Note that even if you override this property, all bindings that do not use a Context or are not scoped will still work!
      */
-    public val diContext: DIContext<*> get() = AnyDIContext
+    public val diContext: DIContext<*> get() = DIContext.Any
 
     /**
      * Trigger to use that define when the retrieval will be done.
@@ -90,7 +107,7 @@ public interface DIAware {
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 public fun <A, T : Any> DIAware.Factory(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): DIProperty<(A) -> T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx) }
 
 /**
  * Gets a factory of [T] for the given argument type, return type and tag, or null if none is found.
@@ -104,7 +121,7 @@ public fun <A, T : Any> DIAware.Factory(argType: TypeToken<in A>, type: TypeToke
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 public fun <A, T : Any> DIAware.FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): DIProperty<((A) -> T)?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx) }
 
 /**
  * Gets a provider of [T] for the given type and tag.
@@ -117,7 +134,7 @@ public fun <A, T : Any> DIAware.FactoryOrNull(argType: TypeToken<in A>, type: Ty
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 public fun <T : Any> DIAware.Provider(type: TypeToken<out T>, tag: Any? = null): DIProperty<() -> T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx) }
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -133,7 +150,7 @@ public fun <T : Any> DIAware.Provider(type: TypeToken<out T>, tag: Any? = null):
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 public fun <A, T : Any> DIAware.Provider(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): DIProperty<() -> T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value).toProvider(arg) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx).toProvider(arg) }
 
 /**
  * Gets a provider of [T] for the given type and tag, or null if none is found.
@@ -145,7 +162,7 @@ public fun <A, T : Any> DIAware.Provider(argType: TypeToken<in A>, type: TypeTok
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 public fun <T : Any> DIAware.ProviderOrNull(type: TypeToken<out T>, tag: Any? = null): DIProperty<(() -> T)?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx) }
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -160,7 +177,7 @@ public fun <T : Any> DIAware.ProviderOrNull(type: TypeToken<out T>, tag: Any? = 
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 public fun <A, T : Any> DIAware.ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): DIProperty<(() -> T)?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value)?.toProvider(arg) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx)?.toProvider(arg) }
 
 /**
  * Gets an instance of [T] for the given type and tag.
@@ -173,7 +190,7 @@ public fun <A, T : Any> DIAware.ProviderOrNull(argType: TypeToken<in A>, type: T
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 public fun <T : Any> DIAware.Instance(type: TypeToken<out T>, tag: Any? = null): DIProperty<T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value).invoke() }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx).invoke() }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -189,7 +206,7 @@ public fun <T : Any> DIAware.Instance(type: TypeToken<out T>, tag: Any? = null):
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 public fun <A, T : Any> DIAware.Instance(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): DIProperty<T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value).invoke(arg()) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx).invoke(arg()) }
 
 /**
  * Gets an instance of [T] for the given type and tag, or null if none is found.
@@ -200,7 +217,7 @@ public fun <A, T : Any> DIAware.Instance(argType: TypeToken<in A>, type: TypeTok
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 public fun <T : Any> DIAware.InstanceOrNull(type: TypeToken<out T>, tag: Any? = null): DIProperty<T?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value)?.invoke() }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx)?.invoke() }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -214,7 +231,7 @@ public fun <T : Any> DIAware.InstanceOrNull(type: TypeToken<out T>, tag: Any? = 
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 public fun <A, T : Any> DIAware.InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): DIProperty<T?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value)?.invoke(arg()) }
+        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx)?.invoke(arg()) }
 
 /**
  * Return a direct [DirectDI] instance, with its receiver and context set to this DIAware receiver and context.
@@ -226,7 +243,7 @@ private class DIWrapper(
         override val diContext: DIContext<*>,
         override val diTrigger: DITrigger? = null
 ) : DI {
-    internal constructor(base: DIAware, diContext: DIContext<*> = base.diContext, trigger: DITrigger? = base.diTrigger) : this(base.di, diContext, trigger)
+    constructor(base: DIAware, diContext: DIContext<*> = base.diContext, trigger: DITrigger? = base.diTrigger) : this(base.di, diContext, trigger)
 
     override val di: DI get() = this
 
