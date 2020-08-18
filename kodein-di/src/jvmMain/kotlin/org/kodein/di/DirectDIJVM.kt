@@ -3,7 +3,7 @@ package org.kodein.di
 import org.kodein.type.TypeToken
 
 @Suppress("FunctionName")
-actual interface DirectDI : DirectDIBase {
+public actual interface DirectDI : DirectDIBase {
     /**
      * Gets all factories that can return a `T` for the given argument type, return type and tag.
      *
@@ -15,7 +15,7 @@ actual interface DirectDI : DirectDIBase {
      * @return A list of matching factories of `T`.
      * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> AllFactories(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null): List<(A) -> T>
+    public fun <A, T : Any> AllFactories(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null): List<(A) -> T>
 
     /**
      * Gets all providers that can return a `T` for the given type and tag.
@@ -26,7 +26,7 @@ actual interface DirectDI : DirectDIBase {
      * @return A list of matching providers of `T`.
      * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <T : Any> AllProviders(type: TypeToken<T>, tag: Any? = null): List<() -> T>
+    public fun <T : Any> AllProviders(type: TypeToken<T>, tag: Any? = null): List<() -> T>
 
     /**
      * Gets all providers that can return a `T` for the given type and tag, curried from factories for the given argument type.
@@ -40,7 +40,7 @@ actual interface DirectDI : DirectDIBase {
      * @return A list of matching providers of `T`.
      * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> AllProviders(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): List<() -> T>
+    public fun <A, T : Any> AllProviders(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): List<() -> T>
 
     /**
      * Gets all instances that can return a `T` for the given type and tag.
@@ -51,7 +51,7 @@ actual interface DirectDI : DirectDIBase {
      * @return A list of matching instances of `T`.
      * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <T : Any> AllInstances(type: TypeToken<T>, tag: Any? = null): List<T>
+    public fun <T : Any> AllInstances(type: TypeToken<T>, tag: Any? = null): List<T>
 
     /**
      * Gets all instances that can return a `T` for the given type and tag, curried from factories for the given argument type.
@@ -65,5 +65,5 @@ actual interface DirectDI : DirectDIBase {
      * @return A list of matching instances of `T`.
      * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: A): List<T>
+    public fun <A, T : Any> AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: A): List<T>
 }

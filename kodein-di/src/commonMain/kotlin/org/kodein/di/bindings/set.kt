@@ -11,7 +11,7 @@ import org.kodein.type.TypeToken
  * @param A The argument type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
-abstract class BaseMultiBinding<C : Any, A, T: Any> : DIBinding<C, A, Set<T>> {
+public abstract class BaseMultiBinding<C : Any, A, T: Any> : DIBinding<C, A, Set<T>> {
     internal abstract val set: MutableSet<DIBinding<C, A, T>>
 
     override fun factoryName(): String = "bindingSet"
@@ -30,7 +30,7 @@ private class SetBindingDI<out C : Any>(private val _base: BindingDI<C>) : Bindi
  * @param A The argument type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
-class ArgSetBinding<C : Any, A, T: Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : BaseMultiBinding<C, A, T>() {
+public class ArgSetBinding<C : Any, A, T: Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : BaseMultiBinding<C, A, T>() {
 
     override val set = LinkedHashSet<DIBinding<C, A, T>>()
 
@@ -45,7 +45,7 @@ class ArgSetBinding<C : Any, A, T: Any>(override val contextType: TypeToken<in C
         }
     }
 
-    override val copier = DIBinding.Copier { builder ->
+    override val copier: DIBinding.Copier<C, A, Set<T>> = DIBinding.Copier { builder ->
         ArgSetBinding(contextType, argType, _elementType, createdType).also {
             it.set.addAll(set.map { it.copier?.copy(builder) ?: it })
         }
@@ -58,7 +58,7 @@ class ArgSetBinding<C : Any, A, T: Any>(override val contextType: TypeToken<in C
  * @param C The context type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
-class SetBinding<C : Any, T: Any>(override val contextType: TypeToken<in C>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : NoArgDIBinding<C, Set<T>>, BaseMultiBinding<C, Unit, T>() {
+public class SetBinding<C : Any, T: Any>(override val contextType: TypeToken<in C>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : NoArgDIBinding<C, Set<T>>, BaseMultiBinding<C, Unit, T>() {
 
     @Suppress("UNCHECKED_CAST")
     override val set = LinkedHashSet<DIBinding<C, Unit, T>>()
@@ -75,7 +75,7 @@ class SetBinding<C : Any, T: Any>(override val contextType: TypeToken<in C>, pri
         }
     }
 
-    override val copier = DIBinding.Copier { builder ->
+    override val copier: DIBinding.Copier<C, Unit, Set<T>> = DIBinding.Copier { builder ->
         SetBinding(contextType, _elementType, createdType).also {
             it.set.addAll(set.map { it.copier?.copy(builder) ?: it })
         }
@@ -87,7 +87,7 @@ class SetBinding<C : Any, T: Any>(override val contextType: TypeToken<in C>, pri
  *
  * @param T The type of the binding in the set.
  */
-class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _binder: DI.Builder.TypeBinder<T>, private val _colTypeToken: TypeToken<S>) {
+public class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _binder: DI.Builder.TypeBinder<T>, private val _colTypeToken: TypeToken<S>) {
 
     /**
      * Second part of the `bind<Type>().inSet() with binding` syntax.
@@ -96,7 +96,7 @@ class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _bind
      * @param binding The binding to add in the set.
      */
     @Suppress("UNCHECKED_CAST")
-    infix fun <C : Any> with(binding: DIBinding<in C, *, out T>) {
+    public infix fun <C : Any> with(binding: DIBinding<in C, *, out T>) {
         _binder as DIBuilderImpl.TypeBinder
         val setKey = DI.Key(binding.contextType, binding.argType, _colTypeToken, _binder.tag)
         val setBinding = _binder.containerBuilder.bindingsMap[setKey]?.first() ?: throw IllegalStateException("No set binding to $setKey")
@@ -116,4 +116,4 @@ class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _bind
  * @param setTypeToken The type of the bound set.
  */
 @Suppress("FunctionName")
-fun <T: Any> DI.Builder.TypeBinder<T>.InSet(setTypeToken: TypeToken<Set<T>>) = TypeBinderInSet(this, setTypeToken)
+public fun <T: Any> DI.Builder.TypeBinder<T>.InSet(setTypeToken: TypeToken<Set<T>>): TypeBinderInSet<T, Set<T>> = TypeBinderInSet(this, setTypeToken)

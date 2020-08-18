@@ -9,4 +9,4 @@ package org.kodein.di
  * @param arg A function that provides the argument that will be passed to the factory.
  * @return A provider function that, when called, will call the receiver factory with the given argument.
  */
-inline fun <A, T : Any> ((A) -> T).toProvider(crossinline arg: () -> A): () -> T = { invoke(arg()) }
+public inline fun <A, T : Any> ((A) -> T).toProvider(crossinline arg: () -> A): () -> T = { invoke(arg()) }

@@ -8,8 +8,8 @@ import org.kodein.di.internal.synchronizedIfNotNull
 import org.kodein.di.internal.synchronizedIfNull
 import org.kodein.type.TypeToken
 
-interface ScopeCloseable {
-    fun close()
+public interface ScopeCloseable {
+    public fun close()
 }
 
 private typealias RegKey = Any
@@ -17,7 +17,7 @@ private typealias RegKey = Any
 /**
  * A registry is responsible managing references inside a scope.
  */
-sealed class ScopeRegistry : ScopeCloseable {
+public sealed class ScopeRegistry : ScopeCloseable {
     /**
      * Get or create a value that correspond for the given key.
      *
@@ -33,23 +33,23 @@ sealed class ScopeRegistry : ScopeCloseable {
      * @param creator A function that creates a reference that will be stored in the registry.
      * @return A value associated to the [key], whether created by [creator] or retrieved by [Reference.next].
      */
-    abstract fun getOrCreate(key: RegKey, sync: Boolean = true, creator: () -> Reference<Any>): Any
+    public abstract fun getOrCreate(key: RegKey, sync: Boolean = true, creator: () -> Reference<Any>): Any
 
-    abstract fun getOrNull(key: RegKey): (() -> Any?)?
+    public abstract fun getOrNull(key: RegKey): (() -> Any?)?
 
-    abstract fun values(): Iterable<Pair<RegKey, () -> Any?>>
+    public abstract fun values(): Iterable<Pair<RegKey, () -> Any?>>
 
-    abstract fun remove(key: RegKey)
+    public abstract fun remove(key: RegKey)
 
-    abstract fun clear()
+    public abstract fun clear()
 
-    final override fun close() = clear()
+    final override fun close(): Unit = clear()
 }
 
 /**
  * Standard [ScopeRegistry] implementation.
  */
-class StandardScopeRegistry : ScopeRegistry() {
+public class StandardScopeRegistry : ScopeRegistry() {
 
     private val _cache = newConcurrentMap<RegKey, () -> Any?>()
 
@@ -68,9 +68,9 @@ class StandardScopeRegistry : ScopeRegistry() {
         )
     }
 
-    override fun getOrNull(key: RegKey) = _cache[key]
+    override fun getOrNull(key: RegKey): (() -> Any?)? = _cache[key]
 
-    override fun values() = _cache.map { it.toPair() }
+    override fun values(): List<Pair<RegKey, () -> Any?>> = _cache.map { it.toPair() }
 
     override fun remove(key: RegKey) {
         (_cache.remove(key)?.invoke() as? ScopeCloseable)?.close()
@@ -93,12 +93,12 @@ class StandardScopeRegistry : ScopeRegistry() {
     /**
      * The number of singleton objects currently created in this scope.
      */
-    val size: Int get() = _cache.size
+    public val size: Int get() = _cache.size
 
     /**
      * @return Whether or not this scope is empty (contains no singleton objects).
      */
-    fun isEmpty(): Boolean = _cache.isEmpty()
+    public fun isEmpty(): Boolean = _cache.isEmpty()
 }
 
 /**
@@ -106,7 +106,7 @@ class StandardScopeRegistry : ScopeRegistry() {
  *
  * If the key changes, the held item will be replaced.
  */
-class SingleItemScopeRegistry : ScopeRegistry() {
+public class SingleItemScopeRegistry : ScopeRegistry() {
     private val _lock = Any()
     @Volatile private var _pair: Pair<RegKey, () -> Any?>? = null
 
@@ -126,14 +126,14 @@ class SingleItemScopeRegistry : ScopeRegistry() {
         return value
     }
 
-    override fun getOrNull(key: RegKey) = _pair?.let { (pKey, pRef) -> if (key == pKey) pRef else null }
+    override fun getOrNull(key: RegKey): (() -> Any?)? = _pair?.let { (pKey, pRef) -> if (key == pKey) pRef else null }
 
     /**
      * @return Whether or not this scope is empty (contains no item).
      */
-    fun isEmpty(): Boolean = _pair == null
+    public fun isEmpty(): Boolean = _pair == null
 
-    override fun values() = _pair?.let { listOf(it) } ?: emptyList()
+    override fun values(): List<Pair<RegKey, () -> Any?>> = _pair?.let { listOf(it) } ?: emptyList()
 
     override fun remove(key: RegKey) {
         val ref = synchronizedIfNotNull(
@@ -169,24 +169,24 @@ class SingleItemScopeRegistry : ScopeRegistry() {
     }
 }
 
-interface ContextTranslator<in C : Any, S : Any> {
-    val contextType: TypeToken<in C>
-    val scopeType: TypeToken<in S>
-    fun translate(ctx: C): S?
+public interface ContextTranslator<in C : Any, S : Any> {
+    public val contextType: TypeToken<in C>
+    public val scopeType: TypeToken<in S>
+    public fun translate(ctx: C): S?
 }
 
-class SimpleContextTranslator<in C : Any, S: Any>(override val contextType: TypeToken<in C>, override val scopeType: TypeToken<in S>, private val t: (ctx: C) -> S?) : ContextTranslator<C, S> {
+public class SimpleContextTranslator<in C : Any, S: Any>(override val contextType: TypeToken<in C>, override val scopeType: TypeToken<in S>, private val t: (ctx: C) -> S?) : ContextTranslator<C, S> {
     override fun translate(ctx: C): S? = t(ctx)
-    override fun toString() = "()"
+    override fun toString(): String = "()"
 }
 
-class SimpleAutoContextTranslator<S: Any>(override val scopeType: TypeToken<in S>, private val t: () -> S) : ContextTranslator<Any, S> {
-    override val contextType get() = TypeToken.Any
+public class SimpleAutoContextTranslator<S: Any>(override val scopeType: TypeToken<in S>, private val t: () -> S) : ContextTranslator<Any, S> {
+    override val contextType: TypeToken<Any> get() = TypeToken.Any
     override fun translate(ctx: Any): S = t()
-    override fun toString() = "(${scopeType.simpleDispString()} -> ${contextType.simpleDispString()})"
+    override fun toString(): String = "(${scopeType.simpleDispString()} -> ${contextType.simpleDispString()})"
 }
 
-fun <C : Any, S: Any> ContextTranslator<C, S>.toKContext(ctx: C) = translate(ctx)?.let { DIContext(scopeType, it) }
+public fun <C : Any, S: Any> ContextTranslator<C, S>.toKContext(ctx: C): DIContext<S> = translate(ctx)?.let { DIContext(scopeType, it) }
 
 internal class CompositeContextTranslator<in C : Any, I : Any, S: Any>(val src: ContextTranslator<C, I>, val dst: ContextTranslator<I, S>) : ContextTranslator<C, S> {
     override val contextType get() = src.contextType
@@ -201,7 +201,7 @@ internal class CompositeContextTranslator<in C : Any, I : Any, S: Any>(val src: 
  *
  * @param C The Context.
  */
-interface Scope<in C> {
+public interface Scope<in C> {
 
     /**
      * Get a registry for a given context.
@@ -210,7 +210,7 @@ interface Scope<in C> {
      * @param context The context associated with the returned registry.
      * @return The registry associated with the given context.
      */
-    fun getRegistry(context: C): ScopeRegistry
+    public fun getRegistry(context: C): ScopeRegistry
 }
 
 /**
@@ -218,13 +218,13 @@ interface Scope<in C> {
  *
  * This is kind of equivalent to having no scope at all, except that you can call [clear].
  */
-open class UnboundedScope(val registry: ScopeRegistry = StandardScopeRegistry()) : Scope<Any?>, ScopeCloseable {
-    override fun getRegistry(context: Any?) = registry
+public open class UnboundedScope(public val registry: ScopeRegistry = StandardScopeRegistry()) : Scope<Any?>, ScopeCloseable {
+    override fun getRegistry(context: Any?): ScopeRegistry = registry
 
-    override fun close() = registry.clear()
+    override fun close(): Unit = registry.clear()
 }
 
-abstract class SubScope<C, PC>(val parentScope: Scope<PC>) : Scope<C> {
+public abstract class SubScope<C, PC>(private val parentScope: Scope<PC>) : Scope<C> {
 
     private data class Key<C>(val context: C)
 
@@ -236,15 +236,15 @@ abstract class SubScope<C, PC>(val parentScope: Scope<PC>) : Scope<C> {
         return parentRegistry.getOrCreate(Key(context), false) { SingletonReference.make { newRegistry() } } as ScopeRegistry
     }
 
-    open fun newRegistry(): ScopeRegistry = StandardScopeRegistry()
+    public open fun newRegistry(): ScopeRegistry = StandardScopeRegistry()
 }
 
 /**
  * Default [Scope]: will always return the same registry, no matter the context.
  */
-class NoScope: Scope<Any?> {
+public class NoScope: Scope<Any?> {
 
     private val _registry = StandardScopeRegistry()
 
-    override fun getRegistry(context: Any?) = _registry
+    override fun getRegistry(context: Any?): StandardScopeRegistry = _registry
 }

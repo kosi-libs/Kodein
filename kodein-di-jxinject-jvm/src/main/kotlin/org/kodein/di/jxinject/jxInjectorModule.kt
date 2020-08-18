@@ -10,29 +10,27 @@ import javax.inject.Named
 /**
  * Module that must be imported in order to use [JxInjector].
  */
-val jxInjectorModule = DI.Module("JX Injector") {
-    Bind() from SetBinding<Any, JxInjectorContainer.Qualifier>(TypeToken.Any, org.kodein.type.generic(), erasedSet())
+public val jxInjectorModule: DI.Module = DI.Module("JX Injector") {
+    Bind() from SetBinding<Any, JxInjectorContainer.Qualifier>(TypeToken.Any, erased(), erasedSet())
     jxQualifier(Named::class.java) { it.value }
 
-    Bind() from Singleton(NoScope(), org.kodein.type.generic(), org.kodein.type.generic()) {
-        JxInjectorContainer(Instance<Set<JxInjectorContainer.Qualifier>>(erasedSet<JxInjectorContainer.Qualifier>()))
-    }
+    bind<JxInjectorContainer>() with Singleton(NoScope(), erased(), erased()) { JxInjectorContainer(Instance(erasedSet())) }
 }
 
 /**
  * Utility function to retrieve a [JxInjector].
  */
-val DI.jx: JxInjector get() = JxInjector(direct, direct.Instance(org.kodein.type.generic(), null))
+public val DI.jx: JxInjector get() = JxInjector(direct, direct.Instance(erased(), null))
 
 /**
  * Utility function to retrieve a [JxInjector].
  */
-val DirectDI.jx: JxInjector get() = JxInjector(this, Instance(org.kodein.type.generic(), null))
+public val DirectDI.jx: JxInjector get() = JxInjector(this, Instance(erased(), null))
 
 /** @suppress */
 @Suppress("UNCHECKED_CAST")
-fun <T: Annotation> DI.Builder.jxQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
-    Bind(erased<JxInjectorContainer.Qualifier>()).InSet(erasedSet()) with InstanceBinding(org.kodein.type.generic(), JxInjectorContainer.Qualifier(cls, tagProvider as (Annotation) -> Any))
+public fun <T: Annotation> DI.Builder.jxQualifier(cls: Class<T>, tagProvider: (T) -> Any) {
+    Bind(erased<JxInjectorContainer.Qualifier>()).InSet(erasedSet()) with InstanceBinding(erased(), JxInjectorContainer.Qualifier(cls, tagProvider as (Annotation) -> Any))
 }
 
 /**
@@ -47,16 +45,16 @@ internal inline fun <reified T: Annotation> DI.Builder.jxQualifier(noinline tagP
 /**
  * Utility function that eases the retrieval of a [JxInjector].
  */
-object Jx {
+public object Jx {
     /**
      * Utility function that eases the retrieval of a [JxInjector].
      */
     @JvmStatic
-    fun of(di: DI) = di.jx
+   public fun of(di: DI): JxInjector = di.jx
 
     /**
      * Utility function that eases the retrieval of a [JxInjector].
      */
     @JvmStatic
-    fun of(directDI: DirectDI) = directDI.jx
+    public fun of(directDI: DirectDI): JxInjector = directDI.jx
 }

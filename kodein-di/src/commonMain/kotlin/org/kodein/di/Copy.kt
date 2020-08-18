@@ -5,50 +5,50 @@ package org.kodein.di
  *
  * @property all Whether the specs are describing multiple matching bindings or only one.
  */
-class CopySpecs(val all: Boolean) : SearchSpecs()
+public class CopySpecs(public val all: Boolean) : SearchSpecs()
 
 /**
  * Simple interface that returns a the keys to copy from a container.
  */
-interface Copy {
+public interface Copy {
     /**
      * The keys to copy from the given tree, according to the rules defined in this object.
      *
      * @param tree The tree that contains bindings to copy.
      */
-    fun keySet(tree: DITree): Set<DI.Key<*, *, *>>
+    public fun keySet(tree: DITree): Set<DI.Key<*, *, *>>
 
     /**
      * A [Copy] spec that copies all bindings.
      */
-    object All: Copy {
-        override fun keySet(tree: DITree) = tree.bindings.keys
+    public object All: Copy {
+        override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> = tree.bindings.keys
     }
 
     /**
      * A [Copy] spec that copies no bindings.
      */
-    object None: Copy {
-        override fun keySet(tree: DITree) = emptySet<DI.Key<*, *, *>>()
+    public object None: Copy {
+        override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> = emptySet<DI.Key<*, *, *>>()
     }
 
     /**
      * A [Copy] spec that copies only the bindings that retain no status / reference.
      */
-    object NonCached: Copy {
-        override fun keySet(tree: DITree) = tree.bindings.filter { it.value.first().binding.copier == null } .keys
+    public object NonCached: Copy {
+        override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> = tree.bindings.filter { it.value.first().binding.copier == null } .keys
     }
 
-    companion object {
+    public companion object {
         /**
          * Creates copy specs where the DSL defines which bindings are to be [copied][BaseDSL.copy].
          */
-        operator fun invoke(f: DSL.() -> Unit) = DSL().apply(f)
+        public operator fun invoke(f: DSL.() -> Unit): DSL = DSL().apply(f)
 
         /**
          * Creates copy specs where all bindings are copied by default, and the DSL defines which bindings are to be [ignored][BaseDSL.ignore].
          */
-        fun allBut(f: AllButDSL.() -> Unit) = AllButDSL().apply(f)
+        public fun allBut(f: AllButDSL.() -> Unit): AllButDSL = AllButDSL().apply(f)
 
         internal fun specsToKeys(tree: DITree, it: CopySpecs): List<DI.Key<*, *, *>> {
             val list = tree.find(it)
@@ -65,21 +65,21 @@ interface Copy {
     /**
      * Base class for the Copy DSL.
      */
-    abstract class BaseDSL : SearchDSL(), Copy {
+    public abstract class BaseDSL : SearchDSL(), Copy {
         internal val copySpecs = ArrayList<CopySpecs>()
         internal val ignoreSpecs = ArrayList<CopySpecs>()
 
         /**
          * Second half of the sentence `[copy|ignore] the` and `[copy|ignore] all`
          */
-        class Sentence(private val specs: MutableList<CopySpecs>) {
+        public class Sentence(private val specs: MutableList<CopySpecs>) {
             /**
              * Defines that this spec will only correspond to **one** matching binding.
              *
              * @param binding The binding it should match.
              * @return The binding itself to configure it (e.g. `copy the binding<Whatever>() with context<MyContext>()`).
              */
-            infix fun the(binding: Binding): SearchSpecs {
+            public infix fun the(binding: Binding): SearchSpecs {
                 return CopySpecs(all = false).also { binding.apply(it) ; specs += it }
             }
 
@@ -89,7 +89,7 @@ interface Copy {
              * @param spec The specs of the search.
              * @return The binding itself to configure it (e.g. `copy all context<MyContext>() with tag("whatever")`).
              */
-            infix fun all(spec: Spec): SearchSpecs {
+            public infix fun all(spec: Spec): SearchSpecs {
                 return CopySpecs(all = true).also { spec.apply(it) ; specs += it }
             }
         }
@@ -97,18 +97,18 @@ interface Copy {
         /**
          * Beginning of the following DSLs: `copy the ...` and `copy all ...`.
          */
-        val copy = Sentence(copySpecs)
+        public val copy: Sentence = Sentence(copySpecs)
 
         /**
          * Beginning of the following DSLs: `ignore the ...` and `ignore all ...`.
          */
-        val ignore = Sentence(ignoreSpecs)
+        public val ignore: Sentence = Sentence(ignoreSpecs)
     }
 
     /**
      * [Copy] DSL.
      */
-    class DSL : BaseDSL() {
+    public class DSL : BaseDSL() {
         override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> {
             val ignored = ignoreSpecs.flatMap { specsToKeys(tree, it) }
             return copySpecs
@@ -121,7 +121,7 @@ interface Copy {
     /**
      * [Copy.allBut] DSL
      */
-    class AllButDSL : BaseDSL() {
+    public class AllButDSL : BaseDSL() {
         override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> {
             val kept = copySpecs.flatMap { specsToKeys(tree, it) }
             val ignored = ignoreSpecs

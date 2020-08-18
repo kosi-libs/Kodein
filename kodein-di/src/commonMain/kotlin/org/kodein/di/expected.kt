@@ -12,9 +12,9 @@ import kotlin.reflect.KClass
  */
 @Suppress("FunctionName")
 @Deprecated("Has been reimplemented in Kodein-Type", ReplaceWith("erasedOf(obj)", "org.kodein.type"))
-fun <T: Any> TTOf(obj: T): TypeToken<out T> = erasedOf(obj)
+public fun <T: Any> TTOf(obj: T): TypeToken<out T> = erasedOf(obj)
 
 /** @suppress */
 @Target(AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.SOURCE)
-expect annotation class Volatile()
+public expect annotation class Volatile()

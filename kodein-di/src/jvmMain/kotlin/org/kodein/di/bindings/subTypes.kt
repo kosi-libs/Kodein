@@ -11,7 +11,7 @@ import org.kodein.type.TypeToken
  * @param T The provided type of all bindings in the set.
  * @param block A function that provides a binding for each subtype.
  */
-class SubTypes<C: Any, A, T : Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, val block: (TypeToken<out T>) -> DIBinding<in C, in A, out T>): DIBinding<C, A, T> {
+public class SubTypes<C: Any, A, T : Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, override val createdType: TypeToken<out T>, public val block: (TypeToken<out T>) -> DIBinding<in C, in A, out T>): DIBinding<C, A, T> {
 
     private val bindings = HashMap<TypeToken<out T>, DIBinding<in C, in A, out T>>()
 
@@ -21,7 +21,7 @@ class SubTypes<C: Any, A, T : Any>(override val contextType: TypeToken<in C>, ov
         return binding.getFactory(key)
     }
 
-    override fun factoryName() = "subTypesBindings"
+    override fun factoryName(): String = "subTypesBindings"
 
     override val supportSubTypes: Boolean get() = true
 }
@@ -31,7 +31,7 @@ class SubTypes<C: Any, A, T : Any>(override val contextType: TypeToken<in C>, ov
  *
  * @param T The type of the binding in the set.
  */
-class TypeBinderSubTypes<T: Any> internal constructor(private val _binder: DI.Builder.TypeBinder<T>) {
+public class TypeBinderSubTypes<T: Any> internal constructor(private val _binder: DI.Builder.TypeBinder<T>) {
 
     /**
      * Second part of the `bind<Type>().inSet() with binding` syntax.
@@ -40,7 +40,7 @@ class TypeBinderSubTypes<T: Any> internal constructor(private val _binder: DI.Bu
      * @param binding The binding to add in the set.
      */
     @Suppress("UNCHECKED_CAST", "FunctionName")
-    fun <C: Any, A> With(contextType: TypeToken<in C>, argType: TypeToken<in A>, createdType: TypeToken<out T>, block: (TypeToken<out T>) -> DIBinding<in C, in A, out T>) {
+    public fun <C: Any, A> With(contextType: TypeToken<in C>, argType: TypeToken<in A>, createdType: TypeToken<out T>, block: (TypeToken<out T>) -> DIBinding<in C, in A, out T>) {
         _binder with SubTypes(contextType, argType, createdType, block)
     }
 }
@@ -54,4 +54,4 @@ class TypeBinderSubTypes<T: Any> internal constructor(private val _binder: DI.Bu
  * @param setTypeToken The type of the bound set.
  */
 @Suppress("FunctionName")
-fun <T: Any> DI.Builder.TypeBinder<T>.subTypes() = TypeBinderSubTypes(this)
+public fun <T: Any> DI.Builder.TypeBinder<T>.subTypes(): TypeBinderSubTypes<T> = TypeBinderSubTypes(this)

@@ -10,7 +10,7 @@ import org.kodein.di.bindings.*
  * @property binding The binding
  * @property fromModule The module name that defined the binding (for debug)
  */
-open class DIDefining<C : Any, A, T: Any>(val binding: DIBinding<C, A, T>, val fromModule: String?)
+public open class DIDefining<C : Any, A, T: Any>(public val binding: DIBinding<C, A, T>, public val fromModule: String?)
 
 /**
  * A definition is a binding that is associated to a [DITree].
@@ -19,12 +19,12 @@ open class DIDefining<C : Any, A, T: Any>(val binding: DIBinding<C, A, T>, val f
  * @property fromModule The module name that defined the binding (for debug)
  * @property tree The tree that this binding relates to.
  */
-class DIDefinition<C : Any, A, T: Any>(binding: DIBinding<C, A, T>, fromModule: String?, val tree: DITree) : DIDefining<C, A, T>(binding, fromModule)
+public class DIDefinition<C : Any, A, T: Any>(binding: DIBinding<C, A, T>, fromModule: String?, public val tree: DITree) : DIDefining<C, A, T>(binding, fromModule)
 
 /**
  * A Map containing all bindings associated to their keys
  */
-typealias BindingsMap = Map<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>>
+public typealias BindingsMap = Map<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>>
 
 private fun BindingsMap.descriptionImpl(withOverrides: Boolean, ident: Int, keyBindDisp: DI.Key<*, *, *>.() -> String, bindingDisp: DIBinding<*, *, *>.() -> String): String {
 
@@ -61,11 +61,11 @@ private fun BindingsMap.descriptionImpl(withOverrides: Boolean, ident: Int, keyB
  *
  * @receiver The bindings map.
  */
-fun BindingsMap.description(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, DI.Key<*, *, *>::bindDescription, DIBinding<*, *, *>::description)
+public fun BindingsMap.description(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, DI.Key<*, *, *>::bindDescription, DIBinding<*, *, *>::description)
 
 /**
  * The description of all bindings in this map, using type full display names.
  *
  * @receiver The bindings map.
  */
-fun BindingsMap.fullDescription(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, DI.Key<*, *, *>::bindFullDescription, DIBinding<*, *, *>::fullDescription)
+public fun BindingsMap.fullDescription(withOverrides: Boolean = false, ident: Int = 8): String = descriptionImpl(withOverrides, ident, DI.Key<*, *, *>::bindFullDescription, DIBinding<*, *, *>::fullDescription)

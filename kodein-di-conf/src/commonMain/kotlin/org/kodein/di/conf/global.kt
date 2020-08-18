@@ -9,12 +9,12 @@ private val oneTrueDI = ConfigurableDI()
  * A global One True DI.
  */
 @Suppress("unused")
-val DI.Companion.global: ConfigurableDI get() = oneTrueDI
+public val DI.Companion.global: ConfigurableDI get() = oneTrueDI
 
 /**
  * A `DIAware` class that needs no implementation because the DI container used will be the [global] One True DI.
  */
-interface DIGlobalAware : DIAware {
+public interface DIGlobalAware : DIAware {
 
     /**
      * The global One True DI.

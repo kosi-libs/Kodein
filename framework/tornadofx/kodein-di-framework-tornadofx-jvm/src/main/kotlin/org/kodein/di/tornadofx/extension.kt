@@ -8,7 +8,7 @@ import tornadofx.Scope
 import kotlin.reflect.*
 
 @Suppress("UNCHECKED_CAST")
-fun DI.MainBuilder.installTornadoSource() {
+public fun DI.MainBuilder.installTornadoSource() {
     externalSources += ExternalSource { key ->
         val elementType = key.type.getRaw()?.jvmType as Class<*>?
 

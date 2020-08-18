@@ -11,7 +11,7 @@ import org.kodein.di.ktor.*
  * e.g. Route.controller { DIControllerImpl() }
  */
 @ContextDsl
-fun Route.controller(init: DirectDI.() -> DIController) = run {
+public fun Route.controller(init: DirectDI.() -> DIController): DIController = run {
     val diController by di().newInstance { init() }
     diController.apply { installRoutes() }
 }
@@ -22,7 +22,7 @@ fun Route.controller(init: DirectDI.() -> DIController) = run {
  * e.g. Route.controller("/protected") { DIControllerImpl() }
  */
 @ContextDsl
-fun Route.controller(endpoint: String, init: DirectDI.() -> DIController) = run {
+public fun Route.controller(endpoint: String, init: DirectDI.() -> DIController): Route = run {
     route(endpoint){
         controller(init)
     }

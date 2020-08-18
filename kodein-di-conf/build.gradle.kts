@@ -12,7 +12,6 @@ kodein {
 
             test.dependencies {
                 implementation(project(":test-utils"))
-//                implementation(project(":kodein-di"))
             }
         }
 

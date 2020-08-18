@@ -9,14 +9,14 @@ import org.kodein.di.bindings.*
 /**
  * Interface that will help leverage the use of DI in the Ktor [Sessions] context
  */
-interface KodeinDISession {
-    fun getSessionId(): Any
+public interface KodeinDISession {
+    public fun getSessionId(): Any
 }
 
 /**
  * DI scope that will provide singletons according to a specific [KodeinDISession]
  */
-object SessionScope : Scope<KodeinDISession> {
+public object SessionScope : Scope<KodeinDISession> {
 
     private val mapRegistry = HashMap<Any, ScopeRegistry>()
 
@@ -24,7 +24,7 @@ object SessionScope : Scope<KodeinDISession> {
      * Reclaim the right [ScopeRegistry] regarding to the given [KodeinDISession]
      * This will help maintaining and retrieving singletons linked with the [KodeinDISession]
      */
-    override fun getRegistry(context: KodeinDISession): ScopeRegistry {
+    public override fun getRegistry(context: KodeinDISession): ScopeRegistry {
         return synchronized(mapRegistry) {
             mapRegistry[context.getSessionId()] ?: run {
                 val scopeRegistry = StandardScopeRegistry()
@@ -40,7 +40,7 @@ object SessionScope : Scope<KodeinDISession> {
      *
      * This is usually called when closing / expiring the session
      */
-    fun close(session: KodeinDISession) {
+    public fun close(session: KodeinDISession) {
         synchronized(mapRegistry) {
             val scopeRegistry = mapRegistry[session.getSessionId()]
             if (scopeRegistry != null) {
@@ -55,7 +55,7 @@ object SessionScope : Scope<KodeinDISession> {
  * Clear session instance with type [T] and clear the corresponding [ScopeRegistry]
  * @throws IllegalStateException if no session provider registered for type [T]
  */
-inline fun <reified T> CurrentSession.clearSessionScope() {
+public inline fun <reified T> CurrentSession.clearSessionScope() {
     val session = get<T>()
 
     if(session != null && session is KodeinDISession){
@@ -66,5 +66,5 @@ inline fun <reified T> CurrentSession.clearSessionScope() {
 }
 //endregion
 //region Request scope
-object CallScope : WeakContextScope<ApplicationCall>()
+public object CallScope : WeakContextScope<ApplicationCall>()
 //endregion

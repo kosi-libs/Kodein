@@ -10,7 +10,7 @@ import org.kodein.di.internal.synchronizedIfNull
  * If you want it to be mutable, the [mutable] property needs to be set **before** any dependency retrieval.
  * The non-mutable configuration methods ([addImport], [addExtend] & [addConfig]) needs to happen **before** any dependency retrieval.
  */
-class ConfigurableDI : DI {
+public class ConfigurableDI : DI {
 //    override val container: KodeinContainer
 //        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
@@ -26,7 +26,7 @@ class ConfigurableDI : DI {
      *
      * Note that if not set, this field will be set to false on `first` DI retrieval.
      */
-    var mutable: Boolean? = null
+    public var mutable: Boolean? = null
         set(value) {
             if (value == field)
                 return
@@ -38,14 +38,14 @@ class ConfigurableDI : DI {
     /**
      * Default constructor.
      */
-    constructor()
+    public constructor()
 
     /**
      * Convenient constructor to directly set the mutability.
      *
      * @param mutable Whether this DI can be mutated.
      */
-    constructor(mutable: Boolean) {
+    public constructor(mutable: Boolean) {
         this.mutable = mutable
     }
 
@@ -67,7 +67,7 @@ class ConfigurableDI : DI {
      *
      * The first time this function is called is the end of the configuration.
      */
-    fun getOrConstruct(): DI {
+    public fun getOrConstruct(): DI {
         return synchronizedIfNull(
                 lock = _lock,
                 predicate = { _instance },
@@ -97,7 +97,7 @@ class ConfigurableDI : DI {
      *
      * @throws IllegalStateException if [mutable] is not `true`.
      */
-    fun clear() {
+    public fun clear() {
         if (mutable != true)
             throw IllegalStateException("Configurabledi is not mutable, you cannot clear bindings.")
 
@@ -117,7 +117,7 @@ class ConfigurableDI : DI {
     /**
      * Whether or not this DI can be configured (meaning that it has not been used for retrieval yet).
      */
-    val canConfigure: Boolean get() = _instance == null
+    public val canConfigure: Boolean get() = _instance == null
 
     /**
      * Adds a configuration to the bindings that will be applied when the DI is constructed.
@@ -125,7 +125,7 @@ class ConfigurableDI : DI {
      * @param config The lambda to be applied when the DI instance is constructed.
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `DI` retrieval function.
      */
-    fun addConfig(config: DI.MainBuilder.() -> Unit) {
+    public fun addConfig(config: DI.MainBuilder.() -> Unit) {
         maySynchronized(_lock) {
             val configs = _configs
             if (configs == null) {
@@ -148,7 +148,7 @@ class ConfigurableDI : DI {
      * @param allowOverride Whether this module is allowed to override existing bindings.
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `DI` retrieval function.
      */
-    fun addImport(module: DI.Module, allowOverride: Boolean = false) = addConfig { import(module, allowOverride) }
+    public fun addImport(module: DI.Module, allowOverride: Boolean = false): Unit = addConfig { import(module, allowOverride) }
 
     /**
      * Adds the bindings of an existing DI instance to the bindings that will be applied when the DI is constructed.
@@ -157,7 +157,7 @@ class ConfigurableDI : DI {
      * @param allowOverride Whether these bindings are allowed to override existing bindings.
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `DI` retrieval function.
      */
-    fun addExtend(di: DI, allowOverride: Boolean = false) = addConfig { extend(di, allowOverride) }
+    public fun addExtend(di: DI, allowOverride: Boolean = false): Unit = addConfig { extend(di, allowOverride) }
 
     /** @suppress */
     override val container: DIContainer get() = getOrConstruct().container

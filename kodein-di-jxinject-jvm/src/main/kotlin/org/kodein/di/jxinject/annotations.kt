@@ -5,25 +5,25 @@ package org.kodein.di.jxinject
  */
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class ErasedBinding
+public annotation class ErasedBinding
 
 /**
  * Defines that the annotated `Function0` is to be injected as a di provider.
  */
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class ProviderFun
+public annotation class ProviderFun
 
 /**
  * Defines that the annotated `Function1` is to be injected as a di factory.
  */
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class FactoryFun
+public annotation class FactoryFun
 
 /**
  * Defines that this should be null if there is no corresponding binding.
  */
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class OrNull
+public annotation class OrNull

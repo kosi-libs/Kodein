@@ -13,7 +13,7 @@ import java.lang.ref.WeakReference
  * A thread local singleton is guaranteed to be unique inside a thread.
  */
 @Suppress("ClassName")
-object threadLocal : RefMaker {
+public object threadLocal : RefMaker {
     override fun <T: Any> make(creator: () -> T): Reference<T> {
         val threadLocal = object : ThreadLocal<T>() { override fun initialValue() = creator() }
         return Reference(threadLocal.get()) { threadLocal.get() }
@@ -29,7 +29,7 @@ object threadLocal : RefMaker {
  * It **may** be GC'd if there are no strong references to it and therefore may be re-created later.
  */
 @Suppress("ClassName", "unused") // There is no way to "cleanly" test soft references.
-object softReference : RefMaker {
+public object softReference : RefMaker {
     override fun <T: Any> make(creator: () -> T): Reference<T> {
         val value = creator()
         val softRef = SoftReference(value)
@@ -46,7 +46,7 @@ object softReference : RefMaker {
  * It **will** be GC'd if there are no strong references to it and therefore may be re-created later.
  */
 @Suppress("ClassName")
-object weakReference : RefMaker {
+public object weakReference : RefMaker {
     override fun <T: Any> make(creator: () -> T): Reference<T> {
         val value = creator()
         val weakRef = WeakReference(value)

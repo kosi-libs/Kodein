@@ -3,7 +3,7 @@ package org.kodein.di
 import org.kodein.type.TypeToken
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING")
-inline class Named(val di: DIAware) {
+public inline class Named(public val di: DIAware) {
     /**
      * Gets a factory of [T] for the given argument type and return type.
      * The name of the receiving property is used as tag.
@@ -16,7 +16,7 @@ inline class Named(val di: DIAware) {
      * @throws DI.NotFoundException If no factory was found.
      * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> Factory(argType: TypeToken<in A>, type: TypeToken<out T>): DIProperty<(A) -> T> =
+    public fun <A, T : Any> Factory(argType: TypeToken<in A>, type: TypeToken<out T>): DIProperty<(A) -> T> =
             DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value) }
 
     /**
@@ -30,7 +30,7 @@ inline class Named(val di: DIAware) {
      * @return A factory of [T], or null if no factory was found.
      * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<out T>): DIProperty<((A) -> T)?> =
+    public fun <A, T : Any> FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<out T>): DIProperty<((A) -> T)?> =
             DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value) }
 
     /**
@@ -43,7 +43,7 @@ inline class Named(val di: DIAware) {
      * @throws DI.NotFoundException If no provider was found.
      * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <T : Any> Provider(type: TypeToken<out T>): DIProperty<() -> T> =
+    public fun <T : Any> Provider(type: TypeToken<out T>): DIProperty<() -> T> =
             DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
 
     /**
@@ -59,7 +59,7 @@ inline class Named(val di: DIAware) {
      * @throws DI.NotFoundException If no provider was found.
      * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> Provider(argType: TypeToken<in A>, type: TypeToken<out T>, arg: () -> A): DIProperty<() -> T> =
+    public fun <A, T : Any> Provider(argType: TypeToken<in A>, type: TypeToken<out T>, arg: () -> A): DIProperty<() -> T> =
             DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value).toProvider(arg) }
 
     /**
@@ -71,7 +71,7 @@ inline class Named(val di: DIAware) {
      * @return A provider of [T], or null if no provider was found.
      * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <T : Any> ProviderOrNull(type: TypeToken<out T>): DIProperty<(() -> T)?> =
+    public fun <T : Any> ProviderOrNull(type: TypeToken<out T>): DIProperty<(() -> T)?> =
             DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
 
     /**
@@ -86,7 +86,7 @@ inline class Named(val di: DIAware) {
      * @return A provider of [T], or null if no factory was found.
      * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, arg: () -> A): DIProperty<(() -> T)?> =
+    public fun <A, T : Any> ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, arg: () -> A): DIProperty<(() -> T)?> =
             DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value)?.toProvider(arg) }
 
     /**
@@ -99,7 +99,7 @@ inline class Named(val di: DIAware) {
      * @throws DI.NotFoundException If no provider was found.
      * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
      */
-    fun <T : Any> Instance(type: TypeToken<out T>): DIProperty<T> =
+    public fun <T : Any> Instance(type: TypeToken<out T>): DIProperty<T> =
             DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value).invoke() }
 
     /**
@@ -115,7 +115,7 @@ inline class Named(val di: DIAware) {
      * @throws DI.NotFoundException If no provider was found.
      * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> Instance(argType: TypeToken<in A>, type: TypeToken<T>, arg: () -> A): DIProperty<T> =
+    public fun <A, T : Any> Instance(argType: TypeToken<in A>, type: TypeToken<T>, arg: () -> A): DIProperty<T> =
             DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value).invoke(arg()) }
 
     /**
@@ -126,7 +126,7 @@ inline class Named(val di: DIAware) {
      * @return An instance of [T], or null if no provider was found.
      * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
      */
-    fun <T : Any> InstanceOrNull(type: TypeToken<out T>): DIProperty<T?> =
+    public fun <T : Any> InstanceOrNull(type: TypeToken<out T>): DIProperty<T?> =
             DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value)?.invoke() }
 
     /**
@@ -140,7 +140,7 @@ inline class Named(val di: DIAware) {
      * @return An instance of [T], or null if no factory was found.
      * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
      */
-    fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, arg: () -> A): DIProperty<T?> =
+    public fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, arg: () -> A): DIProperty<T?> =
             DIProperty(di.diTrigger, di.diContext) { ctx, tag -> di.di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value)?.invoke(arg()) }
 
 }
@@ -148,7 +148,7 @@ inline class Named(val di: DIAware) {
 /**
  * Allows to get factories / providers / instances with a tag set to the name of the receiving property.
  */
-val DIAware.named: Named get() = Named(this)
+public val DIAware.named: Named get() = Named(this)
 
 /**
  * Gets a constant of type [T] and tag whose tag is the name of the receiving property.
@@ -159,4 +159,4 @@ val DIAware.named: Named get() = Named(this)
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-fun <T : Any> DIAware.Constant(type: TypeToken<out T>) = named.Instance(type)
+public fun <T : Any> DIAware.Constant(type: TypeToken<out T>): DIProperty<T> = named.Instance(type)
