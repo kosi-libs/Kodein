@@ -1,6 +1,9 @@
 package org.kodein.di
 
 import org.kodein.di.bindings.Clearable
+import org.kodein.di.bindings.Scope
+import org.kodein.di.bindings.ScopeRegistry
+import org.kodein.di.bindings.StandardScopeRegistry
 import org.kodein.di.bindings.Strong
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
@@ -62,6 +65,33 @@ class Tests_23_Context {
         context.clear()
 
         assertEquals("Salomon NoContext", result)
+    }
+
+    class T03(override val di: DI): DIAware {
+        val scopeRegistry = StandardScopeRegistry()
+
+        val global: String by instance(tag = "global")
+        val local: String by instance(tag = "local")
+
+        override fun toString(): String = "T03"
+    }
+
+    @Test
+    fun test_03_NoGlobalContext() {
+        val T03Scope = Scope<T03> { it.scopeRegistry }
+
+        val di = DI {
+            bind<String>(tag = "global") with singleton { "Salomon $context" }
+            bind<String>(tag = "local") with scoped(T03Scope).singleton { "Salomon $context" }
+        }
+
+        val t = T03(di)
+
+        t.global
+        t.local
+
+        assertEquals("Salomon NoContext", t.global)
+        assertEquals("Salomon T03", t.local)
     }
 
 }

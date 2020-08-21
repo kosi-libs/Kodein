@@ -2,6 +2,7 @@ package org.kodein.di.internal
 
 import org.kodein.di.*
 import org.kodein.di.bindings.BindingDI
+import org.kodein.type.TypeToken
 
 /**
  * DI implementation.
@@ -45,4 +46,11 @@ internal open class BindingDIImpl<out C : Any, out A, out T: Any> internal const
     override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = container.factoryOrNull(key, diContext, overrideLevel + 1) as ((Any?) -> Any)?
 
     override val context: C get() = diContext.value(key.contextType) as C
+
+    override fun noGlobalContext(): BindingDI<C> {
+        if (diContext != DIContext.Any && key.contextType == TypeToken.Any) {
+            return BindingDIImpl(directDI, key, DIContext.Any as DIContext<C>, overrideLevel)
+        }
+        return this
+    }
 }
