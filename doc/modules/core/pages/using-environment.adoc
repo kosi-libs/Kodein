@@ -1,0 +1,263 @@
+= Using the environment
+
+Binding functions have access to the environment where the bound type is retrieved to be able to create it accordingly.
+
+[#context]
+== Context
+
+[.lead]
+This environment is represented as a *context* variable.
+
+The context is an object that is explicitly defined by the programmer for this retrieval or the receiving object when none is explicitely defined.
+
+There are two very important differences between a tag and a context:
+
+- The tag *instance* identifies the binding but can not be used in the binding function.
+- The context *type* identifies the binding and it's *instance* can be used in the binding function.
+
+There are also two very important differences between a factory argument and a context:
+
+- The context is defined _before_ retrieving the binding function while the factory argument is the last known variable.
+- A context is usually global to an entire class while a factory argument is local to a retrieval.
+
+TIP: When in doubt, use a factory with an argument instead of a provider with a context.
+
+[source,kotlin]
+.Example: binding in a context
+----
+val di = DI {
+    bind<Writer>() with contexted<Request>.provider { context.response.writer } // <1>
+}
+----
+<1> note that `context` is already of type `Request`.
+
+
+[#scope]
+== Scope
+
+[NOTE]
+====
+_Kodein-DI_ provides only 1 scope by default, but:
+
+- It is easy to create your own scopes.
+- All `kodein-framework-*` modules provide more scopes that are specific to the target framework.
+====
+
+Scopes are derived from a context variable.
+They allow a singleton or multiton objects to exist multiple times in different contexts. +
+They are of type `Scope<C>` where `C` is the context type.
+
+Think, for example, of a session object inside a web server.
+We can say that there can be only one user per session, and therefore define a `User` singleton scoped in a session.
+Therefore, the provided function will be called *once per session*.
+
+[source, kotlin]
+.Example: binding a User in a Session scope.
+----
+val di = DI {
+    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) } // <1>
+}
+----
+<1> note that `SessionScope` does not really exist, it is an example.
+
+In this example, `SessionScope` is of type `Scope<Session>`, so to access this binding, the user will either have retrieve it inside the session object or explicitly define a `Session` context:
+
+[source, kotlin]
+.Example: binding in a context
+----
+val user by di.on(session).instance()
+----
+
+NOTE: Please read the <<scope-creation>> section if you want to create your own scopes.
+
+
+[[scope-closeable]]
+=== Scope closeable
+
+By default, a Singleton or a Multiton value will never expire.
+However, the purpose of a Scope is to handle the lifecycle of a long lived value.
+Therefore, it is possible for a scoped Singleton or Multiton value to expire (most of the time because the scope itself expires).
+For example, in android's `ActivityRetainedScope`, scoped values will only live the duration of the activity.
+
+If a value implements `ScopeCloseable`, it's `close` function will be called when the value is removed from the scope (or when the scope itself expires).
+
+[CAUTION]
+====
+The `ScopeCloseable.close` method will only be called:
+
+- By scopes that explicitely *support* that feature (not all scopes do, all scopes provided by the _Kodein-DI_ Framework do *except WeakContextScope*).
+- If the value does *not* use `WeakRef` or `SoftRef` references. +
+If the value does, the close method _may or may not_ be called (it will be called if the reference has not expired).
+====
+
+
+=== JVM references in scopes
+
+Yes, you can...
+
+[source, kotlin]
+.Example: JVM scoped weak references.
+----
+val di = DI {
+    bind<User>() with scoped(requestScope).singleton(ref = weakReference) {
+        instance<DataSource>().createUser(context.session.id)
+    } // <1>
+}
+----
+
+
+=== Weak Context Scope
+
+_Kodein-DI_ provides the `WeakContextScope` scope.
+This is a particular scope, as the context it holds on are weak references.
+
+CAUTION: WeakContextScope is *NOT* compatible with `ScopeCloseable`.
+
+You can use this scope when it makes sense to have a scope on a context that is held by the system for the duration of its life cycle.
+
+[source, kotlin]
+.Example: controller scoped to an Activity with WeakContextScope.
+----
+val di = DI {
+    bind<Controller>() with scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } // <1>
+}
+----
+<1> `context` is of type `Activity` because we are using the `WeakContextScope.of<Activity>()`.
+
+`WeakContextScope.of` will always return the same scope, which you should never clean!
+
+If you need a compartimentalized scope which you can clean, you can create a new `WeakContextScope`:
+
+[source, kotlin]
+.Example: creating a WeakContextScope.
+----
+val activityScope = WeakContextScope<Activity>()
+----
+
+
+=== Context translators
+
+Let's get back to the web server example.
+There is one session per user, so we have bound a `User` singleton inside a `Session` scope.
+As each `Request` is associated with a `Session`, you can register a context translator that will make any binding that needs a `Session` context work with a `Request` context:
+
+[source, kotlin]
+.Example:
+----
+val di = DI {
+    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) }
+
+    registerContextTranslator { r: Request -> r.session }
+}
+----
+
+This allows you to retrieve a `User` instance:
+
+- When there is a global `Request` context:
++
+[source, kotlin]
+.Example: retriving with a global context
+----
+class MyController(override val di: DI, request: Request): DIAware {
+    override val diContext = kcontext(request)
+
+    val user: User by instance()
+}
+----
+- When the retrieval happens on a `Request` itself:
++
+[source, kotlin]
+.Example: retriving with a global context
+----
+class MySpecialRequest(override val di: DI): Request(), DIAware {
+    val user: User by instance()
+}
+----
+
+
+=== Context finder
+
+A context finder is a similar to context translator, except that it gets the context from a global context.
+
+For example, if you are in a thread-based server where each request is assigned a thread (are people still doing those?!?), you could get the session from a global:
+
+[source, kotlin]
+.Example:
+----
+val di = DI {
+    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) }
+
+    registerContextFinder { ThreadLocalSession.get() }
+}
+----
+
+This allows to access a `User` object wihout specifying a context.
+
+TIP: Having an other type of context declared will not block from using a context finder.
+
+
+[[scope-creation]]
+== Scope creation
+
+Scoped singletons/multitons are bound to a context and live while that context exists.
+
+To define a scope that can contain scoped singletons or multitons, you must define an object that implements the `Scope` interface.
+This object will be responsible for providing a `ScopeRegistry` according to a context.
+It should always return the same `ScopeRegistry` when given the same context object.
+A standard way of doing so is to use the `userData` property of the context, if it has one, or else to use a `WeakHashMap<C, ScopeRegistry>`.
+
+[source, kotlin]
+.Example: a simple session scope
+----
+object SessionScope : Scope<Session> { <1>
+    override fun getRegistry(context: Session): ScopeRegistry =
+            context.userData as? ScopeRegistry
+                ?: StandardScopeRegistry().also { context.userData = it } // <2>
+}
+----
+<1> The scope's context type is `Session`.
+<2> Creates a `ScopeRegistry` and attach it to the `Session` if there is none.
+
+IMPORTANT: Scope providers should also provide standard context translators. +
+In this example, we should provide, along with `sessionScope` a module providing the `Request` to `Session` context translator.
+
+[[scope-registry]]
+=== Scope registry
+
+The `ScopeRegistry` is responsible for holding value instances.
+It is also responsible for calling the `close` methods on object that are `ScopeCloseable` when they are removed from the registry.
+
+IMPORTANT: To have your scope compatible with `ScopeCloseable` values, make sure to `clean` the registry when the scope expires.
+
+There are two standard implementations of `ScopeRegistry`:
+
+
+=== StandardScopeRegistry
+
+This is the "classic" expected `ScopeRegistry` behaviour.
+
+
+=== SingleItemScopeRegistry
+
+This is a particular `ScopeRegistry` implementation : it will only hold one item and replace the held item if the binding asks for an instance of another binding.
+
+This means that a Multiton scoped with a Scope that uses a `SingleItemScopeRegistry` will actually hold only one instance: the one corresponding to the last argument.
+
+CAUTION: You should NOT use this registry unless you know exactly WHAT you are doing, and WHY you are doing it.
+
+
+=== Sub-scopes
+
+You can define a scope to be defined inside another scope.
+This means that when the parent scope clears, so does all of its subscopes.
+
+[source, kotlin]
+.Example: a simple session scope
+----
+val requestScope = object : SubScope<Request, Session>(sessionScope) {
+    override fun getParentContext(context: Request) = context.session
+}
+----
+
+In this simple example, when the session expires, then all of its associates request scoped values also expire.
+

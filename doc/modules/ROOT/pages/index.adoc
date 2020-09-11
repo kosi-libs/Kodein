@@ -1,39 +1,36 @@
-= KODEIN-DI: Painless Dependency Injection: {version}
-Salomon BRYS <salomon.brys@gmail.com>
+image::Kodein-DI-logo.png[KODEIN-DI, 700]
 :version: 7.1.0
 :branch: 7.1
 
-image::Kodein-DI-logo.png[KODEIN-DI, 700]
+[.lead]
+_Kodein-DI_ is a very useful dependency injection / retrieval container, it is very easy to use and configure.
 
-== Getting started
+._Kodein-DI_ allows you to:
+- Lazily instantiate your dependencies when needed.
+- Stop caring about dependency initialization order.
+- Easily bind classes or interfaces to their instance, provider or factory.
+- Easily debug your dependency bindings and recursions.
 
-- https://kodein.org/Kodein-DI/?{branch}/getting-started[Guide to getting started with Kodein-DI]
+._Kodein-DI_ is a good choice because:
+- It is small, fast and optimized (makes extensive use of `inline`).
+- It proposes a very simple and readable declarative DSL.
+- It is not subject to type erasure (like Java).
+- It integrates nicely with Android.
+- It proposes a very kotlin-esque idiomatic API.
+- It can be used in plain Java.
 
+== Support
 
-== Core documentation
-
-- *https://kodein.org/Kodein-DI/?{branch}/core[FULL CORE DOCUMENTATION]*
-
-
-== Extensions
-
-- https://kodein.org/Kodein-DI/?{branch}/configurable[Configurable & global Kodein-DI]
-- https://kodein.org/Kodein-DI/?{branch}/android[Kodein-DI on Android]
-- https://kodein.org/Kodein-DI/?{branch}/ktor[Kodein-DI on Ktor]
-- https://kodein.org/Kodein-DI/?{branch}/tornadofx[Kodein-DI on TornadoFX]
-- https://kodein.org/Kodein-DI/?{branch}/jsr330[JSR-330 compatibility]
-
-
-== Migrations
-
-- https://kodein.org/Kodein-DI/?{branch}/migration-6to7[Kodein version 6 to version 7]
-- https://kodein.org/Kodein-DI/?{branch}/migration-j2k[JSR-330 to Kodein-DI]
-- https://kodein.org/Kodein-DI/?{branch}/migration-4to5[Kodein version 4 to version 5]
+- Drop by the https://kotlinlang.slack.com/messages/kodein/[Kodein Slack channel]
+- https://stackoverflow.com/questions/tagged/kodein[Stackoverflow] with the tag #kodein
 
 
-== Previous versions
+== Contribute
 
-- https://kodein.org/Kodein-DI/?6.5[Kodein version 6]
-- https://kodein.org/Kodein-DI/?5.3[Kodein version 5]
-- https://kodein.org/Kodein-DI/?4.1[Kodein version 4]
-- https://kodein.org/Kodein-DI/?3.4[Kodein version 3].
+Contributions are very welcome and greatly appreciated! The great majority of pull requests are eventually merged.
+
+To contribute, simply fork https://github.com/Kodein-Framework/Kodein-DI[the project on Github], fix whatever is iching you, and submit a pull request!
+
+I am sure that this documentation contains typos, inaccuracies and languages error (English is not my mother tongue).
+If you feel like enhancing this document, you can propose a pull request that modifies https://github.com/Kodein-Framework/Kodein-DI/tree/master/doc[the documentation documents].
+(Documentation is auto-generated from those).
