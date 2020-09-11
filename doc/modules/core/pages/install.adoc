@@ -1,5 +1,5 @@
-:version: 7.1.0
-:branch: 7.1
+:version: 7.0.0
+:branch: 7.0
 
 [[install]]
 = Install

@@ -1,6 +1,6 @@
 = Kodein-DI on Ktor
-:version: 7.1.0
-:branch: 7.1
+:version: 7.0.0
+:branch: 7.0
 
 You can use Kodein-DI as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-framework-ktor-server-jvm` or `kodein-di-framework-ktor-server-controller-jvm`.
 
