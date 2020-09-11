@@ -1,8 +1,4 @@
 = Migrating from JavaX to Kodein DI
-Salomon BRYS <salomon.brys@gmail.com>
-:toc:
-:toclevels: 4
-
 
 == Introduction
 
@@ -22,9 +18,9 @@ This is for Java only!
 == Install
 
 . Remove the previous library dependency. Good riddance ;)
-. https://kodein.org/Kodein-DI/?/core#install[Add the Kodein dependency].
-. Replace the previous bindings with https://kodein.org/Kodein-DI/?/core#declaring-dependencies[Kodein's bindings].
-. https://kodein.org/Kodein-DI/?/jsr330#install[Add the Kodein JxInject dependency] (don't forget to https://salomonbrys.github.io/Kodein/?/jsr330#import-module[import the `jxInjectorModule`]).
+. xref:core:install.adoc[Add the Kodein dependency].
+. Replace the previous bindings with xref:core:bindings.adoc[Kodein's bindings].
+. xref:extension:jsr330.adoc#install[Add the Kodein JxInject dependency] (don't forget to https://salomonbrys.github.io/Kodein/?/jsr330#import-module[import the `jxInjectorModule`]).
 
 
 == Inject
@@ -108,7 +104,7 @@ MyJavaController controller = Jx.of(kodein).newInstance(MyJavaController.class);
 
 == Qualifiers
 
-JavaX dependency injection libraries use the concept of qualifier annotations while Kodein uses the very similar concept of https://kodein.org/Kodein-DI/#_tagged_bindings[tag].
+JavaX dependency injection libraries use the concept of qualifier annotations while Kodein uses the very similar concept of xref:core:bindings.adoc#tagged-bindings[tag].
 
 NOTE: The `@Named` annotation is supported out of the box and uses the string value of the annotation directly as the tag.
 

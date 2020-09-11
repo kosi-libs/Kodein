@@ -1,4 +1,4 @@
-* Core documentation
+* xref:install.adoc[Core documentation]
 ** xref:install.adoc[Install]
 *** xref:install.adoc#install-jvm[JVM]
 *** xref:install.adoc#kotlin-js[Kotlin/JS]

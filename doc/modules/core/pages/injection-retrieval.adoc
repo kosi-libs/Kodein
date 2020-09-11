@@ -493,7 +493,7 @@ class MyActivity : Activity(), DIAware {
 ----
 <1> Because `ds` is lazily retrieved, access to the `di` property will only happen at first retrieval.
 
-NOTE: There is an official module to ease the use of DI in Android, you can read more about it on http://kodein.org/Kodein-DI/?{branch}/android[the dedicated document].
+NOTE: There is an official module to ease the use of DI in Android, you can read more about it on xref:framework:android.adoc[the dedicated document].
 
 
 === Lateinit

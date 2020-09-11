@@ -148,7 +148,7 @@ val testModule = DI.Module(name = "test", allowSilentOverride = true) {
 If you want to access an instance retrieved by the overridden binding, you can use overriddenInstance.
 This is useful if you want to "enhance" a binding (for example, using the decorator pattern).
 
-[source, kotlin]
+[source,kotlin]
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
 val testModule = DI.Module(name = "test") {
@@ -158,11 +158,12 @@ val testModule = DI.Module(name = "test") {
 <1> `overriddenInstance()` will return the `Logger` instance retrieved by the overridden binding.
 
 
+[#overridden_access_from_parent]
 == Overridden access from parent
 
 Let's consider the following code :
 
-[source, kotlin]
+[source,kotlin]
 .Example: Mixing overriding & extension
 ----
 val parent = DI {
