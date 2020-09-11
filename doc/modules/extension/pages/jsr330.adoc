@@ -1,9 +1,4 @@
 = JSR-330: Using reflexivity to auto-inject
-Salomon BRYS <salomon.brys@gmail.com>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
 :version: 7.1.0
 :branch: 7.1
 

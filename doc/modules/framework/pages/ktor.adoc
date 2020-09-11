@@ -1,9 +1,4 @@
 = Kodein-DI on Ktor
-Romain BOISSELLE <romain@boisselle.dev>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
 :version: 7.1.0
 :branch: 7.1
 
