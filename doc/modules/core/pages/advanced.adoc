@@ -1,0 +1,144 @@
+= Advanced knowledge
+
+[[debugging]]
+== Debugging
+
+=== Print bindings
+
+You can easily print bindings with `println(di.container.tree.bindings.description)`.
+
+Here's an example of what this prints:
+
+.An example of di.container.tree.bindings.description:
+----
+        bind<Dice>() with factory { Int -> RandomDice }
+        bind<DataSource>() with singleton { SQLiteDataSource }
+        bind<Random>() with provider { SecureRandom }
+        bind<String>(tag = "answer") with instance ( Int )
+----
+
+As you can see, it's really easy to understand which type with which tag is bound to which implementation inside which scope.
+
+NOTE: Description prints type names in a "kotlin-esque" way.
+Because _Kodein-DI_ does not depend on `kotlin-reflect`, it uses java `Type` objects that do not contain nullability information.
+As such, the type display does not include nullability. Still, it's easier to read `List<*>` than `List<? extends Object>`.
+
+
+=== Recursive dependency loop
+
+When it detects a recursive dependency, _Kodein-DI_ will throw a `DI.DependencyLoopException`.
+The message of the exception explains how the loop happened.
+
+.An example of recursive dependency loop:
+----
+DI$DependencyLoopException: Dependency recursion:
+     bind<Database>()
+    ╔╩>bind<User>() // <1>
+    ║  ╚>bind<Repository>(tag = "users") // <2>
+    ║    ╚>bind<Database>() // <3>
+    ╚══════╝
+----
+<1> `Database` depends on `User`
+<2> `User` depends on `Repository` with the tag "users"
+<3> `Repository` with the tag "users" depends on `Database`, *we have found the dependency loop!*.
+
+
+[[onready-callbacks]]
+=== OnReady callbacks
+
+You can define callbacks to be called once the di instance is ready and all bindings are defined.
+This can be useful to do some "starting" jobs.
+
+[source,kotlin]
+.Example: registering a callback at binding time
+----
+val appModule = DI.Module(name = "app") {
+    import(engineModule)
+    onReady {
+        val engine = instance<Engine>()
+        instance<Logger>().info("Starting engine version ${engine.version}")
+        engine.start()
+    }
+}
+----
+
+
+[[erased-version]]
+=== Erased version pitfalls
+
+=== Using generic and erased function forms
+
+Each DI function that handles a type exists in two form: as inline (lowercased first letter) and as regular function (uppercased first letter). +
+For example, the `di.instance` function also exists as `di.Instance`.
+
+The uppercase functions need `TypeToken` parameters that define the type being bound / retrieved and maybe the factory's argument. +
+You can easily use these functions with the `generic` or `erased` functions:
+
+[source, kotlin]
+.Example: using the `erased` function
+----
+val ds: DataSource by di.Instance(erased())
+----
+
+By default, all inline functions are aliases to their uppercase counterparts using the `generic` function. +
+For example, the `di.instance()` function is an alias to `di.Instance(generic())`
+
+So, when you know that you inject a type that is *not generic*, you can use `di.Instance(erased())`.
+
+
+=== Erased parameterized generic types
+
+When using the `erased` function or using erased by default (either by choice on the JVM or by necessity elsewhere), you cannot represent a generic type. +
+For example, `erased<Set<String>>` will yield a `TypeToken` representing `Set<*>`.
+
+_Kodein-DI_ provides a way to represent a generic type in an erased way:
+
+[source, kotlin]
+.Example: generic type tokens, using erased
+----
+erasedComp(Set::class, erased(String::class))                                               // Represents a Set<String>
+erasedComp(Map::class, erased(Int::class), erased(String::class))                           // Represents a Map<Int, String>
+erasedComp(Triple::class, erased(Int::class), erased(String::class), erased(Int::class))    // Represents a Triple<Int, String, Int>
+----
+
+NOTE: The type parameter themselves are erased, meaning that you cannot represent a multi-level generic type.
+You can, however, construct your own `CompositeTypeToken` to represent such a type.
+
+
+[[bind-same-type-to-different-factories]]
+=== Bind the same type to different factories
+
+Yeah, when I said earlier that "you can have multiple bindings of the same type, as long as they are bound with different tags", I lied.
+Because each binding is actually a _factory_, the binding tuples are not `([BindType], [Tag])` but actually `([ContextType], [BindType], [ArgType], [Tag])` (note that providers and singletons are bound as `([BindType], Unit, [Tag])`).
+This means that any combination of these three information can be bound to it's own factory, which in turns means that you can bind the same type without tagging to different factories.
+
+CAUTION: Please be cautious when using this knowledge, as other less thorough readers may get confused with it.
+
+
+[[hack-the-container]]
+=== Hack the container!
+
+The DIContainer is the sacred DI object that contains all bindings and is responsible for retrieval.
+You can access it with `di.container`.
+In it, each `Binding` is bound to a `DI.Key`.
+
+In fact, all DI functions are proxies to this container API.
+
+When defining bindings, in the `DI.Builder`, you can access the `container` property to bind factories to a `DI.Key` or a `DI.Bind`.
+
+
+=== Tag vs context vs argument
+
+[options="header"]
+|=======
+| &nbsp;     | Binding identification | accessible by the binding _itself_* | accessible by the binding function
+| *tag*      | instance               | no                                 | no
+| *context*  | type                   | yes                                | yes
+| *argument* | type                   | no                                 | yes
+|=======
+
+
+=== Explore bindings
+
+You can access a *copy* of the bindings map with `di.container.bindings`. +
+From this `Map<DI.Key, Factory<*, *>>`, you can explore all bindings, their keys and factories.

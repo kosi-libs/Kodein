@@ -1,0 +1,379 @@
+[[declaring-dependencies]]
+= Bindings: Declaring dependencies
+
+[source,kotlin]
+.Example: initialization of a DI container
+----
+val di = DI {
+	/* Bindings */
+}
+----
+
+Bindings are declared inside a DI initialization block.
+
+A binding always starts with `bind<TYPE>() with`.
+
+[.lead]
+There are different ways to declare bindings:
+
+
+[[tagged-bindings]]
+== Tagged bindings
+
+All bindings can be tagged to allow you to bind different instances of the same type.
+
+[source,kotlin]
+.Example: different Dice bindings
+----
+val di = DI {
+    bind<Dice>() with ... // <1>
+    bind<Dice>(tag = "DnD10") with ... // <2>
+    bind<Dice>(tag = "DnD20") with ... // <2>
+}
+----
+<1> Default binding (with no tag)
+<2> Bindings with tags (`"DnD10"` and `"DnD20"`)
+
+TIP: The tag is of type `Any`, it does not have to be a `String`.
+
+TIP: Whether at define, at injection or at retrieval, `tag` should always be passed as a named argument.
+
+IMPORTANT: Tag objects must support equality & hashcode comparison.
+It is therefore recommended to either use primitives (Strings, Ints, etc.) or data classes.
+
+[[provider-bindings]]
+== Provider binding
+
+This binds a type to a provider function, which is a function that takes no arguments and returns an object of the bound type (eg. `() -> T`). +
+The provided function will be called *each time* you need an instance of the bound type.
+
+[source,kotlin]
+.Example: creates a new 6 sided Dice entry each time you need one
+----
+val di = DI {
+    bind<Dice>() with provider { RandomDice(6) }
+}
+----
+
+[[singleton-bindings]]
+== Singleton binding
+
+This binds a type to an instance of this type that will lazily be created at first use via a singleton function, which is a function that takes no arguments and returns an object of the bound type (eg. `() -> T`). +
+Therefore, the provided function will be called *only once*: the first time an instance is needed.
+
+[source,kotlin]
+.Example: creates a DataSource singleton that will be initialized on first access
+----
+val di = DI {
+    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+}
+----
+
+
+=== Non-synced singleton
+
+By definition, there can be only one instance of a singleton, which means only one instance can be constructed.
+To achieve this certainty, _Kodein-DI_ synchronizes construction.
+This means that, when a singleton instance is requested and not available, _Kodein-DI_ uses a synchronization mutex to ensure that other request to the same type will wait for this instance to be constructed.
+
+While this behaviour is the only way to ensure the singleton's correctness, it is also costly (due to the mutex) and degrades startup performance.
+
+If you need to improve startup performance, _if you know what you are doing_, you can disable this synchronization.
+
+[source,kotlin]
+.Example: creates a DataSource non synced singleton
+----
+val di = DI {
+    bind<DataSource>() with singleton(sync = false) { SqliteDS.open("path/to/file") }
+}
+----
+
+Using `sync = false` means that:
+
+- There will be no construction synchronicity.
+- There _may_ be multiple instance constructed.
+- Instance will be _reused_ as much as possible.
+
+
+=== Eager singleton
+
+This is the same as a regular singleton, except that the provided function will be called as soon as the DI instance is created and all bindings are defined.
+
+[source,kotlin]
+.Example: creates a DataSource singleton that will be initialized as soon as the binding block ends
+----
+val di = DI {
+    // The SQLite connection will be opened as soon as the di instance is ready
+    bind<DataSource>() with eagerSingleton { SqliteDS.open("path/to/file") }
+}
+----
+
+[[factory-bindings]]
+== Factory binding
+
+This binds a type to a factory function, which is a function that takes an argument of a defined type and that returns an object of the bound type (eg. `(A) -> T`). +
+The provided function will be called *each time* you need an instance of the bound type.
+
+[source,kotlin]
+.Example: creates a new Dice each time you need one, according to an Int representing the number of sides
+----
+val di = DI {
+    bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
+}
+----
+
+
+[[multi-argument-factories]]
+=== Multi-arguments factories
+
+CAUTION: This multi-agrument-factories mechanism is deprecated and will be removed in version `7.0`
+
+A factory can take multiple (up to 5) arguments:
+
+[source,kotlin]
+.Example: creates a new Dice each time you need one, according to an Int representing the number of sides
+----
+val di = DI {
+    bind<Dice>() with factory { startNumber: Int, sides: Int -> RandomDice(sides) }
+}
+----
+
+NOTE: We recommend to use `data classes` instead!
+
+Regarding our users feedback, we find out that multi-arguments factories was difficult to use.
+
+Thus this mechanism will be deprecate soon. So we highly recommend that you migrate your multi-args factories to simple factories by using *data classes*.
+
+[source,kotlin]
+.Example: creates a new Dice each time you need one, according to multiple parameters
+----
+data class DiceParams(val startNumber: Int, val sides: Int)
+
+val di = DI {
+    bind<Dice>() with factory { params: DiceParams -> RandomDice(params) }
+}
+----
+
+
+== Multiton binding
+
+A multiton can be thought of a "singleton factory": it guarantees to always return the same object given the same argument.
+In other words, for a given argument, the first time a multiton is called with this argument, it will call the function to create an instance; and will always yield that same instance when called with the same argument.
+
+[source,kotlin]
+.Example: creates one random generator for each value
+----
+val di = DI {
+    bind<RandomGenerator>() with multiton { max: Int -> SecureRandomGenerator(max) }
+}
+----
+
+Just like a factory, a multiton can take multiple (up to 5) arguments.
+
+=== non-synced multiton
+
+Just like a singleton, a multiton synchronization can be disabled:
+
+[source,kotlin]
+.Example: non-synced multiton
+----
+val di = DI {
+    bind<RandomGenerator>(sync = false) with multiton { max: Int -> SecureRandomGenerator(max) }
+}
+----
+
+
+== Referenced singleton or multiton binding
+
+A referenced singleton is an object that is guaranteed to be single as long as a reference object can return it.
+A referenced multiton is an object that is guaranteed to be single for the same argument as long as a reference object can return it.
+
+A referenced singleton or multiton needs a "reference maker" in addition to the classic construction function that determines the type of reference that will be used.
+
+[.lead]
+_Kodein-DI_ comes with three reference makers for the JVM:
+
+
+=== JVM: Soft & weak
+
+These are objects that are guaranteed to be single in the JVM at a given time, but not guaranteed to be single during the application lifetime.
+If there are no more strong references to the instances, they may be GC'd and later, re-created.
+
+Therefore, the provided function *may or may not* be called multiple times during the application lifetime.
+
+[source,kotlin]
+.Example: creates a Cache object that will exist only once at a given time
+----
+val di = DI {
+    bind<Map>() with singleton(ref = softReference) { WorldMap() } // <1>
+    bind<Client>() with singleton(ref = weakReference) { id -> clientFromDB(id) } // <2>
+}
+----
+<1> Because it's bound by a soft reference, the JVM will GC it before any `OutOfMemoryException` can occur.
+<2> Because it's bound by a weak reference, the JVM will GC it is no more referenced.
+
+Weak singletons use JVM's `Weak` while soft singletons use JVM's `Soft`.
+
+
+=== JVM: Thread local
+
+This is the same as the standard singleton binding, except that each thread gets a different instance.
+Therefore, the provided function will be called *once per thread* that needs the instance, the first time it is requested.
+
+[source,kotlin]
+.Example: creates a Cache object that will exist once per thread
+----
+val di = DI {
+    bind<Cache>() with singleton(ref = threadLocal) { LRUCache(16 * 1024) }
+}
+----
+
+NOTE: Semantically, thread local singletons should use <<scoped-singletons>>, the reason it uses a referenced singleton is because Java's `ThreadLocal` acts like a reference.
+
+CAUTION: Thread locals are not available in JavaScript.
+
+
+== Instance binding
+
+This binds a type to an instance that *already exist*.
+
+[source,kotlin]
+.Example: a DataSource binding to an already existing instance.
+----
+val di = DI {
+    bind<DataSource>() with instance(SqliteDataSource.open("path/to/file")) // <1>
+}
+----
+<1> Instance is used *with parenthesis*: it is not given a function, but an instance.
+
+
+[[constant-binding]]
+=== Constant binding
+
+It is often useful to bind "configuration" constants.
+
+NOTE: Constants are always <<tagged-bindings,tagged>>.
+
+[source,kotlin]
+.Example: two constants
+----
+val di = DI {
+    constant(tag = "maxThread") with 8 // <1>
+    constant(tag = "serverURL") with "https://my.server.url" // <1>
+}
+----
+<1> Note the absence of curly braces: it is not given a function, but an instance.
+
+CAUTION: You should only use constant bindings for very simple types without inheritance or interface (e.g. primitive types and data classes).
+
+
+== Direct binding
+
+Sometimes, it may seem overkill to specify the type to `bind` if you are binding the same type as you are creating.
+
+For this use case, you can transform any `bind<TYPE>() with ...` to `bind() from ...`.
+
+[source,kotlin]
+.Example: direct bindings
+----
+val di = DI {
+    bind() from singleton { RandomDice(6) }
+    bind("DnD20") from provider { RandomDice(20) }
+    bind() from instance(SqliteDataSource.open("path/to/file"))
+}
+----
+
+CAUTION: *This should be used with care* as binding a concrete class and, therefore, having concrete dependencies is an _anti-pattern_ that later prevents modularisation and mocking / testing.
+
+WARNING: When binding a generic type, the bound type will be the specialized type, +
+e.g. `bind() from singleton { listOf(1, 2, 3, 4) }` registers the binding to `List<Int>`.
+
+NOTE: If you are using Kodein/Native, because of https://github.com/JetBrains/kotlin-native/issues/1290[this bug], you need to use the uppercase version: `Bind() from`.
+This issue has been fixed and the `bind() from` syntax will be available to Kodein/Native as soon as Kotlin/Native 0.6 is released.
+
+
+== Subtypes bindings
+
+_Kodein-DI_ allows you register a "subtype bindings factory".
+These are big words for a simple concept that's best explained with an example:
+
+[source,kotlin]
+.Example: direct bindings
+----
+val di = DI {
+    bind<Controller>().subtypes() with { type ->
+        when (type.jvmType) { <1>
+            MySpecialController::class.java -> singleton { MySpecialController() }
+            else -> provider { myControllerSystem.getController(type.jvmType) }
+        }
+    }
+}
+----
+<1> As `type` is a `TypeToken<*>`, you can use `.jvmType` to get the JVM type (e.g. `Class` or `ParameterizedType`).
+
+In essence, `bind<Whatever>().subtypes() with { type -> binding }` allows you to register, in _Kodein-DI_, a binding factory that will be called for subtypes of the provided type.
+
+
+== Transitive dependencies
+
+With those lazily instantiated dependencies, a dependency (very) often needs another dependency.
+Such classes can have their dependencies passed to their constructor.
+Thanks to Kotlin's _killer_ type inference engine, _Kodein-DI_ makes retrieval of transitive dependencies really easy.
+
+[source, kotlin]
+.Example: a class that needs transitive dependencies
+----
+class Dice(private val random: Random, private val sides: Int) {
+/*...*/
+}
+----
+
+It is really easy to bind this `RandomDice` with its transitive dependencies, by simply using `instance()` or `instance(tag)`.
+
+[source, kotlin]
+.Example: bindings of a Dice and of its transitive dependencies
+----
+val di = DI {
+    bind<Dice>() with singleton { Dice(instance(), instance(tag = "max")) } // <1>
+
+    bind<Random>() with provider { SecureRandom() } // <2>
+    constant(tag="max") with 5 // <2>
+}
+----
+<1> Binding of `Dice`. It gets its transitive dependencies by using `instance()` and `instance(tag)`.
+<2> Bindings of `Dice` transitive dependencies.
+
+NOTE: The order in which the bindings are declared has *no importance whatsoever*.
+
+The binding functions are in the same environment as the `newInstance` function described in the <<injection, dependency injection section>>.
+You can read it to learn more about the `instance`, `provider` and `factory` functions available to the function.
+
+
+=== Transitive factory dependencies
+
+Maybe you need a dependency to use one of its functions to create the bound type.
+
+[source, kotlin]
+.Example: using a DataSource to create a Connection.
+----
+val di = DI {
+    bind<DataSource>() with singleton { MySQLDataSource() }
+    bind<Connection>() with provider { instance<DataSource>().openConnection() } // <1>
+}
+----
+<1> Using a `DataSource` as a transitive factory dependency.
+
+
+== Being responsible for its own retrieval
+
+If the bound class is <<di-aware,DIAware>>, you can pass the `di` object to the class so it can itself use the DI container to retrieve its own dependencies.
+
+[source, kotlin]
+.Example: bindings of Manager that is responsible for retrieving its own dependencies
+----
+val di = DI {
+    bind<Manager>() with singleton { ManagerImpl(di) } // <1>
+}
+----
+<1> ManagerImpl is given a DI instance.
+

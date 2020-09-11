@@ -1,11 +1,7 @@
-= Getting started with Kodein-DI
-Salomon BRYS <salomon.brys@gmail.com>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
 :version: 7.1.0
 :branch: 7.1
+
+= Getting started with Kodein-DI
 
 Kodein-DI is a *Dependency Injection* library.
 It allows you to bind your business unit interfaces with their implementation and thus having each business unit being independent.
