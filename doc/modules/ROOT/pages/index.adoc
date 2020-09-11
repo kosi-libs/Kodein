@@ -1,0 +1,33 @@
+image::Kodein-DI-logo.png[KODEIN, 700, 233]
+:version: 6.5.5
+:branch: 6.5
+
+== Getting started
+
+- xref:getting-started.adoc[Guide to getting started with Kodein]
+
+
+== Core documentation
+
+- xref:core.adoc[FULL CORE DOCUMENTATION]*
+
+
+== Extensions
+
+- xref:extension:configurable.adoc[Configurable & global Kodein]
+- xref:framework:android.adoc[Kodein on Android]
+- xref:framework:ktor.adoc[Kodein on Ktor]
+- xref:framework:tornadofx.adoc[Kodein on TornadoFX]
+- xref:extension:jsr330.adoc[JSR-330 compatibility]
+
+
+== Migrations
+
+- https://kodein.org/Kodein-DI/?{branch}/migration-j2k[JSR-330 to Kodein]
+- https://kodein.org/Kodein-DI/?{branch}/migration-4to5[Kodein version 4 to version 5]
+
+
+== Previous versions
+
+- https://kodein.org/Kodein-DI/?4.1[Kodein version 4]
+- https://kodein.org/Kodein-DI/?3.4[Kodein version 3].

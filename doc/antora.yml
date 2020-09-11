@@ -1,0 +1,8 @@
+name: kodein-di
+title: Kodein-DI
+version: '6.5'
+nav:
+  - modules/ROOT/nav.adoc
+  - modules/framework/nav.adoc
+  - modules/extension/nav.adoc
+  - modules/migration/nav.adoc
