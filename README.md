@@ -1,4 +1,4 @@
-<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/doc/ROOT/images/kodein-di-logo.svg" width="700">
+<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/doc/modules/ROOT/images/kodein-di-logo.svg" width="700">
 
 [![Kotlin 1.4.0](https://img.shields.io/badge/Kotlin-1.4.0-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
 [![JCenter](https://api.bintray.com/packages/kodein-framework/Kodein-DI/Kodein-DI/images/download.svg)](https://bintray.com/kodein-framework/Kodein-DI)
