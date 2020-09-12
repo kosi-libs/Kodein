@@ -1,11 +1,10 @@
-image::Kodein-DI-logo.png[KODEIN, 700, 233]
+image::kodein-di-logo.svg[KODEIN, 700]
 :version: 6.5.5
 :branch: 6.5
 
 == Getting started
 
 - xref:getting-started.adoc[Guide to getting started with Kodein]
-
 
 == Core documentation
 
