@@ -1,6 +1,6 @@
 = Kodein-DI on Android
-:version: 7.1.0
-:branch: 7.1
+:version: 7.2.0
+:branch: 7.2
 
 You can use Kodein-DI as-is in your Android project or use the util library `kodein-di-android`.
 

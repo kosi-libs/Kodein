@@ -4,8 +4,8 @@ Romain BOISSELLE <romain@kodein.net>
 :toc-position: left
 :toclevels: 5
 
-:version: 7.1.0
-:branch: 7.1
+:version: 7.2.0
+:branch: 7.2
 
 This guide will help you migrate from Kodein-DI 6 to Kodein-DI 7+.
 

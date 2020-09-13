@@ -1,6 +1,14 @@
 = Platform compatibility & Genericity
+:version: 7.2.0
+:kotlin: 1.4.0
+:jdk: 1.8
 
-IMPORTANT: From `6.3.0` On the JVM, you must be targeting `JDK 1.8` minimum!
+[IMPORTANT]
+====
+Kodein-DI {version} is built upon and compatible with Kotlin {kotlin}.
+
+Also, it requires at least JDK {jdk}, for JVM projects.
+====
 
 _Kodein-DI_ is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
 
@@ -57,5 +65,6 @@ Therefore, please make sure that, using the erased version is right for your use
 //
 //If you are using the `erased` version, either by choice on the JVM, or by default on JS & Native, you should read <<erased-version,erased version pitfalls>>.
 
-NOTE: Even if by default _Kodein-DI_ uses a `generic` type system, you still can use the `erased` one manually. (see *TODO*)
+NOTE: Even if by default _Kodein-DI_ uses a `generic` type system, you still can use the `erased` one manually.
+//(see *TODO*)
 

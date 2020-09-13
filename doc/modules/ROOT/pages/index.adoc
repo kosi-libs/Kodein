@@ -1,6 +1,6 @@
 image::kodein-di-logo.svg[KODEIN-DI, 700]
-:version: 7.1.0
-:branch: 7.1
+:version: 7.2.0
+:branch: 7.2
 
 [.lead]
 _Kodein-DI_ is a very useful dependency injection / retrieval container, it is very easy to use and configure.
