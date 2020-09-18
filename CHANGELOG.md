@@ -1,3 +1,20 @@
+#### 7.1.0 (18-09-2020)
+
+  - DOCUMENTATION
+    * New documentation format https://docs.kodein.org/kodein-di/7.1/
+        * Split full documentation into chapters
+
+  - CORE
+    * Kotlin 1.4.0 
+    * Explicit public API mode
+    * Fixed possible memory leak with DI context
+    * Deprecation cycle
+    
+  - BUILD
+    * Gradle 6.5.1   
+    * New Internal Gradle Plugin   
+    * New snapshot workflow
+
 #### 7.0.0 (22-05-2020)
 
   - DOCUMENTATION
