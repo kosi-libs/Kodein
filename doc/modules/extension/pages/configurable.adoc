@@ -1,12 +1,6 @@
 = Global & Configurable Kodein DI
-Salomon BRYS <salomon.brys@gmail.com>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
 :version: 7.0.0
 :branch: 7.0
-
 
 == Introduction
 

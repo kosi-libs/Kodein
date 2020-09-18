@@ -1,9 +1,4 @@
 = Kodein-DI on Ktor
-Romain BOISSELLE <romain@boisselle.dev>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
 :version: 7.0.0
 :branch: 7.0
 
@@ -238,7 +233,7 @@ subDI {
     bind<Foo>(overrides = true) with provider { Foo("explicitFoo") } // <1>
 }
 subDI(allowSilentOverrides = true) { // <2>
-    bind<Foo> with provider { Foo("implicitFoo") } 
+    bind<Foo> with provider { Foo("implicitFoo") }
 }
 ----
 <1> Overriding the `Foo` binding
@@ -249,18 +244,18 @@ This feature is restricted to the `Routing` / `Route` and can be used like:
 [source, kotlin]
 .Example: extend from multiple places
 ----
-- https://ktor.io/servers/features/routing.html[Routing]
+// https://ktor.io/servers/features/routing.html[Routing]
     routing {
         /* usage */
-        val subDI = subDI { /** new bindings / overrides **/ } <1>
+        val subDI = subDI { /** new bindings / overrides **/ } // <1>
 
         route("/books") {
             /* usage */
-            subDI { /** new bindings / overrides **/ } <2>
+            subDI { /** new bindings / overrides **/ } // <2>
 
             route("/author") {
                 /* usage */
-                subDI { /** new bindings / overrides **/ } <3>
+                subDI { /** new bindings / overrides **/ } // <3>
             }
         }
     }
@@ -280,11 +275,10 @@ With the `kodein-di-framework-ktor-server-jvm` utils you can scope your dependen
 [source, kotlin]
 .Example: Defining the session
 ----
-data class UserSession(val user: User) : DISession { <1>
-    override fun getSessionId() = user.id <2>
+data class UserSession(val user: User) : DISession { // <1>
+    override fun getSessionId() = user.id // <2>
 }
 ----
-+
 <1> Create session object that implements `KtorSession`
 <2> Implement the function `getSessionId()`
 
@@ -295,17 +289,16 @@ data class UserSession(val user: User) : DISession { <1>
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8000) {
-        install(Sessions) { <1>
-            cookie<UserSession>("SESSION_FEATURE_SESSION_ID") <2>
+        install(Sessions) { // <1>
+            cookie<UserSession>("SESSION_FEATURE_SESSION_ID") // <2>
         }
         di {
-            bind<Random>() with scoped(SessionScope).singleton { SecureRandom() } <3>
+            bind<Random>() with scoped(SessionScope).singleton { SecureRandom() } // <3>
             /* binding */
         }
     }.start(true)
 }
 ----
-+
 <1> Install the `Sessions` feature
 <2> Declaring a session cookie represented by `UserSession`
 <3> Bind `Random` object scoped by `SessionScope`
@@ -319,14 +312,13 @@ embeddedServer(Netty, port = 8000) {
     /* configurations */
     routing {
         get("/random") {
-            val session = call.sessions.get<UserSession>() ?: error("no session found!") <1>
-            val random by di().on(session).instance<Random>() <2>
-            call.responText("Hello ${session.user.name", your random number is ${random.nextInt()}")
+            val session = call.sessions.get<UserSession>() ?: error("no session found!") // <1>
+            val random by di().on(session).instance<Random>() // <2>
+            call.responText("Hello ${session.user.name}, your random number is ${random.nextInt()}")
         }
     }
 }.start(true)
 ----
-+
 <1> Retrieve the `session` from the request context or fail
 <2> retrieve a `Random` object from the `DI` object scoped by `session`
 
@@ -336,7 +328,7 @@ embeddedServer(Netty, port = 8000) {
 .Example: Clear the session and scope
 ----
 get("/clear") {
-    call.sessions.clearSessionScope<UserSession>()
+    call.sessions.clearSessionScope<UserSession>() // <1>
 }
 ----
 +
@@ -365,7 +357,7 @@ That's why the `CallScope` is just a wrapper upon `WeakContextScope` with the ta
 .Example: Defining call scoped dependencies
 ----
 val di = DI {
-    bind<Random>() with scoped(CallScope).singleton { SecureRandom() } <1>
+    bind<Random>() with scoped(CallScope).singleton { SecureRandom() } // <1>
 }
 ----
 <1> A `Random` object will be created for each Request (HTTP or Websocket) and will be retrieved as long as the Request lives.
@@ -397,22 +389,23 @@ implementation("org.kodein.di:kodein-di-framework-ktor-server-controller-jvm:{ve
 NOTE:  the `kodein-di-framework-ktor-server-controller-jvm` already have  the `kodein-di-framework-ktor-server-jvm` as transitive dependency, so you don't need to declare both.
 
 ===  Defining your controllers, by implementing `DIController`, or extending `AbstractDIController`
-+ 
++
 To define your controllers you need, either to implement the interface `DIController`, or to extend the class `AbstractDIController` and implement the function `Route.getRoutes()`.
 +
 [source, kotlin]
 .Example: Implementing DIController
 ----
-class MyController(application: Application) : DIController { <1>
-    override val di by di { application } <2>
-    private val repository: DataRepository by instance("dao") <3>
+class MyController(application: Application) : DIController { // <1>
+    override val di by di { application } // <2>
+    private val repository: DataRepository by instance("dao") // <3>
 
-    override fun Route.getRoutes() { <4>
-        get("/version") { <5>
-            val version: String by instance("version") <6>
+    override fun Route.getRoutes() { // <4>
+        get("/version") { // <5>
+            val version: String by instance("version") // <6>
             call.respondText(version)
         }
     }
+}
 ----
 <1> Implement `DIController` and provide a `Application` instance (from constructor)
 <2> Override the `DI` container, from the provided `Application`
@@ -420,19 +413,20 @@ class MyController(application: Application) : DIController { <1>
 <4> Override the function `Route.getRoutes` and define some routes
 <5> This route will be automatically register by the `DIControllerFeature`
 <6> Use your `DI` container as in any `DIAware` class
-+
+
 [source, kotlin]
 .Example: Extending AbstractDIController
 ----
-class MyController(application: Application) : AbstractDIController(application) { <1>
-    private val repository: DataRepository by instance("dao") <2>
+class MyController(application: Application) : AbstractDIController(application) { // <1>
+    private val repository: DataRepository by instance("dao") // <2>
 
-    override fun Routing.installRoutes() { <3>
-        get("/version") { <4>
-            val version: String by instance("version") <5>
+    override fun Routing.installRoutes() { // <3>
+        get("/version") { // <4>
+            val version: String by instance("version") // <5>
             call.respondText(version)
         }
     }
+}
 ----
 <1> Extend `AbstractDIController` and provide a `Application` instance (from constructor)
 <2> Use your `DI` container as in any `DIAware` class
@@ -460,8 +454,8 @@ Those functions will automatically install the routes defined in your `DIControl
 ----
 routing {
 // ...
-controller { MyFirstDIController(instance()) } <1>
-controller("/protected") { `MySecondDIController`(instance()) } <2>
+controller { MyFirstDIController(instance()) } // <1>
+controller("/protected") { MySecondDIController(instance()) } // <2>
 // ...
 }
 ----
