@@ -1,4 +1,4 @@
-<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/doc/modules/ROOT/images/kodein-di-logo.svg" width="700">
+<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/7.1/doc/modules/ROOT/images/kodein-di-logo.svg" width="700">
 
 [![Kotlin 1.4.0](https://img.shields.io/badge/Kotlin-1.4.0-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
 [![JCenter](https://api.bintray.com/packages/kodein-framework/Kodein-DI/Kodein-DI/images/download.svg)](https://bintray.com/kodein-framework/Kodein-DI)
@@ -55,7 +55,7 @@ class Controller(private di: DI) {
 - It can be used in plain Java
 
 ### Looking for **Kodein-DI 7.0** migration guide?
-> Folow this us [here](https://kodein.org/Kodein-DI/?7.0/migration-6to7).
+> Folow this us [here](https://docs.kodein.org/kodein-di/7.1.0/migration/migration-6to7.html).
 
 Kotlin & JVM compatibility
 ---------
@@ -85,7 +85,7 @@ Read more
 
 **_Kodein-DI_** 7+ is the current major version, but documentation is available for previous versions.
 
-**[Kodein-DI documentation](http://kodein.org/Kodein-DI/)**
+**[Kodein-DI documentation](https://docs.kodein.org/kodein-di/7.1.0/)**
 
 
 Support
