@@ -1,11 +1,6 @@
 = Kodein-DI on Android
-Salomon BRYS <salomon.brys@gmail.com>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
-:version: 7.0.0
-:branch: 7.0
+:version: 7.2.0
+:branch: 7.2
 
 You can use Kodein-DI as-is in your Android project or use the util library `kodein-di-android`.
 
@@ -45,7 +40,7 @@ WARNING: If you are using `SupportFragment` in your application, then you *must*
 .Example: an Android Application class that implements DIAware
 ----
 class MyApp : Application(), DIAware {
-	override val di by DI.lazy { <1>
+	override val di by DI.lazy { // <1>
 	    /* bindings */
 	}
 }
@@ -86,13 +81,13 @@ It is very simple to have your Android classes be `DIAware`:
 ----
 class MyActivity : Activity(), DIAware {
 
-    override val di by di() <1>
+    override val di by di() // <1>
 
     val ds: DataSource by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ds.connect() <2>
+        ds.connect() // <2>
         /* ... */
     }
 
@@ -113,13 +108,13 @@ class MyActivity : Activity(), DIAware {
 
     override val di by di()
 
-    override val diTrigger = DITrigger() <1>
+    override val diTrigger = DITrigger() // <1>
 
     val ds: DataSource by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        diTrigger.trigger() <2>
+        diTrigger.trigger() // <2>
         /* ... */
     }
 
@@ -146,7 +141,7 @@ NOTE: If you prefer your View Models to be independant from Kodein-DI, you can u
 ----
 class MyViewModel(app: Application) : ApplicationViewModel(app), DIAware {
 
-    override val di by di() <1>
+    override val di by di() // <1>
 
     val repository : Repository by instance()
 }
@@ -165,7 +160,7 @@ NOTE: This module is absolutely *optional*, you are free to use it or leave it ;
 ----
 class MyApplication : Application(), DIAware {
     override val di by DI.lazy {
-        import(androidXModule(this@MyApplication)) <1>
+        import(androidXModule(this@MyApplication)) // <1>
 	    /* bindings */
     }
 }
@@ -179,7 +174,7 @@ You can see everything that this module proposes in the Kodein-Android https://g
 ----
 class MyActivity : Activity(), DIAware {
     override val di by di()
-    val inflater: LayoutInflater by instance() <1>
+    val inflater: LayoutInflater by instance() // <1>
 }
 ----
 
@@ -200,7 +195,7 @@ class MyUtility(androidContext: Context) : DIAware {
 
     override val di by androidContext.di()
 
-    override val kodeinContext = diContext(androidContext) <1>
+    override val kodeinContext = diContext(androidContext) // <1>
 
     val inflater: LayoutInflater by instance()
 }
@@ -210,7 +205,7 @@ class MyUtility(androidContext: Context) : DIAware {
 
 == Android context translators
 
-The android module provides a number of http://kodein.org/Kodein-DI/?{branch}/core#_context_translators[context translators].
+The android module provides a number of xref:core:using-environment.adoc#_context_translators[context translators].
 For example, they allow you to retrieve an activity scoped singleton inside a fragment, without manually specifying the activity.
 
 NOTE: The android modules automatically register these translators.
@@ -222,7 +217,7 @@ However, if you don't want to use the android modules, but still need these tran
 ----
 class MyApplication : Application(), DIAware {
     override val di by DI.lazy {
-        import(androidXContextTranslators) <1>
+        import(androidXContextTranslators) // <1>
 	    /* bindings */
     }
 }
@@ -241,7 +236,7 @@ The `WeakContextScope` will keep singleton and multiton instances as long as the
 .Example: using an Activity scope
 ----
 val di = DI {
-    bind<Controller>() with scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } <1>
+    bind<Controller>() with scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } // <1>
 }
 ----
 <1> `context` is of type `Activity` because we are using the `WeakContextScope.of<Activity>()`.
@@ -265,7 +260,7 @@ val di = DI {
 }
 ----
 
-NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?{branch}/core#scope-closeable[see documentation].
+NOTE: This scope *IS* compatible with `ScopeCloseable`: xref:core:using-environment.adoc#scope-closeable[see documentation].
 
 
 === Lifecycle scope
@@ -283,7 +278,7 @@ val di = DI {
 
 NOTE: These lifecycles are *NOT* immune to activity restart due to configuration change.
 
-NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?{branch}/core#scope-closeable[see documentation].
+NOTE: This scope *IS* compatible with `ScopeCloseable`: xref:core:using-environment.adoc#scope-closeable[see documentation].
 
 
 == Layered dependencies
@@ -310,7 +305,7 @@ Kodein-DI allows you to create a `DI` instance that lives only inside one of you
 ----
 class MyActivity : Activity(), DIAware {
 
-    override val di by subDI(di()) { <1>
+    override val di by subDI(di()) { // <1>
         /* activity specific bindings */
     }
 
@@ -320,7 +315,7 @@ class MyActivity : Activity(), DIAware {
 
 [NOTE]
 ====
-By default all bindings are cached. You can also define the way the parent DI container is extended by defining the http://kodein.org/Kodein-DI/?{branch}/core#_overridden_access_from_parent[copy mode]. In below example each instance of activity will store a copy of the DI module (all bindings including `singleton` will be recreated per activity instance).
+By default all bindings are cached. You can also define the way the parent DI container is extended by defining the xref:core:modules-inheritance.adoc#overridden_access_from_parent[copy mode]. In below example each instance of activity will store a copy of the DI module (all bindings including `singleton` will be recreated per activity instance).
 
 [source, kotlin]
 .Example: defining an Activity specific DI container that copies all parent bindings
@@ -344,7 +339,7 @@ CAUTION: This means that you *should never access the containing activity* it ma
 ----
 class MyActivity : Activity(), DIAware {
 
-    override val di: DI by retainedSubDI(di()) { <1>
+    override val di: DI by retainedSubDI(di()) { // <1>
         /* activity specific bindings */
     }
 
@@ -354,7 +349,7 @@ class MyActivity : Activity(), DIAware {
 
 [NOTE]
 ====
-You can define the way the parent DI container is extended by defining the http://kodein.org/Kodein-DI/?{branch}/core#_overridden_access_from_parent[copy mode]:
+You can define the way the parent DI container is extended by defining the xref:core:modules-inheritance.adoc#overridden_access_from_parent[copy mode]:
 
 [source, kotlin]
 .Example: defining an Activity specific DI container that copies all parent bindings
@@ -377,7 +372,7 @@ CAUTION: This means that all bindings in the application context are NOT availab
 ----
 class MyActivity : Activity() {
 
-    val activityKodein: DI by retainedDI { <1>
+    val activityKodein: DI by retainedDI { // <1>
         /* activity specific bindings */
     }
 

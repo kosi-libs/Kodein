@@ -1,17 +1,13 @@
-= Getting started with Kodein-DI
-Salomon BRYS <salomon.brys@gmail.com>
-:toc: left
-:toc-position: left
-:toclevels: 5
+:version: 7.2.0
+:branch: 7.2
 
-:version: 7.0.0
-:branch: 7.0
+= Getting started with Kodein-DI
 
 Kodein-DI is a *Dependency Injection* library.
 It allows you to bind your business unit interfaces with their implementation and thus having each business unit being independent.
 
 NOTE: This guide assumes a JVM target.
-      Kodein-DI works exactly the same on all targets that are supported by Kotlin (JVM, Android, JS, Native).
+Kodein-DI works exactly the same on all targets that are supported by Kotlin (JVM, Android, JS, Native).
 
 == Choose & Install
 
@@ -27,14 +23,14 @@ Starting from `7.0.0`, _Kodein-DI_ is using the `generic` version of the type sy
 So, whatever platform you are targeting, `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
 
-[INFO]
+[NOTE]
 ====
 Since *7.0*, _Kodein-DI_ can use `generic` for non JVM platforms, thus it is now the default implementation.
-However you still can force the use of `erased` with the generic and erased function forms!
+However, you still can force the use of `erased` with the generic and erased function forms!
 ====
 
 TIP: Keep in mind that it should be quite rare for DI to be performance critical.
-     DI happens only once per injected object, so to measure how critical DI is, ask yourself how much time injected objects will be created, and if these creations are themselves performance critical.
+DI happens only once per injected object, so to measure how critical DI is, ask yourself how much time injected objects will be created, and if these creations are themselves performance critical.
 
 === Install
 
@@ -163,7 +159,7 @@ val kodein = DI {
 ----
 
 As you can see, Kodein-DI offers a DSL (Domain Specific Language) that allows to very easily declare a binding.
-Kodein-DI offers many bindings that can manage implementations: `provider`, `singleton`, `factory`, `multiton`, `instance`, and more, which you can read about in the https://kodein.org/Kodein-DI/?{branch}/core#declaring-dependencies[bindings section of the core documentation].
+Kodein-DI offers many bindings that can manage implementations: `provider`, `singleton`, `factory`, `multiton`, `instance`, and more, which you can read about in the xref:core:bindings[bindings section of the core documentation].
 
 Most of the time, the type of the interface of the dependency is enough to identify it.
 There is only one `Database` in the application, so if I'm asking for a `Database`, there is no question of _which_ `Database` I need: I need _the_ database. +
@@ -307,7 +303,7 @@ class Presenter(): KodeinAware {
 === Direct
 
 If you don't want everything to be lazy (as it is by default), DI has you covered.
-Head to the https://kodein.org/Kodein-DI/?{branch}/core#direct-rectrieval[Retrival: Direct] section of the core documentation.
+Head to the xref:core:injection-retrieval#direct-retrieval[Retrieval: Direct] section of the core documentation.
 
 
 == Transitive dependencies
@@ -341,6 +337,6 @@ val di = DI {
 == Where to go next
 
 Kodein-DI offers a lot of features.
-All of them are documented, you can find them here: *http://kodein.org/Kodein-DI/?{branch}*.
+All of them are documented, you can find them here: xref:core:install.adoc
 
-If you are using Kodein-DI on Android, you should read the http://kodein.org/Kodein-DI/?{branch}/android[Kodein on Android] documentation.
+If you are using Kodein-DI on Android, you should read the xref:framework:android.adoc[Kodein on Android] documentation.

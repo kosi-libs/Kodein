@@ -4,8 +4,8 @@ Romain BOISSELLE <romain@kodein.net>
 :toc-position: left
 :toclevels: 5
 
-:version: 7.0.0
-:branch: 7.0
+:version: 7.2.0
+:branch: 7.2
 
 This guide will help you migrate from Kodein-DI 6 to Kodein-DI 7+.
 
@@ -127,11 +127,11 @@ Sometimes, _IntelliJ IDEA_ will encourage you to refactor your code with some ac
 
 [cols="65%,<.^35%a",grid="none",frame="none"]
 |===
-|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-to-di.png[Kodein to DI, 800]
+|image::6to7/kodein-to-di.png[Kodein to DI, 800]
 |Either from your code
-|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-to-di-2.png[Kodein to DI, 800]
+|image::6to7/kodein-to-di-2.png[Kodein to DI, 800]
 |Or in the import section
-|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kodein-builder.png[Kodein-DI builder, 500]
+|image::6to7/kodein-builder.png[Kodein-DI builder, 500]
 |Sometimes it won't resolve the deprecation annotations, but will still have some actions to replace the deprecated interface...
 |===
 
@@ -143,13 +143,13 @@ If you were using `KodeinAware` in your projects, you might end up with somethin
 
 [cols="65%,<.^35%a",grid="none",frame="none"]
 |===
-|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-1.png[DIAware, 800]
+|image::6to7/diaware-1.png[DIAware, 800]
 |Both interface implementation and the class implementing it are with errors.
 |===
 
 First thing, replace `KodeinAware` with `DIAware` (_Alt+Enter_ / _Cmd+Enter_ is your best friend here):
 
-image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-2.png[DIAware, 800]
+image::6to7/diaware-2.png[DIAware, 800]
 
 After that, you will need to make changes to the class that is implementing `DIAware`. +
 Because we also had renamed the properties from `KodeinAware`, you might have some errors on the following properties.
@@ -162,26 +162,26 @@ Because we also had renamed the properties from `KodeinAware`, you might have so
 | `kodeinTrigger`              | `diTrigger`
 |=======
 
-image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-3.png[DIAware, 800]
+image::6to7/diaware-3.png[DIAware, 800]
 
 Unfortunately, _IntelliJ IDEA_ won't help you for migrating those properties, you will have to do it manually. +
 
 [cols="65%,<.^35%a",grid="none",frame="none"]
 |===
-|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-4.png[DIAware, 800]
+|image::6to7/diaware-4.png[DIAware, 800]
 |Replace `override kodein: Kodein` by `override di: DI`, either in the constructor or in the member implementation.
-|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/diaware-5.png[DIAware, 800]
+|image::6to7/diaware-5.png[DIAware, 800]
 |Here we are, nice and fresh!
 |===
 
 The same manipulation goes for `kodeinContext` and `kodeinTrigger`
 
-image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/kcontext.png[kcontext, 800]
+image::6to7/kcontext.png[kcontext, 800]
 
 [IMPORTANT]
 ====
 In the cases of `kodeinContext`, the property AND the expression might worth changing
-image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/dicontext.png[dicontext]
+image::6to7/dicontext.png[dicontext]
 ====
 
 ==== Binding & retrieval
@@ -191,11 +191,11 @@ Binding and retrieval are really easier as they just have been deprecated and mo
 
 [cols="65%,<.^35%a",grid="none",frame="none"]
 |===
-|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-1.png[Builder]
+|image::6to7/binder-1.png[Builder]
 |No error here ;)
-|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-2.png[Builder]
+|image::6to7/binder-2.png[Builder]
 |Deprecation message suggest to use the functions defined in `org.kodein.di`.
-|image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-3.png[Builder]
+|image::6to7/binder-3.png[Builder]
 |Once again _IntelliJ IDEA_ won't help you there, just drop the imports `org.kodein.di.erased` / `org.kodein.di.generic`
 |===
 
@@ -203,7 +203,7 @@ IMPORTANT: Removing the package imports `org.kodein.di.erased` / `org.kodein.di.
 
 Otherwise, just re-import the right package!
 
-image:https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/doc/res/6to7/binder-4.png[Builder]
+image::6to7/binder-4.png[Builder]
 
 ==== All the matches
 

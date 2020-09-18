@@ -1,0 +1,106 @@
+
+= Multi-binding
+
+_Kodein-DI_ allows multi bindings via a binding set.
+
+
+[[set-bindings]]
+== In a Set
+
+=== Binding in a Set
+
+To have multiple bindings in a set, you need to:
+
+* Declare that you are using a set binding for a particular bound type.
+* Add bindings to the set.
+
+[source,kotlin]
+.Example creating a set of `Configuration` bindings.
+----
+val di = DI {
+    bind() from setBinding<Configuration>() <1>
+
+    bind<Configuration>().inSet() with provider { FooConfiguration() } // <2>
+    bind<Configuration>().inSet() with singleton { BarConfiguration() } // <2>
+}
+----
+<1> Creating a set binding of `Configuration`.
+<2> Binding multiple `Configuration` implementations.
+
+[NOTE]
+====
+You can:
+
+* Use different binding types (such as `provider` or `singleton`) in the same set.
+* Add bindings to the same set in different modules, provided that the set has been declared first.
+====
+
+You can also bind multiple bindings with arguments (such as `factory` or `multiton`) in a set *as long as all bindings share the same argument type*.
+
+[source,kotlin]
+.Example creating a set of `Result` bindings.
+----
+val di = DI {
+    bind() from argSetBinding<Query, Result>()
+
+    bind<Result>().inSet() with factory { q: Query -> Foo.query(q) }
+    bind<Result>().inSet() with multiton { q: Query -> Bar.query(q) }
+}
+----
+
+
+=== Retrieving from a Set
+
+Note that the type being bound is `Set<T>`, not `T`. +
+Therefore, you need to retrieve a `Set`:
+
+[source,kotlin]
+.Example retrieving set of `Configuration` with the generic version.
+----
+val configurations: Set<Configuration> by di.instance()
+----
+
+if you are using the `erased` version, you need to retrieve thusly:
+
+[source,kotlin]
+.Example retrieving set of `Configuration` with the erased version.
+----
+val configurations: Set<Configuration> by di.Instance(erasedSet())
+----
+
+
+== In a map
+
+_Kodein-DI_ does not directly support map multi-binding.
+However, it is very easy to create a binding map by using a binding set.
+
+First, create the following primitive:
+
+[source,kotlin]
+.Example of the type alias for a map multi-binding as `Map<String, Configuration>`.
+----
+typealias ConfigurationEntry = Pair<String, Configuration>
+typealias ConfigurationEntries = Set<ConfigurationEntry>
+----
+
+Then, bind with keys:
+
+[source,kotlin]
+.Example binding as in a map multibinding.
+----
+val di = DI {
+    bind() from setBinding<ConfigurationEntry>()
+
+    bind<ConfigurationEntry>().inSet() with factory { "foo" to FooConfiguration() }
+    bind<ConfigurationEntry>().inSet() with multiton { "bar" to BarConfiguration() }
+}
+----
+
+Finally, retrieve the map:
+
+[source,kotlin]
+.Example retrieving a map multibinding.
+----
+val configurations by di.instance<ConfigurationEntries>().toMap()
+----
+
