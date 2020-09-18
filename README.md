@@ -1,6 +1,6 @@
-<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/6.1/Kodein-DI-logo.png" width="700">
+<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/doc/modules/ROOT/images/kodein-di-logo.svg" width="700">
 
-[![Kotlin 1.3.72](https://img.shields.io/badge/Kotlin-1.3.72-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
+[![Kotlin 1.4.0](https://img.shields.io/badge/Kotlin-1.4.0-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
 [![JCenter](https://api.bintray.com/packages/kodein-framework/Kodein-DI/Kodein-DI/images/download.svg)](https://bintray.com/kodein-framework/Kodein-DI)
 ![Github Actions](https://github.com/Kodein-Framework/Kodein-DI/workflows/build%20and%20publish%20a%20snapshot/badge.svg)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Kodein-Framework/Kodein-DI/blob/master/LICENSE.txt)
@@ -62,6 +62,7 @@ Kotlin & JVM compatibility
 
 |Kodein-DI|Kotlin|JDK
 |:---:|:---:|:---:|
+|7.1+|1.4+|min 1.8
 |7.0+|1.3.72|min 1.8
 |6.5.5|1.3.72|min 1.8
 |6.5.4|1.3.71|min 1.8
@@ -85,7 +86,7 @@ Read more
 
 **_Kodein-DI_** 7+ is the current major version, but documentation is available for previous versions.
 
-**[Kodein-DI documentation](http://kodein.org/Kodein-DI/)**
+**[Kodein-DI documentation](https://docs.kodein.org/kodein-di/7.2.0/index.html)**
 
 
 Support
