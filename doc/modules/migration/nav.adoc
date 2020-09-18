@@ -1,0 +1,3 @@
+.Migration guides
+* xref:migration-4to5.adoc[Kodein version 4 to version 5]
+* xref:migration-j2k.adoc[JSR-330 to Kodein-DI]

@@ -1,13 +1,6 @@
-= KODEIN DI: KOtlin DEpendency INjection
-Salomon BRYS <salomon.brys@gmail.com>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
+= Core documentation
 :version: 6.5.5
 :branch: 6.5
-
-image::https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/{branch}/Kodein-DI-logo.png[KODEIN, 700, 233]
 
 == Introduction
 
@@ -770,7 +763,7 @@ val testModule = Kodein.Module(name = "test", allowSilentOverride = true) {
 If you want to access an instance retrieved by the overridden binding, you can use overriddenInstance.
 This is useful if you want to "enhance" a binding (for example, using the decorator pattern).
 
-[source, kotlin]
+[source,kotlin]
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
 val testModule = Kodein.Module(name = "test") {
@@ -780,11 +773,12 @@ val testModule = Kodein.Module(name = "test") {
 <1> `overriddenInstance()` will return the `Logger` instance retrieved by the overridden binding.
 
 
+[#overridden_access_from_parent]
 === Overridden access from parent
 
 Let's consider the following code :
 
-[source, kotlin]
+[source,kotlin]
 .Example: Mixing overriding & extension
 ----
 val parent = Kodein {
@@ -805,7 +799,7 @@ Because the `Bar` binding is a `singleton` and is declared in the `parent` Kodei
 In this example, both `parent.instance<Bar>().foo` and `child.instance<Bar>().foo` will yield a `Foo1` object.
 
 NOTE: This is because `Bar` is bound to a `singleton`, the first access would define the container used (`parent` or `child`).
-      If the singleton were initialized by `child`, then a subsequent access from `parent` would yeild a `Bar` with a reference to a `Foo2`, which is not supposed to exist in `parent`.
+If the singleton were initialized by `child`, then a subsequent access from `parent` would yeild a `Bar` with a reference to a `Foo2`, which is not supposed to exist in `parent`.
 
 IMPORTANT: By default, *all bindings that do not cache instances* (basically all bindings but `singleton` and `multiton`) *are copied by default into the new container*, and therefore have access to the bindings & overrides of this new container.
 
@@ -823,7 +817,7 @@ val child = Kodein {
 ----
 
 CAUTION: Copying a binding means that it will exists once more.
-         Therefore, a copied singleton will *no longer be unique* and have TWO instances, one managed by each binding (the original and the copied).
+Therefore, a copied singleton will *no longer be unique* and have TWO instances, one managed by each binding (the original and the copied).
 
 If the binding you need to copy is bound by a context (such as a scoped singleton), you need to specify it:
 
@@ -1371,7 +1365,7 @@ class MyActivity : Activity(), KodeinAware {
 ----
 <1> Because `ds` is lazily retrieved, access to the `kodein` property will only happen at first retrieval.
 
-NOTE: There is an official module to ease the use of Kodein in Android, you can read more about it on http://kodein.org/Kodein-DI/?{branch}/android[the dedicated document].
+NOTE: There is an official module to ease the use of Kodein in Android, you can read more about it on xref:framework:android.adoc[the dedicated document].
 
 
 ==== Lateinit
@@ -1656,20 +1650,21 @@ val kodein = Kodein {
 
 If you need a compartimentalized scope which you can clean, you can create a new `WeakContextScope`:
 
-[source, kotlin]
+[source,kotlin]
 .Example: creating a WeakContextScope.
 ----
 val activityScope = WeakContextScope<Activity>()
 ----
 
 
+[#context_translators]
 ==== Context translators
 
 Let's get back to the web server example.
 There is one session per user, so we have bound a `User` singleton inside a `Session` scope.
 As each `Request` is associated with a `Session`, you can register a context translator that will make any binding that needs a `Session` context work with a `Request` context:
 
-[source, kotlin]
+[source,kotlin]
 .Example:
 ----
 val kodein = Kodein {
@@ -1929,9 +1924,9 @@ The message of the exception explains how the loop happened.
 ----
 Kodein$DependencyLoopException: Dependency recursion:
      bind<Database>()
-    ╔╩>bind<User>()
-    ║  ╚>bind<Repository>(tag = "users")
-    ║    ╚>bind<Database>()
+    ╔╩>bind<User>() // <1>
+    ║  ╚>bind<Repository>(tag = "users") // <2>
+    ║    ╚>bind<Database>() // <3>
     ╚══════╝
 ----
 <1> `Database` depends on `User`

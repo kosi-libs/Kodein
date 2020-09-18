@@ -1,9 +1,4 @@
 = Kodein DI on Android
-Salomon BRYS <salomon.brys@gmail.com>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
 :version: 6.5.5
 :branch: 6.5
 
@@ -211,7 +206,7 @@ class MyUtility(androidContext: Context) : KodeinAware {
 
 == Android context translators
 
-The android module provides a number of http://kodein.org/Kodein-DI/?{branch}/core#_context_translators[context translators].
+The android module provides a number of xref:ROOT:core.adoc#context_translators[context translators].
 For example, they allow you to retrieve an activity scoped singleton inside a fragment, without manually specifying the activity.
 
 NOTE: The android modules automatically register these translators.
@@ -266,7 +261,7 @@ val kodein = Kodein {
 }
 ----
 
-NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?{branch}/core#scope-closeable[see documentation].
+NOTE: This scope *IS* compatible with `ScopeCloseable`: xref:ROOT:core.adoc#scope-closeable[see documentation].
 
 
 === Lifecycle scope
@@ -284,7 +279,7 @@ val kodein = Kodein {
 
 NOTE: These lifecycles are *NOT* immune to activity restart due to configuration change.
 
-NOTE: This scope *IS* compatible with `ScopeCloseable`: http://kodein.org/Kodein-DI/?{branch}/core#scope-closeable[see documentation].
+NOTE: This scope *IS* compatible with `ScopeCloseable`: xref:ROOT:core.adoc#scope-closeable[see documentation].
 
 
 == Layered dependencies
@@ -321,7 +316,7 @@ class MyActivity : Activity(), KodeinAware {
 
 [NOTE]
 ====
-By default all bindings are cached. You can also define the way the parent kodein is extended by defining the http://kodein.org/Kodein-DI/?{branch}/core#_overridden_access_from_parent[copy mode]. In below example each instance of activity will store a copy of the kodein module (all bindings including `singleton` will be recreated per activity instance).
+By default all bindings are cached. You can also define the way the parent kodein is extended by defining the xref:ROOT:core.adoc#overridden_access_from_parent[copy mode]. In below example each instance of activity will store a copy of the kodein module (all bindings including `singleton` will be recreated per activity instance).
 
 [source, kotlin]
 .Example: defining an Activity specific Kodein that copies all parent bindings
@@ -355,7 +350,7 @@ class MyActivity : Activity(), KodeinAware {
 
 [NOTE]
 ====
-You can define the way the parent kodein is extended by defining the http://kodein.org/Kodein-DI/?{branch}/core#_overridden_access_from_parent[copy mode]:
+You can define the way the parent kodein is extended by defining the xref:ROOT:core.adoc#overridden_access_from_parent[copy mode]:
 
 [source, kotlin]
 .Example: defining an Activity specific Kodein that copies all parent bindings

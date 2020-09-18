@@ -1,9 +1,4 @@
 = Kodein DI on TornadoFX
-Romain BOISSELLE <romain@boisselle.dev>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
 :version: 6.5.5
 :branch: 6.5
 
@@ -45,13 +40,13 @@ IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declar
 class TornadoApplication : App(MainView::class), KodeinAware { // <1>
     override val kodein: Kodein get() = Kodein { // <2>
         installTornadoSource() // <3>
-     } 
+     }
 
 }
 ----
 <1> Setting the `App` as `KodeinAware` will help you define a global Kodein container
 <2> Define a Kodein container, accessible from almost anywhere in your application
-<3> Branch Kodein upon TornadoFX dependency injection, to be able to access those dependencies through your Kodein container (see https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[documentation])
+<3> Branch Kodein upon TornadoFX dependency injection, to be able to access those dependencies through your Kodein container (see xref:external-source[documentation])
 
 WARNING: In order to leverage the power of Kodein and the helpers we made, you should really consider making your `App` as `KodeinAware`.
 
@@ -60,7 +55,7 @@ WARNING: In order to leverage the power of Kodein and the helpers we made, you s
 
 If you defined your `App` as `KodeinAware`, you will normally be able to retrieve a Kodein container, and dependencies, from almost anywhere in your code.
 
-CAUTION: You may also want to access your TornadoFX components (such as `View`, `Fragment`, `Controller`, etc) through a Kodein container, to help you with that check the https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[external source] section.
+CAUTION: You may also want to access your TornadoFX components (such as `View`, `Fragment`, `Controller`, etc) through a Kodein container, to help you with that check the xref:external-source[external source] section.
 
 [[closest-kodein]]
 === Closest Kodein pattern
@@ -73,7 +68,7 @@ The idea behind this concept, is to be able to retrieve a Kodein container, from
 [[closest-tfx]]
 ==== From a TornadoFX perspective
 
-In TornadoFX there is no hierarchy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available through the DI container of TornadoFX (and the one of Kodein if you use https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[external source] helper), and they all have a reference to the `App`.
+In TornadoFX there is no hierarchy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available through the DI container of TornadoFX (and the one of Kodein if you use xref:external-source[external source] helper), and they all have a reference to the `App`.
 
 So, if we made our `App` as `KodeinAware`, we can get the global `Kodein` container from any `Component` thanks to:
 
@@ -102,7 +97,7 @@ class PersonController : Controller() {
     val repository: PersonRepository by kodein().instance() // <1>
 }
 ----
-<1> The `kodein()` function that will get the nearest Kodein container, from the `App` 
+<1> The `kodein()` function that will get the nearest Kodein container, from the `App`
 
 [source, kotlin]
 .Example: retrieving dependency through the closest Kodein container from a `View`
@@ -119,7 +114,7 @@ but in order to do that your `App` *must* be `KodeinAware`.
 [[closest-jfx]]
 ==== From a JavaFX perspective
 
-In JavaFX, an `Application` is made of a `Stage` (the window), a `Scene` (the container for all content) and a graph of `Node`. All `Node` are grouped by view (in the case of TornadoFX: `View` or `Fragment`). 
+In JavaFX, an `Application` is made of a `Stage` (the window), a `Scene` (the container for all content) and a graph of `Node`. All `Node` are grouped by view (in the case of TornadoFX: `View` or `Fragment`).
 
 So, the `Node` hierarchy can apply to the closest Kodein pattern, limited to the scope of a `View` or `Fragment` for now. If none of the parent `Node` have a `Kodein` container, thanks to the TornadoFX facilities, we can fallback onto the global Kodein container from the `App`.
 
@@ -261,7 +256,7 @@ class MyView : View() {
         kodein { // <2>
             bind<Random>() with singleton { SecureRandom() }
         }
-        
+
         form { // <3>
             val random by kodein().instance<Random>() // <4>
         }
@@ -274,7 +269,7 @@ class MyView : View() {
 <4> Calling the `kodein()` extension function to access the nearest Kodein container, in this case the one defined at <2>, then retrieve a dependency
 
 IMPORTANT: This feature will provide a *new* Kodein container, meaning it won't be linked to other Kodein container, such as your global one.
-To keep your binding from the global Kodein container you can use https://kodein.org/Kodein-DI/?{branch}/tornadofx#kodein-extension[extension] or following the next about https://kodein.org/Kodein-DI/?{branch}/tornadofx#sub-kodein[subKodein]
+To keep your binding from the global Kodein container you can use xref:kodein-extension[extension] or following the next about xref:sub-kodein[subKodein]
 
 [[sub-kodein]]
 === Extending the nearest Kodein container
@@ -292,7 +287,7 @@ class LoginController : Controller(), KodeinAware { // <1>
     override val kodein: Kodein = subKodein { // <2>
             bind<CredentialsDao> with singleton { CredentialsDao() } <3>
     }
-    
+
     // ...
 
     val dao by instance<CredentialsDao>() // <4>
@@ -305,7 +300,7 @@ class LoginController : Controller(), KodeinAware { // <1>
 +
 NOTE: Making your `Component` as `KodeinAware` is *optional*, but it will help you keeping track of your extended container. Otherwise, you might want to store a reference of your extended container in a local variable.
 
-. In the case of a `Node` hierarchy 
+. In the case of a `Node` hierarchy
 +
 [source, kotlin]
 .Example: Extending the nearest Kodein container for a `Node`
@@ -315,7 +310,7 @@ class LoginView : View() {
         subKodein { // <2>
             bind<LoginController>() with singleton { instance() } // <3>
         }
-        
+
         form {
             val controller by kodein().instance<LoginController>() <4>
         }
@@ -327,7 +322,7 @@ class LoginView : View() {
 <3> Defining binding only available for the extended Kodein container
 <4> Retrieve the `CredentialsDao` from the nearest Kodein container, in that case the extended container stored in the *hbox* properties
 
-IMPORTANT: In the case of a `Component` you have to handle the reference of the extended container yourself. But, in the case of a `Node` the `subKodein` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the https://kodein.org/Kodein-DI/?{branch}/tornadofx#fx-container[FX container feature]
+IMPORTANT: In the case of a `Component` you have to handle the reference of the extended container yourself. But, in the case of a `Node` the `subKodein` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the xref:fx-container[FX container feature]
 
 [[scopes]]
 == TornadoFX scopes

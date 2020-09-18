@@ -1,9 +1,4 @@
 = Kodein DI on Ktor
-Romain BOISSELLE <romain@boisselle.dev>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
 :version: 6.5.5
 :branch: 6.5
 
@@ -242,7 +237,7 @@ subKodein {
     bind<Foo>(overrides = true) with provider { Foo("explicitFoo") } // <1>
 }
 subKodein(allowSilentOverrides = true) { // <2>
-    bind<Foo> with provider { Foo("implicitFoo") } 
+    bind<Foo> with provider { Foo("implicitFoo") }
 }
 ----
 <1> Overriding the `Foo` binding
@@ -256,15 +251,15 @@ This feature is restricted to the `Routing` / `Route` and can be used like:
 - https://ktor.io/servers/features/routing.html[Routing]
     routing {
         /* usage */
-        val subKodein = subKodein { /** new bindings / overrides **/ } <1>
+        val subKodein = subKodein { /** new bindings / overrides **/ } // <1>
 
         route("/books") {
             /* usage */
-            subKodein { /** new bindings / overrides **/ } <2>
+            subKodein { /** new bindings / overrides **/ } // <2>
 
             route("/author") {
                 /* usage */
-                subKodein { /** new bindings / overrides **/ } <3>
+                subKodein { /** new bindings / overrides **/ } // <3>
             }
         }
     }
@@ -284,8 +279,8 @@ With the `kodein-di-framework-ktor-server-jvm` utils you can scope your dependen
 [source, kotlin]
 .Example: Defining the session
 ----
-data class UserSession(val user: User) : KodeinSession { <1>
-    override fun getSessionId() = user.id <2>
+data class UserSession(val user: User) : KodeinSession {  // <1>
+    override fun getSessionId() = user.id  // <2>
 }
 ----
 +
@@ -299,11 +294,11 @@ data class UserSession(val user: User) : KodeinSession { <1>
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8000) {
-        install(Sessions) { <1>
-            cookie<UserSession>("SESSION_FEATURE_SESSION_ID") <2>
+        install(Sessions) {  // <1>
+            cookie<UserSession>("SESSION_FEATURE_SESSION_ID")  // <2>
         }
         kodein {
-            bind<Random>() with scoped(SessionScope).singleton { SecureRandom() } <3>
+            bind<Random>() with scoped(SessionScope).singleton { SecureRandom() } // <3>
             /* binding */
         }
     }.start(true)
@@ -323,8 +318,8 @@ embeddedServer(Netty, port = 8000) {
     /* configurations */
     routing {
         get("/random") {
-            val session = call.sessions.get<UserSession>() ?: error("no session found!") <1>
-            val random by kodein().on(session).instance<Random>() <2>
+            val session = call.sessions.get<UserSession>() ?: error("no session found!") // <1>
+            val random by kodein().on(session).instance<Random>() // <2>
             call.responText("Hello ${session.user.name", your random number is ${random.nextInt()}")
         }
     }
@@ -340,7 +335,7 @@ embeddedServer(Netty, port = 8000) {
 .Example: Clear the session and scope
 ----
 get("/clear") {
-    call.sessions.clearSessionScope<UserSession>()
+    call.sessions.clearSessionScope<UserSession>() // <1>
 }
 ----
 +
@@ -369,7 +364,7 @@ That's why the `CallScope` is just a wrapper upon `WeakContextScope` with the ta
 .Example: Defining call scoped dependencies
 ----
 val kodein = Kodein {
-    bind<Random>() with scoped(CallScope).singleton { SecureRandom() } <1>
+    bind<Random>() with scoped(CallScope).singleton { SecureRandom() } // <1>
 }
 ----
 <1> A `Random` object will be created for each Request (HTTP or Websocket) and will be retrieved as long as the Request lives.
@@ -405,19 +400,19 @@ IMPORTANT: either `kodein-di-generic-jvm` or `kodein-di-erased` *must* be declar
 NOTE:  the `kodein-di-framework-ktor-server-controller-jvm` already have  the `kodein-di-framework-ktor-server-jvm` as transitive dependency, so you don't need to declare both.
 
 ===  Defining your controllers, by implementing `KodeinController`, or extending `AbstractKodeinController`
-+ 
++
 To define your controllers you need, either to implement the interface `KodeinController`, or to extend the class `AbstractKodeinController` and implement the function `Route.getRoutes()`.
 +
 [source, kotlin]
 .Example: Implementing KodeinController
 ----
-class MyController(application: Application) : KodeinController { <1>
-    override val kodein by kodein { application } <2>
-    private val repository: DataRepository by instance("dao") <3>
+class MyController(application: Application) : KodeinController { // <1>
+    override val kodein by kodein { application } // <2>
+    private val repository: DataRepository by instance("dao") // <3>
 
-    override fun Route.getRoutes() { <4>
-        get("/version") { <5>
-            val version: String by instance("version") <6>
+    override fun Route.getRoutes() { // <4>
+        get("/version") { // <5>
+            val version: String by instance("version") // <6>
             call.respondText(version)
         }
     }
@@ -428,19 +423,20 @@ class MyController(application: Application) : KodeinController { <1>
 <4> Override the function `Route.getRoutes` and define some routes
 <5> This route will be automatically register by the `KodeinControllerFeature`
 <6> Use your `Kodein` container as in any `KodeinAware` class
-+
+
 [source, kotlin]
 .Example: Extending AbstractKodeinController
 ----
-class MyController(application: Application) : AbstractKodeinController(application) { <1>
-    private val repository: DataRepository by instance("dao") <2>
+class MyController(application: Application) : AbstractKodeinController(application) { // <1>
+    private val repository: DataRepository by instance("dao") // <2>
 
-    override fun Routing.installRoutes() { <3>
-        get("/version") { <4>
-            val version: String by instance("version") <5>
+    override fun Routing.installRoutes() { // <3>
+        get("/version") { // <4>
+            val version: String by instance("version") // <5>
             call.respondText(version)
         }
     }
+}
 ----
 <1> Extend `AbstractKodeinController` and provide a `Application` instance (from constructor)
 <2> Use your `Kodein` container as in any `KodeinAware` class
@@ -452,7 +448,7 @@ NOTE:   Using `KodeinController` or `AbstractKodeinController` depends on your n
         +
         If you don't need to use inheritance on your controllers, then you could benefit from using `AbstractKodeinController`.
         +
-        On the contrary, if you want to use inheritance for your controllers you should implement `KodeinController` and override the `Kodein` container by yourself. 
+        On the contrary, if you want to use inheritance for your controllers you should implement `KodeinController` and override the `Kodein` container by yourself.
 
 WARNING: Using the `KodeinControllerFeature` *must* be used in addition of the `KodeinFeature`
 
@@ -468,8 +464,8 @@ Those functions will automatically install the routes defined in your `KodeinCon
 ----
 routing {
 // ...
-controller { MyFirstKodeinController(instance()) } <1>
-controller("/protected") { `MySecondKodeinController`(instance()) } <2>
+controller { MyFirstKodeinController(instance()) } // <1>
+controller("/protected") { `MySecondKodeinController`(instance()) } // <2>
 // ...
 }
 ----
