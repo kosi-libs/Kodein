@@ -1,11 +1,6 @@
 = Kodein-DI on TornadoFX
-Romain BOISSELLE <romain@boisselle.dev>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
-:version: 7.0.0
-:branch: 7.0
+:version: 7.1.0
+:branch: 7.1
 
 You can use Kodein-DI as-is in your TornadoFX project, but you can level-up your game by using the libraries `kodein-di-framework-tornadofx-jvm`.
 
@@ -41,13 +36,13 @@ implementation("kodein-di-framework-tornadofx-jvm:{version}")
 class TornadoApplication : App(MainView::class), DIAware { // <1>
     override val di: DI get() = DI { // <2>
         installTornadoSource() // <3>
-     } 
+     }
 
 }
 ----
 <1> Setting the `App` as `DIAware` will help you define a global DI container
 <2> Define a DI container, accessible from almost anywhere in your application
-<3> Branch DI upon TornadoFX dependency injection, to be able to access those dependencies through your DI container (see https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[documentation])
+<3> Branch DI upon TornadoFX dependency injection, to be able to access those dependencies through your DI container (see xref:external-source[documentation])
 
 WARNING: In order to leverage the power of DI and the helpers we made, you should really consider making your `App` as `DIAware`.
 
@@ -56,7 +51,7 @@ WARNING: In order to leverage the power of DI and the helpers we made, you shoul
 
 If you defined your `App` as `DIAware`, you will normally be able to retrieve a DI container, and dependencies, from almost anywhere in your code.
 
-CAUTION: You may also want to access your TornadoFX components (such as `View`, `Fragment`, `Controller`, etc) through a DI container, to help you with that check the https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[external source] section.
+CAUTION: You may also want to access your TornadoFX components (such as `View`, `Fragment`, `Controller`, etc) through a DI container, to help you with that check the xref:external-source[external source] section.
 
 [[closest-di]]
 === Closest DI pattern
@@ -69,7 +64,7 @@ The idea behind this concept, is to be able to retrieve a DI container, from an 
 [[closest-tfx]]
 ==== From a TornadoFX perspective
 
-In TornadoFX there is no hierarchy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available through the DI container of TornadoFX (and the one of DI if you use https://kodein.org/Kodein-DI/?{branch}/tornadofx#external-source[external source] helper), and they all have a reference to the `App`.
+In TornadoFX there is no hierarchy between the different components. In fact, their is no bound between `View`, `Fragment`, `Controller` or `ViewModel`, except if you handle it yourself. However, they are available through the DI container of TornadoFX (and the one of DI if you use xref:external-source[external source] helper), and they all have a reference to the `App`.
 
 So, if we made our `App` as `DIAware`, we can get the global `DI` container from any `Component` thanks to:
 
@@ -115,7 +110,7 @@ but in order to do that your `App` *must* be `DIAware`.
 [[closest-jfx]]
 ==== From a JavaFX perspective
 
-In JavaFX, an `Application` is made of a `Stage` (the window), a `Scene` (the container for all content) and a graph of `Node`. All `Node` are grouped by view (in the case of TornadoFX: `View` or `Fragment`). 
+In JavaFX, an `Application` is made of a `Stage` (the window), a `Scene` (the container for all content) and a graph of `Node`. All `Node` are grouped by view (in the case of TornadoFX: `View` or `Fragment`).
 
 So, the `Node` hierarchy can apply to the closest DI pattern, limited to the scope of a `View` or `Fragment` for now. If none of the parent `Node` have a `DI` container, thanks to the TornadoFX facilities, we can fallback onto the global DI container from the `App`.
 
@@ -257,7 +252,7 @@ class MyView : View() {
         kodeinDI { // <2>
             bind<Random>() with singleton { SecureRandom() }
         }
-        
+
         form { // <3>
             val random by kodeinDI().instance<Random>() // <4>
         }
@@ -270,7 +265,7 @@ class MyView : View() {
 <4> Calling the `kodeinDI()` extension function to access the nearest DI container, in this case the one defined at <2>, then retrieve a dependency
 
 IMPORTANT: This feature will provide a *new* DI container, meaning it won't be linked to other DI container, such as your global one.
-To keep your binding from the global DI container you can use https://kodein.org/Kodein-DI/?{branch}/tornadofx#kodein-extension[extension] or following the next about https://kodein.org/Kodein-DI/?{branch}/tornadofx#sub-kodein[subDI]
+To keep your binding from the global DI container you can use xref:kodein-extension[extension] or following the next about xref:sub-kodein[subDI]
 
 [[sub-di]]
 === Extending the nearest DI container
@@ -288,7 +283,7 @@ class LoginController : Controller(), DIAware { // <1>
     override val di: DI = subDI { // <2>
             bind<CredentialsDao> with singleton { CredentialsDao() } <3>
     }
-    
+
     // ...
 
     val dao by instance<CredentialsDao>() // <4>
@@ -301,7 +296,7 @@ class LoginController : Controller(), DIAware { // <1>
 +
 NOTE: Making your `Component` as `DIAware` is *optional*, but it will help you keeping track of your extended container. Otherwise, you might want to store a reference of your extended container in a local variable.
 
-. In the case of a `Node` hierarchy 
+. In the case of a `Node` hierarchy
 +
 [source, kotlin]
 .Example: Extending the nearest DI container for a `Node`
@@ -311,7 +306,7 @@ class LoginView : View() {
         subDI { // <2>
             bind<LoginController>() with singleton { instance() } // <3>
         }
-        
+
         form {
             val controller by kodeinDI().instance<LoginController>() <4>
         }
@@ -323,7 +318,7 @@ class LoginView : View() {
 <3> Defining binding only available for the extended DI container
 <4> Retrieve the `CredentialsDao` from the nearest DI container, in that case the extended container stored in the *hbox* properties
 
-IMPORTANT: In the case of a `Component` you have to handle the reference of the extended container yourself. But, in the case of a `Node` the `subDI` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the https://kodein.org/Kodein-DI/?{branch}/tornadofx#fx-container[FX container feature]
+IMPORTANT: In the case of a `Component` you have to handle the reference of the extended container yourself. But, in the case of a `Node` the `subDI` will manage it, by storing the reference to the extended container, into the `Node` properties, like for the xref:fx-container[FX container feature]
 
 [[scopes]]
 == TornadoFX scopes

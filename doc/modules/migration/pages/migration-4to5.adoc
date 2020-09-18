@@ -1,11 +1,6 @@
 = Changes & Migration from Kodein 4 to Kodein DI 5
-Salomon BRYS <salomon.brys@gmail.com>
-:toc: left
-:toc-position: left
-:toclevels: 5
-
-:version: 7.0.0
-:branch: 7.0
+:version: 7.1.0
+:branch: 7.1
 
 This guide will help you migrate from Kodein 4 to Kodein 5+.
 
@@ -405,7 +400,7 @@ NOTE: Setting a `kodeinContext` still allows you to acces bindings without scope
 === Android
 
 The Kodein Android extension has radically changed.
-It is therefore advised to read https://kodein.org/Kodein-DI/?{branch}/android[the new Kodein on Android documentation].
+It is therefore advised to read xref:framework:android.adoc[the new Kodein on Android documentation].
 
 
 ==== Laziness
