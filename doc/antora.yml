@@ -1,7 +1,8 @@
 name: kodein-di
 title: Kodein-DI
-version: '7.2'
+version: '7.2.0'
 prerelease: dev
+display_version: 'dev'
 nav:
   - modules/ROOT/nav.adoc
   - modules/core/nav.adoc
