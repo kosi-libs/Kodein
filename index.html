@@ -48,85 +48,86 @@
         </a>
 
         <div id="content">
-            <h1>Kodein-DI</h1>
             <div id="preamble">
                 <div class="sectionbody">
                     <div class="imageblock">
                         <div class="content">
-                            <img src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/Kodein-DI-logo.png" alt="KODEIN" width="700" height="233" />
+                            <img src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/doc/modules/ROOT/images/kodein-di-logo.svg" alt="KODEIN" width="700" height="233" />
                         </div>
                     </div>
                     <div class="paragraph">
                         <p>
-                            <h2><i id="loadingText">Loading...</i></h2>
+                            <h2>The documentation has been moved here:
+                            <a href="https://docs.kodein.org/kodein-di/7.1.0/index.html">https://docs.kodein.org</a>
+                            </h2>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script type="text/javascript">
-            function asciidocify() {
-                var branch = "master";
-                var doc = "index";
-                if (location.search != "") {
-                  var slash = location.search.indexOf("/");
-                  branch = location.search.substr(1, slash != -1 ? slash - 1 : undefined);
-                  if (branch == "latest") {
-                    branch = "master";
-                  }
-                  if (slash >= 0) {
-                    doc = location.search.substr(slash + 1)
-                  }
-                }
-                var url = "https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/" + branch + "/doc/" + doc + ".adoc";
-                $.get(url, function(data) {
-                    var options = Opal.hash({
-                        backend: 'html5',
-                        safe: 'unsafe',
-                        showToc: true,
-                        header_footer: true,
-                        attributes: [
-                            'showtitle',
-                            'icons=font@',
-                            'sectanchors',
-                            'linkcss',
-                            'nofooter'
-                        ]
-                    });
-                    var adoc = Opal.Asciidoctor.$load(data, options);
-                    adoc.$delete_attribute("author");
-//                    var adocHtml = Opal.Asciidoctor.$convert(Opal.Asciidoctor.$load(data), options);
-                    var adocHtml = adoc.$convert(options);
+<!--        <script type="text/javascript">-->
+<!--            function asciidocify() {-->
+<!--                var branch = "master";-->
+<!--                var doc = "index";-->
+<!--                if (location.search != "") {-->
+<!--                  var slash = location.search.indexOf("/");-->
+<!--                  branch = location.search.substr(1, slash != -1 ? slash - 1 : undefined);-->
+<!--                  if (branch == "latest") {-->
+<!--                    branch = "master";-->
+<!--                  }-->
+<!--                  if (slash >= 0) {-->
+<!--                    doc = location.search.substr(slash + 1)-->
+<!--                  }-->
+<!--                }-->
+<!--                var url = "https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/" + branch + "/doc/" + doc + ".adoc";-->
+<!--                $.get(url, function(data) {-->
+<!--                    var options = Opal.hash({-->
+<!--                        backend: 'html5',-->
+<!--                        safe: 'unsafe',-->
+<!--                        showToc: true,-->
+<!--                        header_footer: true,-->
+<!--                        attributes: [-->
+<!--                            'showtitle',-->
+<!--                            'icons=font@',-->
+<!--                            'sectanchors',-->
+<!--                            'linkcss',-->
+<!--                            'nofooter'-->
+<!--                        ]-->
+<!--                    });-->
+<!--                    var adoc = Opal.Asciidoctor.$load(data, options);-->
+<!--                    adoc.$delete_attribute("author");-->
+<!--//                    var adocHtml = Opal.Asciidoctor.$convert(Opal.Asciidoctor.$load(data), options);-->
+<!--                    var adocHtml = adoc.$convert(options);-->
 
-                    var dom = $.parseHTML(adocHtml);
+<!--                    var dom = $.parseHTML(adocHtml);-->
 
-                    $("#content").empty();
+<!--                    $("#content").empty();-->
 
-                    for (var i = 0; i < dom.length; ++i) {
-                        if (dom[i].tagName == "DIV")
-                            $("#content").append(dom[i]);
-                    }
+<!--                    for (var i = 0; i < dom.length; ++i) {-->
+<!--                        if (dom[i].tagName == "DIV")-->
+<!--                            $("#content").append(dom[i]);-->
+<!--                    }-->
 
-                    $('pre code').each(function(i, block) {
-                        hljs.highlightBlock(block);
-                    });
+<!--                    $('pre code').each(function(i, block) {-->
+<!--                        hljs.highlightBlock(block);-->
+<!--                    });-->
 
-                    if (location.hash != "") {
-                        var hash = location.hash;
-                        location.hash = "";
-                        setTimeout(function() { location.hash = hash; }, 0);
-                    }
+<!--                    if (location.hash != "") {-->
+<!--                        var hash = location.hash;-->
+<!--                        location.hash = "";-->
+<!--                        setTimeout(function() { location.hash = hash; }, 0);-->
+<!--                    }-->
 
-                })
-                    .fail(function() {
-                        $('#loadingText').html("No document <b>" + doc + ".adoc</b> for branch <b>" + branch + "</b>.");
-                    })
-                ;
-            }
+<!--                })-->
+<!--                    .fail(function() {-->
+<!--                        $('#loadingText').html("No document <b>" + doc + ".adoc</b> for branch <b>" + branch + "</b>.");-->
+<!--                    })-->
+<!--                ;-->
+<!--            }-->
 
-            asciidocify();
-        </script>
+<!--            asciidocify();-->
+<!--        </script>-->
 
     </body>
 </html>
