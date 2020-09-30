@@ -1,8 +1,4 @@
 = Changes & Migration from _Kodein-DI 6_ to _Kodein-DI 7_
-Romain BOISSELLE <romain@kodein.net>
-:toc: left
-:toc-position: left
-:toclevels: 5
 
 :version: 7.1.0
 :branch: 7.1
@@ -25,7 +21,7 @@ for the JVM, the mechanism remains the same as before, by using reflection.
 We still have both implementations with `generic` and `erased` types, but by default, *Kodein-DI* is using the `generic` version.
 This means that *Native* and *JS* targets are now compatible with generics, meaning that `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings.
 
-TIP: Checkout the link:core.adoc[full documentation] for more details.
+TIP: Checkout the xref:ROOT:index.adoc[full documentation] for more details.
 
 === New modules
 
@@ -46,7 +42,7 @@ Another side effect of the new type system, there is not so much differences mad
 So, the whole packages `org.kodein.di.erased` and `org.kodein.di.generic` have been deprecated.
 Implementation are now in the root package ``org.kodein.di`, and as told before, are based on the generic counterpart of the type system.
 
-TIP: Differences are subtle, please read the link:core.adoc[full documentation] for more details.
+TIP: Differences are subtle, please read the xref:ROOT:index.adoc[full documentation] for more details.
 
 === Class renaming: *Kodein* -> *DI*
 
