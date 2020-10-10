@@ -139,7 +139,7 @@ NOTE: If you prefer your View Models to be independant from Kodein-DI, you can u
 [source, kotlin]
 .Example: using an trigger in a DIAware Android Activity
 ----
-class MyViewModel(app: Application) : ApplicationViewModel(app), DIAware {
+class MyViewModel(app: Application) : AndroidViewModel(app), DIAware {
 
     override val di by di() // <1>
 
