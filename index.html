@@ -61,73 +61,96 @@
                             <a href="https://docs.kodein.org/kodein-di/7.1.0/index.html">https://docs.kodein.org</a>
                             </h2>
                         </p>
+                        <p>
+                            <h4>Old documentations can be found here:</h4>
+                            <ul>
+                                <li>
+                                    <a href="https://kodein.org/Kodein-DI/?6.4">6.4</a>
+                                </li>
+                                <li>
+                                <a href="https://kodein.org/Kodein-DI/?6.3">6.3</a>
+                                </li>
+                                <li>
+                                <a href="https://kodein.org/Kodein-DI/?6.2">6.2</a>
+                                </li>
+                                <li>
+                                <a href="https://kodein.org/Kodein-DI/?6.1">6.1</a>
+                                </li>
+                                <li>
+                                <a href="https://kodein.org/Kodein-DI/?6.0">6.0</a>
+                                </li>
+                                <li>
+                                <a href="https://kodein.org/Kodein-DI/?5.0">5.0</a>
+                                </li>
+                            </ul>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
 
-<!--        <script type="text/javascript">-->
-<!--            function asciidocify() {-->
-<!--                var branch = "master";-->
-<!--                var doc = "index";-->
-<!--                if (location.search != "") {-->
-<!--                  var slash = location.search.indexOf("/");-->
-<!--                  branch = location.search.substr(1, slash != -1 ? slash - 1 : undefined);-->
-<!--                  if (branch == "latest") {-->
-<!--                    branch = "master";-->
-<!--                  }-->
-<!--                  if (slash >= 0) {-->
-<!--                    doc = location.search.substr(slash + 1)-->
-<!--                  }-->
-<!--                }-->
-<!--                var url = "https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/" + branch + "/doc/" + doc + ".adoc";-->
-<!--                $.get(url, function(data) {-->
-<!--                    var options = Opal.hash({-->
-<!--                        backend: 'html5',-->
-<!--                        safe: 'unsafe',-->
-<!--                        showToc: true,-->
-<!--                        header_footer: true,-->
-<!--                        attributes: [-->
-<!--                            'showtitle',-->
-<!--                            'icons=font@',-->
-<!--                            'sectanchors',-->
-<!--                            'linkcss',-->
-<!--                            'nofooter'-->
-<!--                        ]-->
-<!--                    });-->
-<!--                    var adoc = Opal.Asciidoctor.$load(data, options);-->
-<!--                    adoc.$delete_attribute("author");-->
-<!--//                    var adocHtml = Opal.Asciidoctor.$convert(Opal.Asciidoctor.$load(data), options);-->
-<!--                    var adocHtml = adoc.$convert(options);-->
+        <script type="text/javascript">
+            function asciidocify() {
+                var branch = "master";
+                var doc = "index";
+                if (location.search != "") {
+                  var slash = location.search.indexOf("/");
+                  branch = location.search.substr(1, slash != -1 ? slash - 1 : undefined);
+                  if (branch == "latest") {
+                    branch = "master";
+                  }
+                  if (slash >= 0) {
+                    doc = location.search.substr(slash + 1)
+                  }
+                }
+                var url = "https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/" + branch + "/doc/" + doc + ".adoc";
+                $.get(url, function(data) {
+                    var options = Opal.hash({
+                        backend: 'html5',
+                        safe: 'unsafe',
+                        showToc: true,
+                        header_footer: true,
+                        attributes: [
+                            'showtitle',
+                            'icons=font@',
+                            'sectanchors',
+                            'linkcss',
+                            'nofooter'
+                        ]
+                    });
+                    var adoc = Opal.Asciidoctor.$load(data, options);
+                    adoc.$delete_attribute("author");
+//                    var adocHtml = Opal.Asciidoctor.$convert(Opal.Asciidoctor.$load(data), options);
+                    var adocHtml = adoc.$convert(options);
 
-<!--                    var dom = $.parseHTML(adocHtml);-->
+                    var dom = $.parseHTML(adocHtml);
 
-<!--                    $("#content").empty();-->
+                    $("#content").empty();
 
-<!--                    for (var i = 0; i < dom.length; ++i) {-->
-<!--                        if (dom[i].tagName == "DIV")-->
-<!--                            $("#content").append(dom[i]);-->
-<!--                    }-->
+                    for (var i = 0; i < dom.length; ++i) {
+                        if (dom[i].tagName == "DIV")
+                            $("#content").append(dom[i]);
+                    }
 
-<!--                    $('pre code').each(function(i, block) {-->
-<!--                        hljs.highlightBlock(block);-->
-<!--                    });-->
+                    $('pre code').each(function(i, block) {
+                        hljs.highlightBlock(block);
+                    });
 
-<!--                    if (location.hash != "") {-->
-<!--                        var hash = location.hash;-->
-<!--                        location.hash = "";-->
-<!--                        setTimeout(function() { location.hash = hash; }, 0);-->
-<!--                    }-->
+                    if (location.hash != "") {
+                        var hash = location.hash;
+                        location.hash = "";
+                        setTimeout(function() { location.hash = hash; }, 0);
+                    }
 
-<!--                })-->
-<!--                    .fail(function() {-->
-<!--                        $('#loadingText').html("No document <b>" + doc + ".adoc</b> for branch <b>" + branch + "</b>.");-->
-<!--                    })-->
-<!--                ;-->
-<!--            }-->
+                })
+                    .fail(function() {
+                        $('#loadingText').html("No document <b>" + doc + ".adoc</b> for branch <b>" + branch + "</b>.");
+                    })
+                ;
+            }
 
-<!--            asciidocify();-->
-<!--        </script>-->
+            asciidocify();
+        </script>
 
     </body>
 </html>
