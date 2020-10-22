@@ -586,12 +586,12 @@ class MyManager(override val directDI: DirectDI) : DirectDIAware {
 === In Java
 
 While _Kodein-DI_ does not allow you to declare modules or dependencies in Java, it does allow you to retrieve dependencies via `DirectDI`.
-Simply give the DirectDI instance to your Java classes, use _Kodein-DI_ in Java with the `TT` static function:
+Simply give the DirectDI instance to your Java classes, use _Kodein-DI_ in Java with the `erased` static function:
 
 [source, java]
 .Example: using _Kodein-DI_ in Java
 ----
-import static org.kodein.di.TypesKt.TT;
+import static org.kodein.type.erased;
 
 public class JavaClass {
     private final Function1<Integer, Dice> diceFactory;
@@ -600,10 +600,10 @@ public class JavaClass {
     private final String answerConstant;
 
     public JavaClass(DirectDI di) {
-        diceFactory = di.Factory(TT(Integer.class), TT(Dice.class), null);
-        dataSource = di.Instance(TT(Datasource.class), null);
-        randomProvider = di.Provider(TT(Random.class), null);
-        answerConstant = di.Instance(TT(String.class), "answer");
+        diceFactory = di.Factory(erased(Integer.class), erased(Dice.class), null);
+        dataSource = di.Instance(erased(Datasource.class), null);
+        randomProvider = di.Provider(erased(Random.class), null);
+        answerConstant = di.Instance(erased(String.class), "answer");
     }}
 ----
 
