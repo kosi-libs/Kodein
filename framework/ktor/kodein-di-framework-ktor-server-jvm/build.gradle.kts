@@ -9,15 +9,10 @@ repositories {
     maven("https://kotlin.bintray.com/ktor")
 }
 
-kodeinLib {
-    dependencies {
-        api(project(":kodein-di") target "jvm")
-    }
-}
-
 dependencies {
     fun ktor(module: String = "", version: String = ktorVersion) = "io.ktor:ktor$module:$version"
 
+    api(project(":kodein-di"))
     implementation(ktor())
     implementation(ktor("-server-core"))
     implementation(kotlin("stdlib-jdk8"))

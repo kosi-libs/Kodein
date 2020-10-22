@@ -35,8 +35,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Setup gradle.properties
-        run: cp .github/conf/ci.gradle.properties gradle.properties
       - name: Check
         run: ./gradlew check
         shell: bash
