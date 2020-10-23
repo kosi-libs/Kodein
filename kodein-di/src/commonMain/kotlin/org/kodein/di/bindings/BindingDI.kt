@@ -49,8 +49,6 @@ public interface BindingDI<out C : Any> : DirectDI, WithContext<C> {
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
     public fun overriddenFactoryOrNull(): ((Any?) -> Any)?
-
-    public fun noGlobalContext(): BindingDI<C>
 }
 
 ///**

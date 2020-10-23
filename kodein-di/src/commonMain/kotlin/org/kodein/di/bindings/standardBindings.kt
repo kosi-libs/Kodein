@@ -57,11 +57,10 @@ public class Multiton<C : Any, A, T: Any>(override val scope: Scope<C>, override
     }
 
     override fun getFactory(di: BindingDI<C>, key: DI.Key<C, A, T>): (A) -> T {
-        val safeDi = di.noGlobalContext()
-        val registry = scope.getRegistry(safeDi.context)
+        val registry = scope.getRegistry(di.context)
         return { arg ->
             @Suppress("UNCHECKED_CAST")
-            registry.getOrCreate(ScopeKey(_scopeId, arg), sync) { refMaker.make { safeDi.creator(arg) } } as T
+            registry.getOrCreate(ScopeKey(_scopeId, arg), sync) { refMaker.make { di.creator(arg) } } as T
         }
     }
 
@@ -120,11 +119,10 @@ public class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override v
      * @see [DIBinding.getFactory]
      */
     override fun getFactory(di: BindingDI<C>, key: DI.Key<C, Unit, T>): (Unit) -> T {
-        val safeDi = di.noGlobalContext()
-        val registry = scope.getRegistry(safeDi.context)
+        val registry = scope.getRegistry(di.context)
         return {
             @Suppress("UNCHECKED_CAST")
-            registry.getOrCreate(_scopeKey, sync) { refMaker.make { NoArgBindingDIWrap(safeDi).creator() } } as T
+            registry.getOrCreate(_scopeKey, sync) { refMaker.make { NoArgBindingDIWrap(di).creator() } } as T
         }
     }
 
@@ -161,7 +159,7 @@ public class EagerSingleton<T: Any>(builder: DIContainer.Builder, override val c
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(di: BindingDI<Any>, key: DI.Key<Any, Unit, T>): (Unit) -> T = getFactory(di.noGlobalContext())
+    override fun getFactory(di: BindingDI<Any>, key: DI.Key<Any, Unit, T>): (Unit) -> T = getFactory(di)
 
     override fun factoryName(): String = "eagerSingleton"
 

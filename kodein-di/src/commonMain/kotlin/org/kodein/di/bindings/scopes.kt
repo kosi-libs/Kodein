@@ -201,7 +201,7 @@ internal class CompositeContextTranslator<in C : Any, I : Any, S: Any>(val src: 
  *
  * @param C The Context.
  */
-public fun interface Scope<in C> {
+public interface Scope<in C> {
 
     /**
      * Get a registry for a given context.
