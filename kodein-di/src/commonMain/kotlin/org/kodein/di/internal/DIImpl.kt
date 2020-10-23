@@ -9,7 +9,7 @@ import org.kodein.di.bindings.BindingDI
  * Contains almost nothing because the DI object itself contains very few logic.
  * Everything is delegated wither to [container].
  */
-internal open class DIImpl internal constructor(private val internalContainer: DIContainerImpl) : DI {
+internal open class DIImpl internal constructor(private val _container: DIContainerImpl) : DI {
 
     @Suppress("unused")
     private constructor(builder: DIMainBuilderImpl, runCallbacks: Boolean) : this(DIContainerImpl(builder.containerBuilder, builder.externalSources, builder.fullDescriptionOnError, runCallbacks))
@@ -21,14 +21,14 @@ internal open class DIImpl internal constructor(private val internalContainer: D
 
         fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: DI.MainBuilder.() -> Unit): Pair<DI, () -> Unit> {
             val di = DIImpl(newBuilder(allowSilentOverride, init), false)
-            return di to { di.internalContainer.initCallbacks?.invoke() ; Unit }
+            return di to { di._container.initCallbacks?.invoke() ; Unit }
         }
     }
 
-    final override val container: DIContainer get() {
-        if (internalContainer.initCallbacks != null)
+    final override val container: DIContainer by lazy {
+        if (_container.initCallbacks != null)
             throw IllegalStateException("DI has not been initialized")
-        return internalContainer
+        _container
     }
 
 }
@@ -36,13 +36,10 @@ internal open class DIImpl internal constructor(private val internalContainer: D
 @Suppress("UNCHECKED_CAST")
 internal open class BindingDIImpl<out C : Any, out A, out T: Any> internal constructor(
         override val directDI: DirectDI,
-        private val key: DI.Key<C, A, T>,
-        private val diContext: DIContext<C>,
-        private val overrideLevel: Int
+        private val _key: DI.Key<C, A, T>,
+        override val context: C,
+        private val _overrideLevel: Int
 ) : DirectDI by directDI, BindingDI<C> {
-
-    override fun overriddenFactory(): (Any?) -> Any = container.factory(key, diContext, overrideLevel + 1) as (Any?) -> Any
-    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = container.factoryOrNull(key, diContext, overrideLevel + 1) as ((Any?) -> Any)?
-
-    override val context: C get() = diContext.value(key.contextType) as C
+    override fun overriddenFactory(): (Any?) -> Any = container.factory(_key, context, _overrideLevel + 1) as (Any?) -> Any
+    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = container.factoryOrNull(_key, context, _overrideLevel + 1) as ((Any?) -> Any)?
 }

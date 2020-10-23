@@ -29,7 +29,7 @@ public interface DIContainer {
      * @throws DI.NotFoundException If no factory was found.
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    public fun <C : Any, A, T: Any> factory(key: DI.Key<C, A, T>, context: DIContext<C>, overrideLevel: Int = 0): (A) -> T
+    public fun <C : Any, A, T: Any> factory(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): (A) -> T
 
     /**
      * Retrieve a factory for the given key, or null if none is found.
@@ -43,7 +43,7 @@ public interface DIContainer {
      * @return The found factory, or null if no factory was found.
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    public fun <C : Any, A, T: Any> factoryOrNull(key: DI.Key<C, A, T>, context: DIContext<C>, overrideLevel: Int = 0): ((A) -> T)?
+    public fun <C : Any, A, T: Any> factoryOrNull(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): ((A) -> T)?
 
     /**
      * Retrieve all factories that match the given key.
@@ -58,7 +58,7 @@ public interface DIContainer {
      * @throws DI.NotFoundException If no factory was found.
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    public fun <C : Any, A, T: Any> allFactories(key: DI.Key<C, A, T>, context: DIContext<C>, overrideLevel: Int = 0): List<(A) -> T>
+    public fun <C : Any, A, T: Any> allFactories(key: DI.Key<C, A, T>, context: C, overrideLevel: Int = 0): List<(A) -> T>
 
     /**
      * Retrieve a provider for the given key.
@@ -72,7 +72,7 @@ public interface DIContainer {
      * @throws DI.NotFoundException If no provider was found.
      * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    public fun <C : Any, T: Any> provider(key: DI.Key<C, Unit, T>, context: DIContext<C>, overrideLevel: Int = 0): () -> T =
+    public fun <C : Any, T: Any> provider(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): () -> T =
             factory(key, context).toProvider { Unit }
 
     /**
@@ -86,7 +86,7 @@ public interface DIContainer {
      * @return The found provider, or null if no provider was found.
      * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
-    public fun <C : Any, T: Any> providerOrNull(key: DI.Key<C, Unit, T>, context: DIContext<C>, overrideLevel: Int = 0): (() -> T)? =
+    public fun <C : Any, T: Any> providerOrNull(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): (() -> T)? =
             factoryOrNull(key, context)?.toProvider { Unit }
 
     /**
@@ -101,7 +101,7 @@ public interface DIContainer {
      * @throws DI.NotFoundException If no factory was found.
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
-    public fun <C : Any, T: Any> allProviders(key: DI.Key<C, Unit, T>, context: DIContext<C>, overrideLevel: Int = 0): List<() -> T> =
+    public fun <C : Any, T: Any> allProviders(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): List<() -> T> =
             allFactories(key, context).map { it.toProvider { Unit } }
 
     /**

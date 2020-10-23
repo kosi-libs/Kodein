@@ -1,6 +1,5 @@
 package org.kodein.di
 
-import org.kodein.di.bindings.Weak
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
@@ -12,7 +11,7 @@ class GenericJvmTests_82_Weak {
     @Suppress("UNUSED_VALUE")
     @Test
     fun test_00_WeakSingletonBinding() {
-        val kodein = DI { bind<Person>() with singleton(ref = Weak) { Person() } }
+        val kodein = DI { bind<Person>() with singleton(ref = weakReference) { Person() } }
 
         fun getId(): Int {
             val p1: Person by kodein.instance()
@@ -32,7 +31,7 @@ class GenericJvmTests_82_Weak {
     @Suppress("UNUSED_VALUE")
     @Test
     fun test_01_WeakMultiton() {
-        val kodein = DI { bind() from multiton(ref = Weak) { name: String -> Person(name) } }
+        val kodein = DI { bind() from multiton(ref = weakReference) { name: String -> Person(name) } }
 
         var p1: Person? = kodein.direct.instance(arg = "Salomon")
         var p2: Person? = kodein.direct.instance(arg = "Salomon")

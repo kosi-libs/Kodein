@@ -1,11 +1,6 @@
 package org.kodein.di
 
-import org.kodein.di.bindings.Reference
-import org.kodein.di.bindings.Strong
-import org.kodein.di.bindings.Weak
 import org.kodein.type.generic
-import kotlin.js.JsName
-import kotlin.jvm.JvmName
 
 //region Standard retrieving
 /**
@@ -265,24 +260,15 @@ public inline fun <A, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, 
  */
 public inline fun <reified A : Any, reified T : Any> DIAware.instanceOrNull(tag: Any? = null, noinline fArg: () -> A): DIProperty<T?> = InstanceOrNull<A, T>(generic(), generic(), tag, fArg)
 
-public inline fun <reified C : Any> diContextRef(context: Reference<C>): DIContext<C> = DIContext(generic(), context)
-
-public inline fun <reified C : Any> diContextRef(noinline getContext: () -> Reference<C>): DIContext<C> = DIContext(generic(), getContext)
+/**
+ * Defines a context and its type to be used by DI.
+ */
+public inline fun <reified C : Any> diContext(context: C): DIContext<C> = DIContext(generic(), context)
 
 /**
  * Defines a context and its type to be used by DI.
  */
-public inline fun <reified C : Any> diContext(context: C, ref: Reference.Maker): DIContext<C> = DIContext(generic(), context, ref)
-
-/**
- * Defines a context and its type to be used by DI.
- */
-public inline fun <reified C : Any> diContext(ref: Reference.Maker, noinline getContext: () -> C) : DIContext<C> = DIContext(generic<C>(), getContext, ref)
-
-// Since 7.1
-@Deprecated("Specify explicitely the context reference to avoid memory leaks", ReplaceWith("diContext(Strong, getContext)", "org.kodein.di.bindings.Strong"))
-@JvmName("diStrongContext") @JsName("diStrongContext")
-public inline fun <reified C : Any> diContext(noinline getContext: () -> C) : DIContext<C> = diContext(Strong, getContext)
+public inline fun <reified C : Any> diContext(crossinline getContext: () -> C) : DIContext<C> = DIContext(generic<C>(), getValue = { getContext() })
 
 /**
  * Allows to create a new DI object with a context and/or a trigger set.
@@ -291,9 +277,7 @@ public inline fun <reified C : Any> diContext(noinline getContext: () -> C) : DI
  * @param trigger The new trigger of the new DI.
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
-public inline fun <reified C : Any> DIAware.on(context: C, ref: Reference.Maker = Strong, trigger: DITrigger? = this.diTrigger): DI = On(diContext(context, ref), trigger)
-
-public inline fun <reified C : Any> DIAware.onRef(context: Reference<C>, trigger: DITrigger? = this.diTrigger): DI = On(diContextRef(context), trigger)
+public inline fun <reified C : Any> DIAware.on(context: C, trigger: DITrigger? = this.diTrigger): DI = On(diContext(context), trigger)
 
 /**
  * Allows to create a new DI object with a context and/or a trigger set.
@@ -302,9 +286,7 @@ public inline fun <reified C : Any> DIAware.onRef(context: Reference<C>, trigger
  * @param trigger The new trigger of the new DI.
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
-public inline fun <reified C : Any> DIAware.on(trigger: DITrigger? = this.diTrigger, ref: Reference.Maker = Strong, noinline getContext: () -> C): DI = On(diContext(ref, getContext), trigger)
-
-public inline fun <reified C : Any> DIAware.onRef(trigger: DITrigger? = this.diTrigger, noinline getContext: () -> Reference<C>): DI = On(diContextRef(getContext), trigger)
+public inline fun <reified C : Any> DIAware.on(trigger: DITrigger? = this.diTrigger, crossinline getContext: () -> C): DI = On(diContext(getContext), trigger)
 
 /**
  * Allows to create a new DI object with a trigger set.
@@ -555,7 +537,7 @@ public inline fun <A, reified T : Any> DirectDIAware.instanceOrNull(tag: Any? = 
  * @param context The new context for the new DirectDI.
  * @param receiver The new receiver for the new DirectDI.
  */
-public inline fun <reified C : Any> DirectDIAware.on(context: C, ref: Reference.Maker = Strong): DirectDI = directDI.On(diContext(context, ref))
+public inline fun <reified C : Any> DirectDIAware.on(context: C): DirectDI = directDI.On(diContext(context))
 //endregion
 
 //region Named retrieving
