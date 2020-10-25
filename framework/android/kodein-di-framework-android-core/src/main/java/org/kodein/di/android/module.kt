@@ -90,7 +90,7 @@ fun androidCoreModule(app: Application) = DI.Module(name = "\u2063androidModule"
     Bind() from Factory(contextToken, generic(), generic()) { name: String -> context.getSharedPreferences(name, Context.MODE_PRIVATE) }
 
     Bind<File>(generic(), tag = "cache") with Provider(contextToken, generic()) { context.cacheDir }
-    Bind<File>(generic(), tag = "externalCache") with Provider(contextToken, generic()) { context.externalCacheDir }
+    // Bind<File>(generic(), tag = "externalCache") with Provider(contextToken, generic()) { context.externalCacheDir } TODO: re-enable once we found how to bind nullables
     Bind<File>(generic(), tag = "files") with Provider(contextToken, generic()) { context.filesDir }
     Bind<File>(generic(), tag = "obb") with Provider(contextToken, generic()) { context.obbDir }
 
