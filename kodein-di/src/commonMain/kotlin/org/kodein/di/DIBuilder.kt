@@ -108,7 +108,30 @@ public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithContext<C>.provid
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  * @return A singleton ready to be bound.
  */
+@Deprecated(message = "Please use scopedSingleton", replaceWith = ReplaceWith(expression = "scopedSingleton(ref, sync, creator)", imports = ["import org.kodein.di.scopedSingleton"]), level = DeprecationLevel.WARNING)
 public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.singleton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: NoArgSimpleBindingDI<C>.() -> T): Singleton<C, T> = Singleton(scope, contextType, generic(), ref, sync, creator)
+
+/**
+ * Creates a singleton: will create an instance on first request and will subsequently always return the same instance.
+ *
+ * T generics will be erased!
+ *
+ * @param T The created type.
+ * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
+ * @return A singleton ready to be bound.
+ */
+public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.scopedSingleton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: NoArgSimpleBindingDI<C>.() -> T): ScopedSingleton<C, T> = ScopedSingleton(scope, contextType, generic(), ref, sync, creator)
+
+/**
+ * Creates an eager singleton: will create an instance as soon as kodein is ready (all bindings are set) and will always return this instance.
+ *
+ * T generics will be erased!
+ *
+ * @param T The created type.
+ * @param creator The function that will be called as soon as DI is ready. Guaranteed to be called only once. Should create a new instance.
+ * @return An eager singleton ready to be bound.
+ */
+public inline fun <reified T: Any> DI.Builder.globalSingleton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: ContextSafeNoArgBindingDI.() -> T): GlobalSingleton<T> = GlobalSingleton(containerBuilder, generic(), ref, sync, creator)
 
 /**
  * Creates a multiton: will create an instance on first request for each different argument and will subsequently always return the same instance for the same argument.

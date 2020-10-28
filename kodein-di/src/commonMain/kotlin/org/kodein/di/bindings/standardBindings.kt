@@ -97,6 +97,7 @@ public class Provider<C : Any, T: Any>(override val contextType: TypeToken<in C>
  * @param createdType The type of the created object, *used for debug print only*.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
+@Deprecated(message = "Please use ScopedSingleton", replaceWith = ReplaceWith(expression = "ScopedSingleton(scope, contextType, createdType, refMaker, sync, creator)", imports = ["org.kodein.di.bindings.ScopedSingleton"]), level = DeprecationLevel.WARNING)
 public class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, public val sync: Boolean = true, public val creator: NoArgSimpleBindingDI<C>.() -> T) : NoArgDIBinding<C, T> {
     @Suppress("UNCHECKED_CAST")
     private val _refMaker = refMaker ?: SingletonReference
@@ -134,6 +135,111 @@ public class Singleton<C : Any, T: Any>(override val scope: Scope<C>, override v
     }
 
     override val copier: DIBinding.Copier<C, Unit, T> = DIBinding.Copier { Singleton(scope, contextType, createdType, _refMaker, sync, creator) }
+}
+
+/**
+ * Singleton Binding: will create an instance on first request and will subsequently always return the same instance.
+ *
+ * @param T The created type.
+ * @param createdType The type of the created object, *used for debug print only*.
+ * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
+ */
+public class ScopedSingleton<C : Any, T: Any>(override val scope: Scope<C>, override val contextType: TypeToken<in C>, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, public val sync: Boolean = true, public val creator: NoArgSimpleBindingDI<C>.() -> T) : NoArgDIBinding<C, T> {
+    @Suppress("UNCHECKED_CAST")
+    private val _refMaker = refMaker ?: SingletonReference
+    private val _scopeKey = ScopeKey(Any(), Unit)
+
+    private fun factoryName(params: List<String>) = buildString {
+        append("scopedSingleton")
+        if (params.isNotEmpty())
+            append(params.joinToString(prefix = "(", separator = ", ", postfix = ")"))
+    }
+
+    override fun factoryName(): String {
+        val params = ArrayList<String>(2)
+        if (_refMaker != SingletonReference)
+            params.add("ref = ${erasedOf(_refMaker).simpleDispString()}")
+        return factoryName(params)
+    }
+
+    override fun factoryFullName(): String {
+        val params = ArrayList<String>(2)
+        if (_refMaker != SingletonReference)
+            params.add("ref = ${erasedOf(_refMaker).qualifiedDispString()}")
+        return factoryName(params)
+    }
+
+    /**
+     * @see [DIBinding.getFactory]
+     */
+    override fun getFactory(di: BindingDI<C>, key: DI.Key<C, Unit, T>): (Unit) -> T {
+        val registry = scope.getRegistry(di.context)
+        return {
+            @Suppress("UNCHECKED_CAST")
+            registry.getOrCreate(_scopeKey, sync) { _refMaker.make { NoArgBindingDIWrap(di).creator() } } as T
+        }
+    }
+
+    override val copier: DIBinding.Copier<C, Unit, T> = DIBinding.Copier { ScopedSingleton(scope, contextType, createdType, _refMaker, sync, creator) }
+}
+
+/**
+ * Concrete eager singleton: will create an instance as soon as di is ready (all bindings are set) and will always return this instance.
+ *
+ * @param T The created type.
+ * @param createdType The type of the created object.
+ * @param creator The function that will be called as soon as DI is ready. Guaranteed to be called only once. Should create a new instance.
+ */
+public class GlobalSingleton<T: Any>(builder: DIContainer.Builder, override val createdType: TypeToken<out T>, refMaker: RefMaker? = null, public val sync: Boolean = true, public val creator: ContextSafeNoArgBindingDI.() -> T) : NoArgDIBinding<Any, T> {
+    override val contextType: TypeToken<Any> = TypeToken.Any
+
+    override val scope: Scope<Any> = NoScope()
+    private val _scopeKey = ScopeKey(Any(), Unit)
+
+    @Suppress("UNCHECKED_CAST")
+    private val _refMaker = refMaker ?: SingletonReference
+
+    @Volatile private var _instance: T? = null
+
+    /**
+     * @see [DIBinding.getFactory]
+     */
+    override fun getFactory(di: BindingDI<Any>, key: DI.Key<Any, Unit, T>): (Unit) -> T {
+        val registry = scope.getRegistry(AnyDIContext)
+
+        return { _ ->
+            @Suppress("UNCHECKED_CAST")
+            registry.getOrCreate(_scopeKey, sync) {
+                _refMaker.make {
+                    contextSafeNoArgBindingDIWrap(di, key).creator().also {
+                        _instance = it
+                    }
+                }
+            } as T
+        }
+    }
+
+    private fun factoryName(params: List<String>) = buildString {
+        append("globalSingleton")
+        if (params.isNotEmpty())
+            append(params.joinToString(prefix = "(", separator = ", ", postfix = ")"))
+    }
+
+    override fun factoryName(): String {
+        val params = ArrayList<String>(2)
+        if (_refMaker != SingletonReference)
+            params.add("ref = ${erasedOf(_refMaker).simpleDispString()}")
+        return factoryName(params)
+    }
+
+    override fun factoryFullName(): String {
+        val params = ArrayList<String>(2)
+        if (_refMaker != SingletonReference)
+            params.add("ref = ${erasedOf(_refMaker).qualifiedDispString()}")
+        return factoryName(params)
+    }
+
+    override val copier: DIBinding.Copier<Any, Unit, T> = DIBinding.Copier { GlobalSingleton(builder, createdType, _refMaker, sync, creator) }
 }
 
 /**

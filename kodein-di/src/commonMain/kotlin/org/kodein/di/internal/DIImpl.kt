@@ -2,6 +2,7 @@ package org.kodein.di.internal
 
 import org.kodein.di.*
 import org.kodein.di.bindings.BindingDI
+import org.kodein.di.bindings.OverrideLevelProvider
 
 /**
  * DI implementation.
@@ -38,8 +39,8 @@ internal open class BindingDIImpl<out C : Any, out A, out T: Any> internal const
         override val directDI: DirectDI,
         private val _key: DI.Key<C, A, T>,
         override val context: C,
-        private val _overrideLevel: Int
-) : DirectDI by directDI, BindingDI<C> {
-    override fun overriddenFactory(): (Any?) -> Any = container.factory(_key, context, _overrideLevel + 1) as (Any?) -> Any
-    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = container.factoryOrNull(_key, context, _overrideLevel + 1) as ((Any?) -> Any)?
+        override val overrideLevel: Int
+) : DirectDI by directDI, BindingDI<C>, OverrideLevelProvider {
+    override fun overriddenFactory(): (Any?) -> Any = container.factory(_key, context, overrideLevel + 1) as (Any?) -> Any
+    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = container.factoryOrNull(_key, context, overrideLevel + 1) as ((Any?) -> Any)?
 }
