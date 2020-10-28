@@ -12,7 +12,7 @@ class ErasedJvmTests_01_Thread {
     // Only the JVM supports threads
     @Test
     fun test_00_ThreadSingletonBindingGetInstance() {
-        val kodein = DI { bind<Person>() with singleton(ref = threadLocal) { Person() } }
+        val kodein = DI { bind<Person>() with scopedSingleton(ref = threadLocal) { Person() } }
 
         lateinit var tp1: Person
 
@@ -36,7 +36,7 @@ class ErasedJvmTests_01_Thread {
     // Only the JVM supports threads
     @Test
     fun test_01_ThreadSingletonBindingGetProvider() {
-        val kodein = DI { bind<Person>() with singleton(ref = threadLocal) { Person() } }
+        val kodein = DI { bind<Person>() with scopedSingleton(ref = threadLocal) { Person() } }
 
         lateinit var tp1: Person
         lateinit var tp2: () -> Person

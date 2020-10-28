@@ -11,7 +11,7 @@ class Tests_18_MultiBindings {
         val di = DI {
             bind() from setBinding<IPerson>()
 
-            bind<IPerson>().inSet() with singleton { Person("Salomon") }
+            bind<IPerson>().inSet() with scopedSingleton { Person("Salomon") }
             bind<IPerson>().inSet() with provider { Person("Laila") }
 
             Bind<List<IPerson>>(erasedList<IPerson>()) with provider { Instance<Set<IPerson>>(erasedSet(), null).toList() }
@@ -42,7 +42,7 @@ class Tests_18_MultiBindings {
         val di = DI {
             bind() from setBinding<PersonEntry>()
 
-            bind<PersonEntry>().inSet() with singleton { "so" to Person("Salomon") }
+            bind<PersonEntry>().inSet() with scopedSingleton { "so" to Person("Salomon") }
             bind<PersonEntry>().inSet() with provider { "loulou" to Person("Laila") }
 
             Bind<Map<String, Person>>(erasedMap()) with provider { Instance<PersonEntries>(erasedSet(), null).toMap() }

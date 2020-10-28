@@ -27,7 +27,7 @@ class ErasedJvmTests_04_Scope {
         }
 
         val kodein = DI {
-            bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
+            bind<CloseableData>() with scoped(sessionScope).scopedSingleton { CloseableData() }
             registerContextTranslator { r: AbstractRequest -> r.session }
         }
 

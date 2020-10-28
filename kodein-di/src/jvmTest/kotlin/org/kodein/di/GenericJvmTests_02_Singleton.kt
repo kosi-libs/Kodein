@@ -12,7 +12,7 @@ class GenericJvmTests_02_Singleton {
     @Test
     fun test_00_SingletonBindingGetInstance() {
 
-        val kodein = DI { bind<Person>() with singleton { Person() } }
+        val kodein = DI { bind<Person>() with scopedSingleton { Person() } }
 
         val p1: Person by kodein.instance()
         val p2: Person by kodein.instance()
@@ -23,7 +23,7 @@ class GenericJvmTests_02_Singleton {
     @Test
     fun test_01_SingletonBindingGetProvider() {
 
-        val kodein = DI { bind<Person>() with singleton { Person() } }
+        val kodein = DI { bind<Person>() with scopedSingleton { Person() } }
 
         val p1: () -> Person by kodein.provider()
         val p2: () -> Person by kodein.provider()
@@ -34,7 +34,7 @@ class GenericJvmTests_02_Singleton {
     @Test
     fun test_02_NonSyncedSingletonBindingGetInstance() {
 
-        val kodein = DI { bind<Person>() with singleton(sync = false) { Person() } }
+        val kodein = DI { bind<Person>() with scopedSingleton(sync = false) { Person() } }
 
         val p1: Person by kodein.instance()
         val p2: Person by kodein.instance()

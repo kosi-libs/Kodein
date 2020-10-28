@@ -10,9 +10,9 @@ class GenericJvmTests_07_Error {
     fun test_00_DependencyLoop() {
 
         val kodein = DI {
-            bind<A>() with singleton { A(instance()) }
-            bind<B>() with singleton { B(instance()) }
-            bind<C>() with singleton { C(instance()) }
+            bind<A>() with scopedSingleton { A(instance()) }
+            bind<B>() with scopedSingleton { B(instance()) }
+            bind<C>() with scopedSingleton { C(instance()) }
         }
 
         val ex = assertFailsWith<DI.DependencyLoopException> {
@@ -35,9 +35,9 @@ Dependency recursion:
 
         val kodein = DI {
             fullDescriptionOnError = true
-            bind<A>() with singleton { A(instance()) }
-            bind<B>() with singleton { B(instance()) }
-            bind<C>() with singleton { C(instance()) }
+            bind<A>() with scopedSingleton { A(instance()) }
+            bind<B>() with scopedSingleton { B(instance()) }
+            bind<C>() with scopedSingleton { C(instance()) }
         }
 
         val ex = assertFailsWith<DI.DependencyLoopException> {
@@ -83,10 +83,10 @@ Dependency recursion:
     fun test_03_NoDependencyLoop() {
 
         val kodein = DI {
-            bind<A>() with singleton { A(instance()) }
-            bind<A>(tag = "root") with singleton { A(null) }
-            bind<B>() with singleton { B(instance()) }
-            bind<C>() with singleton { C(instance(tag = "root")) }
+            bind<A>() with scopedSingleton { A(instance()) }
+            bind<A>(tag = "root") with scopedSingleton { A(null) }
+            bind<B>() with scopedSingleton { B(instance()) }
+            bind<C>() with scopedSingleton { C(instance(tag = "root")) }
         }
 
         val a by kodein.instance<A>()
@@ -179,7 +179,7 @@ Dependency recursion:
                 bind() from instance(Unit)
             }
             assertFailsWith<IllegalArgumentException> {
-                bind() from singleton { unit() }
+                bind() from scopedSingleton { unit() }
             }
 
             bind<Unit>() with instance(unit())

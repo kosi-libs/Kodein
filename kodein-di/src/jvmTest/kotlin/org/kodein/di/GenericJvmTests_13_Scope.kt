@@ -14,7 +14,7 @@ class GenericJvmTests_13_Scope {
             override fun getRegistry(context: Any?) = registry
         }
         val kodein = DI {
-            bind<Person>() with scoped(myScope).singleton { Person() }
+            bind<Person>() with scoped(myScope).scopedSingleton { Person() }
         }
 
         assertTrue(registry.isEmpty())
@@ -38,7 +38,7 @@ class GenericJvmTests_13_Scope {
             override fun getRegistry(context: String) = registries[context]!!
         }
         val kodein = DI {
-            bind<Person>() with scoped(myScope).singleton { Person() }
+            bind<Person>() with scoped(myScope).scopedSingleton { Person() }
         }
 
         assertTrue(registries["a"]!!.isEmpty())
@@ -62,7 +62,7 @@ class GenericJvmTests_13_Scope {
     @Test
     fun test_02_ScopeIgnoredSingleton() {
         val kodein = DI {
-            bind<Person>() with singleton { Person() }
+            bind<Person>() with scopedSingleton { Person() }
         }
 
         val a: Person by kodein.on(context = "a").instance()
@@ -84,7 +84,7 @@ class GenericJvmTests_13_Scope {
         val myScope = UnboundedScope(SingleItemScopeRegistry())
 
         val kodein = DI {
-            bind<CloseableData>() with scoped(myScope).singleton { CloseableData() }
+            bind<CloseableData>() with scoped(myScope).scopedSingleton { CloseableData() }
         }
 
         val a: CloseableData by kodein.instance()
@@ -114,7 +114,7 @@ class GenericJvmTests_13_Scope {
         }
 
         val kodein = DI {
-            bind<CloseableData>() with scoped(requestScope).singleton { CloseableData() }
+            bind<CloseableData>() with scoped(requestScope).scopedSingleton { CloseableData() }
         }
 
         val session = Session("sid")
@@ -145,7 +145,7 @@ class GenericJvmTests_13_Scope {
         }
 
         val kodein = DI {
-            bind() from scoped(testScope).singleton { Person(context.name) }
+            bind() from scoped(testScope).scopedSingleton { Person(context.name) }
         }
 
         val test1 = T05(kodein, "one")
@@ -168,7 +168,7 @@ class GenericJvmTests_13_Scope {
         }
 
         val kodein = DI {
-            bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
+            bind<CloseableData>() with scoped(sessionScope).scopedSingleton { CloseableData() }
             registerContextTranslator { r: Request -> r.session }
         }
 
@@ -195,7 +195,7 @@ class GenericJvmTests_13_Scope {
         val request = Request(session)
 
         val parentDI = DI {
-            bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
+            bind<CloseableData>() with scoped(sessionScope).scopedSingleton { CloseableData() }
             registerContextTranslator { r: Request -> r.session }
             registerContextFinder { request }
         }
@@ -253,7 +253,7 @@ class GenericJvmTests_13_Scope {
         }
 
         val kodein = DI {
-            bind<CloseableData>() with scoped(sessionScope).singleton { CloseableData() }
+            bind<CloseableData>() with scoped(sessionScope).scopedSingleton { CloseableData() }
             registerContextTranslator { r: AbstractRequest -> r.session }
         }
 

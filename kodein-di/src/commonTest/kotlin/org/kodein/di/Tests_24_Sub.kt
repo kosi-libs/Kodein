@@ -13,7 +13,7 @@ class Tests_24_Sub {
 
         val root = DI {
             bind<Foo>() with provider { Foo("rootFoo") }
-            bind<Bar>() with singleton { Bar(instance()) }
+            bind<Bar>() with scopedSingleton { Bar(instance()) }
         }
 
         val sub = subDI(root) {
@@ -39,7 +39,7 @@ class Tests_24_Sub {
 
         val root = DI {
             bind<Foo>() with provider { Foo("rootFoo") }
-            bind<Bar>() with singleton { Bar(instance()) }
+            bind<Bar>() with scopedSingleton { Bar(instance()) }
         }
 
         val sub = subDI(root, copy = Copy.All, init = {
@@ -65,7 +65,7 @@ class Tests_24_Sub {
 
         val root = DI {
             bind<Foo>() with provider { Foo("rootFoo") }
-            bind<Bar>() with singleton { Bar(instance()) }
+            bind<Bar>() with scopedSingleton { Bar(instance()) }
         }
 
         val sub = subDI(root, allowSilentOverride = true, init = {
@@ -91,7 +91,7 @@ class Tests_24_Sub {
 
         val root = DI {
             bind<Foo>() with provider { Foo("rootFoo") }
-            bind<Bar>() with singleton { Bar(instance()) }
+            bind<Bar>() with scopedSingleton { Bar(instance()) }
         }
 
         assertFailsWith(DI.OverridingException::class) {

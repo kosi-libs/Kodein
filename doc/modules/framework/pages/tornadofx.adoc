@@ -250,7 +250,7 @@ For some need we could want to define DI containers into the `Node` hierarchy. T
 class MyView : View() {
     override val root = hbox { // <1>
         kodeinDI { // <2>
-            bind<Random>() with singleton { SecureRandom() }
+            bind<Random>() with scopedSingleton { SecureRandom() }
         }
 
         form { // <3>
@@ -281,7 +281,7 @@ To do so, we have facilities to extend a DI container by calling the `subDI` ext
 ----
 class LoginController : Controller(), DIAware { // <1>
     override val di: DI = subDI { // <2>
-            bind<CredentialsDao> with singleton { CredentialsDao() } <3>
+            bind<CredentialsDao> with scopedSingleton { CredentialsDao() } <3>
     }
 
     // ...
@@ -304,7 +304,7 @@ NOTE: Making your `Component` as `DIAware` is *optional*, but it will help you k
 class LoginView : View() {
     override val root = hbox { // <1>
         subDI { // <2>
-            bind<LoginController>() with singleton { instance() } // <3>
+            bind<LoginController>() with scopedSingleton { instance() } // <3>
         }
 
         form {

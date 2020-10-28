@@ -11,7 +11,7 @@ class GenericJvmTests_18_MultiBindings {
         val kodein = DI {
             bind() from setBinding<IPerson>()
 
-            bind<IPerson>().inSet() with singleton { Person("Salomon") }
+            bind<IPerson>().inSet() with scopedSingleton { Person("Salomon") }
             bind<IPerson>().inSet() with provider { Person("Laila") }
 
             bind<List<IPerson>>() with provider { instance<Set<IPerson>>().toList() }
@@ -42,7 +42,7 @@ class GenericJvmTests_18_MultiBindings {
         val kodein = DI {
             bind() from setBinding<PersonEntry>()
 
-            bind<PersonEntry>().inSet() with singleton { "so" to Person("Salomon") }
+            bind<PersonEntry>().inSet() with scopedSingleton { "so" to Person("Salomon") }
             bind<PersonEntry>().inSet() with provider { "loulou" to Person("Laila") }
 
             bind<Map<String, Person>>() with provider { instance<PersonEntries>().toMap() }

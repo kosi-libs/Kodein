@@ -10,7 +10,7 @@ const val AUTHOR = "Romain Boisselle"
 const val VERSION = "1.0.0"
 
 fun Application.installDI() = di {
-          bind<ApplicationController>() with singleton { ApplicationController(instance()) }
+          bind<ApplicationController>() with scopedSingleton { ApplicationController(instance()) }
           constant("author") with AUTHOR
           constant("version") with VERSION
         }

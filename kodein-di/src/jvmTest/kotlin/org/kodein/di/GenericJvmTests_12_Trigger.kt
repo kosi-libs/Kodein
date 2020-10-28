@@ -21,7 +21,7 @@ class GenericJvmTests_12_Trigger {
     fun test_00_SimpleTrigger() {
         val kodein = DI {
             bind<Person>() with provider { Person() }
-            bind<Person>(tag = "named") with singleton { Person("Salomon") }
+            bind<Person>(tag = "named") with scopedSingleton { Person("Salomon") }
             bind<Person>(tag = "factory") with factory { name: String -> Person(name) }
         }
 
@@ -49,7 +49,7 @@ class GenericJvmTests_12_Trigger {
     fun test_01_CreatedAtTrigger() {
         var created = false
         val kodein = DI {
-            bind<Person>() with singleton { created = true; Person() }
+            bind<Person>() with scopedSingleton { created = true; Person() }
         }
 
         val container = T01(kodein)

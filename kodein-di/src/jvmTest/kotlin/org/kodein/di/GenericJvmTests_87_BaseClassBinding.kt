@@ -13,8 +13,8 @@ class GenericJvmTests_87_BaseClassBinding {
     open class Resource2 : Resource1()
 
     val kodein00 = DI {
-        bind<Resource1>() with singleton { Resource1() }
-        bind<Resource2>() with singleton { Resource2() }
+        bind<Resource1>() with scopedSingleton { Resource1() }
+        bind<Resource2>() with scopedSingleton { Resource2() }
     }
 
     private val instanceLevelResource1: Resource1 by kodein00.instance()
@@ -27,7 +27,7 @@ class GenericJvmTests_87_BaseClassBinding {
 
     val kodein01 = DI {
         bind<Resource1>() with contexted<String>().provider { Resource1() }
-        bind<Resource2>() with singleton { Resource2() }
+        bind<Resource2>() with scopedSingleton { Resource2() }
     }
 
     private val _01_uncontextedInstanceLevelResource1: Resource1 by kodein01.instance()

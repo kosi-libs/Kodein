@@ -56,8 +56,8 @@ class GenericJvmTests_14_Override {
     fun test_04_OverrideWithSuper() {
         val kodein = DI(allowSilentOverride = true) {
             bind<String>(tag = "name") with instance("Salomon")
-            bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " BRYS" }
-            bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " the great" } // just kidding!
+            bind<String>(tag = "name", overrides = true) with scopedSingleton { (overriddenInstance() as String) + " BRYS" }
+            bind<String>(tag = "name", overrides = true) with scopedSingleton { (overriddenInstance() as String) + " the great" } // just kidding!
         }
 
         assertEquals("Salomon BRYS the great", kodein.direct.instance("name"))
@@ -67,10 +67,10 @@ class GenericJvmTests_14_Override {
     fun test_05_DependencyLoopWithOverrides() {
 
         val kodein = DI {
-            bind<String>(tag = "name") with singleton { instance<String>(tag = "title") + " Salomon " }
-            bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " BRYS " }
-            bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " of France" }
-            bind<String>(tag = "title") with singleton { instance<String>(tag = "name") + " the great" }
+            bind<String>(tag = "name") with scopedSingleton { instance<String>(tag = "title") + " Salomon " }
+            bind<String>(tag = "name", overrides = true) with scopedSingleton { (overriddenInstance() as String) + " BRYS " }
+            bind<String>(tag = "name", overrides = true) with scopedSingleton { (overriddenInstance() as String) + " of France" }
+            bind<String>(tag = "title") with scopedSingleton { instance<String>(tag = "name") + " the great" }
 
         }
 

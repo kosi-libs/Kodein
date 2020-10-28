@@ -21,7 +21,7 @@ val di = DI {
     bind() from setBinding<Configuration>() <1>
 
     bind<Configuration>().inSet() with provider { FooConfiguration() } // <2>
-    bind<Configuration>().inSet() with singleton { BarConfiguration() } // <2>
+    bind<Configuration>().inSet() with scopedSingleton { BarConfiguration() } // <2>
 }
 ----
 <1> Creating a set binding of `Configuration`.

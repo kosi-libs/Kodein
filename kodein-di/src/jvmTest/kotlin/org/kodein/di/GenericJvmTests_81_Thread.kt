@@ -11,7 +11,7 @@ class GenericJvmTests_81_Thread {
 
     @Test
     fun test_00_ThreadSingletonBindingGetInstance() {
-        val kodein = DI { bind<Person>() with singleton(ref = threadLocal) { Person(Thread.currentThread().name) } }
+        val kodein = DI { bind<Person>() with scopedSingleton(ref = threadLocal) { Person(Thread.currentThread().name) } }
 
         lateinit var tp1: Person
 
@@ -34,7 +34,7 @@ class GenericJvmTests_81_Thread {
 
     @Test
     fun test_01_ThreadSingletonBindingGetProvider() {
-        val kodein = DI { bind<Person>() with singleton(ref = threadLocal) { Person() } }
+        val kodein = DI { bind<Person>() with scopedSingleton(ref = threadLocal) { Person() } }
 
         lateinit var tp1: Person
         lateinit var tp2: () -> Person

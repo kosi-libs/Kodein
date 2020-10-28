@@ -12,7 +12,7 @@ Here's an example of what this prints:
 .An example of di.container.tree.bindings.description:
 ----
         bind<Dice>() with factory { Int -> RandomDice }
-        bind<DataSource>() with singleton { SQLiteDataSource }
+        bind<DataSource>() with scopedSingleton { SQLiteDataSource }
         bind<Random>() with provider { SecureRandom }
         bind<String>(tag = "answer") with instance ( Int )
 ----

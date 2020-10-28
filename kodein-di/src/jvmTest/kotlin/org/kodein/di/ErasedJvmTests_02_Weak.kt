@@ -12,7 +12,7 @@ class ErasedJvmTests_02_Weak {
     @Suppress("UNUSED_VALUE")
     @Test
     fun test_00_WeakSingletonBinding() {
-        val kodein = DI { bind<Person>() with singleton(ref = weakReference) { Person() } }
+        val kodein = DI { bind<Person>() with scopedSingleton(ref = weakReference) { Person() } }
 
         fun getId(): Int {
             val p1: Person by kodein.instance()

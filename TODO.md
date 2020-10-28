@@ -12,7 +12,7 @@ This would enable code such as:
 
 ```kotlin
 Kodein {
-    bind<UserList>() with singleton { api.userList().await() }
+    bind<UserList>() with scopedSingleton { api.userList().await() }
 }
 ```
 

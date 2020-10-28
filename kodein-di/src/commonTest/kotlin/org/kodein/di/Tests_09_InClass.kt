@@ -21,7 +21,7 @@ class Tests_09_InClass {
     fun test_00_Class() {
         val di = DI {
             bind<Person>() with provider { Person() }
-            bind<Person>(tag = "named") with singleton { Person("Salomon") }
+            bind<Person>(tag = "named") with scopedSingleton { Person("Salomon") }
             bind<Person>(tag = "factory") with factory { name: String -> Person(name) }
         }
 

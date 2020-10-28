@@ -38,8 +38,8 @@ class GenericJvmTests_05_Named {
 
     @Test fun test_02_NamedSingletonBindingGetInstance() {
         val kodein = DI {
-            bind<Person>() with singleton { Person() }
-            bind<Person>(tag = "named") with singleton { Person("Salomon") }
+            bind<Person>() with scopedSingleton { Person() }
+            bind<Person>(tag = "named") with scopedSingleton { Person("Salomon") }
         }
 
         val p1: Person by kodein.instance(tag = "named")
@@ -51,8 +51,8 @@ class GenericJvmTests_05_Named {
 
     @Test fun test_03_NamedSingletonBindingGetProvider() {
         val kodein = DI {
-            bind<Person>() with singleton { Person() }
-            bind<Person>(tag = "named") with singleton { Person("Salomon") }
+            bind<Person>() with scopedSingleton { Person() }
+            bind<Person>(tag = "named") with scopedSingleton { Person("Salomon") }
         }
 
         val p1: () -> Person by kodein.provider(tag = "named")

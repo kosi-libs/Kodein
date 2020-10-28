@@ -36,7 +36,7 @@ class ErasedJvmTests_00_Factory {
         val di = DI.direct {
             bind<IName>().subTypes() with { type ->
                 when (type.jvmType) {
-                    FullName::class.java -> singleton { FullName("Salomon", "BRYS") }
+                    FullName::class.java -> scopedSingleton { FullName("Salomon", "BRYS") }
                     Name::class.java -> factory { _: Unit -> Name("Salomon") }
                     else -> throw IllegalStateException("Unknown type ${type.qualifiedDispString()}")
                 }

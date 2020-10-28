@@ -109,7 +109,7 @@ public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithContext<C>.provid
  * @return A singleton ready to be bound.
  */
 @Deprecated(message = "Please use scopedSingleton", replaceWith = ReplaceWith(expression = "scopedSingleton(ref, sync, creator)", imports = ["import org.kodein.di.scopedSingleton"]), level = DeprecationLevel.WARNING)
-public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.singleton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: NoArgSimpleBindingDI<C>.() -> T): Singleton<C, T> = Singleton(scope, contextType, generic(), ref, sync, creator)
+public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.singleton(ref: RefMaker? = null, sync: Boolean = true, noinline creator: NoArgSimpleBindingDI<C>.() -> T): ScopedSingleton<C, T> = ScopedSingleton(scope, contextType, generic(), ref, sync, creator)
 
 /**
  * Creates a singleton: will create an instance on first request and will subsequently always return the same instance.

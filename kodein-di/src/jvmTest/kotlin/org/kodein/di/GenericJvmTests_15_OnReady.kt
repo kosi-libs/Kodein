@@ -15,7 +15,7 @@ class GenericJvmTests_15_OnReady {
         var passed = false
         DI {
             constant(tag = "name") with "Salomon"
-            bind<Person>() with singleton { Person(instance(tag = "name")) }
+            bind<Person>() with scopedSingleton { Person(instance(tag = "name")) }
             onReady {
                 assertEquals("Salomon", instance<Person>().name)
                 passed = true

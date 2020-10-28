@@ -65,7 +65,7 @@ Therefore, the provided function will be called *only once*: the first time an i
 .Example: creates a DataSource singleton that will be initialized on first access
 ----
 val di = DI {
-    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+    bind<DataSource>() with scopedSingleton { SqliteDS.open("path/to/file") }
 }
 ----
 
@@ -84,7 +84,7 @@ If you need to improve startup performance, _if you know what you are doing_, yo
 .Example: creates a DataSource non synced singleton
 ----
 val di = DI {
-    bind<DataSource>() with singleton(sync = false) { SqliteDS.open("path/to/file") }
+    bind<DataSource>() with scopedSingleton(sync = false) { SqliteDS.open("path/to/file") }
 }
 ----
 
@@ -205,8 +205,8 @@ Therefore, the provided function *may or may not* be called multiple times durin
 .Example: creates a Cache object that will exist only once at a given time
 ----
 val di = DI {
-    bind<Map>() with singleton(ref = softReference) { WorldMap() } // <1>
-    bind<Client>() with singleton(ref = weakReference) { id -> clientFromDB(id) } // <2>
+    bind<Map>() with scopedSingleton(ref = softReference) { WorldMap() } // <1>
+    bind<Client>() with scopedSingleton(ref = weakReference) { id -> clientFromDB(id) } // <2>
 }
 ----
 <1> Because it's bound by a soft reference, the JVM will GC it before any `OutOfMemoryException` can occur.
@@ -224,7 +224,7 @@ Therefore, the provided function will be called *once per thread* that needs the
 .Example: creates a Cache object that will exist once per thread
 ----
 val di = DI {
-    bind<Cache>() with singleton(ref = threadLocal) { LRUCache(16 * 1024) }
+    bind<Cache>() with scopedSingleton(ref = threadLocal) { LRUCache(16 * 1024) }
 }
 ----
 
@@ -334,7 +334,7 @@ It is really easy to bind this `RandomDice` with its transitive dependencies, by
 .Example: bindings of a Dice and of its transitive dependencies
 ----
 val di = DI {
-    bind<Dice>() with singleton { Dice(instance(), instance(tag = "max")) } // <1>
+    bind<Dice>() with scopedSingleton { Dice(instance(), instance(tag = "max")) } // <1>
 
     bind<Random>() with provider { SecureRandom() } // <2>
     constant(tag="max") with 5 // <2>
@@ -357,7 +357,7 @@ Maybe you need a dependency to use one of its functions to create the bound type
 .Example: using a DataSource to create a Connection.
 ----
 val di = DI {
-    bind<DataSource>() with singleton { MySQLDataSource() }
+    bind<DataSource>() with scopedSingleton { MySQLDataSource() }
     bind<Connection>() with provider { instance<DataSource>().openConnection() } // <1>
 }
 ----
@@ -372,7 +372,7 @@ If the bound class is <<di-aware,DIAware>>, you can pass the `di` object to the 
 .Example: bindings of Manager that is responsible for retrieving its own dependencies
 ----
 val di = DI {
-    bind<Manager>() with singleton { ManagerImpl(di) } // <1>
+    bind<Manager>() with scopedSingleton { ManagerImpl(di) } // <1>
 }
 ----
 <1> ManagerImpl is given a DI instance.

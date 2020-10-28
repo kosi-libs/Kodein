@@ -20,7 +20,7 @@ class GenericJvmTests_10_Module {
 
         val personModule = DI.Module("test") {
             bind<Person>() with provider { Person() }
-            bind<Person>(tag = "named") with singleton { Person("Salomon") }
+            bind<Person>(tag = "named") with scopedSingleton { Person("Salomon") }
             bind<Person>(tag = "factory") with factory { name: String -> Person(name) }
         }
 

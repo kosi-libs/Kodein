@@ -77,7 +77,7 @@ fun test() {
 
     di.addConfig {
         bind<Dice>() with provider { RandomDice(0, 5) }
-        bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+        bind<DataSource>() with scopedSingleton { SqliteDS.open("path/to/file") }
     }
 }
 ----

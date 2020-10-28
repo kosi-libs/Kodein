@@ -133,7 +133,7 @@ class GenericJvmTests_00_Factory {
         val kodein = DI.direct {
             bind<IName>().subTypes() with { type ->
                 when (type.jvmType) {
-                    FullName::class.java -> singleton { FullName("Salomon", "BRYS") }
+                    FullName::class.java -> scopedSingleton { FullName("Salomon", "BRYS") }
                     Name::class.java -> factory { _: Unit -> Name("Salomon") }
                     else -> throw IllegalStateException()
                 }

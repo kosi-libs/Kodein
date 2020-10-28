@@ -66,7 +66,7 @@ Thus, the DI will be reachable from multiple places in your Ktor application.
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
         di { // <1>
-            bind<Random>() with singleton { SecureRandom() } // <2>
+            bind<Random>() with scopedSingleton { SecureRandom() } // <2>
         }
    }.start(true)
 }
@@ -91,7 +91,7 @@ help us with that by defining a DI container that can be retrieve from multiple 
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
         di { // <1>
-            bind<Random>() with singleton { SecureRandom() } // <2>
+            bind<Random>() with scopedSingleton { SecureRandom() } // <2>
         }
 
         routing {
@@ -167,13 +167,13 @@ To do so we have a function `subDI` available for the `Routing` / `Route` classe
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
         di { // <1>
-            bind<Random>() with singleton { SecureRandom() } // <2>
+            bind<Random>() with scopedSingleton { SecureRandom() } // <2>
         }
 
         routing {
             route("/login") {
                 subDI {
-                    bind<CredentialsDao> with singleton { CredentialsDao() } // <3>
+                    bind<CredentialsDao> with scopedSingleton { CredentialsDao() } // <3>
                 }
 
                 post {
@@ -206,7 +206,7 @@ but we have the possibility to copy all the binding (including singleton / multi
 ----
 DI {
     bind<Foo>() with provider { Foo("rootFoo") }
-    bind<Bar>() with singleton { Bar(instance()) }
+    bind<Bar>() with scopedSingleton { Bar(instance()) }
 }
 
 subDI(copy = Copy.All) { // <1>
@@ -226,7 +226,7 @@ Sometimes, It might be interesting to replace an existing dependency (by overrid
 ----
 DI {
     bind<Foo>() with provider { Foo("rootFoo") }
-    bind<Bar>() with singleton { Bar(instance()) }
+    bind<Bar>() with scopedSingleton { Bar(instance()) }
 }
 
 subDI {

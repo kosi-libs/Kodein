@@ -15,7 +15,7 @@ import org.kodein.type.TypeToken
  * ```kotlin
  * val di = DI {
  *     bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
- *     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+ *     bind<DataSource>() with scopedSingleton { SqliteDS.open("path/to/file") }
  *     bind<Random>() with provider { SecureRandom() }
  *     constant("answer") with "forty-two"
  * }
@@ -399,7 +399,7 @@ public interface DI : DIAware {
      *
      * ```kotlinprivate
      * val module = DI.Module {
-     *     bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+     *     bind<DataSource>() with scopedSingleton { SqliteDS.open("path/to/file") }
      * }
      * ```
      *

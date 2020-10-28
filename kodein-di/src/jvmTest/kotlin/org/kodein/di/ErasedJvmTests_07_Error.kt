@@ -13,9 +13,9 @@ class ErasedJvmTests_07_Error {
 
         val di = DI {
             fullDescriptionOnError = true
-            bind<A>() with singleton { A(instance()) }
-            bind<B>() with singleton { B(instance()) }
-            bind<C>() with singleton { C(instance()) }
+            bind<A>() with scopedSingleton { A(instance()) }
+            bind<B>() with scopedSingleton { B(instance()) }
+            bind<C>() with scopedSingleton { C(instance()) }
         }
 
         val ex = assertFailsWith<DI.DependencyLoopException> {

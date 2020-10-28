@@ -23,22 +23,22 @@ class ErasedJvmTests_03_Description {
 
         val di = DI {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
-            bind<IPerson>(tag = "singleton") with singleton { Person("s") }
+            bind<IPerson>(tag = "thread-scopedSingleton") with scopedSingleton(ref = threadLocal) { Person("ts") }
+            bind<IPerson>(tag = "scopedSingleton") with scopedSingleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
-            bind<String>(tag = "scoped") with scoped(TestScope).singleton { "" }
+            bind<String>(tag = "scoped") with scoped(TestScope).scopedSingleton { "" }
             constant(tag = "answer") with 42
         }
 
         val lines = di.container.tree.bindings.description().trim().lineSequence().map(String::trim).toList()
         assertEquals(7, lines.size)
         assertTrue("bind<IPerson>() with provider { Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"thread-singleton\") with singleton(ref = threadLocal) { Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"singleton\") with singleton { Person }" in lines)
+        assertTrue("bind<IPerson>(tag = \"thread-scopedSingleton\") with scopedSingleton(ref = threadLocal) { Person }" in lines)
+        assertTrue("bind<IPerson>(tag = \"scopedSingleton\") with scopedSingleton { Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"factory\") with factory { String -> Person }" in lines)
         assertTrue("bind<IPerson>(tag = \"instance\") with instance ( Person )" in lines)
-        assertTrue("bind<String>(tag = \"scoped\") with scoped(ErasedJvmTests_03_Description.TestScope).singleton { String }" in lines)
+        assertTrue("bind<String>(tag = \"scoped\") with scoped(ErasedJvmTests_03_Description.TestScope).scopedSingleton { String }" in lines)
         assertTrue("bind<Int>(tag = \"answer\") with instance ( Int )" in lines)
     }
 
@@ -48,22 +48,22 @@ class ErasedJvmTests_03_Description {
 
         val di = DI {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
-            bind<IPerson>(tag = "singleton") with singleton { Person("s") }
+            bind<IPerson>(tag = "thread-scopedSingleton") with scopedSingleton(ref = threadLocal) { Person("ts") }
+            bind<IPerson>(tag = "scopedSingleton") with scopedSingleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
-            bind<String>(tag = "scoped") with scoped(TestScope).singleton { "" }
+            bind<String>(tag = "scoped") with scoped(TestScope).scopedSingleton { "" }
             constant(tag = "answer") with 42
         }
 
         val lines = di.container.tree.bindings.fullDescription().trim().lineSequence().map(String::trim).toList()
         assertEquals(7, lines.size)
         assertTrue("bind<org.kodein.di.test.IPerson>() with provider { org.kodein.di.test.Person }" in lines)
-        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"thread-singleton\") with singleton(ref = org.kodein.di.threadLocal) { org.kodein.di.test.Person }" in lines)
-        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"singleton\") with singleton { org.kodein.di.test.Person }" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"thread-scopedSingleton\") with scopedSingleton(ref = org.kodein.di.threadLocal) { org.kodein.di.test.Person }" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"scopedSingleton\") with scopedSingleton { org.kodein.di.test.Person }" in lines)
         assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"factory\") with factory { kotlin.String -> org.kodein.di.test.Person }" in lines)
         assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"instance\") with instance ( org.kodein.di.test.Person )" in lines)
-        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scoped(org.kodein.di.ErasedJvmTests_03_Description.TestScope).singleton { kotlin.String }" in lines)
+        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scoped(org.kodein.di.ErasedJvmTests_03_Description.TestScope).scopedSingleton { kotlin.String }" in lines)
         assertTrue("bind<kotlin.Int>(tag = \"answer\") with instance ( kotlin.Int )" in lines)
     }
 
@@ -71,8 +71,8 @@ class ErasedJvmTests_03_Description {
     @Test fun test_02_RegisteredBindings() {
         val kodein = DI {
             bind<IPerson>() with provider { Person() }
-            bind<IPerson>(tag = "thread-singleton") with singleton(ref = threadLocal) { Person("ts") }
-            bind<IPerson>(tag = "singleton") with singleton { Person("s") }
+            bind<IPerson>(tag = "thread-scopedSingleton") with scopedSingleton(ref = threadLocal) { Person("ts") }
+            bind<IPerson>(tag = "scopedSingleton") with scopedSingleton { Person("s") }
             bind<IPerson>(tag = "factory") with factory { name: String -> Person(name) }
             bind<IPerson>(tag = "instance") with instance(Person("i"))
             constant(tag = "answer") with 42
@@ -80,8 +80,8 @@ class ErasedJvmTests_03_Description {
 
         assertEquals(6, kodein.container.tree.bindings.size)
         assertEquals("provider", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<IPerson>(), null)]!!.first().binding.factoryName())
-        assertEquals("singleton(ref = threadLocal)", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<IPerson>(), "thread-singleton")]!!.first().binding.factoryName())
-        assertEquals("singleton", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<IPerson>(), "singleton")]!!.first().binding.factoryName())
+        assertEquals("scopedSingleton(ref = threadLocal)", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<IPerson>(), "thread-scopedSingleton")]!!.first().binding.factoryName())
+        assertEquals("scopedSingleton", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<IPerson>(), "scopedSingleton")]!!.first().binding.factoryName())
         assertEquals("factory", kodein.container.tree.bindings[DI.Key(TypeToken.Any, org.kodein.type.generic<String>(), org.kodein.type.generic<IPerson>(), "factory")]!!.first().binding.factoryName())
         assertEquals("instance", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<IPerson>(), "instance")]!!.first().binding.factoryName())
         assertEquals("instance", kodein.container.tree.bindings[DI.Key(TypeToken.Any, TypeToken.Unit, org.kodein.type.generic<Int>(), "answer")]!!.first().binding.factoryName())

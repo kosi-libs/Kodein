@@ -10,9 +10,9 @@ class Tests_07_Error {
     fun test_00_DependencyLoop() {
 
         val di = DI {
-            bind<A>() with singleton { A(instance()) }
-            bind<B>() with singleton { B(instance()) }
-            bind<C>() with singleton { C(instance()) }
+            bind<A>() with scopedSingleton { A(instance()) }
+            bind<B>() with scopedSingleton { B(instance()) }
+            bind<C>() with scopedSingleton { C(instance()) }
         }
 
         val ex = assertFailsWith<DI.DependencyLoopException> {
@@ -58,10 +58,10 @@ Dependency recursion:
     fun test_02_NoDependencyLoop() {
 
         val di = DI {
-            bind<A>() with singleton { A(instance()) }
-            bind<A>(tag = "root") with singleton { A(null) }
-            bind<B>() with singleton { B(instance()) }
-            bind<C>() with singleton { C(instance(tag = "root")) }
+            bind<A>() with scopedSingleton { A(instance()) }
+            bind<A>(tag = "root") with scopedSingleton { A(null) }
+            bind<B>() with scopedSingleton { B(instance()) }
+            bind<C>() with scopedSingleton { C(instance(tag = "root")) }
         }
 
         val a by di.instance<A>()
@@ -135,7 +135,7 @@ Dependency recursion:
                 bind() from instance(Unit)
             }
             assertFailsWith<IllegalArgumentException> {
-                bind() from singleton { unit() }
+                bind() from scopedSingleton { unit() }
             }
 
             bind<Unit>() with instance(unit())

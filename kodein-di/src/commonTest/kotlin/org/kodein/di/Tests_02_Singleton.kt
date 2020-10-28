@@ -11,7 +11,7 @@ class Tests_02_Singleton {
     @Test
     fun test_00_SingletonBindingGetInstance() {
 
-        val di = DI { bind<Person>() with singleton { Person() } }
+        val di = DI { bind<Person>() with scopedSingleton { Person() } }
 
         val p1: Person by di.instance()
         val p2: Person by di.instance()
@@ -22,7 +22,7 @@ class Tests_02_Singleton {
     @Test
     fun test_01_SingletonBindingGetProvider() {
 
-        val di = DI { bind<Person>() with singleton { Person() } }
+        val di = DI { bind<Person>() with scopedSingleton { Person() } }
 
         val p1: () -> Person by di.provider()
         val p2: () -> Person by di.provider()
@@ -33,7 +33,7 @@ class Tests_02_Singleton {
     @Test
     fun test_02_NonSyncedSingletonBindingGetInstance() {
 
-        val di = DI { bind<Person>() with singleton(sync = false) { Person() } }
+        val di = DI { bind<Person>() with scopedSingleton(sync = false) { Person() } }
 
         val p1: Person by di.instance()
         val p2: Person by di.instance()

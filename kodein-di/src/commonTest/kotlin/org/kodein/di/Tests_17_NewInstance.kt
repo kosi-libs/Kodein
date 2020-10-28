@@ -14,8 +14,8 @@ class Tests_17_NewInstance {
     @Test
     fun test_00_NewInstance() {
         val di = DI {
-            bind<Person>(tag = "Author") with singleton { Person("Salomon") }
-            bind<Person>(tag = "Spouse") with singleton { Person("Laila") }
+            bind<Person>(tag = "Author") with scopedSingleton { Person("Salomon") }
+            bind<Person>(tag = "Spouse") with scopedSingleton { Person("Laila") }
         }
 
         val wedding by di.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }
@@ -26,8 +26,8 @@ class Tests_17_NewInstance {
     @Test
     fun test_01_DirectNewInstance() {
         val di = DI.direct {
-            bind<Person>(tag = "Author") with singleton { Person("Salomon") }
-            bind<Person>(tag = "Spouse") with singleton { Person("Laila") }
+            bind<Person>(tag = "Author") with scopedSingleton { Person("Salomon") }
+            bind<Person>(tag = "Spouse") with scopedSingleton { Person("Laila") }
         }
 
         val wedding = di.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }

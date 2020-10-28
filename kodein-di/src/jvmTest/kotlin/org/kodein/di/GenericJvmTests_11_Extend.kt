@@ -13,7 +13,7 @@ class GenericJvmTests_11_Extend {
     fun test_00_DIExtend() {
 
         val parent = DI {
-            bind<Person>(tag = "named") with singleton { Person("Salomon") }
+            bind<Person>(tag = "named") with scopedSingleton { Person("Salomon") }
         }
 
         val child = DI {
@@ -30,12 +30,12 @@ class GenericJvmTests_11_Extend {
     fun test_01_DIExtendOverride() {
 
         val parent = DI {
-            bind<String>() with singleton { "parent" }
+            bind<String>() with scopedSingleton { "parent" }
         }
 
         val child = DI {
             extend(parent)
-            bind<String>(overrides = true) with singleton { "child" }
+            bind<String>(overrides = true) with scopedSingleton { "child" }
         }
 
         assertEquals("parent", parent.direct.instance())
@@ -96,7 +96,7 @@ class GenericJvmTests_11_Extend {
 
         val root = DI.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
-            bind<Bar>() with singleton { Bar(instance()) }
+            bind<Bar>() with scopedSingleton { Bar(instance()) }
         }
 
         val sub = DI.direct {
@@ -118,7 +118,7 @@ class GenericJvmTests_11_Extend {
 
         val root = DI.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
-            bind<Bar>() with singleton { Bar(instance()) }
+            bind<Bar>() with scopedSingleton { Bar(instance()) }
         }
 
         val sub = DI.direct {
@@ -143,7 +143,7 @@ class GenericJvmTests_11_Extend {
 
         val root = DI.direct {
             bind<Foo>() with provider { Foo("rootFoo") }
-            bind<Bar>() with singleton { Bar(instance()) }
+            bind<Bar>() with scopedSingleton { Bar(instance()) }
         }
 
         val sub = DI.direct {
