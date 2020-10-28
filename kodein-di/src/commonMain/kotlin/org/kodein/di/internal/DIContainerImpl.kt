@@ -129,8 +129,7 @@ internal class DIContainerImpl private constructor(
                 val kContext = translator?.toKContext(context) ?: DIContext(key.contextType, context) as DIContext<Any>
                 key as DI.Key<Any, A, T>
                 val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
-                val bindingFactory = definition.binding.getFactory(bindingDI, key)
-                return { bindingFactory(it) }
+                return definition.binding.getFactory(bindingDI, key)
             }
         }
 
@@ -156,8 +155,7 @@ internal class DIContainerImpl private constructor(
             val kContext = translator?.toKContext(context) ?: DIContext(key.contextType, context) as DIContext<Any>
             key as DI.Key<Any, A, T>
             val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
-            val bindingFactory = definition.binding.getFactory(bindingDI, key)
-            return { bindingFactory(it) }
+            return definition.binding.getFactory(bindingDI, key)
         }
 
         val bindingDI = bindingDI(key, DIContext(key.contextType, context), tree, overrideLevel)

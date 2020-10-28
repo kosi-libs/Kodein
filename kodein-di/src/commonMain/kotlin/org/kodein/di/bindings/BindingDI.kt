@@ -1,7 +1,8 @@
 package org.kodein.di.bindings
 
 import org.kodein.di.*
-
+import org.kodein.di.internal.DirectDIImpl
+import org.kodein.type.TypeToken
 
 // /!\
 // These classes should be generic but cannot be because the Kotlin's type inference engine cannot infer a function's receiver type from it's return type.
@@ -21,6 +22,10 @@ public interface WithContext<out C : Any> {
      * The context that was given at retrieval.
      */
     public val context: C
+}
+
+internal interface OverrideLevelProvider {
+    val overrideLevel: Int
 }
 
 /**
@@ -120,3 +125,78 @@ internal class NoArgBindingDIWrap<out C : Any>(private val _di: BindingDI<C>) : 
     override fun overriddenInstance() = overriddenProvider().invoke()
     override fun overriddenInstanceOrNull() = overriddenProviderOrNull()?.invoke()
 }
+
+/**
+ * Direct DI interface to be passed to provider methods that hold references, but does not hold a reference to a context.
+ *
+ * It is augmented to allow such methods to access a provider or instance from the binding it is overriding (if it is overriding).
+ */
+@DI.DIDsl
+public interface ContextSafeNoArgSimpleBindingDI : DirectDI {
+
+    /**
+     * Gets a provider from the overridden binding.
+     *
+     * @return A provider yielded by the overridden binding.
+     * @throws DI.NotFoundException if this binding does not override an existing binding.
+     * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     */
+    public fun overriddenProvider(): () -> Any
+
+    /**
+     * Gets a provider from the overridden binding, if this binding overrides an existing binding.
+     *
+     * @return A provider yielded by the overridden binding, or null if this binding does not override an existing binding.
+     * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
+     */
+    public fun overriddenProviderOrNull(): (() -> Any)?
+
+    /**
+     * Gets an instance from the overridden binding.
+     *
+     * @return An instance yielded by the overridden binding.
+     * @throws DI.NotFoundException if this binding does not override an existing binding.
+     * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
+     */
+    public fun overriddenInstance(): Any /*= overriddenProvider().invoke()*/
+
+    /**
+     * Gets an instance from the overridden binding, if this binding overrides an existing binding.
+     *
+     * @return An instance yielded by the overridden binding, or null if this binding does not override an existing binding.
+     * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
+     */
+    public fun overriddenInstanceOrNull(): Any? /*= overriddenProviderOrNull()?.invoke()*/
+}
+
+/**
+ * Direct DI interface to be passed to provider methods that do **not** hold references (i.e. that recreate a new instance every time), but does not hold a reference to a context..
+ *
+ * It is augmented to allow such methods to access a provider or instance from the binding it is overriding (if it is overriding).
+ */
+public interface ContextSafeNoArgBindingDI : ContextSafeNoArgSimpleBindingDI
+
+internal class ContextSafeNoArgBindingDIWrap<T : Any>(
+    directDi: DirectDI,
+    originalKey: DI.Key<*, *, T>,
+    private val overrideLevel: Int
+) : ContextSafeNoArgBindingDI, DirectDI by directDi {
+    private val key: DI.Key<Any, Unit, T> = DI.Key(TypeToken.Any, TypeToken.Unit, originalKey.type, tag = originalKey.tag)
+
+    override fun overriddenProvider(): () -> Any = container.provider(key, AnyDIContext, overrideLevel + 1)
+    override fun overriddenProviderOrNull(): (() -> Any)? = container.providerOrNull(key, AnyDIContext, overrideLevel + 1)
+    override fun overriddenInstance() = overriddenProvider().invoke()
+    override fun overriddenInstanceOrNull() = overriddenProviderOrNull()?.invoke()
+}
+
+internal fun <T : Any> contextSafeNoArgBindingDIWrap(
+    bindingDI: BindingDI<*>,
+    originalKey: DI.Key<*, *, T>
+) = ContextSafeNoArgBindingDIWrap(
+    DirectDIImpl(bindingDI.container, AnyDIContext),
+    originalKey,
+    overrideLevel = when(bindingDI) {
+        is OverrideLevelProvider -> bindingDI.overrideLevel
+        else -> 0
+    }
+)
