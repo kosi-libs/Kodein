@@ -1,7 +1,7 @@
 #### 7.1.0 (18-09-2020)
 
   - DOCUMENTATION
-    * New documentation format https://docs.kodein.org/kodein-di/7.1.0/
+    * New documentation format https://docs.kodein.org/kodein-di/
         * Split full documentation into chapters
 
   - CORE

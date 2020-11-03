@@ -86,7 +86,7 @@ Read more
 
 **_Kodein-DI_** 7+ is the current major version, but documentation is available for previous versions.
 
-**[Kodein-DI documentation](https://docs.kodein.org/kodein-di/7.1.0/index.html)**
+**[Kodein-DI documentation](https://docs.kodein.org/kodein-di/)**
 
 
 Support
