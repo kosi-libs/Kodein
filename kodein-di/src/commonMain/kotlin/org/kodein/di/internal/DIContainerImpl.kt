@@ -17,7 +17,7 @@ internal class DIContainerImpl private constructor(
      */
     internal constructor(builder: DIContainerBuilderImpl, externalSources: List<ExternalSource>, fullDescriptionOnError: Boolean, runCallbacks: Boolean) : this(DITreeImpl(builder.bindingsMap, externalSources, builder.translators), null, fullDescriptionOnError) {
         val init: () -> Unit = {
-            val direct = DirectDIImpl(this, DIContext.Any)
+            val direct = DirectDIImpl(this, AnyDIContext)
             builder.callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }
         }
 
@@ -117,24 +117,24 @@ internal class DIContainerImpl private constructor(
 
     private fun <C : Any, A, T: Any> bindingDI(key: DI.Key<C, A, T>, context: DIContext<C>, tree: DITree, overrideLevel: Int) : BindingDI<C> {
         val container = DIContainerImpl(tree, Node(key, overrideLevel, node, fullDescriptionOnError), fullDescriptionOnError)
-        return BindingDIImpl(DirectDIImpl(container, context), key, context, overrideLevel)
+        return BindingDIImpl(DirectDIImpl(container, context), key, context.value, overrideLevel)
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C : Any, A, T: Any> factoryOrNull(key: DI.Key<C, A, T>, context: DIContext<C>, overrideLevel: Int): ((A) -> T)? {
+    override fun <C : Any, A, T: Any> factoryOrNull(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): ((A) -> T)? {
         tree.find(key, 0).let {
             if (it.size == 1) {
-                val (foundKey, definition, translator) = it[0]
+                val (_, definition, translator) = it[0]
                 node?.check(key, 0)
-                val kContext = translator?.toKContext(context.value(foundKey.contextType) as C, context.reference.maker) ?: context as DIContext<Any>
+                val kContext = translator?.toKContext(context) ?: DIContext(key.contextType, context) as DIContext<Any>
                 key as DI.Key<Any, A, T>
-                val bindingDI = bindingDI(foundKey, kContext, definition.tree, overrideLevel)
-                val bindingFactory = definition.binding.getFactory(bindingDI, key)
-                return { bindingFactory(it) }
+                val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
+                val bindingFactory = definition.binding.getFactory(key)
+                return { bindingFactory(bindingDI, it) }
             }
         }
 
-        val bindingDI = bindingDI(key, context, tree, overrideLevel)
+        val bindingDI = bindingDI(key, DIContext(key.contextType, context), tree, overrideLevel)
         tree.externalSources.forEach { source ->
             source.getFactory(bindingDI, key)?.let {
                 node?.check(key, 0)
@@ -147,20 +147,20 @@ internal class DIContainerImpl private constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C : Any, A, T: Any> factory(key: DI.Key<C, A, T>, context: DIContext<C>, overrideLevel: Int): (A) -> T {
+    override fun <C : Any, A, T: Any> factory(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): (A) -> T {
         val result = tree.find(key, overrideLevel)
 
         if (result.size == 1) {
-            val (foundKey, definition, translator) = result[0]
+            val (_, definition, translator) = result[0]
             node?.check(key, overrideLevel)
-            val kContext = translator?.toKContext(context.value(foundKey.contextType) as C, context.reference.maker) ?: context as DIContext<Any>
+            val kContext = translator?.toKContext(context) ?: DIContext(key.contextType, context) as DIContext<Any>
             key as DI.Key<Any, A, T>
-            val bindingDI = bindingDI(foundKey, kContext, definition.tree, overrideLevel)
-            val bindingFactory = definition.binding.getFactory(bindingDI, key)
-            return { bindingFactory(it) }
+            val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
+            val bindingFactory = definition.binding.getFactory(key)
+            return { bindingFactory(bindingDI, it) }
         }
 
-        val bindingDI = bindingDI(key, context, tree, overrideLevel)
+        val bindingDI = bindingDI(key, DIContext(key.contextType, context), tree, overrideLevel)
         tree.externalSources.forEach { source ->
             source.getFactory(bindingDI, key)?.let {
                 node?.check(key, overrideLevel)
@@ -195,16 +195,16 @@ internal class DIContainerImpl private constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <C : Any, A, T: Any> allFactories(key: DI.Key<C, A, T>, context: DIContext<C>, overrideLevel: Int): List<(A) -> T> {
+    override fun <C : Any, A, T: Any> allFactories(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): List<(A) -> T> {
         val result = tree.find(key, overrideLevel, all = true)
 
-        return result.map { (foundKey, definition, translator) ->
+        return result.map { (_, definition, translator) ->
             node?.check(key, overrideLevel)
-            val kContext = translator?.toKContext(context.value(foundKey.contextType) as C, context.reference.maker) ?: context as DIContext<Any>
+            val kContext = translator?.toKContext(context) ?: DIContext(key.contextType, context) as DIContext<Any>
             key as DI.Key<Any, A, T>
-            val bindingDI = bindingDI(foundKey, kContext, definition.tree, overrideLevel)
-            val bindingFactory = definition.binding.getFactory(bindingDI, key)
-            ({ arg: A -> bindingFactory(arg) })
+            val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
+            val bindingFactory = definition.binding.getFactory(key)
+            ({ arg: A -> bindingFactory(bindingDI, arg) })
         }
     }
 

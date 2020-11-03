@@ -26,7 +26,7 @@ class Tests_22_Search {
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            di.container.factory(key as DI.Key<Any, Unit, Any>, DIContext.Any).invoke(Unit)
+            di.container.factory(key as DI.Key<Any, Unit, Any>, Any()).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)
@@ -50,7 +50,7 @@ class Tests_22_Search {
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            di.container.factory(key as DI.Key<Any, Unit, Any>, DIContext.Any).invoke(Unit)
+            di.container.factory(key as DI.Key<Any, Unit, Any>, Any()).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)
@@ -74,7 +74,7 @@ class Tests_22_Search {
 
         val values = bindings.map { (key, _) ->
             @Suppress("UNCHECKED_CAST")
-            di.container.factory(key as DI.Key<Any, Any?, Any>, DIContext.Any).invoke(Unit)
+            di.container.factory(key as DI.Key<Any, Any?, Any>, Any()).invoke(Unit)
         }
 
         assertTrue("String-foo" in values)
