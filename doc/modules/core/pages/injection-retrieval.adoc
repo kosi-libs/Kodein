@@ -619,7 +619,7 @@ class JavaClass {
     private final List<String> list;
 
     public JavaClass(TypeDI di) {
-        list = di.Instance(generic(new TypeReference<List<String>>() {}), null);
+        list = di.Instance(typeToken(new TypeReference<List<String>>() {}), null);
     }
 }
 ----

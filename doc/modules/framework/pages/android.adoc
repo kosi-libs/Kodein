@@ -489,6 +489,6 @@ Here is a simple one:
 ----
 class DIViewModelFactory(val di: DI) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            di.direct.Instance(generic(modelClass))
+            di.direct.Instance(erased(modelClass))
 }
 ----
