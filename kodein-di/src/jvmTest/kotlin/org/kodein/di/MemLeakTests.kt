@@ -34,7 +34,7 @@ class MemLeakTests {
     }
 
     class Ctx
-    class Foo()
+    class Foo
 
     @Test
     @Suppress("UNUSED_VALUE")
@@ -67,6 +67,31 @@ class MemLeakTests {
             val ref = WeakReference(ctx)
             val foo: Foo by di.on(ctx).instance()
             assertNotNull(foo)
+            return ref
+        }
+
+        val ref = test()
+        assertGarbageCollected(ref)
+    }
+
+    class Provided(override val di: DI) : DIAware {
+        val foo: () -> Foo by provider()
+    }
+
+    @Test
+    @Suppress("UNUSED_VALUE")
+    fun providedSingleton() {
+        val di = DI {
+            bind<Foo>() with singleton { Foo() }
+            bind<Provided>() with singleton { Provided(di) }
+        }
+
+        fun test(): WeakReference<Ctx> {
+            val ctx = Ctx()
+            val ref = WeakReference(ctx)
+
+            val p: Provided by di.on(ctx).instance()
+            assertNotNull(p.foo)
             return ref
         }
 

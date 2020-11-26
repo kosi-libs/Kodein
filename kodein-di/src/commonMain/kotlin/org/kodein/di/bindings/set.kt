@@ -34,14 +34,14 @@ public class ArgSetBinding<C : Any, A, T: Any>(override val contextType: TypeTok
 
     override val set = LinkedHashSet<DIBinding<C, A, T>>()
 
-    override fun getFactory(key: DI.Key<C, A, Set<T>>): (BindingDI<C>, A) -> Set<T> {
-        var lateInitFactories: List<(BindingDI<C>, A) -> T>? = null
-        return { di, arg ->
+    override fun getFactory(key: DI.Key<C, A, Set<T>>, di: BindingDI<C>): (A) -> Set<T> {
+        var lateInitFactories: List<(A) -> T>? = null
+        return { arg ->
             val factories = lateInitFactories ?: run {
                 val subKey = DI.Key(key.contextType, key.argType, _elementType, key.tag)
-                set.map { it.getFactory(subKey) }
+                set.map { it.getFactory(subKey, SetBindingDI(di)) }
             }.also { lateInitFactories = it }
-            factories.asSequence().map { it.invoke(SetBindingDI(di), arg) } .toSet()
+            factories.asSequence().map { it.invoke(arg) } .toSet()
         }
     }
 
@@ -63,15 +63,15 @@ public class SetBinding<C : Any, T: Any>(override val contextType: TypeToken<in 
     @Suppress("UNCHECKED_CAST")
     override val set = LinkedHashSet<DIBinding<C, Unit, T>>()
 
-    override fun getFactory(key: DI.Key<C, Unit, Set<T>>): (BindingDI<C>, Unit) -> Set<T> {
-        var lateInitProviders: List<(BindingDI<C>, Unit) -> T>? = null
-        return { di, _ ->
+    override fun getFactory(key: DI.Key<C, Unit, Set<T>>, di: BindingDI<C>): (Unit) -> Set<T> {
+        var lateInitProviders: List<(Unit) -> T>? = null
+        return { _ ->
             val providers = lateInitProviders ?: run {
                 val subKey = DI.Key(key.contextType, TypeToken.Unit, _elementType, key.tag)
-                set.map { it.getFactory(subKey) }
+                val subDI = SetBindingDI(di)
+                set.map { it.getFactory(subKey, subDI) }
             }.also { lateInitProviders = it }
-            val subDI = SetBindingDI(di)
-            providers.asSequence().map { it.invoke(subDI, Unit) }.toSet()
+            providers.asSequence().map { it.invoke(Unit) }.toSet()
         }
     }
 

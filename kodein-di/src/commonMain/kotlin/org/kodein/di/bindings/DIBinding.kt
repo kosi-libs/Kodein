@@ -26,7 +26,7 @@ public interface Binding<C : Any, A, T: Any> {
      * @param key: The key of the instance to get.
      * @return The instance of the requested type.
      */
-    public fun getFactory(key: DI.Key<C, A, T>): (BindingDI<C>, A) -> T
+    public fun getFactory(key: DI.Key<C, A, T>, di: BindingDI<C>): (A) -> T
 }
 
 /**
