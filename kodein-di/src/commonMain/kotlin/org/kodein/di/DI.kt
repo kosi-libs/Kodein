@@ -6,6 +6,7 @@ import org.kodein.di.bindings.DIBinding
 import org.kodein.di.bindings.Scope
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
+import kotlin.native.concurrent.ThreadLocal
 
 /**
  * KOtlin DEpendency INjection.
@@ -417,6 +418,7 @@ public interface DI : DIAware {
      */
     public val container: DIContainer
 
+    @ThreadLocal
     public companion object {
 
         /**
