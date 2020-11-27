@@ -26,7 +26,8 @@ tasks.withType<Test> {
 
 dependencies {
     api(project(":kodein-di"))
-    implementation("no.tornado:tornadofx:1.7.19")
+    implementation("no.tornado:tornadofx:1.7.20")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${kodeinVersions.kotlin}")
     testImplementation("org.testfx:testfx-core:4.0.4-alpha")
     testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
 }
