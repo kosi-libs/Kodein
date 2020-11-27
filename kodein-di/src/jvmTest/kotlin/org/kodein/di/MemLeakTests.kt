@@ -38,7 +38,7 @@ class MemLeakTests {
 
     @Test
     @Suppress("UNUSED_VALUE")
-    fun provider() {
+    fun test_00_provider() {
         val di = DI {
             bind<Foo>() with provider { Foo() }
         }
@@ -46,8 +46,7 @@ class MemLeakTests {
         fun test(): WeakReference<Ctx> {
             val ctx = Ctx()
             val ref = WeakReference(ctx)
-            val foo: Foo by di.on(ctx).instance()
-            assertNotNull(foo)
+            di.direct.on(ctx).instance<Foo>()
             return ref
         }
 
@@ -57,7 +56,7 @@ class MemLeakTests {
 
     @Test
     @Suppress("UNUSED_VALUE")
-    fun singleton() {
+    fun test_01_singleton() {
         val di = DI {
             bind<Foo>() with singleton { Foo() }
         }
@@ -65,8 +64,7 @@ class MemLeakTests {
         fun test(): WeakReference<Ctx> {
             val ctx = Ctx()
             val ref = WeakReference(ctx)
-            val foo: Foo by di.on(ctx).instance()
-            assertNotNull(foo)
+            di.direct.on(ctx).instance<Foo>()
             return ref
         }
 
@@ -74,24 +72,66 @@ class MemLeakTests {
         assertGarbageCollected(ref)
     }
 
-    class Provided(override val di: DI) : DIAware {
+    class ProvidedS(override val di: DI) : DIAware {
         val foo: () -> Foo by provider()
     }
 
     @Test
     @Suppress("UNUSED_VALUE")
-    fun providedSingleton() {
+    fun test_02_providedSingleton() {
         val di = DI {
-            bind<Foo>() with singleton { Foo() }
-            bind<Provided>() with singleton { Provided(di) }
+            bind<Foo>() with provider { Foo() }
+            bind<ProvidedS>() with singleton { ProvidedS(di) }
         }
 
         fun test(): WeakReference<Ctx> {
             val ctx = Ctx()
             val ref = WeakReference(ctx)
 
-            val p: Provided by di.on(ctx).instance()
-            assertNotNull(p.foo)
+            di.direct.on(ctx).instance<ProvidedS>()
+            return ref
+        }
+
+        val ref = test()
+        assertGarbageCollected(ref)
+    }
+
+    @Test
+    @Suppress("UNUSED_VALUE")
+    fun test_03_multiton() {
+        val di = DI {
+            @Suppress("UNUSED_ANONYMOUS_PARAMETER")
+            bind<Foo>() with multiton { name: String -> Foo() }
+        }
+
+        fun test(): WeakReference<Ctx> {
+            val ctx = Ctx()
+            val ref = WeakReference(ctx)
+            di.direct.on(ctx).instance<String, Foo>(arg = "test")
+            return ref
+        }
+
+        val ref = test()
+        assertGarbageCollected(ref)
+    }
+
+    class ProvidedM(override val di: DI, val name: String) : DIAware {
+        val foo: () -> Foo by provider()
+    }
+
+    @Test
+    @Suppress("UNUSED_VALUE")
+    fun test_04_providedMultiton() {
+        val di = DI {
+            bind<Foo>() with provider { Foo() }
+            bind<ProvidedM>() with multiton { name: String -> ProvidedM(di, name) }
+        }
+
+        fun test(): WeakReference<Ctx> {
+            val ctx = Ctx()
+            val ref = WeakReference(ctx)
+
+            di.direct.on(ctx).instance<String, ProvidedM>(arg = "test")
             return ref
         }
 

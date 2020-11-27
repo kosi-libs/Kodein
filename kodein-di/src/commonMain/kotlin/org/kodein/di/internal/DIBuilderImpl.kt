@@ -15,6 +15,8 @@ internal open class DIBuilderImpl internal constructor(
 
     override val scope: Scope<Any?> get() = NoScope() // Recreating a new NoScope every-time *on purpose*!
 
+    override val explicitContext: Boolean get() = false
+
     inner class TypeBinder<T : Any> internal constructor(val type: TypeToken<out T>, val tag: Any?, val overrides: Boolean?) : DI.Builder.TypeBinder<T> {
         internal val containerBuilder get() = this@DIBuilderImpl.containerBuilder
 

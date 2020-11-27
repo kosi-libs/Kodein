@@ -165,14 +165,11 @@ public interface DI : DIAware {
          */
         public val contextType: TypeToken<C>
 
-        /**
-         * Used to define bindings with a context.
-         *
-         * @param C The context type.
-         */
-        public interface WithContext<C : Any> : BindBuilder<C> {
-            /** @suppress */
-            public class Impl<C : Any>(override val contextType: TypeToken<C>) : WithContext<C>
+        public val explicitContext: Boolean
+
+        /** @suppress */
+        public class ImplWithContext<C : Any>(override val contextType: TypeToken<C>) : BindBuilder<C> {
+            override val explicitContext: Boolean get() = true
         }
 
         /**
@@ -186,10 +183,13 @@ public interface DI : DIAware {
              * The scope that will be used by all bindings that are defined in this DSL context.
              */
             public val scope: Scope<C>
-
-            /** @suppress */
-            public class Impl<C : Any>(override val contextType: TypeToken<C>, override val scope: Scope<C>) : WithScope<C>
         }
+
+        /** @suppress */
+        public class ImplWithScope<C : Any>(override val contextType: TypeToken<C>, override val scope: Scope<C>) : WithScope<C> {
+            override val explicitContext: Boolean get() = true
+        }
+
     }
 
     /**
@@ -200,7 +200,7 @@ public interface DI : DIAware {
      * @property containerBuilder Every methods eventually ends up to a call to this builder.
      */
     @DIDsl
-    public interface Builder : BindBuilder.WithContext<Any>, BindBuilder.WithScope<Any> {
+    public interface Builder : BindBuilder<Any>, BindBuilder.WithScope<Any> {
 
         public val containerBuilder: DIContainer.Builder
 

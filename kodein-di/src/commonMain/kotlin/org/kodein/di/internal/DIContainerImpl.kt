@@ -117,7 +117,7 @@ internal class DIContainerImpl private constructor(
 
     private fun <C : Any, A, T: Any> bindingDI(key: DI.Key<C, A, T>, context: DIContext<C>, tree: DITree, overrideLevel: Int) : BindingDI<C> {
         val container = DIContainerImpl(tree, Node(key, overrideLevel, node, fullDescriptionOnError), fullDescriptionOnError)
-        return BindingDIImpl(DirectDIImpl(container, context), key, context.value, overrideLevel)
+        return BindingDIImpl(DirectDIImpl(container, context), key, overrideLevel)
     }
 
     @Suppress("UNCHECKED_CAST")

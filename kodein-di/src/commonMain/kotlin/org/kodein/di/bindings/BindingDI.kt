@@ -1,6 +1,7 @@
 package org.kodein.di.bindings
 
 import org.kodein.di.*
+import org.kodein.type.TypeToken
 
 
 // /!\
@@ -31,7 +32,7 @@ public interface WithContext<out C : Any> {
  * @param C The type of the context
  */
 @DI.DIDsl
-public interface SimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
+public interface BindingDI<out C : Any> : DirectDI, WithContext<C> {
 
     /**
      * Gets a factory from the overridden binding.
@@ -49,16 +50,14 @@ public interface SimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
     public fun overriddenFactoryOrNull(): ((Any?) -> Any)?
+
+    public fun onErasedContext(): BindingDI<C>
 }
 
-/**
- * Direct DI interface to be passed to factory methods that do **not** hold references (i.e. that recreate a new instance every time).
- *
- * It is augmented to allow such methods to access the context of the retrieval, as well as a factory from the binding it is overriding (if it is overriding).
- *
- * @param C The type of the context
- */
-public interface BindingDI<out C : Any> : SimpleBindingDI<C>
+public object ErasedContext : DIContext<ErasedContext> {
+    override val type: TypeToken<in ErasedContext> get() = TypeToken.Any
+    override val value: ErasedContext get() = ErasedContext
+}
 
 /**
  * Direct DI interface to be passed to provider methods that hold references.
@@ -68,7 +67,7 @@ public interface BindingDI<out C : Any> : SimpleBindingDI<C>
  * @param C The type of the context
  */
 @DI.DIDsl
-public interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
+public interface NoArgBindingDI<out C : Any> : DirectDI, WithContext<C> {
 
     /**
      * Gets a provider from the overridden binding.
@@ -104,15 +103,6 @@ public interface NoArgSimpleBindingDI<out C : Any> : DirectDI, WithContext<C> {
      */
     public fun overriddenInstanceOrNull(): Any? /*= overriddenProviderOrNull()?.invoke()*/
 }
-
-/**
- * Direct DI interface to be passed to provider methods that do **not** hold references (i.e. that recreate a new instance every time).
- *
- * It is augmented to allow such methods to access the context of the retrieval, as well as a provider or instance from the binding it is overriding (if it is overriding).
- *
- * @param C The type of the context
- */
-public interface NoArgBindingDI<out C : Any> : NoArgSimpleBindingDI<C>
 
 internal class NoArgBindingDIWrap<out C : Any>(private val _di: BindingDI<C>) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
     override fun overriddenProvider() = _di.overriddenFactory().toProvider { Unit }

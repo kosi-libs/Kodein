@@ -138,7 +138,7 @@ public interface DIBinding<C : Any, A, T : Any> : Binding<C, A, T> {
  *
  * As a factory does need an argument, it uses `Unit` as its argument.
  */
-public interface NoArgDIBinding<C : Any, T: Any> : DIBinding<C, Unit, T>, Binding<C, Unit, T> {
+public interface NoArgDIBinding<C : Any, T: Any> : DIBinding<C, Unit, T> {
 
     override val argType: TypeToken<Unit> get() = TypeToken.Unit
 

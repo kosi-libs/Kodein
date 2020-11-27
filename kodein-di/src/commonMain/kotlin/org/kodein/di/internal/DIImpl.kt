@@ -2,6 +2,7 @@ package org.kodein.di.internal
 
 import org.kodein.di.*
 import org.kodein.di.bindings.BindingDI
+import org.kodein.di.bindings.ErasedContext
 
 /**
  * DI implementation.
@@ -36,10 +37,15 @@ internal open class DIImpl internal constructor(private val _container: DIContai
 @Suppress("UNCHECKED_CAST")
 internal open class BindingDIImpl<out C : Any, out A, out T: Any> internal constructor(
         override val directDI: DirectDI,
-        private val _key: DI.Key<C, A, T>,
-        override val context: C,
-        private val _overrideLevel: Int
+        private val key: DI.Key<C, A, T>,
+        private val overrideLevel: Int
 ) : DirectDI by directDI, BindingDI<C> {
-    override fun overriddenFactory(): (Any?) -> Any = container.factory(_key, context, _overrideLevel + 1) as (Any?) -> Any
-    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = container.factoryOrNull(_key, context, _overrideLevel + 1) as ((Any?) -> Any)?
+    override fun overriddenFactory(): (Any?) -> Any = container.factory(key, context, overrideLevel + 1) as (Any?) -> Any
+    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = container.factoryOrNull(key, context, overrideLevel + 1) as ((Any?) -> Any)?
+    override val context: C get() = directDI.di.diContext.value as C
+    override fun onErasedContext(): BindingDI<C> = BindingDIImpl<C, A, T>(
+        directDI.On(ErasedContext),
+        key,
+        overrideLevel
+    )
 }
