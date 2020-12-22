@@ -249,5 +249,23 @@ class Tests_13_Scope {
         assertEquals(FullName("Laila", "BRYS"), fn2)
     }
 
+    @Test
+    fun test_10_ContextFinderInDI() {
+        val registries = HashMap<Name, ScopeRegistry>()
+        val nameScope = object : Scope<Name> {
+            override fun getRegistry(context: Name) = registries.getOrPut(context) { StandardScopeRegistry() }
+        }
+        class CurrentName(var current: Name)
+        val di = DI.direct {
+            bind() from scoped(nameScope).singleton { FullName(context.firstName, "BRYS") }
+            bind() from singleton { CurrentName(Name("Salomon")) }
+            registerContextFinder<Name> { instance<CurrentName>().current }
+        }
+
+        assertEquals(FullName("Salomon", "BRYS"), di.instance<FullName>())
+        di.instance<CurrentName>().current = Name("Laila")
+        assertEquals(FullName("Laila", "BRYS"), di.instance<FullName>())
+    }
+
 
 }

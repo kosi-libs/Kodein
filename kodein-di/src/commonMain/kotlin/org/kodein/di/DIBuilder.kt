@@ -146,12 +146,12 @@ public inline fun <reified T: Any> DI.Builder.instance(instance: T): InstanceBin
 //endregion
 
 //region ContextTranslator
-public inline fun <reified C : Any, reified S : Any> contextTranslator(noinline t: (C) -> S?): ContextTranslator<C, S> = SimpleContextTranslator(generic(), generic(), t)
+public inline fun <reified C : Any, reified S : Any> contextTranslator(noinline t: DirectDI.(C) -> S?): ContextTranslator<C, S> = SimpleContextTranslator(generic(), generic(), t)
 
-public inline fun <reified C : Any, reified S : Any> DI.Builder.registerContextTranslator(noinline t: (C) -> S?): Unit = RegisterContextTranslator(contextTranslator(t))
+public inline fun <reified C : Any, reified S : Any> DI.Builder.registerContextTranslator(noinline t: DirectDI.(C) -> S?): Unit = RegisterContextTranslator(contextTranslator(t))
 
-public inline fun <reified S : Any> contextFinder(noinline t: () -> S) : ContextTranslator<Any, S> = SimpleAutoContextTranslator(generic(), t)
+public inline fun <reified S : Any> contextFinder(noinline t: DirectDI.() -> S) : ContextTranslator<Any, S> = SimpleAutoContextTranslator(generic(), t)
 
-public inline fun <reified S : Any> DI.Builder.registerContextFinder(noinline t: () -> S): Unit = RegisterContextTranslator(contextFinder(t))
+public inline fun <reified S : Any> DI.Builder.registerContextFinder(noinline t: DirectDI.() -> S): Unit = RegisterContextTranslator(contextFinder(t))
 //endregion
 

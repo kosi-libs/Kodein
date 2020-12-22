@@ -126,7 +126,8 @@ internal class DIContainerImpl private constructor(
             if (it.size == 1) {
                 val (_, definition, translator) = it[0]
                 node?.check(key, 0)
-                val kContext = translator?.toKContext(context) ?: DIContext(key.contextType, context) as DIContext<Any>
+                val originalContext = DIContext(key.contextType, context) as DIContext<Any>
+                val kContext = translator?.toKContext(DirectDIImpl(this, originalContext), context) ?: originalContext
                 key as DI.Key<Any, A, T>
                 val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
                 return definition.binding.getFactory(key, bindingDI)
@@ -152,7 +153,8 @@ internal class DIContainerImpl private constructor(
         if (result.size == 1) {
             val (_, definition, translator) = result[0]
             node?.check(key, overrideLevel)
-            val kContext = translator?.toKContext(context) ?: DIContext(key.contextType, context) as DIContext<Any>
+            val originalContext = DIContext(key.contextType, context) as DIContext<Any>
+            val kContext = translator?.toKContext(DirectDIImpl(this, originalContext), context) ?: originalContext
             key as DI.Key<Any, A, T>
             val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
             return definition.binding.getFactory(key, bindingDI)
@@ -198,7 +200,8 @@ internal class DIContainerImpl private constructor(
 
         return result.map { (_, definition, translator) ->
             node?.check(key, overrideLevel)
-            val kContext = translator?.toKContext(context) ?: DIContext(key.contextType, context) as DIContext<Any>
+            val originalContext = DIContext(key.contextType, context) as DIContext<Any>
+            val kContext = translator?.toKContext(DirectDIImpl(this, originalContext), context) ?: originalContext
             key as DI.Key<Any, A, T>
             val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
             definition.binding.getFactory(key, bindingDI)

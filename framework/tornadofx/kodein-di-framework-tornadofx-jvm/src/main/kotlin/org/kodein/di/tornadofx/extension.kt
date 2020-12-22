@@ -10,7 +10,7 @@ import kotlin.reflect.*
 @Suppress("UNCHECKED_CAST")
 public fun DI.MainBuilder.installTornadoSource() {
     externalSources += ExternalSource { key ->
-        val elementType = key.type.getRaw()?.jvmType as Class<*>?
+        val elementType = key.type.getRaw().jvmType as Class<*>?
 
         // Check if the elementType is injectable by TornadoFX di container (infine if its a Component)
         if (elementType != null &&
