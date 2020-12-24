@@ -1,6 +1,8 @@
 package org.kodein.di.bindings
 
+import org.kodein.di.DI
 import org.kodein.di.DIContext
+import org.kodein.di.DirectDI
 import org.kodein.di.Volatile
 import org.kodein.di.internal.maySynchronized
 import org.kodein.di.internal.newConcurrentMap
@@ -172,26 +174,26 @@ public class SingleItemScopeRegistry : ScopeRegistry() {
 public interface ContextTranslator<in C : Any, S : Any> {
     public val contextType: TypeToken<in C>
     public val scopeType: TypeToken<in S>
-    public fun translate(ctx: C): S?
+    public fun translate(di: DirectDI, ctx: C): S?
 }
 
-public class SimpleContextTranslator<in C : Any, S: Any>(override val contextType: TypeToken<in C>, override val scopeType: TypeToken<in S>, private val t: (ctx: C) -> S?) : ContextTranslator<C, S> {
-    override fun translate(ctx: C): S? = t(ctx)
+public class SimpleContextTranslator<in C : Any, S: Any>(override val contextType: TypeToken<in C>, override val scopeType: TypeToken<in S>, private val t: DirectDI.(ctx: C) -> S?) : ContextTranslator<C, S> {
+    override fun translate(di: DirectDI, ctx: C): S? = di.t(ctx)
     override fun toString(): String = "()"
 }
 
-public class SimpleAutoContextTranslator<S: Any>(override val scopeType: TypeToken<in S>, private val t: () -> S) : ContextTranslator<Any, S> {
+public class SimpleAutoContextTranslator<S: Any>(override val scopeType: TypeToken<in S>, private val t: DirectDI.() -> S) : ContextTranslator<Any, S> {
     override val contextType: TypeToken<Any> get() = TypeToken.Any
-    override fun translate(ctx: Any): S = t()
+    override fun translate(di: DirectDI, ctx: Any): S = di.t()
     override fun toString(): String = "(${scopeType.simpleDispString()} -> ${contextType.simpleDispString()})"
 }
 
-public fun <C : Any, S: Any> ContextTranslator<C, S>.toKContext(ctx: C): DIContext<S>? = translate(ctx)?.let { DIContext(scopeType, it) }
+public fun <C : Any, S: Any> ContextTranslator<C, S>.toKContext(di: DirectDI, ctx: C): DIContext<S>? = translate(di, ctx)?.let { DIContext(scopeType, it) }
 
 internal class CompositeContextTranslator<in C : Any, I : Any, S: Any>(val src: ContextTranslator<C, I>, val dst: ContextTranslator<I, S>) : ContextTranslator<C, S> {
     override val contextType get() = src.contextType
     override val scopeType get() = dst.scopeType
-    override fun translate(ctx: C): S? = src.translate(ctx)?.let { dst.translate(it) }
+    override fun translate(di: DirectDI, ctx: C): S? = src.translate(di, ctx)?.let { dst.translate(di, it) }
     override fun toString() = "($src -> $dst)"
 }
 
