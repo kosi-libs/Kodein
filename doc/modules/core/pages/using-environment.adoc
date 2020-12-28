@@ -174,6 +174,24 @@ class MySpecialRequest(override val di: DI): Request(), DIAware {
 }
 ----
 
+[NOTE]
+====
+You can access the container's bindings within a context translator:
+
+[source, kotlin]
+.Example:
+----
+val di = DI {
+    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) }
+
+    bind<Translator>() with singleton { RequestTranslator() }
+    registerContextTranslator { r: Request ->
+        instance<Translator>().translate(r)
+     }
+}
+----
+====
+
 
 === Context finder
 
@@ -191,7 +209,24 @@ val di = DI {
 }
 ----
 
-This allows to access a `User` object wihout specifying a context.
+This allows to access a `User` object without specifying a context.
+
+[NOTE]
+====
+You can access the container's bindings within a context finder:
+
+[source, kotlin]
+.Example:
+----
+enum class Env { DEBUG, PRODUCTION }
+class CurrentEnv(var env: Env)
+val di = DI {
+    bind() from scoped(EnvironmentScope).singleton { Service(context) }
+    bind() from singleton { CurrentEnv(Env.PRODUCTION) }
+    registerContextFinder { instance<CurrentEnv>().env }
+}
+----
+====
 
 TIP: Having an other type of context declared will not block from using a context finder.
 

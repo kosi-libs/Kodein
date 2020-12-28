@@ -7,6 +7,41 @@
 [[install-jvm]]
 == JVM
 
+=== With Gradle
+
+Add the JCenter repository:
+
+[source,groovy,subs="attributes"]
+----
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+----
+
+Then add the dependency:
+
+[source,groovy,subs="attributes"]
+----
+dependencies {
+    implementation 'org.kodein.di:kodein-di:{version}'
+}
+----
+
+[TIP]
+====
+If you are *NOT* using *Gradle 6+*, you should declare the use of the Gradle Metadata experimental feature
+
+[subs="attributes"]
+.settings.gradle.kts
+----
+enableFeaturePreview("GRADLE_METADATA")
+----
+
+Or, import the JVM binaries with `implementation("org.kodein.di:kodein-di-jvm:{version}")`.
+====
+
 === With Maven
 
 Add the JCenter repository:
@@ -36,59 +71,6 @@ Then add the dependency:
 
 WARNING: Use `kodein-di-jvm`, as _Kotlin/Multiplatform_ projects does not work with Maven
 
-
-=== With Gradle
-
-Add the JCenter repository:
-
-[source,groovy,subs="attributes"]
-----
-buildscript {
-    repositories {
-        jcenter()
-    }
-}
-----
-
-Then add the dependency:
-
-[source,groovy,subs="attributes"]
-----
-dependencies {
-    implementation 'org.kodein.di:kodein-di:{version}'
-}
-----
-
-[[kotlin-js]]
-== JavaScript (Gradle)
-
-Because _Kodein-DI_ for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
-
-* In a browser:
-** as an AMD module (for example with RequireJS) (See index.html in the demo project).
-** Directly in an HTML page with a `<script>` tag (See index2.html in the demo project).
-* In NodeJS, as a regular CJS module.
-
-Add the JCenter repository:
-
-[source,groovy,subs="attributes"]
-----
-buildscript {
-    repositories {
-        jcenter()
-    }
-}
-----
-
-Then add the dependency:
-
-[source,groovy,subs="attributes"]
-----
-dependencies {
-    compile 'org.kodein.di:kodein-di-js:{version}'
-}
-----
-
 [[kotlin-multiplatform]]
 == Kotlin/Multiplatform (Gradle)
 
@@ -99,7 +81,7 @@ _Kodein-DI_ uses the new gradle native dependency model.
 
 [TIP]
 ====
-If you are *NOT* using *Gradle 6+*, you should declare the use of the Gralde Metadata experimental feature
+If you are *NOT* using *Gradle 6+*, you must declare the use of the Gralde Metadata experimental feature
 
 [subs="attributes"]
 .settings.gradle.kts
@@ -132,5 +114,35 @@ kotlin {
             }
         }
     }
+}
+----
+
+[[kotlin-js]]
+== JavaScript (Gradle)
+
+Because _Kodein-DI_ for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
+
+* In a browser:
+** as an AMD module (for example with RequireJS) (See index.html in the demo project).
+** Directly in an HTML page with a `<script>` tag (See index2.html in the demo project).
+* In NodeJS, as a regular CJS module.
+
+Add the JCenter repository:
+
+[source,groovy,subs="attributes"]
+----
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+----
+
+Then add the dependency:
+
+[source,groovy,subs="attributes"]
+----
+dependencies {
+    compile 'org.kodein.di:kodein-di-js:{version}'
 }
 ----

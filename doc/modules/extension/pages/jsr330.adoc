@@ -22,6 +22,13 @@ CAUTION: Every-thing that is described here is *a lot less performant* than usin
 [[install]]
 == Install
 
+=== With Gradle
+
+[source,groovy,subs="attributes"]
+----
+implementation("org.kodein.di:kodein-di-jxinject-jvm:{version}")
+----
+
 === With Maven
 
 [source,xml,subs="attributes"]
@@ -32,21 +39,6 @@ CAUTION: Every-thing that is described here is *a lot less performant* than usin
     &lt;version&gt;{version}&lt;/version&gt;
 &lt;/dependency&gt;
 ----
-
-IMPORTANT: Do not remove the "kodein-generic-jvm" (or "kodein-erased-jvm") dependency.
-           Both dependencies must be declared.
-
-
-=== With Gradle
-
-[source,groovy,subs="attributes"]
-----
-compile 'org.kodein.di:kodein-di-jxinject-jvm:{version}'
-----
-
-IMPORTANT: Do not remove the "kodein-generic-jvm" (or "kodein-erased-jvm") dependency.
-           Both dependencies must be declared.
-
 
 [[import-module]]
 === Import the module.
