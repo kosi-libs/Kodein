@@ -1,6 +1,6 @@
 name: kodein-di
 title: Kodein-DI
-version: '7.2.0'
+version: '7.3.0'
 prerelease: dev
 display_version: 'dev'
 nav:
