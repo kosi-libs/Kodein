@@ -31,3 +31,8 @@ dependencies {
     testImplementation("org.testfx:testfx-core:4.0.4-alpha")
     testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
 }
+
+kodeinUpload {
+    name = "kodein-di-framework-tornadofx-jvm"
+    description = "Kodein DI Kotlin classes & extensions for the TornadoFX framework"
+}
