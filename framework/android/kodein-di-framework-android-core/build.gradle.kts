@@ -7,6 +7,6 @@ dependencies {
 }
 
 kodeinUpload {
-    name = "kodein-di-framework-android-core"
-    description = "Kodein DI classes & extensions for Android"
+    name = "Kodein-DI-Framework-Android"
+    description = "Standard Kodein DI classes & extensions for Android"
 }

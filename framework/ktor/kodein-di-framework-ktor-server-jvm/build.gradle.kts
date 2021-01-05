@@ -20,6 +20,6 @@ dependencies {
 }
 
 kodeinUpload {
-    name = "kodein-di-framework-ktor-server-jvm"
-    description = "Kodein DI Kotlin classes & extensions for the Ktor framework"
+    name = "Kodein-DI-Framework-Ktor"
+    description = "Kodein-DI Kotlin classes & extensions for Ktor."
 }

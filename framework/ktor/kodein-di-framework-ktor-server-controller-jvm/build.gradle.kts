@@ -21,6 +21,6 @@ dependencies {
 }
 
 kodeinUpload {
-    name = "kodein-di-framework-ktor-server-controller-jvm"
-    description = "Kodein DI Kotlin classes & extensions Ktor, with architectural helpers"
+    name = "Kodein-DI-Framework-Ktor"
+    description = "Kodein-DI Kotlin classes & extensions for Ktor, with architectural helpers"
 }

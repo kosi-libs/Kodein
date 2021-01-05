@@ -9,6 +9,6 @@ dependencies {
 }
 
 kodeinUpload {
-    name = "kodein-di-framework-android-x"
-    description = "Kodein DI extensions with AndroidX compatibility"
+    name = "Kodein-DI-Framework-Android"
+    description = "Kodein-DI extensions with AndroidX compatibility"
 }

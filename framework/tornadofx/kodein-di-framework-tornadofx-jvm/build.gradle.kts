@@ -33,6 +33,6 @@ dependencies {
 }
 
 kodeinUpload {
-    name = "kodein-di-framework-tornadofx-jvm"
-    description = "Kodein DI Kotlin classes & extensions for the TornadoFX framework"
+    name = "Kodein-DI-Framework-TornadoFX"
+    description = "Kodein-DI Kotlin classes & extensions for the TornadoFX framework"
 }
