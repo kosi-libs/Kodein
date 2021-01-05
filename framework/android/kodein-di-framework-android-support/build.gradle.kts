@@ -7,3 +7,8 @@ dependencies {
 
     implementation("com.android.support:appcompat-v7:28.0.0")
 }
+
+kodeinUpload {
+    name = "Kodein-DI-Framework-Android"
+    description = "Kodein DI classes & extensions with 'android.support' compatibility"
+}

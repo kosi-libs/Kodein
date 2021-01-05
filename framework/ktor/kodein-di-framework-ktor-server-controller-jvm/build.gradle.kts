@@ -19,3 +19,8 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testImplementation(ktor("-server-tests"))
 }
+
+kodeinUpload {
+    name = "Kodein-DI-Framework-Ktor"
+    description = "Kodein DI Kotlin classes & extensions Ktor, with architectural helpers"
+}

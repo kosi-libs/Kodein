@@ -5,3 +5,8 @@ plugins {
 dependencies {
     api(project(":kodein-di"))
 }
+
+kodeinUpload {
+    name = "Kodein-DI-Framework-Android"
+    description = "Kodein DI classes & extensions for Android"
+}
