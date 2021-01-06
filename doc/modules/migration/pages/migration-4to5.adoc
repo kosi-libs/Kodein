@@ -1,6 +1,4 @@
 = Changes & Migration from Kodein 4 to Kodein DI 5
-:version: 7.2.0
-:branch: 7.2
 
 This guide will help you migrate from Kodein 4 to Kodein 5+.
 

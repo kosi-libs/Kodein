@@ -1,7 +1,4 @@
 = Platform compatibility & Genericity
-:version: 7.2.0
-:kotlin: 1.4.0
-:jdk: 1.8
 
 [IMPORTANT]
 ====

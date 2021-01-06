@@ -1,11 +1,14 @@
 name: kodein-di
 title: Kodein-DI
 version: '7.3.0'
-prerelease: dev
-display_version: 'dev'
 nav:
   - modules/ROOT/nav.adoc
   - modules/core/nav.adoc
   - modules/framework/nav.adoc
   - modules/extension/nav.adoc
   - modules/migration/nav.adoc
+asciidoc:
+  attributes:
+    version: '7.3.0'
+    kotlin: '1.4.0'
+    jdk: '1.8'

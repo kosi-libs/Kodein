@@ -1,6 +1,4 @@
 = JSR-330: Using reflexivity to auto-inject
-:version: 7.2.0
-:branch: 7.2
 
 
 == Introduction

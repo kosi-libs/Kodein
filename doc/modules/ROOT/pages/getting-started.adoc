@@ -1,5 +1,3 @@
-:version: 7.2.0
-:branch: 7.2
 
 = Getting started with Kodein-DI
 
