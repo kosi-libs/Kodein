@@ -288,10 +288,6 @@ CAUTION: *This should be used with care* as binding a concrete class and, theref
 WARNING: When binding a generic type, the bound type will be the specialized type, +
 e.g. `bind() from singleton { listOf(1, 2, 3, 4) }` registers the binding to `List<Int>`.
 
-NOTE: If you are using Kodein/Native, because of https://github.com/JetBrains/kotlin-native/issues/1290[this bug], you need to use the uppercase version: `Bind() from`.
-This issue has been fixed and the `bind() from` syntax will be available to Kodein/Native as soon as Kotlin/Native 0.6 is released.
-
-
 == Subtypes bindings
 
 _Kodein-DI_ allows you register a "subtype bindings factory".
