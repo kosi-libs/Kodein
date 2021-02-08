@@ -1,7 +1,7 @@
 name: kodein-di
 title: Kodein-DI
 version: '7.3'
-display_version: '7.3.0'
+display_version: '7.3.1'
 nav:
   - modules/ROOT/nav.adoc
   - modules/core/nav.adoc
@@ -10,6 +10,6 @@ nav:
   - modules/migration/nav.adoc
 asciidoc:
   attributes:
-    version: '7.3.0'
-    kotlin: '1.4.0'
+    version: '7.3.1'
+    kotlin: '1.4.30'
     jdk: '1.8'
