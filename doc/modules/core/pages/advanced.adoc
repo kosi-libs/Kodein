@@ -42,6 +42,38 @@ DI$DependencyLoopException: Dependency recursion:
 <2> `User` depends on `Repository` with the tag "users"
 <3> `Repository` with the tag "users" depends on `Database`, *we have found the dependency loop!*.
 
+[[NotFoundException]]
+=== Dependency not found
+
+When you try to inject / retrieve a dependency that does not exists, _Kodein-DI_ will throw a `DI.NotFoundException`.
+The message of the exception explains what is the binding the container is looking for.
+
+.An example of a not found exception:
+----
+No binding found for bind<Person>() with ? { ? }
+----
+
+If you need to trace what are the different bindings available in the container you can use the option `fullContainerTreeOnError = true`, to log them all.
+
+.Enabling logging all the bindings available on a `DI.NotFoundException`.
+----
+val di = DI.direct {
+    fullContainerTreeOnError = true // <1>
+    bind<A>() with singleton { A(instance()) } // <2>
+}
+di.instance<B>() // <3>
+----
+<1> Enables the option.
+<2> Any bindings.
+<3> Try to retrieve an unbound type
+
+.And the trace associated to the code above:
+----
+No binding found for bind<B>() with ? { ? }
+Registered in this DI container:
+        bind<A>() with singleton { A }
+----
+
 
 [[onready-callbacks]]
 === OnReady callbacks

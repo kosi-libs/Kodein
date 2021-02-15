@@ -69,9 +69,23 @@ Dependency recursion:
     }
 
     @Test
-    fun test_03_TypeNotFound() {
+    fun test_03_TypeNotFound_NoTree() {
 
         val di = DI.direct {}
+
+        assertEquals("No binding found for bind<Person>() with ? { ? }", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
+
+        assertFailsWith<DI.NotFoundException> { di.instance<FullName>() }
+
+        assertFailsWith<DI.NotFoundException> { di.instance<List<*>>() }
+
+        assertFailsWith<DI.NotFoundException> { di.instance<List<String>>() }
+    }
+
+    @Test
+    fun test_04_TypeNotFound_FullTree() {
+
+        val di = DI.direct { fullContainerTreeOnError = true }
 
         assertEquals("No binding found for bind<Person>() with ? { ? }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
 
@@ -83,7 +97,7 @@ Dependency recursion:
     }
 
     @Test
-    fun test_04_NameNotFound() {
+    fun test_05_NameNotFound() {
 
         val di = DI.direct {
             bind<Person>() with provider { Person() }
@@ -96,7 +110,7 @@ Dependency recursion:
     }
 
     @Test
-    fun test_05_FactoryIsNotProvider() {
+    fun test_06_FactoryIsNotProvider() {
 
         val di = DI.direct {
             bind<Person>() with factory { name: String -> Person(name) }
@@ -108,7 +122,7 @@ Dependency recursion:
     }
 
     @Test
-    fun test_06_ProviderIsNotFactory() {
+    fun test_07_ProviderIsNotFactory() {
 
         val di = DI.direct {
             bind<Person>() with provider { Person() }
@@ -120,7 +134,7 @@ Dependency recursion:
     }
 
     @Test
-    fun test_07_BindFromUnit() {
+    fun test_08_BindFromUnit() {
 
         fun unit(@Suppress("UNUSED_PARAMETER") i: Int = 42) {}
 

@@ -6,7 +6,8 @@ import org.kodein.di.bindings.*
 internal class DIContainerImpl private constructor(
         override val tree: DITree,
         private val node: Node?,
-        private val fullDescriptionOnError: Boolean
+        private val fullDescriptionOnError: Boolean,
+        private val fullContainerTreeOnError: Boolean,
 ) : DIContainer {
 
     @Volatile var initCallbacks: (() -> Unit)? = null
@@ -15,7 +16,13 @@ internal class DIContainerImpl private constructor(
     /**
      * "Main" constructor that uses the bindings map configured by a [DIContainer.Builder].
      */
-    internal constructor(builder: DIContainerBuilderImpl, externalSources: List<ExternalSource>, fullDescriptionOnError: Boolean, runCallbacks: Boolean) : this(DITreeImpl(builder.bindingsMap, externalSources, builder.translators), null, fullDescriptionOnError) {
+    internal constructor(
+        builder: DIContainerBuilderImpl,
+        externalSources: List<ExternalSource>,
+        fullDescriptionOnError: Boolean,
+        fullContainerTreeOnError: Boolean,
+        runCallbacks: Boolean
+    ) : this(DITreeImpl(builder.bindingsMap, externalSources, builder.translators), null, fullDescriptionOnError, fullContainerTreeOnError) {
         val init: () -> Unit = {
             val direct = DirectDIImpl(this, AnyDIContext)
             builder.callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }
@@ -116,7 +123,7 @@ internal class DIContainerImpl private constructor(
     }
 
     private fun <C : Any, A, T: Any> bindingDI(key: DI.Key<C, A, T>, context: DIContext<C>, tree: DITree, overrideLevel: Int) : BindingDI<C> {
-        val container = DIContainerImpl(tree, Node(key, overrideLevel, node, fullDescriptionOnError), fullDescriptionOnError)
+        val container = DIContainerImpl(tree, Node(key, overrideLevel, node, fullDescriptionOnError), fullDescriptionOnError, fullContainerTreeOnError)
         return BindingDIImpl(DirectDIImpl(container, context), key, overrideLevel)
     }
 
@@ -176,12 +183,15 @@ internal class DIContainerImpl private constructor(
 
         if (result.isEmpty()) {
             val description = buildString {
-                append("No binding found for ${descProp.get()}\n")
-                val forType = tree.find(SearchSpecs(type = key.type))
-                if (forType.isNotEmpty()) {
-                    append("Available bindings for this type:\n${forType.associate { it.first to it.second }.descFun(withOverrides)}")
+                append("No binding found for ${descProp.get()}")
+                if (fullContainerTreeOnError) {
+                    appendLine()
+                    val forType = tree.find(SearchSpecs(type = key.type))
+                    if (forType.isNotEmpty()) {
+                        append("Available bindings for this type:\n${forType.associate { it.first to it.second }.descFun(withOverrides)}")
+                    }
+                    append("Registered in this DI container:\n${tree.bindings.descFun(withOverrides)}")
                 }
-                append("Registered in this DI container:\n${tree.bindings.descFun(withOverrides)}")
             }
 
             throw DI.NotFoundException(key, description)

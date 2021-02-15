@@ -38,6 +38,7 @@ Dependency recursion:
 
         val di = DI.direct {
             fullDescriptionOnError = true
+            fullContainerTreeOnError = true
         }
 
         assertEquals("No binding found for bind<org.kodein.di.test.Person>() with ? { ? }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)

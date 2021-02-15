@@ -350,6 +350,10 @@ public interface DI : DIAware {
          * If true, exceptions thrown will contain qualified names.
          */
         public var fullDescriptionOnError: Boolean
+        /**
+         * If true, NotFoundException thrown will contain the list of all the bindings available.
+         */
+        public var fullContainerTreeOnError: Boolean
 
         /**
          * The external source is repsonsible for fetching / creating a value when DI cannot find a matching binding.
@@ -468,6 +472,7 @@ public interface DI : DIAware {
         }
 
         public var defaultFullDescriptionOnError: Boolean = false
+        public var defaultFullContainerTreeOnError: Boolean = false
     }
 
 }

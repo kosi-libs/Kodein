@@ -78,6 +78,7 @@ internal open class DIMainBuilderImpl(allowSilentOverride: Boolean) : DIBuilderI
     override val externalSources: MutableList<ExternalSource> = ArrayList()
 
     override var fullDescriptionOnError: Boolean = DI.defaultFullDescriptionOnError
+    override var fullContainerTreeOnError: Boolean = DI.defaultFullContainerTreeOnError
 
     override fun extend(di: DI, allowOverride: Boolean, copy: Copy) {
         val keys = copy.keySet(di.container.tree)

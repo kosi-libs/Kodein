@@ -13,7 +13,7 @@ import org.kodein.di.bindings.ErasedContext
 internal open class DIImpl internal constructor(private val _container: DIContainerImpl) : DI {
 
     @Suppress("unused")
-    private constructor(builder: DIMainBuilderImpl, runCallbacks: Boolean) : this(DIContainerImpl(builder.containerBuilder, builder.externalSources, builder.fullDescriptionOnError, runCallbacks))
+    private constructor(builder: DIMainBuilderImpl, runCallbacks: Boolean) : this(DIContainerImpl(builder.containerBuilder, builder.externalSources, builder.fullDescriptionOnError, builder.fullContainerTreeOnError, runCallbacks))
 
     constructor(allowSilentOverride: Boolean = false, init: DI.MainBuilder.() -> Unit) : this(newBuilder(allowSilentOverride, init), true)
 
