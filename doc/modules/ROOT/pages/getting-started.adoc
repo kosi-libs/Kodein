@@ -67,7 +67,7 @@ Add the JCenter repository:
 ----
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 ----

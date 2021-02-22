@@ -3,11 +3,10 @@ import org.kodein.internal.gradle.settings.*
 buildscript {
     repositories {
         mavenLocal()
-        maven(url = "https://dl.bintray.com/kodein-framework/kodein-dev")
-        maven(url = "https://dl.bintray.com/kodein-framework/Kodein-Internal-Gradle")
+        maven(url = "https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/mvn-repo")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:5.5.0")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.0.0-SNAPSHOT")
     }
 }
 

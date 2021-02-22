@@ -12,7 +12,7 @@ Add the JCenter repository:
 ----
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 ----
@@ -94,7 +94,7 @@ Add the JCenter repository:
 ----
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 ----
@@ -130,7 +130,7 @@ Add the JCenter repository:
 ----
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 ----

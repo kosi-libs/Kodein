@@ -5,13 +5,26 @@ on:
     types: [published]
 
 env:
-  BINTRAY_USER: ${{ secrets.bintray_user }}
-  BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
-  BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
+  SONATYPE_USERNAME: ${{ secrets.sonatype_username }}
+  SONATYPE_PASSWORD: ${{ secrets.sonatype_password }}
+  GPG_PRIVATE_KEY: ${{ secrets.pgp_signing_key }}
+  GPG_PRIVATE_PASSWORD: ${{ secrets.pgp_signing_password }}
+
 
 jobs:
-
+  create-staging-repository:
+    name: Create staging repository
+    runs-on: ubuntu-latest
+    outputs:
+      repository-id: ${{ steps.create.outputs.repository-id }}
+    steps:
+      - id: create
+        run: |
+          wget https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/master/sonatype-rest-api/create-repository.sh
+          chmod a+x create-repository.sh
+          ./create-repository.sh -u $SONATYPE_USERNAME -p $SONATYPE_PASSWORD -id ${{ secrets.sonatype_profile_id }}
   build-upload:
+    needs: create-staging-repository
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -39,15 +52,17 @@ jobs:
         run: ./gradlew hostOnlyTest
         shell: bash
       - name: Upload
-        run: ./gradlew hostOnlyPublish
+        run: ./gradlew hostOnlyPublish -Porg.kodein.sonatype.repositoryId=${{ needs.create-staging-repository.outputs.repository-id }}
         shell: bash
       - name: Discard
         if: ${{ failure() || cancelled() }}
-        run: ./gradlew postBintrayDiscard
+        run: |
+          wget https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/master/sonatype-rest-api/drop-repository.sh
+          chmod a+x drop-repository.sh
+          ./drop-repository.sh -u $SONATYPE_USERNAME -p $SONATYPE_PASSWORD -id ${{ needs.create-staging-repository.outputs.repository-id }}
         shell: bash
-
   build-upload-publish:
-    needs: build-upload
+    needs: [create-staging-repository, build-upload]
     runs-on: ubuntu-latest
     steps:
       - name: Check out
@@ -72,12 +87,18 @@ jobs:
         run: ./gradlew check
         shell: bash
       - name: Upload
-        run: ./gradlew publish
+        run: ./gradlew publish -Porg.kodein.sonatype.repositoryId=${{ needs.create-staging-repository.outputs.repository-id }}
         shell: bash
       - name: Discard
         if: ${{ failure() || cancelled() }}
-        run: ./gradlew postBintrayDiscard
+        run: |
+          wget https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/master/sonatype-rest-api/drop-repository.sh
+          chmod a+x drop-repository.sh
+          ./drop-repository.sh -u $SONATYPE_USERNAME -p $SONATYPE_PASSWORD -id ${{ needs.create-staging-repository.outputs.repository-id }}
         shell: bash
       - name: Publish
-        run: ./gradlew postBintrayPublish
+        run: |
+          wget https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/master/sonatype-rest-api/release-repository.sh
+          chmod a+x release-repository.sh
+          ./release-repository.sh -u $SONATYPE_USERNAME -p $SONATYPE_PASSWORD -id ${{ needs.create-staging-repository.outputs.repository-id }}
         shell: bash

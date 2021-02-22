@@ -14,17 +14,15 @@ on:
       - '!./github/workflow/snapshot.yml'
 
 env:
-  BINTRAY_USER: ${{ secrets.bintray_user }}
-  BINTRAY_APIKEY: ${{ secrets.bintray_apikey }}
-  BINTRAY_USER_ORG: ${{ secrets.bintray_user_org }}
+  SONATYPE_USERNAME: ${{ secrets.sonatype_username }}
+  SONATYPE_PASSWORD: ${{ secrets.sonatype_password }}
 
 jobs:
-
   build-upload:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macOS-latest, windows-latest]
+        os: [ macOS-latest, windows-latest ]
     steps:
       - name: Check out
         uses: actions/checkout@v2
@@ -47,14 +45,17 @@ jobs:
       - name: Check
         run: ./gradlew hostOnlyTest
         shell: bash
+      - name: Check Android
+        if: matrix.os == 'macOS-latest'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          ndk: 21.3.6528147
+          cmake: 3.10.2.4988404
+          script: ./gradlew connectedCheck
       - name: Upload
         run: ./gradlew hostOnlyPublish -PsnapshotNumber=${{ github.run_number }} -PgitRef=${{ github.ref }}
         shell: bash
-      - name: Discard
-        if: ${{ failure() || cancelled() }}
-        run: ./gradlew postBintrayDiscard -PsnapshotNumber=${{ github.run_number }} -PgitRef=${{ github.ref }}
-        shell: bash
-
   build-upload-publish:
     needs: build-upload
     runs-on: ubuntu-latest
@@ -82,11 +83,4 @@ jobs:
         shell: bash
       - name: Upload
         run: ./gradlew publish -PsnapshotNumber=${{ github.run_number }} -PgitRef=${{ github.ref }}
-        shell: bash
-      - name: Discard
-        if: ${{ failure() || cancelled() }}
-        run: ./gradlew postBintrayDiscard -PsnapshotNumber=${{ github.run_number }} -PgitRef=${{ github.ref }}
-        shell: bash
-      - name: Publish
-        run: ./gradlew postBintrayPublish -PsnapshotNumber=${{ github.run_number }} -PgitRef=${{ github.ref }}
         shell: bash
