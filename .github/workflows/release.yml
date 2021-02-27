@@ -4,31 +4,32 @@ on:
   release:
     types: [published]
 
-env:
-  SONATYPE_USERNAME: ${{ secrets.sonatype_username }}
-  SONATYPE_PASSWORD: ${{ secrets.sonatype_password }}
-  GPG_PRIVATE_KEY: ${{ secrets.pgp_signing_key }}
-  GPG_PRIVATE_PASSWORD: ${{ secrets.pgp_signing_password }}
-
-
 jobs:
   create-staging-repository:
     name: Create staging repository
     runs-on: ubuntu-latest
     outputs:
-      repository-id: ${{ steps.create.outputs.repository-id }}
+      repository_id: ${{ steps.create.outputs.repository_id }}
     steps:
       - id: create
-        run: |
-          wget https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/master/sonatype-rest-api/create-repository.sh
-          chmod a+x create-repository.sh
-          ./create-repository.sh -u $SONATYPE_USERNAME -p $SONATYPE_PASSWORD -id ${{ secrets.sonatype_profile_id }}
+        uses: nexus-actions/create-nexus-staging-repo@v1.1
+        with:
+          username: ${{ secrets.SONATYPE_USERNAME }}
+          password: ${{ secrets.SONATYPE_PASSWORD }}
+          staging_profile_id: ${{ secrets.SONATYPE_PROFILE_ID }}
+          description: ${{ github.repository }}/${{ github.workflow }}#${{ github.run_number }}
+
   build-upload:
     needs: create-staging-repository
     runs-on: ${{ matrix.os }}
+    env:
+      SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      GPG_PRIVATE_KEY: ${{ secrets.PGP_SIGNING_KEY }}
+      GPG_PRIVATE_PASSWORD: ${{ secrets.PGP_SIGNING_PASSWORD }}
     strategy:
       matrix:
-        os: [macOS-latest, windows-latest]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
     steps:
       - name: Check out
         uses: actions/checkout@v2
@@ -48,57 +49,49 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Check
+      # Host only for MacOS / Windows
+      - name: Check (macos / windows)
+        if: matrix.os != 'ubuntu-latest'
         run: ./gradlew hostOnlyTest
         shell: bash
-      - name: Upload
-        run: ./gradlew hostOnlyPublish -Porg.kodein.sonatype.repositoryId=${{ needs.create-staging-repository.outputs.repository-id }}
+      - name: Check Android
+        if: matrix.os == 'macOS-latest'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          ndk: 21.3.6528147
+          cmake: 3.10.2.4988404
+          script: ./gradlew connectedCheck
+      - name: Upload (macos / windows)
+        if: matrix.os != 'ubuntu-latest'
+        run: ./gradlew hostOnlyPublish -Porg.kodein.sonatype.repositoryId=${{ needs.create-staging-repository.outputs.repository_id }}
         shell: bash
-      - name: Discard
-        if: ${{ failure() || cancelled() }}
-        run: |
-          wget https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/master/sonatype-rest-api/drop-repository.sh
-          chmod a+x drop-repository.sh
-          ./drop-repository.sh -u $SONATYPE_USERNAME -p $SONATYPE_PASSWORD -id ${{ needs.create-staging-repository.outputs.repository-id }}
-        shell: bash
-  build-upload-publish:
-    needs: [create-staging-repository, build-upload]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out
-        uses: actions/checkout@v2
-      - name: Cached Konan
-        uses: actions/cache@v2
-        with:
-          path: ~/.konan
-          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-konan-
-      - name: Cached Gradle
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Check
+      # Linux / JVM / JS
+      - name: Check (ubuntu)
+        if: matrix.os == 'ubuntu-latest'
         run: ./gradlew check
         shell: bash
-      - name: Upload
-        run: ./gradlew publish -Porg.kodein.sonatype.repositoryId=${{ needs.create-staging-repository.outputs.repository-id }}
+      - name: Upload (ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: ./gradlew publishAllPublicationsToOssrhStagingRepository -Porg.kodein.sonatype.repositoryId=${{ needs.create-staging-repository.outputs.repository_id }}
         shell: bash
+
+  drop-or-release:
+    needs: [create-staging-repository, build-upload]
+    runs-on: ubuntu-latest
+    if: ${{ always() && needs.create-staging-repository.result == 'success' }}
+    steps:
       - name: Discard
-        if: ${{ failure() || cancelled() }}
-        run: |
-          wget https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/master/sonatype-rest-api/drop-repository.sh
-          chmod a+x drop-repository.sh
-          ./drop-repository.sh -u $SONATYPE_USERNAME -p $SONATYPE_PASSWORD -id ${{ needs.create-staging-repository.outputs.repository-id }}
-        shell: bash
-      - name: Publish
-        run: |
-          wget https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/master/sonatype-rest-api/release-repository.sh
-          chmod a+x release-repository.sh
-          ./release-repository.sh -u $SONATYPE_USERNAME -p $SONATYPE_PASSWORD -id ${{ needs.create-staging-repository.outputs.repository-id }}
-        shell: bash
+        if: ${{ needs.build-upload.result != 'success' }}
+        uses: nexus-actions/drop-nexus-staging-repo@v1
+        with:
+          username: ${{ secrets.SONATYPE_USERNAME }}
+          password: ${{ secrets.SONATYPE_PASSWORD }}
+          staging_repository_id: ${{ needs.create-staging-repository.outputs.repository_id }}
+      - name: Release
+        if: ${{ needs.build-upload.result == 'success' }}
+        uses: nexus-actions/release-nexus-staging-repo@v1
+        with:
+          username: ${{ secrets.SONATYPE_USERNAME }}
+          password: ${{ secrets.SONATYPE_PASSWORD }}
+          staging_repository_id: ${{ needs.create-staging-repository.outputs.repository_id }}
