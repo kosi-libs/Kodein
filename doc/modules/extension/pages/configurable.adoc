@@ -31,7 +31,7 @@ enableFeaturePreview("GRADLE_METADATA")
 
 ====
 
-Add the JCenter repository:
+Add the MavenCentral repository:
 
 [source,groovy,subs="attributes"]
 ----
@@ -51,21 +51,7 @@ dependencies {
 }
 ----
 
-==== With Maven
-
-Add the JCenter repository:
-
-[source,xml,subs="attributes"]
-----
-&lt;repositories&gt;
-    &lt;repository&gt;
-      &lt;id&gt;jcenter&lt;/id&gt;
-      &lt;url&gt;https://jcenter.bintray.com&lt;/url&gt;
-    &lt;/repository&gt;
-&lt;/repositories&gt;
-----
-
-Then add the dependency:
+Add the dependency:
 
 [source,xml,subs="attributes"]
 ----
@@ -90,7 +76,7 @@ Because _Kodein-DI_ for JavaScript is compiled as a https://github.com/umdjs/umd
 ** Directly in an HTML page with a `<script>` tag (See index2.html in the demo project).
 * In NodeJS, as a regular CJS module.
 
-Add the JCenter repository:
+Add the MavenCentral repository:
 
 [source,groovy,subs="attributes"]
 ----
@@ -118,7 +104,7 @@ androidArm32, androidArm64, iosArm32, iosArm64, iosX64, linuxArm32Hfp, linuxMips
 
 _Kodein-DI_ uses the new gradle native dependency model.
 
-Add the JCenter repository:
+Add the MavenCentral repository:
 
 [source,groovy,subs="attributes"]
 ----

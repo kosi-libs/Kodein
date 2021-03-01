@@ -6,7 +6,7 @@
 
 === With Gradle
 
-Add the JCenter repository:
+Add the MavenCentral repository:
 
 [source,groovy,subs="attributes"]
 ----
@@ -39,21 +39,7 @@ enableFeaturePreview("GRADLE_METADATA")
 Or, import the JVM binaries with `implementation("org.kodein.di:kodein-di-jvm:{version}")`.
 ====
 
-=== With Maven
-
-Add the JCenter repository:
-
-[source,xml,subs="attributes"]
-----
-&lt;repositories&gt;
-    &lt;repository&gt;
-      &lt;id&gt;jcenter&lt;/id&gt;
-      &lt;url&gt;https://jcenter.bintray.com&lt;/url&gt;
-    &lt;/repository&gt;
-&lt;/repositories&gt;
-----
-
-Then add the dependency:
+Add the dependency:
 
 [source,xml,subs="attributes"]
 ----
@@ -88,7 +74,7 @@ enableFeaturePreview("GRADLE_METADATA")
 
 ====
 
-Add the JCenter repository:
+Add the MavenCentral repository:
 
 [source,groovy,subs="attributes"]
 ----
@@ -124,7 +110,7 @@ Because _Kodein-DI_ for JavaScript is compiled as a https://github.com/umdjs/umd
 ** Directly in an HTML page with a `<script>` tag (See index2.html in the demo project).
 * In NodeJS, as a regular CJS module.
 
-Add the JCenter repository:
+Add the MavenCentral repository:
 
 [source,groovy,subs="attributes"]
 ----
