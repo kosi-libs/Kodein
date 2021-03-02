@@ -3,8 +3,11 @@
 You can use Kodein-DI as-is in your Android project or use the util library `kodein-di-android`.
 
 NOTE: Kodein-DI does work on Android as-is.
-      The `kodein-di-android` extension adds multiple android-specific utilities to Kodein-DI. +
+      The `kodein-di-android-*` extensions add multiple android-specific utilities to Kodein-DI. +
       Using or not using this extension really depends on your needs.
+
+IMPORTANT: Starting from `7.3`, using `kodein-di-android-*` extensions in your Android projects needs that you support Android 21 as the minimum SDK.
+           Using Kodein-DI as-is does not force with minimum SDK requirement.
 
 Have a look at the https://github.com/Kodein-Framework/Kodein-Samples/tree/master/di/coffee-maker/android[Android demo project]!
 
