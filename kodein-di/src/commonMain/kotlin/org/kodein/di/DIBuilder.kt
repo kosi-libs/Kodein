@@ -5,7 +5,7 @@ import org.kodein.type.TypeToken
 import org.kodein.type.generic
 
 
-//region Simple bindings
+//region Straight bindings
 /**
  * Binds a singleton: will create an instance on first request and will subsequently always return the same instance.
  *
