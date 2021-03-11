@@ -271,22 +271,38 @@ CAUTION: You should only use constant bindings for very simple types without inh
 
 Sometimes, it may seem overkill to specify the type to `bind` if you are binding the same type as you are creating.
 
-For this use case, you can transform any `bind<TYPE>() with ...` to `bind() from ...`.
+For this use case, you can transform any `bind<TYPE>() with ...` to `bind { ... }`.
 
 [source,kotlin]
 .Example: direct bindings
 ----
 val di = DI {
-    bind() from singleton { RandomDice(6) }
-    bind("DnD20") from provider { RandomDice(20) }
-    bind() from instance(SqliteDataSource.open("path/to/file"))
+    bind { singleton { RandomDice(6) } }
+    bind("DnD20") { provider { RandomDice(20) } }
+    bind { instance(SqliteDataSource.open("path/to/file")) }
 }
 ----
 
 CAUTION: *This should be used with care* as binding a concrete class and, therefore, having concrete dependencies is an _anti-pattern_ that later prevents modularisation and mocking / testing.
 
 WARNING: When binding a generic type, the bound type will be the specialized type, +
-e.g. `bind() from singleton { listOf(1, 2, 3, 4) }` registers the binding to `List<Int>`.
+e.g. `bind { singleton { listOf(1, 2, 3, 4) } }` registers the binding to `List<Int>`.
+
+[NOTE]
+====
+If you are binding straight types, without using tags, overriding, etc., you can use the following extension functions:
+[source,kotlin]
+.Example: simple bindings
+----
+val di = DI {
+    bindFactory { size: Int -> RandomDice(size) }
+    bindProvider { RandomDice(20) }
+    bindSingleton { RandomDice(6) }
+    bindMultiton { name: String ->  Person(name) }
+    bindInstance { SqliteDataSource.open("path/to/file") }
+}
+----
+====
 
 == Subtypes bindings
 
