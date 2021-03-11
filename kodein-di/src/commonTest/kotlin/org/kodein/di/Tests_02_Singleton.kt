@@ -41,4 +41,25 @@ class Tests_02_Singleton {
         assertSame(p1, p2)
     }
 
+    @Test
+    fun test_03_SingletonDirectBindingGetInstance() {
+
+        val di = DI { bindSingleton { Person() } }
+
+        val p1: Person by di.instance()
+        val p2: Person by di.instance()
+
+        assertSame(p1, p2)
+    }
+
+    @Test
+    fun test_04_SingletonDirectBindingGetProvider() {
+
+        val di = DI { bindSingleton { Person() } }
+
+        val p1: () -> Person by di.provider()
+        val p2: () -> Person by di.provider()
+
+        assertSame(p1(), p2())
+    }
 }

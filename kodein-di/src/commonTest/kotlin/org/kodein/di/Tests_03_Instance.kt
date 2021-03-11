@@ -31,4 +31,31 @@ class Tests_03_Instance {
         assertSame(p1(), p)
         assertSame(p2(), p)
     }
+
+
+    @Test fun test_03_InstanceDirectBindingGetInstance() {
+
+        val p = Person()
+
+        val di = DI { bindInstance(p) }
+
+        val p1: Person by di.instance()
+        val p2: Person by di.instance()
+
+        assertSame(p1, p)
+        assertSame(p2, p)
+    }
+
+    @Test fun test_04_InstanceDirectBindingGetProvider() {
+
+        val p = Person()
+
+        val di = DI { bindInstance(p) }
+
+        val p1: () -> Person by di.provider()
+        val p2: () -> Person by di.provider()
+
+        assertSame(p1(), p)
+        assertSame(p2(), p)
+    }
 }

@@ -108,5 +108,106 @@ class Tests_00_Factory {
         assertEquals(AwareTest::class, test.logger.cls)
     }
 
+    @Test
+    fun test_07_FactoryDirectBindingGetFactory() {
+        val di = DI {
+            bindFactory { name: String -> Person(name) }
+        }
+
+        val p1: (String) -> Person by di.factory()
+        val p2: (String) -> Person by di.factory()
+
+        assertNotSame(p1("Salomon"), p2("Salomon"))
+    }
+
+    @Test
+    fun test_08_BindFactoryGetProvider() {
+
+        val di = DI { bindFactory { name: String -> Person(name) } }
+
+        val p: () -> Person by di.provider(arg = "Salomon")
+        val dp: () -> Person = di.direct.provider(arg = "Salomon")
+
+        assertAllEqual("Salomon", p().name, dp().name)
+
+        val fp: () -> Person by di.provider(fArg = { "Salomon" })
+        val dfp: () -> Person = di.direct.provider(fArg = { "Salomon" })
+
+        assertAllEqual("Salomon", fp().name, dfp().name)
+    }
+
+    @Test
+    fun test_09_BindFactoryGetInstance() {
+
+        val di = DI { bindFactory { name: String -> Person(name) } }
+
+        val p: Person by di.instance(arg = "Salomon")
+
+        assertEquals("Salomon", p.name)
+
+        val fp: Person by di.instance(fArg = { "Salomon" })
+
+        assertEquals("Salomon", fp.name)
+    }
+
+    @Test
+    fun test_10_BindGenericFactoryGetInstance() {
+
+        val di = DI { bindFactory { l: List<*> -> Person(l.first().toString()) } }
+
+        val p: Person by di.instance(arg = listOf("Salomon", "BRYS"))
+
+        assertEquals("Salomon", p.name)
+    }
+
+    @Test
+    fun test_11_BindTwoItfFactoryGetInstance() {
+
+        val di = DI {
+            bindFactory { p: IName -> Person(p.firstName) }
+            bindFactory { p: IFullName -> Person(p.firstName + " " + p.lastName) }
+        }
+
+        val p: Person by di.instance(arg = FullInfos("Salomon", "BRYS", 30))
+
+        assertFailsWith<DI.NotFoundException> { p.name }
+    }
+
+    @Test
+    fun test_12_BindFactoryLambdaArgument() {
+        val di = DI {
+            bindFactory { f: () -> Unit -> f }
+        }
+
+        var passed = false
+        val f = { passed = true }
+
+        val run: () -> Unit by di.instance(arg = f)
+        run.invoke()
+
+        assertTrue(passed)
+    }
+
+    /* TODO enable super types for native platforms
+    interface FakeLogger { val cls: KClass<*> }
+
+    class FakeLoggerImpl(override val cls: KClass<*>) : FakeLogger
+
+    class AwareTest(override val di: DI) : DIAware {
+        val logger: FakeLogger by instance(arg = this::class)
+    }
+
+    @Test
+    fun test_06_StarFactory() {
+        val di = DI {
+            bind() from factory { cls: KClass<*> -> FakeLoggerImpl(cls) }
+        }
+
+        val logger: FakeLogger by di.instance(arg = AwareTest::class)
+        assertEquals(AwareTest::class, logger.cls)
+    }
+    */
+
+
 
 }

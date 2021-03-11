@@ -28,4 +28,27 @@ class Tests_01_Provider {
         assertNotSame(p1(), p2())
     }
 
+
+    @Test
+    fun test_03_ProviderDirectBindingGetInstance() {
+
+        val di = DI { bindProvider { Person() } }
+
+        val p1: Person by di.instance()
+        val p2: Person by di.instance()
+
+        assertNotSame(p1, p2)
+    }
+
+    @Test
+    fun test_04_ProviderDirectBindingGetProvider() {
+
+        val di = DI { bindProvider { Person() } }
+
+        val p1 by di.provider<Person>()
+        val p2 by di.provider<Person>()
+
+        assertNotSame(p1(), p2())
+    }
+
 }

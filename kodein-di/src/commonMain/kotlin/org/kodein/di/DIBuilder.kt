@@ -4,7 +4,61 @@ import org.kodein.di.bindings.*
 import org.kodein.type.generic
 
 
-//region Standard bindings
+//region Simple bindings
+/**
+ * Binds a singleton: will create an instance on first request and will subsequently always return the same instance.
+ *
+ * T generics will be erased!
+ *
+ * @param T The created type.
+ * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
+ */
+public inline fun <reified T: Any> DI.Builder.bindSingleton(noinline creator: DirectDI.() -> T) {
+    bind<T>() with singleton(creator = creator)
+}
+
+
+/**
+ * Creates a factory: each time an instance is needed, the function [creator] function will be called.
+ *
+ * T generics will be erased!
+ *
+ * A provider is like a [factory], but without argument.
+ *
+ * @param T The created type.
+ * @param creator The function that will be called each time an instance is requested. Should create a new instance.
+ */
+public inline fun <reified T: Any> DI.Builder.bindProvider(noinline creator: DirectDI.() -> T) {
+    bind<T>() with provider(creator = creator)
+}
+
+/**
+ * Binds a factory: each time an instance is needed, the function [creator] function will be called.
+ *
+ * A & T generics will be erased!
+ *
+ * @param A The argument type.
+ * @param T The created type.
+ * @param creator The function that will be called each time an instance is requested. Should create a new instance.
+ */
+public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(noinline creator: DirectDI.(A) -> T) {
+    bind<T>() with factory(creator = creator)
+}
+
+/**
+ * Binds an instance provider: will always return the given instance.
+ *
+ * T generics will be erased!
+ *
+ * @param T The type of the instance.
+ * @param instance The object that will always be returned.
+ */
+public inline fun <reified T: Any> DI.Builder.bindInstance(instance: T) {
+    bind<T>() with instance(instance)
+}
+//endregion
+
+//region Advanced bindings
 /**
  * Starts the binding of a given type with a given tag.
  *
