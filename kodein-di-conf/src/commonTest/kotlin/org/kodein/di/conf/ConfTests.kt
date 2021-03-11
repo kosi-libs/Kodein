@@ -165,7 +165,8 @@ class ConfTests {
         var ready = false
 
         di.addConfig {
-            bind() from singleton { "test" }
+            bind()
+            bind { singleton { "test" } }
 
             onReady {
                 ready = true

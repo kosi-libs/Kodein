@@ -139,7 +139,7 @@ class Tests_13_Scope {
         }
 
         val kodein = DI {
-            bind() from scoped(testScope).singleton { Person(context.name) }
+            bind { scoped(testScope).singleton { Person(context.name) } }
         }
 
         val test1 = T05(kodein, "one")
@@ -207,9 +207,9 @@ class Tests_13_Scope {
     @Test
     fun test_08_CircularScopes() {
         val di = DI.direct {
-            bind() from contexted<D>().provider { context.str }
-            bind() from contexted<E>().provider { context.int }
-            bind() from contexted<F>().provider { context.char }
+            bind { contexted<D>().provider { context.str } }
+            bind { contexted<E>().provider { context.int } }
+            bind { contexted<F>().provider { context.char } }
             registerContextTranslator { d: D -> d.e }
             registerContextTranslator { e: E -> e.f }
             registerContextTranslator { f: F -> f.d }
@@ -237,7 +237,7 @@ class Tests_13_Scope {
     @Test
     fun test_09_ContextTranslatorAndReceiver() {
         val di = DI.direct {
-            bind() from contexted<Name>().provider { FullName(context.firstName, "BRYS") }
+            bind { contexted<Name>().provider { FullName(context.firstName, "BRYS") } }
             registerContextFinder { Name("Salomon") }
             registerContextTranslator { name: String -> Name(name) }
         }
@@ -257,14 +257,14 @@ class Tests_13_Scope {
         }
         class CurrentName(var current: Name)
         val di = DI.direct {
-            bind() from scoped(nameScope).singleton { FullName(context.firstName, "BRYS") }
-            bind() from singleton { CurrentName(Name("Salomon")) }
-            registerContextFinder<Name> { instance<CurrentName>().current }
+            bind { scoped(nameScope).singleton { FullName(context.firstName, "BRYS") } }
+            bind { singleton { CurrentName(Name("Salomon")) } }
+            registerContextFinder { instance<CurrentName>().current }
         }
 
-        assertEquals(FullName("Salomon", "BRYS"), di.instance<FullName>())
+        assertEquals(FullName("Salomon", "BRYS"), di.instance())
         di.instance<CurrentName>().current = Name("Laila")
-        assertEquals(FullName("Laila", "BRYS"), di.instance<FullName>())
+        assertEquals(FullName("Laila", "BRYS"), di.instance())
     }
 
 

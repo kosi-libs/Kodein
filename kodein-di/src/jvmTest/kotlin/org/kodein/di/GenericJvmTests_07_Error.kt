@@ -68,10 +68,10 @@ Dependency recursion:
     @Test fun test_02_RecursiveDependencies() {
 
         val kodein = DI {
-            bind() from provider { Recurs0(instance()) }
-            bind() from provider { RecursA(instance()) }
-            bind() from provider { RecursB(instance(tag = "yay")) }
-            bind(tag = "yay") from provider { RecursC(instance()) }
+            bind { provider { Recurs0(instance()) } }
+            bind { provider { RecursA(instance()) } }
+            bind { provider { RecursB(instance(tag = "yay")) } }
+            bind(tag = "yay") { provider { RecursC(instance()) } }
         }
 
         assertFailsWith<DI.DependencyLoopException> {
@@ -171,16 +171,16 @@ Dependency recursion:
 
         val kodein = DI.direct {
             assertFailsWith<IllegalArgumentException> {
-                bind() from factory { i: Int -> unit(i) }
+                bind { factory { i: Int -> unit(i) } }
             }
             assertFailsWith<IllegalArgumentException> {
-                bind() from provider { unit() }
+                bind { provider { unit() } }
             }
             assertFailsWith<IllegalArgumentException> {
-                bind() from instance(Unit)
+                bind { instance(Unit) }
             }
             assertFailsWith<IllegalArgumentException> {
-                bind() from singleton { unit() }
+                bind { singleton { unit() } }
             }
 
             bind<Unit>() with instance(unit())

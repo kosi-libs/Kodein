@@ -1,6 +1,7 @@
 package org.kodein.di
 
 import org.kodein.di.bindings.*
+import org.kodein.type.TypeToken
 import org.kodein.type.generic
 
 
@@ -14,7 +15,19 @@ import org.kodein.type.generic
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
 public inline fun <reified T: Any> DI.Builder.bindSingleton(noinline creator: DirectDI.() -> T) {
-    bind<T>() with singleton(creator = creator)
+    bind { singleton(creator = creator) }
+}
+
+/**
+ * Binds a multiton: will create an instance on first request and will subsequently always return the same instance.
+ *
+ * T generics will be erased!
+ *
+ * @param T The created type.
+ * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
+ */
+public inline fun <reified A : Any, reified T: Any> DI.Builder.bindMultiton(sync: Boolean = true, noinline creator: DirectDI.(A) -> T) {
+    bind { multiton(sync = sync, creator = creator) }
 }
 
 
@@ -29,7 +42,7 @@ public inline fun <reified T: Any> DI.Builder.bindSingleton(noinline creator: Di
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  */
 public inline fun <reified T: Any> DI.Builder.bindProvider(noinline creator: DirectDI.() -> T) {
-    bind<T>() with provider(creator = creator)
+    bind { provider(creator = creator) }
 }
 
 /**
@@ -42,7 +55,7 @@ public inline fun <reified T: Any> DI.Builder.bindProvider(noinline creator: Dir
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  */
 public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(noinline creator: DirectDI.(A) -> T) {
-    bind<T>() with factory(creator = creator)
+    bind { factory(creator = creator) }
 }
 
 /**
@@ -54,8 +67,17 @@ public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(noinl
  * @param instance The object that will always be returned.
  */
 public inline fun <reified T: Any> DI.Builder.bindInstance(instance: T) {
-    bind<T>() with instance(instance)
+    bind { instance(instance) }
 }
+
+/**
+ * Attaches a binding to the DI container
+ *
+ * @param T The type of value to bind.
+ * @param tag The tag to bind.
+ * @param overrides Whether this bind **must** or **must not** override an existing binding.
+ */
+public inline fun <reified T: Any> DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null, noinline createBinding: () -> DIBinding<*, *, T>): Unit = Bind(tag, overrides, createBinding)
 //endregion
 
 //region Advanced bindings
@@ -78,6 +100,7 @@ public inline fun <reified T : Any> DI.Builder.bind(tag: Any? = null, overrides:
  * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
  * @return The binder: call [DI.Builder.DirectBinder.from]) on it to finish the binding syntax and register the binding.
  */
+@Deprecated("'bind() fron [BINDING]' might be replace by 'bind { [BINDING] }' (This will be remove in Kodein-DI 8.0)")
 public fun DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null): DI.Builder.DirectBinder = Bind(tag, overrides)
 
 /**

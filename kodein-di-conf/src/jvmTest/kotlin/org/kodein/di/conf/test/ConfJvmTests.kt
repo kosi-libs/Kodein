@@ -77,7 +77,7 @@ class ConfJvmTests {
         assertNull(di.direct.instanceOrNull<String>())
 
         di.addConfig {
-            bind() from provider { "def" }
+            bind { provider { "def" } }
         }
 
         assertEquals("bar", di.direct.instance(tag = "foo"))

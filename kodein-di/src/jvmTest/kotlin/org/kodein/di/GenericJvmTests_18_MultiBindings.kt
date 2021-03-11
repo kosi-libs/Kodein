@@ -9,7 +9,7 @@ class GenericJvmTests_18_MultiBindings {
     @Test
     fun test_00_MultiSet() {
         val kodein = DI {
-            bind() from setBinding<IPerson>()
+            bind { setBinding<IPerson>() }
 
             bind<IPerson>().inSet() with singleton { Person("Salomon") }
             bind<IPerson>().inSet() with provider { Person("Laila") }
@@ -40,7 +40,7 @@ class GenericJvmTests_18_MultiBindings {
     @Test
     fun test_01_MultiMap() {
         val kodein = DI {
-            bind() from setBinding<PersonEntry>()
+            bind { setBinding<PersonEntry>() }
 
             bind<PersonEntry>().inSet() with singleton { "so" to Person("Salomon") }
             bind<PersonEntry>().inSet() with provider { "loulou" to Person("Laila") }

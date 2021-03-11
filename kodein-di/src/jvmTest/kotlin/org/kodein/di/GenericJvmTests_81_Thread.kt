@@ -59,7 +59,9 @@ class GenericJvmTests_81_Thread {
 
     @Test
     fun test_02_threadMultiton() {
-        val kodein = DI { bind() from multiton(ref = threadLocal) { name: String -> Person(name) } }
+        val kodein = DI {
+            bind { multiton(ref = threadLocal) { name: String -> Person(name) } }
+        }
 
         lateinit var tp1: Person
         lateinit var tp3: Person

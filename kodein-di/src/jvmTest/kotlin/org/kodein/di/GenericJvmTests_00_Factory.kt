@@ -12,7 +12,7 @@ class GenericJvmTests_00_Factory {
     fun test_00_FactoryBindingGetFactory() {
 
         val kodein = DI {
-            bind() from factory { name: String -> Person(name) }
+            bind { factory { name: String -> Person(name) } }
         }
 
         val p1: (String) -> Person by kodein.factory()

@@ -14,7 +14,9 @@ class GenericJvmTests_03_Instance {
 
         val p = Person()
 
-        val kodein = DI { bind() from instance(p) }
+        val kodein = DI {
+            bind { instance(p) }
+        }
 
         val p1: Person by kodein.instance()
         val p2: Person by kodein.instance()

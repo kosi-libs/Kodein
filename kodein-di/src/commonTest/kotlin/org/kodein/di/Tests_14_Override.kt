@@ -125,5 +125,45 @@ class Tests_14_Override {
         }
     }
 
+    @Test
+    fun test_09_DirectBindingExplicitOverride() {
+        val di = DI {
+            bind(tag = "name") { instance("Benjamin") }
+            bind(tag = "name", overrides = true) { instance("Salomon") }
+        }
 
+        assertEquals("Salomon", di.direct.instance(tag = "name"))
+    }
+
+    @Test
+    fun test_10_DirectBindingSilentOverride() {
+        val di = DI(allowSilentOverride = true) {
+            bind(tag = "name") { instance("Benjamin") }
+            bind(tag = "name") { instance("Salomon") }
+        }
+
+        assertEquals("Salomon", di.direct.instance(tag = "name"))
+    }
+
+    @Test
+    fun test_11_DirectBindingSilentOverrideNotAllowed() {
+        DI {
+            bind(tag = "name") { instance("Benjamin") }
+
+            assertFailsWith<DI.OverridingException> {
+                bind(tag = "name") { instance("Salomon") }
+            }
+        }
+    }
+
+    @Test
+    fun test_12_DirectBindingMustNotOverride() {
+        DI(allowSilentOverride = true) {
+            bind(tag = "name") { instance("Benjamin") }
+
+            assertFailsWith<DI.OverridingException> {
+                bind(tag = "name", overrides = false) { instance("Salomon") }
+            }
+        }
+    }
 }

@@ -9,12 +9,17 @@ class Tests_18_MultiBindings {
     @Test
     fun test_00_MultiSet() {
         val di = DI {
-            bind() from setBinding<IPerson>()
+            bind { setBinding<IPerson>() }
 
             bind<IPerson>().inSet() with singleton { Person("Salomon") }
             bind<IPerson>().inSet() with provider { Person("Laila") }
 
-            Bind<List<IPerson>>(erasedList<IPerson>()) with provider { Instance<Set<IPerson>>(erasedSet(), null).toList() }
+            Bind<List<IPerson>>(erasedList<IPerson>()) with provider {
+                Instance<Set<IPerson>>(
+                    erasedSet(),
+                    null
+                ).toList()
+            }
         }
 
         val persons1: Set<IPerson> by di.Instance(erasedSet())
@@ -40,7 +45,7 @@ class Tests_18_MultiBindings {
     @Test
     fun test_01_MultiMap() {
         val di = DI {
-            bind() from setBinding<PersonEntry>()
+            bind { setBinding<PersonEntry>() }
 
             bind<PersonEntry>().inSet() with singleton { "so" to Person("Salomon") }
             bind<PersonEntry>().inSet() with provider { "loulou" to Person("Laila") }
@@ -48,7 +53,7 @@ class Tests_18_MultiBindings {
             Bind<Map<String, Person>>(erasedMap()) with provider { Instance<PersonEntries>(erasedSet(), null).toMap() }
         }
 
-        val persons: Map<String, Person> = di.direct.Instance(erasedMap<String, Person>(), null)
+        val persons: Map<String, Person> = di.direct.Instance(erasedMap(), null)
 
         assertEquals(Person("Salomon"), persons["so"])
         assertEquals(Person("Laila"), persons["loulou"])
