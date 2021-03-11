@@ -232,6 +232,7 @@ public interface DI : DIAware {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
+            @Deprecated("'bind() fron [BINDING]' might be replace by 'bind { [BINDING] }' (This will be remove in Kodein-DI 8.0)", replaceWith = ReplaceWith("bind { binding }"))
             public infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>)
         }
 
@@ -251,6 +252,15 @@ public interface DI : DIAware {
             @Suppress("FunctionName")
             public fun <T: Any> With(valueType: TypeToken<out T>, value: T)
         }
+
+        /**
+         * Attaches the binding of a given type with a given tag.
+         *
+         * @param T The type of value to bind.
+         * @param tag The tag to bind.
+         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         */
+        public fun <T : Any> Bind(tag: Any? = null, overrides: Boolean? = null, createBinding: () -> DIBinding<*, *, T>)
 
         /**
          * Starts the binding of a given type with a given tag.

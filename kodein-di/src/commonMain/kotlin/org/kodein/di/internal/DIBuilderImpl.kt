@@ -34,11 +34,25 @@ internal open class DIBuilderImpl internal constructor(
 
     inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) : DI.Builder.ConstantBinder {
         @Suppress("FunctionName")
-        override fun <T: Any> With(valueType: TypeToken<out T>, value: T) = Bind(tag = _tag, overrides = _overrides) from InstanceBinding(valueType, value)
+        override fun <T: Any> With(valueType: TypeToken<out T>, value: T) = Bind(tag = _tag, overrides = _overrides) { InstanceBinding(valueType, value) }
     }
 
     @Suppress("FunctionName")
     override fun <T : Any> Bind(type: TypeToken<out T>, tag: Any?, overrides: Boolean?) = TypeBinder(type, tag, overrides)
+
+    @Suppress("FunctionName")
+    override fun <T : Any> Bind(tag: Any?, overrides: Boolean?, createBinding: () -> DIBinding<*, *, T>) {
+        val binding = createBinding()
+        if (binding.createdType == TypeToken.Unit) {
+            throw IllegalArgumentException("Using `bind { [BINDING] }` with a *Unit* ${binding.factoryName()} is most likely an error. If you are sure you want to bind the Unit type, please use `bind<Unit>() with ${binding.factoryName()}`.")
+        }
+        containerBuilder.bind(
+            key = DI.Key(binding.contextType, binding.argType, binding.createdType, tag = tag),
+            binding = binding,
+            fromModule = moduleName,
+            overrides = overrides,
+        )
+    }
 
     @Suppress("FunctionName")
     override fun Bind(tag: Any?, overrides: Boolean?): DirectBinder = DirectBinder(tag, overrides)
