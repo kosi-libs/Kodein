@@ -260,7 +260,7 @@ public interface DI : DIAware {
          * @param tag The tag to bind.
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          */
-        public fun <T : Any> Bind(tag: Any? = null, overrides: Boolean? = null, createBinding: () -> DIBinding<*, *, T>)
+        public fun <T : Any> Bind(tag: Any? = null, overrides: Boolean? = null, binding: DIBinding<*, *, T>)
 
         /**
          * Starts the binding of a given type with a given tag.

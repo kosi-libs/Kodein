@@ -14,9 +14,7 @@ import org.kodein.type.generic
  * @param T The created type.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
-public inline fun <reified T: Any> DI.Builder.bindSingleton(noinline creator: DirectDI.() -> T) {
-    bind { singleton(creator = creator) }
-}
+public inline fun <reified T: Any> DI.Builder.bindSingleton(noinline creator: DirectDI.() -> T): Unit = Bind(binding = singleton(creator = creator))
 
 /**
  * Binds a multiton: will create an instance on first request and will subsequently always return the same instance.
@@ -26,9 +24,7 @@ public inline fun <reified T: Any> DI.Builder.bindSingleton(noinline creator: Di
  * @param T The created type.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
-public inline fun <reified A : Any, reified T: Any> DI.Builder.bindMultiton(sync: Boolean = true, noinline creator: DirectDI.(A) -> T) {
-    bind { multiton(sync = sync, creator = creator) }
-}
+public inline fun <reified A : Any, reified T: Any> DI.Builder.bindMultiton(sync: Boolean = true, noinline creator: DirectDI.(A) -> T): Unit = Bind(binding = multiton(sync = sync, creator = creator))
 
 
 /**
@@ -41,9 +37,7 @@ public inline fun <reified A : Any, reified T: Any> DI.Builder.bindMultiton(sync
  * @param T The created type.
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-public inline fun <reified T: Any> DI.Builder.bindProvider(noinline creator: DirectDI.() -> T) {
-    bind { provider(creator = creator) }
-}
+public inline fun <reified T: Any> DI.Builder.bindProvider(noinline creator: DirectDI.() -> T): Unit = Bind(binding = provider(creator = creator))
 
 /**
  * Binds a factory: each time an instance is needed, the function [creator] function will be called.
@@ -54,9 +48,7 @@ public inline fun <reified T: Any> DI.Builder.bindProvider(noinline creator: Dir
  * @param T The created type.
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(noinline creator: DirectDI.(A) -> T) {
-    bind { factory(creator = creator) }
-}
+public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(noinline creator: DirectDI.(A) -> T): Unit = Bind(binding = factory(creator = creator))
 
 /**
  * Binds an instance provider: will always return the given instance.
@@ -66,9 +58,7 @@ public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(noinl
  * @param T The type of the instance.
  * @param instance The object that will always be returned.
  */
-public inline fun <reified T: Any> DI.Builder.bindInstance(instance: T) {
-    bind { instance(instance) }
-}
+public inline fun <reified T: Any> DI.Builder.bindInstance(instance: T): Unit = Bind(binding = instance(instance))
 
 /**
  * Attaches a binding to the DI container
@@ -77,7 +67,7 @@ public inline fun <reified T: Any> DI.Builder.bindInstance(instance: T) {
  * @param tag The tag to bind.
  * @param overrides Whether this bind **must** or **must not** override an existing binding.
  */
-public inline fun <reified T: Any> DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null, noinline createBinding: () -> DIBinding<*, *, T>): Unit = Bind(tag, overrides, createBinding)
+public inline fun <reified T: Any> DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null, noinline createBinding: () -> DIBinding<*, *, T>): Unit = Bind(tag, overrides, createBinding())
 //endregion
 
 //region Advanced bindings
