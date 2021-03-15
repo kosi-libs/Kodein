@@ -14,8 +14,8 @@ fun Application.main() {
     install(DefaultHeaders)
 
     di {
-        bind() from scoped(SessionScope).singleton { Random() }
-        bind() from scoped(CallScope).singleton { Random() }
+        bind { scoped(SessionScope).singleton { Random() } }
+        bind { scoped(CallScope).singleton { Random() } }
 
         constant("author") with AUTHOR.toLowerCase()
     }
