@@ -63,7 +63,7 @@ class Tests_03_Instance {
 
         val p = Person()
 
-        val di = DI { bindInstance(p) }
+        val di = DI { bindInstance { p } }
 
         val p1: Person by di.instance()
         val p2: Person by di.instance()
@@ -76,7 +76,7 @@ class Tests_03_Instance {
 
         val p = Person()
 
-        val di = DI { bindInstance(p) }
+        val di = DI { bindInstance { p } }
 
         val p1: () -> Person by di.provider()
         val p2: () -> Person by di.provider()

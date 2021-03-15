@@ -51,4 +51,45 @@ class Tests_06_Constant {
     }
 
 
+    @Test
+    fun test_03_SimpleConstantBindingGetInstance() {
+
+        val di = DI {
+            bindConstant(tag = "answer") { 42 }
+        }
+
+        val c: Int by di.instance(tag = "answer")
+        val answer: Int by di.constant()
+
+        assertEquals(42, c)
+        assertEquals(42, answer)
+    }
+
+    @Test
+    fun test_04_SimpleConstantBindingGetProvider() {
+
+        val di = DI {
+            bindConstant(tag = "answer") { 42 }
+        }
+
+        val c: () -> Int by di.provider(tag = "answer")
+
+        assertEquals(42, c())
+    }
+
+    @Test
+    fun test_05_SimpleConstantBindingGetPolymorphic() {
+
+        val di = DI {
+            bindConstant<IPerson>(tag = "salomon") { Person("Salomon") }
+        }
+
+        val p: IPerson by di.instance(tag = "salomon")
+        val salomon: IPerson by di.constant()
+
+        assertEquals(Person("Salomon"), p)
+        assertEquals(Person("Salomon"), salomon)
+    }
+
+
 }
