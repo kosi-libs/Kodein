@@ -1,6 +1,7 @@
 package org.kodein.di
 
 import org.kodein.di.bindings.*
+import org.kodein.di.internal.DIBuilderImpl
 import org.kodein.type.TypeToken
 import org.kodein.type.generic
 
@@ -58,7 +59,7 @@ public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(tag: 
  * @param T The type of the instance.
  * @param instance The object that will always be returned.
  */
-public inline fun <reified T: Any> DI.Builder.bindInstance(tag: Any? = null, overrides: Boolean? = null, creator: () -> T): Unit = Bind(tag, overrides, instance(creator()))
+public inline fun <reified T: Any> DI.Builder.bindInstance(instance: T): Unit = Bind(binding = instance(instance))
 
 /**
  * Binds a constant provider: will always return the given instance.

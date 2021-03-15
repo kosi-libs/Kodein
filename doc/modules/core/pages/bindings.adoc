@@ -299,8 +299,8 @@ val di = DI {
     bindProvider { RandomDice(20) }
     bindSingleton { RandomDice(6) }
     bindMultiton { name: String ->  Person(name) }
-    bindInstance { SqliteDataSource.open("path/to/file") }
     bindConstant("answer") { 42 }
+    bindInstance(SqliteDataSource.open("path/to/file"))
 }
 ----
 ====
