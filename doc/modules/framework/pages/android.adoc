@@ -237,7 +237,7 @@ The `WeakContextScope` will keep singleton and multiton instances as long as the
 .Example: using an Activity scope
 ----
 val di = DI {
-    bind<Controller>() with scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } // <1>
+    bind<Controller> { scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } } // <1>
 }
 ----
 <1> `context` is of type `Activity` because we are using the `WeakContextScope.of<Activity>()`.
@@ -257,7 +257,7 @@ CAUTION: This means that you *should never retain the activity* passed at creati
 .Example: using an Activity retained scope
 ----
 val di = DI {
-    bind<Controller>() with scoped(ActivityRetainedScope).singleton { ControllerImpl() }
+    bind<Controller> { scoped(ActivityRetainedScope).singleton { ControllerImpl() } }
 }
 ----
 
@@ -273,7 +273,7 @@ It uses Android support Lifecycle, so you need to use Android support's `Lifecyc
 .Example: using an Activity retained scope
 ----
 val di = DI {
-    bind<Controller>() with scoped(AndroidLifecycleScope<Fragment>()).singleton { ControllerImpl(context) }
+    bind<Controller> { scoped(AndroidLifecycleScope<Fragment>()).singleton { ControllerImpl(context) } }
 }
 ----
 

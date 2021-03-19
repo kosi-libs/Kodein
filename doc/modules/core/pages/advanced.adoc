@@ -11,10 +11,10 @@ Here's an example of what this prints:
 
 .An example of di.container.tree.bindings.description:
 ----
-        bind<Dice>() with factory { Int -> RandomDice }
-        bind<DataSource>() with singleton { SQLiteDataSource }
-        bind<Random>() with provider { SecureRandom }
-        bind<String>(tag = "answer") with instance ( Int )
+        bind<Dice> { factory { Int -> RandomDice } }
+        bind<DataSource> { singleton { SQLiteDataSource } }
+        bind<Random> { provider { SecureRandom } }
+        bind<String>(tag = "answer") { instance ( Int ) }
 ----
 
 As you can see, it's really easy to understand which type with which tag is bound to which implementation inside which scope.
@@ -50,7 +50,7 @@ The message of the exception explains what is the binding the container is looki
 
 .An example of a not found exception:
 ----
-No binding found for bind<Person>() with ? { ? }
+No binding found for bind<Person> { ? { ? } }
 ----
 
 If you need to trace what are the different bindings available in the container you can use the option `fullContainerTreeOnError = true`, to log them all.
@@ -59,7 +59,7 @@ If you need to trace what are the different bindings available in the container 
 ----
 val di = DI.direct {
     fullContainerTreeOnError = true // <1>
-    bind<A>() with singleton { A(instance()) } // <2>
+    bind<A> { singleton { A(instance()) } } // <2>
 }
 di.instance<B>() // <3>
 ----
@@ -69,9 +69,9 @@ di.instance<B>() // <3>
 
 .And the trace associated to the code above:
 ----
-No binding found for bind<B>() with ? { ? }
+No binding found for bind<B> { ? { ? } }
 Registered in this DI container:
-        bind<A>() with singleton { A }
+        bind<A> { singleton { A } }
 ----
 
 

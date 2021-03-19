@@ -248,7 +248,7 @@ For some need we could want to define DI containers into the `Node` hierarchy. T
 class MyView : View() {
     override val root = hbox { // <1>
         kodeinDI { // <2>
-            bind<Random>() with singleton { SecureRandom() }
+            bind<Random>() { singleton { SecureRandom() } }
         }
 
         form { // <3>
@@ -279,7 +279,7 @@ To do so, we have facilities to extend a DI container by calling the `subDI` ext
 ----
 class LoginController : Controller(), DIAware { // <1>
     override val di: DI = subDI { // <2>
-            bind<CredentialsDao> with singleton { CredentialsDao() } <3>
+            bind<CredentialsDao> { singleton { CredentialsDao() } } // <3>
     }
 
     // ...
@@ -302,11 +302,11 @@ NOTE: Making your `Component` as `DIAware` is *optional*, but it will help you k
 class LoginView : View() {
     override val root = hbox { // <1>
         subDI { // <2>
-            bind<LoginController>() with singleton { instance() } // <3>
+            bind<LoginController>() { singleton { instance() } } // <3>
         }
 
         form {
-            val controller by kodeinDI().instance<LoginController>() <4>
+            val controller by kodeinDI().instance<LoginController>() // <4>
         }
     }
 }
@@ -332,7 +332,7 @@ That's why the `ComponentScope` and `NodeScope` are just wrappers upon `WeakCont
 .Example: Defining `Component` scoped dependencies
 ----
 val di = DI {
-    bind<EditingState>() with scoped(ComponentScope).singleton { EditingState() } <1>
+    bind<EditingState>() { scoped(ComponentScope).singleton { EditingState() } } // <1>
 }
 ----
 <1> A `EditingState` object will be created for each Component that will ask for.
@@ -341,7 +341,7 @@ val di = DI {
 .Example: Retrieving `Component scoped dependencies
 ----
 class EditorTabFragment : Fragment() {
-    private val editingState: EditingState by kodeinDI().on(this).instance() <1>
+    private val editingState: EditingState by kodeinDI().on(this).instance() // <1>
 }
 ----
 <1> Scope is `this`
@@ -352,7 +352,7 @@ class EditorTabFragment : Fragment() {
 .Example: Defining `Node` scoped dependencies
 ----
 val di = DI {
-    bind<EditingState>() with scoped(NodeScope).singleton { EditingState() } <1>
+    bind<EditingState>() with scoped(NodeScope).singleton { EditingState() } // <1>
 }
 ----
 <1> A `EditingState` object will be created for each `Node` that will ask for.
@@ -365,7 +365,7 @@ class PersonEditorController : Controller() {
 
     fun editPerson(person: Person) {
         val tab = personEditorView.tabPane.tab("Tab Title")
-        val editingState: EditingState by kodeinDI().on(tab).instance() <1>
+        val editingState: EditingState by kodeinDI().on(tab).instance() // <1>
     }
 }
 ----

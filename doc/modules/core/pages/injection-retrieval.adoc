@@ -4,11 +4,11 @@
 .Example bindings that are used throughout the chapter:
 ----
 val di = DI {
-    bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
-    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
-    bind<Random>() with provider { SecureRandom() }
-    bind<FileAccess>() with factory { path: String, mode: Int -> FileAccess.open(path, mode) }
-    constant("answer") with "fourty-two"
+    bind<Dice> { factory { sides: Int -> RandomDice(sides) } }
+    bind<DataSource> { singleton { SqliteDS.open("path/to/file") } }
+    bind<Random> { provider { SecureRandom() } }
+    bind<FileAccess>() { factory { path: String, mode: Int -> FileAccess.open(path, mode) } }
+    bindConstant("answer") { "fourty-two" }
 }
 ----
 
@@ -360,7 +360,7 @@ Note that you can also lazily create a `DI` object so that the bindings definiti
 .Example: Using a lazy DI.
 ----
 val di by DI.lazy {
-    bind<Env>() with instance(Env.getInstance())
+    bind<Env> { instance(Env.getInstance()) }
 }
 val env: Env by di.instance()
 /*...*/

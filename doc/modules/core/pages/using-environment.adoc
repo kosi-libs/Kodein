@@ -26,7 +26,7 @@ TIP: When in doubt, use a factory with an argument instead of a provider with a 
 .Example: binding in a context
 ----
 val di = DI {
-    bind<Writer>() with contexted<Request>.provider { context.response.writer } // <1>
+    bind<Writer> { contexted<Request>.provider { context.response.writer } } // <1>
 }
 ----
 <1> note that `context` is already of type `Request`.
@@ -55,7 +55,7 @@ Therefore, the provided function will be called *once per session*.
 .Example: binding a User in a Session scope.
 ----
 val di = DI {
-    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) } // <1>
+    bind<User> { scoped(SessionScope).singleton { UserData(session.userId) } } // <1>
 }
 ----
 <1> note that `SessionScope` does not really exist, it is an example.
@@ -99,8 +99,10 @@ Yes, you can...
 .Example: JVM scoped weak references.
 ----
 val di = DI {
-    bind<User>() with scoped(requestScope).singleton(ref = weakReference) {
-        instance<DataSource>().createUser(context.session.id)
+    bind<User> {
+        scoped(requestScope).singleton(ref = weakReference) {
+            instance<DataSource>().createUser(context.session.id)
+        }
     } // <1>
 }
 ----
@@ -119,7 +121,7 @@ You can use this scope when it makes sense to have a scope on a context that is 
 .Example: controller scoped to an Activity with WeakContextScope.
 ----
 val di = DI {
-    bind<Controller>() with scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } // <1>
+    bind<Controller> { scoped(WeakContextScope.of<Activity>()).singleton { ControllerImpl(context) } } // <1>
 }
 ----
 <1> `context` is of type `Activity` because we are using the `WeakContextScope.of<Activity>()`.
@@ -145,7 +147,7 @@ As each `Request` is associated with a `Session`, you can register a context tra
 .Example:
 ----
 val di = DI {
-    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) }
+    bind<User> { scoped(SessionScope).singleton { UserData(session.userId) } }
 
     registerContextTranslator { r: Request -> r.session }
 }
@@ -182,9 +184,9 @@ You can access the container's bindings within a context translator:
 .Example:
 ----
 val di = DI {
-    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) }
+    bind<User> { scoped(SessionScope).singleton { UserData(session.userId) } }
 
-    bind<Translator>() with singleton { RequestTranslator() }
+    bind<Translator> { singleton { RequestTranslator() } }
     registerContextTranslator { r: Request ->
         instance<Translator>().translate(r)
      }
@@ -203,7 +205,7 @@ For example, if you are in a thread-based server where each request is assigned 
 .Example:
 ----
 val di = DI {
-    bind<User>() with scoped(SessionScope).singleton { UserData(session.userId) }
+    bind<User> { scoped(SessionScope).singleton { UserData(session.userId) } }
 
     registerContextFinder { ThreadLocalSession.get() }
 }
@@ -221,8 +223,8 @@ You can access the container's bindings within a context finder:
 enum class Env { DEBUG, PRODUCTION }
 class CurrentEnv(var env: Env)
 val di = DI {
-    bind() from scoped(EnvironmentScope).singleton { Service(context) }
-    bind() from singleton { CurrentEnv(Env.PRODUCTION) }
+    bind { scoped(EnvironmentScope).singleton { Service(context) } }
+    bind { singleton { CurrentEnv(Env.PRODUCTION) } }
     registerContextFinder { instance<CurrentEnv>().env }
 }
 ----

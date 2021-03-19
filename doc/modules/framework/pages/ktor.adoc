@@ -64,7 +64,7 @@ Thus, the DI will be reachable from multiple places in your Ktor application.
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
         di { // <1>
-            bind<Random>() with singleton { SecureRandom() } // <2>
+            bind<Random> { singleton { SecureRandom() } } // <2>
         }
    }.start(true)
 }
@@ -89,7 +89,7 @@ help us with that by defining a DI container that can be retrieve from multiple 
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
         di { // <1>
-            bind<Random>() with singleton { SecureRandom() } // <2>
+            bind<Random> { singleton { SecureRandom() } } // <2>
         }
 
         routing {
@@ -165,13 +165,13 @@ To do so we have a function `subDI` available for the `Routing` / `Route` classe
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
         di { // <1>
-            bind<Random>() with singleton { SecureRandom() } // <2>
+            bind<Random>() { singleton { SecureRandom() } } // <2>
         }
 
         routing {
             route("/login") {
                 subDI {
-                    bind<CredentialsDao> with singleton { CredentialsDao() } // <3>
+                    bind<CredentialsDao> { singleton { CredentialsDao() } } // <3>
                 }
 
                 post {
@@ -203,8 +203,8 @@ but we have the possibility to copy all the binding (including singleton / multi
 .Example: Copying all the bindings
 ----
 DI {
-    bind<Foo>() with provider { Foo("rootFoo") }
-    bind<Bar>() with singleton { Bar(instance()) }
+    bind<Foo> { provider { Foo("rootFoo") } }
+    bind<Bar> { singleton { Bar(instance()) } }
 }
 
 subDI(copy = Copy.All) { // <1>
@@ -223,15 +223,15 @@ Sometimes, It might be interesting to replace an existing dependency (by overrid
 .Example: overriding bindings
 ----
 DI {
-    bind<Foo>() with provider { Foo("rootFoo") }
-    bind<Bar>() with singleton { Bar(instance()) }
+    bind<Foo>() { provider { Foo("rootFoo") } }
+    bind<Bar>() { singleton { Bar(instance()) } }
 }
 
 subDI {
-    bind<Foo>(overrides = true) with provider { Foo("explicitFoo") } // <1>
+    bind<Foo>(overrides = true) { provider { Foo("explicitFoo") } } // <1>
 }
 subDI(allowSilentOverrides = true) { // <2>
-    bind<Foo> with provider { Foo("implicitFoo") }
+    bind<Foo> { provider { Foo("implicitFoo") } }
 }
 ----
 <1> Overriding the `Foo` binding
@@ -291,7 +291,7 @@ fun main(args: Array<String>) {
             cookie<UserSession>("SESSION_FEATURE_SESSION_ID") // <2>
         }
         di {
-            bind<Random>() with scoped(SessionScope).singleton { SecureRandom() } // <3>
+            bind<Random> { scoped(SessionScope).singleton { SecureRandom() } } // <3>
             /* binding */
         }
     }.start(true)
@@ -355,7 +355,7 @@ That's why the `CallScope` is just a wrapper upon `WeakContextScope` with the ta
 .Example: Defining call scoped dependencies
 ----
 val di = DI {
-    bind<Random>() with scoped(CallScope).singleton { SecureRandom() } // <1>
+    bind<Random> { scoped(CallScope).singleton { SecureRandom() } } // <1>
 }
 ----
 <1> A `Random` object will be created for each Request (HTTP or Websocket) and will be retrieved as long as the Request lives.

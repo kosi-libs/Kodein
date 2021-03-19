@@ -18,7 +18,7 @@ To have multiple bindings in a set, you need to:
 .Example creating a set of `Configuration` bindings.
 ----
 val di = DI {
-    bind() from setBinding<Configuration>() <1>
+    bind { setBinding<Configuration>() } <1>
 
     bind<Configuration>().inSet() with provider { FooConfiguration() } // <2>
     bind<Configuration>().inSet() with singleton { BarConfiguration() } // <2>
@@ -41,7 +41,7 @@ You can also bind multiple bindings with arguments (such as `factory` or `multit
 .Example creating a set of `Result` bindings.
 ----
 val di = DI {
-    bind() from argSetBinding<Query, Result>()
+    bind { argSetBinding<Query, Result>() }
 
     bind<Result>().inSet() with factory { q: Query -> Foo.query(q) }
     bind<Result>().inSet() with multiton { q: Query -> Bar.query(q) }
@@ -89,7 +89,7 @@ Then, bind with keys:
 .Example binding as in a map multibinding.
 ----
 val di = DI {
-    bind() from setBinding<ConfigurationEntry>()
+    bind { setBinding<ConfigurationEntry>() }
 
     bind<ConfigurationEntry>().inSet() with factory { "foo" to FooConfiguration() }
     bind<ConfigurationEntry>().inSet() with multiton { "bar" to BarConfiguration() }
