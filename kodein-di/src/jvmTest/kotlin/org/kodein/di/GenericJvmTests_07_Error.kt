@@ -21,10 +21,10 @@ class GenericJvmTests_07_Error {
 
         assertEquals("""
 Dependency recursion:
-     bind<A>()
-    ╔╩>bind<B>()
-    ║  ╚>bind<C>()
-    ║    ╚>bind<A>()
+     bind<A>
+    ╔╩>bind<B>
+    ║  ╚>bind<C>
+    ║    ╚>bind<A>
     ╚══════╝
             """.trim(), ex.message
         )
@@ -46,10 +46,10 @@ Dependency recursion:
 
         assertEquals("""
 Dependency recursion:
-     bind<org.kodein.di.test.A>()
-    ╔╩>bind<org.kodein.di.test.B>()
-    ║  ╚>bind<org.kodein.di.test.C>()
-    ║    ╚>bind<org.kodein.di.test.A>()
+     bind<org.kodein.di.test.A>
+    ╔╩>bind<org.kodein.di.test.B>
+    ║  ╚>bind<org.kodein.di.test.C>
+    ║    ╚>bind<org.kodein.di.test.A>
     ╚══════╝
         """.trim(), ex.message?.trim()
         )
@@ -68,10 +68,10 @@ Dependency recursion:
     @Test fun test_02_RecursiveDependencies() {
 
         val kodein = DI {
-            bind { provider { Recurs0(instance()) } }
-            bind { provider { RecursA(instance()) } }
-            bind { provider { RecursB(instance(tag = "yay")) } }
-            bind(tag = "yay") { provider { RecursC(instance()) } }
+            bindProvider { Recurs0(instance()) }
+            bindProvider { RecursA(instance()) }
+            bindProvider { RecursB(instance(tag = "yay")) }
+            bindProvider(tag = "yay") { RecursC(instance()) }
         }
 
         assertFailsWith<DI.DependencyLoopException> {
@@ -123,7 +123,7 @@ Dependency recursion:
             fullContainerTreeOnError = true
         }
 
-        assertEquals("No binding found for bind<org.kodein.di.test.Person>() with ? { ? }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { kodein.instance<Person>() }.message)
+        assertEquals("No binding found for bind<org.kodein.di.test.Person> { ? { ? } }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { kodein.instance<Person>() }.message)
     }
 
 
@@ -162,30 +162,5 @@ Dependency recursion:
         assertFailsWith<DI.NotFoundException> {
             kodein.factory<Int, Person>()
         }
-    }
-
-    @Test
-    fun test_09_BindFromUnit() {
-
-        fun unit(@Suppress("UNUSED_PARAMETER") i: Int = 42) {}
-
-        val kodein = DI.direct {
-            assertFailsWith<IllegalArgumentException> {
-                bind { factory { i: Int -> unit(i) } }
-            }
-            assertFailsWith<IllegalArgumentException> {
-                bind { provider { unit() } }
-            }
-            assertFailsWith<IllegalArgumentException> {
-                bind { instance(Unit) }
-            }
-            assertFailsWith<IllegalArgumentException> {
-                bind { singleton { unit() } }
-            }
-
-            bind<Unit>() with instance(unit())
-        }
-
-        assertSame(Unit, kodein.instance())
     }
 }

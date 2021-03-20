@@ -35,4 +35,28 @@ class Tests_17_NewInstance {
         assertEquals("Laila", wedding.her.name)
     }
 
+    @Test
+    fun test_02_SimpleBinding_NewInstance() {
+        val di = DI {
+            bindSingleton(tag = "Author")  { Person("Salomon") }
+            bindSingleton(tag = "Spouse") { Person("Laila") }
+        }
+
+        val wedding by di.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }
+        assertEquals("Salomon", wedding.him.name)
+        assertEquals("Laila", wedding.her.name)
+    }
+
+    @Test
+    fun test_03_SimpleBinding_DirectNewInstance() {
+        val di = DI.direct {
+            bindSingleton(tag = "Author") { Person("Salomon") }
+            bindSingleton(tag = "Spouse") { Person("Laila") }
+        }
+
+        val wedding = di.newInstance { Wedding(instance(tag = "Author"), instance(tag = "Spouse")) }
+        assertEquals("Salomon", wedding.him.name)
+        assertEquals("Laila", wedding.her.name)
+    }
+
 }

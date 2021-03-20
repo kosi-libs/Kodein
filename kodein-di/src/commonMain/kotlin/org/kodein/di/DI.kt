@@ -107,7 +107,7 @@ public interface DI : DIAware {
          * @param dispString a function that gets the display string for a type.
          */
         private fun StringBuilder.appendDescription(dispString: TypeToken<*>.() -> String) {
-            append(" with ")
+            append(" { ")
             if (contextType != TypeToken.Any) {
                 append("?<${contextType.dispString()}>().")
             }
@@ -117,18 +117,19 @@ public interface DI : DIAware {
                 append(" -> ")
             }
             append("? }")
+            append(" }")
         }
 
 
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this bind.
          */
-        val bindDescription: String get() = "bind<${type.simpleDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
+        val bindDescription: String get() = "bind<${type.simpleDispString()}>${ if (tag != null) "(tag = \"$tag\")" else "" }"
 
         /**
          * Description using full type names. The description is as close as possible to the code used to create this bind.
          */
-        val bindFullDescription: String get() = "bind<${type.qualifiedDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
+        val bindFullDescription: String get() = "bind<${type.qualifiedDispString()}>${ if (tag != null) "(tag = \"$tag\")" else "" }"
 
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this key.

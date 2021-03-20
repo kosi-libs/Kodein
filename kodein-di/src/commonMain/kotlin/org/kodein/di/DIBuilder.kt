@@ -1,8 +1,6 @@
 package org.kodein.di
 
 import org.kodein.di.bindings.*
-import org.kodein.di.internal.DIBuilderImpl
-import org.kodein.type.TypeToken
 import org.kodein.type.generic
 
 
@@ -15,7 +13,7 @@ import org.kodein.type.generic
  * @param T The created type.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
-public inline fun <reified T: Any> DI.Builder.bindSingleton(tag: Any? = null, overrides: Boolean? = null, noinline creator: DirectDI.() -> T): Unit = Bind(tag, overrides, singleton(creator = creator))
+public inline fun <reified T: Any> DI.Builder.bindSingleton(tag: Any? = null, overrides: Boolean? = null, sync: Boolean = true, noinline creator: DirectDI.() -> T): Unit = Bind(tag = tag, overrides = overrides, binding = singleton(sync = sync, creator = creator))
 
 /**
  * Binds a multiton: will create an instance on first request and will subsequently always return the same instance.
@@ -25,7 +23,7 @@ public inline fun <reified T: Any> DI.Builder.bindSingleton(tag: Any? = null, ov
  * @param T The created type.
  * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
  */
-public inline fun <reified A : Any, reified T: Any> DI.Builder.bindMultiton(tag: Any? = null, overrides: Boolean? = null, sync: Boolean = true, noinline creator: DirectDI.(A) -> T): Unit = Bind(tag, overrides, multiton(sync = sync, creator = creator))
+public inline fun <reified A : Any, reified T: Any> DI.Builder.bindMultiton(tag: Any? = null, overrides: Boolean? = null, sync: Boolean = true, noinline creator: DirectDI.(A) -> T): Unit = Bind(tag = tag, overrides = overrides, binding = multiton(sync = sync, creator = creator))
 
 
 /**
@@ -38,7 +36,7 @@ public inline fun <reified A : Any, reified T: Any> DI.Builder.bindMultiton(tag:
  * @param T The created type.
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-public inline fun <reified T: Any> DI.Builder.bindProvider(tag: Any? = null, overrides: Boolean? = null, noinline creator: DirectDI.() -> T): Unit = Bind(tag, overrides, provider(creator = creator))
+public inline fun <reified T: Any> DI.Builder.bindProvider(tag: Any? = null, overrides: Boolean? = null, noinline creator: DirectDI.() -> T): Unit = Bind(tag = tag, overrides = overrides, binding = provider(creator = creator))
 
 /**
  * Binds a factory: each time an instance is needed, the function [creator] function will be called.
@@ -49,7 +47,7 @@ public inline fun <reified T: Any> DI.Builder.bindProvider(tag: Any? = null, ove
  * @param T The created type.
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(tag: Any? = null, overrides: Boolean? = null, noinline creator: DirectDI.(A) -> T): Unit = Bind(tag, overrides, factory(creator = creator))
+public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(tag: Any? = null, overrides: Boolean? = null, noinline creator: DirectDI.(A) -> T): Unit = Bind(tag = tag, overrides = overrides, binding = factory(creator = creator))
 
 /**
  * Binds an instance provider: will always return the given instance.
@@ -57,19 +55,19 @@ public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(tag: 
  * T generics will be erased!
  *
  * @param T The type of the instance.
- * @param instance The object that will always be returned.
+ * @param creator A function that must the instance of type T.
  */
-public inline fun <reified T: Any> DI.Builder.bindInstance(instance: T): Unit = Bind(binding = instance(instance))
+public inline fun <reified T: Any> DI.Builder.bindInstance(tag: Any? = null, overrides: Boolean? = null, creator: () -> T): Unit = Bind(tag = tag, overrides = overrides, binding = instance(creator()))
 
 /**
  * Binds a constant provider: will always return the given instance.
  *
  * T generics will be erased!
  *
- * @param T The type of the instance.
- * @param instance The object that will always be returned.
+ * @param T The type of the constant.
+ * @param creator A function that must the constant of type T.
  */
-public inline fun <reified T: Any> DI.Builder.bindConstant(tag: Any, overrides: Boolean? = null, creator: () -> T): Unit = constant(tag, overrides) with creator()
+public inline fun <reified T: Any> DI.Builder.bindConstant(tag: Any, overrides: Boolean? = null, creator: () -> T): Unit = Bind(tag = tag, overrides = overrides, binding = instance(creator()))
 
 /**
  * Attaches a binding to the DI container

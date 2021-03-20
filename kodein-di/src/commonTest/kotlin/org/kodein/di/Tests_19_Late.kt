@@ -21,7 +21,7 @@ class Tests_19_Late {
         val test = LateInit()
 
         test.di = DI {
-            bind { instance("Salomon") }
+            bindInstance { "Salomon" }
         }
 
         assertEquals("Salomon", test.name)
@@ -43,7 +43,7 @@ class Tests_19_Late {
         val name: String by di.instance()
 
         di.baseDI = DI {
-            bind { instance("Salomon") }
+            bindInstance { "Salomon" }
         }
 
         assertEquals("Salomon", name)
@@ -69,7 +69,7 @@ class Tests_19_Late {
         val name: String by di.instance()
 
         base.baseDI = DI {
-            bind { instance("Salomon") }
+            bindInstance { "Salomon" }
         }
 
         trigger.trigger()

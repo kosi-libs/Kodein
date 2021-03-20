@@ -64,4 +64,49 @@ class Tests_23_Context {
             di.direct.instance<Test02Foo>(tag = "ko")
         }
     }
+
+    @Test
+    fun test_03_DirectBinding_lazyOnContext() {
+        val di = DI {
+            bind { contexted<String>().provider { "Salomon $context" } }
+        }
+
+        var contextRetrieved = false
+
+        val name: String by di.on { contextRetrieved = true ; "BRYS" } .instance()
+
+        assertFalse(contextRetrieved)
+        assertEquals("Salomon BRYS", name)
+        assertTrue(contextRetrieved)
+    }
+
+    @Test
+    fun test_04_DirectBinding_lazyKContext() {
+        val di = DI {
+            bind { contexted<String>().provider { "Salomon $context" } }
+        }
+
+        val t = T01(di)
+
+        assertFalse(t.contextRetrieved)
+        assertEquals("Salomon BRYS", t.name)
+        assertTrue(t.contextRetrieved)
+    }
+
+    @Test
+    fun test_05_DirectBinding_singletonEraseContext() {
+        val di = DI {
+            bindSingleton(tag = "ok") { Test02Foo(instance(tag = "ok")) }
+            bindProvider(tag = "ok") { Test02Bar(null) }
+
+            bindSingleton(tag = "ko") { Test02Foo(instance(tag = "ko")) }
+            bind(tag = "ko") { contexted<Test02Ctx>().provider { Test02Bar(context) } }
+        }
+
+        di.direct.instance<Test02Foo>(tag = "ok")
+
+        assertFailsWith<DI.NotFoundException> {
+            di.direct.instance<Test02Foo>(tag = "ko")
+        }
+    }
 }

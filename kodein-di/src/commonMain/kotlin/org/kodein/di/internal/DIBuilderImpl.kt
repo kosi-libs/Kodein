@@ -42,9 +42,6 @@ internal open class DIBuilderImpl internal constructor(
 
     @Suppress("FunctionName")
     override fun <T : Any> Bind(tag: Any?, overrides: Boolean?, binding: DIBinding<*, *, T>) {
-        if (binding.createdType == TypeToken.Unit) {
-            throw IllegalArgumentException("Using `bind { [BINDING] }` with a *Unit* ${binding.factoryName()} is most likely an error. If you are sure you want to bind the Unit type, please use `bind<Unit>() with ${binding.factoryName()}`.")
-        }
         containerBuilder.bind(
             key = DI.Key(binding.contextType, binding.argType, binding.createdType, tag = tag),
             binding = binding,

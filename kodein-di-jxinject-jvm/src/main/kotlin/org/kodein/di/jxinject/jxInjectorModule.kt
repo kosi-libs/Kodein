@@ -11,7 +11,7 @@ import javax.inject.Named
  * Module that must be imported in order to use [JxInjector].
  */
 public val jxInjectorModule: DI.Module = DI.Module("JX Injector") {
-    bind { SetBinding<Any, JxInjectorContainer.Qualifier>(TypeToken.Any, erased(), erasedSet()) }
+    Bind(binding = SetBinding<Any, JxInjectorContainer.Qualifier>(TypeToken.Any, erased(), erasedSet()))
     jxQualifier(Named::class.java) { it.value }
 
     bind<JxInjectorContainer>() with Singleton(NoScope(), erased(), false, erased()) { JxInjectorContainer(Instance(erasedSet())) }
