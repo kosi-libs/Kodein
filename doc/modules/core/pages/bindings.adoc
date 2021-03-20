@@ -178,7 +178,7 @@ Just like a singleton, a multiton synchronization can be disabled:
 .Example: non-synced multiton
 ----
 val di = DI {
-    bind<RandomGenerator>(sync = false) with multiton { max: Int -> SecureRandomGenerator(max) }
+    bind<RandomGenerator>() with multiton(sync = false) { max: Int -> SecureRandomGenerator(max) }
 }
 ----
 
