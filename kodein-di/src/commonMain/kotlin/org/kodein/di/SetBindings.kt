@@ -2,10 +2,7 @@
 
 package org.kodein.di
 
-import org.kodein.di.bindings.ArgSetBinding
-import org.kodein.di.bindings.InSet
-import org.kodein.di.bindings.SetBinding
-import org.kodein.di.bindings.TypeBinderInSet
+import org.kodein.di.bindings.*
 import org.kodein.type.TypeToken
 import org.kodein.type.erasedComp
 import org.kodein.type.generic
@@ -66,3 +63,12 @@ public inline fun <reified A : Any, reified T: Any> DI.Builder.bindArgSet(tag: A
  * @param T The type of the binding.
  */
 public inline fun <reified T: Any> DI.Builder.TypeBinder<T>.inSet(): TypeBinderInSet<T, Set<T>> = InSet(erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
+
+/**
+ * Defines that the binding will be saved in a set binding.
+ *
+ * T generics will be erased!
+ *
+ * @param T The type of the binding.
+ */
+public inline fun <reified T: Any> DI.Builder.inSet(creator: () -> DIBinding<*, *, T>): Unit = Bind(generic<T>()).inSet() with creator()
