@@ -6,7 +6,7 @@ buildscript {
         maven(url = "https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/mvn-repo")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.1.0")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.4.0")
     }
 }
 
@@ -35,4 +35,8 @@ framework("ktor").include(
 
 framework("tfx").include(
         ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
+)
+
+framework("compose").include(
+        ":framework:compose:kodein-di-framework-compose"
 )

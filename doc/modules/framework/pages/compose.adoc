@@ -1,0 +1,5 @@
+= Kodein-DI and Compose (Android or Desktop)
+
+Kodein-DI is compatible
+
+You can use Kodein-DI as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-framework-ktor-server-jvm` or `kodein-di-framework-ktor-server-controller-jvm`.
