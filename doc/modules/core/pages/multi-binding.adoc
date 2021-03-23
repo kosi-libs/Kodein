@@ -35,20 +35,20 @@ You can:
 * Add bindings to the same set in different modules, provided that the set has been declared first.
 ====
 
-// TODO to be discussed
-//You can also bind multiple bindings with arguments (such as `factory` or `multiton`) in a set *as long as all bindings share the same argument type*.
-//
-//[source,kotlin]
-//.Example creating a set of `Result` bindings.
-//----
-//val di = DI {
-//    bindArgSet<Query, Result>()
-//
-//    inSet<Result> { factory { q: Query -> Foo.query(q) } }
-//    inSet<Result> { multiton { q: Query -> Bar.query(q) } }
-//}
-//----
+You can also bind multiple bindings with arguments (such as `factory` or `multiton`) in a set *as long as all bindings share the same argument type*.
 
+[source,kotlin]
+.Example creating a set of `Result` bindings.
+----
+val di = DI {
+    bindArgSet<Query, Result>() // <1>
+
+    inSet<Result> { factory { q: Query -> Foo.query(q) } } // <2>
+    inSet<Result> { multiton { q: Query -> Bar.query(q) } } // <2>
+}
+----
+<1> abc
+<2> abc
 
 === Retrieving from a Set
 
@@ -56,19 +56,18 @@ Note that the type being bound is `Set<T>`, not `T`. +
 Therefore, you need to retrieve a `Set`:
 
 [source,kotlin]
-.Example retrieving set of `Configuration` with the generic version.
+.Example retrieving set of `Configuration`.
 ----
 val configurations: Set<Configuration> by di.instance()
 ----
 
-if you are using the `erased` version, you need to retrieve thusly:
+To retrieve a `Set` with argument, thus going through a `factory` or a `multiton`, you need to pass the needed argument to the instance function.
 
 [source,kotlin]
-.Example retrieving set of `Configuration` with the erased version.
+.Example retrieving set of `Result` with `Query` argument.
 ----
-val configurations: Set<Configuration> by di.Instance(erasedSet())
+val result: Set<Result> by di.instance(arg = Query("SELECT * FROM USER;"))
 ----
-
 
 == In a map
 
@@ -92,8 +91,8 @@ Then, bind with keys:
 val di = DI {
     bindSet<ConfigurationEntry>()
 
-    inSet<ConfigurationEntry> { factory { "foo" to FooConfiguration() } }
-    inSet<ConfigurationEntry> { multiton { "bar" to BarConfiguration() } }
+    inSet<ConfigurationEntry> { singleton { "foo" to FooConfiguration() } }
+    inSet<ConfigurationEntry> { provider { "bar" to BarConfiguration() } }
 }
 ----
 

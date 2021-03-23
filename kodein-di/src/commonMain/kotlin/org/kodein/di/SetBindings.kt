@@ -16,7 +16,7 @@ import org.kodein.type.generic
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-//@Deprecated("bind() from has been deprecated", replaceWith = ReplaceWith("bindSet()"))
+@Deprecated("'bind() from ...' has been deprecated", replaceWith = ReplaceWith("bindSet<T>()"))
 public inline fun <reified T: Any> DI.Builder.setBinding(): SetBinding<Any, T> = SetBinding(TypeToken.Any, generic<T>(), erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
 
 /**
@@ -29,7 +29,7 @@ public inline fun <reified T: Any> DI.Builder.setBinding(): SetBinding<Any, T> =
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-//@Deprecated("", replaceWith = ReplaceWith("bindArgSet()"))
+@Deprecated("'bind() from ...' has been deprecated", replaceWith = ReplaceWith("bindArgSet<A, T>()"))
 public inline fun <reified A : Any, reified T: Any> DI.Builder.argSetBinding(): ArgSetBinding<Any, A, T> = ArgSetBinding(TypeToken.Any, generic<A>(), generic<T>(), erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
 
 /**
