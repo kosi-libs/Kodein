@@ -71,4 +71,4 @@ public inline fun <reified T: Any> DI.Builder.TypeBinder<T>.inSet(): TypeBinderI
  *
  * @param T The type of the binding.
  */
-public inline fun <reified T: Any> DI.Builder.inSet(creator: () -> DIBinding<*, *, T>): Unit = Bind(generic<T>()).inSet() with creator()
+public inline fun <reified T: Any> DI.Builder.inSet(tag: Any? = null, overrides: Boolean? = null, creator: () -> DIBinding<*, *, T>): Unit = BindSet(tag = tag, overrides = overrides, creator())

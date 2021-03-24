@@ -3,6 +3,8 @@ package org.kodein.di.internal
 import org.kodein.di.*
 import org.kodein.di.bindings.*
 import org.kodein.type.TypeToken
+import org.kodein.type.erasedComp
+import org.kodein.type.generic
 
 internal open class DIBuilderImpl internal constructor(
         private val moduleName: String?,
@@ -48,6 +50,16 @@ internal open class DIBuilderImpl internal constructor(
             fromModule = moduleName,
             overrides = overrides,
         )
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any> BindSet(tag: Any?, overrides: Boolean?, binding: DIBinding<*, *, T>) {
+        val setType = erasedComp(Set::class, binding.createdType) as TypeToken<Set<T>>
+        val setKey = DI.Key(binding.contextType, binding.argType, setType, tag)
+        val setBinding = containerBuilder.bindingsMap[setKey]?.first() ?: throw IllegalStateException("No set binding to $setKey")
+
+        setBinding.binding as? BaseMultiBinding<*, *, T> ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
+        (setBinding.binding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
     }
 
     @Suppress("FunctionName")

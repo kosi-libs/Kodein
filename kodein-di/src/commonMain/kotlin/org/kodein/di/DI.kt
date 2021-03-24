@@ -1,9 +1,6 @@
 package org.kodein.di
 
-import org.kodein.di.bindings.ContextTranslator
-import org.kodein.di.bindings.ExternalSource
-import org.kodein.di.bindings.DIBinding
-import org.kodein.di.bindings.Scope
+import org.kodein.di.bindings.*
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
 import kotlin.native.concurrent.ThreadLocal
@@ -262,6 +259,15 @@ public interface DI : DIAware {
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          */
         public fun <T : Any> Bind(tag: Any? = null, overrides: Boolean? = null, binding: DIBinding<*, *, T>)
+
+        /**
+         * Attaches the binding of a given type with a given tag.
+         *
+         * @param T The type of value to bind.
+         * @param tag The tag to bind.
+         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         */
+        public fun <T : Any> BindSet(tag: Any? = null, overrides: Boolean? = null, binding: DIBinding<*, *, T>)
 
         /**
          * Starts the binding of a given type with a given tag.
