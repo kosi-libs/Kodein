@@ -10,6 +10,7 @@ kodein {
             compileOnly(compose.foundation)
             api(project(":kodein-di"))
         }
+
         add(kodeinTargets.jvm.jvm) {
             target.setCompileClasspath()
         }

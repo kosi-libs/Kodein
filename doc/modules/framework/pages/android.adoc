@@ -9,6 +9,8 @@ NOTE: Kodein-DI does work on Android as-is.
 IMPORTANT: Starting from `7.3`, using `kodein-di-android-*` extensions in your Android projects needs that you support Android 21 as the minimum SDK.
            Using Kodein-DI as-is does not force with minimum SDK requirement.
 
+TIP: If you use *_Jetpack Compose_* you can use our specific module xref:framework:compose.adoc[`kodein-di-framework-compose`].
+
 Have a look at the https://github.com/Kodein-Framework/Kodein-Samples/tree/master/di/coffee-maker/android[Android demo project]!
 
 [[install]]
@@ -284,6 +286,7 @@ NOTE: This scope *IS* compatible with `ScopeCloseable`: xref:core:using-environm
 
 == Layered dependencies
 
+[[closest-di]]
 === The closest DI pattern
 
 Android components can be thought as layers.

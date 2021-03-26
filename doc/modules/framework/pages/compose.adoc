@@ -1,5 +1,301 @@
-= Kodein-DI and Compose (Android or Desktop)
+= Kodein-DI and _Compose_ (Android or Desktop)
 
-Kodein-DI is compatible
+You can use *_Kodein-DI_* as-is in your Android / Desktop project, but you can level-up your game by using the library `kodein-di-framework-compose`.
 
-You can use Kodein-DI as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-framework-ktor-server-jvm` or `kodein-di-framework-ktor-server-controller-jvm`.
+NOTE: *_Kodein-DI_* is compatible with both *Jetpack* and *JetBrains* _Compose_
+
+IMPORTANT: `kodein-di-framework-compose` relies and only few stable APIs that have some good chance to stay (like `@Composable`).
+            This means that `kodein-di-framework-compose` doesn't lock you with a specific version of *Jetpack* and *JetBrains* _Compose_.
+            You can use the one that works for you.
+
+[[install]]
+== Install
+
+*_Kodein-DI_* for _Compose_ can be used for Android or Desktop projects with the same approach (thanks to Gradle's metadatas).
+
+Start by adding the correct dependency to your Gradle build script:
+
+[subs="attributes"]
+.Gradle Groovy script
+----
+implementation 'org.kodein.di:kodein-di-framework-compose:{version}'
+----
+[subs="attributes"]
+.Gradle Kotlin script
+----
+implementation("org.kodein.di:kodein-di-framework-compose:{version}")
+----
+
+[TIP]
+====
+If you are *NOT* using *Gradle 6+*, you should declare the use of the Gradle Metadata experimental feature
+
+.settings.gradle.kts
+----
+enableFeaturePreview("GRADLE_METADATA")
+----
+====
+
+[NOTE]
+====
+Using `kodein-di-framework-compose`, whatever your platform target, will transitively add the *_Kodein-DI_* core module `kodein-di` to your dependencies.
+
+On *Android* it will transitively add the specific module `kodein-di-framework-android-x` (see xref:framework:android.adoc[Android modules]).
+====
+
+== DI capabilities in a `@Composable` tree
+
+*_Kodein-DI_* fully integrates with _Compose_ by providing:
+
+- an easy way to make your DI containers accessible from anywhere in your `@Composable` tree.
+- some helper functions to directly retrieve your bindings in your `@Composable` functions.
+
+=== Using the `@Composable` hierarchy
+
+Compose provides a way of exposing objects and instances to the `@Composable` hierarchy without passing arguments through every `@Composable` functions, it is called link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal].
+This is what *_Kodein-DI_* uses under the hood to help you access your DI containers transparently.
+
+[[with-di]]
+==== Share a DI reference inside a `@Composable` tree
+
+You can easily use *_Kodein-DI_* to expose a DI container within a `@Composable` tree, using the `withDI` functions.
+These functions accept either, a DI builder, a DI reference or xref:core:modules-inheritance.adoc[DI modules].
+
+[source, kotlin]
+.sharing a DI container within a `@Composable` tree
+----
+val di = DI {
+    bindProvider<Dice> { RandomDice(0, 5) }
+    bindSingleton<DataSource> { SqliteDS.open("path/to/file") }
+}
+
+@Composable
+fun App() = withDI(di) { // <1>
+    MyView { // <2>
+        ContentView() // <2>
+        BottomView() // <2>
+    }
+}
+----
+<1> attaches the container `di` to the current `@Composable` node
+<2> every underlying `@Composable` element can access the bindings declared in `di`
+
+
+[source, kotlin]
+.Creating a DI container with DI modules within a `@Composable` tree
+----
+val diceModule = DI.Module("diceModule") {
+    bindProvider<Dice> { RandomDice(0, 5) }
+}
+val persistenceModule = DI.Module("persistenceModule") {
+    bindSingleton<DataSource> { SqliteDS.open("path/to/file") }
+}
+
+@Composable
+fun App() = withDI(diceModule, persistenceModule) { // <1>
+    MyView { // <2>
+        ContentView() // <2>
+        BottomView() // <2>
+    }
+}
+----
+<1> creates a DI container with the given modules before attaching it to the current `@Composable` node
+<2> every underlying `@Composable` element can access the bindings declared in `diceModule` and `persistenceModule`
+
+[source, kotlin]
+.Creating a DI container and expose it to a `@Composable` tree
+----
+@Composable
+fun App() = withDI({ // <1>
+    bindProvider<Dice> { RandomDice(0, 5) }
+    bindSingleton<DataSource> { SqliteDS.open("path/to/file") }
+}) {
+    MyView { // <2>
+        ContentView() // <2>
+        BottomView() // <2>
+    }
+}
+----
+<1> DI builder that will be invoked and attached to the current `@Composable` node
+<2> every underlying `@Composable` element can access the bindings attached to the current `@Composable` node
+
+WARNING: It's important to understand that the bindings can't be accessed with the `CompositionLocal` mechanism from the sibling or upper nodes.
+         The DI reference si only available inside the `content` lambda and for underlying `@Composable` element of the `withDI` functions.
+[[localdi]]
+==== Access a DI container from `@Composable` functions
+
+This assumes you have already gone through the xref:with-di[share DI within a `@Composable` tree] section and that you have a DI container attached to your current `@Composable` hierarchy.
+
+*_Kodein-DI_* uses the _Compose_ notion of link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal]
+to share your DI references via the xref:with-di[`withDI`] and xref:with-di[`subDI`] functions.
+Therefore, in any underlying `@Composable` function you can access the DI attached to the context with the property `LocalDI`.
+
+[source, kotlin]
+.Getting the DI container from parent nodes
+----
+@Composable
+fun ContentView() {
+    val di = LocalDI.current // <1>
+    val dice: Dice by di.instance() // <2>
+}
+----
+<1> Get the DI container attache to a parent node
+<2> Standard *_Kodein-DI_* binding retrieval
+
+WARNING: Using `LocalDI` in a tree where there is no DI container will throw a runtime exception: `IllegalStateException: Missing DI container!`.
+
+==== Extend an existing DI container
+
+In some cases we might want to extend our application DI container for local needs.
+
+[source, kotlin]
+.Extend a DI container from the _Compose_ context
+----
+@Composable
+fun ContentView() {
+    subDI({ // <1>
+        bindSingleton { PersonService() } // <2>
+    }) {
+        ItemList() // <3>
+        ActionView() // <3>
+    }
+}
+----
+<1> Extend the current DI from `LocalDI`
+<2> Add specific bindings for the underlying tree
+<3> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
+
+You can also extend an existing global DI container, like in the following example:
+
+[source, kotlin]
+.Extend a DI container from its reference
+----
+@Composable
+fun ContentView() {
+    subDI(parentDI = globalDI, // <1>
+    diBuilder = {
+        bindSingleton { PersonService() } // <2>
+    }) {
+        ItemList() // <3>
+        ActionView() // <3>
+    }
+}
+----
+<1> The DI container to extend
+<2> Add specific bindings for the underlying tree
+<3> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
+
+NOTE: These `subDI` function are similar to the *_Kodein-DI_* core `subDI`.
+      Check xref:core:modules-inheritance.adoc#extension-composition[this documentation] for more advanced usages.
+
+=== Retrieve bindings from `@Composable` functions
+
+If you have defined a DI container in a xref:#localdi[`LocalDI`], you can consider every underlying `@Composable` as DI aware.
+This means that can access the current DI container and its bindings with one of the following function delegates:
+
+- `val t: TYPE by instance()`
+- `val f: (ARG_TYPE) -> TYPE by factory()`
+- `val p: () -> TYPE by provider()`
+
+TIP: If you are not familiar with these declaration you can explore the detailed documentation on xref:core:bindings.adoc[bindings] and xref:core:injection-retrieval.adoc[injection/retrieval].
+
+Here are some examples on how to retrieve instances, factories or providers within a `@Composable` function.
+
+[source, kotlin]
+.Retrieve instances
+----
+@Composable
+fun ContentView() {
+    val dice: Dice by instance() // <1>
+}
+----
+
+[source, kotlin]
+.Retrieve factories
+----
+@Composable
+fun ContentView() {
+    val diceFactory: (Int) -> Dice by factory() // <1>
+}
+----
+
+[source, kotlin]
+.Retrieve providers
+----
+@Composable
+fun ContentView() {
+    val diceProvider: () -> Dice by provider() // <1>
+    val personProvider: () -> Person by provider(arg = "Romain") // <1>
+}
+----
+
+WARNING: Under the hood these functions are using `LocalDI`. If there is no DI container define in the `@Composable` current hierarchy, you will get a runtime exception: `IllegalStateException: Missing DI container!`.
+
+== Android specific usage
+
+`kodein-di-framework-compose` Android source set adds the transitive dependencies `kodein-di` and `kodein-di-framework-android-x`.
+This gives us the ability to combine two important concepts that are xref:core:injection-retrieval.adoc#di-aware[`DIAware`] and the xref:android.adoc#closest-di[closest DI pattern].
+It adds to some Android specific objects, an extension function `di()`, that is capable of exploring the context hierarchy until it finds a DI container, hence the name of the pattern.
+
+Thanks to these mechanism we can provide two specifc functions for *_Jetpack Compose_* users.
+
+1. A `@Composable` function `contextDI` that uses the closest DI pattern to get a DI container by using the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal] `LocalContext`, from *_Jetpack Compose_*.
+
+[source, kotlin]
+.Getting the closest DI context from the Android's context
+----
+class MainActivity : ComponentActivity(), DIAware {  // <1>
+    override val di: DI = DI.lazy {  // <2>
+        bindSingleton<DataSource> { SqliteDS.open("path/to/file") }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent { App() }
+    }
+}
+
+@Composable
+fun App() {
+    val di = contextDI() // <3>
+    val dataSource: DataSource by instance()
+    Text(text = "Hello ${dataSource.getUsername()}!")
+}
+----
+<1> Your Android context *must* be `DIAware` ...
+<2> ... and override the `di` property.
+<3> the `contextDI` function retrieve the `di` property from the closest `DIAware` object.
+
+- A specific version of the xref:with-di[`withDI`]
+
+This uses the `contextDI` function to provide a DI container as the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal] `LocalDI`.
+
+[source, kotlin]
+.Android context
+----
+class MainActivity : ComponentActivity(), DIAware {  // <1>
+    override val di: DI = DI.lazy {  // <2>
+        bindSingleton<DataSource> { SqliteDS.open("path/to/file") }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent { App() }
+    }
+}
+
+@Composable
+fun App() = withDI { // <3>
+    MyContentView()
+}
+
+@Composable
+fun MyContentView() {
+    val dataSource: DataSource by instance() // <4>
+    Text(text = "Hello ${dataSource.getUsername()}!")
+}
+----
+<1> Your Android context *must* be `DIAware` ...
+<2> ... and override the `di` property.
+<3> Add the closest DI container to the `@Composable` hierarchy
+<4> Underlying `@Composable` can transparently access to the DI container defined in the closest Android's context.
