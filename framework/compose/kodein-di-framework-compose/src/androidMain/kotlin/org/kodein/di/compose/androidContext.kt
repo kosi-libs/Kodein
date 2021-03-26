@@ -15,7 +15,8 @@ import org.kodein.di.android.closestDI
  */
 @Composable
 public fun contextDI(): DI {
-    val di by closestDI { LocalContext.current }
+    val context = LocalContext.current
+    val di by closestDI { context }
     return remember { di }
 }
 
