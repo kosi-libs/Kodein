@@ -72,7 +72,7 @@ fun main(args: Array<String>) {
 <1> Install the `DIFeature` (under the hood we are applying `install(DIFeature, configuration)`)
 <2> Lambda that represent a DI builder, accepting DI core features
 
-WARNING: If you install multiple `DIFeature` on the same Ktor `Application`, only one will be taken into account, obviously the last one that has been declared.
+WARNING: You cannot install multiple `DIFeature` on the same Ktor `Application` (throws a `DuplicateApplicationFeatureException`).
 
 === Closest DI pattern
 
