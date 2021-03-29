@@ -12,7 +12,7 @@ import android.view.View
 import org.kodein.di.*
 import kotlin.reflect.KProperty
 
-private fun di(thisRef: Any?, rootContext: Context): DI {
+private fun closestDI(thisRef: Any?, rootContext: Context): DI {
     var context: Context? = rootContext
     while (context != null) {
         if (context != thisRef && context is DIAware) {
@@ -34,95 +34,79 @@ interface DIPropertyDelegateProvider<in T> {
 }
 
 private class ContextDIPropertyDelegateProvider : DIPropertyDelegateProvider<Context> {
-    override operator fun provideDelegate(thisRef: Context, property: KProperty<*>?) = lazy { di(thisRef, thisRef) }
+    override operator fun provideDelegate(thisRef: Context, property: KProperty<*>?) = lazy { closestDI(thisRef, thisRef) }
 }
 
-private class LazyContextDIPropertyDelegateProvider(private val getContext: () -> Context) : DIPropertyDelegateProvider<Any?> {
-    override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>?) = lazy { di(thisRef, getContext()) }
+class LazyContextDIPropertyDelegateProvider(private val getContext: () -> Context) : DIPropertyDelegateProvider<Any?> {
+    override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>?) = lazy { closestDI(thisRef, getContext()) }
 }
+
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+fun di(): DIPropertyDelegateProvider<Context> = closestDI()
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  *
  * To be used on Android's `Context` classes, such as `Activity` or `Service`.
  */
-fun di(): DIPropertyDelegateProvider<Context> = ContextDIPropertyDelegateProvider()
+fun closestDI(): DIPropertyDelegateProvider<Context> = ContextDIPropertyDelegateProvider()
 
-/**
- * Alias to `di`
- */
-fun closestDI() = di()
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI(context)","org.kodein.di.android"))
+fun di(context: Context): DIPropertyDelegateProvider<Any?> = closestDI(context)
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  *
  * @param context The Android context to use to walk up the context hierarchy.
  */
-fun di(context: Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider { context }
+fun closestDI(context: Context): LazyContextDIPropertyDelegateProvider = LazyContextDIPropertyDelegateProvider { context }
 
-/**
- * Alias to `di`
- */
-fun closestDI(context: Context) = di(context)
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI(getContext)","org.kodein.di.android"))
+fun di(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = closestDI(getContext)
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  *
  * @param getContext A function that returns the Android context to use to walk up the context hierarchy.
  */
-fun di(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider(getContext)
+fun closestDI(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider(getContext)
 
-/**
- * Alias to `di`
- */
-fun closestDI(getContext: () -> Context) = di(getContext)
-
-/**
- * Returns the closest DI (or the app DI, if no closest DI could be found).
- */
-fun Fragment.di() = di { activity }
-
-/**
- * Alias to `di`
- */
-fun Fragment.closestDI() = di()
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+fun Fragment.di(): DIPropertyDelegateProvider<Any?> = closestDI()
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-fun Dialog.di() = di { context }
+fun Fragment.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { activity }
 
-/**
- * Alias to `di`
- */
-fun Dialog.closestDI() = di()
-
-/**
- * Returns the closest DI (or the app DI, if no closest DI could be found).
- */
-fun View.di() = di { context }
-
-/**
- * Alias to `di`
- */
-fun View.closestDI() = di()
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+fun Dialog.di(): DIPropertyDelegateProvider<Any?> = closestDI()
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-fun AbstractThreadedSyncAdapter.di() = di { context }
+fun Dialog.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
 
-/**
- * Alias to `di`
- */
-fun AbstractThreadedSyncAdapter.closestDI() = di()
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+fun View.di(): DIPropertyDelegateProvider<Context> = org.kodein.di.android.closestDI()
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-fun Loader<*>.di() = di { context }
+fun View.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
+
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+fun AbstractThreadedSyncAdapter.di(): DIPropertyDelegateProvider<Any?> = closestDI()
 
 /**
- * Alias to `di`
+ * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-fun Loader<*>.closestDI() = di()
+fun AbstractThreadedSyncAdapter.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
+
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+fun Loader<*>.di(): DIPropertyDelegateProvider<Context> = org.kodein.di.android.closestDI()
+
+/**
+ * Returns the closest DI (or the app DI, if no closest DI could be found).
+ */
+fun Loader<*>.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }

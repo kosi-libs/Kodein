@@ -10,46 +10,40 @@ import org.kodein.di.*
 // attribute key for storing injector in a call
 public val KodeinDIKey: AttributeKey<DI> = AttributeKey<DI>("KodeinDI")
 
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
+public fun Application.di(): LazyDI = closestDI()
+
 /**
  * Getting the global [DI] container from the [Application]
  */
-public fun Application.di(): LazyDI = LazyDI { attributes[KodeinDIKey] }
+public fun Application.closestDI() : LazyDI = LazyDI { attributes[KodeinDIKey] }
 
-/**
- * Alias to `di`
- */
-public fun Application.closestDI() : LazyDI = di()
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI(getApplication)","org.kodein.di.ktor"))
+public fun di(getApplication: () -> Application) : LazyDI = closestDI(getApplication)
 
 /**
  * Getting the global [DI] container from the [Application] parameter
  */
-public fun di(getApplication: () -> Application) : LazyDI = getApplication().di()
+public fun closestDI(getApplication: () -> Application) : LazyDI = getApplication().closestDI()
 
-/**
- * Alias to `di`
- */
-public fun closestDI(getApplication: () -> Application) : LazyDI = di(getApplication)
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
+public fun ApplicationCall.di(): LazyDI = closestDI { application }
 
 /**
  * Getting the global [DI] container from the [ApplicationCall]
  */
-public fun ApplicationCall.di(): LazyDI = di { application }
+public fun ApplicationCall.closestDI(): LazyDI = closestDI()
 
-/**
- * Alias to `di`
- */
-public fun ApplicationCall.closestDI(): LazyDI = di()
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
+public fun Routing.di(): LazyDI = di { application }
 
 /**
  * Getting the global [DI] container from the [Routing] feature
  */
-public fun Routing.di(): LazyDI = di { application }
+public fun Routing.closestDI(): LazyDI = closestDI()
 
-
-/**
- * Alias to `di`
- */
-public fun Routing.closestDI(): LazyDI = di()
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
+public fun Route.di(): LazyDI = closestDI()
 
 /**
  * Getting the global or local (if extended) [DI] container from the current [Route]
@@ -57,7 +51,7 @@ public fun Routing.closestDI(): LazyDI = di()
  *
  * @throws IllegalStateException if there is no [DI] container
  */
-public fun Route.di(): LazyDI {
+public fun Route.closestDI(): LazyDI {
     // Is there an inner DI container for this Route ?
     val routeDI = this.attributes.getOrNull(KodeinDIKey)
     return when {
@@ -67,20 +61,14 @@ public fun Route.di(): LazyDI {
     }
 }
 
-/**
- * Alias to `di`
- */
-public fun Route.closestDI(): LazyDI = di()
+@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
+public fun PipelineContext<*, ApplicationCall>.di(): LazyDI = closestDI()
+
 
 /**
  * Getting the global [DI] container from the [ApplicationCall]
  */
-public fun PipelineContext<*, ApplicationCall>.di(): LazyDI {
+public fun PipelineContext<*, ApplicationCall>.closestDI(): LazyDI {
     val routingCall = (this.call as RoutingApplicationCall)
     return routingCall.route.di()
 }
-
-/**
- * Alias to `di`
- */
-public fun PipelineContext<*, ApplicationCall>.closestDI(): LazyDI = di()
