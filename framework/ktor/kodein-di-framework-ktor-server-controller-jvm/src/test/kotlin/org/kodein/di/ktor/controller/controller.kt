@@ -27,8 +27,8 @@ class ApplicationController(application: Application) : AbstractDIController(app
 }
 
 class DIControllerImpl(application: Application) : DIController {
-    override val di by di { application }
-  override fun Route.getRoutes() {
+    override val di by closestDI { application }
+    override fun Route.getRoutes() {
         route(ROUTE_VERSION) {
             get {
                 val version: String by instance("version")

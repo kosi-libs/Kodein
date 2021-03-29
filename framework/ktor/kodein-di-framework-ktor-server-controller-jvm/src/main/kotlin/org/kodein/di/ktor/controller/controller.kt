@@ -21,7 +21,7 @@ import org.kodein.di.ktor.*
  *
  */
 public abstract class AbstractDIController(private val application: Application) : DIController {
-    public override val di: DI by di { application }
+    public override val di: DI by closestDI { application }
 }
 
 /**

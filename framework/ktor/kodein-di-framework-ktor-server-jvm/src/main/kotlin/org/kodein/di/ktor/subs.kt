@@ -8,6 +8,6 @@ import org.kodein.di.*
  */
 public inline fun Route.subDI(allowSilentOverride: Boolean = false, copy: Copy = Copy.NonCached, crossinline init: DI.MainBuilder.() -> Unit) {
     // Get any DI container in the parent # avoid infinite loop / StackOverflowError
-    val parentDI = parent?.di() ?: di { application }
+    val parentDI = parent?.di() ?: closestDI { application }
     this.attributes.put(KodeinDIKey, subDI(parentDI, allowSilentOverride, copy, init))
 }
