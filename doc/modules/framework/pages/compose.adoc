@@ -121,6 +121,7 @@ fun App() = withDI({ // <1>
 
 WARNING: It's important to understand that the bindings can't be accessed with the `CompositionLocal` mechanism from the sibling or upper nodes.
          The DI reference si only available inside the `content` lambda and for underlying `@Composable` element of the `withDI` functions.
+
 [[localdi]]
 ==== Access a DI container from `@Composable` functions
 
@@ -185,8 +186,50 @@ fun ContentView() {
 <2> Add specific bindings for the underlying tree
 <3> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
 
-NOTE: These `subDI` function are similar to the *_Kodein-DI_* core `subDI`.
-      Check xref:core:modules-inheritance.adoc#extension-composition[this documentation] for more advanced usages.
+.*Copying bindings*
+
+With this feature we can extend our DI container. This extension is made by copying the none singleton / multiton,
+but we have the possibility to copy all the binding (including singleton / multiton).
+
+[source, kotlin]
+.Example: Copying all the bindings
+----
+@Composable
+fun ContentView() {
+    subDI(copy = Copy.All, // <1>
+    diBuilder = {
+        /** new bindings / overrides **/
+    }) {
+        ItemList() // <2>
+        ActionView() // <2>
+    }
+}
+----
+<1> Copying all the bindings, with the singletons / multitons
+<2> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
+
+WARNING: By doing a `Copy.All` your original singleton / multiton won't be available anymore, in the new DI container, they will exist as new instances.
+
+.*Overriding bindings*
+
+Sometimes, It might be interesting to replace an existing dependency (by overriding it).
+
+[source, kotlin]
+.Example: overriding bindings
+----
+@Composable
+fun ContentView() {
+    subDI(allowSilentOverrides = true, // <1>
+    diBuilder = {
+        /** new bindings / overrides **/
+    }) {
+        ItemList() // <2>
+        ActionView() // <2>
+    }
+}
+----
+<1> Overriding in the `subDI` will be implicit
+<2> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
 
 === Retrieve bindings from `@Composable` functions
 
