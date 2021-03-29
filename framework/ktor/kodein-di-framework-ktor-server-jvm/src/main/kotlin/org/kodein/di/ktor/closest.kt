@@ -35,7 +35,7 @@ public fun ApplicationCall.di(): LazyDI = closestDI { application }
 public fun ApplicationCall.closestDI(): LazyDI = closestDI()
 
 @Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
-public fun Routing.di(): LazyDI = di { application }
+public fun Routing.di(): LazyDI = closestDI { application }
 
 /**
  * Getting the global [DI] container from the [Routing] feature
