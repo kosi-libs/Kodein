@@ -12,7 +12,7 @@ import org.kodein.di.ktor.*
  */
 @ContextDsl
 public fun Route.controller(init: DirectDI.() -> DIController): DIController = run {
-    val diController by di().newInstance { init() }
+    val diController by closestDI().newInstance { init() }
     diController.apply { installRoutes() }
 }
 
