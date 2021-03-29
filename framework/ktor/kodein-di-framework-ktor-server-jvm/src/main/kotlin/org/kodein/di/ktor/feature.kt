@@ -45,6 +45,8 @@ public class DIFeature private constructor() {
 }
 
 /**
- * Gets or installs a [DIFeature] feature for the this [Application] and runs a [configuration] script on it
+ * Installs a [DIFeature] feature for the this [Application] and runs a [configuration] script on it
+ *
+ * @throws [DuplicateApplicationFeatureException] if the feature has already been installed.
  */
 public fun Application.di(configuration: DI.MainBuilder.() -> Unit): DIFeature = install(DIFeature, configuration)
