@@ -154,10 +154,10 @@ class KtorTests {
     fun test_05_closest(): Unit = withTestApplication(Application::main) {
         val diInstance = this.application.attributes[KodeinDIKey]
 
-        assertSame(diInstance, di { this.application }.baseDI)
+        assertSame(diInstance, closestDI { this.application }.baseDI)
 
         handleRequest(HttpMethod.Get, ROUTE_CLOSEST) {
-            assertSame(diInstance, di { this.call.application }.baseDI)
+            assertSame(diInstance, closestDI { this.call.application }.baseDI)
         }.apply {
             assertNotNull(response.content)
 
@@ -167,7 +167,7 @@ class KtorTests {
                 assertEquals("$diInstance", diInstances.first())
             }
 
-            assertSame(diInstance, di().baseDI)
+            assertSame(diInstance, closestDI().baseDI)
         }
     }
 
@@ -175,10 +175,10 @@ class KtorTests {
     fun test_06_subKodein(): Unit = withTestApplication(Application::main) {
         val diInstance = this.application.attributes[KodeinDIKey]
 
-        assertSame(diInstance, di { this.application }.baseDI)
+        assertSame(diInstance, closestDI { this.application }.baseDI)
 
         handleRequest(HttpMethod.Post, "$ROUTE_SUBKODEIN$ROUTE_SUB_UPPER") {
-            assertSame(diInstance, di { this.call.application }.baseDI)
+            assertSame(diInstance, closestDI { this.call.application }.baseDI)
         }.apply {
             assertNotNull(response.content)
 
@@ -188,7 +188,7 @@ class KtorTests {
                 assertEquals("$diInstance", diInstances.first())
             }
 
-            assertSame(diInstance, di().baseDI)
+            assertSame(diInstance, closestDI().baseDI)
         }
 
         val lowerAuthor: String
