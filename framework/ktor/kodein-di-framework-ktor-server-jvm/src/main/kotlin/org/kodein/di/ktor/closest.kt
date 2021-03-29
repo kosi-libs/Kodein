@@ -56,8 +56,8 @@ public fun Route.closestDI(): LazyDI {
     val routeDI = this.attributes.getOrNull(KodeinDIKey)
     return when {
         routeDI != null -> routeDI as LazyDI
-        this is Routing -> di()
-        else -> parent?.di() ?: throw IllegalStateException("No DI container found for [$this]")
+        this is Routing -> closestDI()
+        else -> parent?.closestDI() ?: throw IllegalStateException("No DI container found for [$this]")
     }
 }
 
@@ -70,5 +70,5 @@ public fun PipelineContext<*, ApplicationCall>.di(): LazyDI = closestDI()
  */
 public fun PipelineContext<*, ApplicationCall>.closestDI(): LazyDI {
     val routingCall = (this.call as RoutingApplicationCall)
-    return routingCall.route.di()
+    return routingCall.route.closestDI()
 }

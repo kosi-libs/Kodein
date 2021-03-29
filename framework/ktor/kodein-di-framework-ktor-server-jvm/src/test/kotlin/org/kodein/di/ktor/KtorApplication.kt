@@ -137,7 +137,7 @@ fun Application.requestModule() {
 fun Application.closestModule() {
     val kodeinInstances = mutableListOf<DI>()
     routing {
-        kodeinInstances.add(di().baseDI)
+        kodeinInstances.add(closestDI().baseDI)
         route(ROUTE_CLOSEST) {
             kodeinInstances.add(di().baseDI)
             get {
