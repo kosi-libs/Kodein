@@ -31,4 +31,4 @@ fun AndroidViewModel.di() = closestDI()
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-fun AndroidViewModel.closestDI() = di(getApplication<Application>())
+fun AndroidViewModel.closestDI() = closestDI(getApplication<Application>())
