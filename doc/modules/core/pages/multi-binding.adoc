@@ -18,10 +18,10 @@ To have multiple bindings in a set, you need to:
 .Example creating a set of `Configuration` bindings.
 ----
 val di = DI {
-    bind() from setBinding<Configuration>() <1>
+    bindSet<Configuration>() // <1>
 
-    bind<Configuration>().inSet() with provider { FooConfiguration() } // <2>
-    bind<Configuration>().inSet() with singleton { BarConfiguration() } // <2>
+    inSet<Configuration> { provider { FooConfiguration() } } // <2>
+    inSet<Configuration> { singleton { BarConfiguration() } } // <2>
 }
 ----
 <1> Creating a set binding of `Configuration`.
@@ -41,13 +41,14 @@ You can also bind multiple bindings with arguments (such as `factory` or `multit
 .Example creating a set of `Result` bindings.
 ----
 val di = DI {
-    bind() from argSetBinding<Query, Result>()
+    bindArgSet<Query, Result>() // <1>
 
-    bind<Result>().inSet() with factory { q: Query -> Foo.query(q) }
-    bind<Result>().inSet() with multiton { q: Query -> Bar.query(q) }
+    inSet<Result> { factory { q: Query -> Foo.query(q) } } // <2>
+    inSet<Result> { multiton { q: Query -> Bar.query(q) } } // <2>
 }
 ----
-
+<1> abc
+<2> abc
 
 === Retrieving from a Set
 
@@ -55,19 +56,18 @@ Note that the type being bound is `Set<T>`, not `T`. +
 Therefore, you need to retrieve a `Set`:
 
 [source,kotlin]
-.Example retrieving set of `Configuration` with the generic version.
+.Example retrieving set of `Configuration`.
 ----
 val configurations: Set<Configuration> by di.instance()
 ----
 
-if you are using the `erased` version, you need to retrieve thusly:
+To retrieve a `Set` with argument, thus going through a `factory` or a `multiton`, you need to pass the needed argument to the instance function.
 
 [source,kotlin]
-.Example retrieving set of `Configuration` with the erased version.
+.Example retrieving set of `Result` with `Query` argument.
 ----
-val configurations: Set<Configuration> by di.Instance(erasedSet())
+val result: Set<Result> by di.instance(arg = Query("SELECT * FROM USER;"))
 ----
-
 
 == In a map
 
@@ -89,10 +89,10 @@ Then, bind with keys:
 .Example binding as in a map multibinding.
 ----
 val di = DI {
-    bind() from setBinding<ConfigurationEntry>()
+    bindSet<ConfigurationEntry>()
 
-    bind<ConfigurationEntry>().inSet() with factory { "foo" to FooConfiguration() }
-    bind<ConfigurationEntry>().inSet() with multiton { "bar" to BarConfiguration() }
+    inSet<ConfigurationEntry> { singleton { "foo" to FooConfiguration() } }
+    inSet<ConfigurationEntry> { provider { "bar" to BarConfiguration() } }
 }
 ----
 

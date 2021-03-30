@@ -31,7 +31,7 @@ private fun BindingsMap.descriptionImpl(withOverrides: Boolean, ident: Int, keyB
     fun StringBuilder.appendBindings(ident: Int, entries: List<Map.Entry<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>>>) =
             entries.forEach {
                 val keyDescription = it.key.keyBindDisp()
-                append("${" ".repeat(ident)}$keyDescription with ${it.value.first().binding.bindingDisp()}")
+                append("${" ".repeat(ident)}$keyDescription { ${it.value.first().binding.bindingDisp()} }")
                 if (withOverrides) {
                     val subIdent = keyDescription.length - 4
                     it.value.subList(1, it.value.size).forEach {

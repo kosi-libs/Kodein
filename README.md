@@ -36,8 +36,8 @@ An example is always better than a thousand words:
 
 ```kotlin
 val di = DI {
-    bind<Dice>() with provider { RandomDice(0, 5) }
-    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+    bindProvider<Dice> { RandomDice(0, 5) }
+    bindSingleton<DataSource> { SqliteDS.open("path/to/file") }
 }
 
 class Controller(private di: DI) {

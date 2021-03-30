@@ -100,4 +100,98 @@ class Tests_24_Sub {
             }.direct
         }
     }
+
+    @Test fun test_04_SimpleBinding_SubDIOverrideDefaultCopy() {
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = DI {
+            bindProvider { Foo("rootFoo") }
+            bindSingleton { Bar(instance()) }
+        }
+
+        val sub = subDI(root) {
+            bindProvider(overrides = true) { Foo("subFoo") }
+        }
+
+        val subBar by sub.instance<Bar>()
+        val rootBar by root.instance<Bar>()
+
+        assertSame(rootBar, subBar)
+        assertEquals("rootFoo", rootBar.foo.name)
+        assertEquals("rootFoo", subBar.foo.name)
+
+        val subFoo by sub.instance<Foo>()
+        val rootFoo by root.instance<Foo>()
+
+        assertNotEquals(subFoo, rootFoo)
+    }
+
+    @Test fun test_05_SimpleBinding_SubDIOverrideCopyAll() {
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = DI {
+            bindProvider { Foo("rootFoo") }
+            bindSingleton { Bar(instance()) }
+        }
+
+        val sub = subDI(root, copy = Copy.All, init = {
+            bindProvider(overrides = true) { Foo("subFoo") }
+        })
+
+        val subBar by sub.instance<Bar>()
+        val rootBar by root.instance<Bar>()
+
+        assertNotSame(rootBar, subBar)
+        assertEquals("rootFoo", rootBar.foo.name)
+        assertEquals("subFoo", subBar.foo.name)
+
+        val subFoo by sub.instance<Foo>()
+        val rootFoo by root.instance<Foo>()
+
+        assertNotSame(subFoo, rootFoo)
+    }
+
+    @Test fun test_06_SimpleBinding_SubDIAllowedSilentOverride() {
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = DI {
+            bindProvider { Foo("rootFoo") }
+            bindSingleton { Bar(instance()) }
+        }
+
+        val sub = subDI(root, allowSilentOverride = true, init = {
+            bindProvider { Foo("subFoo") }
+        })
+
+        val subBar by sub.instance<Bar>()
+        val rootBar by root.instance<Bar>()
+
+        assertSame(rootBar, subBar)
+        assertEquals("rootFoo", rootBar.foo.name)
+        assertEquals("rootFoo", subBar.foo.name)
+
+        val subFoo by sub.instance<Foo>()
+        val rootFoo by root.instance<Foo>()
+
+        assertNotSame(subFoo, rootFoo)
+    }
+
+    @Test fun test_07_SimpleBinding_SubDINotAllowedSilentOverride() {
+        data class Foo(val name: String)
+        data class Bar(val foo: Foo)
+
+        val root = DI {
+            bindProvider { Foo("rootFoo") }
+            bindSingleton { Bar(instance()) }
+        }
+
+        assertFailsWith(DI.OverridingException::class) {
+            subDI(root) {
+                bindProvider { Foo("subFoo") }
+            }.direct
+        }
+    }
 }

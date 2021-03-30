@@ -71,4 +71,40 @@ class Tests_04_NullBinding {
 
         assertAllEqual("Salomon BRYS", f!!.invoke("Salomon"), df!!.invoke("Salomon"), p!!(), dp!!(), fp!!(), dfp!!(), i!!, di!!, fi!!)
     }
+
+    @Test fun test_04_NonNullDirectBindingProviderAndInstance() {
+
+        val kodein = DI {
+            bind { provider { "Salomon" } }
+        }
+
+        val i: String? by kodein.instanceOrNull()
+        val di: String? = kodein.direct.instanceOrNull()
+        val p: (() -> String)? by kodein.providerOrNull()
+        val dp: (() -> String)? = kodein.direct.providerOrNull()
+
+        assertAllNotNull(i, di, p, dp)
+        assertAllEqual("Salomon", i!!, di!!, p!!(), dp!!())
+    }
+
+    @Test fun test_05_NonNullDirectBindingGetFactory() {
+
+        val kodein = DI {
+            bind { factory { name: String -> "$name BRYS" } }
+        }
+
+        val f: ((String) -> String)? by kodein.factoryOrNull()
+        val df: ((String) -> String)? = kodein.direct.factoryOrNull()
+        val p: (() -> String)? by kodein.providerOrNull(arg = "Salomon")
+        val dp: (() -> String)? = kodein.direct.providerOrNull(arg = "Salomon")
+        val fp: (() -> String)? by kodein.providerOrNull(fArg = { "Salomon" })
+        val dfp: (() -> String)? = kodein.direct.providerOrNull(fArg = { "Salomon" })
+        val i: String? by kodein.instanceOrNull(arg = "Salomon")
+        val di: String? = kodein.direct.instanceOrNull(arg = "Salomon")
+        val fi: String? by kodein.instanceOrNull(fArg = { "Salomon" })
+
+        assertAllNotNull(f, df, p, dp, fp, dfp, i, di, fi)
+
+        assertAllEqual("Salomon BRYS", f!!.invoke("Salomon"), df!!.invoke("Salomon"), p!!(), dp!!(), fp!!(), dfp!!(), i!!, di!!, fi!!)
+    }
 }

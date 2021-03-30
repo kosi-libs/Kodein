@@ -19,8 +19,8 @@ class Tests_21_Description {
                 tag = null
         )
 
-        assertEquals("bind<String>()", key.bindDescription)
-        assertEquals("bind<String>() with ? { ? }", key.description)
+        assertEquals("bind<String>", key.bindDescription)
+        assertEquals("bind<String> { ? { ? } }", key.description)
     }
 
     @Test
@@ -33,7 +33,7 @@ class Tests_21_Description {
         )
 
         assertEquals("bind<IntRange>(tag = \"tag\")", key.bindDescription)
-        assertEquals("bind<IntRange>(tag = \"tag\") with ?<String>().? { Pair<String, String> -> ? }", key.description)
+        assertEquals("bind<IntRange>(tag = \"tag\") { ?<String>().? { Pair<String, String> -> ? } }", key.description)
     }
 
 }

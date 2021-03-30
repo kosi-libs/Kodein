@@ -15,7 +15,7 @@ class ErasedJvmTests_05_ExternalSource {
     @Test
     fun test_00_ExternalSource() {
         val di = DI.direct {
-            bind(tag = "him") from singleton { Person("Salomon") }
+            bind(tag = "him") { singleton { Person("Salomon") } }
 
             val laila = Person("Laila")
             externalSources += ExternalSource { key ->

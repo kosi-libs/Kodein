@@ -11,7 +11,7 @@ val di = DI {
 
 Bindings are declared inside a DI initialization block.
 
-A binding always starts with `bind<TYPE>() with`.
+A binding always starts with `bind<TYPE> { }`.
 
 [.lead]
 There are different ways to declare bindings:
@@ -26,9 +26,9 @@ All bindings can be tagged to allow you to bind different instances of the same 
 .Example: different Dice bindings
 ----
 val di = DI {
-    bind<Dice>() with ... // <1>
-    bind<Dice>(tag = "DnD10") with ... // <2>
-    bind<Dice>(tag = "DnD20") with ... // <2>
+    bind<Dice> { ... } // <1>
+    bind<Dice>(tag = "DnD10") { ... } // <2>
+    bind<Dice>(tag = "DnD20") { ... } // <2>
 }
 ----
 <1> Default binding (with no tag)
@@ -51,9 +51,11 @@ The provided function will be called *each time* you need an instance of the bou
 .Example: creates a new 6 sided Dice entry each time you need one
 ----
 val di = DI {
-    bind<Dice>() with provider { RandomDice(6) }
+    bind<Dice> { provider { RandomDice(6) } }
 }
 ----
+
+TIP: Ending with the same result, you can also use the simple function `bindProvider<Dice> { RandomDice(6) }`.
 
 [[singleton-bindings]]
 == Singleton binding
@@ -65,10 +67,11 @@ Therefore, the provided function will be called *only once*: the first time an i
 .Example: creates a DataSource singleton that will be initialized on first access
 ----
 val di = DI {
-    bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+    bind<DataSource> { singleton { SqliteDS.open("path/to/file") } }
 }
 ----
 
+TIP: Ending with the same result, you can also use the simple function `bindSingleton<DataSource> { SqliteDS.open("path/to/file") }`.
 
 === Non-synced singleton
 
@@ -84,14 +87,14 @@ If you need to improve startup performance, _if you know what you are doing_, yo
 .Example: creates a DataSource non synced singleton
 ----
 val di = DI {
-    bind<DataSource>() with singleton(sync = false) { SqliteDS.open("path/to/file") }
+    bind<DataSource> { singleton(sync = false) { SqliteDS.open("path/to/file") } }
 }
 ----
 
 Using `sync = false` means that:
 
 - There will be no construction synchronicity.
-- There _may_ be multiple instance constructed.
+- There _may_ be multiple instances constructed.
 - Instance will be _reused_ as much as possible.
 
 
@@ -104,7 +107,7 @@ This is the same as a regular singleton, except that the provided function will 
 ----
 val di = DI {
     // The SQLite connection will be opened as soon as the di instance is ready
-    bind<DataSource>() with eagerSingleton { SqliteDS.open("path/to/file") }
+    bind<DataSource> { eagerSingleton { SqliteDS.open("path/to/file") } }
 }
 ----
 
@@ -118,31 +121,16 @@ The provided function will be called *each time* you need an instance of the bou
 .Example: creates a new Dice each time you need one, according to an Int representing the number of sides
 ----
 val di = DI {
-    bind<Dice>() with factory { sides: Int -> RandomDice(sides) }
+    bind<Dice> { factory { sides: Int -> RandomDice(sides) } }
 }
 ----
 
+TIP: Ending with the same result, you can also use the simple function `bindFactory<Int, DataSource> { sides: Int -> RandomDice(sides) }`.
 
 [[multi-argument-factories]]
 === Multi-arguments factories
 
-CAUTION: This multi-agrument-factories mechanism is deprecated and will be removed in version `7.0`
-
-A factory can take multiple (up to 5) arguments:
-
-[source,kotlin]
-.Example: creates a new Dice each time you need one, according to an Int representing the number of sides
-----
-val di = DI {
-    bind<Dice>() with factory { startNumber: Int, sides: Int -> RandomDice(sides) }
-}
-----
-
-NOTE: We recommend to use `data classes` instead!
-
-Regarding our users feedback, we find out that multi-arguments factories was difficult to use.
-
-Thus this mechanism will be deprecate soon. So we highly recommend that you migrate your multi-args factories to simple factories by using *data classes*.
+You can create multi-args factories by using *data classes*.
 
 [source,kotlin]
 .Example: creates a new Dice each time you need one, according to multiple parameters
@@ -150,7 +138,7 @@ Thus this mechanism will be deprecate soon. So we highly recommend that you migr
 data class DiceParams(val startNumber: Int, val sides: Int)
 
 val di = DI {
-    bind<Dice>() with factory { params: DiceParams -> RandomDice(params) }
+    bind<Dice> { factory { params: DiceParams -> RandomDice(params) } }
 }
 ----
 
@@ -164,11 +152,13 @@ In other words, for a given argument, the first time a multiton is called with t
 .Example: creates one random generator for each value
 ----
 val di = DI {
-    bind<RandomGenerator>() with multiton { max: Int -> SecureRandomGenerator(max) }
+    bind<RandomGenerator> { multiton { max: Int -> SecureRandomGenerator(max) } }
 }
 ----
 
 Just like a factory, a multiton can take multiple (up to 5) arguments.
+
+TIP: Ending with the same result, you can also use the simple function `bindMultiton<Int, RandomGenerator> { max: Int -> SecureRandomGenerator(max) }`.
 
 === non-synced multiton
 
@@ -178,10 +168,11 @@ Just like a singleton, a multiton synchronization can be disabled:
 .Example: non-synced multiton
 ----
 val di = DI {
-    bind<RandomGenerator>(sync = false) with multiton { max: Int -> SecureRandomGenerator(max) }
+    bind<RandomGenerator> { multiton(sync = false)  { max: Int -> SecureRandomGenerator(max) } }
 }
 ----
 
+TIP: Ending with the same result, you can also use the simple function `bindMultiton<Int, RandomGenerator>(sync = false) { max: Int -> SecureRandomGenerator(max) }`.
 
 == Referenced singleton or multiton binding
 
@@ -205,8 +196,8 @@ Therefore, the provided function *may or may not* be called multiple times durin
 .Example: creates a Cache object that will exist only once at a given time
 ----
 val di = DI {
-    bind<Map>() with singleton(ref = softReference) { WorldMap() } // <1>
-    bind<Client>() with singleton(ref = weakReference) { id -> clientFromDB(id) } // <2>
+    bind<Map> { singleton(ref = softReference) { WorldMap() } } // <1>
+    bind<Client> { singleton(ref = weakReference) { id -> clientFromDB(id) } }// <2>
 }
 ----
 <1> Because it's bound by a soft reference, the JVM will GC it before any `OutOfMemoryException` can occur.
@@ -224,7 +215,7 @@ Therefore, the provided function will be called *once per thread* that needs the
 .Example: creates a Cache object that will exist once per thread
 ----
 val di = DI {
-    bind<Cache>() with singleton(ref = threadLocal) { LRUCache(16 * 1024) }
+    bind<Cache> { singleton(ref = threadLocal) { LRUCache(16 * 1024) } }
 }
 ----
 
@@ -241,11 +232,12 @@ This binds a type to an instance that *already exist*.
 .Example: a DataSource binding to an already existing instance.
 ----
 val di = DI {
-    bind<DataSource>() with instance(SqliteDataSource.open("path/to/file")) // <1>
+    bind<DataSource> { instance(SqliteDataSource.open("path/to/file")) } // <1>
 }
 ----
 <1> Instance is used *with parenthesis*: it is not given a function, but an instance.
 
+TIP: Ending with the same result, you can also use the simple function `bindInstance<DataSource> { SqliteDataSource.open("path/to/file") }`.
 
 [[constant-binding]]
 === Constant binding
@@ -258,8 +250,8 @@ NOTE: Constants are always <<tagged-bindings,tagged>>.
 .Example: two constants
 ----
 val di = DI {
-    constant(tag = "maxThread") with 8 // <1>
-    constant(tag = "serverURL") with "https://my.server.url" // <1>
+    bindConstant(tag = "maxThread") { 8 } // <1>
+    bindConstant(tag = "serverURL") { "https://my.server.url" } // <1>
 }
 ----
 <1> Note the absence of curly braces: it is not given a function, but an instance.
@@ -271,22 +263,39 @@ CAUTION: You should only use constant bindings for very simple types without inh
 
 Sometimes, it may seem overkill to specify the type to `bind` if you are binding the same type as you are creating.
 
-For this use case, you can transform any `bind<TYPE>() with ...` to `bind() from ...`.
+For this use case, you can transform any `bind<TYPE>() with ...` to `bind { ... }`.
 
 [source,kotlin]
 .Example: direct bindings
 ----
 val di = DI {
-    bind() from singleton { RandomDice(6) }
-    bind("DnD20") from provider { RandomDice(20) }
-    bind() from instance(SqliteDataSource.open("path/to/file"))
+    bind { singleton { RandomDice(6) } }
+    bind("DnD20") { provider { RandomDice(20) } }
+    bind { instance(SqliteDataSource.open("path/to/file")) }
 }
 ----
 
 CAUTION: *This should be used with care* as binding a concrete class and, therefore, having concrete dependencies is an _anti-pattern_ that later prevents modularisation and mocking / testing.
 
 WARNING: When binding a generic type, the bound type will be the specialized type, +
-e.g. `bind() from singleton { listOf(1, 2, 3, 4) }` registers the binding to `List<Int>`.
+e.g. `bind { singleton { listOf(1, 2, 3, 4) } }` registers the binding to `List<Int>`.
+
+[NOTE]
+====
+If you are binding straight types you can use the following extension functions:
+[source,kotlin]
+.Example: simple bindings
+----
+val di = DI {
+    bindFactory { size: Int -> RandomDice(size) }
+    bindProvider { RandomDice(20) }
+    bindSingleton { RandomDice(6) }
+    bindMultiton { name: String ->  Person(name) }
+    bindConstant("answer") { 42 }
+    bindInstance(SqliteDataSource.open("path/to/file"))
+}
+----
+====
 
 == Subtypes bindings
 
@@ -330,10 +339,10 @@ It is really easy to bind this `RandomDice` with its transitive dependencies, by
 .Example: bindings of a Dice and of its transitive dependencies
 ----
 val di = DI {
-    bind<Dice>() with singleton { Dice(instance(), instance(tag = "max")) } // <1>
+    bind<Dice> { singleton { Dice(instance(), instance(tag = "max")) } } // <1>
 
-    bind<Random>() with provider { SecureRandom() } // <2>
-    constant(tag="max") with 5 // <2>
+    bind<Random> {provider { SecureRandom() } } // <2>
+    bindConstant(tag="max"){ 5 } // <2>
 }
 ----
 <1> Binding of `Dice`. It gets its transitive dependencies by using `instance()` and `instance(tag)`.
@@ -353,8 +362,8 @@ Maybe you need a dependency to use one of its functions to create the bound type
 .Example: using a DataSource to create a Connection.
 ----
 val di = DI {
-    bind<DataSource>() with singleton { MySQLDataSource() }
-    bind<Connection>() with provider { instance<DataSource>().openConnection() } // <1>
+    bind<DataSource> { singleton { MySQLDataSource() } }
+    bind<Connection> { provider { instance<DataSource>().openConnection() } } // <1>
 }
 ----
 <1> Using a `DataSource` as a transitive factory dependency.
@@ -368,7 +377,7 @@ If the bound class is <<di-aware,DIAware>>, you can pass the `di` object to the 
 .Example: bindings of Manager that is responsible for retrieving its own dependencies
 ----
 val di = DI {
-    bind<Manager>() with singleton { ManagerImpl(di) } // <1>
+    bind<Manager> { singleton { ManagerImpl(di) } } // <1>
 }
 ----
 <1> ManagerImpl is given a DI instance.

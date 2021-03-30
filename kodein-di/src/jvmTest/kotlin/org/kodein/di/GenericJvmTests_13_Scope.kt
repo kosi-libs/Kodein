@@ -145,7 +145,7 @@ class GenericJvmTests_13_Scope {
         }
 
         val kodein = DI {
-            bind() from scoped(testScope).singleton { Person(context.name) }
+            bind { scoped(testScope).singleton { Person(context.name) } }
         }
 
         val test1 = T05(kodein, "one")
@@ -213,9 +213,9 @@ class GenericJvmTests_13_Scope {
     @Test
     fun test_08_CircularScopes() {
         val kodein = DI.direct {
-            bind() from contexted<A>().provider { context.str }
-            bind() from contexted<B>().provider { context.int }
-            bind() from contexted<C>().provider { context.char }
+            bind { contexted<A>().provider { context.str } }
+            bind { contexted<B>().provider { context.int } }
+            bind { contexted<C>().provider { context.char } }
             registerContextTranslator { a: A -> a.b }
             registerContextTranslator { b: B -> b.c }
             registerContextTranslator { c: C -> c.a }
@@ -269,7 +269,7 @@ class GenericJvmTests_13_Scope {
     @Test
     fun test_10_ContextTranslatorAndReceiver() {
         val kodein = DI.direct {
-            bind() from contexted<Name>().provider { FullName(context.firstName, "BRYS") }
+            bind { contexted<Name>().provider { FullName(context.firstName, "BRYS") } }
             registerContextFinder { Name("Salomon") }
             registerContextTranslator { name: String -> Name(name) }
         }

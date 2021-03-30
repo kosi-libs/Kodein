@@ -3,6 +3,8 @@ package org.kodein.di.internal
 import org.kodein.di.*
 import org.kodein.di.bindings.*
 import org.kodein.type.TypeToken
+import org.kodein.type.erasedComp
+import org.kodein.type.generic
 
 internal open class DIBuilderImpl internal constructor(
         private val moduleName: String?,
@@ -34,11 +36,31 @@ internal open class DIBuilderImpl internal constructor(
 
     inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) : DI.Builder.ConstantBinder {
         @Suppress("FunctionName")
-        override fun <T: Any> With(valueType: TypeToken<out T>, value: T) = Bind(tag = _tag, overrides = _overrides) from InstanceBinding(valueType, value)
+        override fun <T: Any> With(valueType: TypeToken<out T>, value: T) = Bind(tag = _tag, overrides = _overrides, binding = InstanceBinding(valueType, value))
     }
 
     @Suppress("FunctionName")
     override fun <T : Any> Bind(type: TypeToken<out T>, tag: Any?, overrides: Boolean?) = TypeBinder(type, tag, overrides)
+
+    @Suppress("FunctionName")
+    override fun <T : Any> Bind(tag: Any?, overrides: Boolean?, binding: DIBinding<*, *, T>) {
+        containerBuilder.bind(
+            key = DI.Key(binding.contextType, binding.argType, binding.createdType, tag = tag),
+            binding = binding,
+            fromModule = moduleName,
+            overrides = overrides,
+        )
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any> BindSet(tag: Any?, overrides: Boolean?, binding: DIBinding<*, *, T>) {
+        val setType = erasedComp(Set::class, binding.createdType) as TypeToken<Set<T>>
+        val setKey = DI.Key(binding.contextType, binding.argType, setType, tag)
+        val setBinding = containerBuilder.bindingsMap[setKey]?.first() ?: throw IllegalStateException("No set binding to $setKey")
+
+        setBinding.binding as? BaseMultiBinding<*, *, T> ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
+        (setBinding.binding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
+    }
 
     @Suppress("FunctionName")
     override fun Bind(tag: Any?, overrides: Boolean?): DirectBinder = DirectBinder(tag, overrides)

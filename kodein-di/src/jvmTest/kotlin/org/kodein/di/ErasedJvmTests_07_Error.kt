@@ -24,10 +24,10 @@ class ErasedJvmTests_07_Error {
 
         assertEquals("""
 Dependency recursion:
-     bind<org.kodein.di.test.A>()
-    ╔╩>bind<org.kodein.di.test.B>()
-    ║  ╚>bind<org.kodein.di.test.C>()
-    ║    ╚>bind<org.kodein.di.test.A>()
+     bind<org.kodein.di.test.A>
+    ╔╩>bind<org.kodein.di.test.B>
+    ║  ╚>bind<org.kodein.di.test.C>
+    ║    ╚>bind<org.kodein.di.test.A>
     ╚══════╝
         """.trim(), ex.message?.trim()
         )
@@ -41,7 +41,7 @@ Dependency recursion:
             fullContainerTreeOnError = true
         }
 
-        assertEquals("No binding found for bind<org.kodein.di.test.Person>() with ? { ? }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
+        assertEquals("No binding found for bind<org.kodein.di.test.Person> { ? { ? } }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
     }
 
 

@@ -14,7 +14,7 @@ A module is an object that you can construct the exact same way as you construct
 .Example: a simple module
 ----
 val apiModule = DI.Module(name = "API") {
-    bind<API>() with singleton { APIImpl() }
+    bind<API> { singleton { APIImpl() } }
     /* other bindings */
 }
 ----
@@ -113,9 +113,9 @@ You can override an existing binding by specifying explicitly that it is an over
 .Example: binds twice the same type, the second time explitly specifying an override
 ----
 val di = DI {
-    bind<API>() with singleton { APIImpl() }
+    bind<API> { singleton { APIImpl() } }
     /* ... */
-    bind<API>(overrides = true) with singleton { OtherAPIImpl() }
+    bind<API>(overrides = true) { singleton { OtherAPIImpl() } }
 }
 ----
 
@@ -140,7 +140,7 @@ Those cases should be rare and you should know what you are doing.
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
 val testModule = DI.Module(name = "test", allowSilentOverride = true) {
-    bind<EmailClient>() with singleton { MockEmailClient() } // <1>
+    bind<EmailClient>() { singleton { MockEmailClient() } } // <1>
 }
 ----
 <1> Maybe adding a new binding, maybe overriding an existing one, who knows?
@@ -152,7 +152,7 @@ This is useful if you want to "enhance" a binding (for example, using the decora
 .Example: declaring a module in which each binding may or may not override existing bindings.
 ----
 val testModule = DI.Module(name = "test") {
-    bind<Logger>(overrides = true) with singleton { FileLoggerWrapper("path/to/file", overriddenInstance()) } // <1>
+    bind<Logger>(overrides = true) { singleton { FileLoggerWrapper("path/to/file", overriddenInstance()) } } // <1>
 }
 ----
 <1> `overriddenInstance()` will return the `Logger` instance retrieved by the overridden binding.
@@ -167,13 +167,13 @@ Let's consider the following code :
 .Example: Mixing overriding & extension
 ----
 val parent = DI {
-    bind<Foo>() with provider { Foo1() }
-    bind<Bar>() with singleton { Bar(foo = instance<Foo>()) }
+    bind<Foo>() { provider { Foo1() } }
+    bind<Bar>() { singleton { Bar(foo = instance<Foo>()) } }
 }
 
 val child = DI {
     extend(parent)
-    bind<Foo>(overrides = true) with provider { Foo2() }
+    bind<Foo>(overrides = true) { provider { Foo2() } }
 }
 
 val foo = child.instance<Bar>().foo
@@ -197,7 +197,7 @@ val child = DI {
     extend(parent, copy = Copy {
         copy the binding<Bar>() <1>
     })
-    bind<Foo>(overrides = true) with provider { Foo2() }
+    bind<Foo>(overrides = true) { provider { Foo2() } }
 }
 ----
 
@@ -210,14 +210,14 @@ If the binding you need to copy is bound by a context (such as a scoped singleto
 .Example: Copying a tagged scoped singleton
 ----
 val parent = DI {
-    bind<Session>(tag = "req") with scoped(requestScope).singleton { context.session() }
+    bind<Session>(tag = "req") { scoped(requestScope).singleton { context.session() } }
 }
 
 val child = DI {
     extend(parent, copy = Copy {
-        copy the binding<Session>() with scope(requestScope) and tag("req")
+        copy the binding<Session>() { scope(requestScope) and tag("req") }
     })
-    bind<Foo>(overrides = true) with provider { Foo2() }
+    bind<Foo>(overrides = true) { provider { Foo2() } }
 }
 ----
 

@@ -21,10 +21,10 @@ class Tests_07_Error {
 
         assertEquals("""
 Dependency recursion:
-     bind<A>()
-    ╔╩>bind<B>()
-    ║  ╚>bind<C>()
-    ║    ╚>bind<A>()
+     bind<A>
+    ╔╩>bind<B>
+    ║  ╚>bind<C>
+    ║    ╚>bind<A>
     ╚══════╝
         """.trim(), ex.message?.trim()
         )
@@ -42,10 +42,10 @@ Dependency recursion:
     @Test fun test_01_DependencyLoopInClass() {
 
         val di = DI {
-            bind() from provider { Recurs0(instance()) }
-            bind() from provider { RecursA(instance()) }
-            bind() from provider { RecursB(instance(tag = "yay")) }
-            bind(tag = "yay") from provider { RecursC(instance()) }
+            bind { provider { Recurs0(instance()) } }
+            bind { provider { RecursA(instance()) } }
+            bind { provider { RecursB(instance(tag = "yay")) } }
+            bind(tag = "yay") { provider { RecursC(instance()) } }
         }
 
         assertFailsWith<DI.DependencyLoopException> {
@@ -73,7 +73,7 @@ Dependency recursion:
 
         val di = DI.direct {}
 
-        assertEquals("No binding found for bind<Person>() with ? { ? }", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
+        assertEquals("No binding found for bind<Person> { ? { ? } }", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
 
         assertFailsWith<DI.NotFoundException> { di.instance<FullName>() }
 
@@ -87,7 +87,7 @@ Dependency recursion:
 
         val di = DI.direct { fullContainerTreeOnError = true }
 
-        assertEquals("No binding found for bind<Person>() with ? { ? }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
+        assertEquals("No binding found for bind<Person> { ? { ? } }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
 
         assertFailsWith<DI.NotFoundException> { di.instance<FullName>() }
 
@@ -134,27 +134,77 @@ Dependency recursion:
     }
 
     @Test
-    fun test_08_BindFromUnit() {
+    fun test_08_SimpleBinding_DependencyLoop() {
 
-        fun unit(@Suppress("UNUSED_PARAMETER") i: Int = 42) {}
-
-        val di = DI.direct {
-            assertFailsWith<IllegalArgumentException> {
-                bind() from factory { i: Int -> unit(i) }
-            }
-            assertFailsWith<IllegalArgumentException> {
-                bind() from provider { unit() }
-            }
-            assertFailsWith<IllegalArgumentException> {
-                bind() from instance(Unit)
-            }
-            assertFailsWith<IllegalArgumentException> {
-                bind() from singleton { unit() }
-            }
-
-            bind<Unit>() with instance(unit())
+        val di = DI {
+            bindSingleton { A(instance()) } 
+            bindSingleton { B(instance()) } 
+            bindSingleton { C(instance()) } 
         }
 
-        assertSame(Unit, di.instance())
+        val ex = assertFailsWith<DI.DependencyLoopException> {
+            di.direct.instance<A>()
+        }
+
+        assertEquals("""
+Dependency recursion:
+     bind<A>
+    ╔╩>bind<B>
+    ║  ╚>bind<C>
+    ║    ╚>bind<A>
+    ╚══════╝
+        """.trim(), ex.message?.trim()
+        )
+    }
+
+    @Test
+    fun test_09_SimpleBinding_NoDependencyLoop() {
+
+        val di = DI {
+            bindSingleton { A(instance()) }
+            bindSingleton(tag = "root") { A(null) }
+            bindSingleton { B(instance()) }
+            bindSingleton { C(instance(tag = "root")) }
+        }
+
+        val a by di.instance<A>()
+        assertNotNull(a.b?.c?.a)
+    }
+
+    @Test
+    fun test_10_SimpleBinding_NameNotFound() {
+
+        val di = DI.direct {
+            bindProvider { Person() }
+            bindProvider(tag = "named") { Person("Salomon") }
+        }
+
+        assertFailsWith<DI.NotFoundException> {
+            di.instance<Person>(tag = "schtroumpf")
+        }
+    }
+
+    @Test
+    fun test_11_SimpleBinding_FactoryIsNotProvider() {
+
+        val di = DI.direct {
+            bindFactory { name: String -> Person(name) }
+        }
+
+        assertFailsWith<DI.NotFoundException> {
+            di.provider<Person>()
+        }
+    }
+
+    @Test
+    fun test_12_SimpleBinding_ProviderIsNotFactory() {
+
+        val di = DI.direct {
+            bindProvider { Person() }
+        }
+
+        assertFailsWith<DI.NotFoundException> {
+            di.factory<Int, Person>()
+        }
     }
 }

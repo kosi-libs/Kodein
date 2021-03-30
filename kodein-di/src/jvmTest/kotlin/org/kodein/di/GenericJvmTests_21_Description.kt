@@ -22,8 +22,8 @@ class GenericJvmTests_21_Description {
                 tag = null
         )
 
-        assertEquals("bind<String>()", key.bindDescription)
-        assertEquals("bind<String>() with ? { ? }", key.description)
+        assertEquals("bind<String>", key.bindDescription)
+        assertEquals("bind<String> { ? { ? } }", key.description)
     }
 
     @Test
@@ -35,8 +35,8 @@ class GenericJvmTests_21_Description {
                 tag = null
         )
 
-        assertEquals("bind<kotlin.String>()", key.bindFullDescription)
-        assertEquals("bind<kotlin.String>() with ? { ? }", key.fullDescription)
+        assertEquals("bind<kotlin.String>", key.bindFullDescription)
+        assertEquals("bind<kotlin.String> { ? { ? } }", key.fullDescription)
     }
 
     private data class MultiArgs(val s1: String, val s2: String)
@@ -51,7 +51,7 @@ class GenericJvmTests_21_Description {
         )
 
         assertEquals("bind<IntRange>(tag = \"tag\")", key.bindDescription)
-        assertEquals("bind<IntRange>(tag = \"tag\") with ?<String>().? { GenericJvmTests_21_Description.MultiArgs -> ? }", key.description)
+        assertEquals("bind<IntRange>(tag = \"tag\") { ?<String>().? { GenericJvmTests_21_Description.MultiArgs -> ? } }", key.description)
     }
 
     @Test
@@ -64,7 +64,7 @@ class GenericJvmTests_21_Description {
         )
 
         assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\")", key.bindFullDescription)
-        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") with ?<kotlin.String>().? { org.kodein.di.GenericJvmTests_21_Description.MultiArgs -> ? }", key.fullDescription)
+        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") { ?<kotlin.String>().? { org.kodein.di.GenericJvmTests_21_Description.MultiArgs -> ? } }", key.fullDescription)
     }
 
     object TestScope : UnboundedScope()
@@ -84,13 +84,13 @@ class GenericJvmTests_21_Description {
 
         val lines = kodein.container.tree.bindings.description().trim().lineSequence().map(String::trim).toList()
         assertEquals(7, lines.size)
-        assertTrue("bind<IPerson>() with provider { Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"thread-singleton\") with singleton(ref = threadLocal) { Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"singleton\") with singleton { Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"factory\") with factory { String -> Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"instance\") with instance ( Person )" in lines)
-        assertTrue("bind<String>(tag = \"scoped\") with scoped(GenericJvmTests_21_Description.TestScope).singleton { String }" in lines)
-        assertTrue("bind<Int>(tag = \"answer\") with instance ( Int )" in lines)
+        assertTrue("bind<IPerson> { provider { Person } }" in lines)
+        assertTrue("bind<IPerson>(tag = \"thread-singleton\") { singleton(ref = threadLocal) { Person } }" in lines)
+        assertTrue("bind<IPerson>(tag = \"singleton\") { singleton { Person } }" in lines)
+        assertTrue("bind<IPerson>(tag = \"factory\") { factory { String -> Person } }" in lines)
+        assertTrue("bind<IPerson>(tag = \"instance\") { instance ( Person ) }" in lines)
+        assertTrue("bind<String>(tag = \"scoped\") { scoped(GenericJvmTests_21_Description.TestScope).singleton { String } }" in lines)
+        assertTrue("bind<Int>(tag = \"answer\") { instance ( Int ) }" in lines)
     }
 
     @Test
@@ -108,13 +108,13 @@ class GenericJvmTests_21_Description {
 
         val lines = kodein.container.tree.bindings.fullDescription().trim().lineSequence().map(String::trim).toList()
         assertEquals(7, lines.size)
-        assertTrue("bind<org.kodein.di.test.IPerson>() with provider { org.kodein.di.test.Person }" in lines)
-        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"thread-singleton\") with singleton(ref = org.kodein.di.threadLocal) { org.kodein.di.test.Person }" in lines)
-        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"singleton\") with singleton { org.kodein.di.test.Person }" in lines)
-        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"factory\") with factory { kotlin.String -> org.kodein.di.test.Person }" in lines)
-        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"instance\") with instance ( org.kodein.di.test.Person )" in lines)
-        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scoped(org.kodein.di.GenericJvmTests_21_Description.TestScope).singleton { kotlin.String }" in lines)
-        assertTrue("bind<kotlin.Int>(tag = \"answer\") with instance ( kotlin.Int )" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson> { provider { org.kodein.di.test.Person } }" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"thread-singleton\") { singleton(ref = org.kodein.di.threadLocal) { org.kodein.di.test.Person } }" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"singleton\") { singleton { org.kodein.di.test.Person } }" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"factory\") { factory { kotlin.String -> org.kodein.di.test.Person } }" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"instance\") { instance ( org.kodein.di.test.Person ) }" in lines)
+        assertTrue("bind<kotlin.String>(tag = \"scoped\") { scoped(org.kodein.di.GenericJvmTests_21_Description.TestScope).singleton { kotlin.String } }" in lines)
+        assertTrue("bind<kotlin.Int>(tag = \"answer\") { instance ( kotlin.Int ) }" in lines)
     }
 
     @Test
