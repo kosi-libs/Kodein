@@ -27,12 +27,12 @@ public fun di(getApplication: () -> Application) : LazyDI = closestDI(getApplica
 public fun closestDI(getApplication: () -> Application) : LazyDI = getApplication().closestDI()
 
 @Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
-public fun ApplicationCall.di(): LazyDI = closestDI { application }
+public fun ApplicationCall.di(): LazyDI = closestDI()
 
 /**
  * Getting the global [DI] container from the [ApplicationCall]
  */
-public fun ApplicationCall.closestDI(): LazyDI = closestDI()
+public fun ApplicationCall.closestDI(): LazyDI = closestDI { application }
 
 @Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
 public fun Routing.di(): LazyDI = closestDI { application }
@@ -40,7 +40,7 @@ public fun Routing.di(): LazyDI = closestDI { application }
 /**
  * Getting the global [DI] container from the [Routing] feature
  */
-public fun Routing.closestDI(): LazyDI = closestDI()
+public fun Routing.closestDI(): LazyDI = closestDI { application }
 
 @Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
 public fun Route.di(): LazyDI = closestDI()
