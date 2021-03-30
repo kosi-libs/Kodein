@@ -31,7 +31,9 @@ class GenericJvmTests_82_Weak {
     @Suppress("UNUSED_VALUE")
     @Test
     fun test_01_WeakMultiton() {
-        val kodein = DI { bind() from multiton(ref = weakReference) { name: String -> Person(name) } }
+        val kodein = DI {
+            bind { multiton(ref = weakReference) { name: String -> Person(name) } }
+        }
 
         var p1: Person? = kodein.direct.instance(arg = "Salomon")
         var p2: Person? = kodein.direct.instance(arg = "Salomon")

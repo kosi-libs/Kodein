@@ -13,7 +13,7 @@ class Tests_16_Multiton {
 
     @Test
     fun test_00_Multiton() {
-        val di = DI { bind() from multiton { name: String -> Person(name) } }
+        val di = DI { bind { multiton { name: String -> Person(name) } } }
 
         val p1: Person by di.instance(arg = "Salomon")
         val p2: Person by di.instance(fArg = { "Salomon" })
@@ -55,7 +55,43 @@ class Tests_16_Multiton {
 
     @Test
     fun test_02_NonSyncedMultiton() {
-        val di = DI { bind() from multiton(sync = false) { name: String -> Person(name) } }
+        val di = DI { bind { multiton(sync = false) { name: String -> Person(name) } }}
+
+        val p1: Person by di.instance(arg = "Salomon")
+        val p2: Person by di.instance(fArg = { "Salomon" })
+        val p3: Person by di.instance(arg = "Laila")
+        val p4: Person by di.instance(fArg = { "Laila" })
+
+        assertSame(p1, p2)
+        assertSame(p3, p4)
+
+        assertNotSame(p1, p3)
+
+        assertEquals("Salomon", p1.name)
+        assertEquals("Laila", p3.name)
+    }
+
+    @Test
+    fun test_00_SimpleMultiton() {
+        val di = DI { bindMultiton { name: String -> Person(name) } }
+
+        val p1: Person by di.instance(arg = "Salomon")
+        val p2: Person by di.instance(fArg = { "Salomon" })
+        val p3: Person by di.instance(arg = "Laila")
+        val p4: Person by di.instance(fArg = { "Laila" })
+
+        assertSame(p1, p2)
+        assertSame(p3, p4)
+
+        assertNotSame(p1, p3)
+
+        assertEquals("Salomon", p1.name)
+        assertEquals("Laila", p3.name)
+    }
+
+    @Test
+    fun test_02_NonSyncedSimpleMultiton() {
+        val di = DI { bindMultiton(sync = false) { name: String -> Person(name) } }
 
         val p1: Person by di.instance(arg = "Salomon")
         val p2: Person by di.instance(fArg = { "Salomon" })

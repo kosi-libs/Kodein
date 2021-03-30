@@ -196,6 +196,6 @@ public class InstanceBinding<T: Any>(override val createdType: TypeToken<out T>,
      */
     override fun getFactory(key: DI.Key<Any, Unit, T>, di: BindingDI<Any>): (Unit) -> T = { _ -> this.instance }
 
-    override val description: String get() = "${factoryName()} ( ${createdType.simpleDispString()} ) "
-    override val fullDescription: String get() = "${factoryFullName()} ( ${createdType.qualifiedDispString()} ) "
+    override val description: String get() = "${factoryName()} ( ${createdType.simpleDispString()} )"
+    override val fullDescription: String get() = "${factoryFullName()} ( ${createdType.qualifiedDispString()} )"
 }

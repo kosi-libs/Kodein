@@ -59,5 +59,41 @@ class Tests_12_Trigger {
         assertTrue(created)
     }
 
+    @Test
+    fun test_02_SimpleBinding_SimpleTrigger() {
+        val di = DI {
+            bindProvider { Person() }
+            bindSingleton(tag = "named") { Person("Salomon") }
+            bindFactory(tag = "factory") { name: String -> Person(name) }
+        }
+
+        val injected = T00(di)
+
+        injected.diTrigger.trigger()
+        assertNotSame(injected.newPerson(), injected.newPerson())
+        assertEquals("Salomon", injected.salomon.name)
+        assertSame(injected.salomon, injected.salomon)
+        assertNotSame(injected.pFactory("Laila"), injected.pFactory("Laila"))
+        assertEquals("Laila", injected.pFactory("Laila").name)
+        assertEquals("provided", injected.pProvider().name)
+        assertNotSame(injected.pProvider(), injected.pProvider())
+        assertEquals("reified", injected.instance.name)
+        assertSame(injected.instance, injected.instance)
+    }
+
+    @Test
+    fun test_03_SimpleBinding_CreatedAtTrigger() {
+        var created = false
+        val di = DI {
+            bindSingleton { created = true; Person() }
+        }
+
+        val container = T01(di)
+
+        assertFalse(created)
+        container.diTrigger.trigger()
+        assertTrue(created)
+    }
+
 
 }

@@ -13,7 +13,9 @@ class GenericJvmTests_16_Multiton {
 
     @Test
     fun test_00_Multiton() {
-        val kodein = DI { bind() from multiton { name: String -> Person(name) } }
+        val kodein = DI {
+            bind { multiton { name: String -> Person(name) } }
+        }
 
         val p1: Person by kodein.instance(arg = "Salomon")
         val p2: Person by kodein.instance(fArg = { "Salomon" })
@@ -55,7 +57,9 @@ class GenericJvmTests_16_Multiton {
 
     @Test
     fun test_02_NonSyncedMultiton() {
-        val kodein = DI { bind() from multiton(sync = false) { name: String -> Person(name) } }
+        val kodein = DI {
+            bind { multiton(sync = false) { name: String -> Person(name) } }
+        }
 
         val p1: Person by kodein.instance(arg = "Salomon")
         val p2: Person by kodein.instance(fArg = { "Salomon" })

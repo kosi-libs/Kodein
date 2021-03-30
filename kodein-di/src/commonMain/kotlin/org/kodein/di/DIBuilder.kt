@@ -4,7 +4,82 @@ import org.kodein.di.bindings.*
 import org.kodein.type.generic
 
 
-//region Standard bindings
+//region Straight bindings
+/**
+ * Binds a singleton: will create an instance on first request and will subsequently always return the same instance.
+ *
+ * T generics will be erased!
+ *
+ * @param T The created type.
+ * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
+ */
+public inline fun <reified T: Any> DI.Builder.bindSingleton(tag: Any? = null, overrides: Boolean? = null, sync: Boolean = true, noinline creator: DirectDI.() -> T): Unit = Bind(tag = tag, overrides = overrides, binding = singleton(sync = sync, creator = creator))
+
+/**
+ * Binds a multiton: will create an instance on first request and will subsequently always return the same instance.
+ *
+ * T generics will be erased!
+ *
+ * @param T The created type.
+ * @param creator The function that will be called the first time an instance is requested. Guaranteed to be called only once. Should create a new instance.
+ */
+public inline fun <reified A : Any, reified T: Any> DI.Builder.bindMultiton(tag: Any? = null, overrides: Boolean? = null, sync: Boolean = true, noinline creator: DirectDI.(A) -> T): Unit = Bind(tag = tag, overrides = overrides, binding = multiton(sync = sync, creator = creator))
+
+
+/**
+ * Creates a factory: each time an instance is needed, the function [creator] function will be called.
+ *
+ * T generics will be erased!
+ *
+ * A provider is like a [factory], but without argument.
+ *
+ * @param T The created type.
+ * @param creator The function that will be called each time an instance is requested. Should create a new instance.
+ */
+public inline fun <reified T: Any> DI.Builder.bindProvider(tag: Any? = null, overrides: Boolean? = null, noinline creator: DirectDI.() -> T): Unit = Bind(tag = tag, overrides = overrides, binding = provider(creator = creator))
+
+/**
+ * Binds a factory: each time an instance is needed, the function [creator] function will be called.
+ *
+ * A & T generics will be erased!
+ *
+ * @param A The argument type.
+ * @param T The created type.
+ * @param creator The function that will be called each time an instance is requested. Should create a new instance.
+ */
+public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(tag: Any? = null, overrides: Boolean? = null, noinline creator: DirectDI.(A) -> T): Unit = Bind(tag = tag, overrides = overrides, binding = factory(creator = creator))
+
+/**
+ * Binds an instance provider: will always return the given instance.
+ *
+ * T generics will be erased!
+ *
+ * @param T The type of the instance.
+ * @param creator A function that must the instance of type T.
+ */
+public inline fun <reified T: Any> DI.Builder.bindInstance(tag: Any? = null, overrides: Boolean? = null, creator: () -> T): Unit = Bind(tag = tag, overrides = overrides, binding = instance(creator()))
+
+/**
+ * Binds a constant provider: will always return the given instance.
+ *
+ * T generics will be erased!
+ *
+ * @param T The type of the constant.
+ * @param creator A function that must the constant of type T.
+ */
+public inline fun <reified T: Any> DI.Builder.bindConstant(tag: Any, overrides: Boolean? = null, creator: () -> T): Unit = Bind(tag = tag, overrides = overrides, binding = instance(creator()))
+
+/**
+ * Attaches a binding to the DI container
+ *
+ * @param T The type of value to bind.
+ * @param tag The tag to bind.
+ * @param overrides Whether this bind **must** or **must not** override an existing binding.
+ */
+public inline fun <reified T: Any> DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null, noinline createBinding: () -> DIBinding<*, *, T>): Unit = Bind(tag, overrides, createBinding())
+//endregion
+
+//region Advanced bindings
 /**
  * Starts the binding of a given type with a given tag.
  *
@@ -24,6 +99,7 @@ public inline fun <reified T : Any> DI.Builder.bind(tag: Any? = null, overrides:
  * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
  * @return The binder: call [DI.Builder.DirectBinder.from]) on it to finish the binding syntax and register the binding.
  */
+@Deprecated("'bind() fron [BINDING]' might be replace by 'bind { [BINDING] }' (This will be remove in Kodein-DI 8.0)")
 public fun DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null): DI.Builder.DirectBinder = Bind(tag, overrides)
 
 /**

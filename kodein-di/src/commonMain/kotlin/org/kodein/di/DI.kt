@@ -1,9 +1,6 @@
 package org.kodein.di
 
-import org.kodein.di.bindings.ContextTranslator
-import org.kodein.di.bindings.ExternalSource
-import org.kodein.di.bindings.DIBinding
-import org.kodein.di.bindings.Scope
+import org.kodein.di.bindings.*
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
 import kotlin.native.concurrent.ThreadLocal
@@ -107,7 +104,7 @@ public interface DI : DIAware {
          * @param dispString a function that gets the display string for a type.
          */
         private fun StringBuilder.appendDescription(dispString: TypeToken<*>.() -> String) {
-            append(" with ")
+            append(" { ")
             if (contextType != TypeToken.Any) {
                 append("?<${contextType.dispString()}>().")
             }
@@ -117,18 +114,19 @@ public interface DI : DIAware {
                 append(" -> ")
             }
             append("? }")
+            append(" }")
         }
 
 
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this bind.
          */
-        val bindDescription: String get() = "bind<${type.simpleDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
+        val bindDescription: String get() = "bind<${type.simpleDispString()}>${ if (tag != null) "(tag = \"$tag\")" else "" }"
 
         /**
          * Description using full type names. The description is as close as possible to the code used to create this bind.
          */
-        val bindFullDescription: String get() = "bind<${type.qualifiedDispString()}>(${ if (tag != null) "tag = \"$tag\"" else "" })"
+        val bindFullDescription: String get() = "bind<${type.qualifiedDispString()}>${ if (tag != null) "(tag = \"$tag\")" else "" }"
 
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this key.
@@ -232,6 +230,7 @@ public interface DI : DIAware {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
+            @Deprecated("'bind() fron [BINDING]' might be replace by 'bind { [BINDING] }' (This will be remove in Kodein-DI 8.0)", replaceWith = ReplaceWith("bind { binding }"))
             public infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>)
         }
 
@@ -251,6 +250,24 @@ public interface DI : DIAware {
             @Suppress("FunctionName")
             public fun <T: Any> With(valueType: TypeToken<out T>, value: T)
         }
+
+        /**
+         * Attaches the binding of a given type with a given tag.
+         *
+         * @param T The type of value to bind.
+         * @param tag The tag to bind.
+         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         */
+        public fun <T : Any> Bind(tag: Any? = null, overrides: Boolean? = null, binding: DIBinding<*, *, T>)
+
+        /**
+         * Attaches the binding of a given type with a given tag.
+         *
+         * @param T The type of value to bind.
+         * @param tag The tag to bind.
+         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         */
+        public fun <T : Any> BindSet(tag: Any? = null, overrides: Boolean? = null, binding: DIBinding<*, *, T>)
 
         /**
          * Starts the binding of a given type with a given tag.

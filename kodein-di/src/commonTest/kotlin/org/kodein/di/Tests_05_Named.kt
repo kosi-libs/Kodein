@@ -92,4 +92,90 @@ class Tests_05_Named {
         assertSame(named(), p3())
     }
 
+    @Test fun test_06_NamedProviderDirectBindingGetInstance() {
+        val di = DI {
+            bind { provider { Person() } }
+            bind(tag = "named") { provider { Person("Salomon") } }
+        }
+
+        val p1: Person by di.instance()
+        val p2: Person by di.instance(tag = "named")
+
+        assertNull(p1.name)
+        assertEquals("Salomon", p2.name)
+    }
+
+    @Test fun test_07_NamedProviderDirectBindingGetProvider() {
+        val di = DI {
+            bind { provider { Person() } }
+            bind(tag = "named") { provider { Person("Salomon") } }
+        }
+
+        val p1: () -> Person by di.provider()
+        val p2: () -> Person by di.provider(tag = "named")
+
+        assertNull(p1().name)
+        assertEquals("Salomon", p2().name)
+    }
+
+    @Test fun test_08_NamedSingletonDirectBindingGetInstance() {
+        val di = DI {
+            bind { singleton { Person() } }
+            bind(tag = "named") { singleton { Person("Salomon") } }
+        }
+
+        val p1: Person by di.instance(tag = "named")
+        val named: Person by di.named.instance()
+
+        assertEquals("Salomon", p1.name)
+        assertSame(p1, named)
+    }
+
+    @Test fun test_09_NamedSingletonDirectBindingGetProvider() {
+        val di = DI {
+            bind { singleton { Person() } }
+            bind(tag = "named") { singleton { Person("Salomon") } }
+        }
+
+        val p1: () -> Person by di.provider(tag = "named")
+        val named: () -> Person by di.named.provider()
+
+        assertEquals("Salomon", p1().name)
+        assertSame(p1(), named())
+    }
+
+    @Test fun test_10_NamedInstanceDirectBindingGetInstance() {
+
+        val di = DI {
+            bind { instance(Person()) }
+            bind(tag = "named") { instance(Person("Salomon")) }
+        }
+
+        val p1: Person by di.instance()
+        val named: Person by di.named.instance()
+        val p3: Person by di.instance(tag = "named")
+
+        assertNull(p1.name)
+        assertEquals("Salomon", named.name)
+        assertNotSame(p1, named)
+        assertSame(named, p3)
+    }
+
+    @Test fun test_11_NamedInstanceDirectBindingGetProvider() {
+
+        val di = DI {
+            bind { instance(Person()) }
+            bind(tag = "named") { instance(Person("Salomon")) }
+        }
+
+        val p1: () -> Person by di.provider()
+        val named: () -> Person by di.named.provider()
+        val p3: () -> Person by di.provider(tag = "named")
+
+        assertNull(p1().name)
+        assertEquals("Salomon", named().name)
+        assertNotSame(p1(), named())
+        assertSame(named(), p3())
+    }
+
 }

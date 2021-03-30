@@ -146,8 +146,8 @@ fun test() {
     di.addExtend(otherDI)
 
     di.addConfig {
-        bind<Dice>() with provider { RandomDice(0, 5) }
-        bind<DataSource>() with singleton { SqliteDS.open("path/to/file") }
+        bind<Dice> { provider { RandomDice(0, 5) } }
+        bind<DataSource> { singleton { SqliteDS.open("path/to/file") } }
     }
 }
 ----

@@ -33,4 +33,20 @@ class Tests_09_InClass {
         assertEquals("Laila", container.factory("Laila").name)
     }
 
+    @Test
+    fun test_01_SimpleBinding_Class() {
+        val di = DI {
+            bindProvider { Person() }
+            bindSingleton(tag = "named") { Person("Salomon") }
+            bindFactory(tag = "factory") { name: String -> Person(name) }
+        }
+
+        val container = PersonContainer(di)
+        assertNotSame(container.newPerson(), container.newPerson())
+        assertEquals("Salomon", container.salomon.name)
+        assertSame(container.salomon, container.salomon)
+        assertNotSame(container.factory("Laila"), container.factory("Laila"))
+        assertEquals("Laila", container.factory("Laila").name)
+    }
+
 }

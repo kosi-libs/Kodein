@@ -33,13 +33,13 @@ class ErasedJvmTests_03_Description {
 
         val lines = di.container.tree.bindings.description().trim().lineSequence().map(String::trim).toList()
         assertEquals(7, lines.size)
-        assertTrue("bind<IPerson>() with provider { Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"thread-singleton\") with singleton(ref = threadLocal) { Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"singleton\") with singleton { Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"factory\") with factory { String -> Person }" in lines)
-        assertTrue("bind<IPerson>(tag = \"instance\") with instance ( Person )" in lines)
-        assertTrue("bind<String>(tag = \"scoped\") with scoped(ErasedJvmTests_03_Description.TestScope).singleton { String }" in lines)
-        assertTrue("bind<Int>(tag = \"answer\") with instance ( Int )" in lines)
+        assertTrue("bind<IPerson> { provider { Person } }" in lines)
+        assertTrue("bind<IPerson>(tag = \"thread-singleton\") { singleton(ref = threadLocal) { Person } }" in lines)
+        assertTrue("bind<IPerson>(tag = \"singleton\") { singleton { Person } }" in lines)
+        assertTrue("bind<IPerson>(tag = \"factory\") { factory { String -> Person } }" in lines)
+        assertTrue("bind<IPerson>(tag = \"instance\") { instance ( Person ) }" in lines)
+        assertTrue("bind<String>(tag = \"scoped\") { scoped(ErasedJvmTests_03_Description.TestScope).singleton { String } }" in lines)
+        assertTrue("bind<Int>(tag = \"answer\") { instance ( Int ) }" in lines)
     }
 
     // Only the JVM supports precise description
@@ -58,13 +58,13 @@ class ErasedJvmTests_03_Description {
 
         val lines = di.container.tree.bindings.fullDescription().trim().lineSequence().map(String::trim).toList()
         assertEquals(7, lines.size)
-        assertTrue("bind<org.kodein.di.test.IPerson>() with provider { org.kodein.di.test.Person }" in lines)
-        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"thread-singleton\") with singleton(ref = org.kodein.di.threadLocal) { org.kodein.di.test.Person }" in lines)
-        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"singleton\") with singleton { org.kodein.di.test.Person }" in lines)
-        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"factory\") with factory { kotlin.String -> org.kodein.di.test.Person }" in lines)
-        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"instance\") with instance ( org.kodein.di.test.Person )" in lines)
-        assertTrue("bind<kotlin.String>(tag = \"scoped\") with scoped(org.kodein.di.ErasedJvmTests_03_Description.TestScope).singleton { kotlin.String }" in lines)
-        assertTrue("bind<kotlin.Int>(tag = \"answer\") with instance ( kotlin.Int )" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson> { provider { org.kodein.di.test.Person } }" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"thread-singleton\") { singleton(ref = org.kodein.di.threadLocal) { org.kodein.di.test.Person } }" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"singleton\") { singleton { org.kodein.di.test.Person } }" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"factory\") { factory { kotlin.String -> org.kodein.di.test.Person } }" in lines)
+        assertTrue("bind<org.kodein.di.test.IPerson>(tag = \"instance\") { instance ( org.kodein.di.test.Person ) }" in lines)
+        assertTrue("bind<kotlin.String>(tag = \"scoped\") { scoped(org.kodein.di.ErasedJvmTests_03_Description.TestScope).singleton { kotlin.String } }" in lines)
+        assertTrue("bind<kotlin.Int>(tag = \"answer\") { instance ( kotlin.Int ) }" in lines)
     }
 
     // Only the JVM supports precise description
@@ -137,8 +137,8 @@ class ErasedJvmTests_03_Description {
                 tag = null
         )
 
-        assertEquals("bind<kotlin.String>()", key.bindFullDescription)
-        assertEquals("bind<kotlin.String>() with ? { ? }", key.fullDescription)
+        assertEquals("bind<kotlin.String>", key.bindFullDescription)
+        assertEquals("bind<kotlin.String> { ? { ? } }", key.fullDescription)
     }
 
     // Only the JVM supports precise description
@@ -151,7 +151,7 @@ class ErasedJvmTests_03_Description {
         )
 
         assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\")", key.bindFullDescription)
-        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") with ?<kotlin.String>().? { kotlin.Pair<kotlin.String, kotlin.String> -> ? }", key.fullDescription)
+        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") { ?<kotlin.String>().? { kotlin.Pair<kotlin.String, kotlin.String> -> ? } }", key.fullDescription)
     }
 
 }
