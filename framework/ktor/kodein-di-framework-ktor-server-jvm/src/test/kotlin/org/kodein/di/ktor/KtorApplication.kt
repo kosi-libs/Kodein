@@ -61,11 +61,11 @@ private fun Application.sessionModule() {
 
         route(ROUTE_SESSION) {
             get {
-                application.log.info("${di()}")
+                application.log.info("${closestDI()}")
                 val session = call.sessions.get<MockSession>() ?: MockSession(0)
-                val random by di().on(session).instance<Random>()
+                val random by closestDI().on(session).instance<Random>()
 
-                application.log.info("${call.info()} / Session: $session / DI ${di().container} / Random instance: $random")
+                application.log.info("${call.info()} / Session: $session / DI ${closestDI().container} / Random instance: $random")
 
                 call.respondText("$random")
             }
@@ -99,9 +99,9 @@ fun Application.requestModule() {
                     applicationCall: ApplicationCall,
                     proceed: suspend () -> Unit
             ) {
-                val random by di().on(applicationCall).instance<Random>()
+                val random by closestDI().on(applicationCall).instance<Random>()
                 randomDto.randomInstances.add(phase to "$random")
-                log.info("Context $applicationCall / DI ${di().container} / $phase Random instance: $random")
+                log.info("Context $applicationCall / DI ${closestDI().container} / $phase Random instance: $random")
                 proceed()
             }
 
@@ -123,8 +123,8 @@ fun Application.requestModule() {
             }
 
             get {
-                val random by di().on(context).instance<Random>()
-                application.log.info("DI ${di().container} / Random instance: $random")
+                val random by closestDI().on(context).instance<Random>()
+                application.log.info("DI ${closestDI().container} / Random instance: $random")
                 logPhase("[GET]", context) {
                     call.respondText(randomDto.randomInstances.joinToString { "${it.first}=${it.second}" })
                 }
@@ -139,9 +139,9 @@ fun Application.closestModule() {
     routing {
         kodeinInstances.add(closestDI().baseDI)
         route(ROUTE_CLOSEST) {
-            kodeinInstances.add(di().baseDI)
+            kodeinInstances.add(closestDI().baseDI)
             get {
-                kodeinInstances.add(di().baseDI)
+                kodeinInstances.add(closestDI().baseDI)
                 call.respondText(kodeinInstances.joinToString())
             }
         }
@@ -152,11 +152,11 @@ fun Application.subDIModule() {
     val kodeinInstances = mutableListOf<DI>()
     routing {
         route(ROUTE_SUBKODEIN) {
-            kodeinInstances.add(di().baseDI)
+            kodeinInstances.add(closestDI().baseDI)
 
             route(ROUTE_SUB_LOWER) {
                 get {
-                    val author: String by di().instance("author")
+                    val author: String by closestDI().instance("author")
                     call.respondText(author)
                 }
             }
@@ -167,11 +167,11 @@ fun Application.subDIModule() {
                 })
 
                 get {
-                    val author: String by di().instance("author")
+                    val author: String by closestDI().instance("author")
                     call.respondText(author)
                 }
                 post {
-                    kodeinInstances.add(di().baseDI)
+                    kodeinInstances.add(closestDI().baseDI)
                     call.respondText(kodeinInstances.joinToString())
                 }
             }
