@@ -206,7 +206,7 @@ fun ContentView() {
 }
 ----
 <1> Copying all the bindings, with the singletons / multitons
-<2> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
+<2> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings.
 
 WARNING: By doing a `Copy.All` your original singleton / multiton won't be available anymore, in the new DI container, they will exist as new instances.
 
@@ -218,18 +218,29 @@ Sometimes, It might be interesting to replace an existing dependency (by overrid
 .Example: overriding bindings
 ----
 @Composable
+fun App() = withDI({
+        bindProvider<Dice> { RandomDice(0, 5) }
+        bindSingleton<DataSource> { SqliteDS.open("path/to/file") }
+    }) {
+    MyView {
+        ContentView()
+    }
+}
+
+@Composable
 fun ContentView() {
     subDI(allowSilentOverrides = true, // <1>
     diBuilder = {
-        /** new bindings / overrides **/
+        bindProvider<Dice> { RandomDice(0, 10) } // <2>
     }) {
-        ItemList() // <2>
-        ActionView() // <2>
+        ItemList() // <3>
+        ActionView() // <3>
     }
 }
 ----
 <1> Overriding in the `subDI` will be implicit
-<2> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
+<2> Silently overrides the `Dice` provider define in an upper node
+<3> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
 
 === Retrieve bindings from `@Composable` functions
 
