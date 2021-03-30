@@ -1,3 +1,45 @@
+#### 7.5.0 (30-03-2020)
+
+  - CORE
+    * Direct binding by adding `bind(tag: Any?, overrides: Boolean?, createBinding: () -> DIBinding)`
+      * `bind { singleton { Person("Romain") } }` is equivalent to `bind() from singleton { Person("Romain") }`
+      * `bind<IPerson> { singleton { Person("Romain") } }` is equivalent to `bind<IPerson>() with singleton { Person("Romain") }`
+      * `bind { scoped(SessionScope).singleton { Person("Romain") } }` is equivalent to `bind() with scoped(SessionScope).singleton { Person("Romain") }`
+      * etc.
+    * Simplified binding APIs
+      * `bindFactory` / `bindProvider` / `bindSingleton` / `bindMultiton` / `bindInstance` / `bindConstant`
+      * `bindSingleton { Person("Romain") }` is equivalent to `bind() from singleton { Person("Romain") }`  
+      * `bindSingleton<IPerson> { Person("Romain") }` is equivalent to `bind<IPerson>() with singleton { Person("Romain") }`
+      * etc.
+    * Documentation
+  - FRAMEWORK
+    * Adding Compose support for both Android (Jetpack) and Desktop (JetBrains).
+
+#### 7.4.0 (27-02-2020)
+
+  - CORE
+    * Kotlin 1.4.31
+    * Maven Central publication
+
+#### 7.3.1 (08-02-2020)
+
+  - CORE
+    * Enable new JS IR backend
+
+#### 7.3.0 (05-02-2020)
+
+  - CORE
+    * Kotlin 1.4.30
+    * Documentation
+
+#### 7.2.0 (28-12-2020)
+
+  - CORE
+    * Kotlin 1.4.20
+    * Fix memory leak with DI context
+    * Context finder and translator can now access DI container's bindings
+    * Kodein-Type 1.4 + other dependencies
+
 #### 7.1.0 (18-09-2020)
 
   - DOCUMENTATION
