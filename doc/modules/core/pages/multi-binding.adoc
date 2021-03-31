@@ -47,8 +47,8 @@ val di = DI {
     inSet<Result> { multiton { q: Query -> Bar.query(q) } } // <2>
 }
 ----
-<1> abc
-<2> abc
+<1> Creating an argument set binding of `Result` for arguments of type `Query`.
+<2> Binding multiple `Result` factories implementations.
 
 === Retrieving from a Set
 
