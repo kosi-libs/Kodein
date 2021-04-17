@@ -229,7 +229,7 @@ To inject a factory, you need to use `kotlin.jvm.functions.Function1` annotated 
 [source, java]
 ----
 public class MyJavaController {
-    @Inject @ProviderFun Function0<String, Connection> connectionFactory;
+    @Inject @ProviderFun Function1<String, Connection> connectionFactory;
 }
 ----
 
