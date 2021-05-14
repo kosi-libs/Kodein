@@ -44,7 +44,7 @@ TIP: Differences are subtle, please read the xref:ROOT:index.adoc[full documenta
 
 === Class renaming: *Kodein* -> *DI*
 
-New libraries have been released under the *Kodein Frameowrk*, like *Kodein-DB*.
+New libraries have been released under the *Kodein Framework*, like *Kodein-DB*.
 Thus, we thought that is was legit to change the `Kodein` part of our class names, in the benefit of an more explicit one `DI`.
 
 Basically, every classes that were named after `Kodein` have been renamed with `DI`, like `KodeinAware` -> `DIAware`.
