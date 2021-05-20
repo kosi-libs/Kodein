@@ -197,11 +197,11 @@ class KtorTests {
 
         handleRequest(HttpMethod.Get, "$ROUTE_SUBKODEIN$ROUTE_SUB_LOWER").apply {
             lowerAuthor = response.content ?: NO_RESPONSE
-            assertEquals(AUTHOR.toLowerCase(), lowerAuthor)
+            assertEquals(AUTHOR.lowercase(), lowerAuthor)
         }
         handleRequest(HttpMethod.Get, "$ROUTE_SUBKODEIN$ROUTE_SUB_UPPER").apply {
             upperAuthor = response.content ?: NO_RESPONSE
-            assertEquals(AUTHOR.toUpperCase(), upperAuthor)
+            assertEquals(AUTHOR.uppercase(), upperAuthor)
         }
 
         assertNotSame(lowerAuthor, upperAuthor, NO_RESPONSE)

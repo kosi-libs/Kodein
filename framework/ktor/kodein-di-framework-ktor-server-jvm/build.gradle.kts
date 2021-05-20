@@ -1,5 +1,4 @@
-val ktorVersion = "1.4.2"
-val logbackVersion = "1.2.3"
+val ktorVersion = "1.5.4"
 
 plugins {
     id("org.kodein.library.jvm")
@@ -16,6 +15,7 @@ dependencies {
     implementation(ktor())
     implementation(ktor("-server-core"))
     implementation(kotlin("stdlib-jdk8"))
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${kodeinVersions.kotlin}")
     testImplementation(ktor("-server-tests"))
 }
 

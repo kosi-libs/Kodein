@@ -57,7 +57,7 @@ jobs:
           script: ./gradlew connectedCheck
       - name: Upload (macos / windows)
         if: matrix.os != 'ubuntu-latest'
-        run: ./gradlew hostOnlyPublish -PsnapshotNumber=${{ github.run_number }} -PgitRef=${{ github.ref }}
+        run: ./gradlew hostOnlyPublish -PgitRef=${{ github.ref }} -Psnapshot=true
         shell: bash
       # Linux / JVM / JS
       - name: Check (ubuntu)
@@ -66,5 +66,5 @@ jobs:
         shell: bash
       - name: Upload (ubuntu)
         if: matrix.os == 'ubuntu-latest'
-        run: ./gradlew publishAllPublicationsToOssrhStagingRepository -PsnapshotNumber=${{ github.run_number }} -PgitRef=${{ github.ref }}
+        run: ./gradlew publishAllPublicationsToOssrhStagingRepository -PgitRef=${{ github.ref }} -Psnapshot=true
         shell: bash

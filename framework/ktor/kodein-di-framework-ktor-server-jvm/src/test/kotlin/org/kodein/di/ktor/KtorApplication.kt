@@ -17,7 +17,7 @@ fun Application.main() {
         bind { scoped(SessionScope).singleton { Random() } }
         bind { scoped(CallScope).singleton { Random() } }
 
-        constant("author") with AUTHOR.toLowerCase()
+        constant("author") with AUTHOR.lowercase()
     }
 
     sessionModule()
@@ -163,7 +163,7 @@ fun Application.subDIModule() {
 
             route(ROUTE_SUB_UPPER) {
                 subDI(allowSilentOverride = true, init = {
-                    constant("author") with AUTHOR.toUpperCase()
+                    constant("author") with AUTHOR.uppercase()
                 })
 
                 get {

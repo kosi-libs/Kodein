@@ -1,4 +1,3 @@
-@file:Suppress("DEPRECATION", "unused")
 
 package org.kodein.di.conf
 
@@ -30,7 +29,7 @@ class ConfTests {
     @Test fun test_01_Clear() {
         val di = ConfigurableDI(true)
 
-        di.addImport(DI.Module {
+        di.addImport(DI.Module("myModule") {
             constant(tag = "answer") with 21
         })
 
@@ -165,7 +164,6 @@ class ConfTests {
         var ready = false
 
         di.addConfig {
-            bind()
             bind { singleton { "test" } }
 
             onReady {

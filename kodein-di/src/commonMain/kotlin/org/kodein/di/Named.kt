@@ -1,9 +1,10 @@
 package org.kodein.di
 
 import org.kodein.type.TypeToken
+import kotlin.jvm.JvmInline
 
-@Suppress("EXPERIMENTAL_FEATURE_WARNING")
-public inline class Named(public val di: DIAware) {
+@JvmInline
+public value class Named(public val di: DIAware) {
     /**
      * Gets a factory of [T] for the given argument type and return type.
      * The name of the receiving property is used as tag.
