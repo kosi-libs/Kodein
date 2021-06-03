@@ -496,3 +496,17 @@ class DIViewModelFactory(val di: DI) : ViewModelProvider.Factory {
             di.direct.Instance(erased(modelClass))
 }
 ----
+
+== Proguard configuration
+
+Since _Kodein-DI_ 7.6 a new version of the type system has been enabled, to avoid some issue with https://github.com/Kodein-Framework/Kodein-DI/issues/309[R8 code elimination]. However, this new feature allows proguard to optimize your dependencies, leading to runtime  exceptions. Until a proper configuration is added to the right https://github.com/Kodein-Framework/Kodein-Type/issues/6[project] you should add the following lines to your proguard configuration:
+
+[source, properties]
+.A DI View Model Factory
+----
+-keep, allowobfuscation, allowoptimization class org.kodein.type.TypeReference
+-keep, allowobfuscation, allowoptimization class org.kodein.type.JVMAbstractTypeToken$Companion$WrappingTest
+
+-keep, allowobfuscation, allowoptimization class * extends org.kodein.type.TypeReference
+-keep, allowobfuscation, allowoptimization class * extends org.kodein.type.JVMAbstractTypeToken$Companion$WrappingTest
+----
