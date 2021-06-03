@@ -6,7 +6,7 @@ NOTE: *_Kodein-DI_* is compatible with both *Jetpack* and *JetBrains* _Compose_
 
 IMPORTANT: `kodein-di-framework-compose` relies and only few stable APIs that have some good chance to stay (like `@Composable`).
             This means that `kodein-di-framework-compose` doesn't lock you with a specific version of *Jetpack* and *JetBrains* _Compose_.
-            You can use the one that works for you.
+            You can use the one that works for you, **as long as your kotlin version aligns with the version used to build the Compose version your are using**.
 
 [[install]]
 == Install
