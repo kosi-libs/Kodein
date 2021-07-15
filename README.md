@@ -1,6 +1,6 @@
 <img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/doc/modules/ROOT/images/kodein-di-logo.svg" width="700">
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.4.31-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.5.10-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/org.kodein.di/kodein-di)](https://mvnrepository.com/artifact/org.kodein.di/kodein-di)
 ![Github Actions](https://github.com/Kodein-Framework/Kodein-DI/workflows/build%20and%20publish%20a%20snapshot/badge.svg)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Kodein-Framework/Kodein-DI/blob/master/LICENSE.txt)
@@ -63,6 +63,7 @@ Kotlin & JVM compatibility
 
 |Kodein-DI|Kotlin|JDK
 |:---:|:---:|:---:|
+|7.6+|1.5+|min 1.8
 |7.1+|1.4+|min 1.8
 |7.0+|1.3.72|min 1.8
 |6.5.5|1.3.72|min 1.8
