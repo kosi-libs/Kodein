@@ -13,17 +13,17 @@ import org.kodein.type.generic
 
 
 /**
- * Returns a [Lazy] property delegate to access the ComponentActivity's ViewModel, which will be obtained from a Kodein DI
- * factory with a SavedStateHandle argument.
+ * Returns a [Lazy] property delegate to access the [AppCompatActivity]'s [ViewModel], which will be obtained from a Kodein DI
+ * factory with a [SavedStateHandle] argument.
  *
  * ```
- * class MyComponentActivity : ComponentActivity(), DIAware {
+ * class MyComponentActivity : AppCompatActivity(), DIAware {
  *     override val di: DI by closestDI()
  *     private val viewmodel: MyViewModel by viewModelSavedStateFactory()
  * }
  * ```
- * @param A Extension function applies to [androidx.activity.ComponentActivity] which implements [org.kodein.di.DIAware]
- * @param VM The type of [androidx.lifecycle.ViewModel] to obtain
+ * @param A Extension function applies to [AppCompatActivity] which implements [DIAware]
+ * @param VM The type of [ViewModel] to obtain
  * @param tag The bound Kodein DI tag
  * @throws IllegalArgumentException if accessed before the Activity is attached to the Application
  * @throws DI.NotFoundException If no factory was found.
