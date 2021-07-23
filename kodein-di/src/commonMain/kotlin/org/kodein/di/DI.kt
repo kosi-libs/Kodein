@@ -199,7 +199,7 @@ public interface DI : DIAware {
      * @property containerBuilder Every methods eventually ends up to a call to this builder.
      */
     @DIDsl
-    public interface Builder : BindBuilder<Any>, BindBuilder.WithScope<Any> {
+    public interface Builder<D : Any, BD : BindingDIBase<*>, NBD : NoArgBindingDIBase<*>> : BindBuilder<Any>, BindBuilder.WithScope<Any> {
 
         public val containerBuilder: DIContainer.Builder
 
@@ -311,7 +311,7 @@ public interface DI : DIAware {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        public fun import(module: Module, allowOverride: Boolean = false)
+        public fun import(module: Module<*, *, *>, allowOverride: Boolean = false)
 
         /**
          * Imports all bindings defined in the given [DI.Module]s into this builder's definition.
@@ -324,7 +324,7 @@ public interface DI : DIAware {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        public fun importAll(vararg modules: Module, allowOverride: Boolean = false)
+        public fun importAll(vararg modules: Module<*, *, *>, allowOverride: Boolean = false)
 
         /**
          * Imports all bindings defined in the given [DI.Module]s into this builder's definition.
@@ -337,7 +337,7 @@ public interface DI : DIAware {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        public fun importAll(modules: Iterable<Module>, allowOverride: Boolean = false)
+        public fun importAll(modules: Iterable<Module<*, *, *>>, allowOverride: Boolean = false)
 
         /**
          * Like [import] but checks that will only import each module once.
@@ -346,7 +346,7 @@ public interface DI : DIAware {
          *
          * Careful: this is checked by name. If two modules share the same name, only one will be imported!
          */
-        public fun importOnce(module: Module, allowOverride: Boolean = false)
+        public fun importOnce(module: Module<*, *, *>, allowOverride: Boolean = false)
 
         /**
          * Adds a callback that will be called once the DI object is configured and instantiated.
@@ -361,7 +361,7 @@ public interface DI : DIAware {
     /**
      * Builder to create a [DI] object.
      */
-    public interface MainBuilder : Builder {
+    public interface MainBuilder : Builder<DirectDI, BindingDI<Any>, NoArgBindingDI<Any>> {
 
         /**
          * If true, exceptions thrown will contain qualified names.
@@ -429,10 +429,13 @@ public interface DI : DIAware {
      * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
      * @property init The block of configuration for this module.
      */
-    public data class Module(val name: String, val allowSilentOverride: Boolean = false, val prefix: String = "", val init: Builder.() -> Unit) {
-        @Deprecated("You should name your modules, for debug purposes.", replaceWith = ReplaceWith("Module(\"module name\", allowSilentOverride, init)"))
-        public constructor(allowSilentOverride: Boolean = false, init: Builder.() -> Unit) : this("", allowSilentOverride, "", init)
-    }
+    public class Module<D : Any, BD : BindingDIBase<*>, NBD : NoArgBindingDIBase<*>>(
+            public val autoCreator: AutoDI.Creator<D, BD, NBD>,
+            public val name: String = autoCreator::class.simpleName ?: "<unknown>",
+            public val allowSilentOverride: Boolean = false,
+            public val prefix: String = "",
+            public val init: Builder<D, BD, NBD>.() -> Unit
+        )
 
     /**
      * Every methods eventually ends up to a call to this container.
@@ -490,6 +493,14 @@ public interface DI : DIAware {
 
         public var defaultFullDescriptionOnError: Boolean = false
         public var defaultFullContainerTreeOnError: Boolean = false
+
+        public fun Module(name: String, allowSilentOverride: Boolean = false, prefix: String = "", init: Builder.() -> Unit): Module<DI, BindingDI<Any>, NoArgBindingDI<Any>> =
+            Module(AutoDI.Creator.None, name, allowSilentOverride, "", init)
+
+        @Deprecated("You should name your modules, for debug purposes.", replaceWith = ReplaceWith("Module(\"module name\", allowSilentOverride, init)"))
+        public fun Module(allowSilentOverride: Boolean = false, init: Builder.() -> Unit): Module<DI, BindingDI<Any>, NoArgBindingDI<Any>> =
+            Module(AutoDI.Creator.None, "", allowSilentOverride, "", init)
+
     }
 
 }

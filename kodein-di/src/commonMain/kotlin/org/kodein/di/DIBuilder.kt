@@ -36,7 +36,7 @@ public inline fun <reified A : Any, reified T: Any> DI.Builder.bindMultiton(tag:
  * @param T The created type.
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-public inline fun <reified T: Any> DI.Builder.bindProvider(tag: Any? = null, overrides: Boolean? = null, noinline creator: DirectDI.() -> T): Unit = Bind(tag = tag, overrides = overrides, binding = provider(creator = creator))
+public inline fun <reified T: Any, NBD : NoArgBindingDIBase<*>> DI.Builder<*, *, NBD>.bindProvider(tag: Any? = null, overrides: Boolean? = null, noinline creator: NBD.() -> T): Unit = Bind(tag = tag, overrides = overrides, binding = provider(creator = creator))
 
 /**
  * Binds a factory: each time an instance is needed, the function [creator] function will be called.
@@ -140,14 +140,14 @@ public inline fun <reified T : Any> SearchDSL.argument(): SearchDSL.Spec = Argum
  * @param EC The scope's environment context type.
  * @param BC The scope's Binding context type.
  */
-public inline fun <reified C : Any> DI.Builder.scoped(scope: Scope<C>): DI.BindBuilder.WithScope<C> = DI.BindBuilder.ImplWithScope(generic(), scope)
+public inline fun <reified C : Any, D : Any, BD : BindingDIBase<*>, NBD : NoArgBindingDIBase<*>> DI.Builder<D, BD, NBD>.scoped(scope: Scope<C>): DI.BindBuilder.WithScope<C> = DI.BindBuilder.ImplWithScope(generic(), scope)
 
 /**
  * Used to define bindings with a context: `bind<MyType>() with contexted<MyContext>().provider { /*...*/ }`
  *
  * @param C The context type.
  */
-public inline fun <reified C : Any> DI.Builder.contexted(): DI.BindBuilder<C> = DI.BindBuilder.ImplWithContext(generic())
+public inline fun <reified C : Any, D : Any, BD : BindingDIBase<*>, NBD : NoArgBindingDIBase<*>> DI.Builder<D, BD, NBD>.contexted(): DI.BindBuilder<C> = DI.BindBuilder.ImplWithContext(generic())
 
 
 /**
