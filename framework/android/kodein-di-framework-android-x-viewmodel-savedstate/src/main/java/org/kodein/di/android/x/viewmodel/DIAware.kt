@@ -30,7 +30,7 @@ import org.kodein.type.generic
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 @MainThread
-inline fun <A, reified VM> A.viewModelSavedStateFactory(
+inline fun <A, reified VM> A.viewModelSavedState(
         tag: Any? = null,
 ): Lazy<VM> where A : AppCompatActivity, A : DIAware, VM : ViewModel {
     val factoryProducer = { object : AbstractSavedStateViewModelFactory(this, null) {
@@ -69,7 +69,7 @@ inline fun <A, reified VM> A.viewModelSavedStateFactory(
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 @MainThread
-inline fun <F, reified VM> F.viewModelSavedStateFactory(
+inline fun <F, reified VM> F.viewModelSavedState(
         noinline ownerProducer: () -> ViewModelStoreOwner = { this },
         tag: Any? = null,
 ): Lazy<VM> where F : Fragment, F : DIAware, VM : ViewModel {
