@@ -11,7 +11,6 @@ import org.kodein.di.DIAware
 import org.kodein.di.direct
 import org.kodein.type.generic
 
-
 /**
  * Returns a [Lazy] property delegate to access the [AppCompatActivity]'s [ViewModel], which will be obtained from a Kodein DI
  * factory with a [SavedStateHandle] argument.
@@ -30,7 +29,7 @@ import org.kodein.type.generic
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 @MainThread
-inline fun <A, reified VM> A.viewModelSavedState(
+inline fun <A, reified VM> A.viewModelWithSavedStateHandle(
         tag: Any? = null,
 ): Lazy<VM> where A : AppCompatActivity, A : DIAware, VM : ViewModel {
     val factoryProducer = { object : AbstractSavedStateViewModelFactory(this, null) {
@@ -69,7 +68,7 @@ inline fun <A, reified VM> A.viewModelSavedState(
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 @MainThread
-inline fun <F, reified VM> F.viewModelSavedState(
+inline fun <F, reified VM> F.viewModelWithSavedStateHandle(
         noinline ownerProducer: () -> ViewModelStoreOwner = { this },
         tag: Any? = null,
 ): Lazy<VM> where F : Fragment, F : DIAware, VM : ViewModel {
