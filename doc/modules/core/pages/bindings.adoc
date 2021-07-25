@@ -111,6 +111,8 @@ val di = DI {
 }
 ----
 
+TIP: Ending with the same result, you can also use the simple function `bindEagerSingleton<DataSource> { SqliteDS.open("path/to/file") }`.
+
 [[factory-bindings]]
 == Factory binding
 
