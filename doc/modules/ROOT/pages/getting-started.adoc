@@ -137,8 +137,8 @@ The syntax is quite simple:
 .Example: initialization of a DI container
 ----
 val kodein = DI {
-    bind<Random>() with provider { SecureRandom() }
-    bind<Database>() with singleton { SQLiteDatabase() }
+    bindProvider<Random> { SecureRandom() }
+    bindSingleton<Database> { SQLiteDatabase() }
 }
 ----
 
@@ -157,8 +157,8 @@ For cases like this, Kodein-DI allows you to "tag" a binding: add an additional 
 .Example: tagged bindings
 ----
 val kodein = DI {
-    bind<Database>(tag = "local") with singleton { SQLiteDatabase() }
-    bind<Database>(tag = "remote") with provider { DatabaseProxy() }
+    bindSingleton<Database>(tag = "local") { SQLiteDatabase() }
+    bindProvider<Database>(tag = "remote") { DatabaseProxy() }
 }
 ----
 
@@ -173,8 +173,8 @@ Kodein-DI allows you to define binding modules that can later be imported in a D
 .Example: A DI module
 ----
 val module = DI.Module {
-    bind<Database>(tag = "local") with singleton { SQLiteDatabase() }
-    bind<Database>(tag = "remote") with provider { DatabaseProxy() }
+    bindSingleton<Database>(tag = "local") { SQLiteDatabase() }
+    bindProvider<Database>(tag = "remote") { DatabaseProxy() }
 }
 ----
 
@@ -303,7 +303,7 @@ If you are using injection, you can pass the argument the exact same way:
 .Example: binding the Presenter class with injection
 ----
 val di = DI {
-    bind<Presenter>() with singleton { Presenter(instance(), instance()) }
+    bindSingleton<Presenter> { Presenter(instance(), instance()) }
 }
 ----
 
@@ -313,7 +313,7 @@ If you are using retrieval, simply pass the di property:
 .Example: binding the Presenter class with injection
 ----
 val di = DI {
-    bind<Presenter>() with singleton { Presenter(di) }
+    bindSingleton<Presenter> { Presenter(di) }
 }
 ----
 
