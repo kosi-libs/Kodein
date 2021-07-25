@@ -14,7 +14,10 @@ import org.kodein.di.DI
  *
  * @throws [IllegalStateException] if no DI container is attached to the Composable tree
  */
-public val LocalDI: ProvidableCompositionLocal<DI> = compositionLocalOf { error("Missing DI container!") }
+internal val LocalDI: ProvidableCompositionLocal<DI?> = compositionLocalOf { null }
+
+@Composable
+internal expect fun diFromAppContext(): DI
 
 /**
  * Composable helper function to access the current DI container from the Composable tree (if there is one!)
@@ -22,4 +25,4 @@ public val LocalDI: ProvidableCompositionLocal<DI> = compositionLocalOf { error(
  * @throws [IllegalStateException] if no DI container is attached to the Composable tree
  */
 @Composable
-public fun localDI(): DI = LocalDI.current
+public fun localDI(): DI = LocalDI.current ?: diFromAppContext()

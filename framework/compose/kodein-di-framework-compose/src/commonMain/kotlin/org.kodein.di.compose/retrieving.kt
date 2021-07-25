@@ -16,9 +16,14 @@ import org.kodein.di.*
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified T : Any> instance(tag: Any? = null): DIProperty<T> = with(LocalDI.current) {
+public inline fun <reified T : Any> rememberInstance(tag: Any? = null): DIProperty<T> = with(localDI()) {
     remember { instance(tag) }
 }
+
+// Deprecated since 7.7.0
+@Deprecated("Renamed rememberInstance", ReplaceWith("rememberInstance(tag)"))
+@Composable
+public inline fun <reified T : Any> instance(tag: Any? = null): DIProperty<T> = rememberInstance(tag)
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -34,8 +39,31 @@ public inline fun <reified T : Any> instance(tag: Any? = null): DIProperty<T> = 
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> instance(tag: Any? = null, arg: A): DIProperty<T> = with(LocalDI.current) {
+public inline fun <reified A : Any, reified T : Any> rememberInstance(tag: Any? = null, arg: A): DIProperty<T> = with(localDI()) {
     remember { instance(tag, arg) }
+}
+
+// Deprecated since 7.7.0
+@Deprecated("Renamed rememberInstance", ReplaceWith("rememberInstance(tag, arg)"))
+@Composable
+public inline fun <reified A : Any, reified T : Any> instance(tag: Any? = null, arg: A): DIProperty<T> = rememberInstance(tag, arg)
+
+/**
+ * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
+ *
+ * A & T generics will be preserved!
+ *
+ * @param A The type of argument the curried factory takes.
+ * @param T The type of object to retrieve.
+ * @param tag The bound tag, if any.
+ * @param fArg The argument that will be given to the factory when curried.
+ * @return An instance of [T].
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
+ */
+@Composable
+public inline fun <reified A : Any, reified T : Any> rememberInstance(tag: Any? = null, noinline fArg: () -> A): DIProperty<T> = with(localDI()) {
+    remember { instance(tag, fArg) }
 }
 
 /**
@@ -51,9 +79,14 @@ public inline fun <reified A : Any, reified T : Any> instance(tag: Any? = null, 
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> factory(tag: Any? = null): DIProperty<(A) -> T> = with(LocalDI.current) {
+public inline fun <reified A : Any, reified T : Any> rememberFactory(tag: Any? = null): DIProperty<(A) -> T> = with(localDI()) {
     remember { factory(tag) }
 }
+
+// Deprecated since 7.7.0
+@Deprecated("Renamed rememberFactory", ReplaceWith("rememberFactory(tag)"))
+@Composable
+public inline fun <reified A : Any, reified T : Any> factory(tag: Any? = null): DIProperty<(A) -> T> = rememberFactory(tag)
 
 /**
  * Gets a provider of `T` for the given type and tag.
@@ -67,9 +100,14 @@ public inline fun <reified A : Any, reified T : Any> factory(tag: Any? = null): 
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null): DIProperty<() -> T> = with(LocalDI.current) {
+public inline fun <reified T : Any> rememberProvider(tag: Any? = null): DIProperty<() -> T> = with(localDI()) {
     remember { provider(tag) }
 }
+
+// Deprecated since 7.7.0
+@Deprecated("Renamed rememberProvider", ReplaceWith("rememberProvider(tag)"))
+@Composable
+public inline fun <reified T : Any> provider(tag: Any? = null): DIProperty<() -> T> = rememberProvider(tag)
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -85,9 +123,14 @@ public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null):
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null, arg: A): DIProperty<() -> T> = with(LocalDI.current) {
+public inline fun <reified A : Any, reified T : Any> rememberProvider(tag: Any? = null, arg: A): DIProperty<() -> T> = with(localDI()) {
     remember { provider(tag, arg) }
 }
+
+// Deprecated since 7.7.0
+@Deprecated("Renamed rememberProvider", ReplaceWith("rememberProvider(tag, arg)"))
+@Composable
+public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null, arg: A): DIProperty<() -> T> = rememberProvider(tag, arg)
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -103,6 +146,11 @@ public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null, 
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null, noinline fArg: () -> A): DIProperty<() -> T> = with(LocalDI.current) {
+public inline fun <reified A : Any, reified T : Any> rememberProvider(tag: Any? = null, noinline fArg: () -> A): DIProperty<() -> T> = with(localDI()) {
     remember { provider(tag, fArg) }
 }
+
+// Deprecated since 7.7.0
+@Deprecated("Renamed rememberProvider", ReplaceWith("rememberProvider(tag, fArg)"))
+@Composable
+public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null, noinline fArg: () -> A): DIProperty<() -> T> = rememberProvider(tag, fArg)

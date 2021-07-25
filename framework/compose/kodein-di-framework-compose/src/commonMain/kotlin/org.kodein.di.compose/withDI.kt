@@ -2,7 +2,7 @@ package org.kodein.di.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import org.kodein.di.DI
+import org.kodein.di.*
 
 /**
  * Attaches a [DI] container to the underlying [Composable] tree
@@ -33,3 +33,26 @@ public fun withDI(vararg diModules: DI.Module, content: @Composable () -> Unit):
 @Composable
 public fun withDI(di: DI, content: @Composable () -> Unit): Unit =
     CompositionLocalProvider(LocalDI provides di) { content() }
+
+/**
+ * Attaches a DI context to the underlying [Composable] tree
+ *
+ * @param context the [DIContext] representing the context type and value
+ * @param content underlying [Composable] tree that will be able to access this context
+ */
+@Suppress("FunctionName")
+@Composable
+public fun OnDIContext(context: DIContext<*>, content: @Composable () -> Unit) {
+    val di = localDI()
+    CompositionLocalProvider(LocalDI provides di.On(context)) { content() }
+}
+
+/**
+ * Attaches a DI context to the underlying [Composable] tree
+ *
+ * @param context the context value
+ * @param content underlying [Composable] tree that will be able to access this context
+ */
+@Composable
+public inline fun <reified C : Any> onDIContext(context: C, crossinline content: @Composable () -> Unit): Unit =
+    OnDIContext(diContext(context)) { content() }
