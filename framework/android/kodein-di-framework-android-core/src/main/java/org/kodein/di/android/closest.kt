@@ -20,7 +20,9 @@ private fun closestDI(thisRef: Any?, rootContext: Context): DI {
         }
         context = if (context is ContextWrapper) context.baseContext else null
     }
-    return (rootContext.applicationContext as DIAware).di
+    val appContext = rootContext.applicationContext as? DIAware
+        ?: error("Trying to find closest DI, but no DI container was found at all. Your Application should be DIAware.")
+    return appContext.di
 }
 
 /**
