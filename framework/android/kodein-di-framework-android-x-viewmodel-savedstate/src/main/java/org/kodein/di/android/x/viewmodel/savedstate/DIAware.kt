@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package org.kodein.di.android.x.viewmodel
+package org.kodein.di.android.x.viewmodel.savedstate
 
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
