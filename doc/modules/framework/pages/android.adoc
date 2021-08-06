@@ -31,6 +31,8 @@ Kodein-DI offers support for:
 | *Barebone Android*           | `kodein-di-framework-android-core`
 | *Android + Support library*  | `kodein-di-framework-android-support`
 | *Android + AndroidX library* | `kodein-di-framework-android-x`
+| *Android + AndroidX ViewModel* | `kodein-di-framework-android-x-viewmodel`
+| *Android + AndroidX ViewModel with SavedStateHandle* | `kodein-di-framework-android-x-viewmodel-savedstatehandle`
 |=======
 +
 IMPORTANT: From `6.3.0` On the JVM, you must be targeting `JDK 1.8` minimum!
@@ -132,15 +134,83 @@ NOTE: Using this approach has an important advantage: as all dependencies are re
 
 === View Models
 
-To use Kodein-DI, you need an Android context.
+Kodein-DI presents several options for dependency injection and/or retrieval for View Models.
+
+[[view-models-plain]]
+==== Injection and retrieval of plain View Models
+
+The `kodein-di-framework-android-x-viewmodel` module simplifies injection and retrieval of View Models which inherit `androidx.lifecycle.ViewModel`, without requiring that the View Model implement `DIAware`.
+
+NOTE: If your View Model uses a SavedStateHandle, use the <<view-models-saved-state-handle,View Model with SavedStateHandle module>> instead.
+
+Use a Provider binding for plain ViewModel instances.
+[source, kotlin]
+.Example: Create a binding for a ViewModel
+----
+val di = DI {
+    bindProvider { MyViewModel(
+        myDependency = instance()
+    ) }
+}
+----
+
+[source, kotlin]
+.Example: Retrieve a plain ViewModel in an Activity or Fragment
+----
+class MyActivity : AppCompatActivity(), DIAware {
+    override val di: DI by closestDI()
+    private val viewModel: MyViewModel by viewModel()
+}
+
+class MyFragment : Fragment(), DIAWare {
+    override val di: DI by closestDI()
+    private val viewModel: MyViewModel by viewModel()
+}
+----
+
+NOTE: The `viewModel` delegate for Fragments will use its own view model store by default to obtain the ViewModel instance, delegating to your Kodein-DI provider if the instance is not already available in the store. Use the `ownerProducer` argument if you need to use a different view model store, such as a parent fragment's.
+
+[[view-models-saved-state-handle]]
+==== Injection and retrieval of View Models with SavedStateHandle
+
+The `kodein-di-framework-android-x-viewmodel-savedstatehandle` module simplifies injection and retrieval of View Models which inherit https://developer.android.com/reference/androidx/lifecycle/ViewModel[ViewModel] and use a https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle[SavedStateHandle] to persist state.
+
+Use a Factory binding for ViewModel instances which use a SavedStateHandle argument.
+
+[source,kotlin]
+.Example: Create a binding for a View Model with a SavedStateHandle argument
+----
+val di = DI {
+    bindFactory { savedStateHandle: SavedStateHandle -> MyViewModel(
+        savedStateHandle = savedStateHandle,
+        myDependency = instance()
+    ) }
+}
+----
+
+[source,kotlin]
+.Example: Retrieve a ViewModel with a SavedStateHandle in an Activity or Fragment
+----
+class MyActivity : AppCompatActivity(), DIAware {
+    override val di: DI by closestDI()
+    private val viewModel: MyViewModel by viewModelWithSavedStateHandle()
+}
+
+class MyFragment : Fragment(), DIAWare {
+    override val di: DI by closestDI()
+    private val viewModel: MyViewModel by viewModelWithSavedStateHandle()
+}
+----
+
+==== Retrieval inside View Models
+
+To use Kodein-DI retrieval inside View Models, you need an Android context.
 For that, View Models need to implement `AndroidViewModel`.
 
 It is very easy to use Kodein-DI inside View Models:
 
-NOTE: If you prefer your View Models to be independant from Kodein-DI, you can use a <<view-model-factory,View  Model Factory>>.
-
 [source, kotlin]
-.Example: using an trigger in a DIAware Android Activity
+.Example: using a trigger in a DIAware Android Activity
 ----
 class MyViewModel(app: Application) : AndroidViewModel(app), DIAware {
 
@@ -150,6 +220,26 @@ class MyViewModel(app: Application) : AndroidViewModel(app), DIAware {
 }
 ----
 <1> Retrieving the application's DI container.
+
+[[view-model-provider]]
+==== View Model Provider
+
+[[view-model-factory]]
+==== View Model Factory
+
+In case the delegates for plain View Models and SavedStateHandle extension don't satisfy your needs, or if you want your View Models to be independent of Kodein-DI, then you need to inject them (meaning passing their dependencies by constructor).
+To do that, you need to create your own `ViewModelProvider.Factory`.
+
+Here is a simple one:
+
+[source, kotlin]
+.A DI View Model Factory
+----
+class DIViewModelFactory(val di: DI) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            di.direct.Instance(erased(modelClass))
+}
+----
 
 
 == Android module
@@ -365,14 +455,14 @@ override val di by retainedSubDI(di(), copy = Copy.All) {
 ====
 
 
-== Independant Activity retained DI container
+== Independent Activity retained DI container
 
 Kodein-DI provides the `retainedDI` function that creates a DI instance that is _independendant from the parent_.
 
 CAUTION: This means that all bindings in the application context are NOT available through this new DI container.
 
 [source, kotlin]
-.Example: defining an independant DI Container.
+.Example: defining an independent DI Container.
 ----
 class MyActivity : Activity() {
 
@@ -432,7 +522,7 @@ class MyActivity : Activity() {
 ----
 
 
-=== Being Kodein-DI independant
+=== Being Kodein-DI independent
 
 [[dependency-holder]]
 ==== The dependency holder pattern
@@ -477,24 +567,6 @@ class DICreator : MyApplication.Creator {
     override fun myActivity() = di.newInstance { MyActivity.Deps(instance(), instance()) }
 }
 
-----
-
-
-[[view-model-factory]]
-==== View Model Factory
-
-If you want your view models to be independant from Kodein-DI, then you need to inject them (meaning passing their dependencies by constructor).
-To do that, you need to create your own `ViewModelProvider.Factory`.
-
-Here is a simple one:
-
-[source, kotlin]
-.A DI View Model Factory
-----
-class DIViewModelFactory(val di: DI) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            di.direct.Instance(erased(modelClass))
-}
 ----
 
 == Proguard configuration
