@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.compose") version "0.5.0-build262"
+    id("org.jetbrains.compose") version "1.0.0-alpha3"
     id("org.kodein.library.mpp-with-android")
 }
 
