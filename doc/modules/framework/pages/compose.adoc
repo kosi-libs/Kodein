@@ -270,11 +270,11 @@ fun ContentView() {
 If you have defined a DI container in a xref:#localdi[`LocalDI`], you can consider every underlying `@Composable` as DI aware.
 This means that can access the current DI container and its bindings with one of the following function delegates:
 
-- `val t: TYPE by instance()`
-- `val f: (ARG_TYPE) -> TYPE by factory()`
-- `val p: () -> TYPE by provider()`
+- `val t: TYPE by rememberInstance()`
+- `val f: (ARG_TYPE) -> TYPE by rememberFactory()`
+- `val p: () -> TYPE by rememberProvider()`
 
-TIP: If you are not familiar with these declaration you can explore the detailed documentation on xref:core:bindings.adoc[bindings] and xref:core:injection-retrieval.adoc[injection/retrieval].
+TIP: If you are not familiar with these declarations you can explore the detailed documentation on xref:core:bindings.adoc[bindings] and xref:core:injection-retrieval.adoc[injection/retrieval].
 
 Here are some examples on how to retrieve instances, factories or providers within a `@Composable` function.
 
