@@ -1,3 +1,24 @@
+#### 7.8.0 (12-08-2020)
+
+  - CORE
+    * Kotlin 1.5.21
+    * Documentation
+  
+  - ANDROID
+    - 2 new modules have been created to support ViewModel retrieval with ease (thanks to @carltonwhitehead for his contribution).
+      - kodein-di-framework-android-x-viewmodel : Injection and retrieval of plain View Models with by viewModel() delegate.
+      - kodein-di-framework-android-x-viewmodel-savedstate : Injection and retrieval of View Models with SavedStateHandle with by viewModelWithSavedStateHandle() delegate.
+      
+  - COMPOSE: `kodein-di-framework-compose` module is now align with the stable version of Compose compiler (compatible with Kotlin 1.5.21) with improvements
+
+#### 7.6.0 (21-05-2020)
+
+  - CORE:
+    * Kotlin 1.5
+    * Kodein-Type 1.7.1
+      * Thanks to @eygraber for the heavy investigation #309
+  - Documentation
+
 #### 7.5.0 (30-03-2020)
 
   - CORE
