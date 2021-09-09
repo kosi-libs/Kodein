@@ -316,7 +316,7 @@ It adds to some Android specific objects, an extension function `di()`, that is 
 
 Thanks to these mechanisms we can provide two specifcs functions for *_Jetpack Compose_* users.
 
-1. A `@Composable` function `contextDI` that uses the closest DI pattern to get a DI container by using the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal] `LocalContext`, from *_Jetpack Compose_*.
+1. A `@Composable` function `androidContextDI` that uses the closest DI pattern to get a DI container by using the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal] `LocalContext`, from *_Jetpack Compose_*.
 
 [source, kotlin]
 .Getting the closest DI context from the Android's context
@@ -334,18 +334,18 @@ class MainActivity : ComponentActivity(), DIAware {  // <1>
 
 @Composable
 fun App() {
-    val di = contextDI() // <3>
+    val di = androidContextDI() // <3>
     val dataSource: DataSource by rememberInstance()
     Text(text = "Hello ${dataSource.getUsername()}!")
 }
 ----
 <1> Your Android context *must* be `DIAware` ...
 <2> ... and override the `di` property.
-<3> the `contextDI` function retrieve the `di` property from the closest `DIAware` object.
+<3> the `androidContextDI` function retrieve the `di` property from the closest `DIAware` object.
 
 - A specific version of the xref:with-di[`withDI`]
 
-This uses the `contextDI` function to provide a DI container as the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal] `LocalDI`.
+This uses the `androidContextDI` function to provide a DI container as the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal] `LocalDI`.
 
 [source, kotlin]
 .Android context
