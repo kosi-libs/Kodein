@@ -162,7 +162,7 @@ class MyActivity : AppCompatActivity(), DIAware {
     private val viewModel: MyViewModel by viewModel()
 }
 
-class MyFragment : Fragment(), DIAWare {
+class MyFragment : Fragment(), DIAware {
     override val di: DI by closestDI()
     private val viewModel: MyViewModel by viewModel()
 }
