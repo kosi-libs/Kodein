@@ -6,7 +6,7 @@ buildscript {
         maven(url = "https://raw.githubusercontent.com/Kodein-Framework/kodein-internal-gradle-plugin/mvn-repo")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.8.0")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.9.0")
     }
 }
 
