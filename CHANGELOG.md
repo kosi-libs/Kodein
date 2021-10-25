@@ -1,3 +1,14 @@
+#### 7.9.0 (24-10-2020)
+
+  - CORE
+      * Gradle 7.2
+      * AGP 7
+      * Kotlin 1.5.31
+      * Apple Silicon support
+  - COMPOSE
+      * JB Compose beta1
+      * Android : remember ViewModel helper
+
 #### 7.8.0 (12-08-2020)
 
   - CORE
