@@ -7,7 +7,6 @@ kodein {
     kotlin {
         common.main.dependencies {
             compileOnly(compose.runtime)
-            compileOnly(compose.foundation)
             api(project(":kodein-di"))
         }
 
@@ -21,6 +20,8 @@ kodein {
                 api("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-rc01")
             }
         }
+
+        add(kodeinTargets.js.ir.js)
     }
 }
 
