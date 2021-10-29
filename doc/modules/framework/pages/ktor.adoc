@@ -9,7 +9,7 @@ NOTE: Kodein-DI does work on Ktor as-is.
 NOTE: Ktor is a multi-platform project, meaning you can use it for JVM, JS and Native projects.
       Please note that, at the moment, Kodein-DI utilities are only available for the JVM platform, for the server cases precisely.
 
-Have a look at the https://github.com/Kodein-Framework/Kodein-DI/tree/{branch}/demo/demo-ktor[Ktor demo project] to help you to go further!
+Have a look at the https://github.com/Kodein-Framework/Kodein-Samples/tree/master/di/standalone/ktor[Ktor demo project] to help you to go further!
 
 [[install]]
 == Install
@@ -29,10 +29,10 @@ implementation 'org.kodein.di:kodein-di-framework-ktor-server-jvm:{version}'
 implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:{version}")
 ----
 +
-. Declare a DI container in your application or use the <<difeature>>
+. Declare a DI container in your application or use the <<diplugin>>
 +
 [source, kotlin]
-.Example: a Ktor Application declaration, installing the `DIFeature` (via the extension function `Application.di()`).
+.Example: a Ktor Application declaration, installing the `DIPlugin` (via the extension function `Application.di()`).
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
@@ -47,19 +47,19 @@ fun main(args: Array<String>) {
 
 . Retrieve your dependencies!
 
-[[difeature]]
-== `DIFeature`
+[[diplugin]]
+== `DIPlugin`
 
-As a Ktor https://ktor.io/servers/application.html[Application] is based on extensions we cannot use the `DIAware` mechanism on it.
-So, we had to find another, elegant, way to provide a global DI container. That's where the `DIFeature` stands.
+As a Ktor https://ktor.io/docs/a-ktor-application.html[Application] is based on extensions and plugins we cannot use the `DIAware` mechanism on it.
+So, we had to find another, elegant, way to provide a global DI container. That's where the `DIPlugin` stands.
 It allows developers to create an instance of a DI container, that will be available from anywhere in their Ktor app.
 
-To help with that, the `kodein-di-framework-ktor-server-jvm` provides a https://ktor.io/advanced/features.html[custom feature]
-that will create and register an instance of a DI container in the application's https://ktor.io/advanced/pipeline/attributes.html[attributes].
+To help with that, the `kodein-di-framework-ktor-server-jvm` provides a https://ktor.io/docs/creating-custom-plugins.html[custom plugin]
+that will create and register an instance of a DI container in the application's https://ktor.io/docs/attributes.html[attributes].
 Thus, the DI will be reachable from multiple places in your Ktor application.
 
 [source, kotlin]
-.Example: a Ktor Application declaration, installing the `DIFeature`
+.Example: a Ktor Application declaration, installing the `DIPlugin`
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
@@ -69,14 +69,14 @@ fun main(args: Array<String>) {
    }.start(true)
 }
 ----
-<1> Install the `DIFeature` (under the hood we are applying `install(DIFeature, configuration)`)
+<1> Install the `DIPlugin` (under the hood we are applying `install(DIPlugin, configuration)`)
 <2> Lambda that represent a DI builder, accepting DI core features
 
-WARNING: You cannot install multiple `DIFeature` on the same Ktor `Application` (throws a `DuplicateApplicationFeatureException`).
+WARNING: You cannot install multiple `DIPlugin` on the same Ktor `Application` (throws a `DuplicatePluginException`).
 
 === Closest DI pattern
 
-The idea behind this concept, is to be able to retrieve a DI container, from an outer class. The `DIFeature`
+The idea behind this concept, is to be able to retrieve a DI container, from an outer class. The `DIPlugin`
 help us with that by defining a DI container that can be retrieve from multiple places, like:
 
 - Application
@@ -84,7 +84,7 @@ help us with that by defining a DI container that can be retrieve from multiple 
 - Routing / Routes
 
 [source, kotlin]
-.Example: a Ktor Application declaration, installing the `DIFeature`, and retrieving it from routes
+.Example: a Ktor Application declaration, installing the `DIPlugin`, and retrieving it from routes
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
@@ -101,12 +101,12 @@ fun main(args: Array<String>) {
    }.start(true)
 }
 ----
-<1> Install the `DIFeature`
+<1> Install the `DIPlugin`
 <2> Lambda that represent a DI builder, accepting DI core features
 <3> retrieving the DI container from the Application by calling `PipelineContext<*, ApplicationCall>.di` extension function
 
 .Available `di()` extension function receivers
-- https://ktor.io/servers/application.html#application[Application]
+- https://ktor.io/docs/a-ktor-application.html[Application]
 
     fun Application.main() {
         /* usage */
@@ -116,7 +116,7 @@ fun main(args: Array<String>) {
         val random by di().instance<Random>()
     }
 
-- https://ktor.io/advanced/pipeline.html#interceptors-and-the-pipelinecontext[PipelineContext<*, ApplicationCall>]
+- https://ktor.io/docs/pipelines.html[PipelineContext<*, ApplicationCall>]
 
     get {
         /* usage */
@@ -136,7 +136,7 @@ fun main(args: Array<String>) {
         val random by call.di().instance<Random>()
     }
 
-- https://ktor.io/servers/features/routing.html[Routing]
+- https://ktor.io/docs/routing-in-ktor.html[Routing]
 
     routing {
         /* usage */
@@ -150,7 +150,7 @@ NOTE: Because of those extension functions you can always get the DI object by u
     - `di()` inside a Ktor class (such as `Application`, `ApplicationCall`, `Route`, etc.)
     - `di { application }` inside another class, where application is the running Ktor application.
 
-WARNING: The `di()` extension function will only work if your Ktor `Application` has the `DIFeature` installed, or if you handle the installation manually.
+WARNING: The `di()` extension function will only work if your Ktor `Application` has the `DIPlugin` installed, or if you handle the installation manually.
 
 === Extending the nearest DI container
 
@@ -160,7 +160,7 @@ We can easily achieve this goal, as we have facilities to retrieve our DI contai
 To do so we have a function `subDI` available for the `Routing` / `Route` classes.
 
 [source, kotlin]
-.Example: a Ktor Application declaration, installing the `DIFeature`, and retrieving it from routes
+.Example: a Ktor Application declaration, installing the `DIPlugin`, and retrieving it from routes
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
@@ -183,14 +183,14 @@ fun main(args: Array<String>) {
    }.start(true)
 }
 ----
-<1> Install the `DIFeature`
+<1> Install the `DIPlugin`
 <2> Lambda that represent a DI builder, accepting DI core features
 <3> Adding new binding that will be only available for the children of the `/login` route
 <4> Retrieve the `CredentialsDao` from the nearest DI container
 
 WARNING: If you define multiple `routing { }` features, Ktor have a specific way of joining the different routing definition, finally there is only one `Routing` object. Thus, if you define multiple `subDI { }` in your different `routing { }` declaration, only one `subDI` will be taking into account.
 
-WARNING: The `subDI` mechanism will only work if your Ktor `Application` has the `DIFeature` installed, or if you handle the installation manually.
+WARNING: The `subDI` mechanism will only work if your Ktor `Application` has the `DIPlugin` installed, or if you handle the installation manually.
 
 NOTE: On the contrary you can define a `subDI { }` object for each of your `Route`s as each of them will be able to embed a DI instance.
 
@@ -242,7 +242,7 @@ This feature is restricted to the `Routing` / `Route` and can be used like:
 [source, kotlin]
 .Example: extend from multiple places
 ----
-// https://ktor.io/servers/features/routing.html[Routing]
+// https://ktor.io/docs/routing-in-ktor.html[Routing]
     routing {
         /* usage */
         val subDI = subDI { /** new bindings / overrides **/ } // <1>
@@ -297,7 +297,7 @@ fun main(args: Array<String>) {
     }.start(true)
 }
 ----
-<1> Install the `Sessions` feature
+<1> Install the `Sessions` plugin
 <2> Declaring a session cookie represented by `UserSession`
 <3> Bind `Random` object scoped by `SessionScope`
 
@@ -370,7 +370,7 @@ val di = DI {
 
 == DI Controllers
 
-To help those who want to implement a Ktor application base on a "MVC-like" architecture, we provide a https://ktor.io/advanced/features.html[custom feature]. This feature is a specific module called `kodein-di-framework-ktor-server-controller-jvm`. To enable it, add this line in your `dependencies` block in your application `build.gradle(.kts)` file:
+To help those who want to implement a Ktor application base on a "MVC-like" architecture, we provide a https://ktor.io/docs/creating-custom-plugins.html[custom plugin]. This plugin is a specific module called `kodein-di-framework-ktor-server-controller-jvm`. To enable it, add this line in your `dependencies` block in your application `build.gradle(.kts)` file:
 
 [subs="attributes"]
 .Gradle Groovy script
@@ -398,8 +398,8 @@ class MyController(application: Application) : DIController { // <1>
     private val repository: DataRepository by instance("dao") // <3>
 
     override fun Route.getRoutes() { // <4>
-        get("/version") { // <5>
-            val version: String by instance("version") // <6>
+        get("/version") {
+            val version: String by instance("version") // <5>
             call.respondText(version)
         }
     }
@@ -409,8 +409,7 @@ class MyController(application: Application) : DIController { // <1>
 <2> Override the `DI` container, from the provided `Application`
 <3> Use your `DI` container as in any `DIAware` class
 <4> Override the function `Route.getRoutes` and define some routes
-<5> This route will be automatically register by the `DIControllerFeature`
-<6> Use your `DI` container as in any `DIAware` class
+<5> Use your `DI` container as in any `DIAware` class
 
 [source, kotlin]
 .Example: Extending AbstractDIController
@@ -419,8 +418,8 @@ class MyController(application: Application) : AbstractDIController(application)
     private val repository: DataRepository by instance("dao") // <2>
 
     override fun Routing.installRoutes() { // <3>
-        get("/version") { // <4>
-            val version: String by instance("version") // <5>
+        get("/version") {
+            val version: String by instance("version") // <4>
             call.respondText(version)
         }
     }
@@ -429,18 +428,13 @@ class MyController(application: Application) : AbstractDIController(application)
 <1> Extend `AbstractDIController` and provide a `Application` instance (from constructor)
 <2> Use your `DI` container as in any `DIAware` class
 <3> Override the function `Routing.installRoutes` and define some routes
-<4> This route will be automatically register by the `DIControllerFeature`
-<5> Use your `DI` container as in any `DIAware` class
+<4> Use your `DI` container as in any `DIAware` class
 
 NOTE:   Using `DIController` or `AbstractDIController` depends on your needs.
         +
         If you don't need to use inheritance on your controllers, then you could benefit from using `AbstractDIController`.
         +
         On the contrary, if you want to use inheritance for your controllers you should implement `DIController` and override the `DI` container by yourself.
-
-WARNING: Using the `DIControllerFeature` *must* be used in addition of the `DIFeature`
-
-WARNING: In your code, the `DIControllerFeature` *must* be declared *after* the `DIFeature`, as in the previous snippet *4* is declared after *1*, unless you'll see a `MissingApplicationFeatureException` fired
 
 - Install your `DIController`s routes directly into the routing system
 +
@@ -462,11 +456,3 @@ controller("/protected") { MySecondDIController(instance()) } // <2>
 +
 Doing that the `MyFirstDIController` and `MyFirstDIController` will added to the routing system but not autowired, neither bound to the DI container.
 Only their routes defined in the `Route.getRoutes` will be reachable on the web server (e.g. `http://localhost:8080/version`).
-
-
-[CAUTION]
-====
-`Route.controller` extension functions and `DIControllerFeature` can be used at the same time but we recommend that you *should not*
-Declaring controllers in the `Route.controller` extension functions and the `DIControllerFeature` might install the same route multiple times, thus leading to exceptions.
-====
-

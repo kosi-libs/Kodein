@@ -1,6 +1,6 @@
 package org.kodein.di.ktor.controller
 
-import io.ktor.routing.*
+import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
 import org.kodein.di.*
 import org.kodein.di.ktor.*

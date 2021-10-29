@@ -1,9 +1,11 @@
 package org.kodein.di.ktor
 
-import io.ktor.application.*
-import io.ktor.sessions.*
-import org.kodein.di.*
-import org.kodein.di.bindings.*
+import io.ktor.server.application.*
+import io.ktor.server.sessions.*
+import org.kodein.di.bindings.Scope
+import org.kodein.di.bindings.ScopeRegistry
+import org.kodein.di.bindings.StandardScopeRegistry
+import org.kodein.di.bindings.WeakContextScope
 
 //region Session scope
 /**

@@ -1,7 +1,9 @@
 package org.kodein.di.ktor
 
-import io.ktor.routing.*
-import org.kodein.di.*
+import io.ktor.server.routing.*
+import org.kodein.di.Copy
+import org.kodein.di.DI
+import org.kodein.di.subDI
 
 /**
  * Extend the nearest [DI] container, Global (from the Application) or Local (from a parent)

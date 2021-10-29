@@ -1,22 +1,21 @@
-val ktorVersion = "1.5.4"
+val ktorVersion = "2.0.0-beta-1"
 
 plugins {
     id("org.kodein.library.jvm")
 }
 
 repositories {
-    maven("https://kotlin.bintray.com/ktor")
+    maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
 }
 
 dependencies {
     fun ktor(module: String = "", version: String = ktorVersion) = "io.ktor:ktor$module:$version"
 
     api(project(":kodein-di"))
-    implementation(ktor())
     implementation(ktor("-server-core"))
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${kodeinVersions.kotlin}")
+    implementation(ktor("-server-sessions"))
     testImplementation(ktor("-server-tests"))
+    testImplementation(ktor("-server-default-headers"))
 }
 
 kodeinUpload {

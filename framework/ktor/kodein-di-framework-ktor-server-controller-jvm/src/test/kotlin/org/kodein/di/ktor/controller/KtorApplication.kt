@@ -1,8 +1,8 @@
 package org.kodein.di.ktor.controller
 
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.routing.*
+import io.ktor.server.plugins.*
+import io.ktor.server.application.*
+import io.ktor.server.routing.*
 import org.kodein.di.*
 import org.kodein.di.ktor.*
 

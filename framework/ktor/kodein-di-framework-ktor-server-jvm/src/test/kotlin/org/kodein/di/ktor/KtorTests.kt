@@ -1,15 +1,13 @@
 package org.kodein.di.ktor
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
-import io.ktor.util.*
 import org.junit.FixMethodOrder
 import org.junit.runners.MethodSorters
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@KtorExperimentalAPI
 class KtorTests {
 
     private fun assertContained(regex: Regex, content: String) {
