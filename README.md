@@ -1,6 +1,6 @@
 <img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/doc/modules/ROOT/images/kodein-di-logo.svg" width="700">
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.5.10-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.5.31-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/org.kodein.di/kodein-di)](https://mvnrepository.com/artifact/org.kodein.di/kodein-di)
 ![Github Actions](https://github.com/Kodein-Framework/Kodein-DI/workflows/build%20and%20publish%20a%20snapshot/badge.svg)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Kodein-Framework/Kodein-DI/blob/master/LICENSE.txt)
@@ -29,7 +29,7 @@ KOtlin DEpendency INjection
 **_Kodein-DI_** provides extensions to be integrable into:
 
 - [Android](https://developer.android.com/)
-- [Compose (Android / Desktop)](https://docs.kodein.org/kodein-di/7.5/framework/compose.html)
+- [Compose (Android / Desktop)](https://docs.kodein.org/kodein-di/7.9/framework/compose.html)
 - [Ktor](https://ktor.io/)
 - [TornadoFX](https://tornadofx.io/)
 
@@ -95,7 +95,7 @@ Support
 -------
 
 Support is held in the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/)
-(you can get an invite to the Kotlin Slack [here](http://slack.kotlinlang.org/)).
+(you can get an invite to the Kotlin Slack [here](https://slack.kotlinlang.org/)).
 
 
 Future
@@ -157,7 +157,7 @@ Testimonies
 
 &nbsp;
 
-<img src="http://imgur.com/Ymo1qoh.jpg" height="60" />
+<img src="https://imgur.com/Ymo1qoh.jpg" height="60" />
 
 > Kodein is used in [the android app of the OhelShem school](https://github.com/OhelShem/android).  
 > -- [Yoav Sternberg](https://github.com/yoavst)&nbsp;
