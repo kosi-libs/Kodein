@@ -1,3 +1,9 @@
+#### 7.10.0 (29-10-2020)
+
+  - COMPOSE
+      * JB Compose beta5
+      * Enable Web target
+
 #### 7.9.0 (24-10-2020)
 
   - CORE
