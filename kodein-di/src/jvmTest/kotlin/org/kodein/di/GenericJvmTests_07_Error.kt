@@ -123,7 +123,7 @@ Dependency recursion:
             fullContainerTreeOnError = true
         }
 
-        assertEquals("No binding found for bind<org.kodein.di.test.Person> { ? { ? } }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { kodein.instance<Person>() }.message)
+        assertEquals("No binding found for org.kodein.di.test.Person\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { kodein.instance<Person>() }.message)
     }
 
 

@@ -23,7 +23,7 @@ class GenericJvmTests_21_Description {
         )
 
         assertEquals("bind<String>", key.bindDescription)
-        assertEquals("bind<String> { ? { ? } }", key.description)
+        assertEquals("String", key.description)
     }
 
     @Test
@@ -36,7 +36,7 @@ class GenericJvmTests_21_Description {
         )
 
         assertEquals("bind<kotlin.String>", key.bindFullDescription)
-        assertEquals("bind<kotlin.String> { ? { ? } }", key.fullDescription)
+        assertEquals("kotlin.String", key.fullDescription)
     }
 
     private data class MultiArgs(val s1: String, val s2: String)
@@ -51,7 +51,7 @@ class GenericJvmTests_21_Description {
         )
 
         assertEquals("bind<IntRange>(tag = \"tag\")", key.bindDescription)
-        assertEquals("bind<IntRange>(tag = \"tag\") { ?<String>().? { GenericJvmTests_21_Description.MultiArgs -> ? } }", key.description)
+        assertEquals("""IntRange tagged "tag" on context String, with argument GenericJvmTests_21_Description.MultiArgs""", key.description)
     }
 
     @Test
@@ -64,7 +64,7 @@ class GenericJvmTests_21_Description {
         )
 
         assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\")", key.bindFullDescription)
-        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") { ?<kotlin.String>().? { org.kodein.di.GenericJvmTests_21_Description.MultiArgs -> ? } }", key.fullDescription)
+        assertEquals("""kotlin.ranges.IntRange tagged "tag" on context kotlin.String, with argument org.kodein.di.GenericJvmTests_21_Description.MultiArgs""", key.fullDescription)
     }
 
     object TestScope : UnboundedScope()

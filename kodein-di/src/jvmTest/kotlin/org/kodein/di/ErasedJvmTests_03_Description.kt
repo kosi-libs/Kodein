@@ -138,7 +138,7 @@ class ErasedJvmTests_03_Description {
         )
 
         assertEquals("bind<kotlin.String>", key.bindFullDescription)
-        assertEquals("bind<kotlin.String> { ? { ? } }", key.fullDescription)
+        assertEquals("kotlin.String", key.fullDescription)
     }
 
     // Only the JVM supports precise description
@@ -151,7 +151,7 @@ class ErasedJvmTests_03_Description {
         )
 
         assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\")", key.bindFullDescription)
-        assertEquals("bind<kotlin.ranges.IntRange>(tag = \"tag\") { ?<kotlin.String>().? { kotlin.Pair<kotlin.String, kotlin.String> -> ? } }", key.fullDescription)
+        assertEquals("""kotlin.ranges.IntRange tagged "tag" on context kotlin.String, with argument kotlin.Pair<kotlin.String, kotlin.String>""", key.fullDescription)
     }
 
 }

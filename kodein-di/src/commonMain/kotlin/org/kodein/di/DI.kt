@@ -101,38 +101,46 @@ public interface DI : DIAware {
         /**
          * Right part of the description string.
          *
-         * @param dispString a function that gets the display string for a type.
+         * @param displayString a function that gets the display string for a type.
          */
-        private fun StringBuilder.appendDescription(dispString: TypeToken<*>.() -> String) {
-            append(" { ")
+        private fun StringBuilder.appendDescription(displayString: TypeToken<*>.() -> String) {
+            if (tag != null) {
+                append(""" tagged "$tag"""")
+            }
             if (contextType != TypeToken.Any) {
-                append("?<${contextType.dispString()}>().")
+                append(" on context ${contextType.displayString()}")
             }
-            append("? { ")
             if (argType != TypeToken.Unit) {
-                append(argType.dispString())
-                append(" -> ")
+                append(", with argument ${argType.displayString()}")
             }
-            append("? }")
-            append(" }")
         }
 
 
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this bind.
          */
-        val bindDescription: String get() = "bind<${type.simpleDispString()}>${ if (tag != null) "(tag = \"$tag\")" else "" }"
+        val bindDescription: String get() = buildString {
+            append("bind<${type.simpleDispString()}>")
+            if (tag != null) {
+                append("""(tag = "$tag")""")
+            }
+        }
 
         /**
          * Description using full type names. The description is as close as possible to the code used to create this bind.
          */
-        val bindFullDescription: String get() = "bind<${type.qualifiedDispString()}>${ if (tag != null) "(tag = \"$tag\")" else "" }"
+        val bindFullDescription: String get() = buildString {
+            append("bind<${type.qualifiedDispString()}>")
+            if (tag != null) {
+                append("""(tag = "$tag")""")
+            }
+        }
 
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this key.
          */
         val description: String get() = buildString {
-            append(bindDescription)
+            append(type.simpleDispString())
             appendDescription(TypeToken<*>::simpleDispString)
         }
 
@@ -142,7 +150,7 @@ public interface DI : DIAware {
          * Description using full type names. The description is as close as possible to the code used to create this key.
          */
         val fullDescription: String get() = buildString {
-            append(bindFullDescription)
+            append(type.qualifiedDispString())
             appendDescription(TypeToken<*>::qualifiedDispString)
         }
     }

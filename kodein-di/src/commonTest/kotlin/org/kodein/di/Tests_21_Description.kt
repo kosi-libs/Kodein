@@ -20,7 +20,7 @@ class Tests_21_Description {
         )
 
         assertEquals("bind<String>", key.bindDescription)
-        assertEquals("bind<String> { ? { ? } }", key.description)
+        assertEquals("String", key.description)
     }
 
     @Test
@@ -29,11 +29,11 @@ class Tests_21_Description {
                 contextType = generic<String>(),
                 argType = erasedComp(Pair::class, generic<String>(), generic<String>()),
                 type = generic<IntRange>(),
-                tag = "tag"
+                tag = "someTag"
         )
 
-        assertEquals("bind<IntRange>(tag = \"tag\")", key.bindDescription)
-        assertEquals("bind<IntRange>(tag = \"tag\") { ?<String>().? { Pair<String, String> -> ? } }", key.description)
+        assertEquals("""bind<IntRange>(tag = "someTag")""", key.bindDescription)
+        assertEquals("""IntRange tagged "someTag" on context String, with argument Pair<String, String>""", key.description)
     }
 
 }

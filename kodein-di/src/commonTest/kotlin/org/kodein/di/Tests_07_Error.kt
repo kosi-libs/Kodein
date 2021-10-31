@@ -73,7 +73,7 @@ Dependency recursion:
 
         val di = DI.direct {}
 
-        assertEquals("No binding found for bind<Person> { ? { ? } }", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
+        assertEquals("No binding found for Person", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
 
         assertFailsWith<DI.NotFoundException> { di.instance<FullName>() }
 
@@ -87,7 +87,7 @@ Dependency recursion:
 
         val di = DI.direct { fullContainerTreeOnError = true }
 
-        assertEquals("No binding found for bind<Person> { ? { ? } }\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
+        assertEquals("No binding found for Person\nRegistered in this DI container:\n", assertFailsWith<DI.NotFoundException> { di.instance<Person>() }.message)
 
         assertFailsWith<DI.NotFoundException> { di.instance<FullName>() }
 
