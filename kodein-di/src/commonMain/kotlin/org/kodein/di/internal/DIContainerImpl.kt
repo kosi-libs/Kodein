@@ -13,6 +13,10 @@ internal class DIContainerImpl private constructor(
     @Volatile var initCallbacks: (() -> Unit)? = null
         private set
 
+    init {
+        ensureNeverFrozen()
+    }
+
     /**
      * "Main" constructor that uses the bindings map configured by a [DIContainer.Builder].
      */
