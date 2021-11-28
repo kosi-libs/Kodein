@@ -8,7 +8,7 @@ Binding functions have access to the environment where the bound type is retriev
 [.lead]
 This environment is represented as a *context* variable.
 
-The context is an object that is explicitly defined by the programmer for this retrieval or the receiving object when none is explicitely defined.
+The context is an object that is explicitly defined by the programmer for this retrieval or the receiving object when none is explicitly defined.
 
 There are two very important differences between a tag and a context:
 
@@ -128,7 +128,7 @@ val di = DI {
 
 `WeakContextScope.of` will always return the same scope, which you should never clean!
 
-If you need a compartimentalized scope which you can clean, you can create a new `WeakContextScope`:
+If you need a compartmentalized scope which you can clean, you can create a new `WeakContextScope`:
 
 [source, kotlin]
 .Example: creating a WeakContextScope.
@@ -158,7 +158,7 @@ This allows you to retrieve a `User` instance:
 - When there is a global `Request` context:
 +
 [source, kotlin]
-.Example: retriving with a global context
+.Example: retrieving with a global context
 ----
 class MyController(override val di: DI, request: Request): DIAware {
     override val diContext = kcontext(request)
