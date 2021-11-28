@@ -79,7 +79,7 @@ dependencies {
 }
 ----
 
-You need to activate the preview feature `GRADLE_METADATA` in your _.setings.gradle.kts_ file.
+You need to activate the preview feature `GRADLE_METADATA` in your _.settings.gradle.kts_ file.
 
 .setings.gradle.kts
 [source,kotlin,subs="attributes"]
