@@ -110,7 +110,7 @@ However, when intended, it can be really interesting to override a binding, espe
 You can override an existing binding by specifying explicitly that it is an override.
 
 [source, kotlin]
-.Example: binds twice the same type, the second time explitly specifying an override
+.Example: binds twice the same type, the second time explicitly specifying an override
 ----
 val di = DI {
     bind<API> { singleton { APIImpl() } }
@@ -184,7 +184,7 @@ Because the `Bar` binding is a `singleton` and is declared in the `parent` _Kode
 In this example, both `parent.instance<Bar>().foo` and `child.instance<Bar>().foo` will yield a `Foo1` object.
 
 NOTE: This is because `Bar` is bound to a `singleton`, the first access would define the container used (`parent` or `child`).
-If the singleton were initialized by `child`, then a subsequent access from `parent` would yeild a `Bar` with a reference to a `Foo2`, which is not supposed to exist in `parent`.
+If the singleton were initialized by `child`, then a subsequent access from `parent` would yield a `Bar` with a reference to a `Foo2`, which is not supposed to exist in `parent`.
 
 IMPORTANT: By default, *all bindings that do not cache instances* (basically all bindings but `singleton` and `multiton`) *are copied by default into the new container*, and therefore have access to the bindings & overrides of this new container.
 
