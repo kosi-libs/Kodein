@@ -46,7 +46,7 @@ Kodein is now located inside the package `org.kodein.di`.
 The biggest change in Kodein 5 is that everything in Kodein 5 is lazy. +
 This is because:
 
-- You shouldn't know whether the instance you are asking for will be easy to reatrieve or hard to construct.
+- You shouldn't know whether the instance you are asking for will be easy to retrieve or hard to construct.
 - Some classes (such as Android or TornadoFX components) are created before being "attached" to their context.
 
 Furthermore, the use of Kotlin's delegated properties allows:
@@ -92,7 +92,7 @@ TIP: Kodein 5 also allows the binding factories to access the receiver of the pr
      This is very useful for framework integration such as Android & TornadoFX.
 
 The `Singleton` binding is now supercharged.
-It handles scopes AND references, which means that it is now possible for weird stuff such as "weaked scoped singleton".
+It handles scopes AND references, which means that it is now possible for weird stuff such as "weakened scoped singleton".
 
 TIP: The `multiton` binding is the same!
 
@@ -390,7 +390,7 @@ class MyController(request: Request) : KodeinAware {
 }
 ----
 
-NOTE: Setting a `kodeinContext` still allows you to acces bindings without scopes!
+NOTE: Setting a `kodeinContext` still allows you to access bindings without scopes!
       The `kodeinContext` is the context _by default_, but will not be used if there is no need for a context.
 
 
