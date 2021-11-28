@@ -148,7 +148,7 @@ class PersonListController : Controller(), DIAware { <1>
     /*...*/
 }
 ----
-<1> Set the Controller as `KodeeinAware`
+<1> Set the Controller as `KodeinAware`
 <2> Retrieve the `App` DI container from the `kodeinDI()` extension function
 <3> Retrieve dependency using the `instance()` function, as the DI container is part of the context
 <4> Use the dependency

@@ -192,7 +192,7 @@ WARNING: If you define multiple `routing { }` features, Ktor have a specific way
 
 WARNING: The `subDI` mechanism will only work if your Ktor `Application` has the `DIFeature` installed, or if you handle the installation manually.
 
-NOTE: On the contrary you can define a `subDI { }` object for each of your `Route`s as each of them will be able to embbed a DI instance.
+NOTE: On the contrary you can define a `subDI { }` object for each of your `Route`s as each of them will be able to embed a DI instance.
 
 .*Copying bindings*
 
@@ -466,7 +466,7 @@ Only their routes defined in the `Route.getRoutes` will be reachable on the web 
 
 [CAUTION]
 ====
-`Route.controller` extension functions and `DIControllerFeature` can be used at the same time but we recommand that you *should not*
+`Route.controller` extension functions and `DIControllerFeature` can be used at the same time but we recommend that you *should not*
 Declaring controllers in the `Route.controller` extension functions and the `DIControllerFeature` might install the same route multiple times, thus leading to exceptions.
 ====
 

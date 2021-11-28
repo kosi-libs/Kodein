@@ -27,7 +27,7 @@ _Kodein-DI_ is a very useful dependency injection / retrieval container, it is v
 
 Contributions are very welcome and greatly appreciated! The great majority of pull requests are eventually merged.
 
-To contribute, simply fork https://github.com/Kodein-Framework/Kodein-DI[the project on Github], fix whatever is iching you, and submit a pull request!
+To contribute, simply fork https://github.com/Kodein-Framework/Kodein-DI[the project on Github], fix whatever is itching you, and submit a pull request!
 
 I am sure that this documentation contains typos, inaccuracies and languages error (English is not my mother tongue).
 If you feel like enhancing this document, you can propose a pull request that modifies https://github.com/Kodein-Framework/Kodein-DI/tree/master/doc[the documentation documents].

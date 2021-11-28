@@ -64,7 +64,7 @@ _Kodein-DI_ uses the new gradle native dependency model.
 
 [TIP]
 ====
-If you are *NOT* using *Gradle 6+*, you must declare the use of the Gralde Metadata experimental feature
+If you are *NOT* using *Gradle 6+*, you must declare the use of the Gradle Metadata experimental feature
 
 [subs="attributes"]
 .settings.gradle.kts

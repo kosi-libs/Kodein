@@ -314,7 +314,7 @@ WARNING: Under the hood these functions are using `LocalDI`. If there is no DI c
 This gives us the ability to combine two important concepts that are xref:core:injection-retrieval.adoc#di-aware[`DIAware`] and the xref:android.adoc#closest-di[closest DI pattern].
 It adds to some Android specific objects, an extension function `di()`, that is capable of exploring the context hierarchy until it finds a DI container, hence the name of the pattern.
 
-Thanks to these mechanisms we can provide two specifcs functions for *_Jetpack Compose_* users.
+Thanks to these mechanisms we can provide two specifics functions for *_Jetpack Compose_* users.
 
 1. A `@Composable` function `androidContextDI` that uses the closest DI pattern to get a DI container by using the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal] `LocalContext`, from *_Jetpack Compose_*.
 
