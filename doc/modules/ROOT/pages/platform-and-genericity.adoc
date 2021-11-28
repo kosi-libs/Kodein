@@ -57,7 +57,7 @@ Therefore, please make sure that, using the erased version is right for your use
 //- You are confident you are not binding / injecting / retrieving generic types and you are sure *none of the libraries you are using are*.
 //- You are not using <<set-bindings,set bindings>>.
 //
-//If you profile your code and find that injection is a performance pitfall, then it probably is instanciation: you are creating too many objects in critical paths.
+//If you profile your code and find that injection is a performance pitfall, then it probably is instantiation: you are creating too many objects in critical paths.
 //Reusing objects in critical paths will enhance performance both in dependency injection / retrieval and in GC!
 //
 //If you are using the `erased` version, either by choice on the JVM, or by default on JS & Native, you should read <<erased-version,erased version pitfalls>>.
