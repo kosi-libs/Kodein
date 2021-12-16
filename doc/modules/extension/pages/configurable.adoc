@@ -47,7 +47,7 @@ Then add the dependency:
 [source,groovy,subs="attributes"]
 ----
 dependencies {
-    implementation 'org.kodein.di:kodein-conf-di:{version}'
+    implementation 'org.kodein.di:kodein-di-conf:{version}'
 }
 ----
 
@@ -58,7 +58,7 @@ Add the dependency:
 &lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;org.kodein.di&lt;/groupId&gt;
-        &lt;artifactId&gt;kodein-di-jvm&lt;/artifactId&gt;
+        &lt;artifactId&gt;kodein-di-conf-jvm&lt;/artifactId&gt;
         &lt;version&gt;{version}&lt;/version&gt;
     &lt;/dependency&gt;
 &lt;/dependencies&gt;
