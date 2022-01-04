@@ -32,7 +32,7 @@ Kodein-DI offers support for:
 | *Android + Support library*  | `kodein-di-framework-android-support`
 | *Android + AndroidX library* | `kodein-di-framework-android-x`
 | *Android + AndroidX ViewModel* | `kodein-di-framework-android-x-viewmodel`
-| *Android + AndroidX ViewModel with SavedStateHandle* | `kodein-di-framework-android-x-viewmodel-savedstatehandle`
+| *Android + AndroidX ViewModel with SavedStateHandle* | `kodein-di-framework-android-x-viewmodel-savedstate`
 |=======
 +
 IMPORTANT: From `6.3.0` On the JVM, you must be targeting `JDK 1.8` minimum!
@@ -173,7 +173,7 @@ NOTE: The `viewModel` delegate for Fragments will use its own view model store b
 [[view-models-saved-state-handle]]
 ==== Injection and retrieval of View Models with SavedStateHandle
 
-The `kodein-di-framework-android-x-viewmodel-savedstatehandle` module simplifies injection and retrieval of View Models which inherit https://developer.android.com/reference/androidx/lifecycle/ViewModel[ViewModel] and use a https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle[SavedStateHandle] to persist state.
+The `kodein-di-framework-android-x-viewmodel-savedstate` module simplifies injection and retrieval of View Models which inherit https://developer.android.com/reference/androidx/lifecycle/ViewModel[ViewModel] and use a https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle[SavedStateHandle] to persist state.
 
 Use a Factory binding for ViewModel instances which use a SavedStateHandle argument.
 
