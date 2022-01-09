@@ -152,21 +152,21 @@ This assumes you have already gone through the xref:with-di[share DI within a `@
 
 *_Kodein-DI_* uses the _Compose_ notion of link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal]
 to share your DI references via the xref:with-di[`withDI`] and xref:with-di[`subDI`] functions.
-Therefore, in any underlying `@Composable` function you can access the DI attached to the context with the property `LocalDI`.
+Therefore, in any underlying `@Composable` function you can access the DI attached to the context with the function `localDI()`.
 
 [source, kotlin]
 .Getting the DI container from parent nodes
 ----
 @Composable
 fun ContentView() {
-    val di = LocalDI.current // <1>
+    val di = localDI() // <1>
     val dice: Dice by di.instance() // <2>
 }
 ----
 <1> Get the DI container attache to a parent node
 <2> Standard *_Kodein-DI_* binding retrieval
 
-WARNING: Using `LocalDI` in a tree where there is no DI container will throw a runtime exception: `IllegalStateException: Missing DI container!`.
+WARNING: Using `localDI()` in a tree where there is no DI container will throw a runtime exception: `IllegalStateException: Missing DI container!`.
 
 ==== Extend an existing DI container
 
