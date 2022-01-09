@@ -1,6 +1,6 @@
-= Kodein-DI and _Compose_ (Android or Desktop)
+= Kodein-DI and _Compose_ (Android, Desktop, or JS)
 
-You can use *_Kodein-DI_* as-is in your Android / Desktop project, but you can level-up your game by using the library `kodein-di-framework-compose`.
+You can use *_Kodein-DI_* as-is in your Android / Desktop / JS project, but you can level-up your game by using the library `kodein-di-framework-compose`.
 
 NOTE: *_Kodein-DI_* is compatible with both *Jetpack* and *JetBrains* _Compose_
 
@@ -34,7 +34,7 @@ Kodein-DI |Compose compiler |Kotlin
 [[install]]
 == Install
 
-*_Kodein-DI_* for _Compose_ can be used for Android or Desktop projects with the same approach (thanks to Gradle's metadatas).
+*_Kodein-DI_* for _Compose_ can be used for Android, Desktop, or JavaScript projects with the same approach (thanks to Gradle's metadatas).
 
 Start by adding the correct dependency to your Gradle build script:
 
