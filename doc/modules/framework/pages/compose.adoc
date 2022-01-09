@@ -13,6 +13,10 @@ Here is a table containing the version compatibility:
 |===
 Kodein-DI |Compose compiler |Kotlin
 
+|7.10.0
+|1.0.1
+|1.6.10
+
 |7.7.0
 |1.0.0-alpha1
 |1.5.30
