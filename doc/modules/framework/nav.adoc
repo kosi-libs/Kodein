@@ -1,5 +1,5 @@
 .Frameworks support
 * xref:android.adoc[Android]
-* xref:compose.adoc[Compose (Android / Desktop)]
+* xref:compose.adoc[Compose (Android / Desktop / JavaScript)]
 * xref:ktor.adoc[Ktor]
 * xref:tornadofx.adoc[TornadoFX]
