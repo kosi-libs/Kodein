@@ -238,7 +238,11 @@ public interface DI : DIAware {
              * @param binding The binding to bind.
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
-            @Deprecated("'bind() fron [BINDING]' might be replace by 'bind { [BINDING] }' (This will be remove in Kodein-DI 8.0)", replaceWith = ReplaceWith("bind { binding }"))
+            @Deprecated(
+                message = "'bind() fron [BINDING]' might be replace by 'bind { [BINDING] }' (This will be remove in Kodein-DI 8.0)",
+                replaceWith = ReplaceWith("bind { binding }"),
+                level = DeprecationLevel.ERROR
+            )
             public infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>)
         }
 
@@ -438,7 +442,11 @@ public interface DI : DIAware {
      * @property init The block of configuration for this module.
      */
     public data class Module(val name: String, val allowSilentOverride: Boolean = false, val prefix: String = "", val init: Builder.() -> Unit) {
-        @Deprecated("You should name your modules, for debug purposes.", replaceWith = ReplaceWith("Module(\"module name\", allowSilentOverride, init)"))
+        @Deprecated(
+            message = "You should name your modules, for debug purposes.",
+            replaceWith = ReplaceWith("Module(\"module name\", allowSilentOverride, init)"),
+            level = DeprecationLevel.ERROR
+        )
         public constructor(allowSilentOverride: Boolean = false, init: Builder.() -> Unit) : this("", allowSilentOverride, "", init)
     }
 

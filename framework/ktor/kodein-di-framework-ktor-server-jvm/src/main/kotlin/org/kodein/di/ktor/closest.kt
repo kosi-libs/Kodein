@@ -10,7 +10,11 @@ import org.kodein.di.*
 // attribute key for storing injector in a call
 public val KodeinDIKey: AttributeKey<DI> = AttributeKey<DI>("KodeinDI")
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.ktor"),
+    level = DeprecationLevel.ERROR
+)
 public fun Application.di(): LazyDI = closestDI()
 
 /**
@@ -18,7 +22,11 @@ public fun Application.di(): LazyDI = closestDI()
  */
 public fun Application.closestDI() : LazyDI = LazyDI { attributes[KodeinDIKey] }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI(getApplication)","org.kodein.di.ktor"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI(getApplication)", "org.kodein.di.ktor"),
+    level = DeprecationLevel.ERROR
+)
 public fun di(getApplication: () -> Application) : LazyDI = closestDI(getApplication)
 
 /**
@@ -26,7 +34,11 @@ public fun di(getApplication: () -> Application) : LazyDI = closestDI(getApplica
  */
 public fun closestDI(getApplication: () -> Application) : LazyDI = getApplication().closestDI()
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.ktor"),
+    level = DeprecationLevel.ERROR
+)
 public fun ApplicationCall.di(): LazyDI = closestDI()
 
 /**
@@ -34,7 +46,11 @@ public fun ApplicationCall.di(): LazyDI = closestDI()
  */
 public fun ApplicationCall.closestDI(): LazyDI = closestDI { application }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.ktor"),
+    level = DeprecationLevel.ERROR
+)
 public fun Routing.di(): LazyDI = closestDI { application }
 
 /**
@@ -42,7 +58,11 @@ public fun Routing.di(): LazyDI = closestDI { application }
  */
 public fun Routing.closestDI(): LazyDI = closestDI { application }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.ktor"),
+    level = DeprecationLevel.ERROR
+)
 public fun Route.di(): LazyDI = closestDI()
 
 /**
@@ -61,7 +81,11 @@ public fun Route.closestDI(): LazyDI {
     }
 }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.ktor"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.ktor"),
+    level = DeprecationLevel.ERROR
+)
 public fun PipelineContext<*, ApplicationCall>.di(): LazyDI = closestDI()
 
 

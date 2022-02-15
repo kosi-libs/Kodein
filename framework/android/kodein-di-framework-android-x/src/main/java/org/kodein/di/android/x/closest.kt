@@ -9,7 +9,11 @@ import org.kodein.di.android.closestDI
 import org.kodein.di.android.di
 
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
 fun Fragment.di() = closestDI()
 
 /**
@@ -17,7 +21,11 @@ fun Fragment.di() = closestDI()
  */
 fun Fragment.closestDI() = closestDI { requireActivity() }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
 fun Loader<*>.di() = closestDI()
 
 /**
@@ -25,7 +33,11 @@ fun Loader<*>.di() = closestDI()
  */
 fun Loader<*>.closestDI() = closestDI { context }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
 fun AndroidViewModel.di() = closestDI()
 
 /**

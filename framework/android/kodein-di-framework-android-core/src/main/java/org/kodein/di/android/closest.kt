@@ -43,7 +43,11 @@ class LazyContextDIPropertyDelegateProvider(private val getContext: () -> Contex
     override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>?) = lazy { closestDI(thisRef, getContext()) }
 }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
 fun di(): DIPropertyDelegateProvider<Context> = closestDI()
 
 /**
@@ -53,7 +57,11 @@ fun di(): DIPropertyDelegateProvider<Context> = closestDI()
  */
 fun closestDI(): DIPropertyDelegateProvider<Context> = ContextDIPropertyDelegateProvider()
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI(context)","org.kodein.di.android"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI(context)", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
 fun di(context: Context): DIPropertyDelegateProvider<Any?> = closestDI(context)
 
 /**
@@ -63,7 +71,11 @@ fun di(context: Context): DIPropertyDelegateProvider<Any?> = closestDI(context)
  */
 fun closestDI(context: Context): LazyContextDIPropertyDelegateProvider = LazyContextDIPropertyDelegateProvider { context }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI(getContext)","org.kodein.di.android"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI(getContext)", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
 fun di(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = closestDI(getContext)
 
 /**
@@ -73,7 +85,11 @@ fun di(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = closestDI(
  */
 fun closestDI(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider(getContext)
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
 fun Fragment.di(): DIPropertyDelegateProvider<Any?> = closestDI()
 
 /**
@@ -81,7 +97,11 @@ fun Fragment.di(): DIPropertyDelegateProvider<Any?> = closestDI()
  */
 fun Fragment.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { activity }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
 fun Dialog.di(): DIPropertyDelegateProvider<Any?> = closestDI()
 
 /**
@@ -89,15 +109,23 @@ fun Dialog.di(): DIPropertyDelegateProvider<Any?> = closestDI()
  */
 fun Dialog.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
-fun View.di(): DIPropertyDelegateProvider<Context> = org.kodein.di.android.closestDI()
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
+fun View.di() = org.kodein.di.android.closestDI()
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
 fun View.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
 fun AbstractThreadedSyncAdapter.di(): DIPropertyDelegateProvider<Any?> = closestDI()
 
 /**
@@ -105,7 +133,11 @@ fun AbstractThreadedSyncAdapter.di(): DIPropertyDelegateProvider<Any?> = closest
  */
 fun AbstractThreadedSyncAdapter.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
 
-@Deprecated("di() function leads to import conflicts. please replace with closestDI().", replaceWith = ReplaceWith("closestDI()","org.kodein.di.android"))
+@Deprecated(
+    message = "di() function leads to import conflicts. please replace with closestDI().",
+    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
+    level = DeprecationLevel.ERROR
+)
 fun Loader<*>.di(): DIPropertyDelegateProvider<Context> = org.kodein.di.android.closestDI()
 
 /**

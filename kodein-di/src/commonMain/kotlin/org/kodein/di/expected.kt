@@ -11,7 +11,11 @@ import kotlin.reflect.KClass
  * @param obj An object whose actual type will be extract.
  */
 @Suppress("FunctionName")
-@Deprecated("Has been reimplemented in Kodein-Type", ReplaceWith("erasedOf(obj)", "org.kodein.type"))
+@Deprecated(
+    message = "Has been reimplemented in Kodein-Type",
+    ReplaceWith("erasedOf(obj)", "org.kodein.type"),
+    level = DeprecationLevel.ERROR
+)
 public fun <T: Any> TTOf(obj: T): TypeToken<out T> = erasedOf(obj)
 
 /** @suppress */
