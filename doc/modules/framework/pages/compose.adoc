@@ -11,7 +11,11 @@ IMPORTANT: `kodein-di-framework-compose` relies and only few stable APIs that ha
 Here is a table containing the version compatibility:
 
 |===
-Kodein-DI |Compose compiler |Kotlin
+|Kodein-DI |Compose compiler |Kotlin
+
+|7.10.0
+|1.0.1-rc2
+|1.6.10
 
 |7.7.0
 |1.0.0-alpha1
@@ -34,7 +38,7 @@ Kodein-DI |Compose compiler |Kotlin
 [[install]]
 == Install
 
-*_Kodein-DI_* for _Compose_ can be used for Android, Desktop, or JavaScript projects with the same approach (thanks to Gradle's metadatas).
+*_Kodein-DI_* for _Compose_ can be used for Android, Desktop, or JavaScript projects with the same approach (thanks to Gradle's metadata).
 
 Start by adding the correct dependency to your Gradle build script:
 
@@ -48,16 +52,6 @@ implementation 'org.kodein.di:kodein-di-framework-compose:{version}'
 ----
 implementation("org.kodein.di:kodein-di-framework-compose:{version}")
 ----
-
-[TIP]
-====
-If you are *NOT* using *Gradle 6+*, you should declare the use of the Gradle Metadata experimental feature
-
-.settings.gradle.kts
-----
-enableFeaturePreview("GRADLE_METADATA")
-----
-====
 
 [NOTE]
 ====
