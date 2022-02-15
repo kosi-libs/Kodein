@@ -36,14 +36,22 @@ public interface LazyDelegate<out V> {
  *
  * In essence, the DI object is accessed only upon retrieving.
  */
+@Deprecated(
+    message = "This is an internal API, use LazyDelegate instead.",
+    replaceWith = ReplaceWith("LazyDelegate")
+)
 public class DIProperty<out V>(internal val trigger: DITrigger?, public val originalContext: DIContext<*>, private val get: (DIContext<*>, String) -> V) : LazyDelegate<V> {
 
     override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy {
         @Suppress("UNCHECKED_CAST")
-        val context = if (receiver != null && originalContext === AnyDIContext) DIContext(erasedOf(receiver) as TypeToken<in Any>, receiver) else originalContext
-        get(context, prop.name) } .also { trigger?.properties?.add(it)
-    }
+        val context = if (receiver != null && originalContext === AnyDIContext) {
+            DIContext(erasedOf(receiver) as TypeToken<in Any>, receiver)
+        } else {
+            originalContext
+        }
 
+        get(context, prop.name)
+    }.also { trigger?.properties?.add(it) }
 }
 
 public class DIPropertyMap<in I, out O>(private val base: DIProperty<I>, private val map: (I) -> O) : LazyDelegate<O> {

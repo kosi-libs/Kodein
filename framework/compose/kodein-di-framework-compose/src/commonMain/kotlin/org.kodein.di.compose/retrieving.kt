@@ -1,11 +1,43 @@
 package org.kodein.di.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.remember
 import org.kodein.di.*
+import kotlin.reflect.KProperty
+import kotlin.reflect.typeOf
 
 /**
- * Gets an instance of `T` for the given type and tag.
+ * A property delegate provider for DI retrieval in a Composable tree.
+ * Provides a `Lazy` value that, when accessed, retrieve the value from DI.
+ *
+ * In essence, the DI object is accessed only upon retrieving.
+ */
+@PublishedApi
+internal class ComposableDILazyDelegate<V>(private val base: LazyDelegate<V>) : LazyDelegate<V> {
+    private lateinit var lazy: Lazy<V>
+
+    override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> {
+        if (!this::lazy.isInitialized) lazy = base.provideDelegate(null, prop)
+        return lazy
+    }
+}
+
+/**
+ * Access DI container in a Composable tree and retrieve a [T] reference
+ *
+ * T generics will be preserved!
+ *
+ * @param T The type of object to retrieve.
+ * @return A Lazy delegate for the [T] instance.
+ */
+@Composable
+public inline fun <reified T : Any> rememberDI(block: @DisallowComposableCalls DI.() -> LazyDelegate<T>): LazyDelegate<T> = with(localDI()) {
+    remember { ComposableDILazyDelegate(block()) }
+}
+
+/**
+ * Retrieves and keeps reference on an instance of [T] for the given type and tag.
  *
  * T generics will be preserved!
  *
@@ -16,17 +48,36 @@ import org.kodein.di.*
  * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified T : Any> rememberInstance(tag: Any? = null): DIProperty<T> = with(localDI()) {
-    remember { instance(tag) }
-}
-
-// Deprecated since 7.7.0
-@Deprecated("Renamed rememberInstance", ReplaceWith("rememberInstance(tag)"))
-@Composable
-public inline fun <reified T : Any> instance(tag: Any? = null): DIProperty<T> = rememberInstance(tag)
+public inline fun <reified T : Any> rememberInstance(tag: Any? = null): LazyDelegate<T> =
+    rememberDI { instance(tag = tag) }
 
 /**
- * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
+ * Retrieves and keeps reference on a named instance of [T] for the given type and tag.
+ *
+ * T generics will be preserved!
+ *
+ * @param T The type of object to retrieve.
+ * @return An instance of [T].
+ * @throws DI.NotFoundException if no provider was found.
+ * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
+ */
+@Composable
+public inline fun <reified T : Any> rememberNamedInstance(): LazyDelegate<T> =
+    rememberDI { named.instance() }
+
+// Deprecated since 7.7.0
+@Deprecated(
+    message = "Renamed rememberInstance",
+    replaceWith = ReplaceWith("rememberInstance(tag)"),
+    level = DeprecationLevel.ERROR
+)
+@Composable
+public inline fun <reified T : Any> instance(tag: Any? = null): LazyDelegate<T> =
+    rememberInstance(tag = tag)
+
+/**
+ * Retrieves and keeps a reference on an instance of [T] for the given type and tag,
+ * curried from a factory that takes an argument [A].
  *
  * A & T generics will be preserved!
  *
@@ -39,17 +90,40 @@ public inline fun <reified T : Any> instance(tag: Any? = null): DIProperty<T> = 
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> rememberInstance(tag: Any? = null, arg: A): DIProperty<T> = with(localDI()) {
-    remember { instance(tag, arg) }
-}
-
-// Deprecated since 7.7.0
-@Deprecated("Renamed rememberInstance", ReplaceWith("rememberInstance(tag, arg)"))
-@Composable
-public inline fun <reified A : Any, reified T : Any> instance(tag: Any? = null, arg: A): DIProperty<T> = rememberInstance(tag, arg)
+public inline fun <reified A : Any, reified T : Any> rememberInstance(tag: Any? = null, arg: A): LazyDelegate<T> =
+    rememberDI { instance(tag = tag, arg = arg) }
 
 /**
- * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
+ * Retrieves and keeps a reference on an instance of [T] for the given,
+ * curried from a factory that takes an argument [A].
+ *
+ * A & T generics will be preserved!
+ *
+ * @param A The type of argument the curried factory takes.
+ * @param T The type of object to retrieve.
+ * @param tag The bound tag, if any.
+ * @param arg The argument that will be given to the factory when curried.
+ * @return An instance of [T].
+ * @throws DI.NotFoundException If no provider was found.
+ * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
+ */
+@Composable
+public inline fun <reified A : Any, reified T : Any> rememberNamedInstance(arg: A): LazyDelegate<T> =
+    rememberDI { named.instance(arg = arg) }
+
+// Deprecated since 7.7.0
+@Deprecated(
+    message = "Renamed rememberInstance",
+    replaceWith = ReplaceWith("rememberInstance(tag, arg)"),
+    level = DeprecationLevel.ERROR
+)
+@Composable
+public inline fun <reified A : Any, reified T : Any> instance(tag: Any? = null, arg: A): LazyDelegate<T> =
+    rememberInstance(tag = tag, arg = arg)
+
+/**
+ * Retrieves and keeps of [T] for the given type and tag,
+ * curried from a factory that takes an argument [A].
  *
  * A & T generics will be preserved!
  *
@@ -62,12 +136,18 @@ public inline fun <reified A : Any, reified T : Any> instance(tag: Any? = null, 
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> rememberInstance(tag: Any? = null, noinline fArg: () -> A): DIProperty<T> = with(localDI()) {
-    remember { instance(tag, fArg) }
-}
+public inline fun <reified A : Any, reified T : Any> rememberInstance(
+    tag: Any? = null,
+    noinline fArg: () -> A,
+): LazyDelegate<T> =
+    rememberDI { instance(tag = tag, fArg = fArg) }
+
+@Composable
+public inline fun <reified A : Any, reified T : Any> rememberNamedInstance(noinline fArg: () -> A): LazyDelegate<T> =
+    rememberDI { named.instance(fArg = fArg) }
 
 /**
- * Gets a factory of `T` for the given argument type, return type and tag.
+ * Retrieves and keeps a reference on a factory of `T` for the given argument type, return type and tag.
  *
  * A & T generics will be preserved!
  *
@@ -79,17 +159,20 @@ public inline fun <reified A : Any, reified T : Any> rememberInstance(tag: Any? 
  * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> rememberFactory(tag: Any? = null): DIProperty<(A) -> T> = with(localDI()) {
-    remember { factory(tag) }
-}
+public inline fun <reified A : Any, reified T : Any> rememberFactory(tag: Any? = null): LazyDelegate<(A) -> T> =
+    rememberDI { factory(tag = tag) }
 
 // Deprecated since 7.7.0
-@Deprecated("Renamed rememberFactory", ReplaceWith("rememberFactory(tag)"))
+@Deprecated(
+    message = "Renamed rememberFactory",
+    replaceWith = ReplaceWith("rememberFactory(tag)"),
+    level = DeprecationLevel.ERROR)
 @Composable
-public inline fun <reified A : Any, reified T : Any> factory(tag: Any? = null): DIProperty<(A) -> T> = rememberFactory(tag)
+public inline fun <reified A : Any, reified T : Any> factory(tag: Any? = null): LazyDelegate<(A) -> T> =
+    rememberFactory(tag = tag)
 
 /**
- * Gets a provider of `T` for the given type and tag.
+ * Retrieves and keeps a reference on a provider of `T` for the given type and tag.
  *
  * T generics will be preserved!
  *
@@ -100,17 +183,21 @@ public inline fun <reified A : Any, reified T : Any> factory(tag: Any? = null): 
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified T : Any> rememberProvider(tag: Any? = null): DIProperty<() -> T> = with(localDI()) {
-    remember { provider(tag) }
-}
+public inline fun <reified T : Any> rememberProvider(tag: Any? = null): LazyDelegate<() -> T> =
+    rememberDI { provider(tag = tag) }
 
 // Deprecated since 7.7.0
-@Deprecated("Renamed rememberProvider", ReplaceWith("rememberProvider(tag)"))
+@Deprecated(
+    message = "Renamed rememberProvider",
+    replaceWith = ReplaceWith("rememberProvider(tag)"),
+    level = DeprecationLevel.ERROR
+)
 @Composable
-public inline fun <reified T : Any> provider(tag: Any? = null): DIProperty<() -> T> = rememberProvider(tag)
+public inline fun <reified T : Any> provider(tag: Any? = null): LazyDelegate<() -> T> =
+    rememberProvider(tag = tag)
 
 /**
- * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
+ * Retrieves and keeps a reference on a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
  *
  * A & T generics will be preserved!
  *
@@ -123,17 +210,21 @@ public inline fun <reified T : Any> provider(tag: Any? = null): DIProperty<() ->
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> rememberProvider(tag: Any? = null, arg: A): DIProperty<() -> T> = with(localDI()) {
-    remember { provider(tag, arg) }
-}
+public inline fun <reified A : Any, reified T : Any> rememberProvider(tag: Any? = null, arg: A): LazyDelegate<() -> T> =
+    rememberDI { provider(tag = tag, arg = arg) }
 
 // Deprecated since 7.7.0
-@Deprecated("Renamed rememberProvider", ReplaceWith("rememberProvider(tag, arg)"))
+@Deprecated(
+    message = "Renamed rememberProvider",
+    replaceWith = ReplaceWith("rememberProvider(tag, arg)"),
+    level = DeprecationLevel.ERROR
+)
 @Composable
-public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null, arg: A): DIProperty<() -> T> = rememberProvider(tag, arg)
+public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null, arg: A): LazyDelegate<() -> T> =
+    rememberProvider(tag = tag, arg = arg)
 
 /**
- * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
+ * Retrieves and keeps a reference on a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
  *
  * A & T generics will be preserved!
  *
@@ -146,11 +237,21 @@ public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null, 
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> rememberProvider(tag: Any? = null, noinline fArg: () -> A): DIProperty<() -> T> = with(localDI()) {
-    remember { provider(tag, fArg) }
-}
+public inline fun <reified A : Any, reified T : Any> rememberProvider(
+    tag: Any? = null,
+    noinline fArg: () -> A,
+): LazyDelegate<() -> T> =
+    rememberDI { provider(tag = tag, fArg = fArg) }
 
 // Deprecated since 7.7.0
-@Deprecated("Renamed rememberProvider", ReplaceWith("rememberProvider(tag, fArg)"))
+@Deprecated(
+    message = "Renamed rememberProvider",
+    replaceWith = ReplaceWith("rememberProvider(tag, fArg)"),
+    level = DeprecationLevel.ERROR
+)
 @Composable
-public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null, noinline fArg: () -> A): DIProperty<() -> T> = rememberProvider(tag, fArg)
+public inline fun <reified A : Any, reified T : Any> provider(
+    tag: Any? = null,
+    noinline fArg: () -> A,
+): LazyDelegate<() -> T> =
+    rememberProvider(tag = tag, fArg = fArg)
