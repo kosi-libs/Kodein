@@ -9,15 +9,15 @@ import org.kodein.type.TypeToken
  * Defines a context and its type to be used by Di
  */
 public interface DIContext<C : Any> {
-        /**
-         * The type of the context, used to lookup corresponding bindings.
-         */
-        public val type: TypeToken<in C>
+    /**
+     * The type of the context, used to lookup corresponding bindings.
+     */
+    public val type: TypeToken<in C>
 
-        /**
-         * The context itself.
-         */
-        public val value: C
+    /**
+     * The context itself.
+     */
+    public val value: C
 
     /**
      * Defines a context and its type to be used by DI
@@ -33,10 +33,10 @@ public interface DIContext<C : Any> {
 
     public companion object {
         public operator fun <C : Any> invoke(type: TypeToken<in C>, value: C): DIContext<C> = Value(type, value)
-        public operator fun <C : Any> invoke(type: TypeToken<in C>, getValue: () -> C): DIContext<C> = Lazy(type, getValue)
+        public operator fun <C : Any> invoke(type: TypeToken<in C>, getValue: () -> C): DIContext<C> =
+            Lazy(type, getValue)
     }
 }
-
 
 
 @Suppress("UNCHECKED_CAST")
@@ -89,8 +89,13 @@ public interface DIAware {
  * @throws DI.NotFoundException If no factory was found.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-public fun <A, T : Any> DIAware.Factory(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): DIProperty<(A) -> T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value) }
+public fun <A, T : Any> DIAware.Factory(
+    argType: TypeToken<in A>,
+    type: TypeToken<out T>,
+    tag: Any? = null,
+): LazyDelegate<(A) -> T> = DIProperty(diTrigger, diContext) { ctx, _ ->
+    di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value)
+}
 
 /**
  * Gets a factory of [T] for the given argument type, return type and tag, or null if none is found.
@@ -103,8 +108,13 @@ public fun <A, T : Any> DIAware.Factory(argType: TypeToken<in A>, type: TypeToke
  * @return A factory of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-public fun <A, T : Any> DIAware.FactoryOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): DIProperty<((A) -> T)?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value) }
+public fun <A, T : Any> DIAware.FactoryOrNull(
+    argType: TypeToken<in A>,
+    type: TypeToken<out T>,
+    tag: Any? = null,
+): LazyDelegate<((A) -> T)?> = DIProperty(diTrigger, diContext) { ctx, _ ->
+    di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value)
+}
 
 /**
  * Gets a provider of [T] for the given type and tag.
@@ -116,8 +126,10 @@ public fun <A, T : Any> DIAware.FactoryOrNull(argType: TypeToken<in A>, type: Ty
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-public fun <T : Any> DIAware.Provider(type: TypeToken<out T>, tag: Any? = null): DIProperty<() -> T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
+public fun <T : Any> DIAware.Provider(type: TypeToken<out T>, tag: Any? = null): LazyDelegate<() -> T> =
+    DIProperty(diTrigger, diContext) { ctx, _ ->
+        di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value)
+    }
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -132,8 +144,15 @@ public fun <T : Any> DIAware.Provider(type: TypeToken<out T>, tag: Any? = null):
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-public fun <A, T : Any> DIAware.Provider(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): DIProperty<() -> T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value).toProvider(arg) }
+public fun <A, T : Any> DIAware.Provider(
+    argType: TypeToken<in A>,
+    type: TypeToken<out T>,
+    tag: Any? = null,
+    arg: () -> A,
+): DIProperty<() -> T> = DIProperty(diTrigger, diContext) { ctx, _ ->
+    di.container.factory(DI.Key(ctx.anyType, argType, type, tag),
+        ctx.value).toProvider(arg)
+}
 
 /**
  * Gets a provider of [T] for the given type and tag, or null if none is found.
@@ -144,8 +163,13 @@ public fun <A, T : Any> DIAware.Provider(argType: TypeToken<in A>, type: TypeTok
  * @return A provider of [T], or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-public fun <T : Any> DIAware.ProviderOrNull(type: TypeToken<out T>, tag: Any? = null): DIProperty<(() -> T)?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
+public fun <T : Any> DIAware.ProviderOrNull(type: TypeToken<out T>, tag: Any? = null): LazyDelegate<(() -> T)?> =
+    DIProperty(diTrigger, diContext) { ctx, _ ->
+        di.container.providerOrNull(DI.Key(ctx.anyType,
+            TypeToken.Unit,
+            type,
+            tag), ctx.value)
+    }
 
 /**
  * Gets a provider of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -159,8 +183,15 @@ public fun <T : Any> DIAware.ProviderOrNull(type: TypeToken<out T>, tag: Any? = 
  * @return A provider of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
-public fun <A, T : Any> DIAware.ProviderOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): DIProperty<(() -> T)?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value)?.toProvider(arg) }
+public fun <A, T : Any> DIAware.ProviderOrNull(
+    argType: TypeToken<in A>,
+    type: TypeToken<out T>,
+    tag: Any? = null,
+    arg: () -> A,
+): LazyDelegate<(() -> T)?> = DIProperty(diTrigger, diContext) { ctx, _ ->
+    di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag),
+        ctx.value)?.toProvider(arg)
+}
 
 /**
  * Gets an instance of [T] for the given type and tag.
@@ -172,8 +203,11 @@ public fun <A, T : Any> DIAware.ProviderOrNull(argType: TypeToken<in A>, type: T
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-public fun <T : Any> DIAware.Instance(type: TypeToken<out T>, tag: Any? = null): DIProperty<T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value).invoke() }
+public fun <T : Any> DIAware.Instance(type: TypeToken<out T>, tag: Any? = null): LazyDelegate<T> =
+    DIProperty(diTrigger, diContext) { ctx, _ ->
+        di.container.provider(DI.Key(ctx.anyType, TypeToken.Unit, type, tag),
+            ctx.value).invoke()
+    }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -188,8 +222,15 @@ public fun <T : Any> DIAware.Instance(type: TypeToken<out T>, tag: Any? = null):
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-public fun <A, T : Any> DIAware.Instance(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): DIProperty<T> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factory(DI.Key(ctx.anyType, argType, type, tag), ctx.value).invoke(arg()) }
+public fun <A, T : Any> DIAware.Instance(
+    argType: TypeToken<in A>,
+    type: TypeToken<T>,
+    tag: Any? = null,
+    arg: () -> A,
+): LazyDelegate<T> = DIProperty(diTrigger, diContext) { ctx, _ ->
+    di.container.factory(DI.Key(ctx.anyType, argType, type, tag),
+        ctx.value).invoke(arg())
+}
 
 /**
  * Gets an instance of [T] for the given type and tag, or null if none is found.
@@ -199,8 +240,13 @@ public fun <A, T : Any> DIAware.Instance(argType: TypeToken<in A>, type: TypeTok
  * @return An instance of [T], or null if no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-public fun <T : Any> DIAware.InstanceOrNull(type: TypeToken<out T>, tag: Any? = null): DIProperty<T?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.providerOrNull(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value)?.invoke() }
+public fun <T : Any> DIAware.InstanceOrNull(type: TypeToken<out T>, tag: Any? = null): LazyDelegate<T?> =
+    DIProperty(diTrigger, diContext) { ctx, _ ->
+        di.container.providerOrNull(DI.Key(ctx.anyType,
+            TypeToken.Unit,
+            type,
+            tag), ctx.value)?.invoke()
+    }
 
 /**
  * Gets an instance of [T] for the given type and tag, curried from a factory that takes an argument [A], or null if none is found.
@@ -213,8 +259,15 @@ public fun <T : Any> DIAware.InstanceOrNull(type: TypeToken<out T>, tag: Any? = 
  * @return An instance of [T], or null if no factory was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
-public fun <A, T : Any> DIAware.InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): DIProperty<T?> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag), ctx.value)?.invoke(arg()) }
+public fun <A, T : Any> DIAware.InstanceOrNull(
+    argType: TypeToken<in A>,
+    type: TypeToken<out T>,
+    tag: Any? = null,
+    arg: () -> A,
+): LazyDelegate<T?> = DIProperty(diTrigger, diContext) { ctx, _ ->
+    di.container.factoryOrNull(DI.Key(ctx.anyType, argType, type, tag),
+        ctx.value)?.invoke(arg())
+}
 
 /**
  * Return a direct [DirectDI] instance, with its receiver and context set to this DIAware receiver and context.
@@ -222,11 +275,15 @@ public fun <A, T : Any> DIAware.InstanceOrNull(argType: TypeToken<in A>, type: T
 public val DIAware.direct: DirectDI get() = DirectDIImpl(di.container, diContext)
 
 private class DIWrapper(
-        private val _base: DI,
-        override val diContext: DIContext<*>,
-        override val diTrigger: DITrigger? = null
+    private val _base: DI,
+    override val diContext: DIContext<*>,
+    override val diTrigger: DITrigger? = null,
 ) : DI {
-    internal constructor(base: DIAware, diContext: DIContext<*> = base.diContext, trigger: DITrigger? = base.diTrigger) : this(base.di, diContext, trigger)
+    constructor(
+        base: DIAware,
+        diContext: DIContext<*> = base.diContext,
+        trigger: DITrigger? = base.diTrigger,
+    ) : this(base.di, diContext, trigger)
 
     override val di: DI get() = this
 
@@ -240,7 +297,8 @@ private class DIWrapper(
  * @param trigger The new trigger of the new DI.
  * @return A DI object that uses the same container as this one, but with its context and/or trigger changed.
  */
-public fun DIAware.On(context: DIContext<*> = this.diContext, trigger: DITrigger? = this.diTrigger): DI = DIWrapper(this, diContext = context, trigger = trigger)
+public fun DIAware.On(context: DIContext<*> = this.diContext, trigger: DITrigger? = this.diTrigger): DI =
+    DIWrapper(this, diContext = context, trigger = trigger)
 
 /**
  * Allows to create a new instance of an unbound object with the same API as when bounding one.
@@ -248,5 +306,6 @@ public fun DIAware.On(context: DIContext<*> = this.diContext, trigger: DITrigger
  * @param T The type of object to create.
  * @param creator A function that do create the object.
  */
-public fun <T> DIAware.newInstance(creator: DirectDI.() -> T): DIProperty<T> = DIProperty(diTrigger, diContext) { ctx, _ -> di.direct.On(ctx).run(creator) }
+public fun <T> DIAware.newInstance(creator: DirectDI.() -> T): LazyDelegate<T> =
+    DIProperty(diTrigger, diContext) { ctx, _ -> di.direct.On(ctx).run(creator) }
 

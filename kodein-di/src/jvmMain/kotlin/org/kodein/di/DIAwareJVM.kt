@@ -13,8 +13,13 @@ import org.kodein.type.TypeToken
  * @return A list of factories of [T].
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-public fun <A, T : Any> DIAware.AllFactories(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null): DIProperty<List<(A) -> T>> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allFactories(DI.Key(ctx.anyType, argType, type, tag), ctx.value) }
+public fun <A, T : Any> DIAware.AllFactories(
+    argType: TypeToken<in A>,
+    type: TypeToken<out T>,
+    tag: Any? = null,
+): LazyDelegate<List<(A) -> T>> = DIProperty(diTrigger, diContext) { ctx, _ ->
+    di.container.allFactories(DI.Key(ctx.anyType, argType, type, tag), ctx.value)
+}
 
 /**
  * Gets all providers that match the the given return type and tag.
@@ -25,8 +30,12 @@ public fun <A, T : Any> DIAware.AllFactories(argType: TypeToken<in A>, type: Typ
  * @return A list of providers of [T].
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-public fun <T : Any> DIAware.AllProviders(type: TypeToken<out T>, tag: Any? = null): DIProperty<List<() -> T>> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allProviders(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value) }
+public fun <T : Any> DIAware.AllProviders(
+    type: TypeToken<out T>,
+    tag: Any? = null,
+): LazyDelegate<List<() -> T>> = DIProperty(diTrigger, diContext) { ctx, _ ->
+    di.container.allProviders(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value)
+}
 
 /**
  * Gets all providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -40,8 +49,15 @@ public fun <T : Any> DIAware.AllProviders(type: TypeToken<out T>, tag: Any? = nu
  * @return A list of providers of [T].
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-public fun <A, T : Any> DIAware.AllProviders(argType: TypeToken<in A>, type: TypeToken<out T>, tag: Any? = null, arg: () -> A): DIProperty<List<() -> T>> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allFactories(DI.Key(ctx.anyType, argType, type, tag), ctx.value).map { it.toProvider(arg) } }
+public fun <A, T : Any> DIAware.AllProviders(
+        argType: TypeToken<in A>,
+        type: TypeToken<out T>,
+        tag: Any? = null,
+        arg: () -> A,
+): LazyDelegate<List<() -> T>> = DIProperty(diTrigger, diContext) { ctx, _ ->
+        di.container.allFactories(DI.Key(ctx.anyType, argType, type, tag),
+            ctx.value).map { it.toProvider(arg) }
+    }
 
 /**
  * Gets all instances from providers that match the the given return type and tag.
@@ -52,8 +68,13 @@ public fun <A, T : Any> DIAware.AllProviders(argType: TypeToken<in A>, type: Typ
  * @return A list of [T] instances.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-public fun <T : Any> DIAware.AllInstances(type: TypeToken<out T>, tag: Any? = null): DIProperty<List<T>> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allProviders(DI.Key(ctx.anyType, TypeToken.Unit, type, tag), ctx.value).map { it.invoke() } }
+public fun <T : Any> DIAware.AllInstances(type: TypeToken<out T>, tag: Any? = null): LazyDelegate<List<T>> =
+    DIProperty(diTrigger, diContext) { ctx, _ ->
+        di.container.allProviders(DI.Key(ctx.anyType,
+            TypeToken.Unit,
+            type,
+            tag), ctx.value).map { it.invoke() }
+    }
 
 /**
  * Gets all instances from providers that match the the given return type and tag, curried from factories that take an argument [A].
@@ -67,5 +88,12 @@ public fun <T : Any> DIAware.AllInstances(type: TypeToken<out T>, tag: Any? = nu
  * @return A list of [T] instances.
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
-public fun <A, T : Any> DIAware.AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any? = null, arg: () -> A): DIProperty<List<T>> =
-        DIProperty(diTrigger, diContext) { ctx, _ -> di.container.allFactories(DI.Key(ctx.anyType, argType, type, tag), ctx.value).map { it.invoke(arg()) } }
+public fun <A, T : Any> DIAware.AllInstances(
+        argType: TypeToken<in A>,
+        type: TypeToken<T>,
+        tag: Any? = null,
+        arg: () -> A,
+): LazyDelegate<List<T>> = DIProperty(diTrigger, diContext) { ctx, _ ->
+        di.container.allFactories(DI.Key(ctx.anyType, argType, type, tag),
+            ctx.value).map { it.invoke(arg()) }
+    }

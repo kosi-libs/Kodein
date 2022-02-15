@@ -38,9 +38,13 @@ public interface LazyDelegate<out V> {
  */
 @Deprecated(
     message = "This is an internal API, use LazyDelegate instead.",
-    replaceWith = ReplaceWith("LazyDelegate")
-)
-public class DIProperty<out V>(internal val trigger: DITrigger?, public val originalContext: DIContext<*>, private val get: (DIContext<*>, String) -> V) : LazyDelegate<V> {
+    replaceWith = ReplaceWith("LazyDelegate<V>")
+) // TODO set as internal
+public class DIProperty<out V>(
+    internal val trigger: DITrigger?,
+    public val originalContext: DIContext<*>,
+    private val get: (DIContext<*>, String) -> V,
+) : LazyDelegate<V> {
 
     override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<V> = lazy {
         @Suppress("UNCHECKED_CAST")
@@ -54,8 +58,15 @@ public class DIProperty<out V>(internal val trigger: DITrigger?, public val orig
     }.also { trigger?.properties?.add(it) }
 }
 
-public class DIPropertyMap<in I, out O>(private val base: DIProperty<I>, private val map: (I) -> O) : LazyDelegate<O> {
+public class DIPropertyMap<in I, out O>(
+    private val base: DIProperty<I>,
+    private val map: (I) -> O,
+) : LazyDelegate<O> {
 
-    override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<O> = lazy { map(base.provideDelegate(receiver, prop).value) }.also { base.trigger?.properties?.add(it) }
+    override fun provideDelegate(receiver: Any?, prop: KProperty<Any?>): Lazy<O> = lazy {
+        map(base.provideDelegate(receiver, prop).value)
+    }.also {
+        base.trigger?.properties?.add(it)
+    }
 
 }
