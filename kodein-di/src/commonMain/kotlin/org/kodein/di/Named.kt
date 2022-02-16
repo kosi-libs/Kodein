@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package org.kodein.di
 
 import org.kodein.type.TypeToken

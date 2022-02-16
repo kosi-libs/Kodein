@@ -58,6 +58,7 @@ public class DIProperty<out V>(
     }.also { trigger?.properties?.add(it) }
 }
 
+@Suppress("DEPRECATION")
 public class DIPropertyMap<in I, out O>(
     private val base: DIProperty<I>,
     private val map: (I) -> O,
