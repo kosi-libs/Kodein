@@ -137,7 +137,7 @@ fun App() = withDI({ // <1>
 <2> every underlying `@Composable` element can access the bindings attached to the current `@Composable` node
 
 WARNING: It's important to understand that the bindings can't be accessed with the `CompositionLocal` mechanism from the sibling or upper nodes.
-         The DI reference si only available inside the `content` lambda and for underlying `@Composable` element of the `withDI` functions.
+         The DI reference is only available inside the `content` lambda and for underlying `@Composable` element of the `withDI` functions.
 
 [[localdi]]
 ==== Access a DI container from `@Composable` functions
@@ -157,7 +157,7 @@ fun ContentView() {
     val dice: Dice by di.instance() // <2>
 }
 ----
-<1> Get the DI container attache to a parent node
+<1> Get the DI container attached to a parent node
 <2> Standard *_Kodein-DI_* binding retrieval
 
 WARNING: Using `localDI()` in a tree where there is no DI container will throw a runtime exception: `IllegalStateException: Missing DI container!`.
@@ -262,55 +262,86 @@ fun ContentView() {
 === Retrieve bindings from `@Composable` functions
 
 If you have defined a DI container in a xref:#localdi[`LocalDI`], you can consider every underlying `@Composable` as DI aware.
-This means that can access the current DI container and its bindings with one of the following function delegates:
-
-- `val t: TYPE by rememberInstance()`
-- `val f: (ARG_TYPE) -> TYPE by rememberFactory()`
-- `val p: () -> TYPE by rememberProvider()`
-
-TIP: If you are not familiar with these declarations you can explore the detailed documentation on xref:core:bindings.adoc[bindings] and xref:core:injection-retrieval.adoc[injection/retrieval].
-
-Here are some examples on how to retrieve instances, factories or providers within a `@Composable` function.
+This means they can access the current DI container and its bindings with one of the following function delegates:
 
 [source, kotlin]
 .Retrieve instances
 ----
 @Composable
 fun ContentView() {
-    val dice: Dice by rememberInstance() // <1>
+    val dice: Dice by rememberDI { instance() }
+}
+----
+
+`rememberDI` allows you to remember the reference of an instance retrieved from a DI container.
+
+WARNING: Under the hood, `rememberDI { }` uses the `localDI()` function. If there is no DI container defined
+in the `@Composable` current hierarchy, you will get a runtime exception, i.e. `IllegalStateException: Missing DI container!`.
+
+If you need a specific interaction with the DI container, in a `@Composable` tree, you can use `rememberDI { }` to wrap your implementation. Following you can find wrappers already provided by *Kodein-DI*.
+
+[source, kotlin]
+.a wrapper for `rememberDI { instance() }`
+----
+@Composable
+fun ContentView() {
+    val dice: Dice by rememberInstance()
 }
 ----
 
 [source, kotlin]
-.Retrieve factories
+.a wrapper for `rememberDI { named.instance() }`
 ----
 @Composable
 fun ContentView() {
-    val diceFactory: (Int) -> Dice by rememberFactory() // <1>
+    val dice: Dice by rememberInstance(tag = "dice")
+    // is the same as...
+    val dice: Dice by rememberNamedInstance()
 }
 ----
+
+[source, kotlin]
+.a wrapper for `rememberDI { factory() }`
+----
+@Composable
+fun ContentView() {
+    val diceFactory: (Int) -> Dice by rememberFactory()
+}
+----
+
+[source, kotlin]
+.a wrapper for `rememberDI { provider() }`
+----
+@Composable
+fun ContentView() {
+    val diceFactory: (Int) -> Dice by rememberFactory()
+}
+----
+
+TIP: If you are not familiar with these declarations you can explore the detailed documentation on xref:core:bindings.adoc[bindings] and xref:core:injection-retrieval.adoc[injection/retrieval].
 
 [source, kotlin]
 .Retrieve providers
 ----
 @Composable
 fun ContentView() {
-    val diceProvider: () -> Dice by rememberProvider() // <1>
-    val personProvider: () -> Person by rememberProvider(arg = "Romain") // <1>
+    val diceProvider: () -> Dice by rememberProvider()
 }
 ----
 
-WARNING: Under the hood these functions are using `LocalDI`. If there is no DI container define in the `@Composable` current hierarchy, you will get a runtime exception: `IllegalStateException: Missing DI container!`.
+TIP: the `rememberX` functions will preserve the retrieved instance on every composition.
 
 == Android specific usage
 
-`kodein-di-framework-compose` Android source set adds the transitive dependencies `kodein-di` and `kodein-di-framework-android-x`.
+On `kodein-di-framework-compose` the Android source set adds the transitive dependencies to `kodein-di` and `kodein-di-framework-android-x`.
 This gives us the ability to combine two important concepts that are xref:core:injection-retrieval.adoc#di-aware[`DIAware`] and the xref:android.adoc#closest-di[closest DI pattern].
-It adds to some Android specific objects, an extension function `di()`, that is capable of exploring the context hierarchy until it finds a DI container, hence the name of the pattern.
 
-Thanks to these mechanisms we can provide two specifics functions for *_Jetpack Compose_* users.
+TIP: TL;DR - It helps us adds to some Android specific objects, an extension function `closestDI()`,
+that is capable of exploring the context hierarchy until it finds a DI container, hence the name of the pattern.
 
-1. A `@Composable` function `androidContextDI` that uses the closest DI pattern to get a DI container by using the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal] `LocalContext`, from *_Jetpack Compose_*.
+Thanks to these mechanisms we can provide, to *_Jetpack Compose_* users, a `@Composable` function `androidContextDI` that uses the closest DI pattern to get a DI container by using the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal].
+
+TIP: With that, any `@Composable` can retrieve instances from the DI container as long as they can access the upper bound DIAware (i.e. Activity or Fragment).
 
 [source, kotlin]
 .Getting the closest DI context from the Android's context
@@ -328,45 +359,10 @@ class MainActivity : ComponentActivity(), DIAware {  // <1>
 
 @Composable
 fun App() {
-    val di = androidContextDI() // <3>
-    val dataSource: DataSource by rememberInstance()
+    val dataSource: DataSource by rememberInstance() // <3>
     Text(text = "Hello ${dataSource.getUsername()}!")
 }
 ----
 <1> Your Android context *must* be `DIAware` ...
 <2> ... and override the `di` property.
-<3> the `androidContextDI` function retrieve the `di` property from the closest `DIAware` object.
-
-- A specific version of the xref:with-di[`withDI`]
-
-This uses the `androidContextDI` function to provide a DI container as the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal] `LocalDI`.
-
-[source, kotlin]
-.Android context
-----
-class MainActivity : ComponentActivity(), DIAware {  // <1>
-    override val di: DI = DI.lazy {  // <2>
-        bindSingleton<DataSource> { SqliteDS.open("path/to/file") }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent { App() }
-    }
-}
-
-@Composable
-fun App() = withDI { // <3>
-    MyContentView()
-}
-
-@Composable
-fun MyContentView() {
-    val dataSource: DataSource by rememberInstance() // <4>
-    Text(text = "Hello ${dataSource.getUsername()}!")
-}
-----
-<1> Your Android context *must* be `DIAware` ...
-<2> ... and override the `di` property.
-<3> Add the closest DI container to the `@Composable` hierarchy
-<4> Underlying `@Composable` can transparently access to the DI container defined in the closest Android's context.
+<3> Uses the `androidContextDI` function to retrieve the `di` property from the closest `DIAware` object.
