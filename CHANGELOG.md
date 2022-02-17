@@ -1,10 +1,21 @@
-#### 7.10.0 (29-10-2020)
+#### 7.11.0 (18-02-2022)
+
+  - CORE
+    * Documentation improvements (thanks to the contributors!).  
+    * Deprecation cycle
+  - COMPOSE
+    * JB Compose 1.1.0 Alpha5
+    * Introduce `rememberDI` Composable function
+    * Fix `rememberX` functions` behavior
+    * Update documentation
+    
+#### 7.10.0 (29-10-2021)
 
   - COMPOSE
       * JB Compose beta5
       * Enable Web target
 
-#### 7.9.0 (24-10-2020)
+#### 7.9.0 (24-10-2021)
 
   - CORE
       * Gradle 7.2
@@ -15,7 +26,7 @@
       * JB Compose beta1
       * Android : remember ViewModel helper
 
-#### 7.8.0 (12-08-2020)
+#### 7.8.0 (12-08-2021)
 
   - CORE
     * Kotlin 1.5.21
@@ -28,7 +39,7 @@
       
   - COMPOSE: `kodein-di-framework-compose` module is now align with the stable version of Compose compiler (compatible with Kotlin 1.5.21) with improvements
 
-#### 7.6.0 (21-05-2020)
+#### 7.6.0 (21-05-2021)
 
   - CORE:
     * Kotlin 1.5
@@ -36,7 +47,7 @@
       * Thanks to @eygraber for the heavy investigation #309
   - Documentation
 
-#### 7.5.0 (30-03-2020)
+#### 7.5.0 (30-03-2021)
 
   - CORE
     * Direct binding by adding `bind(tag: Any?, overrides: Boolean?, createBinding: () -> DIBinding)`
@@ -53,18 +64,18 @@
   - FRAMEWORK
     * Adding Compose support for both Android (Jetpack) and Desktop (JetBrains).
 
-#### 7.4.0 (27-02-2020)
+#### 7.4.0 (27-02-2021)
 
   - CORE
     * Kotlin 1.4.31
     * Maven Central publication
 
-#### 7.3.1 (08-02-2020)
+#### 7.3.1 (08-02-2021)
 
   - CORE
     * Enable new JS IR backend
 
-#### 7.3.0 (05-02-2020)
+#### 7.3.0 (05-02-2021)
 
   - CORE
     * Kotlin 1.4.30
