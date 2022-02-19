@@ -1,4 +1,3 @@
-
 package org.kodein.di.conf
 
 import org.kodein.di.*
@@ -10,7 +9,8 @@ import kotlin.test.*
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ConfTests {
 
-    @Test fun test_00_Configurable() {
+    @Test
+    fun test_00_Configurable() {
         val di = ConfigurableDI()
 
         di.addConfig {
@@ -26,7 +26,8 @@ class ConfTests {
         assertFalse(di.canConfigure)
     }
 
-    @Test fun test_01_Clear() {
+    @Test
+    fun test_01_Clear() {
         val di = ConfigurableDI(true)
 
         di.addImport(DI.Module("myModule") {
@@ -44,7 +45,8 @@ class ConfTests {
         assertEquals(42, di.direct.instance(tag = "answer"))
     }
 
-    @Test fun test_02_Mutate() {
+    @Test
+    fun test_02_Mutate() {
         val di = ConfigurableDI(true)
 
         di.addExtend(DI {
@@ -61,7 +63,8 @@ class ConfTests {
         assertEquals(42, di.direct.instance(tag = "full"))
     }
 
-    @Test fun test_03_NonMutableClear() {
+    @Test
+    fun test_03_NonMutableClear() {
         val di = ConfigurableDI()
 
         di.addConfig {
@@ -75,7 +78,8 @@ class ConfTests {
         }
     }
 
-    @Test fun test_04_NonMutableMutate() {
+    @Test
+    fun test_04_NonMutableMutate() {
         val di = ConfigurableDI()
 
         di.addConfig {
@@ -89,7 +93,8 @@ class ConfTests {
         }
     }
 
-    @Test fun test_05_mutateConfig() {
+    @Test
+    fun test_05_mutateConfig() {
         val di = ConfigurableDI(true)
 
         di.addConfig {
@@ -106,7 +111,8 @@ class ConfTests {
         assertEquals(42, di.direct.instance(tag = "full"))
     }
 
-    @Test fun test_06_nonMutableMutateConfig() {
+    @Test
+    fun test_06_nonMutableMutateConfig() {
         val di = ConfigurableDI()
 
         di.addConfig {
@@ -137,11 +143,12 @@ class ConfTests {
         assertEquals("Salomon BRYS", di.direct.factory<FullName, String>().invoke(FullName("Salomon", "BRYS")))
     }
 
-    class T08: DIGlobalAware {
+    class T08 : DIGlobalAware {
         val answer: Int by instance(tag = "full")
     }
 
-    @Test fun test_08_Global() {
+    @Test
+    fun test_08_Global() {
         DI.global.mutable = true
 
         DI.global.addConfig {
@@ -158,7 +165,8 @@ class ConfTests {
         assertEquals(42, T08().answer)
     }
 
-    @Test fun test_09_Callback() {
+    @Test
+    fun test_09_Callback() {
         val di = ConfigurableDI()
 
         var ready = false
@@ -184,5 +192,18 @@ class ConfTests {
         assertTrue(ready)
     }
 
+    @Test
+    fun test_10_config_chaining() {
+        val di = ConfigurableDI(true)
 
+        di
+            .addConfig {
+                constant(tag = "half") with 21
+            }.addConfig {
+                constant(tag = "full") with 42
+            }
+
+        assertEquals(21, di.direct.instance(tag = "half"))
+        assertEquals(42, di.direct.instance(tag = "full"))
+    }
 }

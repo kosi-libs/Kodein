@@ -126,7 +126,7 @@ public class ConfigurableDI : DI {
      * @param config The lambda to be applied when the DI instance is constructed.
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `DI` retrieval function.
      */
-    public fun addConfig(config: DI.MainBuilder.() -> Unit) {
+    public fun addConfig(config: DI.MainBuilder.() -> Unit) : ConfigurableDI {
         maySynchronized(_lock) {
             val configs = _configs
             if (configs == null) {
@@ -140,6 +140,7 @@ public class ConfigurableDI : DI {
             }
             _configs!!.add(config)
         }
+        return this
     }
 
     /**
@@ -149,7 +150,9 @@ public class ConfigurableDI : DI {
      * @param allowOverride Whether this module is allowed to override existing bindings.
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `DI` retrieval function.
      */
-    public fun addImport(module: DI.Module, allowOverride: Boolean = false): Unit = addConfig { import(module, allowOverride) }
+    public fun addImport(module: DI.Module, allowOverride: Boolean = false): ConfigurableDI = addConfig {
+        import(module, allowOverride)
+    }
 
     /**
      * Adds the bindings of an existing DI instance to the bindings that will be applied when the DI is constructed.
@@ -161,7 +164,7 @@ public class ConfigurableDI : DI {
      *   By default, all bindings that do not hold references (e.g. not singleton or multiton) are copied.
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `DI` retrieval function.
      */
-    public fun addExtend(di: DI, allowOverride: Boolean = false, copy: Copy = Copy.NonCached): Unit = addConfig {
+    public fun addExtend(di: DI, allowOverride: Boolean = false, copy: Copy = Copy.NonCached): ConfigurableDI = addConfig {
         extend(di, allowOverride, copy)
     }
 
