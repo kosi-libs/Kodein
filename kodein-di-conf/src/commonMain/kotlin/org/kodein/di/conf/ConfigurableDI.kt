@@ -1,6 +1,7 @@
 package org.kodein.di.conf
 
 import org.kodein.di.*
+import org.kodein.di.DI.OverridingException
 import org.kodein.di.internal.maySynchronized
 import org.kodein.di.internal.synchronizedIfNull
 
@@ -155,9 +156,14 @@ public class ConfigurableDI : DI {
      *
      * @param di The existing DI instance whose bindings to be apply when the DI instance is constructed.
      * @param allowOverride Whether these bindings are allowed to override existing bindings.
+     * @param copy The copy specifications, that defines which bindings will be copied to the new container.
+     *   All bindings from the extended container will be accessible in the new container, but only the copied bindings are able to access overridden bindings in this new container.
+     *   By default, all bindings that do not hold references (e.g. not singleton or multiton) are copied.
      * @exception IllegalStateException When calling this function after [getOrConstruct] or any `DI` retrieval function.
      */
-    public fun addExtend(di: DI, allowOverride: Boolean = false): Unit = addConfig { extend(di, allowOverride) }
+    public fun addExtend(di: DI, allowOverride: Boolean = false, copy: Copy = Copy.NonCached): Unit = addConfig {
+        extend(di, allowOverride, copy)
+    }
 
     /** @suppress */
     override val container: DIContainer get() = getOrConstruct().container
