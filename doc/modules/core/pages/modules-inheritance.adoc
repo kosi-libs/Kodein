@@ -9,7 +9,6 @@ _Kodein-DI_ allows you to export your bindings in modules.
 It is very useful to have separate modules defining their own bindings instead of having only one central binding definition.
 A module is an object that you can construct the exact same way as you construct a DI instance.
 
-
 [source, kotlin]
 .Example: a simple module
 ----
@@ -33,6 +32,17 @@ val di = DI {
 NOTE: Modules are *definitions*, they will re-declare their bindings in each DI instance you use.
 If you create a module that defines a singleton and import that module into two different DI instances, then the singleton object will exist twice: once in each DI instance.
 
+Since *Kodein-DI 7.12.0* you can use the property delegate pattern to declare your modules, avoiding explicit naming of your module:
+
+[source, kotlin]
+.Example: a property delegate module
+----
+val apiModule by DI.Module { // <1>
+    bind<API> { singleton { APIImpl() } }
+    /* other bindings */
+}
+----
+<1> name of the module will be implicit, e.i. `apiModule`
 
 [[module-uniqueness]]
 === Name uniqueness

@@ -4,6 +4,7 @@ import org.kodein.di.bindings.*
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
 import kotlin.native.concurrent.ThreadLocal
+import kotlin.reflect.KProperty
 
 /**
  * KOtlin DEpendency INjection.
@@ -441,12 +442,43 @@ public interface DI : DIAware {
      * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
      * @property init The block of configuration for this module.
      */
-    public data class Module(
-        val name: String,
-        val allowSilentOverride: Boolean = false,
-        val prefix: String = "",
-        val init: Builder.() -> Unit,
-    )
+    public interface Module {
+        public val name: String
+        public val allowSilentOverride: Boolean
+        public val prefix: String
+        public val init: Builder.() -> Unit
+
+        public operator fun getValue(thisRef: Any?, property: KProperty<*>) : Module
+
+        public companion object {
+            public operator fun invoke(
+                name: String,
+                allowSilentOverride: Boolean = false,
+                prefix: String = "",
+                init: Builder.() -> Unit,
+            ): Module = ModuleImpl(name, allowSilentOverride, prefix, init)
+        }
+    }
+
+    private data class ModuleImpl(
+        override val name: String,
+        override val allowSilentOverride: Boolean,
+        override val prefix: String,
+        override val init: Builder.() -> Unit
+    ) : Module {
+        override operator fun getValue(thisRef: Any?, property: KProperty<*>) = this
+    }
+
+    private data class ModuleDelegate(
+        override val allowSilentOverride: Boolean = false,
+        override val prefix: String = "",
+        override val init: Builder.() -> Unit,
+    ) : Module {
+        private var _name: String = ""
+        override val name: String get() = _name
+        override operator fun getValue(thisRef: Any?, property: KProperty<*>): Module =
+            this.apply { _name = property.name }
+    }
 
     /**
      * Every methods eventually ends up to a call to this container.
@@ -501,6 +533,12 @@ public interface DI : DIAware {
         public fun from(modules: List<Module>): DI = DI {
             modules.forEach { import(it) }
         }
+
+        public fun Module(
+            allowSilentOverride: Boolean = false,
+            prefix: String = "",
+            init: Builder.() -> Unit,
+        )   : Module = ModuleDelegate(allowSilentOverride, prefix, init)
 
         public var defaultFullDescriptionOnError: Boolean = false
         public var defaultFullContainerTreeOnError: Boolean = false

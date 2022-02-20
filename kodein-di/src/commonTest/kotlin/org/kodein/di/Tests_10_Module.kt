@@ -169,4 +169,29 @@ class Tests_10_Module {
         assertSame(container1.direct.instance<String>(), container2.direct.instance(), container3.direct.instance())
     }
 
+    @Test
+    fun test_06_ModuleCreation() {
+        val directModule1 = DI.Module("test_1") {}
+
+        assertEquals("test_1", directModule1.name)
+        assertFalse(directModule1.allowSilentOverride)
+        assertEquals("", directModule1.prefix)
+
+        val directModule2 = DI.Module("test_2", allowSilentOverride = true, prefix = "prefix_2") {}
+
+        assertEquals("test_2", directModule2.name)
+        assertTrue(directModule2.allowSilentOverride)
+        assertEquals("prefix_2", directModule2.prefix)
+
+        val test_1 by DI.Module {}
+        assertEquals("test_1", test_1.name)
+        assertFalse(test_1.allowSilentOverride)
+        assertEquals("", test_1.prefix)
+
+        val test_2 by DI.Module(allowSilentOverride = true, prefix = "prefix_2") {}
+
+        assertEquals("test_2", test_2.name)
+        assertTrue(test_2.allowSilentOverride)
+        assertEquals("prefix_2", test_2.prefix)
+    }
 }
