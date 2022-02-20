@@ -141,14 +141,12 @@ You can import modules, extend DI objects, or add bindings inside this `Configur
 ----
 fun test() {
     val di = ConfigurableDI()
-
-    di.addModule(aModule)
-    di.addExtend(otherDI)
-
-    di.addConfig {
-        bind<Dice> { provider { RandomDice(0, 5) } }
-        bind<DataSource> { singleton { SqliteDS.open("path/to/file") } }
-    }
+        .addModule(aModule)
+        .addExtend(otherDI)
+        .addConfig {
+            bind<Dice> { provider { RandomDice(0, 5) } }
+            bind<DataSource> { singleton { SqliteDS.open("path/to/file") } }
+        }
 }
 ----
 
@@ -193,7 +191,7 @@ fun test() {
 
     val ds: DataSource by di.instance()
 
-    di.addModule(anotherModule) <1>
+    di.addModule(anotherModule) // <1>
 }
 ----
 <1> This would have failed if the ConfigurableDI was not mutable.
