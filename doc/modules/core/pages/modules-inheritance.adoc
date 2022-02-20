@@ -77,7 +77,7 @@ To support this, _Kodein-DI_ offers `importOnce`: it imports the module if no mo
 [source,kotlin]
 .Example: importing a module only once
 ----
-val appModule = DI.Module {
+val appModule = DI.Module("appModule") {
     importOnce(apiModule)
 }
 ----

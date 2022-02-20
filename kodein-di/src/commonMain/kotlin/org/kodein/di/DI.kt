@@ -441,14 +441,12 @@ public interface DI : DIAware {
      * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
      * @property init The block of configuration for this module.
      */
-    public data class Module(val name: String, val allowSilentOverride: Boolean = false, val prefix: String = "", val init: Builder.() -> Unit) {
-        @Deprecated(
-            message = "You should name your modules, for debug purposes.",
-            replaceWith = ReplaceWith("Module(\"module name\", allowSilentOverride, init)"),
-            level = DeprecationLevel.ERROR
-        )
-        public constructor(allowSilentOverride: Boolean = false, init: Builder.() -> Unit) : this("", allowSilentOverride, "", init)
-    }
+    public data class Module(
+        val name: String,
+        val allowSilentOverride: Boolean = false,
+        val prefix: String = "",
+        val init: Builder.() -> Unit,
+    )
 
     /**
      * Every methods eventually ends up to a call to this container.
