@@ -193,5 +193,13 @@ class Tests_10_Module {
         assertEquals("test_2", test_2.name)
         assertTrue(test_2.allowSilentOverride)
         assertEquals("prefix_2", test_2.prefix)
+
+        val test_3 by DI.Module(name = "test_3_delegate") {}
+
+        assertEquals("test_3_delegate", test_3.name)
+        assertFalse(test_3.allowSilentOverride)
+        assertEquals("", test_3.prefix)
+
+        assertFailsWith<IllegalStateException> { DI.Module {}.name }
     }
 }
