@@ -1,6 +1,7 @@
 package org.kodein.di
 
 import org.kodein.di.bindings.*
+import org.kodein.di.internal.DIBuilderImpl
 import org.kodein.type.generic
 
 
@@ -124,6 +125,17 @@ public fun DI.Builder.bind(tag: Any? = null, overrides: Boolean? = null): DI.Bui
  * @param value The instance to bind.
  */
 public inline infix fun <reified T : Any> DI.Builder.ConstantBinder.with(value: T): Unit = With(generic<T>(), value)
+
+/**
+ * Delegate the targeted type to a new binding type
+ * @param tag The tag to bind.
+ * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
+ * @return The binder: call [DI.Builder.DelegateBinder.To]) on it to finish the binding syntax and register the binding.
+ */
+public inline fun <reified T : Any> DI.Builder.delegate(
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): DI.Builder.DelegateBinder<T> = Delegate(generic(), tag, overrides)
 //endregion
 
 //region SearchDSL

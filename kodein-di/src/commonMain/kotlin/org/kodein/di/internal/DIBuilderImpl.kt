@@ -4,7 +4,6 @@ import org.kodein.di.*
 import org.kodein.di.bindings.*
 import org.kodein.type.TypeToken
 import org.kodein.type.erasedComp
-import org.kodein.type.generic
 
 internal open class DIBuilderImpl internal constructor(
         private val moduleName: String?,
@@ -66,6 +65,12 @@ internal open class DIBuilderImpl internal constructor(
     override fun Bind(tag: Any?, overrides: Boolean?): DirectBinder = DirectBinder(tag, overrides)
 
     override fun constant(tag: Any, overrides: Boolean?) = ConstantBinder(tag, overrides)
+
+    override fun <T : Any> Delegate(
+        type: TypeToken<out T>,
+        tag: Any?,
+        overrides: Boolean?,
+    ): DI.Builder.DelegateBinder<T> = DI.Builder.DelegateBinder(this, type, tag, overrides)
 
     override fun import(module: DI.Module, allowOverride: Boolean) {
         val moduleName = prefix + module.name

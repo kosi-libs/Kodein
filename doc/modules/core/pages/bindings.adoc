@@ -320,6 +320,23 @@ val di = DI {
 
 In essence, `bind<Whatever>().subtypes() with { type -> binding }` allows you to register, in _Kodein-DI_, a binding factory that will be called for subtypes of the provided type.
 
+== Delegate binding
+
+In some cases you could need to bind a super type to an already bound type. For that, _Kodein-DI_ provides a delegation mechanism, to delegate a given binding to another.
+
+[source,kotlin]
+.Example: delegate binding
+----
+interface ICache
+class Cache : ICache
+
+val di = DI {
+    bind { singleton { Cache() } } // <1>
+    delegate<ICache>().to<Cache>() // <2>
+}
+----
+<1> Binds a concrete type
+<2> At retrieval `ICache` will be exactly the same instance as `Cache`, bound in (1).
 
 == Transitive dependencies
 

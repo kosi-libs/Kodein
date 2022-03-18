@@ -3,6 +3,7 @@ package org.kodein.di
 import org.kodein.di.bindings.*
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
+import org.kodein.type.generic
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.reflect.KProperty
 
@@ -228,6 +229,40 @@ public interface DI : DIAware {
         }
 
         /**
+         * Left part of the delegate-binding syntax (`delegate(tag)`).
+         */
+        public class DelegateBinder<T : Any> internal constructor(
+            private val builder: DI.Builder,
+            private val bindType: TypeToken<out T>,
+            private val bindTag: Any? = null,
+            private val overrides: Boolean? = null
+        ) {
+            /**
+             * Delegates the binding of a given type with a given tag.
+             *
+             * @param T The type of value to bind.
+             * @param type The type to delegate the binding to.
+             * @param tag The tag to bind.
+             * @return The binder: call [TypeBinder.with]) on it to finish the binding syntax and register the binding.
+             */
+            @PublishedApi
+            @Suppress("FunctionName")
+            internal fun <A : T> To(type: TypeToken<A>, tag: Any?) {
+                builder.Bind(bindTag, overrides, Provider(builder.contextType, bindType) { Instance(type, tag) })
+            }
+
+            /**
+             * Delegates the binding of a given type with a given tag.
+             *
+             * @param T The type of value to bind.
+             * @param type The type to delegate the binding to.
+             * @param tag The tag to bind.
+             * @return The binder: call [TypeBinder.with]) on it to finish the binding syntax and register the binding.
+             */
+            public inline fun <reified A : T> to(tag: Any? = null): Unit = To(generic<A>(), tag)
+        }
+
+        /**
          * Left part of the direct-binding syntax (`bind(tag)`).
          */
         public interface DirectBinder {
@@ -312,6 +347,18 @@ public interface DI : DIAware {
          * @return The binder: call `with` on it to finish the binding syntax and register the binding.
          */
         public fun constant(tag: Any, overrides: Boolean? = null): ConstantBinder
+
+        /**
+         * Create a delegate binding to a given bound type with a given tag.
+         *
+         * @param T The type of value to bind.
+         * @param type The bound type to delegate to.
+         * @param tag The tag to bind.
+         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         * @return The binder: call [TypeBinder.with]) on it to finish the binding syntax and register the binding.
+         */
+        @Suppress("FunctionName")
+        public fun <T: Any> Delegate(type: TypeToken<out T>, tag: Any? = null, overrides: Boolean? = null): DelegateBinder<T>
 
         /**
          * Imports all bindings defined in the given [DI.Module] into this builder's definition.
