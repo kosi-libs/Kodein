@@ -134,6 +134,7 @@ public class FindDSL : SearchDSL() {
 /**
  * Used to find bindings that match a particular [SearchSpecs].
  */
+@Suppress("DEPRECATION")
 public fun DITree.findAllBindings(f: FindDSL.() -> Unit): List<Triple<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>, ContextTranslator<*, *>?>> {
     val dsl = FindDSL()
     dsl.f()

@@ -138,7 +138,7 @@ internal class DIContainerImpl private constructor(
         return BindingDIImpl(DirectDIImpl(container, context), key, overrideLevel)
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "DEPRECATION")
     override fun <C : Any, A, T: Any> factoryOrNull(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): ((A) -> T)? {
         tree.find(key, 0).let {
             if (it.size == 1) {
@@ -164,7 +164,7 @@ internal class DIContainerImpl private constructor(
         return null
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "DEPRECATION")
     override fun <C : Any, A, T: Any> factory(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): (A) -> T {
         val result = tree.find(key, overrideLevel)
 
@@ -215,7 +215,7 @@ internal class DIContainerImpl private constructor(
         throw DI.NotFoundException(key, "${potentials.size} bindings found that match $key:\n${potentials.descFun(withOverrides)}Other bindings registered in DI:\n${others.descFun(withOverrides)}")
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "DEPRECATION")
     override fun <C : Any, A, T: Any> allFactories(key: DI.Key<C, A, T>, context: C, overrideLevel: Int): List<(A) -> T> {
         val result = tree.find(key, overrideLevel, all = true)
 

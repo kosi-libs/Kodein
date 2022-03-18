@@ -21,22 +21,23 @@ public interface Copy {
     /**
      * A [Copy] spec that copies all bindings.
      */
-    public object All: Copy {
+    public object All : Copy {
         override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> = tree.bindings.keys
     }
 
     /**
      * A [Copy] spec that copies no bindings.
      */
-    public object None: Copy {
+    public object None : Copy {
         override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> = emptySet<DI.Key<*, *, *>>()
     }
 
     /**
      * A [Copy] spec that copies only the bindings that retain no status / reference.
      */
-    public object NonCached: Copy {
-        override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> = tree.bindings.filter { it.value.first().binding.copier == null } .keys
+    public object NonCached : Copy {
+        override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> =
+            tree.bindings.filter { it.value.first().binding.copier == null }.keys
     }
 
     public companion object {
@@ -50,13 +51,17 @@ public interface Copy {
          */
         public fun allBut(f: AllButDSL.() -> Unit): AllButDSL = AllButDSL().apply(f)
 
+        @Suppress("DEPRECATION")
         internal fun specsToKeys(tree: DITree, it: CopySpecs): List<DI.Key<*, *, *>> {
             val list = tree.find(it)
             if (list.isEmpty()) {
                 throw DI.NoResultException(it, "No binding found that match this search: $it")
             }
             if (!it.all && list.size > 1) {
-                throw DI.NoResultException(it, "There were ${list.size} matches for this search: $it\n${list.associate { it.first to it.second }.description(false)}")
+                throw DI.NoResultException(it,
+                    "There were ${list.size} matches for this search: $it\n${
+                        list.associate { it.first to it.second }.description(false)
+                    }")
             }
             return list.map { it.first }
         }
@@ -80,7 +85,7 @@ public interface Copy {
              * @return The binding itself to configure it (e.g. `copy the binding<Whatever>() with context<MyContext>()`).
              */
             public infix fun the(binding: Binding): SearchSpecs {
-                return CopySpecs(all = false).also { binding.apply(it) ; specs += it }
+                return CopySpecs(all = false).also { binding.apply(it); specs += it }
             }
 
             /**
@@ -90,7 +95,7 @@ public interface Copy {
              * @return The binding itself to configure it (e.g. `copy all context<MyContext>() with tag("whatever")`).
              */
             public infix fun all(spec: Spec): SearchSpecs {
-                return CopySpecs(all = true).also { spec.apply(it) ; specs += it }
+                return CopySpecs(all = true).also { spec.apply(it); specs += it }
             }
         }
 
@@ -110,11 +115,11 @@ public interface Copy {
      */
     public class DSL : BaseDSL() {
         override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> {
-            val ignored = ignoreSpecs.flatMap { specsToKeys(tree, it) }
+            val ignored = ignoreSpecs.flatMap { specsToKeys(tree, it) }.toSet()
             return copySpecs
-                    .flatMap { specsToKeys(tree, it) }
-                    .minus(ignored)
-                    .toSet()
+                .flatMap { specsToKeys(tree, it) }
+                .minus(ignored)
+                .toSet()
         }
     }
 
@@ -123,10 +128,11 @@ public interface Copy {
      */
     public class AllButDSL : BaseDSL() {
         override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> {
-            val kept = copySpecs.flatMap { specsToKeys(tree, it) }
+            val kept = copySpecs.flatMap { specsToKeys(tree, it) }.toSet()
             val ignored = ignoreSpecs
-                    .flatMap { specsToKeys(tree, it) }
-                    .minus(kept)
+                .flatMap { specsToKeys(tree, it) }
+                .minus(kept)
+                .toSet()
             return tree.bindings.keys.minus(ignored)
         }
     }

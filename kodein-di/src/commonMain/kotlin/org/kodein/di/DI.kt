@@ -47,7 +47,7 @@ public interface DI : DIAware {
      * @property search The specs that lead to no result.
      * @param message The message of the exception.
      */
-    public class NoResultException(public val search: SearchSpecs, message: String)
+    public class NoResultException(private val search: SearchSpecs, message: String)
         : RuntimeException(message)
 
     /**
