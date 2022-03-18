@@ -24,6 +24,23 @@ internal open class DIBuilderImpl internal constructor(
         override infix fun <C : Any, A> with(binding: DIBinding<in C, in A, out T>) = containerBuilder.bind(DI.Key(binding.contextType, binding.argType, type, tag), binding, moduleName, overrides)
     }
 
+    /**
+     * @see [DI.Builder.DelegateBinder]
+     */
+    inner class DelegateBinder<T : Any> internal constructor(
+        private val builder: DI.Builder,
+        private val bindType: TypeToken<out T>,
+        private val bindTag: Any? = null,
+        private val overrides: Boolean? = null
+    ) : DI.Builder.DelegateBinder<T>() {
+        /**
+         * @see [DI.Builder.DelegateBinder.To]
+         */
+        override fun <A : T> To(type: TypeToken<A>, tag: Any?) {
+            builder.Bind(bindTag, overrides, Provider(builder.contextType, bindType) { Instance(type, tag) })
+        }
+    }
+
     inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) : DI.Builder.DirectBinder {
         override infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>) {
             if (binding.createdType == TypeToken.Unit) {
@@ -70,7 +87,7 @@ internal open class DIBuilderImpl internal constructor(
         type: TypeToken<out T>,
         tag: Any?,
         overrides: Boolean?,
-    ): DI.Builder.DelegateBinder<T> = DI.Builder.DelegateBinder(this, type, tag, overrides)
+    ): DelegateBinder<T> = DelegateBinder(this, type, tag, overrides)
 
     override fun import(module: DI.Module, allowOverride: Boolean) {
         val moduleName = prefix + module.name

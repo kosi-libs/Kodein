@@ -1,6 +1,7 @@
 package org.kodein.di
 
 import org.kodein.di.bindings.*
+import org.kodein.di.internal.DIBuilderImpl
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
 import org.kodein.type.generic
@@ -231,12 +232,7 @@ public interface DI : DIAware {
         /**
          * Left part of the delegate-binding syntax (`delegate(tag)`).
          */
-        public class DelegateBinder<T : Any> internal constructor(
-            private val builder: DI.Builder,
-            private val bindType: TypeToken<out T>,
-            private val bindTag: Any? = null,
-            private val overrides: Boolean? = null
-        ) {
+        public abstract class DelegateBinder<T : Any> {
             /**
              * Delegates the binding of a given type with a given tag.
              *
@@ -245,11 +241,8 @@ public interface DI : DIAware {
              * @param tag The tag to bind.
              * @return The binder: call [TypeBinder.with]) on it to finish the binding syntax and register the binding.
              */
-            @PublishedApi
             @Suppress("FunctionName")
-            internal fun <A : T> To(type: TypeToken<A>, tag: Any?) {
-                builder.Bind(bindTag, overrides, Provider(builder.contextType, bindType) { Instance(type, tag) })
-            }
+            public abstract fun <A : T> To(type: TypeToken<A>, tag: Any?)
 
             /**
              * Delegates the binding of a given type with a given tag.

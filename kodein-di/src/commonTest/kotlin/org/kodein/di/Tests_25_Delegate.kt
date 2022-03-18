@@ -7,7 +7,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class Tests_24_Delegate {
+class Tests_25_Delegate {
 
     interface Itf
     class Cls : Itf
