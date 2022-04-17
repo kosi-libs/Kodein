@@ -1,4 +1,4 @@
-val ktorVersion = "2.0.0-beta-1"
+val ktorVersion = "2.0.0"
 
 plugins {
     id("org.kodein.library.jvm")
