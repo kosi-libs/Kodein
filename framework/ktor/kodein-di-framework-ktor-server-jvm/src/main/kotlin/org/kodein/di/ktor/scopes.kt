@@ -57,7 +57,7 @@ public object SessionScope : Scope<KodeinDISession> {
  * Clear session instance with type [T] and clear the corresponding [ScopeRegistry]
  * @throws IllegalStateException if no session provider registered for type [T]
  */
-public inline fun <reified T> CurrentSession.clearSessionScope() {
+public inline fun <reified T : Any> CurrentSession.clearSessionScope() {
     val session = get<T>()
 
     if(session != null && session is KodeinDISession){

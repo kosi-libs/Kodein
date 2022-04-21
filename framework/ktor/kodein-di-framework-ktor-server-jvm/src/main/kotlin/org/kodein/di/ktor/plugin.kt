@@ -18,7 +18,7 @@ public class DIPlugin {
      * Configure the [DI] container then put it in the [Application.attributes],
      * thus it would be easily accessible (e.g. [Application.di]
      */
-    internal companion object Plugin : ApplicationPlugin<ApplicationCallPipeline, DI.MainBuilder, DIPlugin> {
+    internal companion object Plugin : BaseApplicationPlugin<ApplicationCallPipeline, DI.MainBuilder, DIPlugin> {
         override val key: AttributeKey<DIPlugin> = AttributeKey("DIPlugin")
 
         override fun install(pipeline: ApplicationCallPipeline, configure: DI.MainBuilder.() -> Unit): DIPlugin {

@@ -1,11 +1,13 @@
 package org.kodein.di.ktor.controller
 
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.server.routing.get
+import io.ktor.server.routing.route
 import org.kodein.di.instance
-import org.kodein.di.ktor.*
+import org.kodein.di.ktor.closestDI
 
 const val ROUTE_VERSION = "/version"
 const val ROUTE_AUTHOR = "/author"

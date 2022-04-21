@@ -1,14 +1,13 @@
 package org.kodein.di.ktor.controller
 
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.testing.*
-import org.junit.*
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.server.application.Application
+import io.ktor.server.testing.testApplication
+import org.junit.FixMethodOrder
 import org.junit.Test
-import org.junit.runners.*
-import kotlin.test.*
+import org.junit.runners.MethodSorters
+import kotlin.test.assertEquals
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class KtorControllerTests {
