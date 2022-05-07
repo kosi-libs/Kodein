@@ -259,23 +259,23 @@ class Presenter(val di: DI) {
 Note the usage of the `by` keyword.
 When using dependency retrieval, *properties are retrieved lazily*.
 
-You can go a bit further and use the `KodeinAware` interface, which unlocks a lot of features:
+You can go a bit further and use the `DIAware` interface, which unlocks a lot of features:
 
 [source,kotlin]
-.Example: a KodeinAware class
+.Example: a DIAware class
 ----
-class Presenter(override val di: DI): KodeinAware {
+class Presenter(override val di: DI): DIAware {
     private val db: Database by instance()
     private val rnd: Random by instance()
 }
 ----
 
-Note that because everything is lazy by default, the access to the `DI` object in a `KodeinAware` class can itself be lazy:
+Note that because everything is lazy by default, the access to the `DI` object in a `DIAware` class can itself be lazy:
 
 [source,kotlin]
-.Example: a KodeinAware class with lazy DI
+.Example: a DIAware class with lazy DI
 ----
-class Presenter(): KodeinAware {
+class Presenter(): DIAware {
     override val di by lazy { getApplicationContext().di }
 
     private val db: Database by instance()

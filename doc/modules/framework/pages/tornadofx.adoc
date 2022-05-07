@@ -128,7 +128,7 @@ class EditorTabFragment : Fragment() {
 
 CAUTION: If none of the parent nodes have a DI container, we try to get to the one in the `App`, only if this `App` is `DIAware`.
 
-[[kodeinaware]]
+[[DIAware]]
 ==== Being DIAware
 
 Having your classes set as `DIAware` have multiple advantages. For example this allow to cache the DI container or simplify the way we retrieve our dependencies.
@@ -148,7 +148,7 @@ class PersonListController : Controller(), DIAware { <1>
     /*...*/
 }
 ----
-<1> Set the Controller as `KodeinAware`
+<1> Set the Controller as `DIAware`
 <2> Retrieve the `App` DI container from the `kodeinDI()` extension function
 <3> Retrieve dependency using the `instance()` function, as the DI container is part of the context
 <4> Use the dependency
