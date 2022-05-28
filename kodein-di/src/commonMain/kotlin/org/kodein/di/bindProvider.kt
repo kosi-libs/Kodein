@@ -35,6 +35,9 @@ public inline fun <reified T: Any> DI.Builder.bindProvider(
     noinline creator: DirectDI.() -> T
 ): Unit = Bind(tag = tag, overrides = overrides, binding = provider(creator = creator))
 
+// TODO This fails with Kotlin/JS Legacy
+//  Re-enable this with IR only target.
+//  see https://youtrack.jetbrains.com/issue/KT-39225/KJS-MarkerError-on-runtime-when-using-new-typeToken-via-Kodein-7
 // /**
 //  * Creates a factory: each time an instance is needed, the function [constructor] function will be called.
 //  *

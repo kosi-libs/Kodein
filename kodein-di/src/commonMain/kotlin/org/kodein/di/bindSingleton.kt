@@ -67,6 +67,9 @@ public inline fun <reified T: Any> DI.Builder.bindEagerSingleton(
     noinline creator: DirectDI.() -> T,
 ): Unit = Bind(tag = tag, overrides = overrides, binding = eagerSingleton(creator = creator))
 
+// TODO This fails with Kotlin/JS Legacy
+//  Re-enable this with IR only target.
+//  see https://youtrack.jetbrains.com/issue/KT-39225/KJS-MarkerError-on-runtime-when-using-new-typeToken-via-Kodein-7
 // /**
 //  * Binds a singleton: will create an instance on first request and will subsequently always return the same instance.
 //  *
