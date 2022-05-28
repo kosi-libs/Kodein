@@ -1,10 +1,15 @@
 package org.kodein.di.ktor.controller
 
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.routing.*
-import org.kodein.di.*
-import org.kodein.di.ktor.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.plugins.defaultheaders.DefaultHeaders
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.ktor.di
+import org.kodein.di.singleton
+import org.kodein.di.with
 
 const val AUTHOR = "Romain Boisselle"
 const val VERSION = "1.0.0"

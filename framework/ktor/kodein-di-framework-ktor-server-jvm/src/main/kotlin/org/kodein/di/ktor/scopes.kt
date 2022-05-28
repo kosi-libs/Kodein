@@ -1,9 +1,11 @@
 package org.kodein.di.ktor
 
-import io.ktor.application.*
-import io.ktor.sessions.*
-import org.kodein.di.*
-import org.kodein.di.bindings.*
+import io.ktor.server.application.*
+import io.ktor.server.sessions.*
+import org.kodein.di.bindings.Scope
+import org.kodein.di.bindings.ScopeRegistry
+import org.kodein.di.bindings.StandardScopeRegistry
+import org.kodein.di.bindings.WeakContextScope
 
 //region Session scope
 /**
@@ -55,7 +57,7 @@ public object SessionScope : Scope<KodeinDISession> {
  * Clear session instance with type [T] and clear the corresponding [ScopeRegistry]
  * @throws IllegalStateException if no session provider registered for type [T]
  */
-public inline fun <reified T> CurrentSession.clearSessionScope() {
+public inline fun <reified T : Any> CurrentSession.clearSessionScope() {
     val session = get<T>()
 
     if(session != null && session is KodeinDISession){

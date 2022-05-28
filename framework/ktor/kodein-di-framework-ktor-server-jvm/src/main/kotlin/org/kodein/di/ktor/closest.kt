@@ -1,10 +1,11 @@
 package org.kodein.di.ktor
 
-import io.ktor.application.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.routing.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
-import org.kodein.di.*
+import org.kodein.di.DI
+import org.kodein.di.LazyDI
 
 
 // attribute key for storing injector in a call

@@ -1,13 +1,34 @@
 package org.kodein.di.ktor
 
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.sessions.*
-import org.kodein.di.*
-import java.util.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.application
+import io.ktor.server.application.call
+import io.ktor.server.application.install
+import io.ktor.server.application.log
+import io.ktor.server.plugins.defaultheaders.DefaultHeaders
+import io.ktor.server.request.httpMethod
+import io.ktor.server.request.uri
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
+import io.ktor.server.sessions.SessionStorageMemory
+import io.ktor.server.sessions.Sessions
+import io.ktor.server.sessions.cookie
+import io.ktor.server.sessions.get
+import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.on
+import org.kodein.di.scoped
+import org.kodein.di.singleton
+import org.kodein.di.with
+import java.util.Random
 
 // Test Ktor Application
 fun Application.main() {
@@ -101,7 +122,7 @@ fun Application.requestModule() {
             ) {
                 val random by closestDI().on(applicationCall).instance<Random>()
                 randomDto.randomInstances.add(phase to "$random")
-                log.info("Context $applicationCall / DI ${closestDI().container} / $phase Random instance: $random")
+                this@requestModule.log.info("Context $applicationCall / DI ${closestDI().container} / $phase Random instance: $random")
                 proceed()
             }
 
@@ -112,7 +133,7 @@ fun Application.requestModule() {
             intercept(ApplicationCallPipeline.Monitoring) {
                 logPhase("[Monitoring]", context) { proceed() }
             }
-            intercept(ApplicationCallPipeline.Features) {
+            intercept(ApplicationCallPipeline.Plugins) {
                 logPhase("[Features]", context) { proceed() }
             }
             intercept(ApplicationCallPipeline.Call) {

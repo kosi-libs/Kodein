@@ -1,12 +1,14 @@
 package org.kodein.di.ktor.controller
 
-import io.ktor.application.*
-import io.ktor.routing.*
-import org.kodein.di.*
-import org.kodein.di.ktor.*
+import io.ktor.server.application.Application
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.Routing
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.ktor.closestDI
 
 /**
- * Base controller super class to leverage your Ktor server as a MVC-like architecture
+ * Base controller super class to leverage your Ktor server as an MVC-like architecture
  *
  * Example:
  * class ApplicationController(application: Application) : AbstractDIController(application) {
@@ -25,7 +27,7 @@ public abstract class AbstractDIController(private val application: Application)
 }
 
 /**
- * Base controller interface to leverage your Ktor server as a MVC-like architecture
+ * Base controller interface to leverage your Ktor server as an MVC-like architecture
  *
  * Example:
  * class DIControllerImpl(application: Application) : DIController(application) {
