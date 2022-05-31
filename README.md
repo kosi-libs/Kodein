@@ -1,6 +1,6 @@
 <img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/doc/modules/ROOT/images/kodein-di-logo.svg" width="700">
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.6.10-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.6.21-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/org.kodein.di/kodein-di)](https://mvnrepository.com/artifact/org.kodein.di/kodein-di)
 ![Github Actions](https://github.com/Kodein-Framework/Kodein-DI/workflows/build%20and%20publish%20a%20snapshot/badge.svg)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Kodein-Framework/Kodein-DI/blob/master/LICENSE.txt)
@@ -10,23 +10,23 @@
 KOtlin DEpendency INjection
 ===========================
 
-**_Kodein-DI_** is a very simple and yet very useful dependency retrieval container. it is very easy to use and configure.
+**_KODEIN_** is a very simple and yet very useful dependency retrieval container. it is very easy to use and configure.
 
-**_Kodein-DI_** works:
+**_KODEIN_** works:
 
 - On the JVM.
 - On Android.
 - On Javascript (both in the browser and on Node.js).
 - On Native platforms (such as iOS).
 
-**_Kodein-DI_** allows you to:
+**_KODEIN_** allows you to:
 
 - Lazily instantiate your dependencies when needed
 - Stop caring about dependency initialization order
 - Easily bind classes or interfaces to their instance or provider
 - Easily debug your dependency bindings and recursions
 
-**_Kodein-DI_** provides extensions to be integrable into:
+**_KODEIN_** provides extensions to be integrable into:
 
 - [Android](https://developer.android.com/)
 - [Compose (Android / Desktop)](https://docs.kodein.org/kodein-di/7.9/framework/compose.html)
@@ -46,7 +46,7 @@ class Controller(private di: DI) {
 }
 ```
 
-**_Kodein-DI_** is a good choice because:
+**_KODEIN_** is a good choice because:
 
 - It proposes a very simple and readable declarative DSL
 - It is not subject to type erasure (as Java is)
@@ -55,31 +55,32 @@ class Controller(private di: DI) {
 - It is fast and optimized (makes extensive use of `inline`)
 - It can be used in plain Java
 
-### Looking for **Kodein-DI 7.0** migration guide?
+### Looking for **KODEIN 7.0** migration guide?
 > Follow this us [here](https://kodein.org/Kodein-DI/?7.0/migration-6to7).
 
 Kotlin & JVM compatibility
 ---------
 
-|  Kodein-DI  | Kotlin  |JDK|Compose
-|:-----------:|:-------:|:---:|:---:|
-|   7.10.0   | 1.6.10 |min 1.8| Compatible
-|    7.7+     |  1.5+   |min 1.8| Compatible
-|    7.6+     |  1.5+   |min 1.8| -
-|    7.1+     |  1.4+   |min 1.8| -
-|    7.0+     | 1.3.72  |min 1.8| -
-|    6.5.5    | 1.3.72  |min 1.8| -
-|    6.5.4    | 1.3.71  |min 1.8| -
-|    6.5.3    | 1.3.70  |min 1.8| -
-|    6.5.0    | 1.3.61  |min 1.8| -
-|    6.4.1    | 1.3.50  |min 1.8| -
-|    6.3+     | 1.3.40  |min 1.8| -
-|    6.2+     | 1.3.30  |1.6| -
-|    6.1+     | 1.3.20  |1.6| -
-|    6.0+     |  1.3.0  |1.6| -
-|    5.0+     | 1.2.30  |1.6| -
-|    4.1+     |  1.1.3  |1.6| -
-| 4.0.0-beta2 |  1.1.0  |1.6| -
+|  Kodein-DI  | Kotlin |   JDK   |  Compose   |
+|:-----------:|:------:|:-------:|:----------:|
+|   7.12.0    | 1.6.21 | min 1.8 | Compatible |
+|   7.10.0    | 1.6.10 | min 1.8 | Compatible |
+|    7.7+     |  1.5+  | min 1.8 | Compatible |
+|    7.6+     |  1.5+  | min 1.8 |     -      |
+|    7.1+     |  1.4+  | min 1.8 |     -      |
+|    7.0+     | 1.3.72 | min 1.8 |     -      |
+|    6.5.5    | 1.3.72 | min 1.8 |     -      |
+|    6.5.4    | 1.3.71 | min 1.8 |     -      |
+|    6.5.3    | 1.3.70 | min 1.8 |     -      |
+|    6.5.0    | 1.3.61 | min 1.8 |     -      |
+|    6.4.1    | 1.3.50 | min 1.8 |     -      |
+|    6.3+     | 1.3.40 | min 1.8 |     -      |
+|    6.2+     | 1.3.30 |   1.6   |     -      |
+|    6.1+     | 1.3.20 |   1.6   |     -      |
+|    6.0+     | 1.3.0  |   1.6   |     -      |
+|    5.0+     | 1.2.30 |   1.6   |     -      |
+|    4.1+     | 1.1.3  |   1.6   |     -      |
+| 4.0.0-beta2 | 1.1.0  |   1.6   |     -      |
 
 Demo Projects
 ---------
@@ -88,30 +89,15 @@ You can find samples for MPP project here https://github.com/Kodein-Framework/Ko
 Read more
 ---------
 
-**_Kodein-DI_** 7+ is the current major version, but documentation is available for previous versions.
+**_KODEIN_** 7+ is the current major version, but documentation is available for previous versions.
 
 **[Kodein-DI documentation](https://docs.kodein.org/kodein-di/)**
-
 
 Support
 -------
 
 Support is held in the [Kodein Slack channel](https://kotlinlang.slack.com/messages/kodein/)
-(you can get an invite to the Kotlin Slack [here](https://slack.kotlinlang.org/)).
-
-
-Future
-------
-
-The following frameworks will receive special love from Kodein:
-
-- Android
-- Cocoa-Touch (iOS), **// TODO**
-- Ktor
-- TornadoFX
-
-
-&nbsp;
+(you can get an invitation to the Kotlin Slack [here](https://slack.kotlinlang.org/)).
 
 Testimonies
 -----------
@@ -177,4 +163,4 @@ Testimonies
 
 &nbsp;
 
-If you are using Kodein-DI, please [let us know](mailto:contact@kodein.net)!
+If you are using KODEIN, please [let us know](mailto:contact@kodein.net)!
