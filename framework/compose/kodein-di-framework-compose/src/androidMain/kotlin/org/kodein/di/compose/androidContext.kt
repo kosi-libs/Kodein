@@ -20,28 +20,5 @@ public fun androidContextDI(): DI {
     return remember { di }
 }
 
-// Deprecated since 7.7.0
-@Deprecated(
-    message = "Renamed to androidContextDI",
-    replaceWith = ReplaceWith("androidContextDI()"),
-    level = DeprecationLevel.ERROR
-)
-@Composable
-public fun contextDI(): DI = androidContextDI()
-
-/**
- * Attaches a [DI] container to the underlying [Composable] tree, using the [DI] container attached to the current [Context] (see [contextDI]).
- *
- * @param content underlying [Composable] tree that will be able to consume the [LocalDI] container
- */
-// Deprecated since 7.7.0
-@Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated(
-    message = "This is not necessary anymore as the DI container is automatically used if no local DI is defined",
-    level = DeprecationLevel.ERROR
-)
-@Composable
-public fun withDI(content: @Composable () -> Unit) = CompositionLocalProvider(LocalDI provides androidContextDI()) { content() }
-
 @Composable
 internal actual fun diFromAppContext(): DI = androidContextDI()

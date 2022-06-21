@@ -65,16 +65,6 @@ public inline fun <reified T : Any> rememberInstance(tag: Any? = null): LazyDele
 public inline fun <reified T : Any> rememberNamedInstance(): LazyDelegate<T> =
     rememberDI { named.instance() }
 
-// Deprecated since 7.7.0
-@Deprecated(
-    message = "Renamed rememberInstance",
-    replaceWith = ReplaceWith("rememberInstance(tag)"),
-    level = DeprecationLevel.ERROR
-)
-@Composable
-public inline fun <reified T : Any> instance(tag: Any? = null): LazyDelegate<T> =
-    rememberInstance(tag = tag)
-
 /**
  * Retrieves and keeps a reference on an instance of [T] for the given type and tag,
  * curried from a factory that takes an argument [A].
@@ -110,16 +100,6 @@ public inline fun <reified A : Any, reified T : Any> rememberInstance(tag: Any? 
 @Composable
 public inline fun <reified A : Any, reified T : Any> rememberNamedInstance(arg: A): LazyDelegate<T> =
     rememberDI { named.instance(arg = arg) }
-
-// Deprecated since 7.7.0
-@Deprecated(
-    message = "Renamed rememberInstance",
-    replaceWith = ReplaceWith("rememberInstance(tag, arg)"),
-    level = DeprecationLevel.ERROR
-)
-@Composable
-public inline fun <reified A : Any, reified T : Any> instance(tag: Any? = null, arg: A): LazyDelegate<T> =
-    rememberInstance(tag = tag, arg = arg)
 
 /**
  * Retrieves and keeps of [T] for the given type and tag,
@@ -162,15 +142,6 @@ public inline fun <reified A : Any, reified T : Any> rememberNamedInstance(noinl
 public inline fun <reified A : Any, reified T : Any> rememberFactory(tag: Any? = null): LazyDelegate<(A) -> T> =
     rememberDI { factory(tag = tag) }
 
-// Deprecated since 7.7.0
-@Deprecated(
-    message = "Renamed rememberFactory",
-    replaceWith = ReplaceWith("rememberFactory(tag)"),
-    level = DeprecationLevel.ERROR)
-@Composable
-public inline fun <reified A : Any, reified T : Any> factory(tag: Any? = null): LazyDelegate<(A) -> T> =
-    rememberFactory(tag = tag)
-
 /**
  * Retrieves and keeps a reference on a provider of `T` for the given type and tag.
  *
@@ -185,16 +156,6 @@ public inline fun <reified A : Any, reified T : Any> factory(tag: Any? = null): 
 @Composable
 public inline fun <reified T : Any> rememberProvider(tag: Any? = null): LazyDelegate<() -> T> =
     rememberDI { provider(tag = tag) }
-
-// Deprecated since 7.7.0
-@Deprecated(
-    message = "Renamed rememberProvider",
-    replaceWith = ReplaceWith("rememberProvider(tag)"),
-    level = DeprecationLevel.ERROR
-)
-@Composable
-public inline fun <reified T : Any> provider(tag: Any? = null): LazyDelegate<() -> T> =
-    rememberProvider(tag = tag)
 
 /**
  * Retrieves and keeps a reference on a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -212,16 +173,6 @@ public inline fun <reified T : Any> provider(tag: Any? = null): LazyDelegate<() 
 @Composable
 public inline fun <reified A : Any, reified T : Any> rememberProvider(tag: Any? = null, arg: A): LazyDelegate<() -> T> =
     rememberDI { provider(tag = tag, arg = arg) }
-
-// Deprecated since 7.7.0
-@Deprecated(
-    message = "Renamed rememberProvider",
-    replaceWith = ReplaceWith("rememberProvider(tag, arg)"),
-    level = DeprecationLevel.ERROR
-)
-@Composable
-public inline fun <reified A : Any, reified T : Any> provider(tag: Any? = null, arg: A): LazyDelegate<() -> T> =
-    rememberProvider(tag = tag, arg = arg)
 
 /**
  * Retrieves and keeps a reference on a provider of [T] for the given type and tag, curried from a factory that takes an argument [A].
@@ -242,16 +193,3 @@ public inline fun <reified A : Any, reified T : Any> rememberProvider(
     noinline fArg: () -> A,
 ): LazyDelegate<() -> T> =
     rememberDI { provider(tag = tag, fArg = fArg) }
-
-// Deprecated since 7.7.0
-@Deprecated(
-    message = "Renamed rememberProvider",
-    replaceWith = ReplaceWith("rememberProvider(tag, fArg)"),
-    level = DeprecationLevel.ERROR
-)
-@Composable
-public inline fun <reified A : Any, reified T : Any> provider(
-    tag: Any? = null,
-    noinline fArg: () -> A,
-): LazyDelegate<() -> T> =
-    rememberProvider(tag = tag, fArg = fArg)

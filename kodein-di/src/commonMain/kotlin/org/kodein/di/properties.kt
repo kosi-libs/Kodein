@@ -38,7 +38,7 @@ public interface LazyDelegate<out V> {
  */
 @Deprecated(
     message = "This is an internal API, use LazyDelegate instead.",
-    replaceWith = ReplaceWith("LazyDelegate<V>")
+    replaceWith = ReplaceWith("LazyDelegate<V>"),
 ) // TODO set as internal
 public class DIProperty<out V>(
     internal val trigger: DITrigger?,

@@ -258,23 +258,7 @@ public interface DI : DIAware {
         /**
          * Left part of the direct-binding syntax (`bind(tag)`).
          */
-        public interface DirectBinder {
-            /**
-             * Binds the previously given tag to the given binding.
-             *
-             * The bound type will be the [DIBinding.createdType].
-             *
-             * @param binding The binding to bind.
-             * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
-             */
-            @Deprecated(
-                message = "'bind() fron [BINDING]' might be replace by 'bind { [BINDING] }' (This will be remove in Kodein-DI 8.0)",
-                replaceWith = ReplaceWith("bind { binding }"),
-                level = DeprecationLevel.ERROR
-            )
-            public infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>)
-        }
-
+        public interface DirectBinder
         /**
          * Left part of the constant-binding syntax (`constant(tag)`).
          *

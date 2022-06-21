@@ -16,39 +16,6 @@ import org.kodein.type.generic
  * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
-@Deprecated(
-    message = "'bind() from ...' has been deprecated",
-    replaceWith = ReplaceWith("bindSet<T>()"),
-    level = DeprecationLevel.ERROR
-)
-public inline fun <reified T: Any> DI.Builder.setBinding(): SetBinding<Any, T> = SetBinding(TypeToken.Any, generic<T>(), erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
-
-/**
- * Creates a set: multiple bindings can be added in this set.
- *
- * A & T generics will be erased!
- *
- * @param A The argument type.
- * @param T The created type.
- * @return A set binding ready to be bound.
- */
-@Suppress("RemoveExplicitTypeArguments")
-@Deprecated(
-    message = "'bind() from ...' has been deprecated",
-    replaceWith = ReplaceWith("bindArgSet<A, T>()"),
-    level = DeprecationLevel.ERROR
-)
-public inline fun <reified A : Any, reified T: Any> DI.Builder.argSetBinding(): ArgSetBinding<Any, A, T> = ArgSetBinding(TypeToken.Any, generic<A>(), generic<T>(), erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
-
-/**
- * Creates a set: multiple bindings can be added in this set.
- *
- * T generics will be erased!
- *
- * @param T The created type.
- * @return A set binding ready to be bound.
- */
-@Suppress("RemoveExplicitTypeArguments")
 public inline fun <reified T: Any> DI.Builder.bindSet(tag: Any? = null, overrides: Boolean? = null): Unit = Bind(tag = tag, overrides = overrides, binding = SetBinding(TypeToken.Any, generic<T>(), erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>))
 
 /**

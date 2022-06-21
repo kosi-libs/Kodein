@@ -34,22 +34,6 @@ public inline fun <reified T : Any> DI.Builder.bind(
 ): DI.Builder.TypeBinder<T> = Bind(generic<T>(), tag, overrides)
 
 /**
- * Starts a direct binding with a given tag. A direct bind does not define the type to be bound, the type will be defined according to the bound factory.
- *
- * @param tag The tag to bind.
- * @param overrides Whether this bind **must**, **may** or **must not** override an existing binding.
- * @return The binder: call [DI.Builder.DirectBinder.from]) on it to finish the binding syntax and register the binding.
- */
-@Deprecated(
-    message = "'bind() from [BINDING]' might be replaced by 'bind { [BINDING] }' (This will be removed in Kodein-DI 8.0)",
-    level = DeprecationLevel.ERROR
-)
-public fun DI.Builder.bind(
-    tag: Any? = null,
-    overrides: Boolean? = null,
-): DI.Builder.DirectBinder = Bind(tag, overrides)
-
-/**
  * Binds the previously given tag to the given instance.
  *
  * T generics will be erased!

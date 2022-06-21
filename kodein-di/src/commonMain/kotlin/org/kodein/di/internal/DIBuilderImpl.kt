@@ -41,15 +41,7 @@ internal open class DIBuilderImpl internal constructor(
         }
     }
 
-    inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) : DI.Builder.DirectBinder {
-        @Deprecated("")
-        override infix fun <C : Any, A, T: Any> from(binding: DIBinding<in C, in A, out T>) {
-            if (binding.createdType == TypeToken.Unit) {
-                throw IllegalArgumentException("Using `bind() from` with a *Unit* ${binding.factoryName()} is most likely an error. If you are sure you want to bind the Unit type, please use `bind<Unit>() with ${binding.factoryName()}`.")
-            }
-            containerBuilder.bind(DI.Key(binding.contextType, binding.argType, binding.createdType, _tag), binding, moduleName, _overrides)
-        }
-    }
+    inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) : DI.Builder.DirectBinder
 
     inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) : DI.Builder.ConstantBinder {
         @Suppress("FunctionName")

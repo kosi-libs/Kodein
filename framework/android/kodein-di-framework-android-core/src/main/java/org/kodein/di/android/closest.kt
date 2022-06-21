@@ -43,26 +43,12 @@ class LazyContextDIPropertyDelegateProvider(private val getContext: () -> Contex
     override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>?) = lazy { closestDI(thisRef, getContext()) }
 }
 
-@Deprecated(
-    message = "di() function leads to import conflicts. please replace with closestDI().",
-    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
-    level = DeprecationLevel.ERROR
-)
-fun di(): DIPropertyDelegateProvider<Context> = closestDI()
-
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  *
  * To be used on Android's `Context` classes, such as `Activity` or `Service`.
  */
 fun closestDI(): DIPropertyDelegateProvider<Context> = ContextDIPropertyDelegateProvider()
-
-@Deprecated(
-    message = "di() function leads to import conflicts. please replace with closestDI().",
-    replaceWith = ReplaceWith("closestDI(context)", "org.kodein.di.android"),
-    level = DeprecationLevel.ERROR
-)
-fun di(context: Context): DIPropertyDelegateProvider<Any?> = closestDI(context)
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
@@ -71,13 +57,6 @@ fun di(context: Context): DIPropertyDelegateProvider<Any?> = closestDI(context)
  */
 fun closestDI(context: Context): LazyContextDIPropertyDelegateProvider = LazyContextDIPropertyDelegateProvider { context }
 
-@Deprecated(
-    message = "di() function leads to import conflicts. please replace with closestDI().",
-    replaceWith = ReplaceWith("closestDI(getContext)", "org.kodein.di.android"),
-    level = DeprecationLevel.ERROR
-)
-fun di(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = closestDI(getContext)
-
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  *
@@ -85,60 +64,25 @@ fun di(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = closestDI(
  */
 fun closestDI(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider(getContext)
 
-@Deprecated(
-    message = "di() function leads to import conflicts. please replace with closestDI().",
-    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
-    level = DeprecationLevel.ERROR
-)
-fun Fragment.di(): DIPropertyDelegateProvider<Any?> = closestDI()
-
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
 fun Fragment.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { activity }
-
-@Deprecated(
-    message = "di() function leads to import conflicts. please replace with closestDI().",
-    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
-    level = DeprecationLevel.ERROR
-)
-fun Dialog.di(): DIPropertyDelegateProvider<Any?> = closestDI()
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
 fun Dialog.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
 
-@Deprecated(
-    message = "di() function leads to import conflicts. please replace with closestDI().",
-    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
-    level = DeprecationLevel.ERROR
-)
-fun View.di() = org.kodein.di.android.closestDI()
-
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
 fun View.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
 
-@Deprecated(
-    message = "di() function leads to import conflicts. please replace with closestDI().",
-    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
-    level = DeprecationLevel.ERROR
-)
-fun AbstractThreadedSyncAdapter.di(): DIPropertyDelegateProvider<Any?> = closestDI()
-
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
 fun AbstractThreadedSyncAdapter.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
-
-@Deprecated(
-    message = "di() function leads to import conflicts. please replace with closestDI().",
-    replaceWith = ReplaceWith("closestDI()", "org.kodein.di.android"),
-    level = DeprecationLevel.ERROR
-)
-fun Loader<*>.di(): DIPropertyDelegateProvider<Context> = org.kodein.di.android.closestDI()
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
