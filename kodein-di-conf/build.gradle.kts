@@ -27,6 +27,6 @@ kodein {
 }
 
 kodeinUpload {
-    name = "Kodein-DI-Conf"
-    description = "KODEIN Dependency Injection that can be configured / mutated"
+    name = "Kodein-Conf"
+    description = "Kodein that can be configured / mutated"
 }

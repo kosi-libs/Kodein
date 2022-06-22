@@ -11,6 +11,6 @@ dependencies {
 }
 
 kodeinUpload {
-    name = "Kodein-DI-Framework-AndroidX-ViewModel"
-    description = "Kodein-DI extensions for AndroidX ViewModel"
+    name = "Kodein-Framework-AndroidX-ViewModel"
+    description = "Kodein extensions for AndroidX ViewModel"
 }

@@ -26,6 +26,6 @@ kodein {
 }
 
 kodeinUpload {
-    name = "Kodein-DI-Framework-Compose"
-    description = "Kodein-DI extensions for Jetpack / JetBrains Compose"
+    name = "Kodein-Framework-Compose"
+    description = "Kodein extensions for Jetpack / JetBrains Compose"
 }

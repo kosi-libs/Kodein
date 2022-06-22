@@ -1,9 +1,9 @@
-<img alt="KODEIN-DI" src="https://raw.githubusercontent.com/Kodein-Framework/Kodein-DI/master/doc/modules/ROOT/images/kodein-di-logo.svg" width="700">
+<img alt="KODEIN" src="https://raw.githubusercontent.com/kosi-libs/Kodein/master/doc/modules/ROOT/images/kodein-di-logo.svg" width="700">
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.6.21-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.7.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/org.kodein.di/kodein-di)](https://mvnrepository.com/artifact/org.kodein.di/kodein-di)
-![Github Actions](https://github.com/Kodein-Framework/Kodein-DI/workflows/build%20and%20publish%20a%20snapshot/badge.svg)
-[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Kodein-Framework/Kodein-DI/blob/master/LICENSE.txt)
+![Github Actions](https://github.com/kosi-libs/Kodein/workflows/build%20and%20publish%20a%20snapshot/badge.svg)
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/kosi-libs/Kodein/blob/master/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg?style=flat&logo=slack)](https://kotlinlang.slack.com/messages/kodein/)
 
 
@@ -29,7 +29,7 @@ KOtlin DEpendency INjection
 **_KODEIN_** provides extensions to be integrable into:
 
 - [Android](https://developer.android.com/)
-- [Compose (Android / Desktop)](https://docs.kodein.org/kodein-di/7.9/framework/compose.html)
+- [Compose (Android / Desktop)](https://kosi-libs.org/kodein-di/7.13/framework/compose.html)
 - [Ktor](https://ktor.io/)
 - [TornadoFX](https://tornadofx.io/)
 
@@ -61,8 +61,9 @@ class Controller(private di: DI) {
 Kotlin & JVM compatibility
 ---------
 
-|  Kodein-DI  | Kotlin |   JDK   |  Compose   |
+|   Kodein    | Kotlin |   JDK   |  Compose   |
 |:-----------:|:------:|:-------:|:----------:|
+|   7.13.0    | 1.7.0  | min 1.8 |     No     |
 |   7.12.0    | 1.6.21 | min 1.8 | Compatible |
 |   7.10.0    | 1.6.10 | min 1.8 | Compatible |
 |    7.7+     |  1.5+  | min 1.8 | Compatible |
@@ -84,14 +85,14 @@ Kotlin & JVM compatibility
 
 Demo Projects
 ---------
-You can find samples for MPP project here https://github.com/Kodein-Framework/Kodein-Samples 
+You can find samples for MPP project here https://github.com/kosi-libs/Kodein-Samples 
 
 Read more
 ---------
 
 **_KODEIN_** 7+ is the current major version, but documentation is available for previous versions.
 
-**[Kodein-DI documentation](https://docs.kodein.org/kodein-di/)**
+**[Kodein documentation](https://kosi-libs.org/kodein-di/)**
 
 Support
 -------

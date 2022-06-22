@@ -12,6 +12,6 @@ dependencies {
 }
 
 kodeinUpload {
-    name = "Kodein-DI-Framework-AndroidX-ViewModel-SavedState"
-    description = "Kodein-DI extensions for AndroidX ViewModel with SavedStateHandle"
+    name = "Kodein-Framework-AndroidX-ViewModel-SavedState"
+    description = "Kodein extensions for AndroidX ViewModel with SavedStateHandle"
 }

@@ -10,6 +10,6 @@ dependencies {
 }
 
 kodeinUpload {
-    name = "Kodein-DI-JxInject"
-    description = "KODEIN DI extension that enables to auto-inject with JSR 330 javax.inject annotations"
+    name = "Kodein-JxInject"
+    description = "Kodein extension that enables to auto-inject with JSR 330 javax.inject annotations"
 }
