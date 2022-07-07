@@ -39,6 +39,6 @@ framework("tfx").include(
         ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
 )
 
-//framework("compose").include(
-//        ":framework:compose:kodein-di-framework-compose"
-//)
+framework("compose").include(
+        ":framework:compose:kodein-di-framework-compose"
+)
