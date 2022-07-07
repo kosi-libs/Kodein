@@ -6,7 +6,7 @@ buildscript {
         maven(url = "https://raw.githubusercontent.com/kosi-libs/kodein-internal-gradle-plugin/mvn-repo")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.18.3")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.18.2")
     }
 }
 
@@ -39,6 +39,6 @@ framework("tfx").include(
         ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
 )
 
-//framework("compose").include(
-//        ":framework:compose:kodein-di-framework-compose"
-//)
+framework("compose").include(
+        ":framework:compose:kodein-di-framework-compose"
+)
