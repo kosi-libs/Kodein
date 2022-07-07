@@ -63,6 +63,8 @@ Kotlin & JVM compatibility
 
 |  Kodein-DI  | Kotlin |   JDK   |  Compose   |
 |:-----------:|:------:|:-------:|:----------:|
+|   7.13.1    | 1.7.0  | min 1.8 | Compatible |
+|   7.13.0    | 1.7.0  | min 1.8 |     -      |
 |   7.12.0    | 1.6.21 | min 1.8 | Compatible |
 |   7.10.0    | 1.6.10 | min 1.8 | Compatible |
 |    7.7+     |  1.5+  | min 1.8 | Compatible |
