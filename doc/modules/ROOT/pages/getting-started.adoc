@@ -1,11 +1,11 @@
 
-= Getting started with Kodein-DI
+= Getting started with Kodein
 
-Kodein-DI is a *Dependency Injection* library.
+Kodein is a *Dependency Injection* library.
 It allows you to bind your business unit interfaces with their implementation and thus having each business unit being independent.
 
 NOTE: This guide assumes a JVM target.
-Kodein-DI works exactly the same on all targets that are supported by Kotlin (JVM, Android, JS, Native).
+Kodein works exactly the same on all targets that are supported by Kotlin (JVM, Android, JS, Native).
 
 == Choose & Install
 
@@ -13,17 +13,17 @@ Kodein-DI works exactly the same on all targets that are supported by Kotlin (JV
 
 IMPORTANT: From `6.3.0` On the JVM, you must be targeting `JDK 1.8` minimum!
 
-_Kodein-DI_ is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
+_Kodein_ is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
 
-Since `7.0.0`, a new https://github.com/Kodein-Framework/Kodein-Type[type system] has been designed and included to _Kodein-DI_.
+Since `7.0.0`, a new https://github.com/Kodein-Framework/Kodein-Type[type system] has been designed and included to _Kodein_.
 Thus, it appears to the developer that there is no more _obvious_ differences between platforms, you no longer have to choose between `erased` or `generic` dependencies.
-Starting from `7.0.0`, _Kodein-DI_ is using the `generic` version of the type system, meaning you should be able to bind generics easily for _Kotlin/Multiplatform_ projects.
+Starting from `7.0.0`, _Kodein_ is using the `generic` version of the type system, meaning you should be able to bind generics easily for _Kotlin/Multiplatform_ projects.
 So, whatever platform you are targeting, `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
 
 [NOTE]
 ====
-Since *7.0*, _Kodein-DI_ can use `generic` for non JVM platforms, thus it is now the default implementation.
+Since *7.0*, _Kodein_ can use `generic` for non JVM platforms, thus it is now the default implementation.
 However, you still can force the use of `erased` with the generic and erased function forms!
 ====
 
@@ -130,7 +130,7 @@ In this example, we have seen two different bindings:
 
 === Declaration
 
-In Kodein-DI, bindings are *declared* in a DI Block.
+In Kodein, bindings are *declared* in a DI Block.
 The syntax is quite simple:
 
 [source,kotlin]
@@ -142,8 +142,8 @@ val kodein = DI {
 }
 ----
 
-As you can see, Kodein-DI offers a DSL (Domain Specific Language) that allows to very easily declare a binding.
-Kodein-DI offers many bindings that can manage implementations: `provider`, `singleton`, `factory`, `multiton`, `instance`, and more, which you can read about in the xref:core:bindings[bindings section of the core documentation].
+As you can see, Kodein offers a DSL (Domain Specific Language) that allows to very easily declare a binding.
+Kodein offers many bindings that can manage implementations: `provider`, `singleton`, `factory`, `multiton`, `instance`, and more, which you can read about in the xref:core:bindings[bindings section of the core documentation].
 
 Most of the time, the type of the interface of the dependency is enough to identify it.
 There is only one `Database` in the application, so if I'm asking for a `Database`, there is no question of _which_ `Database` I need: I need _the_ database. +
@@ -151,7 +151,7 @@ Same goes for `Random`. There is only one `Random` implementation that I am goin
 If I am asking for a `Random` implementation, I always want the same type of random: `SecureRandom`. +
 There are times, however, where the type of the dependency is _not_ enough to identify it.
 For example, you may have two `Database` in a mobile application: one being local, and another being a proxy to a distant Database.
-For cases like this, Kodein-DI allows you to "tag" a binding: add an additional information to tag it.
+For cases like this, Kodein allows you to "tag" a binding: add an additional information to tag it.
 
 [source,kotlin]
 .Example: tagged bindings
@@ -167,7 +167,7 @@ val kodein = DI {
 
 When building large applications, there are often different modules, built by their own team, each defining their own business units.
 
-Kodein-DI allows you to define binding modules that can later be imported in a DI container:
+Kodein allows you to define binding modules that can later be imported in a DI container:
 
 [source,kotlin]
 .Example: A DI module
@@ -205,7 +205,7 @@ There are multiple ways of doing so:
 
 === Injection vs Retrieval
 
-Kodein-DI supports two different methods to allow a business unit to access its dependencies: *injection* and *retrieval*.
+Kodein supports two different methods to allow a business unit to access its dependencies: *injection* and *retrieval*.
 
 * When dependencies are *injected*, the class is *provided* its dependencies at *construction*.
 * When dependencies are *retrieved*, the class is *responsible* for *getting* its own dependencies.

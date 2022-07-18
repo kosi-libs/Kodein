@@ -1,7 +1,7 @@
 
 = Multi-binding
 
-_Kodein-DI_ allows multi bindings via a binding set.
+_Kodein_ allows multi bindings via a binding set.
 
 
 [[set-bindings]]
@@ -71,7 +71,7 @@ val result: Set<Result> by di.instance(arg = Query("SELECT * FROM USER;"))
 
 == In a map
 
-_Kodein-DI_ does not directly support map multi-binding.
+_Kodein_ does not directly support map multi-binding.
 However, it is very easy to create a binding map by using a binding set.
 
 First, create the following primitive:

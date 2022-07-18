@@ -1,9 +1,9 @@
-= Kodein-DI on TornadoFX
+= Kodein on TornadoFX
 
-You can use Kodein-DI as-is in your TornadoFX project, but you can level-up your game by using the libraries `kodein-di-framework-tornadofx-jvm`.
+You can use Kodein as-is in your TornadoFX project, but you can level-up your game by using the libraries `kodein-di-framework-tornadofx-jvm`.
 
-NOTE: Kodein-DI does work on TornadoFX as-is.
-      The `kodein-di-framework-tornadofx-jvm` extensions add multiple TornadoFX-specific utilities to Kodein-DI. +
+NOTE: Kodein does work on TornadoFX as-is.
+      The `kodein-di-framework-tornadofx-jvm` extensions add multiple TornadoFX-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
 Have a look at the https://github.com/Kodein-Framework/Kodein-Samples/tree/master/di/tornadofx[TornadoFX demo project] to help you going further!
@@ -159,7 +159,7 @@ NOTE: To benefit from the DI optimization, and the facilities we provide, we hig
 that you make your classes `DIAware` when its possible.
 
 [[di-extension]]
-== Extension of Kodein-DI
+== Extension of Kodein
 
 This section will cover how we can extend the use of DI container in a TornadoFX application, like:
 
@@ -173,18 +173,18 @@ This section will cover how we can extend the use of DI container in a TornadoFX
 === Using TornadoFX Dependency Injection as external source
 
 TornadoFX integrates a dependency injection mechanism to work with its `Component`.
-This section will show you how you can interact with the Tornado DI container, by using Kodein-DI.
-Our goal is to provide you some tools to be able to integrate Kodein-DI as your main DI container,
+This section will show you how you can interact with the Tornado DI container, by using Kodein.
+Our goal is to provide you some tools to be able to integrate Kodein as your main DI container,
 thus by learning and knowing only one mechanism.
 
 - Defining the external source
 +
-In order to use Kodein-DI upon TornadoFX you should make your `App` as `DIAware`,
+In order to use Kodein upon TornadoFX you should make your `App` as `DIAware`,
 then by using the `installTornadoSource()` extension function, in your `di` property override,
 you'll be able to get through the external source from anywhere in your `App`.
 +
 [source, kotlin]
-.Example: Installing the TornadoFX DI container as external source for Kodein-DI
+.Example: Installing the TornadoFX DI container as external source for Kodein
 ----
 class TornadoApplication : App(MainView::class), DIAware {
     override val di: DI = DI {

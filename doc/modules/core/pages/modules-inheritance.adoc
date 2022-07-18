@@ -5,7 +5,7 @@
 
 === Definition
 
-_Kodein-DI_ allows you to export your bindings in modules.
+_Kodein_ allows you to export your bindings in modules.
 It is very useful to have separate modules defining their own bindings instead of having only one central binding definition.
 A module is an object that you can construct the exact same way as you construct a DI instance.
 
@@ -32,7 +32,7 @@ val di = DI {
 NOTE: Modules are *definitions*, they will re-declare their bindings in each DI instance you use.
 If you create a module that defines a singleton and import that module into two different DI instances, then the singleton object will exist twice: once in each DI instance.
 
-Since *Kodein-DI 7.12.0* you can use the property delegate pattern to declare your modules, avoiding explicit naming of your module:
+Since *Kodein 7.12.0* you can use the property delegate pattern to declare your modules, avoiding explicit naming of your module:
 
 [source, kotlin]
 .Example: a property delegate module
@@ -49,10 +49,10 @@ val apiModule by DI.Module { // <1>
 
 Each module name should only be imported once.
 
-If a second module with the name of an already imported module is imported, then _Kodein-DI_ will fail.
+If a second module with the name of an already imported module is imported, then _Kodein_ will fail.
 
 However, you cannot always ensure that every module name is unique: you may need to import modules that are defined outside of your code.
-_Kodein-DI_ offers two ways to mitigate that:
+_Kodein_ offers two ways to mitigate that:
 
 1. Rename a module: +
 Use when you are importing a module whose name already exists.
@@ -80,9 +80,9 @@ val di = DI {
 === Import once
 
 You may define a module which you know depends on another module, so it would be great to import that dependency inside the module that has the dependency.
-However, each module can only be imported once, so if every module that depends on another module imports it, _Kodein-DI_ will fail at the second module that imports it.
+However, each module can only be imported once, so if every module that depends on another module imports it, _Kodein_ will fail at the second module that imports it.
 
-To support this, _Kodein-DI_ offers `importOnce`: it imports the module if no module with that name was previously imported.
+To support this, _Kodein_ offers `importOnce`: it imports the module if no module with that name was previously imported.
 
 [source,kotlin]
 .Example: importing a module only once
@@ -96,7 +96,7 @@ val appModule = DI.Module("appModule") {
 [[extension-composition]]
 == Extension (composition)
 
-_Kodein-DI_ allows you to create a new DI instance by extending an existing one.
+_Kodein_ allows you to create a new DI instance by extending an existing one.
 
 [source,kotlin]
 .Example: extends an already existing DI instance
@@ -113,7 +113,7 @@ Both parent and child DI objects will give the same instance.
 
 == Overriding
 
-By default, overriding a binding is not allowed in _Kodein-DI_.
+By default, overriding a binding is not allowed in _Kodein_.
 That is because accidentally binding twice the same (class,tag) to different instances/providers/factories can cause real headaches to debug.
 
 However, when intended, it can be really interesting to override a binding, especially when creating a testing environment.
@@ -190,7 +190,7 @@ val foo = child.instance<Bar>().foo
 ----
 
 In this example, the `foo` variable will be of type `Foo1`.
-Because the `Bar` binding is a `singleton` and is declared in the `parent` _Kodein-DI_, it *does not have access to bindings declared in `child`.*
+Because the `Bar` binding is a `singleton` and is declared in the `parent` _Kodein_, it *does not have access to bindings declared in `child`.*
 In this example, both `parent.instance<Bar>().foo` and `child.instance<Bar>().foo` will yield a `Foo1` object.
 
 NOTE: This is because `Bar` is bound to a `singleton`, the first access would define the container used (`parent` or `child`).

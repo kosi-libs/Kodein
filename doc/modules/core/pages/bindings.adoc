@@ -76,8 +76,8 @@ TIP: Ending with the same result, you can also use the simple function `bindSing
 === Non-synced singleton
 
 By definition, there can be only one instance of a singleton, which means only one instance can be constructed.
-To achieve this certainty, _Kodein-DI_ synchronizes construction.
-This means that, when a singleton instance is requested and not available, _Kodein-DI_ uses a synchronization mutex to ensure that other request to the same type will wait for this instance to be constructed.
+To achieve this certainty, _Kodein_ synchronizes construction.
+This means that, when a singleton instance is requested and not available, _Kodein_ uses a synchronization mutex to ensure that other request to the same type will wait for this instance to be constructed.
 
 While this behaviour is the only way to ensure the singleton's correctness, it is also costly (due to the mutex) and degrades startup performance.
 

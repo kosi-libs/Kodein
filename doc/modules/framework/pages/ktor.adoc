@@ -1,13 +1,13 @@
-= Kodein-DI on Ktor
+= Kodein on Ktor
 
-You can use Kodein-DI as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-framework-ktor-server-jvm` or `kodein-di-framework-ktor-server-controller-jvm`.
+You can use Kodein as-is in your Ktor project, but you can level-up your game by using the libraries `kodein-di-framework-ktor-server-jvm` or `kodein-di-framework-ktor-server-controller-jvm`.
 
-NOTE: Kodein-DI does work on Ktor as-is.
+NOTE: Kodein does work on Ktor as-is.
       The `kodein-di-framework-ktor-server-jvm` / `kodein-di-framework-ktor-server-controller-jvm` extensions add multiple ktor-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
 NOTE: Ktor is a multi-platform project, meaning you can use it for JVM, JS and Native projects.
-      Please note that, at the moment, Kodein-DI utilities are only available for the JVM platform, for the server cases precisely.
+      Please note that, at the moment, Kodein utilities are only available for the JVM platform, for the server cases precisely.
 
 Have a look at the https://github.com/Kodein-Framework/Kodein-Samples/tree/master/di/standalone/ktor[Ktor demo project] to help you to go further!
 

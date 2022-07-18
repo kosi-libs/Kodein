@@ -1,15 +1,15 @@
 image::kodein-di-logo.svg[KODEIN-DI, 700]
 
 [.lead]
-_Kodein-DI_ is a very useful dependency injection / retrieval container, it is very easy to use and configure.
+_Kodein_ is a very useful dependency injection / retrieval container, it is very easy to use and configure.
 
-._Kodein-DI_ allows you to:
+._Kodein_ allows you to:
 - Lazily instantiate your dependencies when needed.
 - Stop caring about dependency initialization order.
 - Easily bind classes or interfaces to their instance, provider or factory.
 - Easily debug your dependency bindings and recursions.
 
-._Kodein-DI_ is a good choice because:
+._Kodein_ is a good choice because:
 - It is small, fast and optimized (makes extensive use of `inline`).
 - It proposes a very simple and readable declarative DSL.
 - It is not subject to type erasure (like Java).
@@ -27,8 +27,8 @@ _Kodein-DI_ is a very useful dependency injection / retrieval container, it is v
 
 Contributions are very welcome and greatly appreciated! The great majority of pull requests are eventually merged.
 
-To contribute, simply fork https://github.com/Kodein-Framework/Kodein-DI[the project on Github], fix whatever is itching you, and submit a pull request!
+To contribute, simply fork https://github.com/kosi-libs/Kodein[the project on GitHub], fix whatever is itching you, and submit a pull request!
 
 I am sure that this documentation contains typos, inaccuracies and languages error (English is not my mother tongue).
-If you feel like enhancing this document, you can propose a pull request that modifies https://github.com/Kodein-Framework/Kodein-DI/tree/master/doc[the documentation documents].
+If you feel like enhancing this document, you can propose a pull request that modifies https://github.com/kosi-libs/Kodein/tree/master/doc[the documentation documents].
 (Documentation is auto-generated from those).

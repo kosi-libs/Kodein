@@ -2,22 +2,22 @@
 
 [IMPORTANT]
 ====
-Kodein-DI {version} is built upon and compatible with Kotlin {kotlin}.
+Kodein {version} is built upon and compatible with Kotlin {kotlin}.
 
 Also, it requires at least JDK {jdk}, for JVM projects.
 ====
 
-_Kodein-DI_ is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
+_Kodein_ is compatible with all platforms that the Kotlin language compiles to: JVM & compatible (Android), Javascript and all the Kotlin/Native targets.
 
-Since `7.0.0`, a new https://github.com/Kodein-Framework/Kodein-Type[type system] has been designed and included to _Kodein-DI_.
+Since `7.0.0`, a new https://github.com/Kodein-Framework/Kodein-Type[type system] has been designed and included to _Kodein_.
 Thus, it appears to the developer that there is no more _obvious_ differences between platforms, you no longer have to choose between `erased` or `generic` dependencies.
-Starting from `7.0.0`, _Kodein-DI_ is using the `generic` version of the type system, meaning you should be able to bind generics easily for _Kotlin/Multiplatform_ projects.
+Starting from `7.0.0`, _Kodein_ is using the `generic` version of the type system, meaning you should be able to bind generics easily for _Kotlin/Multiplatform_ projects.
 So, whatever platform you are targeting, `bind<List<String>>()` and `bind<List<Int>>()` will represent two different bindings. +
 Similarly, `di.instance<List<String>>()` and `di.instance<List<Int>>()` will yield two different list.
 
 [NOTE]
 ====
-Since *7.0*, _Kodein-DI_ can use `generic` for non JVM platforms, thus it is now the default implementation.
+Since *7.0*, _Kodein_ can use `generic` for non JVM platforms, thus it is now the default implementation.
 However you still can force the use of `erased` with the generic and erased function forms!
 ====
 
@@ -32,7 +32,7 @@ Yes, #perfmatters. However, the humble opinion of the author is that:
 
 - There is a balance to be found between performance, readability, security and debuggability.
 - Optimisation is important *in critical path*, not _everywhere_.
-- _Kodein-DI_ is already pretty optimized ;)
+- _Kodein_ is already pretty optimized ;)
 - In the vast majority of cases, using the erased version will result in **no significant performance change** to your application, as IoC happens once and is not a performance pitfall!
 
 Therefore, please make sure that, using the erased version is right for your use case, before blindly using it ;).
@@ -43,7 +43,7 @@ Therefore, please make sure that, using the erased version is right for your use
 //
 //Of course, it is a little bit more complicated! +
 //To be able to circumvent the type erasure that's inherent to the JVM bytecode, the `generic` version uses a trix that makes heavy use of reflexivity.
-//Because the `erased` version does not use that trix, handling generic types in _Kodein-DI_ are a lot more complex to use.
+//Because the `erased` version does not use that trix, handling generic types in _Kodein_ are a lot more complex to use.
 //
 //[options="header"]
 //|=======
@@ -62,6 +62,6 @@ Therefore, please make sure that, using the erased version is right for your use
 //
 //If you are using the `erased` version, either by choice on the JVM, or by default on JS & Native, you should read <<erased-version,erased version pitfalls>>.
 
-NOTE: Even if by default _Kodein-DI_ uses a `generic` type system, you still can use the `erased` one manually.
+NOTE: Even if by default _Kodein_ uses a `generic` type system, you still can use the `erased` one manually.
 //(see *TODO*)
 

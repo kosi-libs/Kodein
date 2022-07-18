@@ -1,8 +1,8 @@
-= Kodein-DI and _Compose_ (Android, Desktop, or JS)
+= Kodein and _Compose_ (Android, Desktop, or JS)
 
-You can use *_Kodein-DI_* as-is in your Android / Desktop / JS project, but you can level-up your game by using the library `kodein-di-framework-compose`.
+You can use *_Kodein_* as-is in your Android / Desktop / JS project, but you can level-up your game by using the library `kodein-di-framework-compose`.
 
-NOTE: *_Kodein-DI_* is compatible with both *Jetpack* and *JetBrains* _Compose_
+NOTE: *_Kodein_* is compatible with both *Jetpack* and *JetBrains* _Compose_
 
 IMPORTANT: `kodein-di-framework-compose` relies and only few stable APIs that have some good chance to stay (like `@Composable`).
             This means that `kodein-di-framework-compose` doesn't lock you with a specific version of *Jetpack* and *JetBrains* _Compose_.
@@ -11,7 +11,7 @@ IMPORTANT: `kodein-di-framework-compose` relies and only few stable APIs that ha
 Here is a table containing the version compatibility:
 
 |===
-|Kodein-DI |Compose compiler |Kotlin
+|Kodein |Compose compiler |Kotlin
 
 |7.14.0
 1.2.0-alpha01-dev745
@@ -46,7 +46,7 @@ Here is a table containing the version compatibility:
 [[install]]
 == Install
 
-*_Kodein-DI_* for _Compose_ can be used for Android, Desktop, or JavaScript projects with the same approach (thanks to Gradle's metadata).
+*_Kodein_* for _Compose_ can be used for Android, Desktop, or JavaScript projects with the same approach (thanks to Gradle's metadata).
 
 Start by adding the correct dependency to your Gradle build script:
 
@@ -63,7 +63,7 @@ implementation("org.kodein.di:kodein-di-framework-compose:{version}")
 
 [NOTE]
 ====
-Using `kodein-di-framework-compose`, whatever your platform target, will transitively add the *_Kodein-DI_* core module `kodein-di` to your dependencies.
+Using `kodein-di-framework-compose`, whatever your platform target, will transitively add the *_Kodein_* core module `kodein-di` to your dependencies.
 
 On *Android* it will transitively add the specific module `kodein-di-framework-android-x` (see xref:framework:android.adoc[Android modules]).
 ====

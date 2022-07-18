@@ -69,7 +69,7 @@ WARNING: Use `kodein-di-conf-jvm`, as _Kotlin/Multiplatform_ projects configurat
 [[kotlin-js]]
 === JavaScript (Gradle)
 
-Because _Kodein-DI_ for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
+Because _Kodein_ for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
 
 * In a browser:
 ** as an AMD module (for example with RequireJS) (See index.html in the demo project).
@@ -99,10 +99,10 @@ dependencies {
 [[kotlin-multiplatform]]
 === Kotlin/Multiplatform (Gradle)
 
-NOTE: _Kodein-DI_ supports the following targets: +
+NOTE: _Kodein_ supports the following targets: +
 androidArm32, androidArm64, iosArm32, iosArm64, iosX64, linuxArm32Hfp, linuxMips32, linuxMipsel32, linuxX64, macosX64, mingwX64
 
-_Kodein-DI_ uses the new gradle native dependency model.
+_Kodein_ uses the new gradle native dependency model.
 
 Add the MavenCentral repository:
 
