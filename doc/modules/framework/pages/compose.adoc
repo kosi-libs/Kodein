@@ -13,12 +13,8 @@ Here is a table containing the version compatibility:
 |===
 |Kodein-DI |Compose compiler |Kotlin
 
-|7.13.2
-1.2.0-alpha01-dev745
-|1.7.0
-
 |7.13.1
-1.2.0-alpha01-dev741
+1.2.0-alpha01-dev745
 |1.7.0
 
 |7.10.0
