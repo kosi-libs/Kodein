@@ -31,11 +31,11 @@ When dependencies are *injected*, the class is _provided_ its dependencies at co
 When dependencies are *retrieved*, the class is _responsible_ for getting its own dependencies.
 
 Using dependency *injection* is a bit more cumbersome, but your classes are "pure": they are unaware of the dependency container.
-Using dependency *retrieval* is easier (and allows more tooling), but it does binds your classes to the _Kodein-DI_ API.
+Using dependency *retrieval* is easier (and allows more tooling), but it does bind your classes to the _Kodein_ API.
 
 Finally, in retrieval, *everything is lazy by default*, while there can be no lazy-loading using injection.
 
-TIP: If you are developing a library, then you probably should use dependency *injection*, to avoid forcing the users of your library to use _Kodein-DI_ as well. +
+TIP: If you are developing a library, then you probably should use dependency *injection*, to avoid forcing the users of your library to use _Kodein_ as well. +
 If you are developing an application, then you should consider using dependency *retrieval*, as it is easier to use and provides more tooling.
 
 
@@ -68,7 +68,7 @@ instance(tag = "whatever").
 To use dependency injection,
 
 1. Declare your dependencies in the constructor of your classes.
-2. Use _Kodein-DI_'s `newInstance` method to create an object of such class.
+2. Use _Kodein_'s `newInstance` method to create an object of such class.
 
 
 === Simple case
@@ -172,7 +172,7 @@ This allows:
 If you want "direct" retrieval, well, there's a section named <<direct-retrieval,direct retrieval>>, how about that!
 
 
-=== _Kodein-DI_ methods
+=== _Kodein_ methods
 
 You can retrieve a bound type via a DI instance.
 
@@ -186,7 +186,7 @@ val answerConstant: String by di.instance(tag = "answer")
 ----
 
 Note the use of the `by`.
-_Kodein-DI_ uses https://kotlinlang.org/docs/reference/delegated-properties.html::[delegated properties] to enable:
+_Kodein_ uses https://kotlinlang.org/docs/reference/delegated-properties.html::[delegated properties] to enable:
 
 - Lazy loading
 - Accessing the receiver

@@ -1,8 +1,8 @@
 = External Source
 
-An external source is responsible for providing an answer when _Kodein-DI_ cannot find one.
+An external source is responsible for providing an answer when _Kodein_ cannot find one.
 
-When _Kodein-DI_ cannot find a binding for the required type/argument/context, then it calls the external source.
+When _Kodein_ cannot find a binding for the required type/argument/context, then it calls the external source.
 
 [source, kotlin]
 .Example: an external source

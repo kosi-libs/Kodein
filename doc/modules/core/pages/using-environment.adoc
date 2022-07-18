@@ -37,7 +37,7 @@ val di = DI {
 
 [NOTE]
 ====
-_Kodein-DI_ provides only 1 scope by default, but:
+_Kodein_ provides only 1 scope by default, but:
 
 - It is easy to create your own scopes.
 - All `kodein-framework-*` modules provide more scopes that are specific to the target framework.
@@ -85,7 +85,7 @@ If a value implements `ScopeCloseable`, it's `close` function will be called whe
 ====
 The `ScopeCloseable.close` method will only be called:
 
-- By scopes that explicitely *support* that feature (not all scopes do, all scopes provided by the _Kodein-DI_ Framework do *except WeakContextScope*).
+- By scopes that explicitely *support* that feature (not all scopes do, all scopes provided by the _Kodein_ Framework do *except WeakContextScope*).
 - If the value does *not* use `WeakRef` or `SoftRef` references. +
 If the value does, the close method _may or may not_ be called (it will be called if the reference has not expired).
 ====
@@ -110,7 +110,7 @@ val di = DI {
 
 === Weak Context Scope
 
-_Kodein-DI_ provides the `WeakContextScope` scope.
+_Kodein_ provides the `WeakContextScope` scope.
 This is a particular scope, as the context it holds on are weak references.
 
 CAUTION: WeakContextScope is *NOT* compatible with `ScopeCloseable`.

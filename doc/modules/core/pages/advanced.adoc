@@ -20,13 +20,13 @@ Here's an example of what this prints:
 As you can see, it's really easy to understand which type with which tag is bound to which implementation inside which scope.
 
 NOTE: Description prints type names in a "kotlin-esque" way.
-Because _Kodein-DI_ does not depend on `kotlin-reflect`, it uses java `Type` objects that do not contain nullability information.
+Because _Kodein_ does not depend on `kotlin-reflect`, it uses java `Type` objects that do not contain nullability information.
 As such, the type display does not include nullability. Still, it's easier to read `List<*>` than `List<? extends Object>`.
 
 
 === Recursive dependency loop
 
-When it detects a recursive dependency, _Kodein-DI_ will throw a `DI.DependencyLoopException`.
+When it detects a recursive dependency, _Kodein_ will throw a `DI.DependencyLoopException`.
 The message of the exception explains how the loop happened.
 
 .An example of recursive dependency loop:
@@ -45,7 +45,7 @@ DI$DependencyLoopException: Dependency recursion:
 [[NotFoundException]]
 === Dependency not found
 
-When you try to inject / retrieve a dependency that does not exists, _Kodein-DI_ will throw a `DI.NotFoundException`.
+When you try to inject / retrieve a dependency that does not exists, _Kodein_ will throw a `DI.NotFoundException`.
 The message of the exception explains what is the binding the container is looking for.
 
 .An example of a not found exception:

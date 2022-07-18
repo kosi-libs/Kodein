@@ -1,13 +1,13 @@
-= Kodein-DI on Android
+= Kodein on Android
 
-You can use Kodein-DI as-is in your Android project or use the util library `kodein-di-android`.
+You can use Kodein as-is in your Android project or use the util library `kodein-di-android`.
 
-NOTE: Kodein-DI does work on Android as-is.
-      The `kodein-di-android-*` extensions add multiple android-specific utilities to Kodein-DI. +
+NOTE: Kodein does work on Android as-is.
+      The `kodein-di-android-*` extensions add multiple android-specific utilities to Kodein. +
       Using or not using this extension really depends on your needs.
 
 IMPORTANT: Starting from `7.3`, using `kodein-di-android-*` extensions in your Android projects needs that you support Android 21 as the minimum SDK.
-           Using Kodein-DI as-is does not force with minimum SDK requirement.
+           Using Kodein as-is does not force with minimum SDK requirement.
 
 TIP: If you use *_Jetpack Compose_* you can use our specific module xref:framework:compose.adoc[`kodein-di-framework-compose`].
 
