@@ -1,7 +1,18 @@
 package org.kodein.di.internal
 
-import org.kodein.di.*
-import org.kodein.di.bindings.*
+import org.kodein.di.AnyDIContext
+import org.kodein.di.BindingsMap
+import org.kodein.di.DI
+import org.kodein.di.DIContainer
+import org.kodein.di.DIContext
+import org.kodein.di.DITree
+import org.kodein.di.SearchSpecs
+import org.kodein.di.Volatile
+import org.kodein.di.bindings.BindingDI
+import org.kodein.di.bindings.ExternalSource
+import org.kodein.di.bindings.toKContext
+import org.kodein.di.description
+import org.kodein.di.fullDescription
 
 internal class DIContainerImpl private constructor(
         override val tree: DITree,
@@ -12,10 +23,6 @@ internal class DIContainerImpl private constructor(
 
     @Volatile var initCallbacks: (() -> Unit)? = null
         private set
-
-    init {
-        ensureNeverFrozen()
-    }
 
     /**
      * "Main" constructor that uses the bindings map configured by a [DIContainer.Builder].
