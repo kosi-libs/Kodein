@@ -22,6 +22,10 @@ kodein {
         }
 
         add(kodeinTargets.js.ir.js)
+
+        // iosX32 not supported by jetbrains compose
+        add(kodeinTargets.native.iosX64)
+        add(kodeinTargets.native.iosArm64)
     }
 }
 
