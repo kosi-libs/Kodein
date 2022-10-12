@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.compose") version "1.2.0-beta01"
+    id("org.jetbrains.compose") version "1.2.0"
     id("org.kodein.library.mpp-with-android")
 }
 
@@ -20,8 +20,9 @@ kodein {
                 api("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
             }
         }
-
-        add(kodeinTargets.js.ir.js)
+        // JS not supported for Kotlin 1.7.20
+        // (https://github.com/JetBrains/compose-jb/blob/master/VERSIONING.md#kotlin-compatibility)
+        //        add(kodeinTargets.js.ir.js)
 
         // iosX32 not supported by jetbrains compose
         add(kodeinTargets.native.iosX64)
