@@ -1,6 +1,6 @@
 name: kodein
 title: Kodein
-version: '7.14.0'
+version: '7.14'
 display_version: '7.14.0'
 nav:
   - modules/ROOT/nav.adoc
