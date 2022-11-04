@@ -1,6 +1,6 @@
 name: kodein-di
 title: Kodein-DI
-version: '7.12.0'
+version: '7.12'
 display_version: '7.12.0'
 nav:
   - modules/ROOT/nav.adoc
@@ -10,6 +10,7 @@ nav:
   - modules/migration/nav.adoc
 asciidoc:
   attributes:
+    branch: '7.12'
     version: '7.12.0'
     kotlin: '1.6.21'
     jdk: '1.8'
