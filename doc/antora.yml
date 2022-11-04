@@ -1,5 +1,5 @@
-name: kodein-di
-title: Kodein-DI
+name: kodein
+title: Kodein
 version: '7.16'
 display_version: '7.16.0'
 nav:
@@ -11,6 +11,6 @@ nav:
 asciidoc:
   attributes:
     branch: '7.16'
-    version: '7.16,0'
+    version: '7.16.0'
     kotlin: '1.7.20'
     jdk: '1.8'
