@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.compose") version "1.2.0-beta01"
+    id("org.jetbrains.compose") version "1.2.0"
     id("org.kodein.library.mpp-with-android")
 }
 
@@ -21,7 +21,7 @@ kodein {
             }
         }
 
-        add(kodeinTargets.js.ir.js)
+//        add(kodeinTargets.js.ir.js)
 
         // iosX32 not supported by jetbrains compose
         add(kodeinTargets.native.iosX64)
