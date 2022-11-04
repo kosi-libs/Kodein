@@ -32,7 +32,7 @@ implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:{version}")
 . Declare a DI container in your application or use the <<diplugin>>
 +
 [source, kotlin]
-.Example: a Ktor Application declaration, installing the `DIPlugin` (via the extension function `Application.di()`).
+.Example: a Ktor Application declaration, installing the `DIPlugin` (via the extension function `Application.closestDI()`).
 ----
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {
@@ -94,7 +94,7 @@ fun main(args: Array<String>) {
 
         routing {
             get("/") {
-                val random by di().instance<Random>() // <3>
+                val random by closestDI().instance<Random>() // <3>
                 /* logic here */
             }
         }
@@ -105,52 +105,52 @@ fun main(args: Array<String>) {
 <2> Lambda that represent a DI builder, accepting DI core features
 <3> retrieving the DI container from the Application by calling `PipelineContext<*, ApplicationCall>.di` extension function
 
-.Available `di()` extension function receivers
+.Available `closestDI()` extension function receivers
 - https://ktor.io/docs/a-ktor-application.html[Application]
 
     fun Application.main() {
         /* usage */
-        val di = di()
+        val di = closestDI()
 
         /* other usage */
-        val random by di().instance<Random>()
+        val random by closestDI().instance<Random>()
     }
 
 - https://ktor.io/docs/pipelines.html[PipelineContext<*, ApplicationCall>]
 
     get {
         /* usage */
-        val di = di()
+        val di = closestDI()
 
         /* other usage */
-        val random by di().instance<Random>()
+        val random by closestDI().instance<Random>()
     }
 
 - https://ktor.io/servers/calls.html[ApplicationCall]
 
     get("/") {
         /* usage */
-        val di = call.di()
+        val di = call.closestDI()
 
         /* other usage */
-        val random by call.di().instance<Random>()
+        val random by call.closestDI().instance<Random>()
     }
 
 - https://ktor.io/docs/routing-in-ktor.html[Routing]
 
     routing {
         /* usage */
-        val di = di()
+        val di = closestDI()
 
         /* other usage */
-        val random by di().instance<Random>()
+        val random by closestDI().instance<Random>()
     }
 
 NOTE: Because of those extension functions you can always get the DI object by using:
-    - `di()` inside a Ktor class (such as `Application`, `ApplicationCall`, `Route`, etc.)
+    - `closestDI()` inside a Ktor class (such as `Application`, `ApplicationCall`, `Route`, etc.)
     - `di { application }` inside another class, where application is the running Ktor application.
 
-WARNING: The `di()` extension function will only work if your Ktor `Application` has the `DIPlugin` installed, or if you handle the installation manually.
+WARNING: The `closestDI()` extension function will only work if your Ktor `Application` has the `DIPlugin` installed, or if you handle the installation manually.
 
 === Extending the nearest DI container
 
@@ -175,7 +175,7 @@ fun main(args: Array<String>) {
                 }
 
                 post {
-                    val dao by di().instance<CredentialsDao>() // <4>
+                    val dao by closestDI().instance<CredentialsDao>() // <4>
                     /* logic here */
                 }
             }
@@ -311,7 +311,7 @@ embeddedServer(Netty, port = 8000) {
     routing {
         get("/random") {
             val session = call.sessions.get<UserSession>() ?: error("no session found!") // <1>
-            val random by di().on(session).instance<Random>() // <2>
+            val random by closestDI().on(session).instance<Random>() // <2>
             call.responText("Hello ${session.user.name}, your random number is ${random.nextInt()}")
         }
     }
@@ -364,7 +364,7 @@ val di = DI {
 .Example: Retrieving call scoped dependencies
 ----
  get {
-    val random by di().on(context).instance<Random>()
+    val random by closestDI().on(context).instance<Random>()
 }
 ----
 
