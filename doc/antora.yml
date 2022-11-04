@@ -1,5 +1,5 @@
-name: kodein-di
-title: Kodein-DI
+name: kodein
+title: Kodein
 version: '7.1'
 display_version: '7.1.0'
 nav:
@@ -8,3 +8,9 @@ nav:
   - modules/framework/nav.adoc
   - modules/extension/nav.adoc
   - modules/migration/nav.adoc
+asciidoc:
+  attributes:
+    branch: '7.1'
+    version: '7.1.0'
+    kotlin: '1.4.0'
+    jdk: '1.8'
