@@ -10,6 +10,7 @@ nav:
   - modules/migration/nav.adoc
 asciidoc:
   attributes:
+    branch: '7.15'
     version: '7.15.0'
     kotlin: '1.7.20'
     jdk: '1.8'
