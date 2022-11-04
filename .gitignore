@@ -1,4 +1,5 @@
 # INTELLIJ
+.fleet/
 .idea/
 *.ipr
 *.iml
