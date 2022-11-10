@@ -4,40 +4,30 @@ package org.kodein.di.android
 
 import android.accounts.AccountManager
 import android.annotation.SuppressLint
-import android.app.*
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobScheduler
 import android.app.usage.NetworkStatsManager
 import android.app.usage.UsageStatsManager
 import android.appwidget.AppWidgetManager
-import android.bluetooth.BluetoothManager
-import android.content.*
 import android.content.pm.LauncherApps
 import android.content.pm.ShortcutManager
-import android.hardware.ConsumerIrManager
 import android.hardware.SensorManager
 import android.hardware.camera2.CameraManager
-import android.hardware.display.DisplayManager
 import android.hardware.fingerprint.FingerprintManager
-import android.hardware.input.InputManager
 import android.hardware.usb.UsbManager
 import android.location.LocationManager
 import android.media.AudioManager
-import android.media.MediaRouter
 import android.media.midi.MidiManager
 import android.media.projection.MediaProjectionManager
 import android.media.session.MediaSessionManager
 import android.media.tv.TvInputManager
 import android.net.ConnectivityManager
-import android.net.nsd.NsdManager
 import android.net.wifi.WifiManager
 import android.net.wifi.p2p.WifiP2pManager
 import android.nfc.NfcManager
-import android.os.*
 import android.os.health.SystemHealthManager
 import android.os.storage.StorageManager
 import android.preference.PreferenceManager
-import android.print.PrintManager
 import android.telecom.TelecomManager
 import android.telephony.CarrierConfigManager
 import android.telephony.SubscriptionManager
@@ -46,15 +36,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityManager
-import android.view.accessibility.CaptioningManager
 import android.view.inputmethod.InputMethodManager
 import android.view.textservice.TextServicesManager
 import org.kodein.di.DI
 import org.kodein.di.bind
-import org.kodein.di.bindings.*
 import org.kodein.type.TypeToken
 import org.kodein.type.generic
-import java.io.File
 
 val androidCoreContextTranslators = DI.Module(name = "\u2063androidCoreContextTranslators") {
     RegisterContextTranslator(SimpleContextTranslator<Fragment, Activity>(generic(), generic()) { it.activity })
@@ -97,14 +84,14 @@ fun androidCoreModule(app: Application) = DI.Module(name = "\u2063androidModule"
         }
     }
 
-    Bind<File>(generic(), tag = "cache") with Provider(contextToken, generic()) { context.cacheDir }
+    bind(tag = "cache") { Provider(contextToken, generic()) { context.cacheDir } }
     // Bind<File>(generic(), tag = "externalCache") with Provider(contextToken, generic()) { context.externalCacheDir } TODO: re-enable once we found how to bind nullables
-    Bind<File>(generic(), tag = "files") with Provider(contextToken, generic()) { context.filesDir }
-    Bind<File>(generic(), tag = "obb") with Provider(contextToken, generic()) { context.obbDir }
+    bind(tag = "files") { Provider(contextToken, generic()) { context.filesDir } }
+    bind(tag = "obb") { Provider(contextToken, generic()) { context.obbDir } }
 
-    Bind<String>(generic(), tag = "packageCodePath") with Provider(contextToken, generic()) { context.packageCodePath }
-    Bind<String>(generic(), tag = "packageName") with Provider(contextToken, generic()) { context.packageName }
-    Bind<String>(generic(), tag = "packageResourcePath") with Provider(contextToken, generic()) { context.packageResourcePath }
+    bind(tag = "packageCodePath") { Provider(contextToken, generic()) { context.packageCodePath } }
+    bind(tag = "packageName") { Provider(contextToken, generic()) { context.packageName } }
+    bind(tag = "packageResourcePath") { Provider(contextToken, generic()) { context.packageResourcePath } }
 
     bind { Provider(contextToken, generic()) { context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager } }
     bind { Provider(contextToken, generic()) { context.getSystemService(Context.ACCOUNT_SERVICE) as AccountManager } }
