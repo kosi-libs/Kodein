@@ -1,15 +1,26 @@
+@file:Suppress("FunctionName")
+
 package org.kodein.di.internal
 
-import org.kodein.di.*
-import org.kodein.di.bindings.*
+import org.kodein.di.Copy
+import org.kodein.di.DI
+import org.kodein.di.DirectDI
+import org.kodein.di.bindings.BaseMultiBinding
+import org.kodein.di.bindings.ContextTranslator
+import org.kodein.di.bindings.DIBinding
+import org.kodein.di.bindings.ExternalSource
+import org.kodein.di.bindings.InstanceBinding
+import org.kodein.di.bindings.NoScope
+import org.kodein.di.bindings.Provider
+import org.kodein.di.bindings.Scope
 import org.kodein.type.TypeToken
 import org.kodein.type.erasedComp
 
 internal open class DIBuilderImpl internal constructor(
-        private val moduleName: String?,
-        private val prefix: String,
-        internal val importedModules: MutableSet<String>,
-        override val containerBuilder: DIContainerBuilderImpl
+    private val moduleName: String?,
+    private val prefix: String,
+    internal val importedModules: MutableSet<String>,
+    override val containerBuilder: DIContainerBuilderImpl
 ) : DI.Builder {
 
     override val contextType = TypeToken.Any
@@ -18,10 +29,19 @@ internal open class DIBuilderImpl internal constructor(
 
     override val explicitContext: Boolean get() = false
 
-    inner class TypeBinder<T : Any> internal constructor(val type: TypeToken<out T>, val tag: Any?, val overrides: Boolean?) : DI.Builder.TypeBinder<T> {
+    inner class TypeBinder<T : Any> internal constructor(
+        val type: TypeToken<out T>,
+        val tag: Any?,
+        val overrides: Boolean?
+    ) : DI.Builder.TypeBinder<T> {
         internal val containerBuilder get() = this@DIBuilderImpl.containerBuilder
 
-        override infix fun <C : Any, A> with(binding: DIBinding<in C, in A, out T>) = containerBuilder.bind(DI.Key(binding.contextType, binding.argType, type, tag), binding, moduleName, overrides)
+        override infix fun <C : Any, A> with(binding: DIBinding<in C, in A, out T>) = containerBuilder.bind(
+            DI.Key(binding.contextType, binding.argType, type, tag),
+            binding,
+            moduleName,
+            overrides
+        )
     }
 
     /**
@@ -41,18 +61,28 @@ internal open class DIBuilderImpl internal constructor(
         }
     }
 
-    inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) : DI.Builder.DirectBinder
+    inner class DirectBinder internal constructor(private val _tag: Any?, private val _overrides: Boolean?) :
+        DI.Builder.DirectBinder
 
-    inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) : DI.Builder.ConstantBinder {
-        @Suppress("FunctionName")
-        override fun <T: Any> With(valueType: TypeToken<out T>, value: T) = Bind(tag = _tag, overrides = _overrides, binding = InstanceBinding(valueType, value))
+    inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) :
+        DI.Builder.ConstantBinder {
+        override fun <T : Any> With(valueType: TypeToken<out T>, value: T) =
+            Bind(tag = _tag, overrides = _overrides, binding = InstanceBinding(valueType, value))
     }
 
     @Suppress("FunctionName")
-    override fun <T : Any> Bind(type: TypeToken<out T>, tag: Any?, overrides: Boolean?) = TypeBinder(type, tag, overrides)
+    override fun <T : Any> Bind(
+        type: TypeToken<out T>,
+        tag: Any?,
+        overrides: Boolean?
+    ) = TypeBinder(type, tag, overrides)
 
     @Suppress("FunctionName")
-    override fun <T : Any> Bind(tag: Any?, overrides: Boolean?, binding: DIBinding<*, *, T>) {
+    override fun <T : Any> Bind(
+        tag: Any?,
+        overrides: Boolean?,
+        binding: DIBinding<*, *, T>
+    ) {
         containerBuilder.bind(
             key = DI.Key(binding.contextType, binding.argType, binding.createdType, tag = tag),
             binding = binding,
@@ -61,17 +91,23 @@ internal open class DIBuilderImpl internal constructor(
         )
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> BindSet(tag: Any?, overrides: Boolean?, binding: DIBinding<*, *, T>) {
+    @Suppress("unchecked_cast")
+    override fun <T : Any> BindSet(
+        tag: Any?,
+        overrides: Boolean?,
+        binding: DIBinding<*, *, T>,
+    ) {
         val setType = erasedComp(Set::class, binding.createdType) as TypeToken<Set<T>>
         val setKey = DI.Key(binding.contextType, binding.argType, setType, tag)
-        val setBinding = containerBuilder.bindingsMap[setKey]?.first() ?: throw IllegalStateException("No set binding to $setKey")
+        val setBinding =
+            containerBuilder.bindingsMap[setKey]?.first() ?: throw IllegalStateException("No set binding to $setKey")
 
-        setBinding.binding as? BaseMultiBinding<*, *, T> ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
-        (setBinding.binding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
+        val multipleBinding =
+            setBinding.binding as? BaseMultiBinding<*, *, T>
+                ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
+        (multipleBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
     }
 
-    @Suppress("FunctionName")
     override fun Bind(tag: Any?, overrides: Boolean?): DirectBinder = DirectBinder(tag, overrides)
 
     override fun constant(tag: Any, overrides: Boolean?) = ConstantBinder(tag, overrides)
@@ -88,14 +124,19 @@ internal open class DIBuilderImpl internal constructor(
             throw IllegalStateException("Module \"$moduleName\" has already been imported!")
         }
         importedModules += moduleName
-        DIBuilderImpl(moduleName, prefix + module.prefix, importedModules, containerBuilder.subBuilder(allowOverride, module.allowSilentOverride)).apply(module.init)
+        DIBuilderImpl(
+            moduleName,
+            prefix + module.prefix,
+            importedModules,
+            containerBuilder.subBuilder(allowOverride, module.allowSilentOverride)
+        ).apply(module.init)
     }
 
     override fun importAll(modules: Iterable<DI.Module>, allowOverride: Boolean) =
-            modules.forEach { import(it, allowOverride) }
+        modules.forEach { import(it, allowOverride) }
 
     override fun importAll(vararg modules: DI.Module, allowOverride: Boolean) =
-            modules.forEach { import(it, allowOverride) }
+        modules.forEach { import(it, allowOverride) }
 
     override fun importOnce(module: DI.Module, allowOverride: Boolean) {
         if (module.name.isEmpty())
@@ -106,11 +147,17 @@ internal open class DIBuilderImpl internal constructor(
 
     override fun onReady(cb: DirectDI.() -> Unit) = containerBuilder.onReady(cb)
 
-    override fun RegisterContextTranslator(translator: ContextTranslator<*, *>) = containerBuilder.registerContextTranslator(translator)
+    override fun RegisterContextTranslator(translator: ContextTranslator<*, *>) =
+        containerBuilder.registerContextTranslator(translator)
 
 }
 
-internal open class DIMainBuilderImpl(allowSilentOverride: Boolean) : DIBuilderImpl(null, "", HashSet(), DIContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList())), DI.MainBuilder {
+internal open class DIMainBuilderImpl(allowSilentOverride: Boolean) : DIBuilderImpl(
+    null,
+    "",
+    HashSet(),
+    DIContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList())
+), DI.MainBuilder {
 
     override val externalSources: MutableList<ExternalSource> = ArrayList()
 
@@ -123,9 +170,9 @@ internal open class DIMainBuilderImpl(allowSilentOverride: Boolean) : DIBuilderI
         containerBuilder.extend(di.container, allowOverride, keys)
         externalSources += di.container.tree.externalSources
         importedModules.addAll(
-                containerBuilder.bindingsMap
-                        .flatMap { it.value.map { it.fromModule } }
-                        .filterNotNull()
+            containerBuilder.bindingsMap
+                .flatMap { it.value.map { it.fromModule } }
+                .filterNotNull()
         )
     }
 
@@ -135,9 +182,9 @@ internal open class DIMainBuilderImpl(allowSilentOverride: Boolean) : DIBuilderI
         containerBuilder.extend(directDI.container, allowOverride, keys)
         externalSources += directDI.container.tree.externalSources
         importedModules.addAll(
-                containerBuilder.bindingsMap
-                        .flatMap { it.value.map { it.fromModule } }
-                        .filterNotNull()
+            containerBuilder.bindingsMap
+                .flatMap { it.value.map { it.fromModule } }
+                .filterNotNull()
         )
     }
 }

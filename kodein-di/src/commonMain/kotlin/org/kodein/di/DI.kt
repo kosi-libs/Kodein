@@ -1,7 +1,8 @@
+@file:Suppress("FunctionName")
+
 package org.kodein.di
 
 import org.kodein.di.bindings.*
-import org.kodein.di.internal.DIBuilderImpl
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
 import org.kodein.type.generic
@@ -292,7 +293,11 @@ public interface DI : DIAware {
          * @param tag The tag to bind.
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          */
-        public fun <T : Any> BindSet(tag: Any? = null, overrides: Boolean? = null, binding: DIBinding<*, *, T>)
+        public fun <T : Any> BindSet(
+            tag: Any? = null,
+            overrides: Boolean? = null,
+            binding: DIBinding<*, *, T>,
+        )
 
         /**
          * Starts the binding of a given type with a given tag.

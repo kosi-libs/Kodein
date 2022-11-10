@@ -11,7 +11,7 @@ import org.kodein.type.TypeToken
  * @param A The argument type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
-public abstract class BaseMultiBinding<C : Any, A, T: Any> : DIBinding<C, A, Set<T>> {
+public abstract class BaseMultiBinding<C : Any, A, T : Any> : DIBinding<C, A, Set<T>> {
     internal abstract val set: MutableSet<DIBinding<C, A, T>>
 
     override fun factoryName(): String = "bindingSet"
@@ -30,7 +30,12 @@ private class SetBindingDI<out C : Any>(private val _base: BindingDI<C>) : Bindi
  * @param A The argument type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
-public class ArgSetBinding<C : Any, A, T: Any>(override val contextType: TypeToken<in C>, override val argType: TypeToken<in A>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : BaseMultiBinding<C, A, T>() {
+public class ArgSetBinding<C : Any, A, T : Any>(
+    override val contextType: TypeToken<in C>,
+    override val argType: TypeToken<in A>,
+    private val _elementType: TypeToken<out T>,
+    override val createdType: TypeToken<out Set<T>>
+) : BaseMultiBinding<C, A, T>() {
 
     override val set = LinkedHashSet<DIBinding<C, A, T>>()
 
@@ -41,7 +46,7 @@ public class ArgSetBinding<C : Any, A, T: Any>(override val contextType: TypeTok
                 val subKey = DI.Key(key.contextType, key.argType, _elementType, key.tag)
                 set.map { it.getFactory(subKey, SetBindingDI(di)) }
             }.also { lateInitFactories = it }
-            factories.asSequence().map { it.invoke(arg) } .toSet()
+            factories.asSequence().map { it.invoke(arg) }.toSet()
         }
     }
 
@@ -58,7 +63,11 @@ public class ArgSetBinding<C : Any, A, T: Any>(override val contextType: TypeTok
  * @param C The context type of all bindings in the set.
  * @param T The provided type of all bindings in the set.
  */
-public class SetBinding<C : Any, T: Any>(override val contextType: TypeToken<in C>, private val _elementType: TypeToken<out T>, override val createdType: TypeToken<out Set<T>>) : NoArgDIBinding<C, Set<T>>, BaseMultiBinding<C, Unit, T>() {
+public class SetBinding<C : Any, T : Any>(
+    override val contextType: TypeToken<in C>,
+    private val _elementType: TypeToken<out T>,
+    override val createdType: TypeToken<out Set<T>>
+) : NoArgDIBinding<C, Set<T>>, BaseMultiBinding<C, Unit, T>() {
 
     @Suppress("UNCHECKED_CAST")
     override val set = LinkedHashSet<DIBinding<C, Unit, T>>()
@@ -87,7 +96,10 @@ public class SetBinding<C : Any, T: Any>(override val contextType: TypeToken<in 
  *
  * @param T The type of the binding in the set.
  */
-public class TypeBinderInSet<in T : Any, S: Any> internal constructor(private val _binder: DI.Builder.TypeBinder<T>, private val _colTypeToken: TypeToken<S>) {
+public class TypeBinderInSet<in T : Any, S : Any> internal constructor(
+    private val _binder: DI.Builder.TypeBinder<T>,
+    private val _colTypeToken: TypeToken<S>
+) {
 
     /**
      * Second part of the `bind<Type>().inSet() with binding` syntax.
@@ -99,9 +111,11 @@ public class TypeBinderInSet<in T : Any, S: Any> internal constructor(private va
     public infix fun <C : Any> with(binding: DIBinding<in C, *, out T>) {
         _binder as DIBuilderImpl.TypeBinder
         val setKey = DI.Key(binding.contextType, binding.argType, _colTypeToken, _binder.tag)
-        val setBinding = _binder.containerBuilder.bindingsMap[setKey]?.first() ?: throw IllegalStateException("No set binding to $setKey")
+        val setBinding = _binder.containerBuilder.bindingsMap[setKey]?.first()
+            ?: throw IllegalStateException("No set binding to $setKey")
 
-        setBinding.binding as? BaseMultiBinding<C, *, T> ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
+        setBinding.binding as? BaseMultiBinding<C, *, T>
+            ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
 
         (setBinding.binding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
     }
@@ -116,4 +130,5 @@ public class TypeBinderInSet<in T : Any, S: Any> internal constructor(private va
  * @param setTypeToken The type of the bound set.
  */
 @Suppress("FunctionName")
-public fun <T: Any> DI.Builder.TypeBinder<T>.InSet(setTypeToken: TypeToken<Set<T>>): TypeBinderInSet<T, Set<T>> = TypeBinderInSet(this, setTypeToken)
+public fun <T : Any> DI.Builder.TypeBinder<T>.InSet(setTypeToken: TypeToken<Set<T>>): TypeBinderInSet<T, Set<T>> =
+    TypeBinderInSet(this, setTypeToken)
