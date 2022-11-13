@@ -1,4 +1,4 @@
-@file:Suppress("unused", "UNCHECKED_CAST")
+@file:Suppress("unused", "unchecked_cast", "deprecation")
 
 package org.kodein.di
 
@@ -23,8 +23,40 @@ import org.kodein.type.generic
 public inline fun <reified T : Any> DI.Builder.bindSet(tag: Any? = null, overrides: Boolean? = null): Unit = Bind(
     tag = tag,
     overrides = overrides,
-    binding = SetBinding(TypeToken.Any, generic<T>(), erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
+    binding = SetBinding(
+        contextType = TypeToken.Any,
+        _elementType = generic<T>(),
+        createdType = erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>
+    )
 )
+
+/**
+ * Creates a set and add multiple bindings to it.
+ *
+ * T generics will be erased!
+ *
+ * @param T The created type.
+ * @param creator The builder that should add binding in the set.
+ */
+public inline fun <reified T : Any> DI.Builder.bindSet(
+    tag: Any? = null,
+    overrides: Boolean? = null,
+    noinline creator: DI.Builder.SetBinder<T>.() -> Unit
+): Unit = BindInSet(tag = tag, overrides = overrides, type = generic(), creator = creator)
+
+/**
+ * Add multiple bindings in an existing set
+ *
+ * T generics will be erased!
+ *
+ * @param T The binding type of the targeted set.
+ * @param creator The builder that should add binding in the set.
+ */
+public inline fun <reified T : Any> DI.Builder.inBindSet(
+    tag: Any? = null,
+    overrides: Boolean? = null,
+    noinline creator: DI.Builder.SetBinder<T>.() -> Unit
+): Unit = InBindSet(tag = tag, overrides = overrides, type = generic(), creator = creator)
 
 /**
  * Creates a set: multiple bindings can be added in this set.
@@ -33,7 +65,6 @@ public inline fun <reified T : Any> DI.Builder.bindSet(tag: Any? = null, overrid
  *
  * @param A The argument type.
  * @param T The created type.
- * @return A set binding ready to be bound.
  */
 @Suppress("RemoveExplicitTypeArguments")
 public inline fun <reified A : Any, reified T : Any> DI.Builder.bindArgSet(
@@ -43,22 +74,27 @@ public inline fun <reified A : Any, reified T : Any> DI.Builder.bindArgSet(
     tag = tag,
     overrides = overrides,
     binding = ArgSetBinding(
-        TypeToken.Any,
-        generic<A>(),
-        generic<T>(),
-        erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>
+        contextType = TypeToken.Any,
+        argType = generic<A>(),
+        _elementType = generic<T>(),
+        createdType = erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>
     )
 )
 
 /**
- * Defines that the binding will be saved in a set binding.
+ * Creates a set and add multiple bindings to it.
  *
  * T generics will be erased!
  *
- * @param T The type of the binding.
+ * @param A The argument type.
+ * @param T The created type.
+ * @param creator The builder that should add binding in the set.
  */
-public inline fun <reified T : Any> DI.Builder.TypeBinder<T>.inSet(): TypeBinderInSet<T, Set<T>> =
-    InSet(erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
+public inline fun <reified A : Any, reified T : Any> DI.Builder.bindArgSet(
+    tag: Any? = null,
+    overrides: Boolean? = null,
+    noinline creator: DI.Builder.ArgSetBinder<A, T>.() -> Unit
+): Unit = BindInArgSet(tag = tag, overrides = overrides, argType = generic(), type = generic(), creator = creator)
 
 /**
  * Defines that the binding will be saved in a set binding.
@@ -67,10 +103,33 @@ public inline fun <reified T : Any> DI.Builder.TypeBinder<T>.inSet(): TypeBinder
  *
  * @param T The type of the binding.
  */
+@Deprecated("Use addInBindSet instead")
+public inline fun <reified T : Any> DI.Builder.TypeBinder<T>.inSet(): TypeBinderInSet<T, Set<T>> =
+    InSet(setTypeToken = erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
+
+/**
+ * Defines that the binding will be saved in a set binding.
+ *
+ * T generics will be erased!
+ *
+ * @param T The type of the binding.
+ */
+@Deprecated("Use addInBindSet instead", ReplaceWith("addInBindSet"))
 public inline fun <reified T : Any> DI.Builder.inSet(
     tag: Any? = null,
     overrides: Boolean? = null,
     creator: () -> DIBinding<*, *, T>
-): Unit {
-    BindSet(tag = tag, overrides = overrides, creator())
-}
+): Unit = BindSet(tag = tag, overrides = overrides, creator())
+
+/**
+ * Defines that the binding will be saved in a set binding.
+ *
+ * T generics will be erased!
+ *
+ * @param T The type of the binding.
+ */
+public inline fun <reified T : Any> DI.Builder.addInBindSet(
+    tag: Any? = null,
+    overrides: Boolean? = null,
+    creator: () -> DIBinding<*, *, T>
+): Unit = AddBindInSet(tag = tag, overrides = overrides, binding = creator())

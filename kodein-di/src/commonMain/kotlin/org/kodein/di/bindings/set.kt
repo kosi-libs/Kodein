@@ -69,7 +69,6 @@ public class SetBinding<C : Any, T : Any>(
     override val createdType: TypeToken<out Set<T>>
 ) : NoArgDIBinding<C, Set<T>>, BaseMultiBinding<C, Unit, T>() {
 
-    @Suppress("UNCHECKED_CAST")
     override val set = LinkedHashSet<DIBinding<C, Unit, T>>()
 
     override fun getFactory(key: DI.Key<C, Unit, Set<T>>, di: BindingDI<C>): (Unit) -> Set<T> {
@@ -96,6 +95,7 @@ public class SetBinding<C : Any, T : Any>(
  *
  * @param T The type of the binding in the set.
  */
+@Deprecated("TypeBinderInSet must be replaced by the use of bindSet / inBindSet / addInBindSet builders.")
 public class TypeBinderInSet<in T : Any, S : Any> internal constructor(
     private val _binder: DI.Builder.TypeBinder<T>,
     private val _colTypeToken: TypeToken<S>
@@ -129,6 +129,7 @@ public class TypeBinderInSet<in T : Any, S : Any> internal constructor(
  * @param T The provided type of all bindings in the set.
  * @param setTypeToken The type of the bound set.
  */
-@Suppress("FunctionName")
+@Suppress("FunctionName", "deprecation")
+@Deprecated("InSet must be replaced by the use of bindSet / inBindSet / addInBindSet builders.")
 public fun <T : Any> DI.Builder.TypeBinder<T>.InSet(setTypeToken: TypeToken<Set<T>>): TypeBinderInSet<T, Set<T>> =
     TypeBinderInSet(this, setTypeToken)

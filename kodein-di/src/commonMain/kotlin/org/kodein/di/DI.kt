@@ -278,6 +278,46 @@ public interface DI : DIAware {
         }
 
         /**
+         * Manage multiple bindings in a [Set]
+         */
+        public interface SetBinder<T : Any> {
+            /**
+             * Add a binding in the [Set] of type [T]
+             *
+             * @param createBinding The builder that should add binding in the set.
+             */
+            public fun add(createBinding: () -> DIBinding<*, *, out T>)
+            /**
+             * Add a binding in the [Set] of type [T], and also in the DI container
+             *
+             * @param tag The tag to bind.
+             * @param overrides Whether this bind **must** or **must not** override an existing binding.
+             * @param createBinding The builder that should add binding in the set.
+             */
+            public fun bind(tag: Any? = null, overrides: Boolean? = null, createBinding: () -> DIBinding<*, *, out T>)
+        }
+
+        /**
+         * Manage multiple bindings, with type argument, in a [Set]
+         */
+        public interface ArgSetBinder<A: Any, T : Any> {
+            /**
+             * Add a binding in the [Set] of type [T]
+             *
+             * @param createBinding The builder that should add binding in the set.
+             */
+            public fun add(createBinding: () -> DIBinding<*, in A, out T>)
+            /**
+             * Add a binding in the [Set] of type [T], and also in the DI container
+             *
+             * @param tag The tag to bind.
+             * @param overrides Whether this bind **must** or **must not** override an existing binding.
+             * @param createBinding The builder that should add binding in the set.
+             */
+            public fun bind(tag: Any? = null, overrides: Boolean? = null, createBinding: () -> DIBinding<*, in A, out T>)
+        }
+
+        /**
          * Attaches the binding of a given type with a given tag.
          *
          * @param T The type of value to bind.
@@ -287,13 +327,85 @@ public interface DI : DIAware {
         public fun <T : Any> Bind(tag: Any? = null, overrides: Boolean? = null, binding: DIBinding<*, *, T>)
 
         /**
+         * Creates a Set binding of a given type with a given tag and attaches multiple bindings to it.
+         *
+         * @param T The type of value to bind.
+         * @param tag The tag to bind.
+         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         */
+        public fun <T : Any> BindInSet(
+            tag: Any? = null,
+            overrides: Boolean? = null,
+            type: TypeToken<out T>,
+            creator: SetBinder<T>.() -> Unit
+        )
+
+        /**
+         * Attaches multiple bindings in a Set binding of a given type with a given tag.
+         *
+         * @param T The type of value to bind.
+         * @param tag The tag to bind.
+         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         */
+        public fun <T : Any> InBindSet(
+            tag: Any? = null,
+            overrides: Boolean? = null,
+            type: TypeToken<out T>,
+            creator: SetBinder<T>.() -> Unit
+        )
+
+        /**
+         * Creates a Set binding of a given type with a given tag and attaches multiple bindings to it.
+         *
+         * @param T The type of value to bind.
+         * @param tag The tag to bind.
+         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         */
+        public fun <A: Any, T : Any> BindInArgSet(
+            tag: Any? = null,
+            overrides: Boolean? = null,
+            argType: TypeToken<in A>,
+            type: TypeToken<out T>,
+            creator: ArgSetBinder<A, T>.() -> Unit
+        )
+
+        /**
+         * Attaches multiple bindings in a Set binding of a given type with a given tag.
+         *
+         * @param T The type of value to bind.
+         * @param tag The tag to bind.
+         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         */
+        public fun <A: Any, T : Any> InBindArgSet(
+            tag: Any? = null,
+            overrides: Boolean? = null,
+            argType: TypeToken<in A>,
+            type: TypeToken<out T>,
+            creator: ArgSetBinder<A, T>.() -> Unit
+        )
+
+        /**
          * Attaches the binding of a given type with a given tag.
          *
          * @param T The type of value to bind.
          * @param tag The tag to bind.
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          */
+        @Deprecated("Use AddBindInSet instead.", ReplaceWith("AddBindInSet"))
         public fun <T : Any> BindSet(
+            tag: Any? = null,
+            overrides: Boolean? = null,
+            binding: DIBinding<*, *, T>,
+        )
+
+        /**
+         * Attaches multiple bindings in a Set binding of a given type with a given tag.
+         *
+         * @param T The type of value to bind.
+         * @param tag The tag to bind.
+         * @param overrides Whether this bind **must** or **must not** override an existing binding.
+         */
+        public fun <T : Any> AddBindInSet(
             tag: Any? = null,
             overrides: Boolean? = null,
             binding: DIBinding<*, *, T>,

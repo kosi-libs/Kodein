@@ -4,11 +4,28 @@ package org.kodein.di.android
 
 import android.accounts.AccountManager
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.ActivityManager
+import android.app.AlarmManager
+import android.app.Application
+import android.app.Dialog
+import android.app.DownloadManager
+import android.app.Fragment
+import android.app.KeyguardManager
+import android.app.NotificationManager
+import android.app.SearchManager
+import android.app.UiModeManager
+import android.app.WallpaperManager
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobScheduler
 import android.app.usage.NetworkStatsManager
 import android.app.usage.UsageStatsManager
 import android.appwidget.AppWidgetManager
+import android.content.AbstractThreadedSyncAdapter
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Loader
+import android.content.RestrictionsManager
 import android.content.pm.LauncherApps
 import android.content.pm.ShortcutManager
 import android.hardware.SensorManager
@@ -25,6 +42,12 @@ import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.net.wifi.p2p.WifiP2pManager
 import android.nfc.NfcManager
+import android.os.BatteryManager
+import android.os.Build
+import android.os.DropBoxManager
+import android.os.HardwarePropertiesManager
+import android.os.PowerManager
+import android.os.Vibrator
 import android.os.health.SystemHealthManager
 import android.os.storage.StorageManager
 import android.preference.PreferenceManager
@@ -40,6 +63,9 @@ import android.view.inputmethod.InputMethodManager
 import android.view.textservice.TextServicesManager
 import org.kodein.di.DI
 import org.kodein.di.bind
+import org.kodein.di.bindings.Factory
+import org.kodein.di.bindings.Provider
+import org.kodein.di.bindings.SimpleContextTranslator
 import org.kodein.type.TypeToken
 import org.kodein.type.generic
 

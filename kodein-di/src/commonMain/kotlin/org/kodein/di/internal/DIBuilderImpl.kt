@@ -5,6 +5,7 @@ package org.kodein.di.internal
 import org.kodein.di.Copy
 import org.kodein.di.DI
 import org.kodein.di.DirectDI
+import org.kodein.di.bindings.ArgSetBinding
 import org.kodein.di.bindings.BaseMultiBinding
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.DIBinding
@@ -13,6 +14,7 @@ import org.kodein.di.bindings.InstanceBinding
 import org.kodein.di.bindings.NoScope
 import org.kodein.di.bindings.Provider
 import org.kodein.di.bindings.Scope
+import org.kodein.di.bindings.SetBinding
 import org.kodein.type.TypeToken
 import org.kodein.type.erasedComp
 
@@ -70,6 +72,98 @@ internal open class DIBuilderImpl internal constructor(
             Bind(tag = _tag, overrides = _overrides, binding = InstanceBinding(valueType, value))
     }
 
+    @Suppress("unchecked_cast")
+    inner class SetBinder<T : Any> internal constructor(
+        private val setBindingTag: Any? = null,
+        private val setBindingType: TypeToken<out T>,
+        setBindingOverrides: Boolean? = null,
+        addSetBindingToContainer: Boolean = true,
+    ) : DI.Builder.SetBinder<T> {
+
+        private val setBinding: BaseMultiBinding<*, *, T> by lazy {
+            val setType = erasedComp(Set::class, setBindingType) as TypeToken<Set<T>>
+            val setKey = DI.Key(TypeToken.Any, TypeToken.Unit, setType, setBindingTag)
+
+            val setBinding = containerBuilder.bindingsMap[setKey]?.first()
+                ?: throw IllegalStateException("No set binding to $setKey")
+            setBinding.binding as? BaseMultiBinding<*, *, T>
+                ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
+        }
+
+        init {
+            if (addSetBindingToContainer) {
+                Bind(
+                    tag = setBindingTag,
+                    overrides = setBindingOverrides,
+                    binding = SetBinding(
+                        contextType = TypeToken.Any,
+                        _elementType = setBindingType,
+                        createdType = erasedComp(Set::class, setBindingType) as TypeToken<Set<T>>
+                    )
+                )
+            }
+        }
+
+        override fun add(createBinding: () -> DIBinding<*, *, out T>) {
+            val binding = createBinding()
+            (setBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
+        }
+
+        override fun bind(tag: Any?, overrides: Boolean?, createBinding: () -> DIBinding<*, *, out T>) {
+            val binding = createBinding()
+            (setBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
+
+            Bind(tag = tag, overrides = overrides, binding = binding)
+        }
+    }
+
+    @Suppress("unchecked_cast")
+    inner class ArgSetBinder<A : Any, T : Any>(
+        private val setBindingTag: Any? = null,
+        setBindingOverrides: Boolean? = null,
+        private val setBindingArgType: TypeToken<in A>,
+        private val setBindingType: TypeToken<out T>,
+        addSetBindingToContainer: Boolean = true,
+    ) : DI.Builder.ArgSetBinder<A, T> {
+
+        private val setBinding: BaseMultiBinding<*, in A, out T> by lazy {
+            val setType = erasedComp(Set::class, setBindingType) as TypeToken<Set<T>>
+            val setKey = DI.Key(TypeToken.Any, setBindingArgType, setType, setBindingTag)
+
+            val setBinding = containerBuilder.bindingsMap[setKey]?.first()
+                ?: throw IllegalStateException("No set binding to $setKey")
+            setBinding.binding as? BaseMultiBinding<*, A, T>
+                ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
+        }
+
+        init {
+            if (addSetBindingToContainer) {
+                Bind(
+                    tag = setBindingTag,
+                    overrides = setBindingOverrides,
+                    binding = ArgSetBinding(
+                        TypeToken.Any,
+                        setBindingArgType,
+                        setBindingType,
+                        erasedComp(Set::class, setBindingType) as TypeToken<Set<T>>
+                    )
+                )
+            }
+        }
+
+        override fun add(createBinding: () -> DIBinding<*, in A, out T>) {
+            val binding = createBinding()
+            (setBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
+        }
+
+        override fun bind(tag: Any?, overrides: Boolean?, createBinding: () -> DIBinding<*, in A, out T>) {
+            val binding = createBinding()
+            (setBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
+
+            Bind(tag = tag, overrides = overrides, binding = binding)
+        }
+    }
+
     @Suppress("FunctionName")
     override fun <T : Any> Bind(
         type: TypeToken<out T>,
@@ -91,8 +185,67 @@ internal open class DIBuilderImpl internal constructor(
         )
     }
 
-    @Suppress("unchecked_cast")
+    override fun <T : Any> BindInSet(
+        tag: Any?,
+        overrides: Boolean?,
+        type: TypeToken<out T>,
+        creator: DI.Builder.SetBinder<T>.() -> Unit
+    ) = creator(SetBinder(tag, type, overrides))
+
+    override fun <T : Any> InBindSet(
+        tag: Any?,
+        overrides: Boolean?,
+        type: TypeToken<out T>,
+        creator: DI.Builder.SetBinder<T>.() -> Unit
+    ) = creator(
+        SetBinder(
+            setBindingTag = tag,
+            setBindingType = type,
+            setBindingOverrides = overrides,
+            addSetBindingToContainer = false
+        )
+    )
+
+    override fun <A : Any, T : Any> BindInArgSet(
+        tag: Any?,
+        overrides: Boolean?,
+        argType: TypeToken<in A>,
+        type: TypeToken<out T>,
+        creator: DI.Builder.ArgSetBinder<A, T>.() -> Unit
+    ) = creator(
+        ArgSetBinder(
+            setBindingTag = tag,
+            setBindingOverrides = overrides,
+            setBindingArgType = argType,
+            setBindingType = type
+        )
+    )
+
+    override fun <A : Any, T : Any> InBindArgSet(
+        tag: Any?,
+        overrides: Boolean?,
+        argType: TypeToken<in A>,
+        type: TypeToken<out T>,
+        creator: DI.Builder.ArgSetBinder<A, T>.() -> Unit
+    ) = creator(
+        ArgSetBinder(
+            setBindingTag = tag,
+            setBindingOverrides = overrides,
+            setBindingArgType = argType,
+            setBindingType = type,
+            addSetBindingToContainer = false
+        )
+    )
+
+    @Deprecated("Use AddBindInSet instead.", ReplaceWith("AddBindInSet"))
     override fun <T : Any> BindSet(
+        tag: Any?,
+        overrides: Boolean?,
+        binding: DIBinding<*, *, T>,
+    ) = AddBindInSet(tag = tag, overrides = overrides, binding = binding)
+
+    @Suppress("unchecked_cast")
+    override fun <T : Any> AddBindInSet(
         tag: Any?,
         overrides: Boolean?,
         binding: DIBinding<*, *, T>,
@@ -149,7 +302,6 @@ internal open class DIBuilderImpl internal constructor(
 
     override fun RegisterContextTranslator(translator: ContextTranslator<*, *>) =
         containerBuilder.registerContextTranslator(translator)
-
 }
 
 internal open class DIMainBuilderImpl(allowSilentOverride: Boolean) : DIBuilderImpl(
