@@ -103,7 +103,7 @@ public inline fun <reified A : Any, reified T : Any> DI.Builder.bindArgSet(
  *
  * @param T The type of the binding.
  */
-@Deprecated("Use addInBindSet instead")
+@Deprecated("Use inBindSet { add { BINDING } } instead.")
 public inline fun <reified T : Any> DI.Builder.TypeBinder<T>.inSet(): TypeBinderInSet<T, Set<T>> =
     InSet(setTypeToken = erasedComp(Set::class, generic<T>()) as TypeToken<Set<T>>)
 
@@ -114,7 +114,7 @@ public inline fun <reified T : Any> DI.Builder.TypeBinder<T>.inSet(): TypeBinder
  *
  * @param T The type of the binding.
  */
-@Deprecated("Use addInBindSet instead", ReplaceWith("addInBindSet"))
+@Deprecated("Use inBindSet { add { BINDING } } instead.")
 public inline fun <reified T : Any> DI.Builder.inSet(
     tag: Any? = null,
     overrides: Boolean? = null,
@@ -128,6 +128,7 @@ public inline fun <reified T : Any> DI.Builder.inSet(
  *
  * @param T The type of the binding.
  */
+@Deprecated("Use inBindSet { add { BINDING } } instead.")
 public inline fun <reified T : Any> DI.Builder.addInBindSet(
     tag: Any? = null,
     overrides: Boolean? = null,

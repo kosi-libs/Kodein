@@ -237,7 +237,8 @@ internal open class DIBuilderImpl internal constructor(
         )
     )
 
-    @Deprecated("Use AddBindInSet instead.", ReplaceWith("AddBindInSet"))
+    @Deprecated("Use inBindSet { add { BINDING } } instead.")
+    @Suppress("deprecation")
     override fun <T : Any> BindSet(
         tag: Any?,
         overrides: Boolean?,
@@ -245,6 +246,7 @@ internal open class DIBuilderImpl internal constructor(
     ) = AddBindInSet(tag = tag, overrides = overrides, binding = binding)
 
     @Suppress("unchecked_cast")
+    @Deprecated("Use inBindSet { add { BINDING } } instead.")
     override fun <T : Any> AddBindInSet(
         tag: Any?,
         overrides: Boolean?,
