@@ -12,7 +12,7 @@ jobs:
       repository_id: ${{ steps.create.outputs.repository_id }}
     steps:
       - id: create
-        uses: nexus-actions/create-nexus-staging-repo@v1.1
+        uses: nexus-actions/create-nexus-staging-repo@main
         with:
           base_url: https://s01.oss.sonatype.org/service/local/
           username: ${{ secrets.SONATYPE_USERNAME }}
@@ -33,23 +33,24 @@ jobs:
         os: [ubuntu-latest, macOS-latest, windows-latest]
     steps:
       - name: Check out
-        uses: actions/checkout@v2
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 #v3
       - name: Cached Konan
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 #v3
         with:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-konan-
       - name: Cached Gradle
-        uses: actions/cache@v2
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 #v3
         with:
           path: ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
       - name: Set up JDK 11
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc #v3
         with:
           java-version: 11
+          distribution: temurin
       # Host only for MacOS / Windows
       - name: Check (macos / windows)
         if: matrix.os != 'ubuntu-latest'
@@ -57,7 +58,7 @@ jobs:
         shell: bash
       - name: Check Android
         if: matrix.os == 'macOS-latest'
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@50986b1464923454c95e261820bc626f38490ec0 #v2
         with:
           api-level: 29
           ndk: 21.3.6528147
@@ -84,7 +85,7 @@ jobs:
     steps:
       - name: Discard
         if: ${{ needs.build-upload.result != 'success' }}
-        uses: nexus-actions/drop-nexus-staging-repo@v1
+        uses: nexus-actions/drop-nexus-staging-repo@fe83783967a063540320ace3c8942608246705a1 #v1
         with:
           base_url: https://s01.oss.sonatype.org/service/local/
           username: ${{ secrets.SONATYPE_USERNAME }}
@@ -92,7 +93,7 @@ jobs:
           staging_repository_id: ${{ needs.create-staging-repository.outputs.repository_id }}
       - name: Release
         if: ${{ needs.build-upload.result == 'success' }}
-        uses: nexus-actions/release-nexus-staging-repo@v1
+        uses: nexus-actions/release-nexus-staging-repo@36161f25ef98cc3821eabb11ab742d2e9d479e52 #v1.2
         with:
           base_url: https://s01.oss.sonatype.org/service/local/
           username: ${{ secrets.SONATYPE_USERNAME }}
