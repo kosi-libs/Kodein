@@ -53,23 +53,6 @@ val di = DI {
 <1> Creating a set binding of `Configuration`.
 <2> add multiple `Configuration` binding implementation.
 
-[NOTE]
-====
-You can also do the same with `addInBindSet` function to add bindings to an existing:
-[source,kotlin]
-----
-val di = DI {
-    bindSet<Configuration>() // <1>
-    addInBindSet<Configuration>() { provider { FooConfiguration() } } // <2>
-    addInBindSet<Configuration>() { singleton { BarConfiguration() } } // <2>
-
-}
-----
-<1> Creating a set binding of `Configuration`.
-<2> add multiple `Configuration` binding implementation.
-
-====
-
 You can also bind multiple bindings with arguments (such as `factory` or `multiton`) in a set *as long as all bindings share the same argument type*.
 
 [source,kotlin]
