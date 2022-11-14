@@ -18,21 +18,56 @@ To have multiple bindings in a set, you need to:
 .Example creating a set of `Configuration` bindings.
 ----
 val di = DI {
-    bindSet<Configuration>() // <1>
-
-    inSet<Configuration> { provider { FooConfiguration() } } // <2>
-    inSet<Configuration> { singleton { BarConfiguration() } } // <2>
+    bindSet<Configuration> { // <1>
+        add { provider { FooConfiguration() } } // <2>
+        bind { singleton { BarConfiguration() } } // <3>
+    }
 }
 ----
 <1> Creating a set binding of `Configuration`.
-<2> Binding multiple `Configuration` implementations.
+<2> adds a `Configuration` binding implementation.
+<3> adds a `Configuration` binding and attaches it to the DI container.
 
 [NOTE]
 ====
 You can:
 
 * Use different binding types (such as `provider` or `singleton`) in the same set.
-* Add bindings to the same set in different modules, provided that the set has been declared first.
+* Add bindings to the same set in different modules if the set has been declared first.
+====
+
+[source,kotlin]
+.Example creating a set of `Configuration` bindings and populates it from modules.
+----
+val module1 by DI.Module {
+    inBindSet<Configuration> {
+        add { provider { FooConfiguration() } } // <2>
+        add { singleton { BarConfiguration() } } // <2>
+    }
+}
+val di = DI {
+    bindSet<Configuration>() // <1>
+    importAll(module1)
+}
+----
+<1> Creating a set binding of `Configuration`.
+<2> add multiple `Configuration` binding implementation.
+
+[NOTE]
+====
+You can also do the same with `addInBindSet` function to add bindings to an existing:
+[source,kotlin]
+----
+val di = DI {
+    bindSet<Configuration>() // <1>
+    addInBindSet<Configuration>() { provider { FooConfiguration() } } // <2>
+    addInBindSet<Configuration>() { singleton { BarConfiguration() } } // <2>
+
+}
+----
+<1> Creating a set binding of `Configuration`.
+<2> add multiple `Configuration` binding implementation.
+
 ====
 
 You can also bind multiple bindings with arguments (such as `factory` or `multiton`) in a set *as long as all bindings share the same argument type*.
@@ -41,10 +76,10 @@ You can also bind multiple bindings with arguments (such as `factory` or `multit
 .Example creating a set of `Result` bindings.
 ----
 val di = DI {
-    bindArgSet<Query, Result>() // <1>
-
-    inSet<Result> { factory { q: Query -> Foo.query(q) } } // <2>
-    inSet<Result> { multiton { q: Query -> Bar.query(q) } } // <2>
+    bindArgSet<Query, Result> { // <1>
+        add { factory { q: Query -> Foo.query(q) } } // <2>
+        add { multiton { q: Query -> Bar.query(q) } } // <2>
+    }
 }
 ----
 <1> Creating an argument set binding of `Result` for arguments of type `Query`.
@@ -89,10 +124,10 @@ Then, bind with keys:
 .Example binding as in a map multibinding.
 ----
 val di = DI {
-    bindSet<ConfigurationEntry>()
-
-    inSet<ConfigurationEntry> { singleton { "foo" to FooConfiguration() } }
-    inSet<ConfigurationEntry> { provider { "bar" to BarConfiguration() } }
+    bindSet<ConfigurationEntry> {
+        add { singleton { "foo" to FooConfiguration() } }
+        add { provider { "bar" to BarConfiguration() } }
+    }
 }
 ----
 
