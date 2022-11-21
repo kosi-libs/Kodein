@@ -4,11 +4,11 @@ plugins {
 
 dependencies {
     api(project(":framework:android:kodein-di-framework-android-x"))
-    implementation("androidx.appcompat:appcompat:1.3.1")
-    implementation("androidx.fragment:fragment-ktx:1.3.6")
-    val lifecycleVersion = "2.3.0"
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion")
+
+    implementation(libs.android.x.appcompat)
+    implementation(libs.android.x.fragment.ktx)
+    implementation(libs.android.x.lifecycle.viewmodel.ktx)
+    implementation(libs.android.x.lifecycle.viewmodel.savedstate)
 }
 
 kodeinUpload {

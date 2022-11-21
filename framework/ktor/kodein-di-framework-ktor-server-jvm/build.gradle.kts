@@ -1,5 +1,3 @@
-val ktorVersion = "2.0.0"
-
 plugins {
     id("org.kodein.library.jvm")
 }
@@ -9,13 +7,11 @@ repositories {
 }
 
 dependencies {
-    fun ktor(module: String = "", version: String = ktorVersion) = "io.ktor:ktor$module:$version"
-
     api(project(":kodein-di"))
-    implementation(ktor("-server-core"))
-    implementation(ktor("-server-sessions"))
-    testImplementation(ktor("-server-tests"))
-    testImplementation(ktor("-server-default-headers"))
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.sessions)
+    testImplementation(libs.ktor.test.server)
+    testImplementation(libs.ktor.test.server.default.headers)
 }
 
 kodeinUpload {

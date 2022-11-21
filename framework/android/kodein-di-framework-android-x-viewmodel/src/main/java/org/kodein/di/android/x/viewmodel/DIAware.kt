@@ -74,13 +74,15 @@ inline fun <F, reified VM> F.viewModel(
     tag: Any? = null,
 ): Lazy<VM> where F : Fragment, F : DIAware, VM : ViewModel {
     return createViewModelLazy(
-        VM::class,
-        { ownerProducer().viewModelStore },
-        { object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val vmProvider = direct.provider<VM>(tag)
-                return vmProvider() as T
+        viewModelClass = VM::class,
+        storeProducer = { ownerProducer().viewModelStore },
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    val vmProvider = direct.provider<VM>(tag)
+                    return vmProvider() as T
+                }
             }
-        } }
+        }
     )
 }

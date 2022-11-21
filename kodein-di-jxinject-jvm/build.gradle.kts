@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     api(project(":kodein-di"))
-    api("javax.inject:javax.inject:1")
+    api(libs.javax.inject)
 
     testImplementation(project(":test-utils"))
 }
