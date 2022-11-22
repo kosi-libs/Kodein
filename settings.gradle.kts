@@ -22,6 +22,11 @@ include(
         ""
 )
 
+include(
+    ":kodein-resolver:kodein-resolver-processor",
+    ":kodein-resolver:kodein-resolver-runtime",
+)
+
 android.include(
         ":framework:android:kodein-di-framework-android-core",
         ":framework:android:kodein-di-framework-android-support",
