@@ -22,10 +22,12 @@ include(
         ""
 )
 
-include(
-    ":kodein-resolver:kodein-resolver-processor",
-    ":kodein-resolver:kodein-resolver-runtime",
-)
+// Disabled for main branch as it is still work in progress
+//include(
+//    ":compiler:kodein-resolver-processor",
+//    ":compiler:kodein-resolver-api",
+//    ":compiler:kodein-resolver-test",
+//)
 
 android.include(
         ":framework:android:kodein-di-framework-android-core",

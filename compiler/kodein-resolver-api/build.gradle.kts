@@ -17,6 +17,6 @@ kodein {
 }
 
 kodeinUpload {
-    name = "kodein-resolver-runtime"
-    description = "Kodein Resolver runtime"
+    name = "kodein-resolver-api"
+    description = "Kodein Resolver API"
 }
