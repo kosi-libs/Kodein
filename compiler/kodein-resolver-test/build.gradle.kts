@@ -13,8 +13,6 @@ kodein {
         common.test {
             dependencies {
                 implementation(kotlin("test-junit"))
-                // Adding KSP JVM result to COMMON source set
-                kotlin.srcDir("build/generated/ksp/jvm/jvmTest/kotlin")
             }
         }
 
@@ -27,11 +25,16 @@ kodein {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", project(":compiler:kodein-resolver-processor"))
-    add("kspJvm", project(":compiler:kodein-resolver-processor"))
-    add("kspJs", project(":compiler:kodein-resolver-processor"))
-    add("kspMacosArm64", project(":compiler:kodein-resolver-processor"))
-    add("kspIosSimulatorArm64", project(":compiler:kodein-resolver-processor"))
-    add("kspTvosSimulatorArm64", project(":compiler:kodein-resolver-processor"))
-    add("kspWatchosSimulatorArm64", project(":compiler:kodein-resolver-processor"))
+    listOf(
+        "kspCommonMainMetadata",
+        "kspJvm", "kspJs",
+        "kspMacosX64", "kspMacosArm64",
+        "kspIosArm32", "kspIosArm64", "kspIosX64", "kspIosSimulatorArm64",
+        "kspWatchosArm32", "kspWatchosArm64", "kspWatchosX86", "kspWatchosSimulatorArm64",
+        "kspTvosArm64", "kspTvosX64", "kspTvosSimulatorArm64",
+        "kspLinuxX64", "kspLinuxArm64", "kspLinuxArm32Hfp",
+        // "mingwX64"
+    ).forEach {
+        add(it, project(":compiler:kodein-resolver-processor"))
+    }
 }
