@@ -10,7 +10,7 @@ import org.kodein.type.generic
  * @param tag the bound tag, if any
  * @return true if the binding is found
  */
-public inline fun <reified T: Any, reified A: Any> DI.hasFactory(tag: Any? = null): Boolean {
+public inline fun <reified A: Any, reified T: Any> DI.hasFactory(tag: Any? = null): Boolean {
     val key = DI.Key(
         contextType = TypeToken.Any,
         argType = generic<A>(),
@@ -27,4 +27,4 @@ public inline fun <reified T: Any, reified A: Any> DI.hasFactory(tag: Any? = nul
  * @param tag the bound tag, if any
  * @return true if the binding is found
  */
-public inline fun <reified T: Any> DI.hasProvider(tag: Any? = null): Boolean = hasFactory<T, Unit>(tag)
+public inline fun <reified T: Any> DI.hasProvider(tag: Any? = null): Boolean = hasFactory<Unit, T>(tag)

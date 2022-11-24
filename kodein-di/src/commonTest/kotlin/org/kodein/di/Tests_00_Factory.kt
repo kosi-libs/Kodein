@@ -22,15 +22,15 @@ class Tests_00_Factory {
     @Test
     fun test_01_WithFactoryGetProvider() {
 
-        val di = DI { bind<Person>() with factory { name: String -> Person(name) } }
+        val di = DI { bind<Person>("ABC") with factory { name: String -> Person(name) } }
 
-        val p: () -> Person by di.provider(arg = "Salomon")
-        val dp: () -> Person = di.direct.provider(arg = "Salomon")
+        val p: () -> Person by di.provider(arg = "Salomon", tag = "ABC")
+        val dp: () -> Person = di.direct.provider<String, Person>(arg = "Salomon", tag = "ABC")
 
         assertAllEqual("Salomon", p().name, dp().name)
 
-        val fp: () -> Person by di.provider(fArg = { "Salomon" })
-        val dfp: () -> Person = di.direct.provider(fArg = { "Salomon" })
+        val fp: () -> Person by di.provider(fArg = { "Salomon" }, tag = "ABC")
+        val dfp: () -> Person = di.direct.provider(fArg = { "Salomon" }, tag = "ABC")
 
         assertAllEqual("Salomon", fp().name, dfp().name)
     }

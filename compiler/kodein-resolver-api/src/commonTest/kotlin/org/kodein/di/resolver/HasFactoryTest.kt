@@ -27,21 +27,21 @@ class HasFactoryTest {
         }
 
         // Singleton of type String
-        assertTrue(di.hasFactory<String, Unit>())
+        assertTrue(di.hasFactory<Unit, String>())
         // Tagged singleton of type String
-        assertTrue(di.hasFactory<String, Unit>("author"))
+        assertTrue(di.hasFactory<Unit, String>("author"))
         // Multiton of type String
         assertTrue(di.hasFactory<String, String>())
         // Constant of type Int
-        assertTrue(di.hasFactory<Int, Unit>("CONST"))
+        assertTrue(di.hasFactory<Unit, Int>("CONST"))
         // Factory of type Int with type argument Int
         assertTrue(di.hasFactory<Int, Int>())
         // Provider of type Person
-        assertTrue(di.hasFactory<Person, Unit>())
+        assertTrue(di.hasFactory<Unit, Person>())
 
-        assertFalse(di.hasFactory<Double, Int>())
-        assertFalse(di.hasFactory<Double, Unit>())
-        assertFalse(di.hasFactory<Unit, String>())
+        assertFalse(di.hasFactory<Int, Double>())
+        assertFalse(di.hasFactory<Unit, Double>())
+        assertFalse(di.hasFactory<String, Unit>())
     }
 
     @Test

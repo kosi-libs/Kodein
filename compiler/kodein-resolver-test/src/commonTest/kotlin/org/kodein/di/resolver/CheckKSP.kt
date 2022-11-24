@@ -9,9 +9,9 @@ import kotlin.test.Test
 // TODO: WIP
 class CheckKSP {
     val di = DI {
-        bindSingleton { Bar() }
+        bindSingleton("DEF") { Bar() }
         bindSingleton { Baz() }
-        bindFactory<String, Foo> { _ -> new(::Foo) }
+        bindFactory<String, Foo>() { _ -> new(::Foo) }
     }
 
     @Test fun check_MySecondLibResolver() = di.newMySecondLibResolver().check()

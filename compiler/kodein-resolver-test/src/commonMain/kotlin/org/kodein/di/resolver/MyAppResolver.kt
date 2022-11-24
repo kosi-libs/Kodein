@@ -8,11 +8,13 @@ class Foo(b: Bar)
 
 @DIResolver
 interface MyAppResolver : DIChecker, MyFirstLibResolver {
+    @Tag("ABC")
     fun foo(str: String): Foo
 }
 
 @DIResolver
 interface MyFirstLibResolver : DIChecker, MySecondLibResolver {
+    @Tag("DEF")
     fun bar(): Bar
 }
 

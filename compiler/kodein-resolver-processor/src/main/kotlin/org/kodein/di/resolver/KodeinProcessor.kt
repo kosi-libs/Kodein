@@ -42,23 +42,27 @@ public class KodeinProcessor(
         if (classDeclaration.classKind != ClassKind.INTERFACE)
             error("${classDeclaration.simpleName.asString()} must be and interface to be annoted with @DIResolver.")
 
-        val (resolverClassName, resolverGeneratedClassName, classBuilder) = classDeclaration.accept(ResolverGenerator(resolver), Unit)
+        // Handle DI resolver class generation
+        val (resolverClassName, resolverGeneratedClassName, classBuilder) =
+            classDeclaration.accept(ResolverGenerator(resolver), Unit)
 
-        val gFile =
-              FileSpec.builder(classDeclaration.packageName.asString(), resolverGeneratedClassName)
+        val gFile = FileSpec.builder(classDeclaration.packageName.asString(), resolverGeneratedClassName)
 
+        // Handle DI resolver declared functions (local to the current classDeclaration)
         val declaredFunSpecs = classDeclaration.getDeclaredFunctions().map {
-            it.accept(FunctionResolver(), Unit)
+            it.accept(FunctionResolver(), classDeclaration.simpleName.asString())
         }
+        // Handle DI resolver super types declared functions (from any super type of classDeclaration)
         val superFunSpecs = classDeclaration.getAllSuperTypes()
             .mapNotNull { it.declaration as? KSClassDeclaration }
             .filter { it.isAnnotationPresent(DIResolver::class) }
             .flatMap { superTypeDeclaration ->
                 superTypeDeclaration.getDeclaredFunctions().map {
-                    it.accept(FunctionResolver(), Unit)
+                    it.accept(FunctionResolver(), classDeclaration.simpleName.asString())
                 }
             }
 
+        // Create a function to check the consistency of the current DI Resolver
         val checkFun = (declaredFunSpecs + superFunSpecs).fold(
             FunSpec.builder("check")
                 .addModifiers(KModifier.OVERRIDE)
@@ -69,11 +73,13 @@ public class KodeinProcessor(
 
         classBuilder.addFunction(checkFun)
 
+
         gFile
             .addImport(Names.diPackageName, "DI", "direct", "instance")
             .addImport(Names.resolverPackageName, "hasFactory")
             .addType(classBuilder.build())
 
+        // Generate a helper function to create an instance of the DI resolver
         val creatorFun = FunSpec.builder("new${resolverClassName}")
             .receiver(DI::class)
             .returns(classDeclaration.toClassName())
