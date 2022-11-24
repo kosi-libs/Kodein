@@ -22,7 +22,6 @@ include(
         ""
 )
 
-// Disabled for main branch as it is still work in progress
 include(
     ":compiler:kodein-resolver-processor",
     ":compiler:kodein-resolver-api",

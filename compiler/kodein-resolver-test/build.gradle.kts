@@ -33,7 +33,7 @@ dependencies {
         "kspWatchosArm32", "kspWatchosArm64", "kspWatchosX86", "kspWatchosSimulatorArm64",
         "kspTvosArm64", "kspTvosX64", "kspTvosSimulatorArm64",
         "kspLinuxX64", "kspLinuxArm64", "kspLinuxArm32Hfp",
-        // "mingwX64"
+        "kspMingwX64"
     ).forEach {
         add(it, project(":compiler:kodein-resolver-processor"))
     }
