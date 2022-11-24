@@ -6,19 +6,19 @@ class Bar
 class Baz
 class Foo(b: Bar)
 
-@DIResolver
-interface MyAppResolver : DIChecker, MyFirstLibResolver {
+@Resolve
+interface MyAppResolver : DIResolver, MyFirstLibResolver {
     @Tag("ABC")
     fun foo(str: String): Foo
 }
 
-@DIResolver
-interface MyFirstLibResolver : DIChecker, MySecondLibResolver {
+@Resolve
+interface MyFirstLibResolver : DIResolver, MySecondLibResolver {
     @Tag("DEF")
     fun bar(): Bar
 }
 
-@DIResolver
-interface MySecondLibResolver: DIChecker {
+@Resolve
+interface MySecondLibResolver: DIResolver {
     fun baz(): Baz
 }

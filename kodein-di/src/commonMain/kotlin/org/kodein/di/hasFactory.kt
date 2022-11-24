@@ -1,6 +1,5 @@
-package org.kodein.di.resolver
+package org.kodein.di
 
-import org.kodein.di.DI
 import org.kodein.type.TypeToken
 import org.kodein.type.generic
 
@@ -9,6 +8,8 @@ import org.kodein.type.generic
  *
  * @param tag the bound tag, if any
  * @return true if the binding is found
+ *
+ * TODO: Handle context type
  */
 public inline fun <reified A: Any, reified T: Any> DI.hasFactory(tag: Any? = null): Boolean {
     val key = DI.Key(

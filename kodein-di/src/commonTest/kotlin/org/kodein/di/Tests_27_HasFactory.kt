@@ -1,17 +1,11 @@
-package org.kodein.di.resolver
+package org.kodein.di
 
-import org.kodein.di.DI
-import org.kodein.di.bindConstant
-import org.kodein.di.bindFactory
-import org.kodein.di.bindMultiton
-import org.kodein.di.bindProvider
-import org.kodein.di.bindSingleton
 import kotlin.jvm.JvmInline
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class HasFactoryTest {
+class Tests_27_HasFactory {
 
     @JvmInline value class Person(val name: String)
 

@@ -7,6 +7,7 @@ internal object Names {
     const val resolverPackageName = "org.kodein.di.resolver"
 
     val DI = ClassName(diPackageName, "DI")
-    val DIChecker = ClassName(resolverPackageName, "DIChecker")
+    val DIResolver = ClassName(resolverPackageName, "DIResolver")
+    val Resolve = ClassName(resolverPackageName, "Resolve")
 }
 

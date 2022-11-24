@@ -11,7 +11,7 @@ class CheckKSP {
     val di = DI {
         bindSingleton("DEF") { Bar() }
         bindSingleton { Baz() }
-        bindFactory<String, Foo>() { _ -> new(::Foo) }
+        bindFactory<String, Foo>("ABC") { _ -> new(::Foo) }
     }
 
     @Test fun check_MySecondLibResolver() = di.newMySecondLibResolver().check()

@@ -6,11 +6,13 @@ package org.kodein.di.resolver
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
-public annotation class DIResolver
+@MustBeDocumented
+public annotation class Resolve
 
 /**
- * TODO
+ * Defines a tag on a bind function in a [Resolve]
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)
+@MustBeDocumented
 public annotation class Tag(val ref: String)
