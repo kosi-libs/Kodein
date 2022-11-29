@@ -6,19 +6,19 @@ class Bar
 class Baz
 class Foo(b: Bar)
 
-@Resolve
+@Resolved
 interface MyAppResolver : DIResolver, MyFirstLibResolver {
     @Tag("ABC")
-    fun foo(str: String): Foo
+    fun foo(b: Bar): Foo
 }
 
-@Resolve
+@Resolved
 interface MyFirstLibResolver : DIResolver, MySecondLibResolver {
     @Tag("DEF")
     fun bar(): Bar
 }
 
-@Resolve
+@Resolved
 interface MySecondLibResolver: DIResolver {
     fun baz(): Baz
 }

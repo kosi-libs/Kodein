@@ -15,7 +15,8 @@ import org.kodein.di.resolver.Tag
 
 internal data class FunctionResolverData(
     val funSpec: FunSpec,
-    val checkBlock: CodeBlock
+    val checkBlock: CodeBlock,
+    val key: BindKey
 )
 
 @OptIn(KspExperimental::class)
@@ -59,7 +60,16 @@ internal class FunctionResolver : KSEmptyVisitor<String, FunctionResolverData>()
             }
         )
 
-        return FunctionResolverData(diAccessor.build(), checkBlock)
+        return FunctionResolverData(
+            funSpec = diAccessor.build(),
+            checkBlock = checkBlock,
+            key = BindKey(
+                context = null, // TODO Manage context in the future
+                argument = argument?.type,
+                type = returnType,
+                tag = tag?.ref
+            )
+        )
     }
 
     private fun createDiInstanceStatement(returnType: ClassName, tag: BindTag?, argument: BindArgument?): CodeBlock {
@@ -109,4 +119,24 @@ private data class BindTag(val ref: String) {
 
 private data class BindArgument(val name: String, val type: ClassName) {
     val literal = "arg·=·$name"
+}
+
+internal data class BindKey(
+    val context: ClassName?,
+    val argument: ClassName?,
+    val type: ClassName,
+    val tag: String?
+) {
+    override fun toString(): String = buildString {
+        append("\\n bind<${type.simpleName}>")
+        append("(")
+        if (tag != null) {
+            append("""tag = \"$tag\"""")
+        }
+        if (argument != null) {
+            if (!this.endsWith("(")) append(", ")
+            append("""arg = ${argument.simpleName}""")
+        }
+        append(")")
+    }
 }

@@ -8,6 +8,6 @@ internal object Names {
 
     val DI = ClassName(diPackageName, "DI")
     val DIResolver = ClassName(resolverPackageName, "DIResolver")
-    val Resolve = ClassName(resolverPackageName, "Resolve")
+    val Resolved = ClassName(resolverPackageName, "Resolved")
 }
 

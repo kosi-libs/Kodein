@@ -15,7 +15,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toClassName
 import org.kodein.di.DI
 import org.kodein.di.resolver.Names
-import org.kodein.di.resolver.Resolve
+import org.kodein.di.resolver.Resolved
 
 internal data class DIResolverGeneratorData(
     val resolverGeneratedClassName: String,
@@ -66,15 +66,17 @@ internal class DIResolverGenerator(
         // Handle DI resolver super types declared functions (from any super type of classDeclaration)
         val superFunSpecs = classDeclaration.getAllSuperTypes()
             .mapNotNull { it.declaration as? KSClassDeclaration }
-            .filter { it.isAnnotationPresent(Resolve::class) }
+            .filter { it.isAnnotationPresent(Resolved::class) }
             .flatMap { superTypeDeclaration ->
                 superTypeDeclaration.getDeclaredFunctions().map {
                     it.accept(FunctionResolver(), classDeclaration.simpleName.asString())
                 }
             }
 
+        val allFun = (declaredFunSpecs + superFunSpecs)
+
         // Create a function to check the consistency of the current DI Resolver
-        val checkFun = (declaredFunSpecs + superFunSpecs).fold(
+        val checkFun = allFun.fold(
             FunSpec.builder("check")
                 .addModifiers(KModifier.OVERRIDE)
         ) { checkFun, gFunc ->
@@ -83,6 +85,20 @@ internal class DIResolverGenerator(
         }
 
         classBuilder.addFunction(checkFun.build())
+
+        // Create a toString function to list every keys resolved by the current resovler
+        val toStringStatement = buildString {
+            append("""return "$resolverClassName manages the following binding:"""")
+            allFun.map { it.key }.forEach { append(" +\n \"$it\"") }
+        }
+
+        classBuilder.addFunction(
+            FunSpec.builder("toString")
+                .returns(String::class)
+                .addModifiers(KModifier.OVERRIDE)
+                .addStatement(toStringStatement)
+                .build()
+        )
 
         // Generate a helper function to create an instance of the DI resolver
         val creatorFunc = FunSpec.builder("new${resolverClassName}")

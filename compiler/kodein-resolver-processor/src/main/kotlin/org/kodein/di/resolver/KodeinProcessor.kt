@@ -1,6 +1,5 @@
 package org.kodein.di.resolver
 
-import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
@@ -19,7 +18,7 @@ public class KodeinProcessor(
     private val logger: KSPLogger,
 ) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> = try {
-        resolver.getSymbolsWithAnnotation(Names.Resolve.canonicalName)
+        resolver.getSymbolsWithAnnotation(Names.Resolved.canonicalName)
             .filterIsInstance<KSClassDeclaration>()
             .filterNot { processClass(it, resolver) }
             .toList()
@@ -31,7 +30,7 @@ public class KodeinProcessor(
     private fun processClass(classDeclaration: KSClassDeclaration, resolver: Resolver): Boolean {
         if (!classDeclaration.validate()) return false
         if (classDeclaration.classKind != ClassKind.INTERFACE)
-            error("${classDeclaration.simpleName.asString()} must be and interface to be annoted with @DIResolver.")
+            error("${classDeclaration.simpleName.asString()} must be and interface to be annoted with @${Names.Resolved}.")
 
         // Handle DI resolver class generation
         val (resolverGeneratedClassName, diResolver, creatorFun) =

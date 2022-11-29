@@ -7,10 +7,10 @@ package org.kodein.di.resolver
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
-public annotation class Resolve
+public annotation class Resolved
 
 /**
- * Defines a tag on a bind function in a [Resolve]
+ * Defines a tag on a bind function in a [Resolved]
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)
