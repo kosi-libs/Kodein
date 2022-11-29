@@ -6,7 +6,7 @@ buildscript {
         maven(url = "https://raw.githubusercontent.com/kosi-libs/kodein-internal-gradle-plugin/mvn-repo")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.21.0")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.22.0")
     }
 }
 
@@ -22,11 +22,12 @@ include(
         ""
 )
 
-include(
-    ":compiler:kodein-resolver-processor",
-    ":compiler:kodein-resolver-api",
-    ":compiler:kodein-resolver-test",
-)
+// TODO: WIP - Disabled to avoid breaking CI workflow
+//include(
+//    ":compiler:kodein-resolver-processor",
+//    ":compiler:kodein-resolver-api",
+//    ":compiler:kodein-resolver-test",
+//)
 
 android.include(
         ":framework:android:kodein-di-framework-android-core",
