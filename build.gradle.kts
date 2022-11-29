@@ -1,5 +1,6 @@
 plugins {
     id("org.kodein.root")
+    alias(libs.plugins.ksp) apply false
 }
 
 allprojects {
