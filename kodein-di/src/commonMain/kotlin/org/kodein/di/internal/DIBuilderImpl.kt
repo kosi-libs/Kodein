@@ -263,6 +263,7 @@ internal open class DIBuilderImpl internal constructor(
         (multipleBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
     }
 
+    @Deprecated("This is not used, it will be removed")
     override fun Bind(tag: Any?, overrides: Boolean?): DirectBinder = DirectBinder(tag, overrides)
 
     override fun constant(tag: Any, overrides: Boolean?) = ConstantBinder(tag, overrides)

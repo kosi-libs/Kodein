@@ -17,6 +17,7 @@ class RetainedDIFragment : Fragment() {
             _di = value
         }
 
+    @Deprecated("Deprecated in Java")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -25,7 +26,7 @@ class RetainedDIFragment : Fragment() {
 
 }
 
-private const val diRetainedFragmentTag = "org.kodein.di.android.RetainedDIFragment"
+private const val DI_RETAINED_FRAGMENT_TAG = "org.kodein.di.android.RetainedDIFragment"
 
 /**
  * A DI instance that will be retained between activity changes.
@@ -34,12 +35,12 @@ private const val diRetainedFragmentTag = "org.kodein.di.android.RetainedDIFragm
  * @property init The block of configuration for this module.
  */
 fun Activity.retainedDI(allowSilentOverride: Boolean = false, init: DI.MainBuilder.() -> Unit): Lazy<DI> = lazy {
-    (fragmentManager.findFragmentByTag(diRetainedFragmentTag) as? RetainedDIFragment)?.di?.let { return@lazy it }
+    (fragmentManager.findFragmentByTag(DI_RETAINED_FRAGMENT_TAG) as? RetainedDIFragment)?.di?.let { return@lazy it }
 
     val di = DI(allowSilentOverride, init)
     val fragment = RetainedDIFragment()
     fragment.di = di
-    fragmentManager.beginTransaction().add(fragment, diRetainedFragmentTag).commit()
+    fragmentManager.beginTransaction().add(fragment, DI_RETAINED_FRAGMENT_TAG).commit()
 
     return@lazy di
 }

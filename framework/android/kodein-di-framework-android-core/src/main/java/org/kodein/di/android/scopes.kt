@@ -40,17 +40,20 @@ open class ActivityRetainedScope private constructor(private val registryType: R
 
         var transactionPendingFragmentCache: MutableMap<Activity, WeakReference<RetainedScopeFragment>>? = null
 
+        @Deprecated("Deprecated in Java")
         override fun onAttach(context: Context?) {
             super.onAttach(context)
             transactionPendingFragmentCache?.remove(context)
             transactionPendingFragmentCache = null
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             retainInstance = true
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onDestroy() {
             registry.clear()
             super.onDestroy()

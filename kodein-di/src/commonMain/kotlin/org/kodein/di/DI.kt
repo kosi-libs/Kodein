@@ -431,6 +431,7 @@ public interface DI : DIAware {
          * @return The binder: call [DirectBinder.from]) on it to finish the binding syntax and register the binding.
          */
         @Suppress("FunctionName")
+        @Deprecated("This is not used, it will be removed")
         public fun Bind(tag: Any? = null, overrides: Boolean? = null): DirectBinder
 
         /**
