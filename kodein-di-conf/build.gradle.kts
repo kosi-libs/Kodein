@@ -27,6 +27,6 @@ kodein {
 }
 
 kodeinUpload {
-    name = "Kodein-Conf"
-    description = "Kodein that can be configured / mutated"
+    name = "Kodein-JxInject"
+    description = "Kodein that can be use with JSR-330: Using reflexivity to auto-inject"
 }

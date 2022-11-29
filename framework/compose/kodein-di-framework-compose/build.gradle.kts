@@ -1,6 +1,6 @@
 plugins {
-    id("org.jetbrains.compose") version "1.2.1"
     id("org.kodein.library.mpp-with-android")
+    alias(libs.plugins.compose)
 }
 
 kodein {
@@ -17,7 +17,7 @@ kodein {
         add(kodeinTargets.jvm.android) {
             main.dependencies {
                 api(project(":framework:android:kodein-di-framework-android-x"))
-                api("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+                api(libs.android.x.lifecycle.viewmodel.compose)
             }
         }
 

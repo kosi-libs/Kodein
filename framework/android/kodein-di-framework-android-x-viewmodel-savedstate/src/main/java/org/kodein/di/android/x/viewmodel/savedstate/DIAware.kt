@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.*
+import androidx.lifecycle.viewmodel.CreationExtras
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.direct
@@ -74,13 +75,15 @@ inline fun <F, reified VM> F.viewModelWithSavedStateHandle(
     tag: Any? = null,
 ): Lazy<VM> where F : Fragment, F : DIAware, VM : ViewModel {
     return createViewModelLazy(
-        VM::class,
-        { ownerProducer().viewModelStore},
-        { object : AbstractSavedStateViewModelFactory(this, arguments) {
-            override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-                val factory = direct.Factory(generic<SavedStateHandle>(), generic<VM>(), tag)
-                return factory(handle) as T
+        viewModelClass = VM::class,
+        storeProducer = { ownerProducer().viewModelStore},
+        factoryProducer = {
+            object : AbstractSavedStateViewModelFactory(this, arguments) {
+                override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+                    val factory = direct.Factory(generic<SavedStateHandle>(), generic<VM>(), tag)
+                    return factory(handle) as T
+                }
             }
-        } }
+        }
     )
 }

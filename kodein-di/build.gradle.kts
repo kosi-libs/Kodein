@@ -7,7 +7,7 @@ kodein {
 
         common {
             main.dependencies {
-                api("org.kodein.type:kaverit:2.2.1")
+                api(libs.kosi.kaverit)
             }
             test.dependencies {
                 implementation(project(":test-utils"))
