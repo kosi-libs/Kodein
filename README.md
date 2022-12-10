@@ -56,7 +56,7 @@ class Controller(private di: DI) {
 - It can be used in plain Java
 
 ### Looking for **KODEIN 7.0** migration guide?
-> Follow this us [here](https://kodein.org/Kodein-DI/?7.0/migration-6to7).
+> Follow this us [here](https://kosi-libs.org/kodein/7.16/migration/migration-6to7.html).
 
 Kotlin & JVM compatibility
 ---------
@@ -97,7 +97,7 @@ Read more
 
 **_KODEIN_** 7+ is the current major version, but documentation is available for previous versions.
 
-**[Kodein documentation](https://kosi-libs.org/kodein-di/)**
+**[Kodein documentation](https://kosi-libs.org/kodein/)**
 
 Support
 -------
