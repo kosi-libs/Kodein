@@ -103,7 +103,9 @@ kotlin {
 [[kotlin-js]]
 == JavaScript (Gradle)
 
-Because _Kodein-DI_ for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
+NOTE: Since Kotlin 1.8, legacy backend has been deprecated, thus starting from 7.17.0 Kodein is only available for JS-IR.
+
+Because _Kodein_ for JavaScript is compiled as a https://github.com/umdjs/umd[UMD module], it can be imported:
 
 * In a browser:
 ** as an AMD module (for example with RequireJS) (See index.html in the demo project).

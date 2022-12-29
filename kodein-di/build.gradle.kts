@@ -16,7 +16,7 @@ kodein {
         add(kodeinTargets.jvm.jvm) {
             target.setCompileClasspath()
         }
-        add(kodeinTargets.js.js)
+        add(kodeinTargets.js.ir.js)
         add(kodeinTargets.native.all)
 
     }

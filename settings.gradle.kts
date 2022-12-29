@@ -6,7 +6,7 @@ buildscript {
         maven(url = "https://raw.githubusercontent.com/kosi-libs/kodein-internal-gradle-plugin/mvn-repo")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.22.0")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:6.23.1")
     }
 }
 
@@ -46,6 +46,7 @@ framework("tfx").include(
         ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
 )
 
-framework("compose").include(
-        ":framework:compose:kodein-di-framework-compose"
-)
+// Compose is not yet compatible with Kotlin 1.8
+//framework("compose").include(
+//        ":framework:compose:kodein-di-framework-compose"
+//)
