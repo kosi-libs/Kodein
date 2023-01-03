@@ -7,12 +7,11 @@ kodein {
         common.main.dependencies {
             api(project(":kodein-di"))
         }
-
         add(kodeinTargets.jvm.jvm) {
             target.setCompileClasspath()
         }
         add(kodeinTargets.native.all)
-        add(kodeinTargets.js.js)
+        add(kodeinTargets.js.ir.js)
     }
 }
 
