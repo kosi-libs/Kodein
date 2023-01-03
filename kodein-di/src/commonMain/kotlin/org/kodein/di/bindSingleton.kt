@@ -67,148 +67,145 @@ public inline fun <reified T: Any> DI.Builder.bindEagerSingleton(
     noinline creator: DirectDI.() -> T,
 ): Unit = Bind(tag = tag, overrides = overrides, binding = eagerSingleton(creator = creator))
 
-// TODO This fails with Kotlin/JS Legacy
-//  Re-enable this with IR only target.
-//  see https://youtrack.jetbrains.com/issue/KT-39225/KJS-MarkerError-on-runtime-when-using-new-typeToken-via-Kodein-7
-// /**
-//  * Binds a singleton: will create an instance on first request and will subsequently always return the same instance.
-//  *
-//  * T generics will be erased!
-//  *
-//  * @param T The created type.
-//  * @param constructor The function reference to the T constructor (e.g. :: T)
-//  */
-// public inline fun <reified T: Any> DI.Builder.bindSingletonOf(
-//     noinline constructor: () -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
-//
-// /**
-//  * @see bindSingletonOf
-//  */
-// public inline fun <reified T: Any, reified P1> DI.Builder.bindSingletonOf(
-//     noinline constructor: (P1) -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
-//
-// /**
-//  * @see bindSingletonOf
-//  */
-// public inline fun <reified T: Any, reified P1, reified P2> DI.Builder.bindSingletonOf(
-//     noinline constructor: (P1, P2) -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
-//
-// /**
-//  * @see bindSingletonOf
-//  */
-// public inline fun <reified T: Any,
-//         reified P1, reified P2,
-//         reified P3> DI.Builder.bindSingletonOf(
-//     noinline constructor: (P1, P2, P3) -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
-//
-// /**
-//  * @see bindSingletonOf
-//  */
-// public inline fun <reified T: Any,
-//         reified P1, reified P2,
-//         reified P3, reified P4> DI.Builder.bindSingletonOf(
-//     noinline constructor: (P1, P2, P3, P4) -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
-//
-// /**
-//  * @see bindSingletonOf
-//  */
-// public inline fun <reified T: Any,
-//         reified P1, reified P2,
-//         reified P3, reified P4,
-//         reified P5> DI.Builder.bindSingletonOf(
-//     noinline constructor: (P1, P2, P3, P4, P5) -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
-//
-// /**
-//  * @see bindSingletonOf
-//  */
-// public inline fun <reified T: Any,
-//         reified P1, reified P2,
-//         reified P3, reified P4,
-//         reified P5, reified P6> DI.Builder.bindSingletonOf(
-//     noinline constructor: (P1, P2, P3, P4, P5, P6) -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
-//
-// /**
-//  * @see bindSingletonOf
-//  */
-// public inline fun <reified T: Any,
-//         reified P1, reified P2,
-//         reified P3, reified P4,
-//         reified P5, reified P6,
-//         reified P7> DI.Builder.bindSingletonOf(
-//     noinline constructor: (P1, P2, P3, P4, P5, P6, P7) -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
-//
-// /**
-//  * @see bindSingletonOf
-//  */
-// public inline fun <reified T: Any,
-//         reified P1, reified P2,
-//         reified P3, reified P4,
-//         reified P5, reified P6,
-//         reified P7, reified P8> DI.Builder.bindSingletonOf(
-//     noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8) -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
-//
-// /**
-//  * @see bindSingletonOf
-//  */
-// public inline fun <reified T: Any,
-//         reified P1, reified P2,
-//         reified P3, reified P4,
-//         reified P5, reified P6,
-//         reified P7, reified P8,
-//         reified P9> DI.Builder.bindSingletonOf(
-//     noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9) -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
-//
-// /**
-//  * @see bindSingletonOf
-//  */
-// public inline fun <reified T: Any,
-//         reified P1, reified P2,
-//         reified P3, reified P4,
-//         reified P5, reified P6,
-//         reified P7, reified P8,
-//         reified P9, reified P10> DI.Builder.bindSingletonOf(
-//     noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> T,
-//     tag: Any? = null,
-//     overrides: Boolean? = null,
-//     sync: Boolean = true,
-// ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+ /**
+  * Binds a singleton: will create an instance on first request and will subsequently always return the same instance.
+  *
+  * T generics will be erased!
+  *
+  * @param T The created type.
+  * @param constructor The function reference to the T constructor (e.g. :: T)
+  */
+ public inline fun <reified T: Any> DI.Builder.bindSingletonOf(
+     noinline constructor: () -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+
+ /**
+  * @see bindSingletonOf
+  */
+ public inline fun <reified T: Any, reified P1> DI.Builder.bindSingletonOf(
+     noinline constructor: (P1) -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+
+ /**
+  * @see bindSingletonOf
+  */
+ public inline fun <reified T: Any, reified P1, reified P2> DI.Builder.bindSingletonOf(
+     noinline constructor: (P1, P2) -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+
+ /**
+  * @see bindSingletonOf
+  */
+ public inline fun <reified T: Any,
+         reified P1, reified P2,
+         reified P3> DI.Builder.bindSingletonOf(
+     noinline constructor: (P1, P2, P3) -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+
+ /**
+  * @see bindSingletonOf
+  */
+ public inline fun <reified T: Any,
+         reified P1, reified P2,
+         reified P3, reified P4> DI.Builder.bindSingletonOf(
+     noinline constructor: (P1, P2, P3, P4) -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+
+ /**
+  * @see bindSingletonOf
+  */
+ public inline fun <reified T: Any,
+         reified P1, reified P2,
+         reified P3, reified P4,
+         reified P5> DI.Builder.bindSingletonOf(
+     noinline constructor: (P1, P2, P3, P4, P5) -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+
+ /**
+  * @see bindSingletonOf
+  */
+ public inline fun <reified T: Any,
+         reified P1, reified P2,
+         reified P3, reified P4,
+         reified P5, reified P6> DI.Builder.bindSingletonOf(
+     noinline constructor: (P1, P2, P3, P4, P5, P6) -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+
+ /**
+  * @see bindSingletonOf
+  */
+ public inline fun <reified T: Any,
+         reified P1, reified P2,
+         reified P3, reified P4,
+         reified P5, reified P6,
+         reified P7> DI.Builder.bindSingletonOf(
+     noinline constructor: (P1, P2, P3, P4, P5, P6, P7) -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+
+ /**
+  * @see bindSingletonOf
+  */
+ public inline fun <reified T: Any,
+         reified P1, reified P2,
+         reified P3, reified P4,
+         reified P5, reified P6,
+         reified P7, reified P8> DI.Builder.bindSingletonOf(
+     noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8) -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+
+ /**
+  * @see bindSingletonOf
+  */
+ public inline fun <reified T: Any,
+         reified P1, reified P2,
+         reified P3, reified P4,
+         reified P5, reified P6,
+         reified P7, reified P8,
+         reified P9> DI.Builder.bindSingletonOf(
+     noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9) -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }
+
+ /**
+  * @see bindSingletonOf
+  */
+ public inline fun <reified T: Any,
+         reified P1, reified P2,
+         reified P3, reified P4,
+         reified P5, reified P6,
+         reified P7, reified P8,
+         reified P9, reified P10> DI.Builder.bindSingletonOf(
+     noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> T,
+     tag: Any? = null,
+     overrides: Boolean? = null,
+     sync: Boolean = true,
+ ): Unit = bindSingleton(tag, overrides, sync) { new(constructor) }

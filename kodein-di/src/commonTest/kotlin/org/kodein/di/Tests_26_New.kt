@@ -3,7 +3,6 @@ package org.kodein.di
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import kotlin.test.Test
-import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 
@@ -54,8 +53,8 @@ internal class Tests_26_New {
     @Test
     fun test_03_singleton_of() {
         val di = DI {
-            bindSingleton { new(::A) }
-            bindSingleton { new(::B) }
+            bindSingletonOf(::A)
+            bindSingletonOf(::B)
         }
 
         val a: A by di.instance()
@@ -67,8 +66,8 @@ internal class Tests_26_New {
     @Test
     fun test_03_new_provider_of() {
         val di = DI {
-            bindProvider { new(::A) }
-            bindProvider { new(::B) }
+            bindProviderOf(::A)
+            bindProviderOf(::B)
         }
 
         val a: A by di.instance()
