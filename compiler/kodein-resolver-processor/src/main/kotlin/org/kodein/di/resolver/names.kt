@@ -4,7 +4,7 @@ import com.squareup.kotlinpoet.ClassName
 
 internal object Names {
     const val diPackageName = "org.kodein.di"
-    const val resolverPackageName = "org.kodein.di.resolver"
+    private const val resolverPackageName = "org.kodein.di.resolver"
 
     val DI = ClassName(diPackageName, "DI")
     val DIResolver = ClassName(resolverPackageName, "DIResolver")

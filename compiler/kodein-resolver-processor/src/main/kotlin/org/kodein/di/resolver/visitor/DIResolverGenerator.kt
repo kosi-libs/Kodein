@@ -4,7 +4,6 @@ import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.isAnnotationPresent
-import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSNode
 import com.google.devtools.ksp.visitor.KSEmptyVisitor
@@ -24,9 +23,7 @@ internal data class DIResolverGeneratorData(
 )
 
 @OptIn(KspExperimental::class)
-internal class DIResolverGenerator(
-    private val resolver: Resolver
-) : KSEmptyVisitor<Unit, DIResolverGeneratorData>() {
+internal class DIResolverGenerator : KSEmptyVisitor<Unit, DIResolverGeneratorData>() {
     override fun defaultHandler(node: KSNode, data: Unit): DIResolverGeneratorData =
         error("KodeinResolverGenerator can only process KSClassDeclaration")
 
@@ -61,7 +58,7 @@ internal class DIResolverGenerator(
 
         // Handle DI resolver declared functions (local to the current classDeclaration)
         val declaredFunSpecs = classDeclaration.getDeclaredFunctions().map {
-            it.accept(FunctionResolver(), classDeclaration.simpleName.asString())
+            it.accept(RetrievalGenerator(), classDeclaration.simpleName.asString())
         }
         // Handle DI resolver super types declared functions (from any super type of classDeclaration)
         val superFunSpecs = classDeclaration.getAllSuperTypes()
@@ -69,7 +66,7 @@ internal class DIResolverGenerator(
             .filter { it.isAnnotationPresent(Resolved::class) }
             .flatMap { superTypeDeclaration ->
                 superTypeDeclaration.getDeclaredFunctions().map {
-                    it.accept(FunctionResolver(), classDeclaration.simpleName.asString())
+                    it.accept(RetrievalGenerator(), classDeclaration.simpleName.asString())
                 }
             }
 

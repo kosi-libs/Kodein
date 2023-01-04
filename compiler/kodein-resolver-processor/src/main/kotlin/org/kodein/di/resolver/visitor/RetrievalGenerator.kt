@@ -13,18 +13,18 @@ import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.ksp.toClassName
 import org.kodein.di.resolver.Tag
 
-internal data class FunctionResolverData(
+internal data class RetrievalGeneratorData(
     val funSpec: FunSpec,
     val checkBlock: CodeBlock,
     val key: BindKey
 )
 
 @OptIn(KspExperimental::class)
-internal class FunctionResolver : KSEmptyVisitor<String, FunctionResolverData>() {
-    override fun defaultHandler(node: KSNode, data: String): FunctionResolverData =
+internal class RetrievalGenerator : KSEmptyVisitor<String, RetrievalGeneratorData>() {
+    override fun defaultHandler(node: KSNode, data: String): RetrievalGeneratorData =
         error("[$data - KodeinFunctionResolver can only process KSFunctionDeclaration")
 
-    override fun visitFunctionDeclaration(function: KSFunctionDeclaration, data: String): FunctionResolverData {
+    override fun visitFunctionDeclaration(function: KSFunctionDeclaration, data: String): RetrievalGeneratorData {
         val returnType = function.returnType!!.resolve().toClassName()
 
         if (function.parameters.size > 1)
@@ -60,7 +60,7 @@ internal class FunctionResolver : KSEmptyVisitor<String, FunctionResolverData>()
             }
         )
 
-        return FunctionResolverData(
+        return RetrievalGeneratorData(
             funSpec = diAccessor.build(),
             checkBlock = checkBlock,
             key = BindKey(
