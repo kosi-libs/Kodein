@@ -59,7 +59,14 @@ internal open class DIBuilderImpl internal constructor(
          * @see [DI.Builder.DelegateBinder.To]
          */
         override fun <A : T> To(type: TypeToken<A>, tag: Any?) {
-            builder.Bind(bindTag, overrides, Provider(builder.contextType, bindType) { Instance(type, tag) })
+            builder.Bind(
+                tag = bindTag,
+                overrides = overrides,
+                binding = Provider(
+                    contextType = builder.contextType,
+                    createdType = bindType
+                ) { Instance(type, tag) }
+            )
         }
     }
 

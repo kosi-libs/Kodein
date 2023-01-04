@@ -16,7 +16,12 @@ import org.kodein.type.generic
  */
 public inline fun <C : Any, reified A : Any, reified T: Any> DI.BindBuilder<C>.factory(
     noinline creator: BindingDI<C>.(A) -> T
-): Factory<C, A, T> = Factory<C, A, T>(contextType, generic(), generic(), creator)
+): Factory<C, A, T> = Factory<C, A, T>(
+    contextType = contextType,
+    argType = generic(),
+    createdType = generic(),
+    creator = creator
+)
 
 /**
  * Binds a factory: each time an instance is needed, the function [creator] function will be called.

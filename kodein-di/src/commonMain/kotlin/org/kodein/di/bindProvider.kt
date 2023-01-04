@@ -15,9 +15,9 @@ import org.kodein.type.generic
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  * @return A provider ready to be bound.
  */
-public inline fun <C : Any, reified T: Any> DI.BindBuilder<C>.provider(
+public inline fun <C : Any, reified T : Any> DI.BindBuilder<C>.provider(
     noinline creator: NoArgBindingDI<C>.() -> T
-): Provider<C, T> = Provider(contextType, generic(), creator)
+): Provider<C, T> = Provider(contextType = contextType, createdType = generic(), creator = creator)
 
 /**
  * Creates a factory: each time an instance is needed, the function [creator] function will be called.
@@ -35,41 +35,38 @@ public inline fun <reified T: Any> DI.Builder.bindProvider(
     noinline creator: DirectDI.() -> T
 ): Unit = Bind(tag = tag, overrides = overrides, binding = provider(creator = creator))
 
-// TODO This fails with Kotlin/JS Legacy
-//  Re-enable this with IR only target.
-//  see https://youtrack.jetbrains.com/issue/KT-39225/KJS-MarkerError-on-runtime-when-using-new-typeToken-via-Kodein-7
- /**
-  * Creates a factory: each time an instance is needed, the function [constructor] function will be called.
-  *
-  * T generics will be erased!
-  *
-  * @param T The created type.
-  * @param constructor The function reference to the T constructor (e.g. :: T)
-  */
- public inline fun <reified T: Any> DI.Builder.bindProviderOf(
-     noinline constructor: () -> T,
-     tag: Any? = null,
-     overrides: Boolean? = null,
- ): Unit = bindProvider(tag, overrides) { new(constructor) }
+/**
+ * Creates a factory: each time an instance is needed, the function [constructor] function will be called.
+ *
+ * T generics will be erased!
+ *
+ * @param T The created type.
+ * @param constructor The function reference to the T constructor (e.g. :: T)
+ */
+public inline fun <reified T : Any> DI.Builder.bindProviderOf(
+    noinline constructor: () -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
 
 
- /**
-  * @see bindProviderOf
-  */
- public inline fun <reified T: Any, reified P1> DI.Builder.bindProviderOf(
-     noinline constructor: (P1) -> T,
-     tag: Any? = null,
-     overrides: Boolean? = null,
- ): Unit = bindProvider(tag, overrides) { new(constructor) }
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T : Any, reified P1> DI.Builder.bindProviderOf(
+    noinline constructor: (P1) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
 
- /**
-  * @see bindProviderOf
-  */
- public inline fun <reified T: Any, reified P1, reified P2> DI.Builder.bindProviderOf(
-     noinline constructor: (P1, P2) -> T,
-     tag: Any? = null,
-     overrides: Boolean? = null,
- ): Unit = bindProvider(tag, overrides) { new(constructor) }
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T : Any, reified P1, reified P2> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
 
  /**
   * @see bindProviderOf

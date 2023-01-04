@@ -52,6 +52,19 @@ public interface BindingDI<out C : Any> : DirectDI, WithContext<C> {
     public fun overriddenFactoryOrNull(): ((Any?) -> Any)?
 
     public fun onErasedContext(): BindingDI<C>
+
+    public companion object {
+        internal fun <C: Any> factory() : (BindingDI<C>) -> BindingDI<C> = {
+                di: BindingDI<C> -> BindingDIDelegate(di)
+        }
+    }
+}
+
+public open class BindingDIDelegate<out C : Any>(private val _di: BindingDI<C>) : BindingDI<C>, DirectDI by _di, WithContext<C> by _di {
+    override fun overriddenFactory(): (Any?) -> Any = _di.overriddenFactory()
+    override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = _di.overriddenFactoryOrNull()
+    override fun onErasedContext(): BindingDI<C> = _di.onErasedContext()
+
 }
 
 public object ErasedContext : DIContext<ErasedContext> {
@@ -102,11 +115,19 @@ public interface NoArgBindingDI<out C : Any> : DirectDI, WithContext<C> {
      * @throws DI.DependencyLoopException If the instance construction triggered a dependency loop.
      */
     public fun overriddenInstanceOrNull(): Any? /*= overriddenProviderOrNull()?.invoke()*/
+
+    public companion object {
+        internal fun <C: Any> factory() : (BindingDI<C>) -> NoArgBindingDI<C> = {
+                di: BindingDI<C> -> NoArgBindingDIDelegate(di)
+        }
+    }
 }
 
-internal class NoArgBindingDIWrap<out C : Any>(private val _di: BindingDI<C>) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
-    override fun overriddenProvider() = _di.overriddenFactory().toProvider { Unit }
-    override fun overriddenProviderOrNull() = _di.overriddenFactoryOrNull()?.toProvider { Unit }
-    override fun overriddenInstance() = overriddenProvider().invoke()
-    override fun overriddenInstanceOrNull() = overriddenProviderOrNull()?.invoke()
+public open class NoArgBindingDIDelegate<out C : Any>(
+    private val _di: BindingDI<C>
+) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
+    override fun overriddenProvider(): () -> Any = _di.overriddenFactory().toProvider { }
+    override fun overriddenProviderOrNull(): (() -> Any)? = _di.overriddenFactoryOrNull()?.toProvider { }
+    override fun overriddenInstance(): Any = overriddenProvider().invoke()
+    override fun overriddenInstanceOrNull(): Any? = overriddenProviderOrNull()?.invoke()
 }

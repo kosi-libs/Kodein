@@ -19,12 +19,15 @@ public class Factory<C : Any, A, T : Any>(
     override val contextType: TypeToken<in C>,
     override val argType: TypeToken<in A>,
     override val createdType: TypeToken<out T>,
+    private val bindingDIFactory: (BindingDI<C>) -> BindingDI<C> = BindingDI.factory(),
     private val creator: BindingDI<C>.(A) -> T
 ) : DIBinding<C, A, T> {
 
     override fun factoryName(): String = "factory"
 
-    override fun getFactory(key: DI.Key<C, A, T>, di: BindingDI<C>): (A) -> T = { arg -> this.creator(di, arg) }
+    override fun getFactory(key: DI.Key<C, A, T>, di: BindingDI<C>): (A) -> T = { arg ->
+        bindingDIFactory(di).creator(arg)
+    }
 }
 
 private data class ScopeKey<out A>(val scopeId: Any, val arg: A)
@@ -110,6 +113,7 @@ public class Multiton<C : Any, A, T : Any>(
 public class Provider<C : Any, T : Any>(
     override val contextType: TypeToken<in C>,
     override val createdType: TypeToken<out T>,
+    private val bindingDIFactory: (BindingDI<C>) -> NoArgBindingDI<C> = NoArgBindingDI.factory(),
     public val creator: NoArgBindingDI<C>.() -> T
 ) : NoArgDIBinding<C, T> {
     override fun factoryName(): String = "provider"
@@ -117,9 +121,7 @@ public class Provider<C : Any, T : Any>(
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(key: DI.Key<C, Unit, T>, di: BindingDI<C>): (Unit) -> T = { _ ->
-        NoArgBindingDIWrap(di).creator()
-    }
+    override fun getFactory(key: DI.Key<C, Unit, T>, di: BindingDI<C>): (Unit) -> T = { bindingDIFactory(di).creator() }
 }
 
 /**
@@ -136,6 +138,7 @@ public class Singleton<C : Any, T : Any>(
     override val createdType: TypeToken<out T>,
     refMaker: RefMaker? = null,
     public val sync: Boolean = true,
+    private val bindingDIFactory: (BindingDI<C>) -> NoArgBindingDI<C> = NoArgBindingDI.factory(),
     public val creator: NoArgBindingDI<C>.() -> T
 ) : NoArgDIBinding<C, T> {
     @Suppress("UNCHECKED_CAST")
@@ -168,18 +171,28 @@ public class Singleton<C : Any, T : Any>(
     override fun getFactory(key: DI.Key<C, Unit, T>, di: BindingDI<C>): (Unit) -> T {
         var lateInitRegistry: ScopeRegistry? = null
 
-        @Suppress("UNCHECKED_CAST")
         val bindingDi = if (explicitContext) di else di.onErasedContext()
         return { _ ->
             val registry = lateInitRegistry
                 ?: scope.getRegistry(bindingDi.context).also { lateInitRegistry = it }
             @Suppress("UNCHECKED_CAST")
-            registry.getOrCreate(_scopeKey, sync) { _refMaker.make { NoArgBindingDIWrap(bindingDi).creator() } } as T
+            registry.getOrCreate(_scopeKey, sync) { _refMaker.make { bindingDIFactory(bindingDi).creator() } } as T
         }
     }
 
     override val copier: DIBinding.Copier<C, Unit, T> =
-        DIBinding.Copier { Singleton(scope, contextType, explicitContext, createdType, _refMaker, sync, creator) }
+        DIBinding.Copier {
+            Singleton(
+                scope = scope,
+                contextType = contextType,
+                explicitContext = explicitContext,
+                createdType = createdType,
+                refMaker = _refMaker,
+                sync = sync,
+                bindingDIFactory = bindingDIFactory,
+                creator = creator
+            )
+        }
 }
 
 /**
@@ -192,6 +205,7 @@ public class Singleton<C : Any, T : Any>(
 public class EagerSingleton<T : Any>(
     builder: DIContainer.Builder,
     override val createdType: TypeToken<out T>,
+    private val bindingDIFactory: (BindingDI<Any>) -> NoArgBindingDI<Any> = NoArgBindingDI.factory(),
     public val creator: NoArgBindingDI<Any>.() -> T
 ) : NoArgDIBinding<Any, T> {
 
@@ -208,7 +222,7 @@ public class EagerSingleton<T : Any>(
                 predicate = this@EagerSingleton::_instance,
                 ifNotNull = { it },
                 ifNull = {
-                    NoArgBindingDIWrap(di).creator().also { _instance = it }
+                    bindingDIFactory(di).creator().also { _instance = it }
                 }
             )
         }
@@ -227,7 +241,13 @@ public class EagerSingleton<T : Any>(
     }
 
     override val copier: DIBinding.Copier<Any, Unit, T> =
-        DIBinding.Copier { builder -> EagerSingleton(builder, createdType, creator) }
+        DIBinding.Copier { builder ->
+            EagerSingleton(
+                builder = builder,
+                createdType = createdType,
+                creator = creator
+            )
+        }
 }
 
 /**

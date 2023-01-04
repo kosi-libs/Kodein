@@ -3,7 +3,6 @@ package org.kodein.di
 import org.kodein.di.bindings.*
 import org.kodein.type.generic
 
-
 /**
  * Creates a singleton: will create an instance on first request and will subsequently always return the same instance.
  *
@@ -18,7 +17,15 @@ public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.singleto
     ref: RefMaker? = null,
     sync: Boolean = true,
     noinline creator: NoArgBindingDI<C>.() -> T,
-): Singleton<C, T> = Singleton(scope, contextType, explicitContext, generic(), ref, sync, creator)
+): Singleton<C, T> = Singleton(
+    scope = scope,
+    contextType = contextType,
+    explicitContext = explicitContext,
+    createdType = generic(),
+    refMaker = ref,
+    sync = sync,
+    creator = creator
+)
 
 /**
  * Creates an eager singleton: will create an instance as soon as kodein is ready
@@ -33,7 +40,11 @@ public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.singleto
  */
 public inline fun <reified T: Any> DI.Builder.eagerSingleton(
     noinline creator: NoArgBindingDI<Any>.() -> T
-): EagerSingleton<T> = EagerSingleton(containerBuilder, generic(), creator)
+): EagerSingleton<T> = EagerSingleton(
+    builder = containerBuilder,
+    createdType = generic(),
+    creator = creator
+)
 
 /**
  * Binds a singleton: will create an instance on first request and will subsequently always return the same instance.
