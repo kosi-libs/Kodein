@@ -11,6 +11,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.ksp.writeTo
+import org.kodein.di.resolver.visitor.BuilderGenerator
 import org.kodein.di.resolver.visitor.DIResolverGenerator
 
 public class KodeinProcessor(
@@ -30,7 +31,7 @@ public class KodeinProcessor(
     private fun processClass(classDeclaration: KSClassDeclaration): Boolean {
         if (!classDeclaration.validate()) return false
         if (classDeclaration.classKind != ClassKind.INTERFACE)
-            error("${classDeclaration.simpleName.asString()} must be and interface to be annoted with @${Names.Resolved}.")
+            error("${classDeclaration.simpleName.asString()} must be and interface to be annotated with @${Names.Resolved}.")
 
         // Handle DI resolver class generation
         val (resolverGeneratedClassName, diResolver, creatorFun) =
@@ -43,6 +44,9 @@ public class KodeinProcessor(
             .build()
 
         gFile.writeTo(codeGenerator, Dependencies(aggregating = false))
+
+        // Handle DI Builder generation
+        classDeclaration.accept(BuilderGenerator(), codeGenerator)
 
         return true
     }
