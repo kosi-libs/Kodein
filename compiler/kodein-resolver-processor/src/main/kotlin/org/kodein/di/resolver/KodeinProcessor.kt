@@ -11,6 +11,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.ksp.writeTo
+import org.kodein.di.resolver.visitor.BuilderExtensionGenerator
 import org.kodein.di.resolver.visitor.BuilderGenerator
 import org.kodein.di.resolver.visitor.DIResolverGenerator
 
@@ -47,6 +48,7 @@ public class KodeinProcessor(
 
         // Handle DI Builder generation
         classDeclaration.accept(BuilderGenerator(), codeGenerator)
+        classDeclaration.accept(BuilderExtensionGenerator(), codeGenerator)
 
         return true
     }
