@@ -13,33 +13,34 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.writeTo
 import org.kodein.di.resolver.Names
+import org.kodein.di.resolver.visitor.utils.factoryExtensions
+import org.kodein.di.resolver.visitor.utils.instanceExtensions
+import org.kodein.di.resolver.visitor.utils.multitonExtensions
+import org.kodein.di.resolver.visitor.utils.providerExtensions
+import org.kodein.di.resolver.visitor.utils.singletonExtensions
 
 internal class BuilderExtensionGenerator : KSEmptyVisitor<CodeGenerator, Unit>() {
     override fun defaultHandler(node: KSNode, data: CodeGenerator) =
         error("KodeinResolverGenerator can only process KSClassDeclaration")
 
     override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: CodeGenerator) {
-        val extensionSignature = BuilderExtensionSignatureData.of(classDeclaration)
+        val extensionSignature = BuilderExtensionTypes(classDeclaration)
 
         val gFile = FileSpec.builder(
             packageName = classDeclaration.packageName.asString(),
-            fileName = "${extensionSignature.builderGeneratedClassName.simpleName}Extensions"
+            fileName = "${extensionSignature.builder.simpleName}Extensions"
         )
-            .addImport("org.kodein.type", "TypeToken", "generic")
+            .addImport(
+                Names.kaveritPackageName,
+                "TypeToken", "generic"
+            )
             .addImport(
                 Names.diPackageName,
                 "new"
             )
             .addImport(
                 Names.diBindingPackageName,
-                "BindingDI",
-                "NoArgBindingDI",
-                "Factory",
-                "InstanceBinding",
-                "Multiton",
-                "Provider",
-                "NoScope",
-                "RefMaker",
+                "BindingDI","NoArgBindingDI","Factory","InstanceBinding","Multiton","Provider","Singleton","NoScope","RefMaker"
             )
 
         extensionSignature.factoryExtensions().forEach { gFile.addFunction(it) }
@@ -52,41 +53,31 @@ internal class BuilderExtensionGenerator : KSEmptyVisitor<CodeGenerator, Unit>()
     }
 }
 
-internal fun BuilderExtensionSignatureData.createExtension(name: String): FunSpec.Builder {
+internal fun BuilderExtensionTypes.createExtension(name: String): FunSpec.Builder {
     return FunSpec.builder(name)
         .addModifiers(KModifier.INLINE)
-        .addTypeVariable(reifiedType)
-        .receiver(builderGeneratedClassName)
+        .addTypeVariable(reifiedCreatedType)
+        .receiver(builder)
 }
 
-internal data class BuilderExtensionSignatureData(
-    val resolverClassName: ClassName,
-    val resolverBindingDIClassName: ClassName,
-    val resolverNoArgBindingDIClassName: ClassName,
-    val builderGeneratedClassName: ClassName,
-    val reifiedArgumentType: TypeVariableName,
-    val reifiedType: TypeVariableName
+internal data class BuilderExtensionTypes(
+    private val classDeclaration: KSClassDeclaration,
 ) {
-    companion object {
-        fun of(classDeclaration: KSClassDeclaration): BuilderExtensionSignatureData {
-            val resolverClassName = classDeclaration.toClassName()
-            return BuilderExtensionSignatureData(
-                resolverClassName = resolverClassName,
-                resolverBindingDIClassName = ClassName(
-                    classDeclaration.packageName.asString(),
-                    "${resolverClassName.simpleName}BindingDI"
-                ),
-                resolverNoArgBindingDIClassName = ClassName(
-                    classDeclaration.packageName.asString(),
-                    "${resolverClassName.simpleName}NoArgBindingDI"
-                ),
-                builderGeneratedClassName = ClassName(
-                    classDeclaration.packageName.asString(),
-                    "${resolverClassName.simpleName}Builder"
-                ),
-                reifiedArgumentType = TypeVariableName("A", Any::class).copy(reified = true),
-                reifiedType = TypeVariableName("T", Any::class).copy(reified = true)
-            )
-        }
+    private val diResolver: ClassName by lazy { classDeclaration.toClassName() }
+    private val classNameFactory = { suffix: String ->
+        ClassName(classDeclaration.packageName.asString(), "${diResolver.simpleName}$suffix")
+    }
+
+    val builder: ClassName by lazy { classNameFactory("Builder") }
+    val bindingDI: ClassName by lazy { classNameFactory("BindingDI") }
+
+    val noArgBindingDI: ClassName by lazy { classNameFactory("NoArgBindingDI") }
+
+    val reifiedArgumentType: TypeVariableName by lazy {
+        TypeVariableName("A", Any::class).copy(reified = true)
+    }
+
+    val reifiedCreatedType: TypeVariableName by lazy {
+        TypeVariableName("T", Any::class).copy(reified = true)
     }
 }
