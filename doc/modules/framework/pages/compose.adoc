@@ -14,6 +14,14 @@ Here is a table containing the version compatibility:
 
 |Kodein-DI |Compose compiler |Kotlin
 
+|7.17.1
+|Compose 1.3.0-rc2
+|1.8.0
+
+|7.16.0
+|Compose 1.2.0
+|1.7.20
+
 |7.15.1
 |Compose 1.2.0
 |1.7.20
