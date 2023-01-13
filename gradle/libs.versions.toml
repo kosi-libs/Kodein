@@ -8,7 +8,7 @@ androidx-appcompat-version = "1.5.1"
 androidx-fragment-version = "1.5.4"
 androidx-lifecycle-version = "2.5.1"
 # Compose
-compose-version = "1.3.0-rc01" # Not yet compatible with Kotlin 1.8
+compose-version = "1.3.0-rc02"
 # KSP
 kotlinpoet-version = "1.12.0"
 ksp-version = "1.8.0-1.0.8"

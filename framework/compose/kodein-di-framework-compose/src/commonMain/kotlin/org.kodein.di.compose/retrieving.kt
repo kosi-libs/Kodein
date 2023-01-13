@@ -32,7 +32,9 @@ internal class ComposableDILazyDelegate<V>(private val base: LazyDelegate<V>) : 
  * @return A Lazy delegate for the [T] instance.
  */
 @Composable
-public inline fun <reified T : Any> rememberDI(block: @DisallowComposableCalls DI.() -> LazyDelegate<T>): LazyDelegate<T> = with(localDI()) {
+public inline fun <reified T : Any> rememberDI(
+    crossinline block: @DisallowComposableCalls DI.() -> LazyDelegate<T>
+): LazyDelegate<T> = with(localDI()) {
     remember { ComposableDILazyDelegate(block()) }
 }
 

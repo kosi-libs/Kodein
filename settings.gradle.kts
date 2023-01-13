@@ -46,7 +46,6 @@ framework("tfx").include(
         ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
 )
 
-// Compose is not yet compatible with Kotlin 1.8
-//framework("compose").include(
-//        ":framework:compose:kodein-di-framework-compose"
-//)
+framework("compose").include(
+        ":framework:compose:kodein-di-framework-compose"
+)
