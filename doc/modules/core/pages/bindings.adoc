@@ -382,7 +382,16 @@ val di = DI {
 ----
 <1> Binding of `Dice`. It gets its transitive dependencies.
 
-This tricks is limited to 0 to 10 constructor parameters.
+Or even more concise:
+[source, kotlin]
+----
+val di = DI {
+    bindSingletonOf(::Dice) // <1>
+}
+----
+<1> Binding of `Dice`. It gets its transitive dependencies.
+
+Those tricks are limited to 0 to 10 constructor parameters.
 ====
 
 The binding functions are in the same environment as the `newInstance` function described in the <<injection, dependency injection section>>.
