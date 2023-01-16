@@ -10,9 +10,11 @@ IMPORTANT: `kodein-di-framework-compose` relies and only few stable APIs that ha
 
 Here is a table containing the version compatibility:
 
+[%header,cols=3*]
 |===
-
-|Kodein |Compose compiler |Kotlin
+|Kodein
+|Compose compiler
+|Kotlin
 
 |7.14.0
 1.2.0-alpha01-dev745
@@ -41,7 +43,6 @@ Here is a table containing the version compatibility:
 |7.5.0
 |1.0.0-beta06
 |1.4.31
-
 |===
 
 [[install]]
