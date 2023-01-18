@@ -1,6 +1,6 @@
 [versions]
 # Core
-kaverit-version = "2.3.0"
+kaverit-version = "2.4.0-android-proguard-SNAPSHOT"
 kotlin-version = "1.8.0"
 # Android
 android-appcompat-version = "28.0.0"
