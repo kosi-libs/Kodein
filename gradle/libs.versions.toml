@@ -1,7 +1,6 @@
 [versions]
 # Core
 kaverit-version = "2.3.0"
-kotlin-version = "1.8.0"
 # Android
 android-appcompat-version = "28.0.0"
 androidx-appcompat-version = "1.5.1"
@@ -13,7 +12,7 @@ compose-version = "1.3.0-rc02"
 kotlinpoet-version = "1.12.0"
 ksp-version = "1.8.0-1.0.8"
 # Ktor
-ktor-version = "2.2.1"
+ktor-version = "2.2.3"
 # JxInject
 javax-inject-version = "1"
 # TornadoFX
@@ -42,18 +41,16 @@ ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.re
 # Ktor
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
 ktor-server-sessions = { module = "io.ktor:ktor-server-sessions", version.ref = "ktor-version" }
+ktor-test-server-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor-version" }
 ktor-test-server = { module = "io.ktor:ktor-server-tests", version.ref = "ktor-version" }
 ktor-test-server-default-headers = { module = "io.ktor:ktor-server-default-headers", version.ref = "ktor-version" }
 # JxInject
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject-version" }
 # TornadoFX
 tornadofx = { module = "no.tornado:tornadofx", version.ref = "tornadofx-version" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-version" }
 testfx = { module = "org.testfx:testfx-core", version.ref = "testfx-version" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter-version" }
 # Test
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-version" }
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
 junit = { module = "junit:junit", version.ref = "junit-version" }
 
 [plugins]

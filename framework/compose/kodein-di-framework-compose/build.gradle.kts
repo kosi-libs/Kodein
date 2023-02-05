@@ -7,7 +7,7 @@ kodein {
     kotlin {
         common.main.dependencies {
             compileOnly(compose.runtime)
-            api(project(":kodein-di"))
+            api(projects.kodeinDi)
         }
 
         add(kodeinTargets.jvm.jvm) {
@@ -16,12 +16,12 @@ kodein {
 
         add(kodeinTargets.jvm.android) {
             main.dependencies {
-                api(project(":framework:android:kodein-di-framework-android-x"))
+                api(projects.framework.android.kodeinDiFrameworkAndroidX)
                 api(libs.android.x.lifecycle.viewmodel.compose)
             }
         }
 
-        add(kodeinTargets.js.ir.js)
+        add(kodeinTargets.js.js)
 
         // iosX32 not supported by jetbrains compose
         add(kodeinTargets.native.iosX64)

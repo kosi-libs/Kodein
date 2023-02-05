@@ -7,7 +7,7 @@ kodein {
 
         common {
             main.dependencies {
-                api(project(":kodein-di"))
+                api(projects.kodeinDi)
             }
 
             test.dependencies {
@@ -19,9 +19,9 @@ kodein {
             target.setCompileClasspath()
         }
 
-        add(kodeinTargets.js.ir.js)
+        add(kodeinTargets.js.js)
 
-        add(kodeinTargets.native.all)
+        add(kodeinTargets.native.allDarwin)
 
     }
 }

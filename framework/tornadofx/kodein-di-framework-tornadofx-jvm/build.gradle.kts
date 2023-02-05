@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.*
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("org.kodein.library.jvm")
     alias(libs.plugins.openjfx)
@@ -10,18 +11,14 @@ javafx {
     modules("javafx.controls")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 tasks.withType<Test> {
     useJUnitPlatform()
 }
 
 dependencies {
-    api(project(":kodein-di"))
+    api(projects.kodeinDi)
+    implementation(kodeinGlobals.kotlin.reflect)
     implementation(libs.tornadofx)
-    implementation(libs.kotlin.reflect)
     testImplementation(libs.testfx)
     testImplementation(libs.junit.jupiter)
 }

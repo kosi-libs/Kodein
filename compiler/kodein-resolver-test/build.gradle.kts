@@ -7,7 +7,7 @@ kodein {
     kotlin {
         common.main {
             dependencies {
-                implementation(project(":compiler:kodein-resolver-api"))
+                implementation(projects.compiler.kodeinResolverApi)
             }
         }
         common.test {
@@ -22,7 +22,7 @@ kodein {
             target.setCompileClasspath()
         }
         add(kodeinTargets.native.all)
-        add(kodeinTargets.js.ir.js)
+        add(kodeinTargets.js.js)
     }
 }
 

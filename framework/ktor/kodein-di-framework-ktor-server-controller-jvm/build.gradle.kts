@@ -2,12 +2,8 @@ plugins {
     id("org.kodein.library.jvm")
 }
 
-repositories {
-    maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
-}
-
 dependencies {
-    api(project(":framework:ktor:kodein-di-framework-ktor-server-jvm"))
+    api(projects.framework.ktor.kodeinDiFrameworkKtorServerJvm)
 
     implementation(libs.ktor.server.core)
     testImplementation(libs.ktor.test.server)

@@ -6,17 +6,16 @@ kodein {
     kotlin {
 
         common.main.dependencies {
-            api(libs.kotlin.test)
+            api(kodeinGlobals.kotlin.test)
         }
 
         add(kodeinTargets.jvm.jvm) {
             main.dependencies {
-                api(libs.kotlin.test.junit)
-                api(libs.junit)
+                api(kodeinGlobals.kotlin.test.junit)
             }
         }
 
-        add(kodeinTargets.js.ir.js)
+        add(kodeinTargets.js.js)
 
         add(kodeinTargets.native.all)
 

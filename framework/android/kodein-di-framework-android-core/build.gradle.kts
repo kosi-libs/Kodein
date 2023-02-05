@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":kodein-di"))
+    api(projects.kodeinDi)
 }
 
 kodeinUpload {

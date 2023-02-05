@@ -5,13 +5,13 @@ plugins {
 kodein {
     kotlin {
         common.main.dependencies {
-            api(project(":kodein-di"))
+            api(projects.kodeinDi)
         }
         add(kodeinTargets.jvm.jvm) {
             target.setCompileClasspath()
         }
         add(kodeinTargets.native.all)
-        add(kodeinTargets.js.ir.js)
+        add(kodeinTargets.js.js)
     }
 }
 
