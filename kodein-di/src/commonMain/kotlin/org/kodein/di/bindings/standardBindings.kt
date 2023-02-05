@@ -19,12 +19,12 @@ public class Factory<C : Any, A, T : Any>(
     override val contextType: TypeToken<in C>,
     override val argType: TypeToken<in A>,
     override val createdType: TypeToken<out T>,
-    private val creator: BindingDI<C>.(A) -> T
+    private val creator: BindingInfo<C>.(A) -> T
 ) : DIBinding<C, A, T> {
 
     override fun factoryName(): String = "factory"
 
-    override fun getFactory(key: DI.Key<C, A, T>, di: BindingDI<C>): (A) -> T = { arg -> this.creator(di, arg) }
+    override fun getFactory(key: DI.Key<C, A, T>, di: BindingInfo<C>): (A) -> T = { arg -> this.creator(di, arg) }
 }
 
 private data class ScopeKey<out A>(val scopeId: Any, val arg: A)
@@ -46,7 +46,7 @@ public class Multiton<C : Any, A, T : Any>(
     override val createdType: TypeToken<out T>,
     refMaker: RefMaker? = null,
     public val sync: Boolean = true,
-    private val creator: BindingDI<C>.(A) -> T
+    private val creator: BindingInfo<C>.(A) -> T
 ) : DIBinding<C, A, T> {
     private val _refMaker = refMaker ?: SingletonReference
 
@@ -72,7 +72,7 @@ public class Multiton<C : Any, A, T : Any>(
         return factoryName(params)
     }
 
-    override fun getFactory(key: DI.Key<C, A, T>, di: BindingDI<C>): (A) -> T {
+    override fun getFactory(key: DI.Key<C, A, T>, di: BindingInfo<C>): (A) -> T {
         var lateInitRegistry: ScopeRegistry? = null
         val bindingDi = if (explicitContext) di else di.onErasedContext()
         return { arg ->
@@ -110,15 +110,15 @@ public class Multiton<C : Any, A, T : Any>(
 public class Provider<C : Any, T : Any>(
     override val contextType: TypeToken<in C>,
     override val createdType: TypeToken<out T>,
-    public val creator: NoArgBindingDI<C>.() -> T
+    public val creator: (BindingInfo<C>, DirectDI) -> T
 ) : NoArgDIBinding<C, T> {
     override fun factoryName(): String = "provider"
 
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(key: DI.Key<C, Unit, T>, di: BindingDI<C>): (Unit) -> T = { _ ->
-        NoArgBindingDIWrap(di).creator()
+    override fun getFactory(key: DI.Key<C, Unit, T>, info: BindingInfo<C>, di: DirectDI): (Unit) -> T = { _ ->
+        creator(info, di)
     }
 }
 
@@ -165,7 +165,7 @@ public class Singleton<C : Any, T : Any>(
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(key: DI.Key<C, Unit, T>, di: BindingDI<C>): (Unit) -> T {
+    override fun getFactory(key: DI.Key<C, Unit, T>, di: BindingInfo<C>): (Unit) -> T {
         var lateInitRegistry: ScopeRegistry? = null
 
         @Suppress("UNCHECKED_CAST")
@@ -201,7 +201,7 @@ public class EagerSingleton<T : Any>(
     private var _instance: T? = null
     private val _lock = Any()
 
-    private fun getFactory(di: BindingDI<Any>): (Unit) -> T {
+    private fun getFactory(di: BindingInfo<Any>): (Unit) -> T {
         return { _ ->
             synchronizedIfNull(
                 lock = _lock,
@@ -217,7 +217,7 @@ public class EagerSingleton<T : Any>(
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(key: DI.Key<Any, Unit, T>, di: BindingDI<Any>): (Unit) -> T = getFactory(di)
+    override fun getFactory(key: DI.Key<Any, Unit, T>, di: BindingInfo<Any>): (Unit) -> T = getFactory(di)
 
     override fun factoryName(): String = "eagerSingleton"
 
@@ -247,7 +247,7 @@ public class InstanceBinding<T : Any>(
     /**
      * @see [DIBinding.getFactory]
      */
-    override fun getFactory(key: DI.Key<Any, Unit, T>, di: BindingDI<Any>): (Unit) -> T = { _ -> this.instance }
+    override fun getFactory(key: DI.Key<Any, Unit, T>, di: BindingInfo<Any>): (Unit) -> T = { _ -> this.instance }
 
     override val description: String get() = "${factoryName()} ( ${createdType.simpleDispString()} )"
     override val fullDescription: String get() = "${factoryFullName()} ( ${createdType.qualifiedDispString()} )"

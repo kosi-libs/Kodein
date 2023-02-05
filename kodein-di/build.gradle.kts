@@ -16,12 +16,20 @@ kodein {
         add(kodeinTargets.jvm.jvm) {
             target.setCompileClasspath()
         }
-        add(kodeinTargets.js.js)
+//        add(kodeinTargets.js.js)
 
-        add(kodeinTargets.native.allDarwin)
+//        add(kodeinTargets.native.allDarwin)
+
+        targets.configureEach {
+            compilations.configureEach {
+                kotlinOptions.freeCompilerArgs = listOf("-Xcontext-receivers")
+            }
+        }
 
     }
 }
+
+
 
 kodeinUpload {
     name = "Kodein"

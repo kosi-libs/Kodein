@@ -7,6 +7,7 @@ import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.bindings.ArgSetBinding
 import org.kodein.di.bindings.BaseMultiBinding
+import org.kodein.di.bindings.BindingInfo
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.DIBinding
 import org.kodein.di.bindings.ExternalSource
@@ -18,12 +19,13 @@ import org.kodein.di.bindings.SetBinding
 import org.kodein.type.TypeToken
 import org.kodein.type.erasedComp
 
-internal open class DIBuilderImpl internal constructor(
+internal open class DIBuilderImpl<R : Any> internal constructor(
     private val moduleName: String?,
     private val prefix: String,
     internal val importedModules: MutableSet<String>,
-    override val containerBuilder: DIContainerBuilderImpl
-) : DI.Builder {
+    override val containerBuilder: DIContainerBuilderImpl,
+    override val wrap: (di: BindingInfo<Any>) -> R
+) : DI.Builder<R> {
 
     override val contextType = TypeToken.Any
 
@@ -50,7 +52,7 @@ internal open class DIBuilderImpl internal constructor(
      * @see [DI.Builder.DelegateBinder]
      */
     inner class DelegateBinder<T : Any> internal constructor(
-        private val builder: DI.Builder,
+        private val builder: DI.Builder<R>,
         private val bindType: TypeToken<out T>,
         private val bindTag: Any? = null,
         private val overrides: Boolean? = null
@@ -274,7 +276,7 @@ internal open class DIBuilderImpl internal constructor(
         overrides: Boolean?,
     ): DelegateBinder<T> = DelegateBinder(this, type, tag, overrides)
 
-    override fun import(module: DI.Module, allowOverride: Boolean) {
+    override fun import(module: DI.Module<R>, allowOverride: Boolean) {
         val moduleName = prefix + module.name
         if (moduleName.isNotEmpty() && moduleName in importedModules) {
             throw IllegalStateException("Module \"$moduleName\" has already been imported!")
@@ -284,17 +286,18 @@ internal open class DIBuilderImpl internal constructor(
             moduleName,
             prefix + module.prefix,
             importedModules,
-            containerBuilder.subBuilder(allowOverride, module.allowSilentOverride)
+            containerBuilder.subBuilder(allowOverride, module.allowSilentOverride),
+            wrap
         ).apply(module.init)
     }
 
-    override fun importAll(modules: Iterable<DI.Module>, allowOverride: Boolean) =
+    override fun importAll(modules: Iterable<DI.Module<R>>, allowOverride: Boolean) =
         modules.forEach { import(it, allowOverride) }
 
-    override fun importAll(vararg modules: DI.Module, allowOverride: Boolean) =
+    override fun importAll(vararg modules: DI.Module<R>, allowOverride: Boolean) =
         modules.forEach { import(it, allowOverride) }
 
-    override fun importOnce(module: DI.Module, allowOverride: Boolean) {
+    override fun importOnce(module: DI.Module<R>, allowOverride: Boolean) {
         if (module.name.isEmpty())
             throw IllegalStateException("importOnce must be given a named module.")
         if (module.name !in importedModules)
@@ -307,12 +310,16 @@ internal open class DIBuilderImpl internal constructor(
         containerBuilder.registerContextTranslator(translator)
 }
 
-internal open class DIMainBuilderImpl(allowSilentOverride: Boolean) : DIBuilderImpl(
+internal open class DIMainBuilderImpl<R : Any>(
+    allowSilentOverride: Boolean,
+    override val wrap: (di: BindingInfo<Any>) -> R
+) : DIBuilderImpl<R>(
     null,
     "",
     HashSet(),
-    DIContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList())
-), DI.MainBuilder {
+    DIContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList()),
+    wrap
+), DI.MainBuilder<R> {
 
     override val externalSources: MutableList<ExternalSource> = ArrayList()
 

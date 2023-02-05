@@ -8,7 +8,7 @@ import org.kodein.di.DIContext
 import org.kodein.di.DITree
 import org.kodein.di.SearchSpecs
 import org.kodein.di.Volatile
-import org.kodein.di.bindings.BindingDI
+import org.kodein.di.bindings.BindingInfo
 import org.kodein.di.bindings.ExternalSource
 import org.kodein.di.bindings.toKContext
 import org.kodein.di.description
@@ -133,7 +133,7 @@ internal class DIContainerImpl private constructor(
 
     }
 
-    private fun <C : Any, A, T: Any> bindingDI(key: DI.Key<C, A, T>, context: DIContext<C>, tree: DITree, overrideLevel: Int) : BindingDI<C> {
+    private fun <C : Any, A, T: Any> bindingDI(key: DI.Key<C, A, T>, context: DIContext<C>, tree: DITree, overrideLevel: Int) : BindingInfo<C> {
         val container = DIContainerImpl(tree, Node(key, overrideLevel, node, fullDescriptionOnError), fullDescriptionOnError, fullContainerTreeOnError)
         return BindingDIImpl(DirectDIImpl(container, context), key, overrideLevel)
     }

@@ -17,8 +17,8 @@ rootProject.name = "Kodein"
 include(
         ":test-utils",
         ":kodein-di",
-        ":kodein-di-conf",
-        ":kodein-di-jxinject-jvm",
+//        ":kodein-di-conf",
+//        ":kodein-di-jxinject-jvm",
         ""
 )
 
@@ -29,23 +29,23 @@ include(
 //    ":compiler:kodein-resolver-test",
 //)
 
-android.include(
-        ":framework:android:kodein-di-framework-android-core",
-        ":framework:android:kodein-di-framework-android-support",
-        ":framework:android:kodein-di-framework-android-x",
-        ":framework:android:kodein-di-framework-android-x-viewmodel",
-        ":framework:android:kodein-di-framework-android-x-viewmodel-savedstate"
-)
-
-framework("ktor").include(
-        ":framework:ktor:kodein-di-framework-ktor-server-jvm",
-        ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm"
-)
-
-framework("tfx").include(
-        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
-)
-
-framework("compose").include(
-        ":framework:compose:kodein-di-framework-compose"
-)
+//android.include(
+//        ":framework:android:kodein-di-framework-android-core",
+//        ":framework:android:kodein-di-framework-android-support",
+//        ":framework:android:kodein-di-framework-android-x",
+//        ":framework:android:kodein-di-framework-android-x-viewmodel",
+//        ":framework:android:kodein-di-framework-android-x-viewmodel-savedstate"
+//)
+//
+//framework("ktor").include(
+//        ":framework:ktor:kodein-di-framework-ktor-server-jvm",
+//        ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm"
+//)
+//
+//framework("tfx").include(
+//        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
+//)
+//
+//framework("compose").include(
+//        ":framework:compose:kodein-di-framework-compose"
+//)

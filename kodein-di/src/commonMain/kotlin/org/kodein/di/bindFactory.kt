@@ -1,6 +1,6 @@
 package org.kodein.di
 
-import org.kodein.di.bindings.BindingDI
+import org.kodein.di.bindings.BindingInfo
 import org.kodein.di.bindings.Factory
 import org.kodein.type.generic
 
@@ -15,7 +15,7 @@ import org.kodein.type.generic
  * @return A factory ready to be bound.
  */
 public inline fun <C : Any, reified A : Any, reified T: Any> DI.BindBuilder<C>.factory(
-    noinline creator: BindingDI<C>.(A) -> T
+    noinline creator: BindingInfo<C>.(A) -> T
 ): Factory<C, A, T> = Factory<C, A, T>(contextType, generic(), generic(), creator)
 
 /**

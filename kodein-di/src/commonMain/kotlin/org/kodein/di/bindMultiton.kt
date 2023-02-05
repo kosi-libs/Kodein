@@ -1,6 +1,6 @@
 package org.kodein.di
 
-import org.kodein.di.bindings.BindingDI
+import org.kodein.di.bindings.BindingInfo
 import org.kodein.di.bindings.Multiton
 import org.kodein.di.bindings.RefMaker
 import org.kodein.type.generic
@@ -20,7 +20,7 @@ import org.kodein.type.generic
 public inline fun <C : Any, reified A : Any, reified T: Any> DI.BindBuilder.WithScope<C>.multiton(
     ref: RefMaker? = null,
     sync: Boolean = true,
-    noinline creator: BindingDI<C>.(A) -> T
+    noinline creator: BindingInfo<C>.(A) -> T
 ): Multiton<C, A, T> = Multiton(scope, contextType, explicitContext, generic(), generic(), ref, sync, creator)
 
 /**

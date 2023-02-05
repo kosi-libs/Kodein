@@ -1,7 +1,10 @@
 package org.kodein.di
 
+import org.kodein.di.bindings.BindingCreator
+import org.kodein.di.bindings.BindingReceiver
 import org.kodein.di.bindings.NoArgBindingDI
 import org.kodein.di.bindings.Provider
+import org.kodein.di.bindings.callWrapped
 import org.kodein.type.generic
 
 /**
@@ -15,9 +18,9 @@ import org.kodein.type.generic
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  * @return A provider ready to be bound.
  */
-public inline fun <C : Any, reified T: Any> DI.BindBuilder<C>.provider(
-    noinline creator: NoArgBindingDI<C>.() -> T
-): Provider<C, T> = Provider(contextType, generic(), creator)
+public inline fun <C : Any, reified T: Any, R : Any> DI.BindBuilder<C, R>.provider(
+    noinline creator: BindingCreator<C, T, R>
+): Provider<C, T> = Provider(contextType, generic()) { info, di -> callWrapped(info, di, creator) }
 
 /**
  * Creates a factory: each time an instance is needed, the function [creator] function will be called.

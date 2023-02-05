@@ -12,6 +12,23 @@ import org.kodein.type.TypeToken
 // inline fun <reified A, reified T: Any> testFactory(f: TestContext<A, T>.(A) -> T): T = ...
 // fun test() { /* bind<String>() with */ testFactory { name: String -> "hello, $name!" } }
 
+public class BindingReceiver<C : Any, R>(
+    info: BindingInfo<C>,
+    di: R
+)
+
+public typealias BindingCreator<C, T, R> = BindingReceiver<C, R>.() -> T
+//public typealias BindingCreator<C, T, R> = context(BindingInfo<C>) R.() -> T
+
+@PublishedApi
+internal fun <C : Any, T, R : Any> DI.BindBuilder<C, R>.callWrapped(
+    info: BindingInfo<C>,
+    di: DirectDI,
+    creator: BindingCreator<C, T, R>
+): T =
+    BindingReceiver<C, R>(info, wrap(di)).creator()
+//    with(info) { wrap(di).creator() }
+
 /**
  * Indicates that the context of a retrieval is accessible.
  *
@@ -32,7 +49,7 @@ public interface WithContext<out C : Any> {
  * @param C The type of the context
  */
 @DI.DIDsl
-public interface BindingDI<out C : Any> : DirectDI, WithContext<C> {
+public interface BindingInfo<out C : Any> : WithContext<C> {
 
     /**
      * Gets a factory from the overridden binding.
@@ -51,7 +68,7 @@ public interface BindingDI<out C : Any> : DirectDI, WithContext<C> {
      */
     public fun overriddenFactoryOrNull(): ((Any?) -> Any)?
 
-    public fun onErasedContext(): BindingDI<C>
+    public fun onErasedContext(): BindingInfo<C>
 }
 
 public object ErasedContext : DIContext<ErasedContext> {
@@ -67,7 +84,7 @@ public object ErasedContext : DIContext<ErasedContext> {
  * @param C The type of the context
  */
 @DI.DIDsl
-public interface NoArgBindingDI<out C : Any> : DirectDI, WithContext<C> {
+public interface NoArgBindingInfo<out C : Any> : WithContext<C> {
 
     /**
      * Gets a provider from the overridden binding.
@@ -104,9 +121,9 @@ public interface NoArgBindingDI<out C : Any> : DirectDI, WithContext<C> {
     public fun overriddenInstanceOrNull(): Any? /*= overriddenProviderOrNull()?.invoke()*/
 }
 
-internal class NoArgBindingDIWrap<out C : Any>(private val _di: BindingDI<C>) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
-    override fun overriddenProvider() = _di.overriddenFactory().toProvider { Unit }
-    override fun overriddenProviderOrNull() = _di.overriddenFactoryOrNull()?.toProvider { Unit }
+internal class NoArgBindingInfoWrap<out C : Any>(private val _info: BindingInfo<C>) : NoArgBindingInfo<C>, WithContext<C> by _info {
+    override fun overriddenProvider() = _info.overriddenFactory().toProvider { Unit }
+    override fun overriddenProviderOrNull() = _info.overriddenFactoryOrNull()?.toProvider { Unit }
     override fun overriddenInstance() = overriddenProvider().invoke()
     override fun overriddenInstanceOrNull() = overriddenProviderOrNull()?.invoke()
 }

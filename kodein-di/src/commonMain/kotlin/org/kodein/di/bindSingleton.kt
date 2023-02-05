@@ -14,11 +14,11 @@ import org.kodein.type.generic
  * Guaranteed to be called only once. Should create a new instance.
  * @return A singleton ready to be bound.
  */
-public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.singleton(
+public inline fun <C : Any, reified T: Any, R : Any> DI.BindBuilder.WithScope<C, R>.singleton(
     ref: RefMaker? = null,
     sync: Boolean = true,
-    noinline creator: NoArgBindingDI<C>.() -> T,
-): Singleton<C, T> = Singleton(scope, contextType, explicitContext, generic(), ref, sync, creator)
+    noinline creator: BindingCreator<C, R, T>,
+): Singleton<C, T> = Singleton(scope, contextType, explicitContext, generic(), ref, sync) { wrapNoArg(this).creator() }
 
 /**
  * Creates an eager singleton: will create an instance as soon as kodein is ready
@@ -31,8 +31,8 @@ public inline fun <C : Any, reified T: Any> DI.BindBuilder.WithScope<C>.singleto
  * Guaranteed to be called only once. Should create a new instance.
  * @return An eager singleton ready to be bound.
  */
-public inline fun <reified T: Any> DI.Builder.eagerSingleton(
-    noinline creator: NoArgBindingDI<Any>.() -> T
+public inline fun <reified T: Any, R : Any> DI.Builder<R>.eagerSingleton(
+    noinline creator: BindingCreator<Any, R, T>
 ): EagerSingleton<T> = EagerSingleton(containerBuilder, generic(), creator)
 
 /**
@@ -44,11 +44,11 @@ public inline fun <reified T: Any> DI.Builder.eagerSingleton(
  * @param creator The function that will be called the first time an instance is requested.
  * Guaranteed to be called only once. Should create a new instance.
  */
-public inline fun <reified T: Any> DI.Builder.bindSingleton(
+public inline fun <reified T: Any, R : Any> DI.Builder<R>.bindSingleton(
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline creator: DirectDI.() -> T,
+    noinline creator: BindingCreator<Any, R, T>,
 ): Unit = Bind(tag = tag, overrides = overrides, binding = singleton(sync = sync, creator = creator))
 
 /**
@@ -61,10 +61,10 @@ public inline fun <reified T: Any> DI.Builder.bindSingleton(
  * @param creator The function that will be called as soon as DI is ready.
  * Guaranteed to be called only once. Should create a new instance.
  */
-public inline fun <reified T: Any> DI.Builder.bindEagerSingleton(
+public inline fun <reified T: Any, R : Any> DI.Builder<R>.bindEagerSingleton(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline creator: DirectDI.() -> T,
+    noinline creator: BindingCreator<Any, R, T>,
 ): Unit = Bind(tag = tag, overrides = overrides, binding = eagerSingleton(creator = creator))
 
  /**

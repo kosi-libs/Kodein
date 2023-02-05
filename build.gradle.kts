@@ -1,3 +1,4 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("org.kodein.root")
     alias(libs.plugins.ksp) apply false

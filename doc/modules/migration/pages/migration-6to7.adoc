@@ -222,7 +222,7 @@ Here is the table of all the correspondences, for the public classes:
 | `LazyKodein`                 | `LazyDI`
 | `KodeinProperty`             | `DIProperty`
 | `KodeinPropertyMap`          | `DIPropertyMap`
-| `BindingKodein`              | `BindingDI`
+| `BindingKodein`              | `BindingInfo`
 | `SimpleBindingKodein`        | `SimpleBindingDI`
 | `NoArgSimpleBindingKodein`   | `NoArgSimpleBindingDI`
 | `NoArgBindingKodein`         | `NoArgBindingDI`

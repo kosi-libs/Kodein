@@ -17,7 +17,7 @@ public abstract class BaseMultiBinding<C : Any, A, T : Any> : DIBinding<C, A, Se
     override fun factoryName(): String = "bindingSet"
 }
 
-private class SetBindingDI<out C : Any>(private val _base: BindingDI<C>) : BindingDI<C> by _base {
+private class SetBindingDI<out C : Any>(private val _base: BindingInfo<C>) : BindingInfo<C> by _base {
     override fun overriddenFactory() = throw IllegalStateException("Cannot access overrides in a Set binding")
     override fun overriddenFactoryOrNull() = throw IllegalStateException("Cannot access overrides in a Set binding")
 }
@@ -39,7 +39,7 @@ public class ArgSetBinding<C : Any, A, T : Any>(
 
     override val set = LinkedHashSet<DIBinding<C, A, T>>()
 
-    override fun getFactory(key: DI.Key<C, A, Set<T>>, di: BindingDI<C>): (A) -> Set<T> {
+    override fun getFactory(key: DI.Key<C, A, Set<T>>, di: BindingInfo<C>): (A) -> Set<T> {
         var lateInitFactories: List<(A) -> T>? = null
         return { arg ->
             val factories = lateInitFactories ?: run {
@@ -71,7 +71,7 @@ public class SetBinding<C : Any, T : Any>(
 
     override val set = LinkedHashSet<DIBinding<C, Unit, T>>()
 
-    override fun getFactory(key: DI.Key<C, Unit, Set<T>>, di: BindingDI<C>): (Unit) -> Set<T> {
+    override fun getFactory(key: DI.Key<C, Unit, Set<T>>, di: BindingInfo<C>): (Unit) -> Set<T> {
         var lateInitProviders: List<(Unit) -> T>? = null
         return { _ ->
             val providers = lateInitProviders ?: run {

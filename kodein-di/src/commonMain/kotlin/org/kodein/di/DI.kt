@@ -170,7 +170,7 @@ public interface DI : DIAware {
      *
      * @param C The context type.
      */
-    public interface BindBuilder<C : Any> {
+    public interface BindBuilder<C : Any, R : Any>  {
         /**
          * The context type that will be used by all bindings that are defined in this DSL context.
          */
@@ -178,8 +178,13 @@ public interface DI : DIAware {
 
         public val explicitContext: Boolean
 
+        public val wrap: (di: DirectDI) -> R
+
         /** @suppress */
-        public class ImplWithContext<C : Any>(override val contextType: TypeToken<C>) : BindBuilder<C> {
+        public class ImplWithContext<C : Any, R : Any>(
+            override val contextType: TypeToken<C>,
+            override val wrap: (di: DirectDI) -> R,
+        ) : BindBuilder<C, R> {
             override val explicitContext: Boolean get() = true
         }
 
@@ -188,7 +193,7 @@ public interface DI : DIAware {
          *
          * @param C The scope's Context.
          */
-        public interface WithScope<C : Any> : BindBuilder<C> {
+        public interface WithScope<C : Any, R : Any> : BindBuilder<C, R> {
 
             /**
              * The scope that will be used by all bindings that are defined in this DSL context.
@@ -197,7 +202,11 @@ public interface DI : DIAware {
         }
 
         /** @suppress */
-        public class ImplWithScope<C : Any>(override val contextType: TypeToken<C>, override val scope: Scope<C>) : WithScope<C> {
+        public class ImplWithScope<C : Any, R : Any>(
+            override val contextType: TypeToken<C>,
+            override val scope: Scope<C>,
+            override val wrap: (di: DirectDI) -> R,
+        ) : WithScope<C, R> {
             override val explicitContext: Boolean get() = true
         }
 
@@ -211,7 +220,7 @@ public interface DI : DIAware {
      * @property containerBuilder Every methods eventually ends up to a call to this builder.
      */
     @DIDsl
-    public interface Builder : BindBuilder<Any>, BindBuilder.WithScope<Any> {
+    public interface Builder<R : Any> : BindBuilder<Any, R>, BindBuilder.WithScope<Any, R> {
 
         public val containerBuilder: DIContainer.Builder
 
@@ -466,7 +475,7 @@ public interface DI : DIAware {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        public fun import(module: Module, allowOverride: Boolean = false)
+        public fun import(module: Module<R>, allowOverride: Boolean = false)
 
         /**
          * Imports all bindings defined in the given [DI.Module]s into this builder's definition.
@@ -479,7 +488,7 @@ public interface DI : DIAware {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        public fun importAll(vararg modules: Module, allowOverride: Boolean = false)
+        public fun importAll(vararg modules: Module<R>, allowOverride: Boolean = false)
 
         /**
          * Imports all bindings defined in the given [DI.Module]s into this builder's definition.
@@ -492,7 +501,7 @@ public interface DI : DIAware {
          * @throws OverridingException If this module overrides an existing binding and is not allowed to
          *                             OR [allowOverride] is true while YOU don't have the permission to override.
          */
-        public fun importAll(modules: Iterable<Module>, allowOverride: Boolean = false)
+        public fun importAll(modules: Iterable<Module<R>>, allowOverride: Boolean = false)
 
         /**
          * Like [import] but checks that will only import each module once.
@@ -501,7 +510,7 @@ public interface DI : DIAware {
          *
          * Careful: this is checked by name. If two modules share the same name, only one will be imported!
          */
-        public fun importOnce(module: Module, allowOverride: Boolean = false)
+        public fun importOnce(module: Module<R>, allowOverride: Boolean = false)
 
         /**
          * Adds a callback that will be called once the DI object is configured and instantiated.
@@ -516,7 +525,7 @@ public interface DI : DIAware {
     /**
      * Builder to create a [DI] object.
      */
-    public interface MainBuilder : Builder {
+    public interface MainBuilder<R : Any> : Builder<R> {
 
         /**
          * If true, exceptions thrown will contain qualified names.
@@ -584,10 +593,10 @@ public interface DI : DIAware {
      * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
      * @property init The block of configuration for this module.
      */
-    public data class Module(
+    public data class Module<R : Any>(
         public val allowSilentOverride: Boolean = false,
         public val prefix: String = "",
-        public val init: Builder.() -> Unit,
+        public val init: Builder<R>.() -> Unit,
     ) {
         private var _name: String? = null
         public val name: String get() = _name
@@ -597,12 +606,12 @@ public interface DI : DIAware {
             name: String,
             allowSilentOverride: Boolean = false,
             prefix: String = "",
-            init: Builder.() -> Unit,
+            init: Builder<R>.() -> Unit,
         ) : this(allowSilentOverride, prefix, init) {
             _name = name
         }
 
-        public operator fun getValue(thisRef: Any?, property: KProperty<*>): Module {
+        public operator fun getValue(thisRef: Any?, property: KProperty<*>): Module<R> {
             if (_name.isNullOrEmpty()) _name = property.name
             return this
         }
@@ -623,7 +632,7 @@ public interface DI : DIAware {
          * @param init The block of configuration.
          * @return The new DI object, freshly created, and ready for hard work!
          */
-        public operator fun invoke(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DI = DIImpl(allowSilentOverride, init)
+        public operator fun invoke(allowSilentOverride: Boolean = false, init: MainBuilder<DirectDI>.() -> Unit): DI = DIImpl(allowSilentOverride, init)
 
         /**
          * Creates a [DI] instance that will be lazily created upon first access.
@@ -632,7 +641,7 @@ public interface DI : DIAware {
          * @param init The block of configuration.
          * @return A lazy property that will yield, when accessed, the new DI object, freshly created, and ready for hard work!
          */
-        public fun lazy(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): LazyDI = LazyDI { DIImpl(allowSilentOverride, init) }
+        public fun lazy(allowSilentOverride: Boolean = false, init: MainBuilder<DirectDI>.() -> Unit): LazyDI = LazyDI { DIImpl(allowSilentOverride, init) }
 
         /**
          * Creates a direct [DirectDI] instance that will be lazily created upon first access.
@@ -641,7 +650,7 @@ public interface DI : DIAware {
          * @param init The block of configuration.
          * @return The new DirectDI object, freshly created, and ready for hard work!
          */
-        public fun direct(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DirectDI = DIImpl(allowSilentOverride, init).direct
+        public fun direct(allowSilentOverride: Boolean = false, init: MainBuilder<DirectDI>.() -> Unit): DirectDI = DIImpl(allowSilentOverride, init).direct
 
         /**
          * Creates a DI object but without directly calling onReady callbacks.
@@ -656,9 +665,9 @@ public interface DI : DIAware {
          * @return a Pair with the DI object, and the callbacks function to call.
          *   Note that you *should not* use the DI object before calling the callbacks function.
          */
-        public fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): Pair<DI, () -> Unit> = DIImpl.withDelayedCallbacks(allowSilentOverride, init)
+        public fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: MainBuilder<DirectDI>.() -> Unit): Pair<DI, () -> Unit> = DIImpl.withDelayedCallbacks(allowSilentOverride, init)
 
-        public fun from(modules: List<Module>): DI = DI {
+        public fun from(modules: List<Module<DirectDI>>): DI = DI {
             modules.forEach { import(it) }
         }
 
