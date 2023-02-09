@@ -127,7 +127,7 @@ val di = DI {
 }
 ----
 
-TIP: Ending with the same result, you can also use the simple function `bindFactory<Int, DataSource> { sides: Int -> RandomDice(sides) }`.
+TIP: Ending with the same result, you can also use the simple function `bindFactory<Int, Dice> { sides: Int -> RandomDice(sides) }`.
 
 [[multi-argument-factories]]
 === Multi-arguments factories
