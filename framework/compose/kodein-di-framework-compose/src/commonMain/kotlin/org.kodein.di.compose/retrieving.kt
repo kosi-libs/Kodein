@@ -3,9 +3,13 @@ package org.kodein.di.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.remember
-import org.kodein.di.*
+import org.kodein.di.DI
+import org.kodein.di.LazyDelegate
+import org.kodein.di.factory
+import org.kodein.di.instance
+import org.kodein.di.named
+import org.kodein.di.provider
 import kotlin.reflect.KProperty
-import kotlin.reflect.typeOf
 
 /**
  * A property delegate provider for DI retrieval in a Composable tree.

@@ -18,7 +18,7 @@ kodein {
         }
         add(kodeinTargets.js.js)
 
-        add(kodeinTargets.native.allDarwin)
+        add(kodeinTargets.native.all)
 
     }
 }

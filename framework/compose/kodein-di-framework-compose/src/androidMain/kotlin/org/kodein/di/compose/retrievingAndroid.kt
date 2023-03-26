@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import org.kodein.di.*
+import org.kodein.di.direct
+import org.kodein.di.instance
 
 /**
  * Gets an instance of a [VM] as an android [ViewModel] for the given [tag].

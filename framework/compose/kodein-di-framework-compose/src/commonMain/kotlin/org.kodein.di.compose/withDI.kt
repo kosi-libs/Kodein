@@ -2,7 +2,10 @@ package org.kodein.di.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import org.kodein.di.*
+import org.kodein.di.DI
+import org.kodein.di.DIContext
+import org.kodein.di.On
+import org.kodein.di.diContext
 
 /**
  * Attaches a [DI] container to the underlying [Composable] tree
