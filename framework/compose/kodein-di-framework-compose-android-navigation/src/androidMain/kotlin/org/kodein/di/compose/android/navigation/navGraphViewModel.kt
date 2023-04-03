@@ -30,7 +30,7 @@ public inline fun <reified VM : ViewModel> NavBackStackEntry.rememberNavGraphVie
 ): ViewModelLazy<VM> = with(
     localDI()
 ) {
-    remember {
+    remember(this@rememberNavGraphViewModel) {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { navHostController.getBackStackEntry(getParentId()).viewModelStore },
@@ -55,7 +55,7 @@ public inline fun <reified VM : ViewModel> NavBackStackEntry.navGraphViewModel(
     navHostController: NavHostController,
     tag: String? = null
 ): VM = with(localDI()) {
-    remember {
+    remember(this@navGraphViewModel) {
         val provider = ViewModelProvider(
             navHostController.getBackStackEntry(getParentId()).viewModelStore,
             KodeinViewModelScopedSingleton(di = di, tag = tag)
@@ -90,7 +90,7 @@ public inline fun <reified A: Any, reified VM : ViewModel> NavBackStackEntry.rem
 ): ViewModelLazy<VM> = with(
     localDI()
 ) {
-    remember {
+    remember(this@rememberNavGraphViewModel) {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { navHostController.getBackStackEntry(getParentId()).viewModelStore },
@@ -126,7 +126,7 @@ public inline fun <reified A: Any, reified VM : ViewModel> NavBackStackEntry.nav
     tag: String? = null,
     arg: A,
 ): VM = with(localDI()) {
-    remember {
+    remember(this@navGraphViewModel) {
         val provider = ViewModelProvider(
             navHostController.getBackStackEntry(getParentId()).viewModelStore,
             KodeinViewModelScopedFactory(
