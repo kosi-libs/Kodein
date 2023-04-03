@@ -7,7 +7,7 @@ kodein {
     kotlin {
         common.main.dependencies {
             compileOnly(compose.runtime)
-            compileOnly(projects.framework.compose.kodeinDiFrameworkCompose)
+            api(projects.framework.compose.kodeinDiFrameworkCompose)
         }
 
         add(kodeinTargets.jvm.android) {
