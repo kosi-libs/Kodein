@@ -35,7 +35,6 @@ android.include(
         ":framework:android:kodein-di-framework-android-x",
         ":framework:android:kodein-di-framework-android-x-viewmodel",
         ":framework:android:kodein-di-framework-android-x-viewmodel-savedstate",
-        ":framework:android:kodein-di-framework-android-compose"
 )
 
 framework("ktor").include(
@@ -48,5 +47,7 @@ framework("tfx").include(
 )
 
 framework("compose").include(
-        ":framework:compose:kodein-di-framework-compose"
+        ":framework:compose:kodein-di-framework-compose",
+        ":framework:compose:kodein-di-framework-compose-android",
+        ":framework:compose:kodein-di-framework-compose-android-navigation",
 )

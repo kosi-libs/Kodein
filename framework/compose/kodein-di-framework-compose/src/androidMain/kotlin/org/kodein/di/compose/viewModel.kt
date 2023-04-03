@@ -21,10 +21,7 @@ import org.kodein.di.instance
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
-@Deprecated(
-    message = "Use rememberViewModel instead",
-    replaceWith = ReplaceWith("rememberViewModel(tag)", "org.kodein.di.compose.viewmodel")
-)
+@Deprecated(message = "Use the new package kodein-di-framework-compose-android instead",)
 public inline fun <reified VM : ViewModel> rememberViewModel(tag: Any? = null): ViewModelLazy<VM> = with(localDI()) {
     val viewModelStoreOwner = LocalViewModelStoreOwner.current ?: error("")
 
@@ -56,10 +53,7 @@ public inline fun <reified VM : ViewModel> rememberViewModel(tag: Any? = null): 
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
-@Deprecated(
-    message = "Use rememberViewModel instead",
-    replaceWith = ReplaceWith("rememberViewModel(tag, arg)", "org.kodein.di.compose.viewmodel")
-)
+@Deprecated(message = "Use the new package kodein-di-framework-compose-android instead",)
 public inline fun <reified A: Any, reified VM : ViewModel> rememberViewModel(tag: Any? = null, arg: A): ViewModelLazy<VM> = with(localDI()) {
     val viewModelStoreOwner = LocalViewModelStoreOwner.current ?: error("")
 
