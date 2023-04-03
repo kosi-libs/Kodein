@@ -34,7 +34,8 @@ android.include(
         ":framework:android:kodein-di-framework-android-support",
         ":framework:android:kodein-di-framework-android-x",
         ":framework:android:kodein-di-framework-android-x-viewmodel",
-        ":framework:android:kodein-di-framework-android-x-viewmodel-savedstate"
+        ":framework:android:kodein-di-framework-android-x-viewmodel-savedstate",
+        ":framework:android:kodein-di-framework-android-compose"
 )
 
 framework("ktor").include(

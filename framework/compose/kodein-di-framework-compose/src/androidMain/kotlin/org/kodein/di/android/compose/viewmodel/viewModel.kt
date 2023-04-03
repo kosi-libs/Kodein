@@ -1,4 +1,4 @@
-package org.kodein.di.compose
+package org.kodein.di.android.compose.viewmodel
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import org.kodein.di.compose.localDI
 import org.kodein.di.direct
 import org.kodein.di.instance
+import org.kodein.type.erased
 
 /**
  * Gets an instance of a [VM] as an android [ViewModel] for the given [tag].
@@ -21,21 +23,17 @@ import org.kodein.di.instance
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified VM : ViewModel> rememberViewModel(tag: Any? = null): ViewModelLazy<VM> = with(localDI()) {
-    val viewModelStoreOwner = LocalViewModelStoreOwner.current ?: error("")
+public inline fun <reified VM : ViewModel> rememberViewModel(
+    tag: Any? = null
+): ViewModelLazy<VM> = with(localDI()) {
+    val viewModelStoreOwner = LocalViewModelStoreOwner.current
+        ?: error("ViewModelStoreOwner is missing for LocalViewModelStoreOwner.")
 
     remember {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { viewModelStoreOwner.viewModelStore },
-            factoryProducer = {
-                object : ViewModelProvider.Factory {
-                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                        @Suppress("UNCHECKED_CAST")
-                        return direct.instance<VM>(tag) as T
-                    }
-                }
-            }
+            factoryProducer = { KodeinViewModelInstance(di = di, vmType = erased<VM>(), tag = tag,) }
         )
     }
 }
@@ -52,20 +50,25 @@ public inline fun <reified VM : ViewModel> rememberViewModel(tag: Any? = null): 
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A: Any, reified VM : ViewModel> rememberViewModel(tag: Any? = null, arg: A): ViewModelLazy<VM> = with(localDI()) {
-    val viewModelStoreOwner = LocalViewModelStoreOwner.current ?: error("")
+public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
+    tag: Any? = null,
+    arg: A,
+): ViewModelLazy<VM> = with(localDI()) {
+    val viewModelStoreOwner = LocalViewModelStoreOwner.current
+        ?: error("ViewModelStoreOwner is missing for LocalViewModelStoreOwner.")
 
     remember {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { viewModelStoreOwner.viewModelStore },
             factoryProducer = {
-                object : ViewModelProvider.Factory {
-                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                        @Suppress("UNCHECKED_CAST")
-                        return direct.instance<A, VM>(tag, arg) as T
-                    }
-                }
+                KodeinViewModelFactory(
+                    di = di,
+                    vmType = erased<VM>(),
+                    argType = erased<A>(),
+                    arg = arg,
+                    tag = tag,
+                )
             }
         )
     }

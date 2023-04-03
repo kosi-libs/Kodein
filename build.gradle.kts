@@ -5,5 +5,5 @@ plugins {
 
 allprojects {
     group = "org.kodein.di"
-    version = "7.19.1"
+    version = "7.20.0"
 }

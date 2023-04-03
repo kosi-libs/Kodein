@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":framework:android:kodein-di-framework-android-x"))
+    api(projects.framework.android.kodeinDiFrameworkAndroidX)
 
     implementation(libs.android.x.appcompat)
     implementation(libs.android.x.fragment.ktx)

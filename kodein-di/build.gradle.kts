@@ -10,7 +10,7 @@ kodein {
                 api(libs.kosi.kaverit)
             }
             test.dependencies {
-                implementation(project(":test-utils"))
+                implementation(projects.testUtils)
             }
         }
         add(kodeinTargets.jvm.jvm) {

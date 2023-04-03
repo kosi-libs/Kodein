@@ -15,7 +15,8 @@ kodein {
         add(kodeinTargets.jvm.android) {
             main.dependencies {
                 api(projects.framework.android.kodeinDiFrameworkAndroidX)
-                api(libs.android.x.lifecycle.viewmodel.compose)
+                implementation(libs.android.x.lifecycle.viewmodel.compose)
+                implementation(libs.android.compose.navigation)
             }
         }
 

@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":framework:android:kodein-di-framework-android-core"))
+    api(projects.framework.android.kodeinDiFrameworkAndroidCore)
 
     implementation(libs.android.appcompat)
 }

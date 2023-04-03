@@ -6,7 +6,7 @@ dependencies {
     api(projects.kodeinDi)
     api(libs.javax.inject)
 
-    testImplementation(project(":test-utils"))
+    testImplementation(projects.testUtils)
 }
 
 kodeinUpload {
