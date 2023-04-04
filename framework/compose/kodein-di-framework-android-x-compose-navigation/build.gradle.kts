@@ -12,7 +12,7 @@ kodein {
 
         add(kodeinTargets.jvm.android) {
             main.dependencies {
-                api(projects.framework.compose.kodeinDiFrameworkComposeAndroid)
+                api(projects.framework.compose.kodeinDiFrameworkAndroidXCompose)
                 implementation(libs.android.x.lifecycle.viewmodel.compose)
                 implementation(libs.android.compose.navigation)
             }
@@ -22,5 +22,5 @@ kodein {
 
 kodeinUpload {
     name = "Kodein-Framework-Compose-Android-Navigation"
-    description = "Kodein extensions for Jetpack Compose Navigation scoped ViewModels"
+    description = "Kodein extensions for AndroidX navigation scoped ViewModels using Jetpack Compose"
 }

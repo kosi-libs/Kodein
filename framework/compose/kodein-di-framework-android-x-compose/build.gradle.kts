@@ -21,5 +21,5 @@ kodein {
 
 kodeinUpload {
     name = "Kodein-Framework-Compose-Android"
-    description = "Kodein extensions for Jetpack Compose ViewModels"
+    description = "Kodein extensions for AndroidX ViewModels using Jetpack Compose"
 }
