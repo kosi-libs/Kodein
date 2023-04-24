@@ -1,9 +1,11 @@
 package org.kodein.di.conf
 
-import org.kodein.di.*
-import org.kodein.di.DI.OverridingException
+import org.kodein.di.Copy
+import org.kodein.di.DI
+import org.kodein.di.DIContainer
 import org.kodein.di.internal.maySynchronized
 import org.kodein.di.internal.synchronizedIfNull
+import kotlin.jvm.Volatile
 
 /**
  * A class that can be used to configure a DI object and as a DI object.

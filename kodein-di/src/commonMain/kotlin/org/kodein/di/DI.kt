@@ -84,17 +84,17 @@ public interface DI : DIAware {
         /**
          * Because this type is immutable, we can cache its hash to make it faster inside a HashMap.
          */
-        private var _hashCode: Int = 0
+        private var cachedHashCode: Int = 0
 
         /** @suppress */
         override fun hashCode(): Int {
-            if (_hashCode == 0) {
-                _hashCode = contextType.hashCode()
-                _hashCode = 31 * _hashCode + argType.hashCode()
-                _hashCode = 29 * type.hashCode()
-                _hashCode = 23 * _hashCode + (tag?.hashCode() ?: 0)
+            if (cachedHashCode == 0) {
+                cachedHashCode = contextType.hashCode()
+                cachedHashCode = 31 * cachedHashCode + argType.hashCode()
+                cachedHashCode = 29 * type.hashCode()
+                cachedHashCode = 23 * cachedHashCode + (tag?.hashCode() ?: 0)
             }
-            return _hashCode
+            return cachedHashCode
         }
 
         /**

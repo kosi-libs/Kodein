@@ -2,27 +2,20 @@ plugins {
     id("org.kodein.library.mpp")
 }
 
-kodein {
-    kotlin {
+kotlin.kodein {
+    all()
 
-        common {
-            main.dependencies {
-                api(projects.kodeinDi)
-            }
-
-            test.dependencies {
-                implementation(projects.testUtils)
-            }
+    common {
+        mainDependencies {
+            api(projects.kodeinDi)
         }
-
-        add(kodeinTargets.jvm.jvm) {
-            target.setCompileClasspath()
+        testDependencies {
+            implementation(projects.testUtils)
         }
+    }
 
-        add(kodeinTargets.js.js)
-
-        add(kodeinTargets.native.allDarwin)
-
+    jvm {
+        target.setCompileClasspath()
     }
 }
 

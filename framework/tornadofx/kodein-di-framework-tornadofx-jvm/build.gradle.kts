@@ -1,13 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.*
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("org.kodein.library.jvm")
+    kodein.library.jvm
     alias(libs.plugins.openjfx)
 }
 
 javafx {
-    version = libs.versions.javafx.version.get()
+    version = libs.versions.javafx.get()
     modules("javafx.controls")
 }
 

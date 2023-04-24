@@ -1,7 +1,9 @@
 plugins {
-    id("org.kodein.root")
+    kodein.root
     alias(libs.plugins.ksp) apply false
 }
+
+kodein.experimentalCompose(libs.versions.compose)
 
 allprojects {
     group = "org.kodein.di"

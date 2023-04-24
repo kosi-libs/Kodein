@@ -1,5 +1,5 @@
 plugins {
-    id("org.kodein.library.android")
+    kodein.library.android
 }
 
 dependencies {

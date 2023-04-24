@@ -2,22 +2,16 @@ plugins {
     id("org.kodein.mpp")
 }
 
-kodein {
-    kotlin {
+kotlin.kodein {
+    all()
 
-        common.main.dependencies {
-            api(kodeinGlobals.kotlin.test)
+    common.mainDependencies {
+        api(kodeinGlobals.kotlin.test)
+    }
+
+    jvm {
+        sources.mainDependencies {
+            api(kodeinGlobals.kotlin.test.junit)
         }
-
-        add(kodeinTargets.jvm.jvm) {
-            main.dependencies {
-                api(kodeinGlobals.kotlin.test.junit)
-            }
-        }
-
-        add(kodeinTargets.js.js)
-
-        add(kodeinTargets.native.all)
-
     }
 }

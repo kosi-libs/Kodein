@@ -7,12 +7,12 @@ import org.kodein.di.DIContainer
 import org.kodein.di.DIContext
 import org.kodein.di.DITree
 import org.kodein.di.SearchSpecs
-import org.kodein.di.Volatile
 import org.kodein.di.bindings.BindingDI
 import org.kodein.di.bindings.ExternalSource
 import org.kodein.di.bindings.toKContext
 import org.kodein.di.description
 import org.kodein.di.fullDescription
+import kotlin.jvm.Volatile
 
 internal class DIContainerImpl private constructor(
         override val tree: DITree,

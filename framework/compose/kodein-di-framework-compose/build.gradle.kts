@@ -1,33 +1,23 @@
 plugins {
-    id("org.kodein.library.mpp-with-android")
+    kodein.library.mppWithAndroid
     alias(libs.plugins.compose)
 }
 
-kodein {
-    kotlin {
-        common.main.dependencies {
-            compileOnly(compose.runtime)
-            api(projects.kodeinDi)
+kotlin.kodein {
+    jsEnv()
+
+    allComposeExperimental()
+
+    common.mainDependencies {
+        compileOnly(kotlin.compose.runtime)
+        api(projects.kodeinDi)
+    }
+
+    android {
+        sources.mainDependencies {
+            api(projects.framework.android.kodeinDiFrameworkAndroidX)
+            implementation(libs.android.x.lifecycle.viewmodel.compose)
         }
-
-        add(kodeinTargets.jvm.jvm)
-
-        add(kodeinTargets.jvm.android) {
-            main.dependencies {
-                api(projects.framework.android.kodeinDiFrameworkAndroidX)
-                implementation(libs.android.x.lifecycle.viewmodel.compose)
-            }
-        }
-
-        add(kodeinTargets.js.js)
-
-        // iosX32 not supported by jetbrains compose
-        add(kodeinTargets.native.iosX64)
-        add(kodeinTargets.native.iosArm64)
-        add(kodeinTargets.native.iosSimulatorArm64)
-
-        add(kodeinTargets.native.macosX64)
-        add(kodeinTargets.native.macosArm64)
     }
 }
 

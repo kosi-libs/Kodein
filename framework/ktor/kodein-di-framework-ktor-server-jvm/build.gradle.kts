@@ -1,5 +1,5 @@
 plugins {
-    id("org.kodein.library.jvm")
+    kodein.library.jvm
 }
 
 dependencies {

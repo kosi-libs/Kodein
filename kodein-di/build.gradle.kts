@@ -2,24 +2,20 @@ plugins {
     id("org.kodein.library.mpp")
 }
 
-kodein {
-    kotlin {
+kotlin.kodein {
+    all()
 
-        common {
-            main.dependencies {
-                api(libs.kosi.kaverit)
-            }
-            test.dependencies {
-                implementation(projects.testUtils)
-            }
+    common {
+        mainDependencies {
+            api(libs.kosi.kaverit)
         }
-        add(kodeinTargets.jvm.jvm) {
-            target.setCompileClasspath()
+        testDependencies {
+            implementation(projects.testUtils)
         }
-        add(kodeinTargets.js.js)
+    }
 
-        add(kodeinTargets.native.all)
-
+    jvm {
+        target.setCompileClasspath()
     }
 }
 

@@ -6,20 +6,19 @@ buildscript {
         maven(url = "https://raw.githubusercontent.com/kosi-libs/kodein-internal-gradle-plugin/mvn-repo")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:7.0.6")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:8.0.1")
     }
 }
 
 apply { plugin("org.kodein.settings") }
 
-rootProject.name = "Kodein"
+rootProject.name = "Kosi-Kodein"
 
 include(
         ":test-utils",
         ":kodein-di",
         ":kodein-di-conf",
         ":kodein-di-jxinject-jvm",
-        ""
 )
 
 // TODO: WIP - Disabled to avoid breaking CI workflow

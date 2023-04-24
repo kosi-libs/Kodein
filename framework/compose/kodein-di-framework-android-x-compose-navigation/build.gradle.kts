@@ -1,22 +1,21 @@
 plugins {
-    id("org.kodein.library.mpp-with-android")
+    kodein.library.mppWithAndroid
     alias(libs.plugins.compose)
 }
 
-kodein {
-    kotlin {
-        common.main.dependencies {
-            compileOnly(compose.runtime)
-            api(projects.framework.compose.kodeinDiFrameworkCompose)
+kotlin.kodein {
+    common.mainDependencies {
+        compileOnly(kotlin.compose.runtime)
+        api(projects.framework.compose.kodeinDiFrameworkCompose)
+    }
+
+    android {
+        sources.mainDependencies {
+            api(projects.framework.compose.kodeinDiFrameworkAndroidXCompose)
+            implementation(libs.android.x.lifecycle.viewmodel.compose)
+            implementation(libs.android.compose.navigation)
         }
 
-        add(kodeinTargets.jvm.android) {
-            main.dependencies {
-                api(projects.framework.compose.kodeinDiFrameworkAndroidXCompose)
-                implementation(libs.android.x.lifecycle.viewmodel.compose)
-                implementation(libs.android.compose.navigation)
-            }
-        }
     }
 }
 
