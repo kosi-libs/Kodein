@@ -404,3 +404,38 @@ fun App() {
 <1> Your Android context *must* be `DIAware` ...
 <2> ... and override the `di` property.
 <3> Uses the `androidContextDI` function to retrieve the `di` property from the closest `DIAware` object.
+
+=== Retrieve ViewModels in a `@Composable`
+
+When working with Android, we mostly encounter the use of `ViewModel`s to control the state of our application. Mostly, because they are lifecycle aware and can survive configuration/navigation changes.
+
+So, if you are using `ViewModel`s in your application, you can retrieve them from the DI container by using the `rememberViewModel` function.
+
+[source, kotlin]
+.Retrieve a ViewModel
+----
+@Composable
+fun App() {
+    val viewModel: MyViewModel by rememberViewModel() // <1>
+    val state by viewModel.state.collectAsState() // <2>
+}
+----
+<1> Retrieves the `MyViewModel` from the DI container.
+<2> Consume a `state` property of the `MyViewModel`.
+
+[TIP]
+====
+If you need to retrieve a `ViewModel` instance that is bound to a navigation graph, you can use the `NavBackStackEntry.navGraphViewModel(navHostController)` extension function, with the `NavHostController` parameter.
+
+[source, kotlin]
+.Retrieve a ViewModel bound to a navigation graph
+----
+composable("/home") {
+    val viewModel: MyViewModel by backStackEntry.navGraphViewModel(navHostController) // <1>
+}
+composable("/details/{id}") { backStackEntry ->
+    val viewModel: MyViewModel by backStackEntry.navGraphViewModel(navHostController) // <1>
+}
+----
+<1> Retrieves the `MyViewModel` from the DI container. In both cases, it is the same instance of `MyViewModel`.
+====

@@ -13,6 +13,7 @@ kotlin.kodein {
         sources.mainDependencies {
             api(projects.framework.android.kodeinDiFrameworkAndroidX)
             implementation(libs.android.x.lifecycle.viewmodel.compose)
+            implementation(libs.android.compose.navigation)
         }
     }
 }
