@@ -1,6 +1,6 @@
 <img alt="KODEIN" src="https://raw.githubusercontent.com/kosi-libs/Kodein/master/doc/modules/ROOT/images/kodein-di-logo.svg" width="700">
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.8.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.8.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/org.kodein.di/kodein-di)](https://mvnrepository.com/artifact/org.kodein.di/kodein-di)
 ![Github Actions](https://github.com/kosi-libs/Kodein/workflows/build%20and%20publish%20a%20snapshot/badge.svg)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/kosi-libs/Kodein/blob/master/LICENSE.txt)
@@ -63,6 +63,8 @@ Kotlin & JVM compatibility
 
 |   Kodein    | Kotlin |   JDK   |      Compose       |
 |:-----------:|:------:|:-------:|:------------------:|
+|   7.21.0    | 1.8.20 | min 1.8 |     Compatible     |
+|   7.20.1    | 1.8.10 | min 1.8 |     Compatible     |
 |   7.19.0    | 1.8.10 | min 1.8 |     Compatible     |
 |   7.18.0    | 1.8.0  | min 1.8 |     Compatible     |
 |   7.17.1    | 1.8.0  | min 1.8 |     Compatible     |
