@@ -11,6 +11,6 @@ nav:
 asciidoc:
   attributes:
     branch: '7.20'
-    version: '7.20.1'
+    version: '7.20.2'
     kotlin: '1.8.10'
     jdk: '1.8'

@@ -12,7 +12,7 @@ jobs:
       repository_id: ${{ steps.create.outputs.repository_id }}
     steps:
       - id: create
-        uses: nexus-actions/create-nexus-staging-repo@main
+        uses: nexus-actions/create-nexus-staging-repo@3e5e7209801629febdcf75541a4898710d28df9a #v1.2
         with:
           base_url: https://s01.oss.sonatype.org/service/local/
           username: ${{ secrets.SONATYPE_USERNAME }}
