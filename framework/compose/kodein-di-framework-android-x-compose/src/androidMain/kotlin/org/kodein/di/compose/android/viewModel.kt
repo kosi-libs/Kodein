@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.kodein.di.compose.localDI
 import org.kodein.type.erased
+import org.kodein.type.generic
 
 /**
  * Gets an instance of a [VM] as an android [ViewModel] for the given [tag].
@@ -93,7 +94,7 @@ public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
             factoryProducer = {
                 KodeinViewModelScopedFactory(
                     di = di,
-                    argType = erased<A>(),
+                    argType = generic<A>(),
                     arg = arg,
                     tag = tag
                 )
@@ -127,7 +128,7 @@ public inline fun <reified A : Any, reified VM : ViewModel> viewModel(
     remember {
         val provider = ViewModelProvider(
             viewModelStoreOwner,
-            KodeinViewModelScopedFactory(di = di, argType = erased<A>(), arg = arg, tag = tag)
+            KodeinViewModelScopedFactory(di = di, argType = generic<A>(), arg = arg, tag = tag)
         )
         if (tag == null) {
             provider[VM::class.java]
