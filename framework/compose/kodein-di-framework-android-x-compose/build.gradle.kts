@@ -1,20 +1,20 @@
 plugins {
-    kodein.library.mppWithAndroid
-    alias(libs.plugins.compose)
+    kodein.library.android
 }
 
-kotlin.kodein {
-    common.mainDependencies {
-        compileOnly(kotlin.compose.runtime)
-        api(projects.framework.compose.kodeinDiFrameworkCompose)
-    }
+dependencies {
+    api(projects.framework.compose.kodeinDiFrameworkCompose)
+    implementation(libs.android.compose.navigation)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.runtime)
+}
 
-    android {
-        sources.mainDependencies {
-            api(projects.framework.android.kodeinDiFrameworkAndroidX)
-            implementation(libs.android.x.lifecycle.viewmodel.compose)
-            implementation(libs.android.compose.navigation)
-        }
+android {
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
