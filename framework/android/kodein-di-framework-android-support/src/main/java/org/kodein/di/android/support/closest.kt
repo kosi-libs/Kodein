@@ -1,9 +1,9 @@
 package org.kodein.di.android.support
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.support.v4.app.Fragment
-import android.support.v4.content.Loader
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.AndroidViewModel
+import androidx.loader.content.Loader
 import org.kodein.di.android.closestDI
 
 

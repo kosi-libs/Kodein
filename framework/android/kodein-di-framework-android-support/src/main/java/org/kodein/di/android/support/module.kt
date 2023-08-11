@@ -2,10 +2,10 @@ package org.kodein.di.android.support
 
 import android.app.Activity
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
-import android.support.v4.app.Fragment
-import android.support.v4.content.Loader
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.AndroidViewModel
+import androidx.loader.content.Loader
 import org.kodein.di.DI
 import org.kodein.di.android.androidCoreContextTranslators
 import org.kodein.di.android.androidCoreModule
