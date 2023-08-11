@@ -8,7 +8,8 @@ androidx-fragment = "1.5.4"
 androidx-lifecycle = "2.5.1"
 androidx-compose = "2.5.3"
 # Compose
-compose = "1.4.0-dev-wasm06"
+jbCompose = "1.4.0-dev-wasm06"
+composeCompiler = "1.4.3"
 # KSP
 kotlinpoet = "1.12.0"
 ksp = "1.8.10-1.0.9"
@@ -56,7 +57,6 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "jun
 junit = { module = "junit:junit", version.ref = "junit" }
 
 [plugins]
-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-jetpack-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+compose = { id = "org.jetbrains.compose", version.ref = "jbCompose" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 openjfx = { id = "org.openjfx.javafxplugin", version.ref = "openjfx" }
