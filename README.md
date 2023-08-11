@@ -29,7 +29,7 @@ KOtlin DEpendency INjection
 **_KODEIN_** provides extensions to be integrable into:
 
 - [Android](https://developer.android.com/)
-- [Compose (Android / Desktop)](https://kosi-libs.org/kodein-di/7.13/framework/compose.html)
+- [Compose (Android / Desktop)](https://kosi-libs.org/kodein/7.19/framework/compose.html)
 - [Ktor](https://ktor.io/)
 - [TornadoFX](https://tornadofx.io/)
 
