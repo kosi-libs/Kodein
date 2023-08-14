@@ -18,6 +18,10 @@ android {
     }
 }
 
+android {
+    namespace = "org.kodein.di.compose.android"
+}
+
 kodeinUpload {
     name = "Kodein-Framework-Compose-Android"
     description = "Kodein extensions for AndroidX ViewModels using Jetpack Compose"

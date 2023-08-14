@@ -8,10 +8,10 @@ import android.os.Bundle
 import org.kodein.di.*
 
 /** @suppress */
-class RetainedDIFragment : Fragment() {
+public class RetainedDIFragment : Fragment() {
 
     private var _di: DI? = null
-    var di: DI?
+    public var di: DI?
         get() = _di
         set(value) {
             _di = value
@@ -34,7 +34,7 @@ private const val DI_RETAINED_FRAGMENT_TAG = "org.kodein.di.android.RetainedDIFr
  * @property allowSilentOverride Whether this module is allowed to non-explicit overrides.
  * @property init The block of configuration for this module.
  */
-fun Activity.retainedDI(allowSilentOverride: Boolean = false, init: DI.MainBuilder.() -> Unit): Lazy<DI> = lazy {
+public fun Activity.retainedDI(allowSilentOverride: Boolean = false, init: DI.MainBuilder.() -> Unit): Lazy<DI> = lazy {
     (fragmentManager.findFragmentByTag(DI_RETAINED_FRAGMENT_TAG) as? RetainedDIFragment)?.di?.let { return@lazy it }
 
     val di = DI(allowSilentOverride, init)

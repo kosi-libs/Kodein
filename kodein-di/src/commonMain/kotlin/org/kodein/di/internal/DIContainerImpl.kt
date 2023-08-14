@@ -12,7 +12,7 @@ import org.kodein.di.bindings.ExternalSource
 import org.kodein.di.bindings.toKContext
 import org.kodein.di.description
 import org.kodein.di.fullDescription
-import kotlin.jvm.Volatile
+import kotlin.concurrent.Volatile
 
 internal class DIContainerImpl private constructor(
         override val tree: DITree,
@@ -21,7 +21,8 @@ internal class DIContainerImpl private constructor(
         private val fullContainerTreeOnError: Boolean,
 ) : DIContainer {
 
-    @Volatile var initCallbacks: (() -> Unit)? = null
+    @Volatile
+    var initCallbacks: (() -> Unit)? = null
         private set
 
     /**

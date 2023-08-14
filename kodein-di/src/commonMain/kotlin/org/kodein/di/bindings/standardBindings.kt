@@ -5,7 +5,7 @@ import org.kodein.di.internal.BindingDIImpl
 import org.kodein.di.internal.synchronizedIfNull
 import org.kodein.type.TypeToken
 import org.kodein.type.erasedOf
-import kotlin.jvm.Volatile
+import kotlin.concurrent.Volatile
 
 /**
  * Concrete factory: each time an instance is needed, the function creator function will be called.

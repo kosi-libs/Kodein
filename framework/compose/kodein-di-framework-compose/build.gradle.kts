@@ -9,7 +9,7 @@ kotlin.kodein {
     allComposeExperimental()
 
     common.mainDependencies {
-        compileOnly(kotlin.compose.runtime)
+        implementation(kotlin.compose.runtime)
         api(projects.kodeinDi)
     }
 
@@ -19,6 +19,10 @@ kotlin.kodein {
             implementation(libs.android.x.lifecycle.viewmodel.compose)
         }
     }
+}
+
+android {
+    namespace = "org.kodein.di.compose"
 }
 
 kodeinUpload {

@@ -10,6 +10,10 @@ dependencies {
     implementation(libs.android.x.lifecycle.viewmodel.ktx)
 }
 
+android {
+    namespace = "org.kodein.di.android.x.viewmodel"
+}
+
 kodeinUpload {
     name = "Kodein-Framework-AndroidX-ViewModel"
     description = "Kodein extensions for AndroidX ViewModel"

@@ -1,6 +1,5 @@
 package org.kodein.di.bindings
 
-import org.kodein.di.DI
 import org.kodein.di.DIContext
 import org.kodein.di.DirectDI
 import org.kodein.di.internal.maySynchronized
@@ -8,7 +7,6 @@ import org.kodein.di.internal.newConcurrentMap
 import org.kodein.di.internal.synchronizedIfNotNull
 import org.kodein.di.internal.synchronizedIfNull
 import org.kodein.type.TypeToken
-import kotlin.jvm.Volatile
 
 public interface ScopeCloseable {
     public fun close()
@@ -110,7 +108,8 @@ public class StandardScopeRegistry : ScopeRegistry() {
  */
 public class SingleItemScopeRegistry : ScopeRegistry() {
     private val _lock = Any()
-    @Volatile
+
+    @kotlin.concurrent.Volatile
     private var _pair: Pair<RegKey, () -> Any?>? = null
 
     override fun getOrCreate(key: RegKey, sync: Boolean, creator: () -> Reference<Any>): Any {

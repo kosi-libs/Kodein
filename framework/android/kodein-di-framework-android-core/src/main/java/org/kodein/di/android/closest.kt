@@ -30,17 +30,17 @@ private fun closestDI(thisRef: Any?, rootContext: Context): DI {
  *
  * @param T The receiver type.
  */
-interface DIPropertyDelegateProvider<in T> {
+public interface DIPropertyDelegateProvider<in T> {
     /** @suppress */
-    operator fun provideDelegate(thisRef: T, property: KProperty<*>?): Lazy<DI>
+    public operator fun provideDelegate(thisRef: T, property: KProperty<*>?): Lazy<DI>
 }
 
 private class ContextDIPropertyDelegateProvider : DIPropertyDelegateProvider<Context> {
     override operator fun provideDelegate(thisRef: Context, property: KProperty<*>?) = lazy { closestDI(thisRef, thisRef) }
 }
 
-class LazyContextDIPropertyDelegateProvider(private val getContext: () -> Context) : DIPropertyDelegateProvider<Any?> {
-    override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>?) = lazy { closestDI(thisRef, getContext()) }
+public class LazyContextDIPropertyDelegateProvider(private val getContext: () -> Context) : DIPropertyDelegateProvider<Any?> {
+    override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>?): Lazy<DI> = lazy { closestDI(thisRef, getContext()) }
 }
 
 /**
@@ -48,43 +48,43 @@ class LazyContextDIPropertyDelegateProvider(private val getContext: () -> Contex
  *
  * To be used on Android's `Context` classes, such as `Activity` or `Service`.
  */
-fun closestDI(): DIPropertyDelegateProvider<Context> = ContextDIPropertyDelegateProvider()
+public fun closestDI(): DIPropertyDelegateProvider<Context> = ContextDIPropertyDelegateProvider()
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  *
  * @param context The Android context to use to walk up the context hierarchy.
  */
-fun closestDI(context: Context): LazyContextDIPropertyDelegateProvider = LazyContextDIPropertyDelegateProvider { context }
+public fun closestDI(context: Context): LazyContextDIPropertyDelegateProvider = LazyContextDIPropertyDelegateProvider { context }
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  *
  * @param getContext A function that returns the Android context to use to walk up the context hierarchy.
  */
-fun closestDI(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider(getContext)
+public fun closestDI(getContext: () -> Context): DIPropertyDelegateProvider<Any?> = LazyContextDIPropertyDelegateProvider(getContext)
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-fun Fragment.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { activity }
+public fun Fragment.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { activity }
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-fun Dialog.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
+public fun Dialog.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-fun View.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
+public fun View.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-fun AbstractThreadedSyncAdapter.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
+public fun AbstractThreadedSyncAdapter.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
 
 /**
  * Returns the closest DI (or the app DI, if no closest DI could be found).
  */
-fun Loader<*>.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }
+public fun Loader<*>.closestDI(): DIPropertyDelegateProvider<Any?> = closestDI { context }

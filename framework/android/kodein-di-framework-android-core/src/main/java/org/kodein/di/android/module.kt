@@ -69,7 +69,7 @@ import org.kodein.di.bindings.SimpleContextTranslator
 import org.kodein.type.TypeToken
 import org.kodein.type.generic
 
-val androidCoreContextTranslators = DI.Module(name = "\u2063androidCoreContextTranslators") {
+public val androidCoreContextTranslators: DI.Module = DI.Module(name = "\u2063androidCoreContextTranslators") {
     RegisterContextTranslator(SimpleContextTranslator<Fragment, Activity>(generic(), generic()) { it.activity })
     RegisterContextTranslator(SimpleContextTranslator<Dialog, Context>(generic(), generic()) { it.context })
     RegisterContextTranslator(SimpleContextTranslator<View, Context>(generic(), generic()) { it.context })
@@ -84,7 +84,7 @@ val androidCoreContextTranslators = DI.Module(name = "\u2063androidCoreContextTr
  * @return An Android `DI.Module` that defines a lot of platform bindings.
  */
 @SuppressLint("NewApi")
-fun androidCoreModule(app: Application) = DI.Module(name = "\u2063androidModule") {
+public fun androidCoreModule(app: Application): DI.Module = DI.Module(name = "\u2063androidModule") {
 
     importOnce(androidCoreContextTranslators)
 

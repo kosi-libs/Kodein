@@ -17,6 +17,14 @@ kotlin.kodein {
     jvm {
         target.setCompileClasspath()
     }
+
+    wasm {
+        target {
+            browser {
+                testTask(Action { enabled = false })
+            }
+        }
+    }
 }
 
 kodeinUpload {

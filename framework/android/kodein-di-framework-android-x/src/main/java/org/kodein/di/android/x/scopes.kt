@@ -8,13 +8,13 @@ import org.kodein.di.bindings.*
 import org.kodein.di.internal.synchronizedIfNull
 import java.util.*
 
-open class AndroidLifecycleScope private constructor(
+public open class AndroidLifecycleScope private constructor(
     private val newRegistry: () -> ScopeRegistry
 ) : Scope<LifecycleOwner>, DefaultLifecycleObserver {
 
-    companion object multiItem : AndroidLifecycleScope(::StandardScopeRegistry)
+    public companion object multiItem : AndroidLifecycleScope(::StandardScopeRegistry)
 
-    object singleItem : AndroidLifecycleScope(::SingleItemScopeRegistry)
+    public object singleItem : AndroidLifecycleScope(::SingleItemScopeRegistry)
 
     private val map = HashMap<LifecycleOwner, ScopeRegistry>()
 
