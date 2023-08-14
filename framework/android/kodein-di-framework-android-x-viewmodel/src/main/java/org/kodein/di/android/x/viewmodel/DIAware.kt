@@ -30,7 +30,7 @@ import org.kodein.di.provider
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 @MainThread
-inline fun <A, reified VM> A.viewModel(
+public inline fun <A, reified VM> A.viewModel(
     tag: Any? = null,
 ): Lazy<VM> where A : AppCompatActivity, A : DIAware, VM : ViewModel {
     val factoryProducer = { object : ViewModelProvider.Factory {
@@ -69,7 +69,7 @@ inline fun <A, reified VM> A.viewModel(
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 @MainThread
-inline fun <F, reified VM> F.viewModel(
+public inline fun <F, reified VM> F.viewModel(
     noinline ownerProducer: () -> ViewModelStoreOwner = { this },
     tag: Any? = null,
 ): Lazy<VM> where F : Fragment, F : DIAware, VM : ViewModel {

@@ -15,7 +15,7 @@ private const val SCOPE_FRAGMENT_TAG = "org.kodein.android.ActivityRetainedScope
 /**
  * A scope that allows to get an activity-scoped singleton that's independent from the activity restart.
  */
-open class ActivityRetainedScope private constructor(private val registryType: RegistryType) : Scope<Activity> {
+public open class ActivityRetainedScope private constructor(private val registryType: RegistryType) : Scope<Activity> {
 
     private enum class RegistryType {
         Standard { override fun new() = StandardScopeRegistry() },
@@ -23,22 +23,22 @@ open class ActivityRetainedScope private constructor(private val registryType: R
         abstract fun new(): ScopeRegistry
     }
 
-    object Keys {
-        const val registryTypeOrdinal = "org.kodein.di.android.registryTypeOrdinal"
+    public object Keys {
+        public const val registryTypeOrdinal: String = "org.kodein.di.android.registryTypeOrdinal"
     }
 
-    companion object MultiItem: ActivityRetainedScope(RegistryType.Standard)
+    public companion object MultiItem: ActivityRetainedScope(RegistryType.Standard)
 
-    object SingleItem: ActivityRetainedScope(RegistryType.SingleItem)
+    public object SingleItem: ActivityRetainedScope(RegistryType.SingleItem)
 
     /** @suppress */
-    class RetainedScopeFragment: Fragment() {
-        val registry by lazy {
+    public class RetainedScopeFragment: Fragment() {
+        public val registry: ScopeRegistry by lazy {
             val ordinal = arguments.getInt(Keys.registryTypeOrdinal)
-            RegistryType.values()[ordinal].new()
+            RegistryType.entries[ordinal].new()
         }
 
-        var transactionPendingFragmentCache: MutableMap<Activity, WeakReference<RetainedScopeFragment>>? = null
+        public var transactionPendingFragmentCache: MutableMap<Activity, WeakReference<RetainedScopeFragment>>? = null
 
         @Deprecated("Deprecated in Java")
         override fun onAttach(context: Context?) {

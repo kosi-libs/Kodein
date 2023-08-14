@@ -35,4 +35,7 @@ internal abstract class DirectDIBaseImpl protected constructor(override val cont
 
     override fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?, arg: A): T? = container.factoryOrNull(DI.Key(context.anyType, argType, type, tag), context.value)?.invoke(arg)
 }
+
+// https://youtrack.jetbrains.com/issue/KT-61573
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 internal expect class DirectDIImpl(container: DIContainer, context: DIContext<*>) : DirectDI

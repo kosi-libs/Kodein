@@ -8,6 +8,10 @@ dependencies {
     implementation(libs.android.x.appcompat)
 }
 
+android {
+    namespace = "org.kodein.di.android.x"
+}
+
 kodeinUpload {
     name = "Kodein-Framework-Android"
     description = "Kodein extensions with AndroidX compatibility"

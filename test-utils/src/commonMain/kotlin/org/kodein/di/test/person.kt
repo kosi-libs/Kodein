@@ -1,27 +1,27 @@
 package org.kodein.di.test
 
-interface IPerson { val name: String? }
+public interface IPerson { public val name: String? }
 
-data class Person(override val name: String? = null ) : IPerson
+public data class Person(override val name: String? = null ) : IPerson
 
-data class A(var b: B?, val str: String = "")
-data class B(var c: C?, val int: Int = 0)
-data class C(var a: A?, val char: Char = ' ')
-data class D(val str: String = "") {
+public data class A(var b: B?, val str: String = "")
+public data class B(var c: C?, val int: Int = 0)
+public data class C(var a: A?, val char: Char = ' ')
+public data class D(val str: String = "") {
     lateinit var e: E
 }
-data class E(val int: Int = 0) {
+public data class E(val int: Int = 0) {
     lateinit var f: F
 }
-data class F(val char: Char = ' ') {
+public data class F(val char: Char = ' ') {
     lateinit var d: D
 }
 
-interface IName {
-    val firstName: String
+public interface IName {
+    public val firstName: String
 }
 
-open class Name(override val firstName: String) : IName {
+public open class Name(override val firstName: String) : IName {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Name) return false
@@ -33,14 +33,14 @@ open class Name(override val firstName: String) : IName {
         return firstName.hashCode()
     }
 
-    override fun toString() = firstName
+    override fun toString(): String = firstName
 }
 
-interface IFullName : IName {
-    val lastName: String
+public interface IFullName : IName {
+    public val lastName: String
 }
 
-open class FullName(firstName: String, override val lastName: String) : Name(firstName), IFullName {
+public open class FullName(firstName: String, override val lastName: String) : Name(firstName), IFullName {
     override fun equals(other: Any?): Boolean{
         if (this === other) return true
         if (other !is FullName) return false
@@ -53,14 +53,14 @@ open class FullName(firstName: String, override val lastName: String) : Name(fir
         return 31 * super.hashCode() + lastName.hashCode()
     }
 
-    override fun toString() = "$firstName $lastName"
+    override fun toString(): String = "$firstName $lastName"
 }
 
-interface IAge {
-    val age: Int
+public interface IAge {
+    public val age: Int
 }
 
-class FullInfos(firstName: String, lastName: String, override val age: Int) : FullName(firstName, lastName), IAge {
+public class FullInfos(firstName: String, lastName: String, override val age: Int) : FullName(firstName, lastName), IAge {
     override fun equals(other: Any?): Boolean{
         if (this === other) return true
         if (other !is FullInfos) return false
@@ -73,8 +73,8 @@ class FullInfos(firstName: String, lastName: String, override val age: Int) : Fu
         return 31 * super.hashCode() + age.hashCode()
     }
 
-    override fun toString() = "$firstName $lastName, $age"
+    override fun toString(): String = "$firstName $lastName, $age"
 }
 
-typealias PersonEntry = Pair<String, Person>
-typealias PersonEntries = Set<PersonEntry>
+public typealias PersonEntry = Pair<String, Person>
+public typealias PersonEntries = Set<PersonEntry>

@@ -6,8 +6,10 @@ import org.kodein.type.TypeToken
 @Suppress("UNCHECKED_CAST")
 private val DIContext<*>.anyType get() = type as TypeToken<in Any>
 
-@Suppress("FunctionName")
-internal actual class DirectDIImpl actual constructor(container: DIContainer, context: DIContext<*>) : DirectDIBaseImpl(container, context), DirectDI {
+// https://youtrack.jetbrains.com/issue/KT-61573
+@Suppress("FunctionName", "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+internal actual class DirectDIImpl actual constructor(container: DIContainer, context: DIContext<*>) : DirectDIBaseImpl(container, context),
+    DirectDI {
 
     override fun <A, T : Any> AllFactories(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?): List<(A) -> T> = container.allFactories(DI.Key(context.anyType, argType, type, tag), context.value)
 

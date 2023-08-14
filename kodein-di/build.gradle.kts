@@ -19,6 +19,11 @@ kotlin.kodein {
     }
 }
 
+kotlin.sourceSets {
+    val jsBasedMain by getting
+    getByName("wasmJsMain").dependsOn(jsBasedMain)
+}
+
 kodeinUpload {
     name = "Kodein"
     description = "Kodein Core"

@@ -6,7 +6,11 @@ import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.createViewModelLazy
-import androidx.lifecycle.*
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelLazy
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -31,10 +35,10 @@ import org.kodein.type.generic
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 @MainThread
-inline fun <A, reified VM> A.viewModelWithSavedStateHandle(
+public inline fun <A, reified VM> A.viewModelWithSavedStateHandle(
     tag: Any? = null,
 ): Lazy<VM> where A : AppCompatActivity, A : DIAware, VM : ViewModel {
-    val factoryProducer = { object : AbstractSavedStateViewModelFactory(this, null) {
+    val factoryProducer = { object : AbstractSavedStateViewModelFactory(this@viewModelWithSavedStateHandle, null) {
         override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
             val factory = direct.Factory(generic<SavedStateHandle>(), generic<VM>(), tag)
             return factory(handle) as T
@@ -70,7 +74,7 @@ inline fun <A, reified VM> A.viewModelWithSavedStateHandle(
  * @throws DI.DependencyLoopException When calling the factory, if the value construction triggered a dependency loop.
  */
 @MainThread
-inline fun <F, reified VM> F.viewModelWithSavedStateHandle(
+public inline fun <F, reified VM> F.viewModelWithSavedStateHandle(
     noinline ownerProducer: () -> ViewModelStoreOwner = { this },
     tag: Any? = null,
 ): Lazy<VM> where F : Fragment, F : DIAware, VM : ViewModel {
@@ -78,7 +82,7 @@ inline fun <F, reified VM> F.viewModelWithSavedStateHandle(
         viewModelClass = VM::class,
         storeProducer = { ownerProducer().viewModelStore},
         factoryProducer = {
-            object : AbstractSavedStateViewModelFactory(this, arguments) {
+            object : AbstractSavedStateViewModelFactory(this@viewModelWithSavedStateHandle, arguments) {
                 override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
                     val factory = direct.Factory(generic<SavedStateHandle>(), generic<VM>(), tag)
                     return factory(handle) as T

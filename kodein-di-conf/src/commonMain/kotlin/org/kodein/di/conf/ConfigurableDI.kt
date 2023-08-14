@@ -5,7 +5,6 @@ import org.kodein.di.DI
 import org.kodein.di.DIContainer
 import org.kodein.di.internal.maySynchronized
 import org.kodein.di.internal.synchronizedIfNull
-import kotlin.jvm.Volatile
 
 /**
  * A class that can be used to configure a DI object and as a DI object.
@@ -62,7 +61,7 @@ public class ConfigurableDI : DI {
     /**
      * DI instance. If it is not null, than it cannot be configured anymore.
      */
-    @Volatile
+    @kotlin.concurrent.Volatile
     private var _instance: DI? = null
 
     /**

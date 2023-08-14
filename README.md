@@ -6,7 +6,6 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/kosi-libs/Kodein/blob/master/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-green.svg?style=flat&logo=slack)](https://kotlinlang.slack.com/messages/kodein/)
 
-
 KOtlin DEpendency INjection
 ===========================
 
@@ -55,15 +54,12 @@ class Controller(private di: DI) {
 - It is fast and optimized (makes extensive use of `inline`)
 - It can be used in plain Java
 
-### Looking for **KODEIN 7.0** migration guide?
-> Follow this us [here](https://kosi-libs.org/kodein/7.16/migration/migration-6to7.html).
-
 Kotlin & JVM compatibility
 ---------
 
 |   Kodein    | Kotlin |   JDK   |      Compose       |
 |:-----------:|:------:|:-------:|:------------------:|
-|   7.21.0    | 1.8.20 | min 1.8 |     Compatible     |
+|   7.21.0    | 1.8.20 | min 17  |     Compatible     |
 |   7.20.1    | 1.8.10 | min 1.8 |     Compatible     |
 |   7.19.0    | 1.8.10 | min 1.8 |     Compatible     |
 |   7.18.0    | 1.8.0  | min 1.8 |     Compatible     |
@@ -94,10 +90,6 @@ Kotlin & JVM compatibility
 |    4.1+     | 1.1.3  |   1.6   |         -          |
 | 4.0.0-beta2 | 1.1.0  |   1.6   |         -          |
 
-Demo Projects
----------
-You can find samples for MPP project here https://github.com/kosi-libs/Kodein-Samples 
-
 Read more
 ---------
 
@@ -116,18 +108,12 @@ Testimonies
 
 &nbsp;
 
-<img src="https://www.collokia.com/images/collokia-logo.png" height="30" />
-
 > At [Collokia](https://www.collokia.com/) we use Kodein in all of our backend service infrastructure and all modules in those services are loosely coupled through injection with Kodein.
 > It allows us to have nice module independence, and to opt-out of injection during testing or build separate modules in support of testing.  
 > It is a key component and building block in our architecture.  
 > -- [Jayson Minard](https://github.com/apatrida)
 
 &nbsp;
-
-&nbsp;
-
-<img src="https://moovel-group.com/assets/images/sign.png" height="40" />
 
 > At [Moovel Group GmbH](https://www.moovel.com/de/en), we have successfully used the wonderful Kodein library into in [this Android app](https://play.google.com/store/apps/details?id=com.daimler.moovel.android).
 > As we improved it, we found Kodein to be much more useful than Dagger2 as it simplified our code throughout.  
@@ -137,41 +123,25 @@ Testimonies
 
 &nbsp;
 
-&nbsp;
-
-<img src="https://insiteapplications.com/static/InSiteLogo.png" width="150" height="35" />
-
 > Kodein has been instrumental in moving our entire production application to Kotlin at [InSite Applications](https://insiteapplications.com). It uses standard Kotlin idioms and features for ultimate clarity and simplicity. It was clear to us from the beginning that Kodein would be our DI solution. Our devs love it so much that they've transitioned to using it in their personal apps, both Java and Kotlin!  
 > -- [Eliezer Graber](https://github.com/eygraber)
 
 &nbsp;
-
-&nbsp;
-
-<img src="https://cdn2.hubspot.net/hubfs/2561893/compsoft-creative-logo.jpg" height="35" />
 
 > At [Compsoft Creative](https://www.compsoft.co.uk), Kodein is central our new Kotlin based app architecture, giving us a solid underpinning to all apps we develop and allowing a simple yet powerful way to de-couple our services with a library that is lightweight and perfect for mobile apps.  
 > -- [Daniel Payne](https://github.com/CompsoftCreative)
 
 &nbsp;
 
-&nbsp;
-
-<img src="https://imgur.com/Ymo1qoh.jpg" height="60" />
-
 > Kodein is used in [the android app of the OhelShem school](https://github.com/OhelShem/android).  
 > -- [Yoav Sternberg](https://github.com/yoavst)&nbsp;
 
 &nbsp;
 
-<img src="https://dental-monitoring.com/wp-content/uploads/2015/02/logo.png" height="60" />
-
 > Kodein was created at [Dental Monitoring](https://dental-monitoring.com/) with the opinion that Dagger2 is way too verbose and complex.
 > It is now used in almost all our projects: the server, the internal production software & the Android application.  
 > Kodein is very easy to use and set up: it allows our team to easily share code and patterns, as well as quickly bootstrapping new ideas.  
 > -- [Salomon Brys](https://github.com/SalomonBrys)
-
-&nbsp;
 
 &nbsp;
 

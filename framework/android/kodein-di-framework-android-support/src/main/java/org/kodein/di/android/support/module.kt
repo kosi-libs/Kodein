@@ -12,7 +12,7 @@ import org.kodein.di.android.androidCoreModule
 import org.kodein.di.bindings.SimpleContextTranslator
 import org.kodein.type.generic
 
-val androidSupportContextTranslators = DI.Module("\u2063androidSupportContextTranslators") {
+public val androidSupportContextTranslators: DI.Module = DI.Module("\u2063androidSupportContextTranslators") {
     importOnce(androidCoreContextTranslators)
 
     RegisterContextTranslator(SimpleContextTranslator<Fragment, Activity>(generic(), generic()) { it.requireActivity() })
@@ -20,7 +20,7 @@ val androidSupportContextTranslators = DI.Module("\u2063androidSupportContextTra
     RegisterContextTranslator(SimpleContextTranslator<AndroidViewModel, Application>(generic(), generic()) { it.getApplication() })
 }
 
-fun androidSupportModule(app: Application) = DI.Module("\u2063androidSupportModule") {
+public fun androidSupportModule(app: Application): DI.Module = DI.Module("\u2063androidSupportModule") {
     importOnce(androidSupportContextTranslators)
     importOnce(androidCoreModule(app))
 }

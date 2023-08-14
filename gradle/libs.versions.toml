@@ -1,21 +1,21 @@
 [versions]
 # Core
-kaverit = "2.5.0"
+kaverit = "2.8.0"
 # Android
 android-appcompat = "28.0.0"
-androidx-appcompat = "1.5.1"
-androidx-fragment = "1.5.4"
-androidx-lifecycle = "2.5.1"
-androidx-compose = "2.5.3"
+androidx-appcompat = "1.6.1"
+androidx-fragment = "1.6.2"
+androidx-lifecycle = "2.6.2"
+androidx-compose = "2.7.5"
 # Compose
-jbCompose = "1.4.0-dev-wasm06"
-compose-compiler = "1.4.5"
-compose-bom = "2023.06.01"
+jbCompose = "1.5.10-dev-wasm02"
+compose-compiler = "1.5.1"
+compose-bom = "2023.10.01"
 # KSP
-kotlinpoet = "1.12.0"
-ksp = "1.8.10-1.0.9"
+kotlinpoet = "1.14.2"
+ksp = "1.9.20-1.0.14"
 # Ktor
-ktor = "2.2.3"
+ktor = "2.3.5"
 # JxInject
 javax-inject = "1"
 # TornadoFX
@@ -25,7 +25,7 @@ tornadofx = "1.7.20"
 testfx = "4.0.4-alpha"
 # Test
 junit = "4.13.2"
-junit-jupiter = "5.6.0"
+junit-jupiter = "5.6.3"
 
 [libraries]
 # Core

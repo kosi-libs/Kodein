@@ -1,4 +1,5 @@
-import org.kodein.internal.gradle.settings.*
+import org.kodein.internal.gradle.settings.android
+import org.kodein.internal.gradle.settings.framework
 
 buildscript {
     repositories {
@@ -6,7 +7,7 @@ buildscript {
         maven(url = "https://raw.githubusercontent.com/kosi-libs/kodein-internal-gradle-plugin/mvn-repo")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:8.0.1")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:8.3.0")
     }
 }
 
