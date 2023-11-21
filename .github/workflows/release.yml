@@ -45,7 +45,7 @@ jobs:
           java-version: 17
           distribution: 'temurin'
       - name: Check
-        run: ./gradlew hostOnlyTest
+        run: ./gradlew check
         shell: bash
       - name: Check Android
         uses: reactivecircus/android-emulator-runner@d94c3fbe4fe6a29e4a5ba47c12fb47677c73656b #v2.28.0
