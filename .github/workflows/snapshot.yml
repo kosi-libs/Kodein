@@ -13,13 +13,12 @@ on:
       - './github/**'
       - '!./github/workflow/snapshot.yml'
 
-env:
-  SONATYPE_USERNAME: ${{ secrets.sonatype_username }}
-  SONATYPE_PASSWORD: ${{ secrets.sonatype_password }}
-
 jobs:
   build-upload:
     runs-on: macOS-latest
+    env:
+      SONATYPE_USERNAME: ${{ secrets.sonatype_username }}
+      SONATYPE_PASSWORD: ${{ secrets.sonatype_password }}
     steps:
       - name: Setup
         uses: kosi-libs/kodein-internal-github-actions/setup@main
