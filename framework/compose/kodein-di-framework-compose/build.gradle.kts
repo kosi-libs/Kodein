@@ -6,6 +6,8 @@ plugins {
 kotlin.kodein {
     jsEnv()
 
+//    allComposeStable()
+    // 1.5.11 does not work with compose WasmJS yet
     allComposeExperimental()
 
     common.mainDependencies {
@@ -19,6 +21,10 @@ kotlin.kodein {
             implementation(libs.android.x.lifecycle.viewmodel.compose)
         }
     }
+}
+
+compose {
+    kotlinCompilerPlugin.set(libs.versions.compose.compiler.get())
 }
 
 android {

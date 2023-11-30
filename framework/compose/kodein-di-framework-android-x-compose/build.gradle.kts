@@ -1,15 +1,17 @@
 plugins {
     kodein.library.android
+    alias(libs.plugins.compose)
 }
 
 dependencies {
     api(projects.framework.compose.kodeinDiFrameworkCompose)
-    implementation(libs.android.compose.navigation)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.runtime)
+    implementation(libs.android.x.compose.navigation)
+    implementation(platform(libs.android.compose.bom))
+    implementation(libs.android.compose.runtime)
 }
 
 android {
+    namespace = "org.kodein.di.compose.android"
     buildFeatures {
         compose = true
     }
@@ -18,8 +20,8 @@ android {
     }
 }
 
-android {
-    namespace = "org.kodein.di.compose.android"
+compose {
+    kotlinCompilerPlugin.set(libs.versions.compose.compiler.get())
 }
 
 kodeinUpload {
