@@ -9,7 +9,7 @@ androidx-lifecycle = "2.6.2"
 androidx-compose = "2.7.5"
 # Compose
 jbCompose = "1.5.10-dev-wasm03"
-compose-compiler = "1.5.5"
+compose-compiler = "1.5.4"
 compose-bom = "2023.10.01"
 # KSP
 kotlinpoet = "1.14.2"
