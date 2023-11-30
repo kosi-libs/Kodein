@@ -55,7 +55,7 @@ jobs:
           cmake: 3.10.2.4988404
           script: ./gradlew connectedCheck
       - name: Upload
-        run: ./gradlew publishAllPublicationsToOssrhStagingRepository -Porg.kodein.sonatype.repositoryId=${{ needs.create-staging-repository.outputs.repository_id }}
+        run: ./gradlew publishAllPublicationsToOssrhStagingRepository -Porg.kodein.sonatype.repositoryId=${{ needs.create-staging-repository.outputs.repository-id }}
         shell: bash
 
   drop-or-release:
