@@ -20,10 +20,6 @@ android {
     }
 }
 
-compose {
-    kotlinCompilerPlugin.set(libs.versions.compose.compiler.get())
-}
-
 kodeinUpload {
     name = "Kodein-Framework-Compose-Android"
     description = "Kodein extensions for AndroidX ViewModels using Jetpack Compose"

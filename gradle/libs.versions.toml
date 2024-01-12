@@ -1,6 +1,6 @@
 [versions]
 # Core
-kaverit = "2.8.1"
+kaverit = "2.8.2"
 # Android
 android-appcompat = "28.0.0"
 androidx-appcompat = "1.6.1"
@@ -8,7 +8,7 @@ androidx-fragment = "1.6.2"
 androidx-lifecycle = "2.6.2"
 androidx-compose = "2.7.5"
 # Compose
-jbCompose = "1.5.10-dev-wasm03"
+jbCompose = "1.6.0-alpha01"
 compose-compiler = "1.5.4"
 compose-bom = "2023.10.01"
 # KSP
