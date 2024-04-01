@@ -28,15 +28,14 @@ dependencies {
 
 [TIP]
 ====
-If you are *NOT* using *Gradle 6+*, you should declare the use of the Gradle Metadata experimental feature
+If you are working on a JVM project with Kodein, and are using Proguard to shrink down the size of your application, you must add the following rule to your configuration:
 
-[subs="attributes"]
-.settings.gradle.kts
+[]
+.proguard-rules.pro
 ----
-enableFeaturePreview("GRADLE_METADATA")
+# Kodein : Keep the generic type information for the dependency container
+-keepattributes Signature
 ----
-
-Or, import the JVM binaries with `implementation("org.kodein.di:kodein-di-jvm:{version}")`.
 ====
 
 Add the dependency:
@@ -61,18 +60,6 @@ NOTE: _Kodein-DI_ supports the following targets: +
 androidArm32, androidArm64, iosArm32, iosArm64, iosX64, linuxArm32Hfp, linuxMips32, linuxMipsel32, linuxX64, macosX64, mingwX64
 
 _Kodein-DI_ uses the new gradle native dependency model.
-
-[TIP]
-====
-If you are *NOT* using *Gradle 6+*, you must declare the use of the Gradle Metadata experimental feature
-
-[subs="attributes"]
-.settings.gradle.kts
-----
-enableFeaturePreview("GRADLE_METADATA")
-----
-
-====
 
 Add the MavenCentral repository:
 
