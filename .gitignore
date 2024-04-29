@@ -25,3 +25,6 @@ package-lock.json
 *.a
 *.o
 *.so
+
+# Kotlin
+.kotlin

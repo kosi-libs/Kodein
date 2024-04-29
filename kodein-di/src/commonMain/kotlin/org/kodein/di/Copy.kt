@@ -29,7 +29,7 @@ public interface Copy {
      * A [Copy] spec that copies no bindings.
      */
     public object None: Copy {
-        override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> = emptySet<DI.Key<*, *, *>>()
+        override fun keySet(tree: DITree): Set<DI.Key<*, *, *>> = emptySet()
     }
 
     /**
@@ -113,7 +113,7 @@ public interface Copy {
             val ignored = ignoreSpecs.flatMap { specsToKeys(tree, it) }
             return copySpecs
                     .flatMap { specsToKeys(tree, it) }
-                    .minus(ignored)
+                    .minus(ignored.toSet())
                     .toSet()
         }
     }
@@ -126,7 +126,7 @@ public interface Copy {
             val kept = copySpecs.flatMap { specsToKeys(tree, it) }
             val ignored = ignoreSpecs
                     .flatMap { specsToKeys(tree, it) }
-                    .minus(kept)
+                    .minus(kept.toSet())
             return tree.bindings.keys.minus(ignored)
         }
     }

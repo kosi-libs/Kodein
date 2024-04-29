@@ -19,7 +19,6 @@ import org.kodein.type.generic
  * @param T The created type.
  * @return A set binding ready to be bound.
  */
-@Suppress("RemoveExplicitTypeArguments")
 public inline fun <reified T : Any> DI.Builder.bindSet(tag: Any? = null, overrides: Boolean? = null): Unit = Bind(
     tag = tag,
     overrides = overrides,
@@ -66,7 +65,6 @@ public inline fun <reified T : Any> DI.Builder.inBindSet(
  * @param A The argument type.
  * @param T The created type.
  */
-@Suppress("RemoveExplicitTypeArguments")
 public inline fun <reified A : Any, reified T : Any> DI.Builder.bindArgSet(
     tag: Any? = null,
     overrides: Boolean? = null

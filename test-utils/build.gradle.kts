@@ -15,8 +15,3 @@ kotlin.kodein {
         }
     }
 }
-
-kotlin.sourceSets {
-    val jsBasedMain by getting
-    getByName("wasmJsMain").dependsOn(jsBasedMain)
-}

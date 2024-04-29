@@ -15,7 +15,7 @@ public interface DirectDIAware {
 /**
  * @see [DirectDI]
  */
-@Suppress("FunctionName", "ClassName")
+@Suppress("FunctionName")
 public interface DirectDIBase : DirectDIAware {
 
     /**
@@ -176,8 +176,6 @@ public interface DirectDIBase : DirectDIAware {
  *
  * Note that `DirectDI` is engineered to also work with Java code.
  */
-// https://youtrack.jetbrains.com/issue/KT-61573
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 public expect interface DirectDI : DirectDIBase
 
 /**

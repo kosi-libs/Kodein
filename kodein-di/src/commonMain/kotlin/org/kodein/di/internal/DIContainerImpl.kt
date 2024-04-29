@@ -36,8 +36,8 @@ internal class DIContainerImpl private constructor(
         runCallbacks: Boolean
     ) : this(DITreeImpl(builder.bindingsMap, externalSources, builder.translators), null, fullDescriptionOnError, fullContainerTreeOnError) {
         val init: () -> Unit = {
-            val direct = DirectDIImpl(this, AnyDIContext)
-            builder.callbacks.forEach { @Suppress("UNUSED_EXPRESSION") it(direct) }
+            val direct = createDirectDI(this, AnyDIContext)
+            builder.callbacks.forEach { it(direct) }
         }
 
         if (runCallbacks)
@@ -78,7 +78,7 @@ internal class DIContainerImpl private constructor(
          *
          * @throws DI.DependencyLoopException if the key exists in the dependency tree.
          */
-        internal fun check(searchedKey: DI.Key<*, *, *>, searchedOverrideLevel: Int) {
+        fun check(searchedKey: DI.Key<*, *, *>, searchedOverrideLevel: Int) {
             if (!recursiveCheck(this, searchedKey, searchedOverrideLevel)) {
                 val list = recursiveLoop(this, searchedKey, searchedOverrideLevel, emptyList()) + displayString(searchedKey, overrideLevel)
                 val sb = StringBuilder()
@@ -136,7 +136,7 @@ internal class DIContainerImpl private constructor(
 
     private fun <C : Any, A, T: Any> bindingDI(key: DI.Key<C, A, T>, context: DIContext<C>, tree: DITree, overrideLevel: Int) : BindingDI<C> {
         val container = DIContainerImpl(tree, Node(key, overrideLevel, node, fullDescriptionOnError), fullDescriptionOnError, fullContainerTreeOnError)
-        return BindingDIImpl(DirectDIImpl(container, context), key, overrideLevel)
+        return BindingDIImpl(createDirectDI(container, context), key, overrideLevel)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -146,7 +146,7 @@ internal class DIContainerImpl private constructor(
                 val (_, definition, translator) = it[0]
                 node?.check(key, 0)
                 val originalContext = DIContext(key.contextType, context) as DIContext<Any>
-                val kContext = translator?.toKContext(DirectDIImpl(this, originalContext), context) ?: originalContext
+                val kContext = translator?.toKContext(createDirectDI(this, originalContext), context) ?: originalContext
                 key as DI.Key<Any, A, T>
                 val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
                 return definition.binding.getFactory(key, bindingDI)
@@ -173,7 +173,7 @@ internal class DIContainerImpl private constructor(
             val (_, definition, translator) = result[0]
             node?.check(key, overrideLevel)
             val originalContext = DIContext(key.contextType, context) as DIContext<Any>
-            val kContext = translator?.toKContext(DirectDIImpl(this, originalContext), context) ?: originalContext
+            val kContext = translator?.toKContext(createDirectDI(this, originalContext), context) ?: originalContext
             key as DI.Key<Any, A, T>
             val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
             return definition.binding.getFactory(key, bindingDI)
@@ -223,7 +223,7 @@ internal class DIContainerImpl private constructor(
         return result.map { (_, definition, translator) ->
             node?.check(key, overrideLevel)
             val originalContext = DIContext(key.contextType, context) as DIContext<Any>
-            val kContext = translator?.toKContext(DirectDIImpl(this, originalContext), context) ?: originalContext
+            val kContext = translator?.toKContext(createDirectDI(this, originalContext), context) ?: originalContext
             key as DI.Key<Any, A, T>
             val bindingDI = bindingDI(key, kContext, definition.tree, overrideLevel)
             definition.binding.getFactory(key, bindingDI)

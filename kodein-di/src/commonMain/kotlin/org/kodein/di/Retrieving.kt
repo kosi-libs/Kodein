@@ -457,7 +457,6 @@ public inline fun <reified A : Any, reified T : Any> DirectDIAware.provider(
  * @return A provider, or null if no provider was found.
  * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
  */
-@Suppress("UNCHECKED_CAST")
 public inline fun <reified T : Any> DirectDIAware.providerOrNull(tag: Any? = null): (() -> T)? =
     directDI.ProviderOrNull<T>(generic(), tag)
 

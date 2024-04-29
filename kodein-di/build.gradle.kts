@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     id("org.kodein.library.mpp")
 }
@@ -19,10 +21,12 @@ kotlin.kodein {
     }
 }
 
-kotlin.sourceSets {
-    val jsBasedMain by getting
-    getByName("wasmJsMain").dependsOn(jsBasedMain)
-}
+//kotlin {
+//    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+//    compilerOptions {
+//        freeCompilerArgs.add("-Xexpect-actual-classes")
+//    }
+//}
 
 kodeinUpload {
     name = "Kodein"

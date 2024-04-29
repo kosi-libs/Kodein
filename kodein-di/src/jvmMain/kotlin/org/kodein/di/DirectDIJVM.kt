@@ -2,8 +2,7 @@ package org.kodein.di
 
 import org.kodein.type.TypeToken
 
-// https://youtrack.jetbrains.com/issue/KT-61573
-@Suppress("FunctionName", "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+@Suppress("FunctionName")
 public actual interface DirectDI : DirectDIBase {
     /**
      * Gets all factories that can return a `T` for the given argument type, return type and tag.

@@ -164,10 +164,8 @@ internal class DITreeImpl(
 
     private fun notInMap(result: DI.Key<*, *, *>, request: DI.Key<*, *, *>) = IllegalStateException("Tree returned key ${result.internalDescription} that is not in cache when searching for ${request.internalDescription}.\nKeys in cache:\n${_cache.keys.joinToString("\n") { it.internalDescription }}")
 
-    @Suppress("UNCHECKED_CAST")
     override fun find(search: SearchSpecs): List<Triple<DI.Key<*, *, *>, List<DIDefinition<*, *, *>>, ContextTranslator<*, *>?>> {
         val result = findBySpecs(search)
-        @Suppress("UselessCallOnCollection")
         return result.map { (key, translator) -> Triple(key, _cache[key]!!.second, translator) }
     }
 

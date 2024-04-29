@@ -105,8 +105,8 @@ public interface NoArgBindingDI<out C : Any> : DirectDI, WithContext<C> {
 }
 
 internal class NoArgBindingDIWrap<out C : Any>(private val _di: BindingDI<C>) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
-    override fun overriddenProvider() = _di.overriddenFactory().toProvider { Unit }
-    override fun overriddenProviderOrNull() = _di.overriddenFactoryOrNull()?.toProvider { Unit }
+    override fun overriddenProvider() = _di.overriddenFactory().toProvider { }
+    override fun overriddenProviderOrNull() = _di.overriddenFactoryOrNull()?.toProvider { }
     override fun overriddenInstance() = overriddenProvider().invoke()
     override fun overriddenInstanceOrNull() = overriddenProviderOrNull()?.invoke()
 }

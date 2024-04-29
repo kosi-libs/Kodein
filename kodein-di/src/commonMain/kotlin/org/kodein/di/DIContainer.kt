@@ -73,7 +73,7 @@ public interface DIContainer {
      * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
     public fun <C : Any, T: Any> provider(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): () -> T =
-            factory(key, context).toProvider { Unit }
+            factory(key, context).toProvider { }
 
     /**
      * Retrieve a provider for the given key, or null if none is found.
@@ -87,7 +87,7 @@ public interface DIContainer {
      * @throws DI.DependencyLoopException When calling the provider function, if the instance construction triggered a dependency loop.
      */
     public fun <C : Any, T: Any> providerOrNull(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): (() -> T)? =
-            factoryOrNull(key, context)?.toProvider { Unit }
+            factoryOrNull(key, context)?.toProvider { }
 
     /**
      * Retrieve all providers that match the given key.
@@ -102,7 +102,7 @@ public interface DIContainer {
      * @throws DI.DependencyLoopException When calling the factory function, if the instance construction triggered a dependency loop.
      */
     public fun <C : Any, T: Any> allProviders(key: DI.Key<C, Unit, T>, context: C, overrideLevel: Int = 0): List<() -> T> =
-            allFactories(key, context).map { it.toProvider { Unit } }
+            allFactories(key, context).map { it.toProvider { } }
 
     /**
      * This is where you configure the bindings.

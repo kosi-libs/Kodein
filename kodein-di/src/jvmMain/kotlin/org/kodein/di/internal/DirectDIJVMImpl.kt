@@ -6,18 +6,15 @@ import org.kodein.type.TypeToken
 @Suppress("UNCHECKED_CAST")
 private val DIContext<*>.anyType get() = type as TypeToken<in Any>
 
-// https://youtrack.jetbrains.com/issue/KT-61573
-@Suppress("FunctionName", "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-internal actual class DirectDIImpl actual constructor(container: DIContainer, context: DIContext<*>) : DirectDIBaseImpl(container, context),
-    DirectDI {
-
+private class DirectDIImpl(
+    container: DIContainer,
+    context: DIContext<*>,
+) : DirectDIBaseImpl(container, context), DirectDI {
     override fun <A, T : Any> AllFactories(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?): List<(A) -> T> = container.allFactories(DI.Key(context.anyType, argType, type, tag), context.value)
-
     override fun <T : Any> AllProviders(type: TypeToken<T>, tag: Any?): List<() -> T> = container.allProviders(DI.Key(context.anyType, TypeToken.Unit, type, tag), context.value)
-
     override fun <A, T : Any> AllProviders(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?, arg: () -> A): List<() -> T> = container.allFactories(DI.Key(context.anyType, argType, type, tag), context.value).map { it.toProvider(arg) }
-
     override fun <T : Any> AllInstances(type: TypeToken<T>, tag: Any?): List<T> = container.allProviders(DI.Key(context.anyType, TypeToken.Unit, type, tag), context.value).map { it.invoke() }
-
     override fun <A, T : Any> AllInstances(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?, arg: A): List<T> = container.allFactories(DI.Key(context.anyType, argType, type, tag), context.value).map { it.invoke(arg) }
 }
+
+internal actual fun createDirectDI(container: DIContainer, context: DIContext<*>): DirectDI = DirectDIImpl(container, context)

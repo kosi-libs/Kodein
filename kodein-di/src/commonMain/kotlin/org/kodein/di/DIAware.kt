@@ -2,7 +2,7 @@
 
 package org.kodein.di
 
-import org.kodein.di.internal.DirectDIImpl
+import org.kodein.di.internal.createDirectDI
 import org.kodein.type.TypeToken
 
 /**
@@ -43,7 +43,7 @@ public interface DIContext<C : Any> {
 internal inline val DIContext<*>.anyType get() = type as TypeToken<in Any>
 
 private object Contexes {
-    val AnyDIContext = DIContext<Any>(TypeToken.Any, Any())
+    val AnyDIContext = DIContext(TypeToken.Any, Any())
 }
 
 /**
@@ -272,7 +272,7 @@ public fun <A, T : Any> DIAware.InstanceOrNull(
 /**
  * Return a direct [DirectDI] instance, with its receiver and context set to this DIAware receiver and context.
  */
-public val DIAware.direct: DirectDI get() = DirectDIImpl(di.container, diContext)
+public val DIAware.direct: DirectDI get() = createDirectDI(di.container, diContext)
 
 private class DIWrapper(
     private val _base: DI,

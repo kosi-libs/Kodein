@@ -6,14 +6,13 @@ import org.kodein.type.TypeToken
 @Suppress("UNCHECKED_CAST")
 private inline val DIContext<*>.anyType get() = type as TypeToken<in Any>
 
-@Suppress("FunctionName")
 internal abstract class DirectDIBaseImpl protected constructor(override val container: DIContainer, val context: DIContext<*>) : DirectDI {
 
     override val directDI: DirectDI get() = this
 
     override val lazy: DI get() = DIImpl(container as DIContainerImpl).On(context = context)
 
-    override fun On(context: DIContext<*>): DirectDI = DirectDIImpl(container, context)
+    override fun On(context: DIContext<*>): DirectDI = createDirectDI(container, context)
 
     override fun <A, T : Any> Factory(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?): (A) -> T = container.factory(DI.Key(context.anyType, argType, type, tag), context.value)
 
@@ -36,6 +35,4 @@ internal abstract class DirectDIBaseImpl protected constructor(override val cont
     override fun <A, T : Any> InstanceOrNull(argType: TypeToken<in A>, type: TypeToken<T>, tag: Any?, arg: A): T? = container.factoryOrNull(DI.Key(context.anyType, argType, type, tag), context.value)?.invoke(arg)
 }
 
-// https://youtrack.jetbrains.com/issue/KT-61573
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-internal expect class DirectDIImpl(container: DIContainer, context: DIContext<*>) : DirectDI
+internal expect fun createDirectDI(container: DIContainer, context: DIContext<*>) : DirectDI

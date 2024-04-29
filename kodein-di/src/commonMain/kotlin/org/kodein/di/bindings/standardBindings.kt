@@ -139,7 +139,7 @@ public class Singleton<C : Any, T : Any>(
     public val sync: Boolean = true,
     public val creator: NoArgBindingDI<C>.() -> T
 ) : NoArgDIBinding<C, T> {
-    @Suppress("UNCHECKED_CAST")
+
     private val _refMaker = refMaker ?: SingletonReference
     private val _scopeKey = ScopeKey(Any(), Unit)
 
@@ -169,7 +169,6 @@ public class Singleton<C : Any, T : Any>(
     override fun getFactory(key: DI.Key<C, Unit, T>, di: BindingDI<C>): (Unit) -> T {
         var lateInitRegistry: ScopeRegistry? = null
 
-        @Suppress("UNCHECKED_CAST")
         val bindingDi = if (explicitContext) di else di.onErasedContext()
         return { _ ->
             val registry = lateInitRegistry

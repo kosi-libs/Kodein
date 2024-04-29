@@ -43,7 +43,7 @@ internal open class BindingDIImpl<out C : Any, out A, out T: Any> internal const
     override fun overriddenFactory(): (Any?) -> Any = container.factory(key, context, overrideLevel + 1) as (Any?) -> Any
     override fun overriddenFactoryOrNull(): ((Any?) -> Any)? = container.factoryOrNull(key, context, overrideLevel + 1) as ((Any?) -> Any)?
     override val context: C get() = directDI.di.diContext.value as C
-    override fun onErasedContext(): BindingDI<C> = BindingDIImpl<C, A, T>(
+    override fun onErasedContext(): BindingDI<C> = BindingDIImpl(
         directDI.On(ErasedContext),
         key,
         overrideLevel
