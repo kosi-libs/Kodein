@@ -21,7 +21,7 @@ jobs:
       - name: Setup
         uses: kosi-libs/kodein-internal-github-actions/setup@main
       - name: Check with Android
-        uses: kosi-libs/kodein-internal-github-actions/checkWithAndroid@main
+        uses: kosi-libs/kodein-internal-github-actions/.github/workflows/check-with-android.yml@main
       - name: Upload
         run: ./gradlew publishAllPublicationsToOssrhStagingRepository -Porg.kodein.sonatype.repositoryId=${{ needs.create-staging-repository.outputs.repository-id }}
         shell: bash

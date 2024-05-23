@@ -16,4 +16,4 @@ jobs:
       - name: Setup
         uses: kosi-libs/kodein-internal-github-actions/setup@main
       - name: Check with Android
-        uses: kosi-libs/kodein-internal-github-actions/checkWithAndroid@main
+        uses: kosi-libs/kodein-internal-github-actions/.github/workflows/check-with-android.yml@main
