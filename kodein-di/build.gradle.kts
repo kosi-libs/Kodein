@@ -19,13 +19,6 @@ kotlin.kodein {
     }
 }
 
-//kotlin {
-//    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-//    compilerOptions {
-//        freeCompilerArgs.add("-Xexpect-actual-classes")
-//    }
-//}
-
 kodeinUpload {
     name = "Kodein"
     description = "Kodein Core"

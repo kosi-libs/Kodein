@@ -25,7 +25,7 @@ KOtlin DEpendency INjection
 **_KODEIN_** provides extensions to be integrable into:
 
 - [Android](https://developer.android.com/)
-- [Compose (Android / Desktop / Web)](https://kosi-libs.org/kodein/7.21/framework/compose.html)
+- [Compose (Android / Desktop / Web)](https://kosi-libs.org/kodein/7.22/framework/compose.html)
 - [Ktor](https://ktor.io/)
 
 An example is always better than a thousand words:
@@ -89,7 +89,7 @@ Kotlin & JVM compatibility
 |   7.17.1    | 1.8.0  | min 1.8 |
 |   7.17.0    | 1.8.0  | min 1.8 |
 
-> Full table can be found [here](https://kosi-libs.org/kodein/7.21/core/platform-and-genericity.html)
+> Full table can be found [here](https://kosi-libs.org/kodein/7.22/core/platform-and-genericity.html)
 
 Support
 -------

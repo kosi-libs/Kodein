@@ -16,6 +16,10 @@ Here is a table containing the version compatibility:
 |Compose compiler
 |Kotlin
 
+|7.22.0
+|Compose 1.6.10
+|1.9.21
+
 |7.21.2
 |Compose 1.6.0-alpha01
 |1.9.21
