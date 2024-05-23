@@ -3,7 +3,7 @@ import com.android.build.gradle.internal.tasks.LintModelMetadataTask
 
 plugins {
     kodein.library.mppWithAndroid
-    alias(libs.plugins.compose.compiler)
+    alias(kodeinGlobals.plugins.kotlin.plugin.compose)
     alias(libs.plugins.compose)
 }
 

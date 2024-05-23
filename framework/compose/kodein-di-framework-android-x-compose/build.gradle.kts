@@ -1,6 +1,6 @@
 plugins {
     kodein.library.android
-    alias(libs.plugins.compose.compiler)
+    alias(kodeinGlobals.plugins.kotlin.plugin.compose)
     alias(libs.plugins.compose)
 }
 

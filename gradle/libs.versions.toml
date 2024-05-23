@@ -61,6 +61,5 @@ junit = { module = "junit:junit", version.ref = "junit" }
 
 [plugins]
 compose = { id = "org.jetbrains.compose", version.ref = "jbCompose" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "compose-compiler" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 openjfx = { id = "org.openjfx.javafxplugin", version.ref = "openjfx" }
