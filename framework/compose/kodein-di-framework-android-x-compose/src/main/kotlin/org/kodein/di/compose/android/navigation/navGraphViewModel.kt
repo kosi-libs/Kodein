@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
-import org.kodein.di.compose.android.KodeinViewModelScopedFactory
-import org.kodein.di.compose.android.KodeinViewModelScopedSingleton
+import org.kodein.di.compose.viewmodel.KodeinViewModelScopedFactory
+import org.kodein.di.compose.viewmodel.KodeinViewModelScopedSingleton
 import org.kodein.di.compose.localDI
 import org.kodein.type.erased
 
@@ -51,6 +51,11 @@ public inline fun <reified VM : ViewModel> NavBackStackEntry.rememberNavGraphVie
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
+@Deprecated(
+    message = "Use rememberNavGraphViewModel instead",
+    ReplaceWith("rememberNavGraphViewModel", "org.kodein.di.compose.android.navigation"),
+    DeprecationLevel.WARNING
+)
 public inline fun <reified VM : ViewModel> NavBackStackEntry.navGraphViewModel(
     navHostController: NavHostController,
     tag: String? = null
@@ -121,6 +126,11 @@ public inline fun <reified A: Any, reified VM : ViewModel> NavBackStackEntry.rem
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
+@Deprecated(
+    message = "Use rememberNavGraphViewModel instead",
+    ReplaceWith("rememberNavGraphViewModel", "org.kodein.di.compose.android.navigation"),
+    DeprecationLevel.WARNING
+)
 public inline fun <reified A: Any, reified VM : ViewModel> NavBackStackEntry.navGraphViewModel(
     navHostController: NavHostController,
     tag: String? = null,
