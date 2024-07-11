@@ -9,7 +9,7 @@ androidx-lifecycle = "2.7.0"
 androidx-compose = "2.7.7"
 # Compose
 jbCompose = "1.6.11"
-compose-viewmodel = "2.8.0"
+jb-lifecycle = "2.8.0"
 compose-navigation = "2.7.0-alpha07"
 compose-compiler = "2.0.0"
 compose-bom = "2024.05.00"
@@ -43,7 +43,7 @@ android-x-compose-navigation = { module = "androidx.navigation:navigation-compos
 android-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 android-compose-runtime = { module = "androidx.compose.runtime:runtime" }
 # Compose Multiplatform
-jetbrains-compose-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-viewmodel" }
+jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "jb-lifecycle" }
 jetbrains-compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
 # KSP
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }

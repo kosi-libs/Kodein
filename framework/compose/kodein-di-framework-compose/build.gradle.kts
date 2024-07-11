@@ -13,13 +13,13 @@ kotlin.kodein {
 
     common.mainDependencies {
         implementation(kotlin.compose.runtime)
+        implementation(libs.jetbrains.lifecycle.viewmodel.compose)
         api(projects.kodeinDi)
     }
 
     android {
         sources.mainDependencies {
             api(projects.framework.android.kodeinDiFrameworkAndroidX)
-            implementation(libs.jetbrains.compose.viewmodel)
             implementation(libs.android.x.lifecycle.viewmodel.compose)
         }
     }

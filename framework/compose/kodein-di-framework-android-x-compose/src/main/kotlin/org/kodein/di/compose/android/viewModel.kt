@@ -27,6 +27,7 @@ import org.kodein.type.generic
     ReplaceWith("rememberViewModel", "org.kodein.di.compose.viewmodel"),
     DeprecationLevel.WARNING
 )
+@Suppress("DEPRECATION")
 public inline fun <reified VM : ViewModel> rememberViewModel(
     tag: String? = null
 ): ViewModelLazy<VM> = with(localDI()) {
@@ -59,6 +60,7 @@ public inline fun <reified VM : ViewModel> rememberViewModel(
     ReplaceWith("rememberViewModel", "org.kodein.di.compose.viewmodel"),
     DeprecationLevel.WARNING
 )
+@Suppress("DEPRECATION")
 public inline fun <reified VM : ViewModel> viewModel(
     tag: String? = null
 ): VM = with(localDI()) {
@@ -95,6 +97,7 @@ public inline fun <reified VM : ViewModel> viewModel(
     ReplaceWith("rememberViewModel", "org.kodein.di.compose.viewmodel"),
     DeprecationLevel.WARNING
 )
+@Suppress("DEPRECATION")
 public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
     tag: String? = null,
     arg: A,
@@ -138,6 +141,7 @@ public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
     ReplaceWith("rememberViewModel", "org.kodein.di.compose.viewmodel"),
     DeprecationLevel.WARNING
 )
+@Suppress("DEPRECATION")
 public inline fun <reified A : Any, reified VM : ViewModel> viewModel(
     tag: String? = null,
     arg: A,
