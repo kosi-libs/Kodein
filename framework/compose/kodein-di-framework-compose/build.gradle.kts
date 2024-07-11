@@ -19,6 +19,7 @@ kotlin.kodein {
     android {
         sources.mainDependencies {
             api(projects.framework.android.kodeinDiFrameworkAndroidX)
+            implementation(libs.jetbrains.compose.viewmodel)
             implementation(libs.android.x.lifecycle.viewmodel.compose)
         }
     }
