@@ -8,7 +8,7 @@ androidx-fragment = "1.6.2"
 androidx-lifecycle = "2.7.0"
 androidx-compose = "2.7.7"
 # Compose
-jbCompose = "1.6.10"
+jbCompose = "1.6.11"
 compose-viewmodel = "2.8.0"
 compose-navigation = "2.7.0-alpha07"
 compose-compiler = "2.0.0"

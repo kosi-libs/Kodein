@@ -6,19 +6,23 @@ NOTE: *_Kodein-DI_* is compatible with both *Jetpack* and *JetBrains* _Compose_
 
 IMPORTANT: `kodein-di-framework-compose` relies and only few stable APIs that have some good chance to stay (like `@Composable`).
             This means that `kodein-di-framework-compose` doesn't lock you with a specific version of *Jetpack* and *JetBrains* _Compose_.
-            You can use the one that works for you, **as long as your kotlin version aligns with the version used to build the Compose version your are using**.
+            You can use the one that works for you, **as long as your kotlin version aligns with the version used to build the Compose version you are using**.
 
 Here is a table containing the version compatibility:
 
 [%header,cols=3*]
 |===
 |Kodein
-|Compose compiler
+|JetBrains Compose
 |Kotlin
+
+|7.23.0
+|Compose 1.6.11
+|2.0.0
 
 |7.22.0
 |Compose 1.6.10
-|1.9.21
+|2.0.0
 
 |7.21.2
 |Compose 1.6.0-alpha01
@@ -389,6 +393,24 @@ fun ContentView() {
 
 TIP: the `rememberX` functions will preserve the retrieved instance on every composition.
 
+== Working with Compose ViewModels in a `@Composable`
+
+When working with Compose Multiplatform, you can use `ViewModel`s to control the state of our application. Mostly, because they are lifecycle-aware and can survive configuration/navigation changes.
+
+So, if you are using `ViewModel`s in your application, you can retrieve them from the DI container by using the `rememberViewModel` function.
+
+[source, kotlin]
+.Retrieve a ViewModel
+----
+@Composable
+fun App() {
+    val viewModel: MyViewModel by rememberViewModel() // <1>
+    val state by viewModel.state.collectAsState() // <2>
+}
+----
+<1> Retrieves the `MyViewModel` from the DI container.
+<2> Consume a `state` property of the `MyViewModel`.
+
 == Android specific usage
 
 On `kodein-di-framework-compose` the Android source set adds the transitive dependencies to `kodein-di` and `kodein-di-framework-android-x`.
@@ -425,26 +447,8 @@ fun App() {
 <2> ... and override the `di` property.
 <3> Uses the `androidContextDI` function to retrieve the `di` property from the closest `DIAware` object.
 
-=== Retrieve ViewModels in a `@Composable`
+=== Android Navigation and ViewModels
 
-When working with Android, we mostly encounter the use of `ViewModel`s to control the state of our application. Mostly, because they are lifecycle aware and can survive configuration/navigation changes.
-
-So, if you are using `ViewModel`s in your application, you can retrieve them from the DI container by using the `rememberViewModel` function.
-
-[source, kotlin]
-.Retrieve a ViewModel
-----
-@Composable
-fun App() {
-    val viewModel: MyViewModel by rememberViewModel() // <1>
-    val state by viewModel.state.collectAsState() // <2>
-}
-----
-<1> Retrieves the `MyViewModel` from the DI container.
-<2> Consume a `state` property of the `MyViewModel`.
-
-[TIP]
-====
 If you need to retrieve a `ViewModel` instance that is bound to a navigation graph, you can use the `NavBackStackEntry.navGraphViewModel(navHostController)` extension function, with the `NavHostController` parameter.
 
 [source, kotlin]
@@ -458,4 +462,3 @@ composable("/details/{id}") { backStackEntry ->
 }
 ----
 <1> Retrieves the `MyViewModel` from the DI container. In both cases, it is the same instance of `MyViewModel`.
-====
