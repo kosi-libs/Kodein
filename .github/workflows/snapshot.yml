@@ -18,7 +18,6 @@ jobs:
     uses: kosi-libs/kodein-internal-github-actions/.github/workflows/unit-tests.yml@main
   instrumentation-tests:
     uses: kosi-libs/kodein-internal-github-actions/.github/workflows/check-with-android.yml@main
-
   upload-snapshot:
     needs:
       - unit-tests

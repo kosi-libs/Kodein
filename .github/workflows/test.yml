@@ -10,10 +10,7 @@ on:
       - '!./github/workflow/test.yml'
 
 jobs:
-  check:
-    runs-on: macOS-latest
-    steps:
-      - name: Setup
-        uses: kosi-libs/kodein-internal-github-actions/setup@main
-      - name: Check with Android
-        uses: kosi-libs/kodein-internal-github-actions/.github/workflows/check-with-android.yml@main
+  unit-tests:
+    uses: kosi-libs/kodein-internal-github-actions/.github/workflows/unit-tests.yml@main
+  instrumentation-tests:
+    uses: kosi-libs/kodein-internal-github-actions/.github/workflows/check-with-android.yml@main
