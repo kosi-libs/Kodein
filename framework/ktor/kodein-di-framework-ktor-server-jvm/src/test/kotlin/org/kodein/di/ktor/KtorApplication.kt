@@ -3,14 +3,16 @@ package org.kodein.di.ktor
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationCallPipeline
-import io.ktor.server.application.application
+import io.ktor.server.application.Hook
 import io.ktor.server.application.call
+import io.ktor.server.application.createRouteScopedPlugin
 import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
 import io.ktor.server.request.httpMethod
 import io.ktor.server.request.uri
 import io.ktor.server.response.respondText
+import io.ktor.server.routing.application
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
@@ -19,8 +21,10 @@ import io.ktor.server.sessions.SessionStorageMemory
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
 import io.ktor.server.sessions.get
+import io.ktor.server.sessions.reflectionSessionSerializer
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
+import io.ktor.util.pipeline.PipelinePhase
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.instance
@@ -73,6 +77,7 @@ private fun Application.sessionModule() {
     install(Sessions) {
         cookie<MockSession>("SESSION_FEATURE_SESSION_ID", SessionStorageMemory()) {
             cookie.path = "/" // Specify cookie's path '/' so it can be used in the whole site
+            serializer = reflectionSessionSerializer()
         }
     }
 
@@ -116,9 +121,9 @@ fun Application.requestModule() {
     routing {
         route(ROUTE_REQUEST) {
             suspend fun logPhase(
-                    phase: String,
-                    applicationCall: ApplicationCall,
-                    proceed: suspend () -> Unit
+                phase: String,
+                applicationCall: ApplicationCall,
+                proceed: suspend () -> Unit
             ) {
                 val random by closestDI().on(applicationCall).instance<Random>()
                 randomDto.randomInstances.add(phase to "$random")
@@ -126,27 +131,41 @@ fun Application.requestModule() {
                 proceed()
             }
 
-            intercept(ApplicationCallPipeline.Setup) {
-                randomDto.randomInstances.clear()
-                logPhase("[Setup]", context) { proceed() }
+            val interceptor = createRouteScopedPlugin("Interceptor") {
+                class PhaseHook(val phase: PipelinePhase) : Hook<suspend (ApplicationCall) -> Unit> {
+                    override fun install(
+                        pipeline: ApplicationCallPipeline,
+                        handler: suspend (ApplicationCall) -> Unit
+                    ) {
+                        pipeline.intercept(phase) {
+                            handler(call)
+                            proceed()
+                        }
+                    }
+                }
+                on(PhaseHook(ApplicationCallPipeline.Setup)) {
+                    randomDto.randomInstances.clear()
+                    logPhase("[Setup]", it) { }
+                }
+                on(PhaseHook(ApplicationCallPipeline.Monitoring)) {
+                    logPhase("[Monitoring]", it) { }
+                }
+                on(PhaseHook(ApplicationCallPipeline.Plugins)) {
+                    logPhase("[Plugins]", it) { }
+                }
+                on(PhaseHook(ApplicationCallPipeline.Call)) {
+                    logPhase("[Call]", it) { }
+                }
+                on(PhaseHook(ApplicationCallPipeline.Fallback)) {
+                    logPhase("[Fallback]", it) { }
+                }
             }
-            intercept(ApplicationCallPipeline.Monitoring) {
-                logPhase("[Monitoring]", context) { proceed() }
-            }
-            intercept(ApplicationCallPipeline.Plugins) {
-                logPhase("[Features]", context) { proceed() }
-            }
-            intercept(ApplicationCallPipeline.Call) {
-                logPhase("[Call]", context) { proceed() }
-            }
-            intercept(ApplicationCallPipeline.Fallback) {
-                logPhase("[Fallback]", context) { proceed() }
-            }
+            install(interceptor)
 
             get {
-                val random by closestDI().on(context).instance<Random>()
+                val random by closestDI().on(call).instance<Random>()
                 application.log.info("DI ${closestDI().container} / Random instance: $random")
-                logPhase("[GET]", context) {
+                logPhase("[GET]", call) {
                     call.respondText(randomDto.randomInstances.joinToString { "${it.first}=${it.second}" })
                 }
             }

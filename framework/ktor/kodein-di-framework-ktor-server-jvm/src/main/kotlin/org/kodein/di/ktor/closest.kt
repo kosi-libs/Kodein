@@ -3,7 +3,6 @@ package org.kodein.di.ktor
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
-import io.ktor.util.pipeline.*
 import org.kodein.di.DI
 import org.kodein.di.LazyDI
 
@@ -50,7 +49,6 @@ public fun Route.closestDI(): LazyDI {
 /**
  * Getting the global [DI] container from the [ApplicationCall]
  */
-public fun PipelineContext<*, ApplicationCall>.closestDI(): LazyDI {
-    val routingCall = (this.call as RoutingApplicationCall)
-    return routingCall.route.closestDI()
+public fun RoutingContext.closestDI(): LazyDI {
+    return call.route.closestDI()
 }

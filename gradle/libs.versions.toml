@@ -17,7 +17,7 @@ compose-bom = "2024.05.00"
 kotlinpoet = "1.14.2"
 ksp = "1.9.20-1.0.14"
 # Ktor
-ktor = "2.3.6"
+ktor = "3.0.1"
 # JxInject
 javax-inject = "1"
 # TornadoFX
@@ -52,8 +52,7 @@ ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.re
 # Ktor
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-sessions = { module = "io.ktor:ktor-server-sessions", version.ref = "ktor" }
-ktor-test-server-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
-ktor-test-server = { module = "io.ktor:ktor-server-tests", version.ref = "ktor" }
+ktor-test-server = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 ktor-test-server-default-headers = { module = "io.ktor:ktor-server-default-headers", version.ref = "ktor" }
 # JxInject
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
