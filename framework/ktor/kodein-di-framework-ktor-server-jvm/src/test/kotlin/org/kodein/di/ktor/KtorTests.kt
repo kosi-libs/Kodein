@@ -139,7 +139,7 @@ class KtorTests {
                     keyValue.first() to keyValue.last()
                 }
 
-        assertEquals(5, pairs.size) // Ensure we pass through 5 phases (Setup, Monitoring, Features, Call, GET)
+        assertEquals(5, pairs.size) // Ensure we pass through 5 phases (Setup, Monitoring, Plugins, Call, GET)
         assertEquals(1, pairs.map { it.second }.distinct().count()) // For all the phases we only have 1 Random instance
     }
 

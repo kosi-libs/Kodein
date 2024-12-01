@@ -1,6 +1,7 @@
 package org.kodein.di.ktor
 
 import io.ktor.server.application.*
+import io.ktor.server.routing.RoutingCall
 import io.ktor.server.sessions.*
 import org.kodein.di.bindings.Scope
 import org.kodein.di.bindings.ScopeRegistry
@@ -68,5 +69,13 @@ public inline fun <reified T : Any> CurrentSession.clearSessionScope() {
 }
 //endregion
 //region Request scope
-public object CallScope : WeakContextScope<ApplicationCall>()
+public object CallScope : WeakContextScope<ApplicationCall>() {
+    override fun getRegistry(context: ApplicationCall): ScopeRegistry {
+        val actualContext = when (context) {
+            is RoutingCall -> context.pipelineCall
+            else -> context
+        }
+        return super.getRegistry(actualContext)
+    }
+}
 //endregion
