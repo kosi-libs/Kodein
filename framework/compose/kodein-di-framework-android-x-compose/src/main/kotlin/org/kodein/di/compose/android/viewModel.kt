@@ -86,12 +86,6 @@ public inline fun <reified VM : ViewModel> viewModel(
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
-@Deprecated(
-    message = "Use the new Compose Multiplatform rememberViewModel instead from Kodein Framework Compose",
-    ReplaceWith("rememberViewModel", "org.kodein.di.compose.viewmodel"),
-    DeprecationLevel.WARNING
-)
-@Suppress("DEPRECATION")
 public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
     tag: String? = null,
     arg: A,
