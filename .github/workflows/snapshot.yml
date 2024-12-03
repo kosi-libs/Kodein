@@ -3,7 +3,7 @@ name: build and publish a snapshot
 on:
   push:
     branches:
-      - master
+      - main
       - 'snapshot/*'
       - 'kotlin-*'
     paths-ignore:
