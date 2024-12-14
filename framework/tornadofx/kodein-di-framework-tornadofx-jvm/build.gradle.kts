@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.*
-
 plugins {
     kodein.library.jvm
     alias(libs.plugins.openjfx)
@@ -10,14 +8,11 @@ javafx {
     modules("javafx.controls")
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
 dependencies {
     api(projects.kodeinDi)
     implementation(kodeinGlobals.kotlin.reflect)
     implementation(libs.tornadofx)
+    testImplementation(kotlin("test"))
     testImplementation(libs.testfx)
     testImplementation(libs.junit.jupiter)
 }

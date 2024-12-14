@@ -1,20 +1,20 @@
 [versions]
 # Core
-kaverit = "2.9.0"
+ kaverit = "2.10.0"
 # Android
 android-appcompat = "28.0.0"
-androidx-appcompat = "1.6.1"
-androidx-fragment = "1.6.2"
-androidx-lifecycle = "2.7.0"
-androidx-compose = "2.7.7"
+androidx-appcompat = "1.7.0"
+androidx-fragment = "1.8.5"
+androidx-lifecycle = "2.8.7"
+androidx-compose = "2.8.5"
 # Compose
 jbCompose = "1.6.11"
 jb-lifecycle = "2.8.0"
 compose-navigation = "2.7.0-alpha07"
 compose-compiler = "2.0.0"
-compose-bom = "2024.05.00"
+compose-bom = "2024.12.01"
 # KSP
-kotlinpoet = "1.14.2"
+kotlinpoet = "1.18.1"
 ksp = "1.9.20-1.0.14"
 # Ktor
 ktor = "3.0.1"
@@ -27,7 +27,7 @@ tornadofx = "1.7.20"
 testfx = "4.0.4-alpha"
 # Test
 junit = "4.13.2"
-junit-jupiter = "5.10.1"
+junit-jupiter = "5.11.3"
 
 [libraries]
 # Core
