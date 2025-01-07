@@ -81,7 +81,7 @@ help us with that by defining a DI container that can be retrieve from multiple 
 
 - Application
 - ApplicationCall
-- Routing / Routes
+- Routing / Routes / RoutingContext
 
 [source, kotlin]
 .Example: a Ktor Application declaration, installing the `DIPlugin`, and retrieving it from routes

@@ -6,13 +6,6 @@ import org.kodein.di.DI
 import org.kodein.di.bindInstance
 import org.kodein.di.ktor.DIPlugin.Plugin
 
-@Deprecated(
-    "This is deprecated since Ktor 2+ has renamed the concept",
-    ReplaceWith("DIPlugin"),
-    DeprecationLevel.ERROR
-)
-public typealias DIFeature = DIPlugin
-
 /**
  * Ktor [Plugin] that provide a global [DI] container
  * that would be accessible from everywhere in the Ktor application
