@@ -9,10 +9,10 @@ androidx-fragment = "1.8.5"
 androidx-lifecycle = "2.8.7"
 androidx-compose = "2.8.5"
 # Compose
-jbCompose = "1.6.11"
+jbCompose = "1.7.3"
 jb-lifecycle = "2.8.0"
-compose-navigation = "2.7.0-alpha07"
-compose-compiler = "2.0.0"
+compose-navigation = "2.7.0-alpha11"
+compose-compiler = "2.1.0"
 compose-bom = "2024.12.01"
 # KSP
 kotlinpoet = "1.18.1"
