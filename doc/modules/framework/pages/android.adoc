@@ -334,7 +334,7 @@ val di = DI {
 ----
 <1> `context` is of type `Activity` because we are using the `WeakContextScope.of<Activity>()`.
 
-CAUTION: WeakContextScope is *NOT* compatible with `ScopeCloseable`.
+CAUTION: WeakContextScope is *NOT* compatible with `AutoCloseable`.
 
 
 === Activity retained scope
@@ -353,7 +353,7 @@ val di = DI {
 }
 ----
 
-NOTE: This scope *IS* compatible with `ScopeCloseable`: xref:core:using-environment.adoc#scope-closeable[see documentation].
+NOTE: This scope *IS* compatible with `AutoCloseable`: xref:core:using-environment.adoc#scope-closeable[see documentation].
 
 
 === Lifecycle scope
@@ -371,7 +371,7 @@ val di = DI {
 
 NOTE: These lifecycles are *NOT* immune to activity restart due to configuration change.
 
-NOTE: This scope *IS* compatible with `ScopeCloseable`: xref:core:using-environment.adoc#scope-closeable[see documentation].
+NOTE: This scope *IS* compatible with `AutoCloseable`: xref:core:using-environment.adoc#scope-closeable[see documentation].
 
 
 == Layered dependencies

@@ -79,11 +79,11 @@ However, the purpose of a Scope is to handle the lifecycle of a long lived value
 Therefore, it is possible for a scoped Singleton or Multiton value to expire (most of the time because the scope itself expires).
 For example, in android's `ActivityRetainedScope`, scoped values will only live the duration of the activity.
 
-If a value implements `ScopeCloseable`, it's `close` function will be called when the value is removed from the scope (or when the scope itself expires).
+If a value implements `AutoCloseable`, it's `close` function will be called when the value is removed from the scope (or when the scope itself expires).
 
 [CAUTION]
 ====
-The `ScopeCloseable.close` method will only be called:
+The `AutoCloseable.close` method will only be called:
 
 - By scopes that explicitely *support* that feature (not all scopes do, all scopes provided by the _Kodein-DI_ Framework do *except WeakContextScope*).
 - If the value does *not* use `WeakRef` or `SoftRef` references. +
@@ -113,7 +113,7 @@ val di = DI {
 _Kodein-DI_ provides the `WeakContextScope` scope.
 This is a particular scope, as the context it holds on are weak references.
 
-CAUTION: WeakContextScope is *NOT* compatible with `ScopeCloseable`.
+CAUTION: WeakContextScope is *NOT* compatible with `AutoCloseable`.
 
 You can use this scope when it makes sense to have a scope on a context that is held by the system for the duration of its life cycle.
 
@@ -262,9 +262,9 @@ In this example, we should provide, along with `sessionScope` a module providing
 === Scope registry
 
 The `ScopeRegistry` is responsible for holding value instances.
-It is also responsible for calling the `close` methods on object that are `ScopeCloseable` when they are removed from the registry.
+It is also responsible for calling the `close` methods on object that are `AutoCloseable` when they are removed from the registry.
 
-IMPORTANT: To have your scope compatible with `ScopeCloseable` values, make sure to `clean` the registry when the scope expires.
+IMPORTANT: To have your scope compatible with `AutoCloseable` values, make sure to `clean` the registry when the scope expires.
 
 There are two standard implementations of `ScopeRegistry`:
 

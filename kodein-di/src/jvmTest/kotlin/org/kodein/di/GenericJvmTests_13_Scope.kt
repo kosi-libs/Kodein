@@ -86,7 +86,7 @@ class GenericJvmTests_13_Scope {
     }
 
     @Test
-    fun test_03_ScopeCloseableSingleton() {
+    fun test_03_AutoCloseableSingleton() {
         val myScope = UnboundedScope(SingleItemScopeRegistry())
 
         val kodein = DI {

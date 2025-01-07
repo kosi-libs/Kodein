@@ -73,7 +73,7 @@ class Tests_13_Scope {
     }
 
     @Test
-    fun test_03_ScopeCloseableSingleton() {
+    fun test_03_AutoCloseableSingleton() {
 
         val myScope = UnboundedScope(SingleItemScopeRegistry())
 
@@ -334,7 +334,7 @@ class Tests_13_Scope {
     }
 
     @Test
-    fun test_14_DirectBinding_ScopeCloseableSingleton() {
+    fun test_14_DirectBinding_AutoCloseableSingleton() {
 
         val myScope = UnboundedScope(SingleItemScopeRegistry())
 
