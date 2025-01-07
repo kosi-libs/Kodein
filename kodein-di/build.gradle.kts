@@ -1,5 +1,6 @@
 plugins {
     kodein.library.mpp
+    alias(libs.plugins.kotlinx.atomicfu)
 }
 
 kotlin.kodein {

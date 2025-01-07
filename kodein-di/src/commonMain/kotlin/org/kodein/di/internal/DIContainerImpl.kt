@@ -1,5 +1,6 @@
 package org.kodein.di.internal
 
+import kotlinx.atomicfu.locks.SynchronizedObject
 import org.kodein.di.AnyDIContext
 import org.kodein.di.BindingsMap
 import org.kodein.di.DI
@@ -43,7 +44,7 @@ internal class DIContainerImpl private constructor(
         if (runCallbacks)
             init()
         else {
-            val lock = Any()
+            val lock = SynchronizedObject()
             initCallbacks = {
                 synchronizedIfNotNull(
                         lock = lock,

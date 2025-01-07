@@ -1,6 +1,7 @@
 [versions]
 # Core
- kaverit = "2.10.0"
+kaverit = "2.10.0"
+atomicfu="0.26.1"
 # Android
 android-appcompat = "28.0.0"
 androidx-appcompat = "1.7.0"
@@ -64,6 +65,7 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "jun
 junit = { module = "junit:junit", version.ref = "junit" }
 
 [plugins]
+kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "atomicfu" }
 compose = { id = "org.jetbrains.compose", version.ref = "jbCompose" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 openjfx = { id = "org.openjfx.javafxplugin", version.ref = "openjfx" }

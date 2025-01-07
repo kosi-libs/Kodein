@@ -1,5 +1,6 @@
 package org.kodein.di.bindings
 
+import kotlinx.atomicfu.locks.SynchronizedObject
 import org.kodein.di.*
 import org.kodein.di.internal.BindingDIImpl
 import org.kodein.di.internal.synchronizedIfNull
@@ -199,7 +200,7 @@ public class EagerSingleton<T : Any>(
 
     @Volatile
     private var _instance: T? = null
-    private val _lock = Any()
+    private val _lock = SynchronizedObject()
 
     private fun getFactory(di: BindingDI<Any>): (Unit) -> T {
         return { _ ->

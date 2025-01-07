@@ -1,5 +1,6 @@
 package org.kodein.di.conf
 
+import kotlinx.atomicfu.locks.SynchronizedObject
 import org.kodein.di.Copy
 import org.kodein.di.DI
 import org.kodein.di.DIContainer
@@ -19,7 +20,7 @@ public class ConfigurableDI : DI {
     /** @suppress */
     override val di: DI get() = this
 
-    private val _lock = Any()
+    private val _lock = SynchronizedObject()
 
     /**
      * Whether this Configurabledi can be mutated.

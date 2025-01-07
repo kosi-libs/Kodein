@@ -1,5 +1,6 @@
 package org.kodein.di.bindings
 
+import kotlinx.atomicfu.locks.SynchronizedObject
 import org.kodein.di.DIContext
 import org.kodein.di.DirectDI
 import org.kodein.di.internal.maySynchronized
@@ -53,7 +54,7 @@ public class StandardScopeRegistry : ScopeRegistry() {
 
     private val _cache = newConcurrentMap<RegKey, () -> Any?>()
 
-    private val _lock = Any()
+    private val _lock = SynchronizedObject()
 
     override fun getOrCreate(key: RegKey, sync: Boolean, creator: () -> Reference<Any>): Any {
         return synchronizedIfNull(
@@ -107,7 +108,7 @@ public class StandardScopeRegistry : ScopeRegistry() {
  * If the key changes, the held item will be replaced.
  */
 public class SingleItemScopeRegistry : ScopeRegistry() {
-    private val _lock = Any()
+    private val _lock = SynchronizedObject()
 
     @kotlin.concurrent.Volatile
     private var _pair: Pair<RegKey, () -> Any?>? = null
