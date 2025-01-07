@@ -9,15 +9,18 @@ import org.kodein.di.internal.synchronizedIfNotNull
 import org.kodein.di.internal.synchronizedIfNull
 import org.kodein.type.TypeToken
 
-public interface ScopeCloseable {
-    public fun close()
-}
+@Deprecated(
+    message = "Use kotlin AutoCloseable instead.",
+    replaceWith = ReplaceWith("AutoCloseable", imports = arrayOf("AutoCloseable"))
+)
+public typealias ScopeCloseable = AutoCloseable
 
 private typealias RegKey = Any
 
 /**
  * A registry is responsible managing references inside a scope.
  */
+@Suppress("DEPRECATION")
 public sealed class ScopeRegistry : ScopeCloseable {
     /**
      * Get or create a value that correspond for the given key.
@@ -74,7 +77,7 @@ public class StandardScopeRegistry : ScopeRegistry() {
     override fun values(): List<Pair<RegKey, () -> Any?>> = _cache.map { it.toPair() }
 
     override fun remove(key: RegKey) {
-        (_cache.remove(key)?.invoke() as? ScopeCloseable)?.close()
+        (_cache.remove(key)?.invoke() as? AutoCloseable)?.close()
     }
 
     /**
@@ -87,7 +90,7 @@ public class StandardScopeRegistry : ScopeRegistry() {
             refs
         }
         refs.forEach {
-            (it.invoke() as? ScopeCloseable)?.close()
+            (it.invoke() as? AutoCloseable)?.close()
         }
     }
 
@@ -125,7 +128,7 @@ public class SingleItemScopeRegistry : ScopeRegistry() {
                     oldRef to value
                 }
         )
-        (oldRef?.invoke() as? ScopeCloseable)?.close()
+        (oldRef?.invoke() as? AutoCloseable)?.close()
         return value
     }
 
@@ -151,7 +154,7 @@ public class SingleItemScopeRegistry : ScopeRegistry() {
                 }
         )
 
-        (ref?.invoke() as? ScopeCloseable)?.close()
+        (ref?.invoke() as? AutoCloseable)?.close()
     }
 
     /**
@@ -168,7 +171,7 @@ public class SingleItemScopeRegistry : ScopeRegistry() {
                 }
         )
 
-        (ref?.invoke() as? ScopeCloseable)?.close()
+        (ref?.invoke() as? AutoCloseable)?.close()
     }
 }
 
@@ -221,7 +224,7 @@ public interface Scope<in C> {
  *
  * This is kind of equivalent to having no scope at all, except that you can call [clear].
  */
-public open class UnboundedScope(public val registry: ScopeRegistry = StandardScopeRegistry()) : Scope<Any?>, ScopeCloseable {
+public open class UnboundedScope(public val registry: ScopeRegistry = StandardScopeRegistry()) : Scope<Any?>, AutoCloseable {
     override fun getRegistry(context: Any?): ScopeRegistry = registry
 
     override fun close(): Unit = registry.clear()

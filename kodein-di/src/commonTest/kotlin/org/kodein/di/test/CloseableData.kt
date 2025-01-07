@@ -1,8 +1,6 @@
 package org.kodein.di.test
 
-import org.kodein.di.bindings.ScopeCloseable
-
-class CloseableData(val name: String? = null) : ScopeCloseable {
+class CloseableData(val name: String? = null) : AutoCloseable {
     var closed = false
         private set
 

@@ -1,7 +1,13 @@
 package org.kodein.di
 
-import org.kodein.di.bindings.*
+import org.kodein.di.bindings.Scope
+import org.kodein.di.bindings.ScopeRegistry
+import org.kodein.di.bindings.SingleItemScopeRegistry
+import org.kodein.di.bindings.StandardScopeRegistry
+import org.kodein.di.bindings.SubScope
+import org.kodein.di.bindings.UnboundedScope
 import org.kodein.di.test.*
+import java.lang.AutoCloseable
 import kotlin.test.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -70,7 +76,7 @@ class GenericJvmTests_13_Scope {
         assertSame(a, b)
     }
 
-    class CloseableData(val name: String? = null) : ScopeCloseable {
+    class CloseableData(val name: String? = null) : AutoCloseable {
         var closed = false
             private set
 
