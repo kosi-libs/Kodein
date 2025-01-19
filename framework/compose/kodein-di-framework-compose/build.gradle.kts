@@ -10,6 +10,7 @@ plugins {
 kotlin.kodein {
     jsEnv()
     allComposeUi()
+    js() // Not embedded in allComposeUi
 
     common.mainDependencies {
         implementation(kotlin.compose.runtime)
