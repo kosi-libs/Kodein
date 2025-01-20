@@ -168,6 +168,6 @@ Support is held in the [Kodein Slack channel](https://kotlinlang.slack.com/messa
 
 If you are using KODEIN, please [let us know](mailto:contact@kodein.net)!
 
-### Supported by
+## Supported by
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
