@@ -13,4 +13,4 @@ asciidoc:
     branch: '7.24'
     version: '7.24.0'
     kotlin: '2.0.0'
-    jdk: '11'
+    jdk: '17'
