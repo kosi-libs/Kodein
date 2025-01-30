@@ -1,5 +1,5 @@
 plugins {
-    id("org.kodein.library.mpp")
+    kodein.library.mpp
     alias(libs.plugins.kotlinx.atomicfu)
 }
 
