@@ -40,6 +40,7 @@ public inline fun <reified A : Any, reified T : Any> DI.Builder.bindMultiton(
 ): Unit = Bind(tag = tag, overrides = overrides, binding = multiton(sync = sync, creator = creator))
 
 // region bindMultitonOf overloads
+
 public inline fun <
         reified A : Any,
         reified T : Any,
