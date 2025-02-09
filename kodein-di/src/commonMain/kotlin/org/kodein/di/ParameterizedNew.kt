@@ -32,6 +32,8 @@ internal inline fun <reified P : Any, T> DirectDIAware.parameterized(
 @PublishedApi
 internal inline fun <reified T : Any> ParameterizedNew.invoke(): T = invoke(generic<T>())
 
+// region new() overloads
+
 /**
  * @see new
  */
@@ -570,3 +572,5 @@ public inline fun <
         invoke()
     )
 }
+
+// endregion

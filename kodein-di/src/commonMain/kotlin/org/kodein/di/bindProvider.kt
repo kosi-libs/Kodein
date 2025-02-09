@@ -35,6 +35,8 @@ public inline fun <reified T: Any> DI.Builder.bindProvider(
     noinline creator: DirectDI.() -> T
 ): Unit = Bind(tag = tag, overrides = overrides, binding = provider(creator = creator))
 
+// region bindProviderOf overloads
+
 // TODO This fails with Kotlin/JS Legacy
 //  Re-enable this with IR only target.
 //  see https://youtrack.jetbrains.com/issue/KT-39225/KJS-MarkerError-on-runtime-when-using-new-typeToken-via-Kodein-7
@@ -380,3 +382,5 @@ public inline fun <reified T: Any,
     tag: Any? = null,
     overrides: Boolean? = null,
 ): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+// endregion
