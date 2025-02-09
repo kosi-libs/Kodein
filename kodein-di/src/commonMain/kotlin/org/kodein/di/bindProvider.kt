@@ -170,3 +170,213 @@ public inline fun <reified T: Any> DI.Builder.bindProvider(
      tag: Any? = null,
      overrides: Boolean? = null,
  ): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12,
+        reified P13> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12,
+        reified P13, reified P14> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12,
+        reified P13, reified P14,
+        reified P15> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12,
+        reified P13, reified P14,
+        reified P15, reified P16> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12,
+        reified P13, reified P14,
+        reified P15, reified P16,
+        reified P17> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12,
+        reified P13, reified P14,
+        reified P15, reified P16,
+        reified P17, reified P18> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12,
+        reified P13, reified P14,
+        reified P15, reified P16,
+        reified P17, reified P18,
+        reified P19> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12,
+        reified P13, reified P14,
+        reified P15, reified P16,
+        reified P17, reified P18,
+        reified P19, reified P20> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12,
+        reified P13, reified P14,
+        reified P15, reified P16,
+        reified P17, reified P18,
+        reified P19, reified P20,
+        reified P21> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
+
+/**
+ * @see bindProviderOf
+ */
+public inline fun <reified T: Any,
+        reified P1, reified P2,
+        reified P3, reified P4,
+        reified P5, reified P6,
+        reified P7, reified P8,
+        reified P9, reified P10,
+        reified P11, reified P12,
+        reified P13, reified P14,
+        reified P15, reified P16,
+        reified P17, reified P18,
+        reified P19, reified P20,
+        reified P21, reified P22> DI.Builder.bindProviderOf(
+    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22) -> T,
+    tag: Any? = null,
+    overrides: Boolean? = null,
+): Unit = bindProvider(tag, overrides) { new(constructor) }
