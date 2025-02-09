@@ -46,10 +46,10 @@ public inline fun <
         reified T : Any,
         reified P1,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -58,10 +58,10 @@ public inline fun <
         reified P1,
         reified P2,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -71,10 +71,10 @@ public inline fun <
         reified P2,
         reified P3,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -85,10 +85,10 @@ public inline fun <
         reified P3,
         reified P4,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -100,10 +100,10 @@ public inline fun <
         reified P4,
         reified P5,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -116,10 +116,10 @@ public inline fun <
         reified P5,
         reified P6,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -133,10 +133,10 @@ public inline fun <
         reified P6,
         reified P7,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -151,10 +151,10 @@ public inline fun <
         reified P7,
         reified P8,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -170,10 +170,10 @@ public inline fun <
         reified P8,
         reified P9,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -211,10 +211,10 @@ public inline fun <
         reified P10,
         reified P11,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -233,10 +233,10 @@ public inline fun <
         reified P11,
         reified P12,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -256,10 +256,10 @@ public inline fun <
         reified P12,
         reified P13,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -280,10 +280,10 @@ public inline fun <
         reified P13,
         reified P14,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -305,10 +305,10 @@ public inline fun <
         reified P14,
         reified P15,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -331,10 +331,10 @@ public inline fun <
         reified P15,
         reified P16,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -358,10 +358,10 @@ public inline fun <
         reified P16,
         reified P17,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -386,10 +386,10 @@ public inline fun <
         reified P17,
         reified P18,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -415,10 +415,10 @@ public inline fun <
         reified P18,
         reified P19,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -445,10 +445,10 @@ public inline fun <
         reified P19,
         reified P20,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -476,10 +476,10 @@ public inline fun <
         reified P20,
         reified P21,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 public inline fun <
@@ -508,10 +508,10 @@ public inline fun <
         reified P21,
         reified P22,
         > DI.Builder.bindMultitonOf(
+    crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22) -> T,
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22) -> T,
 ): Unit = bindMultiton<A, T>(tag, overrides, sync) { new(it, constructor) }
 
 // endregion

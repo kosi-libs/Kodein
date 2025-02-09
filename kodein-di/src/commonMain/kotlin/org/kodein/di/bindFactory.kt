@@ -42,7 +42,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1) -> T,
+     crossinline constructor: (P1) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -53,7 +53,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2) -> T,
+     crossinline constructor: (P1, P2) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -65,7 +65,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3) -> T,
+     crossinline constructor: (P1, P2, P3) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -78,7 +78,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4) -> T,
+     crossinline constructor: (P1, P2, P3, P4) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -92,7 +92,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -107,7 +107,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -123,7 +123,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -140,7 +140,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -158,7 +158,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -177,7 +177,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -197,7 +197,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -218,7 +218,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -240,7 +240,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -263,7 +263,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -287,7 +287,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -312,7 +312,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -338,7 +338,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -365,7 +365,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -393,7 +393,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -422,7 +422,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -452,7 +452,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 public inline fun <
@@ -483,7 +483,7 @@ public inline fun <
         > DI.Builder.bindFactoryOf(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22) -> T,
+     crossinline constructor: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22) -> T,
 ): Unit = bindFactory<A, T>(tag, overrides) { new(it, constructor) }
 
 // endregion
