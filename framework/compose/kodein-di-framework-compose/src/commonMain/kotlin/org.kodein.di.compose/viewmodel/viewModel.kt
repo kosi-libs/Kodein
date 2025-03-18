@@ -41,7 +41,8 @@ public inline fun <reified VM : ViewModel> rememberViewModel(
  * @param A The type of argument to be passed to the ViewModel constructor.
  * @param VM The type of ViewModel to be created.
  * @param tag The optional tag to be used for resolving ViewModel instance from DI container.
- * @param arg The argument value to be passed to the ViewModel constructor.
+ * @param arg The argument value to be passed to the ViewModel constructor. When [arg] changes, you will receive a
+ * **new** viewmodel instance!
  * @return [ViewModelLazy] instance representing the remembered ViewModel.
  * @throws [error] if ViewModelStoreOwner is missing for LocalViewModelStoreOwner.
  */
@@ -53,7 +54,7 @@ public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
     val viewModelStoreOwner = LocalViewModelStoreOwner.current
         ?: error("ViewModelStoreOwner is missing for LocalViewModelStoreOwner.")
 
-    remember {
+    remember(arg) {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { viewModelStoreOwner.viewModelStore },
