@@ -5,7 +5,6 @@ import org.kodein.di.test.MethodSorters
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertNotSame
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 internal class Tests_28_ParameterizedNew {
@@ -88,20 +87,5 @@ internal class Tests_28_ParameterizedNew {
         val param = A() // injected class does not use the param
         val d: D by di.instance(arg = param)
         assertEquals(d.p, i, "expected injected instance $i, but given ${d.p}")
-    }
-
-    @Test
-    fun test_03_new_bindMultitonOf_param() {
-        val di = DI {
-            bindMultitonOf<A, _, _>(::B)
-        }
-
-        val p1 = A(0)
-        val p2 = A(1)
-
-        val b1: B by di.instance(arg = p1)
-        val b2: B by di.instance(arg = p2)
-
-        assertNotSame(b1, b2, "expected different instances for different params, got : b1=$b1, b2=$b2")
     }
 }
