@@ -85,7 +85,9 @@ internal class Tests_28_ParameterizedNew {
         }
 
         val param = A() // injected class does not use the param
-        val d: D by di.instance(arg = param)
-        assertEquals(d.p, i, "expected injected instance $i, but given ${d.p}")
+        assertFailsWith<DI.UnusedParameterException> {
+            val d: D by di.instance(arg = param)
+            assertEquals(d.p, i, "expected injected instance $i, but given ${d.p}")
+        }
     }
 }

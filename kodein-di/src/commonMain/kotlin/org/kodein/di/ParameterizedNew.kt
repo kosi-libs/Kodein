@@ -7,6 +7,18 @@ import org.kodein.type.TypeToken
 import org.kodein.type.generic
 
 @PublishedApi
+internal fun UnusedParamMessage(arg: Any): String = """
+The new() operator has processed all parameters, but your provided argument "$arg" was not used.
+This is likely a developer error because if you provided an argument using factory() or multiton(), 
+you probably meant to use it in some way.
+
+Possible solutions:
+1. Use new() overload without a parameter (e.g. new(::MyClass) )
+2. Replace factory()/multiton() with provider()/singleton()
+3. Use the argument in your dependency's constructor.
+"""
+
+@PublishedApi
 internal interface ParameterizedNew {
 
     operator fun <T : Any> invoke(t: TypeToken<T>): T
@@ -20,6 +32,7 @@ internal inline fun <reified A : Any, T> DirectDIAware.parameterized(
 
     private val pType = generic<A>()
     private var consumed by atomic(false)
+    fun verify() = if (!consumed) throw DI.UnusedParameterException(UnusedParamMessage(param)) else Unit
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> invoke(t: TypeToken<T>): T {
@@ -27,7 +40,8 @@ internal inline fun <reified A : Any, T> DirectDIAware.parameterized(
         consumed = true
         return param as T
     }
-}.run(block)
+
+}.run { block().also { verify() } }
 
 @PublishedApi
 internal inline fun <reified T : Any> ParameterizedNew.invoke(): T = invoke(generic<T>())
