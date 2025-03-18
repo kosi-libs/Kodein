@@ -58,7 +58,8 @@ internal class Tests_28_ParameterizedNew {
     }
 
     private class I
-    private class D(val p: I)
+    @Suppress("unused")
+    private class D(val p: I, val p2: A)
 
     @Test
     fun test_03_new_nousage() {

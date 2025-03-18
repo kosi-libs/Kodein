@@ -46,36 +46,62 @@ internal inline fun <reified A : Any, T> DirectDIAware.parameterized(
 @PublishedApi
 internal inline fun <reified T : Any> ParameterizedNew.invoke(): T = invoke(generic<T>())
 
+/**
+ * This is a [new] factory function overload that takes a parameter [param].
+ *
+ * This function will try to merge [instance] calls used to retrieve graph dependencies with usages of your provided
+ * [param].
+ *
+ * - This function will try to use the [param] **once** after which it will always inject dependencies from the graph.
+ *   Make sure your parameter is declared only once in the target dependency constructor, unless you want to also inject
+ *   it from the graph
+ * - This function will throw [DI.UnusedParameterException] if you never use the provided [param].
+ * - On jvm, this function can correctly resolve inheritance hierarchies if provided [param] is a subclass of the
+ *   parameter used in the constructor, but due to compiler limitations, this will **only** work on JVM!
+ *   Avoid relying on inheritance when injecting parameters using this function.
+ */
+public inline fun <T, reified A : Any> DirectDIAware.new(
+    param: A,
+    constructor: (A) -> T,
+): T = constructor(param)
+
 // region new() overloads
 
 /**
- * @see new
+ * Please see parent [new] function documentation for more info.
  */
-public inline fun <T, reified A : Any, reified P1> DirectDIAware.new(
-    param: A,
-    constructor: (P1) -> T,
-): T = parameterized(param) { constructor(invoke()) }
-
 public inline fun <T, reified A : Any, reified P1, reified P2> DirectDIAware.new(
     param: A,
     constructor: (P1, P2) -> T,
 ): T = parameterized(param) { constructor(invoke(), invoke()) }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <T, reified A : Any, reified P1, reified P2, reified P3> DirectDIAware.new(
     param: A,
     constructor: (P1, P2, P3) -> T,
 ): T = parameterized(param) { constructor(invoke(), invoke(), invoke()) }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <T, reified A : Any, reified P1, reified P2, reified P3, reified P4> DirectDIAware.new(
     param: A,
     constructor: (P1, P2, P3, P4) -> T,
 ): T = parameterized(param) { constructor(invoke(), invoke(), invoke(), invoke()) }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <T, reified A : Any, reified P1, reified P2, reified P3, reified P4, reified P5> DirectDIAware.new(
     param: A,
     constructor: (P1, P2, P3, P4, P5) -> T,
 ): T = parameterized(param) { constructor(invoke(), invoke(), invoke(), invoke(), invoke()) }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -90,6 +116,9 @@ public inline fun <
     constructor: (P1, P2, P3, P4, P5, P6) -> T,
 ): T = parameterized(param) { constructor(invoke(), invoke(), invoke(), invoke(), invoke(), invoke()) }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -105,6 +134,9 @@ public inline fun <
     constructor: (P1, P2, P3, P4, P5, P6, P7) -> T,
 ): T = parameterized(param) { constructor(invoke(), invoke(), invoke(), invoke(), invoke(), invoke(), invoke()) }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -132,6 +164,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -161,6 +196,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -192,6 +230,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -225,6 +266,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -260,6 +304,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -297,6 +344,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -324,6 +374,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -353,6 +406,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -383,6 +439,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -414,6 +473,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -446,6 +508,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -479,6 +544,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -513,6 +581,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 public inline fun <
         T,
         reified A : Any,
@@ -548,6 +619,9 @@ public inline fun <
     )
 }
 
+/**
+ * Please see parent [new] function documentation for more info.
+ */
 @Suppress("Indentation")
 public inline fun <
         T,
