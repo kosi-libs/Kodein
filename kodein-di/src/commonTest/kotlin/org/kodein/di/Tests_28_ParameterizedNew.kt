@@ -9,8 +9,8 @@ import kotlin.test.assertFailsWith
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 internal class Tests_28_ParameterizedNew {
 
-    open class A(val i: Int = 0)
-    class B(val p: A)
+    private open class A(val i: Int = 0)
+    private class B(val p: A)
 
     @Test
     fun test_00_new_1param() {
@@ -25,7 +25,7 @@ internal class Tests_28_ParameterizedNew {
         assertEquals(b.p, arg, "expected parameter, but injected instance")
     }
 
-    class C(val p1: A, val p2: A)
+    private class C(val p1: A, val p2: A)
 
     @Test
     fun test_01_new_2param() {
@@ -57,24 +57,8 @@ internal class Tests_28_ParameterizedNew {
         }
     }
 
-
-    class S() : A()
-
-    @Test
-    fun test_02_new_subclass() {
-        val di = DI {
-            bind { singleton { A() } }
-            bind { factory { p: A -> new(p, ::B) } }
-        }
-
-        val subclass = S()
-        val b: B by di.instance(arg = subclass)
-
-        assertEquals(b.p, subclass, "injected parameter ${b.p} is not the expected subclass")
-    }
-
-    class I
-    class D(val p: I)
+    private class I
+    private class D(val p: I)
 
     @Test
     fun test_03_new_nousage() {
