@@ -44,7 +44,7 @@ public inline fun <reified T : Any> rememberDI(
     noinline block: @DisallowComposableCalls DI.() -> LazyDelegate<T>,
 ): LazyDelegate<T> = with(localDI()) {
     val block by rememberUpdatedState(block)
-    remember(keys = keys) { ComposableDILazyDelegate(block()) }
+    remember(*keys, di) { ComposableDILazyDelegate(block()) }
 }
 
 /**
