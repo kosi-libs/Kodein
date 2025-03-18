@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import org.kodein.di.DI
 
 /**
@@ -14,7 +15,7 @@ import org.kodein.di.DI
  *
  * @throws [IllegalStateException] if no DI container is attached to the Composable tree
  */
-public val LocalDI: ProvidableCompositionLocal<DI?> = compositionLocalOf { null }
+public val LocalDI: ProvidableCompositionLocal<DI?> = staticCompositionLocalOf { null }
 
 @Composable
 internal expect fun diFromAppContext(): DI
