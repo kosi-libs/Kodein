@@ -14,8 +14,8 @@ import org.kodein.type.generic
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  * @return A factory ready to be bound.
  */
-public inline fun <C : Any, reified A : Any, reified T: Any> DI.BindBuilder<C>.factory(
-    noinline creator: BindingDI<C>.(A) -> T
+public inline fun <C : Any, reified A : Any, reified T : Any> DI.BindBuilder<C>.factory(
+    noinline creator: BindingDI<C>.(A) -> T,
 ): Factory<C, A, T> = Factory(contextType, generic(), generic(), creator)
 
 /**
@@ -27,8 +27,8 @@ public inline fun <C : Any, reified A : Any, reified T: Any> DI.BindBuilder<C>.f
  * @param T The created type.
  * @param creator The function that will be called each time an instance is requested. Should create a new instance.
  */
-public inline fun <reified A : Any, reified T: Any> DI.Builder.bindFactory(
+public inline fun <reified A : Any, reified T : Any> DI.Builder.bindFactory(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline creator: DirectDI.(A) -> T
+    noinline creator: DirectDI.(A) -> T,
 ): Unit = Bind(tag = tag, overrides = overrides, binding = factory(creator = creator))
