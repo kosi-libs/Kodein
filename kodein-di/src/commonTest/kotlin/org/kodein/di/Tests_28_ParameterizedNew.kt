@@ -57,22 +57,23 @@ internal class Tests_28_ParameterizedNew {
         }
     }
 
-    private class I
+    private class Param
+
     @Suppress("unused")
-    private class D(val p: I, val p2: A)
+    private class D(val inj1: A, val inj2: B)
 
     @Test
     fun test_03_new_nousage() {
-        val i = I()
         val di = DI {
-            bind { singleton { i } }
-            bind { factory { p: A -> new(p, ::D) } }
+            bind { singleton { A() } }
+            bind { singleton { new(::B) } }
+            bind { factory { p: Param -> new(p, ::D) } }
         }
 
-        val param = A() // injected class does not use the param
+        val param = Param() // injected class does not use the param
         assertFailsWith<DI.UnusedParameterException> {
             val d: D by di.instance(arg = param)
-            assertEquals(d.p, i, "expected injected instance $i, but given ${d.p}")
+            println("injected D=$d")
         }
     }
 }
