@@ -12,7 +12,6 @@ androidx-compose = "2.8.9"
 jbCompose = "1.8.0-rc01"
 jb-lifecycle = "2.9.0-alpha07"
 compose-navigation = "2.7.0-alpha11"
-compose-compiler = "2.1.21-RC2"
 compose-bom = "2025.04.01"
 # KSP
 kotlinpoet = "1.18.1"
