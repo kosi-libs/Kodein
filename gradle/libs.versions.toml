@@ -17,7 +17,7 @@ compose-bom = "2025.04.01"
 kotlinpoet = "1.18.1"
 ksp = "1.9.20-1.0.14"
 # Ktor
-ktor = "3.0.1"
+ktor = "3.1.2"
 # JxInject
 javax-inject = "1"
 # TornadoFX
@@ -27,7 +27,7 @@ tornadofx = "1.7.20"
 testfx = "4.0.4-alpha"
 # Test
 junit = "4.13.2"
-junit-jupiter = "5.11.3"
+junit-jupiter = "5.12.0"
 
 [libraries]
 # Core
