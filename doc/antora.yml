@@ -12,5 +12,5 @@ asciidoc:
   attributes:
     branch: '7.26'
     version: '7.26.0'
-    kotlin: '2.1.0'
+    kotlin: '2.1.21-RC'
     jdk: '17'

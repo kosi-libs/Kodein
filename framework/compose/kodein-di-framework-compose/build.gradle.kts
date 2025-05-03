@@ -1,6 +1,3 @@
-import com.android.build.gradle.internal.lint.LintModelWriterTask
-import com.android.build.gradle.internal.tasks.LintModelMetadataTask
-
 plugins {
     kodein.library.mppWithAndroid
     alias(kodeinGlobals.plugins.kotlin.plugin.compose)
@@ -24,14 +21,6 @@ kotlin.kodein {
             implementation(libs.android.x.lifecycle.viewmodel.compose)
         }
     }
-}
-
-// https://github.com/JetBrains/compose-multiplatform/issues/4739
-tasks.withType<LintModelWriterTask>{
-    dependsOn("generateResourceAccessorsForAndroidUnitTest")
-}
-tasks.withType<LintModelMetadataTask>{
-    dependsOn("generateResourceAccessorsForAndroidUnitTest")
 }
 
 android {
