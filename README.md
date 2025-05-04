@@ -80,14 +80,15 @@ kotlin {
 Kotlin & JVM compatibility
 ---------
 
-|   Kodein    | Kotlin |   JDK   |
-|:-----------:|:------:|:-------:|
-|   7.22      | 2.0.+  | min 11  |
-|   7.21      | 1.9.+  | min 1.8 |
-|   7.20      | 1.8.10 | min 1.8 |
-|   7.19      | 1.8.10 | min 1.8 |
-|   7.18      | 1.8.0  | min 1.8 |
-|   7.17      | 1.8.0  | min 1.8 |
+| Kodein | Kotlin |   JDK   |
+|:------:|:------:|:-------:|
+|  7.23  | 2.0.+  | min 17  |
+|  7.22  | 2.0.+  | min 11  |
+|  7.21  | 1.9.+  | min 1.8 |
+|  7.20  | 1.8.10 | min 1.8 |
+|  7.19  | 1.8.10 | min 1.8 |
+|  7.18  | 1.8.0  | min 1.8 |
+|  7.17  | 1.8.0  | min 1.8 |
 
 > Full table can be found [here](https://kosi-libs.org/kodein/7.22/core/platform-and-genericity.html)
 
