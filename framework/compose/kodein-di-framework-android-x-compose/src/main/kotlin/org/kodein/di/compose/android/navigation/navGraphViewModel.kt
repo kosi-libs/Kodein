@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
+import org.kodein.di.compose.localDI
 import org.kodein.di.compose.viewmodel.KodeinViewModelScopedFactory
 import org.kodein.di.compose.viewmodel.KodeinViewModelScopedSingleton
-import org.kodein.di.compose.localDI
 import org.kodein.type.erased
 
 /**
@@ -18,7 +18,7 @@ import org.kodein.type.erased
  * VM generic will be preserved!
  *
  * @param VM The type of the [ViewModel] to retrieve.
- * @param tag The bound tag, if any.
+ * @param tag The bound tag, if any. If changed during composition, a new instance will be created.
  * @return An instance of [VM].
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
@@ -26,11 +26,9 @@ import org.kodein.type.erased
 @Composable
 public inline fun <reified VM : ViewModel> NavBackStackEntry.rememberNavGraphViewModel(
     navHostController: NavHostController,
-    tag: String? = null
-): ViewModelLazy<VM> = with(
-    localDI()
-) {
-    remember(this@rememberNavGraphViewModel) {
+    tag: String? = null,
+): ViewModelLazy<VM> = with(localDI()) {
+    remember(this@rememberNavGraphViewModel, tag, di) {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { navHostController.getBackStackEntry(getParentId()).viewModelStore },
@@ -45,7 +43,7 @@ public inline fun <reified VM : ViewModel> NavBackStackEntry.rememberNavGraphVie
  * VM generic will be preserved!
  *
  * @param VM The type of the [ViewModel] to retrieve.
- * @param tag The bound tag, if any.
+ * @param tag The bound tag, if any. If changes during composition, a new instance will be created.
  * @return An instance of [VM].
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
@@ -58,9 +56,9 @@ public inline fun <reified VM : ViewModel> NavBackStackEntry.rememberNavGraphVie
 )
 public inline fun <reified VM : ViewModel> NavBackStackEntry.navGraphViewModel(
     navHostController: NavHostController,
-    tag: String? = null
+    tag: String? = null,
 ): VM = with(localDI()) {
-    remember(this@navGraphViewModel) {
+    remember(this@navGraphViewModel, di, tag) {
         val provider = ViewModelProvider(
             navHostController.getBackStackEntry(getParentId()).viewModelStore,
             KodeinViewModelScopedSingleton(di = di, tag = tag)
@@ -79,23 +77,22 @@ public inline fun <reified VM : ViewModel> NavBackStackEntry.navGraphViewModel(
  * VM generic will be preserved!
  *
  * @param VM The type of the [ViewModel] to retrieve.
- * @param tag The bound tag, if any.
+ * @param tag The bound tag, if any. If changes during composition, a new instance will be created.
  * @param A The type of argument the returned factory takes.
  * @param argType The type of argument the returned factory takes.
  * @param arg A function that returns the argument that will be given to the factory when curried.
+ * If changes during composition, a new instance will be created.
  * @return An instance of [VM].
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A: Any, reified VM : ViewModel> NavBackStackEntry.rememberNavGraphViewModel(
+public inline fun <reified A : Any, reified VM : ViewModel> NavBackStackEntry.rememberNavGraphViewModel(
     navHostController: NavHostController,
     tag: String? = null,
     arg: A,
-): ViewModelLazy<VM> = with(
-    localDI()
-) {
-    remember(this@rememberNavGraphViewModel) {
+): ViewModelLazy<VM> = with(localDI()) {
+    remember(this@rememberNavGraphViewModel, di, tag, arg) {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { navHostController.getBackStackEntry(getParentId()).viewModelStore },
@@ -117,10 +114,11 @@ public inline fun <reified A: Any, reified VM : ViewModel> NavBackStackEntry.rem
  * VM generic will be preserved!
  *
  * @param VM The type of the [ViewModel] to retrieve.
- * @param tag The bound tag, if any.
+ * @param tag The bound tag, if any. If changes during composition, a new instance will be created.
  * @param A The type of argument the returned factory takes.
  * @param argType The type of argument the returned factory takes.
  * @param arg A function that returns the argument that will be given to the factory when curried.
+ * If changes during composition, a new instance will be created.
  * @return An instance of [VM].
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
@@ -131,12 +129,12 @@ public inline fun <reified A: Any, reified VM : ViewModel> NavBackStackEntry.rem
     ReplaceWith("rememberNavGraphViewModel", "org.kodein.di.compose.android.navigation"),
     DeprecationLevel.WARNING
 )
-public inline fun <reified A: Any, reified VM : ViewModel> NavBackStackEntry.navGraphViewModel(
+public inline fun <reified A : Any, reified VM : ViewModel> NavBackStackEntry.navGraphViewModel(
     navHostController: NavHostController,
     tag: String? = null,
     arg: A,
 ): VM = with(localDI()) {
-    remember(this@navGraphViewModel) {
+    remember(this@navGraphViewModel, tag, arg, di) {
         val provider = ViewModelProvider(
             navHostController.getBackStackEntry(getParentId()).viewModelStore,
             KodeinViewModelScopedFactory(

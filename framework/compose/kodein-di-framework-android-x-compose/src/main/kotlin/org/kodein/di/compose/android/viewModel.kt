@@ -16,7 +16,7 @@ import org.kodein.type.generic
  * VM generic will be preserved!
  *
  * @param VM The type of the [ViewModel] to retrieve.
- * @param tag The bound tag, if any.
+ * @param tag The bound tag, if any. If changes during composition, a new instance will be created.
  * @return An instance of [VM].
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
@@ -28,7 +28,7 @@ public inline fun <reified VM : ViewModel> rememberViewModel(
     val viewModelStoreOwner = LocalViewModelStoreOwner.current
         ?: error("ViewModelStoreOwner is missing for LocalViewModelStoreOwner.")
 
-    remember {
+    remember(tag, di) {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { viewModelStoreOwner.viewModelStore },
@@ -77,10 +77,10 @@ public inline fun <reified VM : ViewModel> viewModel(
  * VM generic will be preserved!
  *
  * @param VM The type of the [ViewModel] to retrieve.
- * @param tag The bound tag, if any.
+ * @param tag The bound tag, if any. If changed during composition, a new instance will be created.
  * @param A The type of argument the returned factory takes.
- * @param argType The type of argument the returned factory takes.
  * @param arg A function that returns the argument that will be given to the factory when curried.
+ * If changed during composition, a new instance will be created.
  * @return An instance of [VM].
  * @throws DI.NotFoundException If no provider was found.
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
@@ -93,7 +93,7 @@ public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
     val viewModelStoreOwner = LocalViewModelStoreOwner.current
         ?: error("ViewModelStoreOwner is missing for LocalViewModelStoreOwner.")
 
-    remember {
+    remember(tag, arg, di) {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { viewModelStoreOwner.viewModelStore },
