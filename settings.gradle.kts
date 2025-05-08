@@ -8,7 +8,7 @@ buildscript {
         maven(url = "https://raw.githubusercontent.com/kosi-libs/kodein-internal-gradle-plugin/mvn-repo")
     }
     dependencies {
-        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:8.12.1")
+        classpath("org.kodein.internal.gradle:kodein-internal-gradle-settings:8.13.1")
     }
 }
 
@@ -17,10 +17,10 @@ apply { plugin("org.kodein.settings") }
 rootProject.name = "Kosi-Kodein"
 
 include(
-        ":test-utils",
-        ":kodein-di",
-        ":kodein-di-conf",
-        ":kodein-di-jxinject-jvm",
+    ":test-utils",
+    ":kodein-di",
+    ":kodein-di-conf",
+    ":kodein-di-jxinject-jvm",
 )
 
 // TODO: WIP - Disabled to avoid breaking CI workflow
@@ -31,20 +31,20 @@ include(
 //)
 
 android.include(
-        ":framework:android:kodein-di-framework-android-core",
-        ":framework:android:kodein-di-framework-android-support",
-        ":framework:android:kodein-di-framework-android-x",
-        ":framework:android:kodein-di-framework-android-x-viewmodel",
-        ":framework:android:kodein-di-framework-android-x-viewmodel-savedstate",
+    ":framework:android:kodein-di-framework-android-core",
+    ":framework:android:kodein-di-framework-android-support",
+    ":framework:android:kodein-di-framework-android-x",
+    ":framework:android:kodein-di-framework-android-x-viewmodel",
+    ":framework:android:kodein-di-framework-android-x-viewmodel-savedstate",
 )
 
 framework("ktor").include(
-        ":framework:ktor:kodein-di-framework-ktor-server-jvm",
-        ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm"
+    ":framework:ktor:kodein-di-framework-ktor-server-jvm",
+    ":framework:ktor:kodein-di-framework-ktor-server-controller-jvm",
 )
 
 framework("tfx").include(
-        ":framework:tornadofx:kodein-di-framework-tornadofx-jvm"
+    ":framework:tornadofx:kodein-di-framework-tornadofx-jvm",
 )
 
 framework("compose").include(
