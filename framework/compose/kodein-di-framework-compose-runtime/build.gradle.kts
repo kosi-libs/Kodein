@@ -1,6 +1,6 @@
+@file:OptIn(ExperimentalComposeLibrary::class)
+
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
     kodein.library.mppWithAndroid
@@ -9,18 +9,12 @@ plugins {
 }
 
 kotlin.kodein {
-    jsEnvBrowserOnly()
-    allComposeUi()
-    js {
-        target.browser {
-            testTask { enabled = false }
-        }
-    }
+    jsEnv()
+    allComposeRuntime()
 
     common.mainDependencies {
         implementation(kotlin.compose.runtime)
-        implementation(libs.jetbrains.lifecycle.viewmodel.compose)
-        api(projects.framework.compose.kodeinDiFrameworkComposeRuntime)
+        api(projects.kodeinDi)
     }
 
     common.testDependencies {
@@ -31,12 +25,9 @@ kotlin.kodein {
     }
 
     android {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        target.instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-
         sources.mainDependencies {
+            implementation(kotlin.compose.ui)
             api(projects.framework.android.kodeinDiFrameworkAndroidX)
-            implementation(libs.android.x.lifecycle.viewmodel.compose)
         }
     }
 
@@ -53,20 +44,13 @@ dependencies {
 }
 
 android {
-    namespace = "org.kodein.di.compose"
+    namespace = "org.kodein.di.compose.runtime"
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    testOptions {
-        unitTests {
-            all {
-                it.exclude("org/kodein/di/compose")
-            }
-        }
     }
 }
 
 kodeinUpload {
-    name = "Kodein-Framework-Compose"
-    description = "Kodein extensions for Jetpack / JetBrains Compose"
+    name = "Kodein-Framework-Compose-Runtime"
+    description = "Kodein extensions for JetBrains Compose runtime targets (Android / JVM / Native / JS / WASM)"
 }

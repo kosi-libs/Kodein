@@ -1,12 +1,14 @@
-= Kodein-DI and _Compose_ (Android, Desktop, or JS)
+= Kodein-DI and _Compose_ (Android, Desktop, & Web)
 
-You can use *_Kodein-DI_* as-is in your Android / Desktop / JS project, but you can level-up your game by using the library `kodein-di-framework-compose`.
+You can use *_Kodein-DI_* as-is in your Android / Desktop / Web project:
+
+* `kodein-di-framework-compose-runtime`: Provides Kodein extensions for Compose runtime targets (Android / JVM / Native / JS / WASM)
+* `kodein-di-framework-compose`: Provides Kodein extensions for Compose lifecycle components, and depends on kodein-di-framework-compose-runtime
 
 NOTE: *_Kodein-DI_* is compatible with both *Jetpack* and *JetBrains* _Compose_
 
-IMPORTANT: `kodein-di-framework-compose` relies and only few stable APIs that have some good chance to stay (like `@Composable`).
-            This means that `kodein-di-framework-compose` doesn't lock you with a specific version of *Jetpack* and *JetBrains* _Compose_.
-            You can use the one that works for you, **as long as your kotlin version aligns with the version used to build the Compose version you are using**.
+IMPORTANT: These libraries rely on only a few stable APIs that have a good chance to stay (like `@Composable`).
+This means that they don't lock you with a specific version of *Jetpack* and *JetBrains* _Compose_.
 
 Here is a table containing the version compatibility:
 
@@ -47,94 +49,47 @@ Here is a table containing the version compatibility:
 |7.21.0
 |Compose 1.5.10-dev-wasm02
 |1.9.20
-
-|7.20.0
-|Compose 1.3.1
-|1.8.10
-
-|7.19.0
-|Compose 1.3.1
-|1.8.10
-
-|7.18.0
-|Compose 1.3.0-rc2
-|1.8.0
-
-|7.17.1
-|Compose 1.3.0-rc2
-|1.8.0
-
-|7.16.0
-|Compose 1.2.0
-|1.7.20
-
-|7.15.1
-|Compose 1.2.0
-|1.7.20
-
-|7.15.0
-|NOT COMPATIBLE
-|1.7.20
-
-|7.15.0-kotlin-1.7.20-RC
-|NOT COMPATIBLE
-|1.7.20
-
-|7.14.0
-|1.2.0-alpha01-dev745
-|1.7.10
-
-|7.13.1
-|1.2.0-alpha01-dev745
-|1.7.0
-
-|7.10.0
-|1.0.1-rc2
-|1.6.10
-
-|7.7.0
-|1.0.0-alpha1
-|1.5.30
-
-|7.6.0
-|1.0.0-beta08
-|1.5.21
-
-|7.5.1
-|1.0.0-beta07
-|1.4.32
-
-|7.5.0
-|1.0.0-beta06
-|1.4.31
 |===
 
 [[install]]
 == Install
 
-*_Kodein-DI_* for _Compose_ can be used for Android, Desktop, or JavaScript projects with the same approach (thanks to Gradle's metadata).
+*_Kodein-DI_* for _Compose_ can be used for Android, Desktop, or Web projects with the same approach (thanks to Gradle's metadata).
+
+=== Choose the right module
+
+There are two modules available for Compose integration:
+
+* `kodein-di-framework-compose-runtime`: Use this if you only need basic Compose runtime integration across all platforms (Android, JVM, Native, JS, WASM)
+* `kodein-di-framework-compose`: Use this for Compose lifecycle aware integration, including ViewModel support.
+This module depends on `kodein-di-framework-compose-runtime`
+
+=== Adding dependencies
 
 Start by adding the correct dependency to your Gradle build script:
 
 [subs="attributes"]
-.Gradle Groovy script
-----
-implementation 'org.kodein.di:kodein-di-framework-compose:{version}'
-----
-[subs="attributes"]
-.Gradle Kotlin script
+.Gradle Kotlin script for full Compose integration
 ----
 implementation("org.kodein.di:kodein-di-framework-compose:{version}")
 ----
 
+[subs="attributes"]
+.Gradle Kotlin script for Compose runtime only
+----
+implementation("org.kodein.di:kodein-di-framework-compose-runtime:{version}")
+----
+
 [NOTE]
 ====
-Using `kodein-di-framework-compose`, whatever your platform target, will transitively add the *_Kodein-DI_* core module `kodein-di` to your dependencies.
+Using `kodein-di-framework-compose`, whatever your platform target, will transitively add the *_Kodein-DI_* core module `kodein-di` and `kodein-di-framework-compose-runtime` to your dependencies.
 
 On *Android* it will transitively add the specific module `kodein-di-framework-android-x` (see xref:framework:android.adoc[Android modules]).
 ====
 
 == DI capabilities in a `@Composable` tree
+
+NOTE: This functionality is available in both the `kodein-di-framework-compose-runtime` and `kodein-di-framework-compose` modules.
 
 *_Kodein-DI_* fully integrates with _Compose_ by providing:
 
@@ -149,10 +104,10 @@ This is what *_Kodein-DI_* uses under the hood to help you access your DI contai
 [[with-di]]
 ==== Share a DI reference inside a `@Composable` tree
 
-You can easily use *_Kodein-DI_* to expose a DI container within a `@Composable` tree, using the `withDI` functions.
-These functions accept either, a DI builder, a DI reference or xref:core:modules-inheritance.adoc[DI modules].
+You can use *_Kodein-DI_* to expose a DI container within a `@Composable` tree, using the `withDI` functions.
+These functions accept either, a DI builder, a DI reference, or xref:core:modules-inheritance.adoc[DI modules].
 
-[source, kotlin]
+[source,kotlin]
 .sharing a DI container within a `@Composable` tree
 ----
 val di = DI {
@@ -168,11 +123,11 @@ fun App() = withDI(di) { // <1>
     }
 }
 ----
+
 <1> attaches the container `di` to the current `@Composable` node
 <2> every underlying `@Composable` element can access the bindings declared in `di`
 
-
-[source, kotlin]
+[source,kotlin]
 .Creating a DI container with DI modules within a `@Composable` tree
 ----
 val diceModule = DI.Module("diceModule") {
@@ -190,10 +145,11 @@ fun App() = withDI(diceModule, persistenceModule) { // <1>
     }
 }
 ----
+
 <1> creates a DI container with the given modules before attaching it to the current `@Composable` node
 <2> every underlying `@Composable` element can access the bindings declared in `diceModule` and `persistenceModule`
 
-[source, kotlin]
+[source,kotlin]
 .Creating a DI container and expose it to a `@Composable` tree
 ----
 @Composable
@@ -207,11 +163,12 @@ fun App() = withDI({ // <1>
     }
 }
 ----
+
 <1> DI builder that will be invoked and attached to the current `@Composable` node
 <2> every underlying `@Composable` element can access the bindings attached to the current `@Composable` node
 
 WARNING: It's important to understand that the bindings can't be accessed with the `CompositionLocal` mechanism from the sibling or upper nodes.
-         The DI reference is only available inside the `content` lambda and for underlying `@Composable` element of the `withDI` functions.
+The DI reference is only available inside the `content` lambda and for underlying `@Composable` element of the `withDI` functions.
 
 [[localdi]]
 ==== Access a DI container from `@Composable` functions
@@ -222,7 +179,7 @@ This assumes you have already gone through the xref:with-di[share DI within a `@
 to share your DI references via the xref:with-di[`withDI`] and xref:with-di[`subDI`] functions.
 Therefore, in any underlying `@Composable` function you can access the DI attached to the context with the function `localDI()`.
 
-[source, kotlin]
+[source,kotlin]
 .Getting the DI container from parent nodes
 ----
 @Composable
@@ -231,6 +188,7 @@ fun ContentView() {
     val dice: Dice by di.instance() // <2>
 }
 ----
+
 <1> Get the DI container attached to a parent node
 <2> Standard *_Kodein-DI_* binding retrieval
 
@@ -240,7 +198,7 @@ WARNING: Using `localDI()` in a tree where there is no DI container will throw a
 
 In some cases we might want to extend our application DI container for local needs.
 
-[source, kotlin]
+[source,kotlin]
 .Extend a DI container from the _Compose_ context
 ----
 @Composable
@@ -253,13 +211,14 @@ fun ContentView() {
     }
 }
 ----
+
 <1> Extend the current DI from `LocalDI`
 <2> Add specific bindings for the underlying tree
 <3> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
 
 You can also extend an existing global DI container, like in the following example:
 
-[source, kotlin]
+[source,kotlin]
 .Extend a DI container from its reference
 ----
 @Composable
@@ -273,16 +232,16 @@ fun ContentView() {
     }
 }
 ----
+
 <1> The DI container to extend
 <2> Add specific bindings for the underlying tree
 <3> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
 
 .*Copying bindings*
+With this feature we can extend our DI container.
+This extension is made by copying the none singleton / multiton, but we have the possibility to copy all the binding (including singleton / multiton).
 
-With this feature we can extend our DI container. This extension is made by copying the none singleton / multiton,
-but we have the possibility to copy all the binding (including singleton / multiton).
-
-[source, kotlin]
+[source,kotlin]
 .Example: Copying all the bindings
 ----
 @Composable
@@ -296,16 +255,16 @@ fun ContentView() {
     }
 }
 ----
+
 <1> Copying all the bindings, with the singletons / multitons
 <2> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings.
 
 WARNING: By doing a `Copy.All` your original singleton / multiton won't be available anymore, in the new DI container, they will exist as new instances.
 
 .*Overriding bindings*
-
 Sometimes, It might be interesting to replace an existing dependency (by overriding it).
 
-[source, kotlin]
+[source,kotlin]
 .Example: overriding bindings
 ----
 @Composable
@@ -329,6 +288,7 @@ fun ContentView() {
     }
 }
 ----
+
 <1> Overriding in the `subDI` will be implicit
 <2> Silently overrides the `Dice` provider define in an upper node
 <3> every underlying `@Composable` element can access the bindings declared in the parent's DI container + the local bindings added in *2*.
@@ -338,7 +298,7 @@ fun ContentView() {
 If you have defined a DI container in a xref:#localdi[`LocalDI`], you can consider every underlying `@Composable` as DI aware.
 This means they can access the current DI container and its bindings with one of the following function delegates:
 
-[source, kotlin]
+[source,kotlin]
 .Retrieve instances
 ----
 @Composable
@@ -349,12 +309,13 @@ fun ContentView() {
 
 `rememberDI` allows you to remember the reference of an instance retrieved from a DI container.
 
-WARNING: Under the hood, `rememberDI { }` uses the `localDI()` function. If there is no DI container defined
-in the `@Composable` current hierarchy, you will get a runtime exception, i.e. `IllegalStateException: Missing DI container!`.
+WARNING: Under the hood, `rememberDI { }` uses the `localDI()` function.
+If there is no DI container defined in the `@Composable` current hierarchy, you will get a runtime exception, i.e. `IllegalStateException: Missing DI container!`.
 
-If you need a specific interaction with the DI container, in a `@Composable` tree, you can use `rememberDI { }` to wrap your implementation. Following you can find wrappers already provided by *Kodein-DI*.
+If you need a specific interaction with the DI container, in a `@Composable` tree, you can use `rememberDI { }` to wrap your implementation.
+Following you can find wrappers already provided by *Kodein-DI*.
 
-[source, kotlin]
+[source,kotlin]
 .a wrapper for `rememberDI { instance() }`
 ----
 @Composable
@@ -363,7 +324,7 @@ fun ContentView() {
 }
 ----
 
-[source, kotlin]
+[source,kotlin]
 .a wrapper for `rememberDI { named.instance() }`
 ----
 @Composable
@@ -374,7 +335,7 @@ fun ContentView() {
 }
 ----
 
-[source, kotlin]
+[source,kotlin]
 .a wrapper for `rememberDI { factory() }`
 ----
 @Composable
@@ -383,7 +344,7 @@ fun ContentView() {
 }
 ----
 
-[source, kotlin]
+[source,kotlin]
 .a wrapper for `rememberDI { provider() }`
 ----
 @Composable
@@ -394,7 +355,7 @@ fun ContentView() {
 
 TIP: If you are not familiar with these declarations you can explore the detailed documentation on xref:core:bindings.adoc[bindings] and xref:core:injection-retrieval.adoc[injection/retrieval].
 
-[source, kotlin]
+[source,kotlin]
 .Retrieve providers
 ----
 @Composable
@@ -407,11 +368,14 @@ TIP: the `rememberX` functions will preserve the retrieved instance on every com
 
 == Working with Compose ViewModels in a `@Composable`
 
-When working with Compose Multiplatform, you can use `ViewModel`s to control the state of our application. Mostly, because they are lifecycle-aware and can survive configuration/navigation changes.
+NOTE: This functionality is only available in the `kodein-di-framework-compose` module, not in the `kodein-di-framework-compose-runtime` module.
+
+When working with Compose Multiplatform, you can use `ViewModel`s to control the state of our application.
+Mostly, because they are lifecycle-aware and can survive configuration/navigation changes.
 
 So, if you are using `ViewModel`s in your application, you can retrieve them from the DI container by using the `rememberViewModel` function.
 
-[source, kotlin]
+[source,kotlin]
 .Retrieve a ViewModel
 ----
 @Composable
@@ -420,22 +384,24 @@ fun App() {
     val state by viewModel.state.collectAsState() // <2>
 }
 ----
+
 <1> Retrieves the `MyViewModel` from the DI container.
 <2> Consume a `state` property of the `MyViewModel`.
 
 == Android specific usage
 
+NOTE: This functionality is only available in the `kodein-di-framework-compose` module, not in the `kodein-di-framework-compose-runtime` module.
+
 On `kodein-di-framework-compose` the Android source set adds the transitive dependencies to `kodein-di` and `kodein-di-framework-android-x`.
 This gives us the ability to combine two important concepts that are xref:core:injection-retrieval.adoc#di-aware[`DIAware`] and the xref:android.adoc#closest-di[closest DI pattern].
 
-TIP: TL;DR - It helps us adds to some Android specific objects, an extension function `closestDI()`,
-that is capable of exploring the context hierarchy until it finds a DI container, hence the name of the pattern.
+TIP: TL;DR - It helps us adds to some Android specific objects, an extension function `closestDI()`, that is capable of exploring the context hierarchy until it finds a DI container, hence the name of the pattern.
 
 Thanks to these mechanisms we can provide, to *_Jetpack Compose_* users, a `@Composable` function `androidContextDI` that uses the closest DI pattern to get a DI container by using the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal].
 
 TIP: With that, any `@Composable` can retrieve instances from the DI container as long as they can access the upper bound DIAware (i.e. Activity or Fragment).
 
-[source, kotlin]
+[source,kotlin]
 .Getting the closest DI context from the Android's context
 ----
 class MainActivity : ComponentActivity(), DIAware {  // <1>
@@ -455,6 +421,7 @@ fun App() {
     Text(text = "Hello ${dataSource.getUsername()}!")
 }
 ----
+
 <1> Your Android context *must* be `DIAware` ...
 <2> ... and override the `di` property.
 <3> Uses the `androidContextDI` function to retrieve the `di` property from the closest `DIAware` object.
@@ -463,7 +430,7 @@ fun App() {
 
 If you need to retrieve a `ViewModel` instance that is bound to a navigation graph, you can use the `NavBackStackEntry.navGraphViewModel(navHostController)` extension function, with the `NavHostController` parameter.
 
-[source, kotlin]
+[source,kotlin]
 .Retrieve a ViewModel bound to a navigation graph
 ----
 composable("/home") {
@@ -473,4 +440,6 @@ composable("/details/{id}") { backStackEntry ->
     val viewModel: MyViewModel by backStackEntry.navGraphViewModel(navHostController) // <1>
 }
 ----
-<1> Retrieves the `MyViewModel` from the DI container. In both cases, it is the same instance of `MyViewModel`.
+
+<1> Retrieves the `MyViewModel` from the DI container.
+In both cases, it is the same instance of `MyViewModel`.

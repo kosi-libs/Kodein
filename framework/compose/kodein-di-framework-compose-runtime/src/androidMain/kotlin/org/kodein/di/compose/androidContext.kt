@@ -18,6 +18,3 @@ public fun androidContextDI(): DI {
     val di by closestDI { context }
     return remember { di }
 }
-
-@Composable
-internal actual fun diFromAppContext(): DI = androidContextDI()

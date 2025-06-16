@@ -1,3 +1,5 @@
+@file:Suppress("ComposableNaming")
+
 package org.kodein.di.compose
 
 import androidx.compose.runtime.Composable

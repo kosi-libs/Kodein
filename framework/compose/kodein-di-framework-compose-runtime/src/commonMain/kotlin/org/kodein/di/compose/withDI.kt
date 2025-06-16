@@ -1,3 +1,5 @@
+@file:Suppress("ComposableNaming")
+
 package org.kodein.di.compose
 
 import androidx.compose.runtime.Composable
@@ -25,7 +27,7 @@ public fun withDI(builder: DI.MainBuilder.() -> Unit, content: @Composable () ->
  */
 @Composable
 public fun withDI(vararg diModules: DI.Module, content: @Composable () -> Unit): Unit =
-    CompositionLocalProvider(LocalDI provides DI { importAll(*diModules)}) { content() }
+    CompositionLocalProvider(LocalDI provides DI { importAll(*diModules) }) { content() }
 
 /**
  * Attaches a [DI] container to the underlying [Composable] tree
@@ -57,5 +59,7 @@ public fun OnDIContext(context: DIContext<*>, content: @Composable () -> Unit) {
  * @param content underlying [Composable] tree that will be able to access this context
  */
 @Composable
-public inline fun <reified C : Any> onDIContext(context: C, crossinline content: @Composable () -> Unit): Unit =
-    OnDIContext(diContext(context)) { content() }
+public inline fun <reified C : Any> onDIContext(
+    context: C,
+    crossinline content: @Composable () -> Unit
+): Unit = OnDIContext(diContext(context)) { content() }

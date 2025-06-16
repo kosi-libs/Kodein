@@ -3,13 +3,13 @@ package org.kodein.di.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.remember
+import kotlin.reflect.KProperty
 import org.kodein.di.DI
 import org.kodein.di.LazyDelegate
 import org.kodein.di.factory
 import org.kodein.di.instance
 import org.kodein.di.named
 import org.kodein.di.provider
-import kotlin.reflect.KProperty
 
 /**
  * A property delegate provider for DI retrieval in a Composable tree.
@@ -86,7 +86,10 @@ public inline fun <reified T : Any> rememberNamedInstance(): LazyDelegate<T> =
  * @throws DI.DependencyLoopException If the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> rememberInstance(tag: Any? = null, arg: A): LazyDelegate<T> =
+public inline fun <reified A : Any, reified T : Any> rememberInstance(
+    tag: Any? = null,
+    arg: A
+): LazyDelegate<T> =
     rememberDI { instance(tag = tag, arg = arg) }
 
 /**
@@ -177,7 +180,10 @@ public inline fun <reified T : Any> rememberProvider(tag: Any? = null): LazyDele
  * @throws DI.DependencyLoopException When calling the provider, if the value construction triggered a dependency loop.
  */
 @Composable
-public inline fun <reified A : Any, reified T : Any> rememberProvider(tag: Any? = null, arg: A): LazyDelegate<() -> T> =
+public inline fun <reified A : Any, reified T : Any> rememberProvider(
+    tag: Any? = null,
+    arg: A
+): LazyDelegate<() -> T> =
     rememberDI { provider(tag = tag, arg = arg) }
 
 /**
