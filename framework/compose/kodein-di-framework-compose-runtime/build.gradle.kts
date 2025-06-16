@@ -17,13 +17,6 @@ kotlin.kodein {
         api(projects.kodeinDi)
     }
 
-    common.testDependencies {
-        @OptIn(ExperimentalComposeLibrary::class) implementation(kotlin.compose.uiTest)
-        implementation(kotlin.compose.foundation)
-        implementation(kotlin.compose.material3)
-        implementation(kotlin.compose.ui)
-    }
-
     android {
         sources.mainDependencies {
             implementation(kotlin.compose.ui)
@@ -52,5 +45,6 @@ android {
 
 kodeinUpload {
     name = "Kodein-Framework-Compose-Runtime"
-    description = "Kodein extensions for JetBrains Compose runtime targets (Android / JVM / Native / JS / WASM)"
+    description =
+        "Kodein extensions for JetBrains Compose runtime targets (Android / JVM / Native / JS / WASM)"
 }

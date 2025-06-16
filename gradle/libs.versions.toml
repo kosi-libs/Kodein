@@ -30,6 +30,7 @@ junit = "4.13.2"
 junit-jupiter = "5.12.0"
 ui-test-junit4-android = "1.8.2"
 ui-test-manifest = "1.8.2"
+robolectric = "4.12"
 
 [libraries]
 # Core
@@ -66,6 +67,7 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "jun
 junit = { module = "junit:junit", version.ref = "junit" }
 ui-test-junit4-android = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "ui-test-junit4-android" }
 ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "ui-test-manifest" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 [plugins]
 kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "atomicfu" }
