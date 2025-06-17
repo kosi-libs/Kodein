@@ -1,8 +1,18 @@
 package org.kodein.di
 
-import org.kodein.di.test.*
 import kotlin.reflect.KClass
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotSame
+import kotlin.test.assertTrue
+import org.kodein.di.test.FixMethodOrder
+import org.kodein.di.test.FullInfos
+import org.kodein.di.test.IFullName
+import org.kodein.di.test.IName
+import org.kodein.di.test.MethodSorters
+import org.kodein.di.test.Person
+import org.kodein.di.test.assertAllEqual
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class Tests_00_Factory {
@@ -87,7 +97,9 @@ class Tests_00_Factory {
         assertTrue(passed)
     }
 
-    interface FakeLogger { val cls: KClass<*> }
+    interface FakeLogger {
+        val cls: KClass<*>
+    }
 
     class FakeLoggerImpl(override val cls: KClass<*>) : FakeLogger
 
@@ -292,6 +304,20 @@ class Tests_00_Factory {
     }
     */
 
+
+    @Test
+    fun test_21_KClassBindingWithFactory() {
+        val di = DI {
+            bind(Person::class) with factory { name: String -> Person(name) }
+        }
+
+        val p1: Person by di.instance(arg = "Salomon")
+        val p2: Person by di.instance(arg = "Salomon")
+
+        assertNotSame(p1, p2)
+        assertEquals("Salomon", p1.name)
+        assertEquals("Salomon", p2.name)
+    }
 
 
 }
