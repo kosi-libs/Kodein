@@ -1,18 +1,18 @@
 [versions]
 # Core
 kaverit = "2.10.0"
-atomicfu="0.26.1"
+atomicfu = "0.26.1"
 # Android
 android-appcompat = "28.0.0"
 androidx-appcompat = "1.7.0"
-androidx-fragment = "1.8.6"
-androidx-lifecycle = "2.8.7"
-androidx-compose = "2.8.9"
-# Compose
-jbCompose = "1.8.0-rc01"
-jb-lifecycle = "2.9.0-alpha07"
-compose-navigation = "2.7.0-alpha11"
-compose-bom = "2025.04.01"
+androidx-fragment = "1.8.7"
+androidx-lifecycle = "2.9.0"
+androidx-compose = "2.9.0"
+compose-bom = "2025.05.01"
+# Compose Multiplatform
+compose-multiplatform = "1.8.1"
+cmp-lifecycle = "2.9.0"
+cmp-navigation = "2.9.0-beta02"
 # KSP
 kotlinpoet = "1.18.1"
 ksp = "1.9.20-1.0.14"
@@ -28,6 +28,9 @@ testfx = "4.0.4-alpha"
 # Test
 junit = "4.13.2"
 junit-jupiter = "5.12.0"
+ui-test-junit4-android = "1.8.2"
+ui-test-manifest = "1.8.2"
+robolectric = "4.12"
 
 [libraries]
 # Core
@@ -43,8 +46,8 @@ android-x-compose-navigation = { module = "androidx.navigation:navigation-compos
 android-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 android-compose-runtime = { module = "androidx.compose.runtime:runtime" }
 # Compose Multiplatform
-jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "jb-lifecycle" }
-jetbrains-compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
+jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "cmp-lifecycle" }
+jetbrains-compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "cmp-navigation" }
 # KSP
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
@@ -62,9 +65,12 @@ testfx = { module = "org.testfx:testfx-core", version.ref = "testfx" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 # Test
 junit = { module = "junit:junit", version.ref = "junit" }
+ui-test-junit4-android = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "ui-test-junit4-android" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "ui-test-manifest" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 [plugins]
 kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "atomicfu" }
-compose = { id = "org.jetbrains.compose", version.ref = "jbCompose" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 openjfx = { id = "org.openjfx.javafxplugin", version.ref = "openjfx" }
