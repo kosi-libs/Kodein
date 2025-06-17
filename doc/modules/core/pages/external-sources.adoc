@@ -1,22 +1,22 @@
-= External Source
+= External Sources
 
 An external source is responsible for providing an answer when _Kodein-DI_ cannot find one.
 
-When _Kodein-DI_ cannot find a binding for the required type/argument/context, then it calls the external source.
+When _Kodein-DI_ cannot find a binding for the required type/argument/context, then it calls the external sources in the order they were added until one returns a non-null result.
 
-[source, kotlin]
-.Example: an external source
+[source,kotlin]
+.Example: adding an external source
 ----
 val di = DI {
-    externalSource = ExternalSource { key ->
-        when (key.type.jvmType) { // <1>
-            Whatever::class.java -> when (key.argType.jvmType) { // <2>
-                Unit::class.java -> when (key.tag) { // <3>
+    externalSources += ExternalSource { key ->
+        when (key.type.raw) { // <1>
+            Whatever::class -> when (key.argType.raw) { // <2>
+                Unit::class -> when (key.tag) { // <3>
                     "user" -> externalFactory { existingInstance } // <4>
                     null -> externalFactory { Whatever("default-value") } // <4>
                     else -> null // <6>
                 }
-                String::class.java -> when (key.tag) { // <3>
+                String::class -> when (key.tag) { // <3>
                     null -> externalFactory { Whatever(it as String) } // <5>
                     else -> null // <6>
                 }
@@ -27,6 +27,7 @@ val di = DI {
     }
 }
 ----
+
 <1> The type that is required
 <2> The argument type (Unit if no argument)
 <3> The tag (null if no tag)
@@ -34,13 +35,37 @@ val di = DI {
 <5> The argument has been checked to be a String, so it can be safely casted
 <6> Return null if the external source has no answer
 
-The `externalSource` property takes an `ExternalSource` instance, which is a SAM interface that can be implemented by a lambda with the `ExternalSource { }` constructor.
-This `ExternalSource` is called every time a new `Key` is asked but not found.
-The `Key` itself contains information about the binding that was asked but not found.
+The `externalSources` property is a mutable list that allows you to add multiple `ExternalSource` instances.
+Each `ExternalSource` is an interface that can be implemented by a lambda with the `ExternalSource { }` constructor.
+When a binding is not found, each external source in the list is called in the order they were added until one returns a non-null result.
+The `Key` passed to the external source contains information about the binding that was asked but not found.
 
-WARNING: The `ExternalSource` will be called only once per unknown key.
+WARNING: Each `ExternalSource` will be called only once per unknown key.
 
-The `ExternalSource` must return a function (which you can easily create with the `externalFactory` utility function) that takes an `Any?` argument and returns the instance.
+The `ExternalSource` must return a function (which you can create with the `externalFactory` utility function) that takes an `Any?` argument and returns the instance.
 This function will be called *every time* an instance is requested.
 Note that if no argument is provided, the argument to the lambda will be `Unit`.
 
+[source,kotlin]
+.Example: multiple external sources
+----
+val di = DI {
+    // First external source for handling Whatever instances
+    externalSources += ExternalSource { key ->
+        if (key.type.raw == Whatever::class) {
+            externalFactory { Whatever("from first source") }
+        } else {
+            null
+        }
+    }
+
+    // Second external source for handling other types
+    externalSources += ExternalSource { key ->
+        if (key.type.raw == SomethingElse::class) {
+            externalFactory { SomethingElse() }
+        } else {
+            null
+        }
+    }
+}
+----
