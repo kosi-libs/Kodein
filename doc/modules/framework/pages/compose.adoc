@@ -395,7 +395,7 @@ NOTE: This functionality is only available in the `kodein-di-framework-compose` 
 On `kodein-di-framework-compose` the Android source set adds the transitive dependencies to `kodein-di` and `kodein-di-framework-android-x`.
 This gives us the ability to combine two important concepts that are xref:core:injection-retrieval.adoc#di-aware[`DIAware`] and the xref:android.adoc#closest-di[closest DI pattern].
 
-TIP: TL;DR - It helps us adds to some Android specific objects, an extension function `closestDI()`, that is capable of exploring the context hierarchy until it finds a DI container, hence the name of the pattern.
+TIP: TL;DR – It adds an extension function to Android-specific objects called `closestDI()` that explores the context hierarchy to find a DI container.
 
 Thanks to these mechanisms we can provide, to *_Jetpack Compose_* users, a `@Composable` function `androidContextDI` that uses the closest DI pattern to get a DI container by using the link:https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal[CompositionLocal].
 
