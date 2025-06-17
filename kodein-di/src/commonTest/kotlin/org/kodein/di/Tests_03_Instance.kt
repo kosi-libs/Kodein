@@ -1,12 +1,17 @@
 package org.kodein.di
 
-import org.kodein.di.test.*
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertSame
+import org.kodein.di.test.FixMethodOrder
+import org.kodein.di.test.MethodSorters
+import org.kodein.di.test.Person
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class Tests_03_Instance {
 
-    @Test fun test_00_InstanceBindingGetInstance() {
+    @Test
+    fun test_00_InstanceBindingGetInstance() {
 
         val p = Person()
 
@@ -19,7 +24,8 @@ class Tests_03_Instance {
         assertSame(p2, p)
     }
 
-    @Test fun test_01_InstanceBindingGetProvider() {
+    @Test
+    fun test_01_InstanceBindingGetProvider() {
 
         val p = Person()
 
@@ -33,7 +39,8 @@ class Tests_03_Instance {
     }
 
 
-    @Test fun test_03_DirectInstanceBindingGetInstance() {
+    @Test
+    fun test_03_DirectInstanceBindingGetInstance() {
 
         val p = Person()
 
@@ -46,7 +53,8 @@ class Tests_03_Instance {
         assertSame(p2, p)
     }
 
-    @Test fun test_04_DirectInstanceBindingGetProvider() {
+    @Test
+    fun test_04_DirectInstanceBindingGetProvider() {
 
         val p = Person()
 
@@ -59,7 +67,8 @@ class Tests_03_Instance {
         assertSame(p2(), p)
     }
 
-    @Test fun test_05_SimpleInstanceBindingGetInstance() {
+    @Test
+    fun test_05_SimpleInstanceBindingGetInstance() {
 
         val p = Person()
 
@@ -72,7 +81,8 @@ class Tests_03_Instance {
         assertSame(p2, p)
     }
 
-    @Test fun test_06_SimpleInstanceBindingGetProvider() {
+    @Test
+    fun test_06_SimpleInstanceBindingGetProvider() {
 
         val p = Person()
 
@@ -87,7 +97,8 @@ class Tests_03_Instance {
 
     fun unit(@Suppress("UNUSED_PARAMETER") i: Int = 42) {}
 
-    @Test fun test_07_BindWithUnit() {
+    @Test
+    fun test_07_BindWithUnit() {
         val di = DI.direct {
             bind<Unit>() with instance(unit())
         }
@@ -95,11 +106,25 @@ class Tests_03_Instance {
         assertSame(Unit, di.instance())
     }
 
-    @Test fun test_08_DirectBindUnit() {
+    @Test
+    fun test_08_DirectBindUnit() {
         val di = DI.direct {
             bind { instance(unit()) }
         }
 
         assertSame(Unit, di.instance())
+    }
+
+    @Test
+    fun test_09_KClassBindingWithInstance() {
+        val person = Person("Instance")
+        val di = DI {
+            bind(Person::class) with instance(person)
+        }
+
+        val p: Person by di.instance()
+
+        assertSame(person, p)
+        assertEquals("Instance", p.name)
     }
 }
