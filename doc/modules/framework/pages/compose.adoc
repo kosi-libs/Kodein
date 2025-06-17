@@ -239,7 +239,7 @@ fun ContentView() {
 
 .*Copying bindings*
 With this feature we can extend our DI container.
-This extension is made by copying the none singleton / multiton, but we have the possibility to copy all the binding (including singleton / multiton).
+This extension is made by copying the non-singleton / multiton bindings, but we have the possibility to copy all the bindings (including singletons / multitons).
 
 [source,kotlin]
 .Example: Copying all the bindings
