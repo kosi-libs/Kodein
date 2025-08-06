@@ -28,7 +28,7 @@ internal interface ParameterizedNew {
 internal inline fun <reified A : Any, T> DirectDIAware.parameterized(
     param: A,
     block: ParameterizedNew.() -> T,
-) = object : ParameterizedNew {
+): T = object : ParameterizedNew {
 
     private val pType = generic<A>()
     private var consumed by atomic(false)
