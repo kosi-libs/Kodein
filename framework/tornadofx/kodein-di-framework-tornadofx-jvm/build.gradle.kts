@@ -19,5 +19,5 @@ dependencies {
 
 kodeinUpload {
     name = "Kodein-Framework-TornadoFX"
-    description = "Kodein Kotlin classes & extensions for the TornadoFX framework"
+    description = "Kodein Kotlin classes & extensions for the TornadoFX framework (DEPRECATED: TornadoFX has been abandoned by its creator. Consider using Compose instead.)"
 }

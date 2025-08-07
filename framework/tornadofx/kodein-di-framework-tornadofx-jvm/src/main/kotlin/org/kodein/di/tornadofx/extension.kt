@@ -7,7 +7,14 @@ import tornadofx.*
 import tornadofx.Scope
 import kotlin.reflect.*
 
+/**
+ * Installs a TornadoFX source to the DI container
+ * 
+ * @deprecated TornadoFX has been abandoned by its creator. Consider using Compose instead.
+ * See documentation at: https://kosi-libs.org/kodein/latest/framework/compose.html
+ */
 @Suppress("UNCHECKED_CAST")
+@Deprecated("TornadoFX has been abandoned by its creator. Consider using Compose instead. Also, see: https://kosi-libs.org/kodein/latest/framework/compose.html")
 public fun DI.MainBuilder.installTornadoSource() {
     externalSources += ExternalSource { key ->
         val elementType = key.type.getRaw().jvmType as Class<*>?
