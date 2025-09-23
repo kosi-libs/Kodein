@@ -1,23 +1,23 @@
 [versions]
 # Core
-kaverit = "2.11.0"
+kaverit = "2.12.0"
 atomicfu = "0.29.0"
 # Android
 android-appcompat = "28.0.0"
 androidx-appcompat = "1.7.1"
-androidx-fragment = "1.8.8"
-androidx-lifecycle = "2.9.2"
-androidx-compose = "2.9.3"
-compose-bom = "2025.07.00"
+androidx-fragment = "1.8.9"
+androidx-lifecycle = "2.9.4"
+androidx-compose = "2.9.4"
+compose-bom = "2025.09.00"
 # Compose Multiplatform
-compose-multiplatform = "1.8.2"
-cmp-lifecycle = "2.9.1"
-cmp-navigation = "2.9.0-beta04"
+compose-multiplatform = "1.9.0"
+cmp-lifecycle = "2.9.4"
+cmp-navigation = "2.9.0"
 # KSP
-kotlinpoet = "1.18.1"
+kotlinpoet = "2.2.0"
 ksp = "1.9.20-1.0.14"
 # Ktor
-ktor = "3.2.3"
+ktor = "3.3.0"
 # JxInject
 javax-inject = "1"
 # TornadoFX
@@ -28,9 +28,9 @@ testfx = "4.0.18"
 # Test
 junit = "4.13.2"
 junit-jupiter = "5.13.4"
-ui-test-junit4-android = "1.8.3"
-ui-test-manifest = "1.8.3"
-robolectric = "4.15.1"
+ui-test-junit4-android = "1.9.1"
+ui-test-manifest = "1.9.1"
+robolectric = "4.16"
 
 [libraries]
 # Core
