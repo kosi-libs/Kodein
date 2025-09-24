@@ -3,6 +3,7 @@ package org.kodein.di
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.kodein.di.bindings.overriddenInstanceOf
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
@@ -59,14 +60,75 @@ class Tests_14_Override {
             bindSingleton<String>(
                 tag = "name",
                 overrides = true,
-            ) { (overriddenInstance() as String) + " BRYS" }
+            ) {
+                val s = overriddenInstance()
+                "$s BRYS"
+            }
             bindSingleton<String>(
                 tag = "name",
                 overrides = true,
-            ) { (overriddenInstance() as String) + " of France" }
+            ) {
+                val s = overriddenInstance()
+                "$s of France"
+            }
         }
 
         assertEquals("Salomon BRYS of France", di.direct.instance("name"))
+    }
+
+
+    private inline fun <reified T : String> uppercase(t: T): String = t.toString().uppercase()
+
+    @Test
+    fun test_04b_OverrideWithSuper_Reified() {
+        val di = DI(allowSilentOverride = true) {
+            bind<String>(tag = "name") with instance("Salomon")
+            bindSingleton(
+                tag = "name",
+                overrides = true,
+            ) {
+                uppercase(overriddenInstanceOf())
+            }
+            bindSingleton(
+                tag = "name",
+                overrides = true,
+            ) {
+                val s: String = overriddenInstanceOf()
+                "$s of France"
+            }
+        }
+
+        assertEquals("SALOMON of France", di.direct.instance("name"))
+    }
+
+    @Test
+    fun test_04c_OverrideWithSuper_BindSingletonShorthand() {
+        val di = DI(allowSilentOverride = true) {
+            bind<String>(tag = "name") with instance("Salomon")
+            bindSingleton<String>(tag = "name", overrides = true) {
+                val s: String = overriddenInstanceOf()
+                "$s BRYS"
+            }
+            bindSingleton<String>(tag = "name", overrides = true) {
+                val s: String = overriddenInstanceOf()
+                "$s of France"
+            }
+        }
+
+        assertEquals("Salomon BRYS of France", di.direct.instance("name"))
+    }
+
+    @Test
+    fun test_04c_OverrideWithSuper_ClassCastException() {
+        val di = DI(allowSilentOverride = true) {
+            bind<Int>() with instance(20)
+            bindSingleton<Int>(overrides = true) {
+                val s: String = overriddenInstanceOf()
+                22 + s.toInt()
+            }
+        }
+
+        assertFailsWith<ClassCastException> { di.direct.instance<Int>() }
     }
 
     @Test
