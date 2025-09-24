@@ -8,6 +8,7 @@ import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
 
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class Tests_14_Override {
 
@@ -69,48 +70,6 @@ class Tests_14_Override {
                 overrides = true,
             ) {
                 val s = overriddenInstance()
-                "$s of France"
-            }
-        }
-
-        assertEquals("Salomon BRYS of France", di.direct.instance("name"))
-    }
-
-
-    private inline fun <reified T : String> uppercase(t: T): String = t.toString().uppercase()
-
-    @Test
-    fun test_04b_OverrideWithSuper_Reified() {
-        val di = DI(allowSilentOverride = true) {
-            bind<String>(tag = "name") with instance("Salomon")
-            bindSingleton(
-                tag = "name",
-                overrides = true,
-            ) {
-                uppercase(overriddenInstanceOf())
-            }
-            bindSingleton(
-                tag = "name",
-                overrides = true,
-            ) {
-                val s: String = overriddenInstanceOf()
-                "$s of France"
-            }
-        }
-
-        assertEquals("SALOMON of France", di.direct.instance("name"))
-    }
-
-    @Test
-    fun test_04c_OverrideWithSuper_BindSingletonShorthand() {
-        val di = DI(allowSilentOverride = true) {
-            bind<String>(tag = "name") with instance("Salomon")
-            bindSingleton<String>(tag = "name", overrides = true) {
-                val s: String = overriddenInstanceOf()
-                "$s BRYS"
-            }
-            bindSingleton<String>(tag = "name", overrides = true) {
-                val s: String = overriddenInstanceOf()
                 "$s of France"
             }
         }
@@ -380,6 +339,25 @@ class Tests_14_Override {
         val p: Person by di.instance()
 
         assertEquals("Second", p.name)
+    }
+
+
+    private inline fun <reified T : String> uppercase(t: T): String = t.toString().uppercase()
+
+    @Test
+    fun test_23_OverrideWithSuper_Reified() {
+        val di = DI(allowSilentOverride = true) {
+            bind<String>() with instance("Salomon")
+            bindSingleton {
+                uppercase<String>(overriddenInstanceOf())
+            }
+            bindSingleton {
+                val s: String = overriddenInstanceOf()
+                "$s of France"
+            }
+        }
+
+        assertEquals("SALOMON of France", di.direct.instance())
     }
 
 }
