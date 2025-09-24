@@ -51,7 +51,7 @@ public inline fun <reified T : Any> DI.Builder.bindSingleton(
     tag: Any? = null,
     overrides: Boolean? = null,
     sync: Boolean = true,
-    noinline creator: DirectDI.() -> T,
+    noinline creator: NoArgBindingDI<Any>.() -> T,
 ): Unit = Bind(tag = tag, overrides = overrides, binding = singleton(sync = sync, creator = creator))
 
 /**
@@ -67,7 +67,7 @@ public inline fun <reified T : Any> DI.Builder.bindSingleton(
 public inline fun <reified T : Any> DI.Builder.bindEagerSingleton(
     tag: Any? = null,
     overrides: Boolean? = null,
-    noinline creator: DirectDI.() -> T,
+    noinline creator: NoArgBindingDI<Any>.() -> T,
 ): Unit = Bind(tag = tag, overrides = overrides, binding = eagerSingleton(creator = creator))
 
 // region bindSingletonOf overloads

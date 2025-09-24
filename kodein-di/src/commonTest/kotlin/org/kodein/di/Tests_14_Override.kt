@@ -56,14 +56,14 @@ class Tests_14_Override {
     fun test_04_OverrideWithSuper() {
         val di = DI(allowSilentOverride = true) {
             bind<String>(tag = "name") with instance("Salomon")
-            bind<String>(
+            bindSingleton<String>(
                 tag = "name",
                 overrides = true,
-            ) with singleton { (overriddenInstance() as String) + " BRYS" }
-            bind<String>(
+            ) { (overriddenInstance() as String) + " BRYS" }
+            bindSingleton<String>(
                 tag = "name",
                 overrides = true,
-            ) with singleton { (overriddenInstance() as String) + " of France" }
+            ) { (overriddenInstance() as String) + " of France" }
         }
 
         assertEquals("Salomon BRYS of France", di.direct.instance("name"))
@@ -74,14 +74,14 @@ class Tests_14_Override {
 
         val di = DI {
             bind<String>(tag = "name") with singleton { instance<String>(tag = "title") + " Salomon " }
-            bind<String>(
+            bindSingleton<String>(
                 tag = "name",
                 overrides = true,
-            ) with singleton { (overriddenInstance() as String) + " BRYS " }
-            bind<String>(
+            ) { (overriddenInstance() as String) + " BRYS " }
+            bindSingleton<String>(
                 tag = "name",
                 overrides = true,
-            ) with singleton { (overriddenInstance() as String) + " of France" }
+            ) { (overriddenInstance() as String) + " of France" }
             bind<String>(tag = "title") with singleton { instance<String>(tag = "name") + " the great" }
 
         }
@@ -226,14 +226,14 @@ class Tests_14_Override {
     fun test_17_SimpleBinding_OverrideWithSuper() {
         val di = DI(allowSilentOverride = true) {
             bindInstance(tag = "name") { "Salomon" }
-            bind(
+            bindSingleton(
                 tag = "name",
                 overrides = true,
-            ) { singleton { (overriddenInstance() as String) + " BRYS" } }
-            bind(
+            )  { (overriddenInstance() as String) + " BRYS" }
+            bindSingleton(
                 tag = "name",
                 overrides = true,
-            ) { singleton { (overriddenInstance() as String) + " of France" } }
+            )  { (overriddenInstance() as String) + " of France" }
         }
 
         assertEquals("Salomon BRYS of France", di.direct.instance("name"))
@@ -244,14 +244,14 @@ class Tests_14_Override {
 
         val di = DI {
             bind(tag = "name") { singleton { instance<String>(tag = "title") + " Salomon " } }
-            bind(
+            bindSingleton(
                 tag = "name",
                 overrides = true,
-            ) { singleton { (overriddenInstance() as String) + " BRYS " } }
-            bind(
+            )  { (overriddenInstance() as String) + " BRYS " }
+            bindSingleton(
                 tag = "name",
                 overrides = true,
-            ) { singleton { (overriddenInstance() as String) + " of France" } }
+            )  { (overriddenInstance() as String) + " of France" }
             bind(tag = "title") { singleton { instance<String>(tag = "name") + " the great" } }
 
         }
