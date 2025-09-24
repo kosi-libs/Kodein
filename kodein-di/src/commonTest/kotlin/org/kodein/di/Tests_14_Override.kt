@@ -3,9 +3,11 @@ package org.kodein.di
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.kodein.di.bindings.overriddenInstanceOf
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
+
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class Tests_14_Override {
@@ -59,14 +61,33 @@ class Tests_14_Override {
             bindSingleton<String>(
                 tag = "name",
                 overrides = true,
-            ) { (overriddenInstance() as String) + " BRYS" }
+            ) {
+                val s = overriddenInstance()
+                "$s BRYS"
+            }
             bindSingleton<String>(
                 tag = "name",
                 overrides = true,
-            ) { (overriddenInstance() as String) + " of France" }
+            ) {
+                val s = overriddenInstance()
+                "$s of France"
+            }
         }
 
         assertEquals("Salomon BRYS of France", di.direct.instance("name"))
+    }
+
+    @Test
+    fun test_04c_OverrideWithSuper_ClassCastException() {
+        val di = DI(allowSilentOverride = true) {
+            bind<Int>() with instance(20)
+            bindSingleton<Int>(overrides = true) {
+                val s: String = overriddenInstanceOf()
+                22 + s.toInt()
+            }
+        }
+
+        assertFailsWith<ClassCastException> { di.direct.instance<Int>() }
     }
 
     @Test
@@ -318,6 +339,25 @@ class Tests_14_Override {
         val p: Person by di.instance()
 
         assertEquals("Second", p.name)
+    }
+
+
+    private inline fun <reified T : String> uppercase(t: T): String = t.toString().uppercase()
+
+    @Test
+    fun test_23_OverrideWithSuper_Reified() {
+        val di = DI(allowSilentOverride = true) {
+            bind<String>() with instance("Salomon")
+            bindSingleton {
+                uppercase<String>(overriddenInstanceOf())
+            }
+            bindSingleton {
+                val s: String = overriddenInstanceOf()
+                "$s of France"
+            }
+        }
+
+        assertEquals("SALOMON of France", di.direct.instance())
     }
 
 }
