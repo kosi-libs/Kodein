@@ -30,4 +30,3 @@ jobs:
       - name: Upload
         run: ./gradlew publishAggregationToCentralPortalSnapshots -PgitRef=${{ github.ref }} -Psnapshot=true
         shell: bash
-

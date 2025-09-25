@@ -11,6 +11,6 @@ on:
 
 jobs:
   unit-tests:
-    uses: kosi-libs/kodein-internal-github-actions/.github/workflows/unit-tests.yml@main
+    uses: kosi-libs/kodein-internal-github-actions/.github/workflows/unit-tests.yml@test-ci
   instrumentation-tests:
-    uses: kosi-libs/kodein-internal-github-actions/.github/workflows/check-with-android.yml@main
+    uses: kosi-libs/kodein-internal-github-actions/.github/workflows/check-with-android.yml@test-ci
