@@ -50,5 +50,5 @@ framework("tfx").include(
 framework("compose").include(
     ":framework:compose:kodein-di-framework-compose-runtime",
     ":framework:compose:kodein-di-framework-compose",
-    ":framework:compose:kodein-di-framework-android-x-compose",
+//    ":framework:compose:kodein-di-framework-android-x-compose",
 )
