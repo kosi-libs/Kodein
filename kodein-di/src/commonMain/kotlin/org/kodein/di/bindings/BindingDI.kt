@@ -104,6 +104,14 @@ public interface NoArgBindingDI<out C : Any> : DirectDI, WithContext<C> {
     public fun overriddenInstanceOrNull(): Any? /*= overriddenProviderOrNull()?.invoke()*/
 }
 
+@Throws(ClassCastException::class)
+public inline fun <reified T : Any> NoArgBindingDI<*>.overriddenInstanceOf(): T = overriddenInstance() as T
+@Throws(ClassCastException::class)
+public inline fun <reified T : Any> NoArgBindingDI<*>.overriddenInstanceOrNullOf(): T? {
+    val p = overriddenProviderOrNull() ?: return null
+    return p() as T
+}
+
 internal class NoArgBindingDIWrap<out C : Any>(private val _di: BindingDI<C>) : NoArgBindingDI<C>, DirectDI by _di, WithContext<C> by _di {
     override fun overriddenProvider() = _di.overriddenFactory().toProvider { }
     override fun overriddenProviderOrNull() = _di.overriddenFactoryOrNull()?.toProvider { }
