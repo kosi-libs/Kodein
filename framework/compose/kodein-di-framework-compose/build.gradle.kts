@@ -23,16 +23,16 @@ kotlin.kodein {
         api(projects.framework.compose.kodeinDiFrameworkComposeRuntime)
     }
 
-    common.testDependencies {
-        @OptIn(ExperimentalComposeLibrary::class) implementation(kotlin.compose.uiTest)
-        implementation(kotlin.compose.foundation)
-        implementation(kotlin.compose.material3)
-        implementation(kotlin.compose.ui)
-    }
+//    common.testDependencies {
+//        @OptIn(ExperimentalComposeLibrary::class) implementation(kotlin.compose.uiTest)
+//        implementation(kotlin.compose.foundation)
+//        implementation(kotlin.compose.material3)
+//        implementation(kotlin.compose.ui)
+//    }
 
     android {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        target.instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
+//        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+//        target.instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
 
         sources.mainDependencies {
             api(projects.framework.android.kodeinDiFrameworkAndroidX)
@@ -47,10 +47,10 @@ kotlin.kodein {
     }
 }
 
-dependencies {
-    androidTestImplementation(libs.ui.test.junit4.android)
-    debugImplementation(libs.ui.test.manifest)
-}
+//dependencies {
+//    androidTestImplementation(libs.ui.test.junit4.android)
+//    debugImplementation(libs.ui.test.manifest)
+//}
 
 android {
     namespace = "org.kodein.di.compose"
