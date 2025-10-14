@@ -51,6 +51,7 @@ class GenericJvmTests_10_Module {
 
         val ex = assertFailsWith<IllegalStateException> {
             DI {
+                verifyModuleNames = true
                 import(module)
                 import(module)
             }
