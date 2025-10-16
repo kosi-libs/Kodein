@@ -559,6 +559,12 @@ public interface DI : DIAware {
         public var fullContainerTreeOnError: Boolean
 
         /**
+         * If true, importing a module with a duplicate name will throw an exception.
+         * If false (default), duplicate module names are allowed.
+         */
+        public var verifyModuleNames: Boolean
+
+        /**
          * The external source is repsonsible for fetching / creating a value when DI cannot find a matching binding.
          */
         public val externalSources: MutableList<ExternalSource>
@@ -703,6 +709,7 @@ public interface DI : DIAware {
 
         public var defaultFullDescriptionOnError: Boolean = false
         public var defaultFullContainerTreeOnError: Boolean = false
+        public var defaultVerifyModuleNames: Boolean = false
     }
 
 }

@@ -22,7 +22,8 @@ internal open class DIBuilderImpl internal constructor(
     private val moduleName: String?,
     private val prefix: String,
     internal val importedModules: MutableSet<String>,
-    override val containerBuilder: DIContainerBuilderImpl
+    override val containerBuilder: DIContainerBuilderImpl,
+    protected open val verifyModuleNames: Boolean
 ) : DI.Builder {
 
     override val contextType = TypeToken.Any
@@ -276,7 +277,7 @@ internal open class DIBuilderImpl internal constructor(
 
     override fun import(module: DI.Module, allowOverride: Boolean) {
         val moduleName = prefix + module.name
-        if (moduleName.isNotEmpty() && moduleName in importedModules) {
+        if (verifyModuleNames && moduleName.isNotEmpty() && moduleName in importedModules) {
             throw IllegalStateException("Module \"$moduleName\" has already been imported!")
         }
         importedModules += moduleName
@@ -284,7 +285,8 @@ internal open class DIBuilderImpl internal constructor(
             moduleName,
             prefix + module.prefix,
             importedModules,
-            containerBuilder.subBuilder(allowOverride, module.allowSilentOverride)
+            containerBuilder.subBuilder(allowOverride, module.allowSilentOverride),
+            verifyModuleNames
         ).apply(module.init)
     }
 
@@ -311,13 +313,15 @@ internal open class DIMainBuilderImpl(allowSilentOverride: Boolean) : DIBuilderI
     null,
     "",
     HashSet(),
-    DIContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList())
+    DIContainerBuilderImpl(true, allowSilentOverride, HashMap(), ArrayList(), ArrayList()),
+    DI.defaultVerifyModuleNames
 ), DI.MainBuilder {
 
     override val externalSources: MutableList<ExternalSource> = ArrayList()
 
     override var fullDescriptionOnError: Boolean = DI.defaultFullDescriptionOnError
     override var fullContainerTreeOnError: Boolean = DI.defaultFullContainerTreeOnError
+    override var verifyModuleNames: Boolean = DI.defaultVerifyModuleNames
 
     override fun extend(di: DI, allowOverride: Boolean, copy: Copy) {
         val keys = copy.keySet(di.container.tree)
