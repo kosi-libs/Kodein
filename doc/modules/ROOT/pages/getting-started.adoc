@@ -214,9 +214,19 @@ Dependency injection is more pure in the sense that an injected class will have 
 It is however more cumbersome, and does not provide a lot of features. +
 At contrario, dependency retrieval is easier and feature full, but it requires the class to know about DI.
 
-In the end, it boils down to that question: *Do you need this class to be DI independent?*
-If you are building a library that will be used in multiple architecture, you probably do.
-If you are building an application, you probably don't.
+[WARNING]
+====
+Using _Retrieval_ means adopting the [Service Locator pattern](https://en.wikipedia.org/wiki/Service_locator_pattern), which is generally considered an **anti-pattern** and should be used sparingly. The main drawbacks are:
+
+    1. **Harder testing:** Components that retrieve dependencies directly cannot be tested in isolation without setting up the DI container.
+    2. **Reduced clarity:** Retrieval hides a component’s dependencies, making the code harder to reason about — any service might be located from anywhere, even deep inside a lambda or helper functions.
+
+====
+	
+In the end, the choice depends on your use case:
+
+    - If you are building a **library** that needs to remain independent of any DI framework, prefer **injection**.
+    - If you are building an **application**, where convenience and flexibility matter more than strict purity, **retrieval** may be acceptable.
 
 
 === Injection
