@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.kodein.di.compose.localDI
-import org.kodein.type.erased
 import org.kodein.type.generic
 
 /**
@@ -32,7 +31,7 @@ public inline fun <reified VM : ViewModel> rememberViewModel(
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { viewModelStoreOwner.viewModelStore },
-            factoryProducer = { KodeinViewModelScopedSingleton(di = di, tag = tag) }
+            factoryProducer = { KodeinViewModelScopedSingleton(di = di, tag = tag) },
         )
     }
 }
@@ -52,7 +51,7 @@ public inline fun <reified VM : ViewModel> rememberViewModel(
 @Deprecated(
     message = "Use the new Compose Multiplatform rememberViewModel instead from Kodein Framework Compose",
     ReplaceWith("rememberViewModel", "org.kodein.di.compose.viewmodel"),
-    DeprecationLevel.WARNING
+    DeprecationLevel.WARNING,
 )
 @Suppress("DEPRECATION")
 public inline fun <reified VM : ViewModel> viewModel(
@@ -62,7 +61,10 @@ public inline fun <reified VM : ViewModel> viewModel(
         ?: error("ViewModelStoreOwner is missing for LocalViewModelStoreOwner.")
 
     remember {
-        val provider = ViewModelProvider(viewModelStoreOwner, KodeinViewModelScopedSingleton(di = di, tag = tag))
+        val provider = ViewModelProvider(
+            viewModelStoreOwner,
+            KodeinViewModelScopedSingleton(di = di, tag = tag),
+        )
         if (tag == null) {
             provider[VM::class.java]
         } else {
@@ -102,9 +104,9 @@ public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
                     di = di,
                     argType = generic<A>(),
                     arg = arg,
-                    tag = tag
+                    tag = tag,
                 )
-            }
+            },
         )
     }
 }
@@ -127,7 +129,7 @@ public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
 @Deprecated(
     message = "Use the new Compose Multiplatform rememberViewModel instead from Kodein Framework Compose",
     ReplaceWith("rememberViewModel", "org.kodein.di.compose.viewmodel"),
-    DeprecationLevel.WARNING
+    DeprecationLevel.WARNING,
 )
 @Suppress("DEPRECATION")
 public inline fun <reified A : Any, reified VM : ViewModel> viewModel(
@@ -140,7 +142,7 @@ public inline fun <reified A : Any, reified VM : ViewModel> viewModel(
     remember {
         val provider = ViewModelProvider(
             viewModelStoreOwner,
-            KodeinViewModelScopedFactory(di = di, argType = generic<A>(), arg = arg, tag = tag)
+            KodeinViewModelScopedFactory(di = di, argType = generic<A>(), arg = arg, tag = tag),
         )
         if (tag == null) {
             provider[VM::class.java]

@@ -13,12 +13,6 @@ dependencies {
 
 android {
     namespace = "org.kodein.di.compose.android"
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
 }
 
 kodeinUpload {

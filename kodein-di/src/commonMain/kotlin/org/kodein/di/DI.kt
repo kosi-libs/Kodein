@@ -2,7 +2,10 @@
 
 package org.kodein.di
 
-import org.kodein.di.bindings.*
+import org.kodein.di.bindings.ContextTranslator
+import org.kodein.di.bindings.DIBinding
+import org.kodein.di.bindings.ExternalSource
+import org.kodein.di.bindings.Scope
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
 import org.kodein.type.generic
@@ -38,8 +41,7 @@ public interface DI : DIAware {
      * @property key The key that was not found.
      * @param message The message of the exception.
      */
-    public class NotFoundException(public val key: Key<*, *, *>, message: String)
-            : RuntimeException(message)
+    public class NotFoundException(public val key: Key<*, *, *>, message: String) : RuntimeException(message)
 
     /**
      * Exception thrown when searching for bindings and none could be found.
@@ -47,8 +49,7 @@ public interface DI : DIAware {
      * @property search The specs that lead to no result.
      * @param message The message of the exception.
      */
-    public class NoResultException(public val search: SearchSpecs, message: String)
-        : RuntimeException(message)
+    public class NoResultException(public val search: SearchSpecs, message: String) : RuntimeException(message)
 
     /**
      * Exception thrown when there is an overriding error.
@@ -56,6 +57,11 @@ public interface DI : DIAware {
      * @param message The message of the exception.
      */
     public class OverridingException(message: String) : RuntimeException(message)
+
+    /**
+     * Exception thrown when [new] operator's parameter instance is unused.
+     */
+    public class UnusedParameterException(message: String, cause: Exception? = null) : RuntimeException(message, cause)
 
     override val di: DI get() = this
 
@@ -74,11 +80,11 @@ public interface DI : DIAware {
      * @property tag The associated tag.
      */
     @Suppress("EqualsOrHashCode")
-    public data class Key<in C : Any, in A, out T: Any>(
-            val contextType: TypeToken<in C>,
-            val argType: TypeToken<in A>,
-            val type: TypeToken<out T>,
-            val tag: Any?
+    public data class Key<in C : Any, in A, out T : Any>(
+        val contextType: TypeToken<in C>,
+        val argType: TypeToken<in A>,
+        val type: TypeToken<out T>,
+        val tag: Any?,
     ) {
 
         /**
@@ -123,40 +129,44 @@ public interface DI : DIAware {
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this bind.
          */
-        val bindDescription: String get() = buildString {
-            append("bind<${type.simpleDispString()}>")
-            if (tag != null) {
-                append("""(tag = "$tag")""")
+        val bindDescription: String
+            get() = buildString {
+                append("bind<${type.simpleDispString()}>")
+                if (tag != null) {
+                    append("""(tag = "$tag")""")
+                }
             }
-        }
 
         /**
          * Description using full type names. The description is as close as possible to the code used to create this bind.
          */
-        val bindFullDescription: String get() = buildString {
-            append("bind<${type.qualifiedDispString()}>")
-            if (tag != null) {
-                append("""(tag = "$tag")""")
+        val bindFullDescription: String
+            get() = buildString {
+                append("bind<${type.qualifiedDispString()}>")
+                if (tag != null) {
+                    append("""(tag = "$tag")""")
+                }
             }
-        }
 
         /**
          * Description using simple type names. The description is as close as possible to the code used to create this key.
          */
-        val description: String get() = buildString {
-            append(type.simpleDispString())
-            appendDescription(TypeToken<*>::simpleDispString)
-        }
+        val description: String
+            get() = buildString {
+                append(type.simpleDispString())
+                appendDescription(TypeToken<*>::simpleDispString)
+            }
 
         val internalDescription: String get() = "(context: ${contextType.simpleDispString()}, arg: ${argType.simpleDispString()}, type: ${type.simpleDispString()}, tag: $tag)"
 
         /**
          * Description using full type names. The description is as close as possible to the code used to create this key.
          */
-        val fullDescription: String get() = buildString {
-            append(type.qualifiedDispString())
-            appendDescription(TypeToken<*>::qualifiedDispString)
-        }
+        val fullDescription: String
+            get() = buildString {
+                append(type.qualifiedDispString())
+                appendDescription(TypeToken<*>::qualifiedDispString)
+            }
     }
 
     /**
@@ -171,6 +181,7 @@ public interface DI : DIAware {
      * @param C The context type.
      */
     public interface BindBuilder<C : Any> {
+
         /**
          * The context type that will be used by all bindings that are defined in this DSL context.
          */
@@ -180,6 +191,7 @@ public interface DI : DIAware {
 
         /** @suppress */
         public class ImplWithContext<C : Any>(override val contextType: TypeToken<C>) : BindBuilder<C> {
+
             override val explicitContext: Boolean get() = true
         }
 
@@ -197,7 +209,9 @@ public interface DI : DIAware {
         }
 
         /** @suppress */
-        public class ImplWithScope<C : Any>(override val contextType: TypeToken<C>, override val scope: Scope<C>) : WithScope<C> {
+        public class ImplWithScope<C : Any>(override val contextType: TypeToken<C>, override val scope: Scope<C>) :
+            WithScope<C> {
+
             override val explicitContext: Boolean get() = true
         }
 
@@ -221,6 +235,7 @@ public interface DI : DIAware {
          * @param T The type to bind.
          */
         public interface TypeBinder<T : Any> {
+
             /**
              * Binds the previously given type and tag to the given binding.
              *
@@ -234,6 +249,7 @@ public interface DI : DIAware {
          * Left part of the delegate-binding syntax (`delegate(tag)`).
          */
         public abstract class DelegateBinder<T : Any> {
+
             /**
              * Delegates the binding of a given type with a given tag.
              *
@@ -260,11 +276,13 @@ public interface DI : DIAware {
          * Left part of the direct-binding syntax (`bind(tag)`).
          */
         public interface DirectBinder
+
         /**
          * Left part of the constant-binding syntax (`constant(tag)`).
          *
          */
         public interface ConstantBinder {
+
             /**
              * Binds the previously given tag to the given instance.
              *
@@ -274,19 +292,21 @@ public interface DI : DIAware {
              * @throws OverridingException If this bindings overrides an existing binding and is not allowed to.
              */
             @Suppress("FunctionName")
-            public fun <T: Any> With(valueType: TypeToken<out T>, value: T)
+            public fun <T : Any> With(valueType: TypeToken<out T>, value: T)
         }
 
         /**
          * Manage multiple bindings in a [Set]
          */
         public interface SetBinder<T : Any> {
+
             /**
              * Add a binding in the [Set] of type [T]
              *
              * @param createBinding The builder that should add binding in the set.
              */
             public fun add(createBinding: () -> DIBinding<*, *, out T>)
+
             /**
              * Add a binding in the [Set] of type [T], and also in the DI container
              *
@@ -300,13 +320,15 @@ public interface DI : DIAware {
         /**
          * Manage multiple bindings, with type argument, in a [Set]
          */
-        public interface ArgSetBinder<A: Any, T : Any> {
+        public interface ArgSetBinder<A : Any, T : Any> {
+
             /**
              * Add a binding in the [Set] of type [T]
              *
              * @param createBinding The builder that should add binding in the set.
              */
             public fun add(createBinding: () -> DIBinding<*, in A, out T>)
+
             /**
              * Add a binding in the [Set] of type [T], and also in the DI container
              *
@@ -314,7 +336,11 @@ public interface DI : DIAware {
              * @param overrides Whether this bind **must** or **must not** override an existing binding.
              * @param createBinding The builder that should add binding in the set.
              */
-            public fun bind(tag: Any? = null, overrides: Boolean? = null, createBinding: () -> DIBinding<*, in A, out T>)
+            public fun bind(
+                tag: Any? = null,
+                overrides: Boolean? = null,
+                createBinding: () -> DIBinding<*, in A, out T>,
+            )
         }
 
         /**
@@ -337,7 +363,7 @@ public interface DI : DIAware {
             tag: Any? = null,
             overrides: Boolean? = null,
             type: TypeToken<out T>,
-            creator: SetBinder<T>.() -> Unit
+            creator: SetBinder<T>.() -> Unit,
         )
 
         /**
@@ -351,7 +377,7 @@ public interface DI : DIAware {
             tag: Any? = null,
             overrides: Boolean? = null,
             type: TypeToken<out T>,
-            creator: SetBinder<T>.() -> Unit
+            creator: SetBinder<T>.() -> Unit,
         )
 
         /**
@@ -361,12 +387,12 @@ public interface DI : DIAware {
          * @param tag The tag to bind.
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          */
-        public fun <A: Any, T : Any> BindInArgSet(
+        public fun <A : Any, T : Any> BindInArgSet(
             tag: Any? = null,
             overrides: Boolean? = null,
             argType: TypeToken<in A>,
             type: TypeToken<out T>,
-            creator: ArgSetBinder<A, T>.() -> Unit
+            creator: ArgSetBinder<A, T>.() -> Unit,
         )
 
         /**
@@ -376,12 +402,12 @@ public interface DI : DIAware {
          * @param tag The tag to bind.
          * @param overrides Whether this bind **must** or **must not** override an existing binding.
          */
-        public fun <A: Any, T : Any> InBindArgSet(
+        public fun <A : Any, T : Any> InBindArgSet(
             tag: Any? = null,
             overrides: Boolean? = null,
             argType: TypeToken<in A>,
             type: TypeToken<out T>,
-            creator: ArgSetBinder<A, T>.() -> Unit
+            creator: ArgSetBinder<A, T>.() -> Unit,
         )
 
         /**
@@ -453,7 +479,11 @@ public interface DI : DIAware {
          * @return The binder: call [TypeBinder.with]) on it to finish the binding syntax and register the binding.
          */
         @Suppress("FunctionName")
-        public fun <T: Any> Delegate(type: TypeToken<out T>, tag: Any? = null, overrides: Boolean? = null): DelegateBinder<T>
+        public fun <T : Any> Delegate(
+            type: TypeToken<out T>,
+            tag: Any? = null,
+            overrides: Boolean? = null,
+        ): DelegateBinder<T>
 
         /**
          * Imports all bindings defined in the given [DI.Module] into this builder's definition.
@@ -522,10 +552,17 @@ public interface DI : DIAware {
          * If true, exceptions thrown will contain qualified names.
          */
         public var fullDescriptionOnError: Boolean
+
         /**
          * If true, NotFoundException thrown will contain the list of all the bindings available.
          */
         public var fullContainerTreeOnError: Boolean
+
+        /**
+         * If true, importing a module with a duplicate name will throw an exception.
+         * If false (default), duplicate module names are allowed.
+         */
+        public var verifyModuleNames: Boolean
 
         /**
          * The external source is repsonsible for fetching / creating a value when DI cannot find a matching binding.
@@ -589,9 +626,11 @@ public interface DI : DIAware {
         public val prefix: String = "",
         public val init: Builder.() -> Unit,
     ) {
+
         private var _name: String? = null
-        public val name: String get() = _name
-            ?: throw IllegalStateException("module must have a name.")
+        public val name: String
+            get() = _name
+                ?: throw IllegalStateException("module must have a name.")
 
         public constructor(
             name: String,
@@ -623,7 +662,8 @@ public interface DI : DIAware {
          * @param init The block of configuration.
          * @return The new DI object, freshly created, and ready for hard work!
          */
-        public operator fun invoke(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DI = DIImpl(allowSilentOverride, init)
+        public operator fun invoke(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DI =
+            DIImpl(allowSilentOverride, init)
 
         /**
          * Creates a [DI] instance that will be lazily created upon first access.
@@ -632,7 +672,8 @@ public interface DI : DIAware {
          * @param init The block of configuration.
          * @return A lazy property that will yield, when accessed, the new DI object, freshly created, and ready for hard work!
          */
-        public fun lazy(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): LazyDI = LazyDI { DIImpl(allowSilentOverride, init) }
+        public fun lazy(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): LazyDI =
+            LazyDI { DIImpl(allowSilentOverride, init) }
 
         /**
          * Creates a direct [DirectDI] instance that will be lazily created upon first access.
@@ -641,7 +682,8 @@ public interface DI : DIAware {
          * @param init The block of configuration.
          * @return The new DirectDI object, freshly created, and ready for hard work!
          */
-        public fun direct(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DirectDI = DIImpl(allowSilentOverride, init).direct
+        public fun direct(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): DirectDI =
+            DIImpl(allowSilentOverride, init).direct
 
         /**
          * Creates a DI object but without directly calling onReady callbacks.
@@ -656,7 +698,10 @@ public interface DI : DIAware {
          * @return a Pair with the DI object, and the callbacks function to call.
          *   Note that you *should not* use the DI object before calling the callbacks function.
          */
-        public fun withDelayedCallbacks(allowSilentOverride: Boolean = false, init: MainBuilder.() -> Unit): Pair<DI, () -> Unit> = DIImpl.withDelayedCallbacks(allowSilentOverride, init)
+        public fun withDelayedCallbacks(
+            allowSilentOverride: Boolean = false,
+            init: MainBuilder.() -> Unit,
+        ): Pair<DI, () -> Unit> = DIImpl.withDelayedCallbacks(allowSilentOverride, init)
 
         public fun from(modules: List<Module>): DI = DI {
             modules.forEach { import(it) }
@@ -664,6 +709,7 @@ public interface DI : DIAware {
 
         public var defaultFullDescriptionOnError: Boolean = false
         public var defaultFullContainerTreeOnError: Boolean = false
+        public var defaultVerifyModuleNames: Boolean = false
     }
 
 }

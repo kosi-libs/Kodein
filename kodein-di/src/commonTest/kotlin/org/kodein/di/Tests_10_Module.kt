@@ -48,6 +48,7 @@ class Tests_10_Module {
 
         val ex = assertFailsWith<IllegalStateException> {
             DI {
+                verifyModuleNames = true
                 import(module)
                 import(module)
             }
@@ -201,5 +202,32 @@ class Tests_10_Module {
         assertEquals("", test_3.prefix)
 
         assertFailsWith<IllegalStateException> { DI.Module {}.name }
+    }
+
+    @Test
+    fun test_07_ModuleImportTwiceWithVerificationDisabled() {
+        val module = DI.Module("test") {}
+
+        // Should not throw an exception when verifyModuleNames is false
+        DI {
+            verifyModuleNames = false
+            import(module)
+            import(module)
+        }
+    }
+
+    @Test
+    fun test_08_ModuleImportTwiceWithVerificationEnabled() {
+        val module = DI.Module("test") {}
+
+        val ex = assertFailsWith<IllegalStateException> {
+            DI {
+                verifyModuleNames = true
+                import(module)
+                import(module)
+            }
+        }
+
+        assertEquals("Module \"test\" has already been imported!", ex.message)
     }
 }

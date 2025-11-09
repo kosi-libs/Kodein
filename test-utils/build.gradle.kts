@@ -1,5 +1,5 @@
 plugins {
-    kodein.library.mpp
+    kodein.mpp
 }
 
 kotlin.kodein {

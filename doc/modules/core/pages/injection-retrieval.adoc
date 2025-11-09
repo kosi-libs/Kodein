@@ -1,6 +1,6 @@
 = Dependency injection & retrieval
 
-[source, kotlin]
+[source,kotlin]
 .Example bindings that are used throughout the chapter:
 ----
 val di = DI {
@@ -12,7 +12,6 @@ val di = DI {
 }
 ----
 
-
 == Retrieval rules
 
 .When retrieving a dependency, the following rules apply:
@@ -23,7 +22,6 @@ val di = DI {
 ** as a factory method: `(A) -> T`
 ** as a provider method: `() -> T` _if the argument `A` is provided at retrieval_.
 ** as an instance: `T` _if the argument `A` is provided at retrieval_.
-
 
 == Injection & Retrieval
 
@@ -37,7 +35,6 @@ Finally, in retrieval, *everything is lazy by default*, while there can be no la
 
 TIP: If you are developing a library, then you probably should use dependency *injection*, to avoid forcing the users of your library to use _Kodein-DI_ as well. +
 If you are developing an application, then you should consider using dependency *retrieval*, as it is easier to use and provides more tooling.
-
 
 === Base methods
 
@@ -54,13 +51,12 @@ All three methods can take a `tag` argument.
 ====
 The `tag` argument should always be named.
 
-[source, kotlin]
+[source,kotlin]
 .Example: Using the named tag argument.
 ----
-instance(tag = "whatever").
+instance(tag = "whatever")
 ----
 ====
-
 
 [[injection]]
 == Injection
@@ -73,48 +69,90 @@ To use dependency injection,
 
 === Simple case
 
-[source, kotlin]
+[source,kotlin]
 .Example: a MainController class with a 2 dependencies constructor.
 ----
 class MainController(val ds: DataSource, val rnd: Random) { /*...*/ }
 ----
 
-[source, kotlin]
+[source,kotlin]
 .Example: Creating a MainController by injecting its dependencies.
 ----
 val controller by di.newInstance { MainController(instance(), instance(tag = "whatever")) } // <1>
 ----
+
 <1> Note the use of the `instance` function that will inject the correct dependency.
 
 WARNING: When injecting a type that was not bound, a `DI.NotFoundException` will be thrown.
 
 If you are not sure (or simply do not know) if the type has been bound, you can use `*OrNull` methods.
 
-
 === Multi-arguments factories
 
-When injecting a value that was bound with a <<multi-argument-factories,multi-argument factory>>,
-the arguments must be wrapped inside a *data class*:
+When injecting a value that was bound with a <<multi-argument-factories,multi-argument factory>>, the arguments must be wrapped inside a *data class*:
 
-[source, kotlin]
+[source,kotlin]
 .Example: Creating a FileController by injecting a multi-argument bound dependency.
 ----
 data class ControllerParams(val path: String, val timeout: Int)
 val controller by di.newInstance { FileController(instance(args = ControllerParams("path/to/file", 0))) }
 ----
 
+=== Using the `new` function
+
+Sometimes writing `Class(instance(), instance(), instance()...)` can be cumbersome if the class has multiple
+dependencies. When declaring your bindings, you can use a short-hand function `new()`
+that automatically populates the constructor with dependencies from your graph:
+
+[source,kotlin]
+----
+class MainController(val ds: DataSource, val rnd: Random) { /*...*/ }
+
+val di = DI {
+    bindSingleton { new(::MainController) }
+    bindProvider { new(::MainController) }
+}
+----
+
+This function is available for classes with up to 22 constructor parameters.
+
+This function also supports using arguments, such as those in `bindFactory` or `bindMultiton` functions.
+For them, provide your argument type in the lambda parameter (that way you don't need to specify type arguments),
+and then pass it as the first parameter to the `new` function:
+
+[source,kotlin]
+----
+class MainController(val rnd: Random, val param: String) // notice param is not the first
+
+val di = DI {
+    bindMultiton { param: String -> new(param, ::MainController) }
+    bindFactory { param: String -> new(param, ::MainController) }
+}
+----
+
+If you do that, the `new` function will iterate through all parameters of the class's constructor and try to find
+**the first match** of the argument type (`String` in the example above).
+
+- If the types don't match, it will try to resolve the dependency from the graph.
+- The parameter is only used **once** at the **first occurrence**.
+  After the first usage, any matching types will be resolved from the container instead.
+- Make sure you use the argument in the parameter list at least once, otherwise `DI.UnusedParameterException` will be
+  thrown at **retrieval** time, as unused arguments are very likely developer errors.
+
+WARNING: Avoid subtyping (inheritance) for your arguments, as resolving the argument subclasses correctly is only
+supported on the JVM at the moment due to compiler limitations.
 
 === Currying factories
 
 You can retrieve a provider or an instance from a factory bound type by using the `arg` parameter (this is called _currying_).
 
-[source, kotlin]
+[source,kotlin]
 .Example: a RollController class with a constructor dependency bound to a factory.
 ----
 class RollController(val dice: Dice) { /*...*/ }
 ----
 
-[source, kotlin]
+[source,kotlin]
 .Example: Creating a RollController by injecting its dependency.
 ----
 val controller by di.newInstance { RollController(instance(arg = 6)) }
@@ -122,7 +160,7 @@ val controller by di.newInstance { RollController(instance(arg = 6)) }
 
 Note that if you want to bind a factory with multiple argument, you need to use a *data class* to pass multiple arguments:
 
-[source, kotlin]
+[source,kotlin]
 .Example: Creating a multi-argument RollController by injecting its dependency.
 ----
 data class Params(val arg1: Int, val arg2: Int)
@@ -131,13 +169,12 @@ val controller by di.newInstance { RollController(instance(arg = Params(60, 6)))
 
 TIP: The `arg` argument should always be named.
 
-
 === Defining context
 
 When retrieving, you sometimes need to manually define a context (for example, when retrieving a scoped singleton).
 For this, you can use the `on` method:
 
-[source, kotlin]
+[source,kotlin]
 .Example: Setting a global context.
 ----
 val controller by di.on(context = myContext).newInstance { OtherController(instance(arg = 6), instance()) }
@@ -154,8 +191,6 @@ When that happens, you can define a lazy context that will be accessed only when
 val controller by di.on { requireActivity() } .newInstance { OtherController(instance(arg = 6), instance()) }
 ----
 
-
-
 [[retrieval-di-container]]
 == Retrieval: the DI container
 
@@ -171,12 +206,11 @@ This allows:
 
 If you want "direct" retrieval, well, there's a section named <<direct-retrieval,direct retrieval>>, how about that!
 
-
 === _Kodein-DI_ methods
 
 You can retrieve a bound type via a DI instance.
 
-[source, kotlin]
+[source,kotlin]
 .Example: retrieving bindings
 ----
 val diceFactory: (Int) -> Dice by di.factory()
@@ -197,7 +231,7 @@ WARNING: When asking for a type that was not bound, a `DI.NotFoundException` wil
 
 If you are not sure (or simply do not know) if the type has been bound, you can use `*OrNull` methods.
 
-[source, kotlin]
+[source,kotlin]
 .Example: retrieving bindings that may not have been bound
 ----
 val diceFactory: ((Int) -> Dice)? by di.factoryOrNull()
@@ -206,34 +240,31 @@ val randomProvider: (() -> Random)? by di.providerOrNull()
 val answerConstant: String? by di.instanceOrNull(tag = "answer")
 ----
 
-
 === Constants
 
 If you bound <<constant-binding,constants>>, you can easily retrieve them with the constant method if the name of the property matches the tag:
 
-[source, kotlin]
+[source,kotlin]
 .Example: retrieving a constant
 ----
 val answer: String by di.constant()
 ----
 
-
 === Named bindings
 
 If you used <<tagged-bindings,tagged bindings>>, if the tag is a `String` and the property name matches the tag, instead of passing it as argument, you can use `named`:
 
-[source, kotlin]
+[source,kotlin]
 .Example: retrieving a named binding
 ----
 val answer: String by di.named.instance()
 ----
 
-
 === Multi-arguments factories
 
 When retrieving a value that was bound with a <<multi-argument-factories,multi-argument factory>>, the arguments must be wrapped inside a *data class*:
 
-[source, kotlin]
+[source,kotlin]
 .Example: Creating a MainController by injecting a multi-argument bound dependency.
 ----
 data class FileParams(val path: String, val maxSize: Int)
@@ -244,18 +275,19 @@ val fileAccess: FileAccess by di.instance(args = FileParams("/path/to/file", 0))
 
 Instead of retrieving a value, you can retrieve a factory, that can call as much as you need.
 
-[source, kotlin]
+[source,kotlin]
 .Example: Retrieving factory.
 ----
 val f1: (Int) -> Int by di.factory() <1>
 ----
+
 <1> retrieving a factory that takes 1 argument (Int) and return an Int
 
 === Currying factories
 
 You can retrieve a provider or an instance from a factory bound type by using the `arg` parameter (this is called _currying_).
 
-[source, kotlin]
+[source,kotlin]
 .Example: currying factories
 ----
 val sixSideDiceProvider: () -> Dice by di.provider(arg = 6)
@@ -264,22 +296,22 @@ val twentySideDice: Dice by di.instance(arg = 20)
 
 Note that if you bound a factory with multiple arguments, you need to use a *data class* to pass multiple arguments:
 
-[source, kotlin]
+[source,kotlin]
 .Example: Creating a multi-argument Dice by injecting its dependency.
 ----
 data class DiceParams(val startNumber: Int, val sides: Int)
 val sixtyToSixtySixDice: Dice by di.instance(arg = DiceParams(60, 6)) <1>
 ----
+
 <1> Bonus points if you can say the variable name 5 times in less than 5 seconds ;)
 
 TIP: The `arg` argument should always be named.
-
 
 === Defining context
 
 Whether you are using a scoped singleton/multiton or using a context in the target binding, you may need to specify a context.
 
-[source, kotlin]
+[source,kotlin]
 .Example: Getting a Session after setting the Request context.
 ----
 val session: Session by di.on(context = request).instance()
@@ -287,7 +319,7 @@ val session: Session by di.on(context = request).instance()
 
 If you retrieve multiple dependencies all using the same context, you can create a new `DI` object with the context set:
 
-[source, kotlin]
+[source,kotlin]
 .Example: creating a DI object with the Request context.
 ----
 val reqDI = di.on(context = request)
@@ -299,13 +331,12 @@ TIP: The `context` argument should always be named.
 NOTE: Using a global context does not forces you to use only bindings that are declared with this type of context.
 Because the default context is `Any?`, all non-contexted bindings will still be available with a global context set.
 
-
 === Using a Trigger
 
 There is a mechanism that allows you to decide when dependencies are actually retrieved if you want them to be retrieved at a particular time and not at first access.
 This mechanism is called a Trigger.
 
-[source, kotlin]
+[source,kotlin]
 .Example: using a trigger.
 ----
 val trigger = DITrigger()
@@ -313,12 +344,13 @@ val dice: Dice by di.on(trigger = trigger).instance()
 /*...*/
 trigger.trigger() <1>
 ----
+
 <1> Retrieval happens now.
 
 You can, of course, assign multiple properties to the same trigger.
 You can also create a DI object that has a given trigger by default:
 
-[source, kotlin]
+[source,kotlin]
 .Example: creating a DI object with a trigger.
 ----
 val trigger = DITrigger()
@@ -333,7 +365,6 @@ TIP: The `trigger` argument should always be named.
 NOTE: A trigger allows you to "force" retrieval.
 However, retrieval can still happen before `inject()` is called if the variable is accessed.
 
-
 === Lazy access
 
 _Kodein-DI_ proposes a `LazyDI` object that allows you to lazily access the DI object only when needed.
@@ -344,7 +375,7 @@ This is useful if:
 
 For this, you can use a `LazyDI`:
 
-[source, kotlin]
+[source,kotlin]
 .Example: Using a LazyDI.
 ----
 val di = LazyDI { /* access to a di instance */ }
@@ -352,11 +383,12 @@ val ds: DataSource by di.instance()
 /*...*/
 dice.roll() <1>
 ----
+
 <1> Only then will the DI instance will itself be retrieved.
 
 Note that you can also lazily create a `DI` object so that the bindings definition function will only be called when the first retrieved property is needed:
 
-[source, kotlin]
+[source,kotlin]
 .Example: Using a lazy DI.
 ----
 val di by DI.lazy {
@@ -366,14 +398,14 @@ val env: Env by di.instance()
 /*...*/
 env.doSomething() <1>
 ----
-<1> Only then will the DI instance will itself be created, and the bindings definition function ran.
 
+<1> Only then will the DI instance will itself be created, and the bindings definition function ran.
 
 === Late init
 
 _Kodein-DI_ proposes a `LateInitDI` that allows you to define a DI object _after_ some lazy retrieval:
 
-[source, kotlin]
+[source,kotlin]
 .Example: Using a LateInitDI.
 ----
 val di = LateInitDI()
@@ -383,23 +415,23 @@ di.baseDI = /* access to a di instance */ <1>
 /*...*/
 env.doSomething() <2>
 ----
+
 <1> Setting the real DI object.
 <2> If this was run before setting `di.baseDI`, an `UninitializedPropertyAccessException` would be thrown.
-
 
 === All matches
 
 _Kodein-DI_ allows you to retrieve all instances that matches a given type:
 
-[source, kotlin]
+[source,kotlin]
 .Example: all instances of Foo.
 ----
 val instances: List<Foo> by di.allInstances() <1>
 ----
+
 <1> Will return all instances that are for bindings of sub-classes of `Foo`
 
 NOTE: Of course, `allProviders` and `allFactories` are also provided ;)
-
 
 [[di-aware]]
 == Retrieval: being DIAware
@@ -409,7 +441,7 @@ NOTE: Of course, `allProviders` and `allFactories` are also provided ;)
 You can have classes that implement the interface `DIAware`. +
 Doing so has the benefit of getting a simpler syntax for retrieval.
 
-[source, kotlin]
+[source,kotlin]
 .Example: a DIAware class
 ----
 class MyManager(override val di: DI) : DIAware {
@@ -424,12 +456,11 @@ class MyManager(override val di: DI) : DIAware {
 
 All methods that are available to the DI container are available to a `DIAware` class.
 
-
 === Class global context
 
 In a `DIAware` class, to define a context that's valid for the entire class, you can simply override the `diContext` property:
 
-[source, kotlin]
+[source,kotlin]
 .Example: a DIAware class with a context
 ----
 class MyManager(override val di: DI) : DIAware {
@@ -437,6 +468,7 @@ class MyManager(override val di: DI) : DIAware {
     /*...*/
 }
 ----
+
 <1> Note the use of the `diContext` function that creates a `DIContext` with the given value.
 
 NOTE: Using a global context does not forces you to use only bindings that are declared with this type of context.
@@ -445,7 +477,7 @@ Because the default context is `Any?`, all non-contexted bindings will still be 
 Sometimes, the context is not available directly at construction.
 When that happens, you can define a lazy context that will be accessed only when needed.
 
-[source, kotlin]
+[source,kotlin]
 .Example: a DIAware class with a context
 ----
 class MyManager(override val di: DI) : DIAware {
@@ -454,13 +486,12 @@ class MyManager(override val di: DI) : DIAware {
 }
 ----
 
-
 === Class global trigger
 
 If you want to have all dependency properties retrieved at once, you can use a class global trigger.
 Simply override the `diTrigger` property:
 
-[source, kotlin]
+[source,kotlin]
 .Example: a DIAware class with a trigger
 ----
 class MyManager(override val di: DI) : DIAware {
@@ -472,15 +503,15 @@ class MyManager(override val di: DI) : DIAware {
     }
 }
 ----
-<1> Retrieval of all dependencies happens now.
 
+<1> Retrieval of all dependencies happens now.
 
 === Lazy access
 
 Some classes (such as Android Activities) do not have access to a `DI` instance at the time of construction, but only later when they have been properly connected to their environment (Android context). +
 Because DI is lazy by default, this does not cause any issue: simply have the `di` property be lazy by itself:
 
-[source, kotlin]
+[source,kotlin]
 .Example: an Activity class with a lazy-loaded `di`
 ----
 class MyActivity : Activity(), DIAware {
@@ -488,16 +519,16 @@ class MyActivity : Activity(), DIAware {
     val ds: DataSource by instance() <1>
 }
 ----
+
 <1> Because `ds` is lazily retrieved, access to the `di` property will only happen at first retrieval.
 
 NOTE: There is an official module to ease the use of DI in Android, you can read more about it on xref:framework:android.adoc[the dedicated document].
-
 
 === Lateinit
 
 Because everything is lazy and, in a DIAware class, the DI object is not accessed until needed, you can easily declare the `di` field as lateinit.
 
-[source, kotlin]
+[source,kotlin]
 .Example: an Activity class with a lateinit `di`
 ----
 class MyActivity : Activity(), DIAware {
@@ -508,22 +539,22 @@ class MyActivity : Activity(), DIAware {
     }
 }
 ----
-<1> Because `ds` is lazily retrieved, access to the `di` property will only happen at first retrieval.
 
+<1> Because `ds` is lazily retrieved, access to the `di` property will only happen at first retrieval.
 
 === All matches
 
 _Kodein-DI_ allows you to retrieve all instances that matches a given type:
 
-[source, kotlin]
+[source,kotlin]
 .Example: all instances of Foo.
 ----
 val instances: List<Foo> = di.allInstances() <1>
 ----
+
 <1> Will return all instances that are for bindings of sub-classes of `Foo`
 
 NOTE: Of course, `allProviders` and `allFactories` are also provided ;)
-
 
 [[direct-retrieval]]
 == Retrieval: Direct
@@ -537,7 +568,7 @@ However, because it is direct, `DirectDI` does *NOT* feature:
 - Laziness: the instance/provider/factory is fetched at call time.
 - Receiver awareness: receiver is defined by the Kotlin's delegated properties mechanism.
 
-[source, kotlin]
+[source,kotlin]
 .Example: using a DirectDI
 ----
 val directDI = di.direct
@@ -551,22 +582,22 @@ val controller = directDI.newInstance { MainController(instance(), instance(tag 
 ====
 If you only plan to use direct access, you can define your main di object to be a `DirectDI`:
 
-[source, kotlin]
+[source,kotlin]
 .Example: using a DirectDI
 ----
 val di = DI.direct { <1>
         /* bindings */
     }
 ----
+
 <1>: Note the `.direct`.
 ====
-
 
 === Being DirectDIAware
 
 Much like `DI` offers `DIAware`, `DirectDI` offers `DirectDIAware`
 
-[source, kotlin]
+[source,kotlin]
 .Example: a DirectDIAware class
 ----
 class MyManager(override val directDI: DirectDI) : DirectDIAware {
@@ -579,13 +610,12 @@ class MyManager(override val directDI: DirectDI) : DirectDIAware {
 }
 ----
 
-
 === In Java
 
 While _Kodein-DI_ does not allow you to declare modules or dependencies in Java, it does allow you to retrieve dependencies via `DirectDI`.
 Simply give the DirectDI instance to your Java classes, use _Kodein-DI_ in Java with the `erased` static function:
 
-[source, java]
+[source,java]
 .Example: using _Kodein-DI_ in Java
 ----
 import static org.kodein.type.erased;
@@ -609,7 +639,7 @@ public class JavaClass {
 Remember that Java is subject to type erasure.
 Therefore, if you registered a generic Class binding such as `bind<List<String>>()`, in order to retrieve it you have to use `TypeReference` to circumvent Java's type erasure.
 
-[source, java]
+[source,java]
 .Example: using TypeReference in Java
 ----
 class JavaClass {
@@ -622,13 +652,12 @@ class JavaClass {
 ----
 ====
 
-
 == Error messages
 
 By default, _Kodein-DI_ error messages contains the classes simple names (e.g. `View`), which makes it easily readable. +
 If you want the error to contain classes full names (e.g. `com.company.app.UserController.View`), you can set `fullDescriptionOnError`:
 
-[source, kotlin]
+[source,kotlin]
 .Example: showing qualified names in errors
 ----
 val di = DI {
@@ -638,11 +667,10 @@ val di = DI {
 
 If you are using multiple DI instances, you can set the default value `fullDescriptionOnError` for all subsequently created DI instances:
 
-[source, kotlin]
+[source,kotlin]
 .Example: showing qualified names in all di instances errors
 ----
 DI.defaultFullDescriptionOnError = true
 ----
 
 CAUTION: `DI.defaultFullDescriptionOnError` must be set *before* creating a DI instance.
-

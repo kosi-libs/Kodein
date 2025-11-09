@@ -1,10 +1,11 @@
 package org.kodein.di
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import org.kodein.di.test.FixMethodOrder
 import org.kodein.di.test.MethodSorters
 import org.kodein.di.test.Person
-import kotlin.test.Test
-import kotlin.test.assertSame
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class Tests_02_Singleton {
@@ -84,4 +85,30 @@ class Tests_02_Singleton {
 
         assertSame(p1(), p2())
     }
+
+    @Test
+    fun test_07_KClassBindingWithSingleton() {
+        val di = DI {
+            bind(Person::class) with singleton { Person() }
+        }
+
+        val p1: Person by di.instance()
+        val p2: Person by di.instance()
+
+        assertSame(p1, p2)
+    }
+
+    @Test
+    fun test_08_KClassBindingWithTaggedSingleton() {
+        val di = DI {
+            bind(Person::class, tag = "person") with singleton { Person("Tagged") }
+        }
+
+        val p1: Person by di.instance(tag = "person")
+        val p2: Person by di.instance(tag = "person")
+
+        assertSame(p1, p2)
+        assertEquals("Tagged", p1.name)
+    }
+
 }

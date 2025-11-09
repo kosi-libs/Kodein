@@ -1,10 +1,13 @@
 package org.kodein.di
 
-import org.kodein.di.test.FixMethodOrder
-import org.kodein.di.test.MethodSorters
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.kodein.di.bindings.overriddenInstanceOf
+import org.kodein.di.test.FixMethodOrder
+import org.kodein.di.test.MethodSorters
+import org.kodein.di.test.Person
+
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class Tests_14_Override {
@@ -55,11 +58,36 @@ class Tests_14_Override {
     fun test_04_OverrideWithSuper() {
         val di = DI(allowSilentOverride = true) {
             bind<String>(tag = "name") with instance("Salomon")
-            bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " BRYS" }
-            bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " of France" }
+            bindSingleton<String>(
+                tag = "name",
+                overrides = true,
+            ) {
+                val s = overriddenInstance()
+                "$s BRYS"
+            }
+            bindSingleton<String>(
+                tag = "name",
+                overrides = true,
+            ) {
+                val s = overriddenInstance()
+                "$s of France"
+            }
         }
 
         assertEquals("Salomon BRYS of France", di.direct.instance("name"))
+    }
+
+    @Test
+    fun test_04c_OverrideWithSuper_ClassCastException() {
+        val di = DI(allowSilentOverride = true) {
+            bind<Int>() with instance(20)
+            bindSingleton<Int>(overrides = true) {
+                val s: String = overriddenInstanceOf()
+                22 + s.toInt()
+            }
+        }
+
+        assertFailsWith<ClassCastException> { di.direct.instance<Int>() }
     }
 
     @Test
@@ -67,8 +95,14 @@ class Tests_14_Override {
 
         val di = DI {
             bind<String>(tag = "name") with singleton { instance<String>(tag = "title") + " Salomon " }
-            bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " BRYS " }
-            bind<String>(tag = "name", overrides = true) with singleton { (overriddenInstance() as String) + " of France" }
+            bindSingleton<String>(
+                tag = "name",
+                overrides = true,
+            ) { (overriddenInstance() as String) + " BRYS " }
+            bindSingleton<String>(
+                tag = "name",
+                overrides = true,
+            ) { (overriddenInstance() as String) + " of France" }
             bind<String>(tag = "title") with singleton { instance<String>(tag = "name") + " the great" }
 
         }
@@ -213,8 +247,14 @@ class Tests_14_Override {
     fun test_17_SimpleBinding_OverrideWithSuper() {
         val di = DI(allowSilentOverride = true) {
             bindInstance(tag = "name") { "Salomon" }
-            bind(tag = "name", overrides = true) { singleton { (overriddenInstance() as String) + " BRYS" } }
-            bind(tag = "name", overrides = true) { singleton { (overriddenInstance() as String) + " of France" } }
+            bindSingleton(
+                tag = "name",
+                overrides = true,
+            )  { (overriddenInstance() as String) + " BRYS" }
+            bindSingleton(
+                tag = "name",
+                overrides = true,
+            )  { (overriddenInstance() as String) + " of France" }
         }
 
         assertEquals("Salomon BRYS of France", di.direct.instance("name"))
@@ -225,8 +265,14 @@ class Tests_14_Override {
 
         val di = DI {
             bind(tag = "name") { singleton { instance<String>(tag = "title") + " Salomon " } }
-            bind(tag = "name", overrides = true) { singleton { (overriddenInstance() as String) + " BRYS " } }
-            bind(tag = "name", overrides = true) { singleton { (overriddenInstance() as String) + " of France" } }
+            bindSingleton(
+                tag = "name",
+                overrides = true,
+            )  { (overriddenInstance() as String) + " BRYS " }
+            bindSingleton(
+                tag = "name",
+                overrides = true,
+            )  { (overriddenInstance() as String) + " of France" }
             bind(tag = "title") { singleton { instance<String>(tag = "name") + " the great" } }
 
         }
@@ -282,4 +328,36 @@ class Tests_14_Override {
             }
         }
     }
+
+    @Test
+    fun test_22_KClassBindingWithOverrides() {
+        val di = DI {
+            bind(Person::class) with singleton { Person("First") }
+            bind(Person::class, overrides = true) with singleton { Person("Second") }
+        }
+
+        val p: Person by di.instance()
+
+        assertEquals("Second", p.name)
+    }
+
+
+    private inline fun <reified T : String> uppercase(t: T): String = t.toString().uppercase()
+
+    @Test
+    fun test_23_OverrideWithSuper_Reified() {
+        val di = DI(allowSilentOverride = true) {
+            bind<String>() with instance("Salomon")
+            bindSingleton {
+                uppercase<String>(overriddenInstanceOf())
+            }
+            bindSingleton {
+                val s: String = overriddenInstanceOf()
+                "$s of France"
+            }
+        }
+
+        assertEquals("SALOMON of France", di.direct.instance())
+    }
+
 }
