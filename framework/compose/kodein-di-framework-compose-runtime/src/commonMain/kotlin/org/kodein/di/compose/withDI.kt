@@ -4,6 +4,9 @@ package org.kodein.di.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import org.kodein.di.DI
 import org.kodein.di.DIContext
 import org.kodein.di.On
@@ -16,8 +19,14 @@ import org.kodein.di.diContext
  * @param content underlying [Composable] tree that will be able to consume the [DI] container
  */
 @Composable
-public fun withDI(builder: DI.MainBuilder.() -> Unit, content: @Composable () -> Unit): Unit =
-    CompositionLocalProvider(LocalDI provides DI { builder() }) { content() }
+public inline fun withDI(
+    noinline builder: DI.MainBuilder.() -> Unit,
+    crossinline content: @Composable () -> Unit,
+) {
+    val currentBuilder by rememberUpdatedState(builder)
+    val di = remember { DI { currentBuilder() } }
+    CompositionLocalProvider(LocalDI provides di) { content() }
+}
 
 /**
  * Creates a [DI] container and imports [DI.Module]s before attaching it to the underlying [Composable] tree
@@ -26,8 +35,10 @@ public fun withDI(builder: DI.MainBuilder.() -> Unit, content: @Composable () ->
  * @param content underlying [Composable] tree that will be able to consume the [DI] container
  */
 @Composable
-public fun withDI(vararg diModules: DI.Module, content: @Composable () -> Unit): Unit =
-    CompositionLocalProvider(LocalDI provides DI { importAll(*diModules) }) { content() }
+public inline fun withDI(
+    vararg diModules: DI.Module,
+    crossinline content: @Composable () -> Unit,
+): Unit = withDI(builder = { importAll(*diModules) }, content)
 
 /**
  * Attaches a [DI] container to the underlying [Composable] tree
@@ -36,8 +47,10 @@ public fun withDI(vararg diModules: DI.Module, content: @Composable () -> Unit):
  * @param content underlying [Composable] tree that will be able to consume the [DI] container
  */
 @Composable
-public fun withDI(di: DI, content: @Composable () -> Unit): Unit =
-    CompositionLocalProvider(LocalDI provides di) { content() }
+public inline fun withDI(
+    di: DI,
+    crossinline content: @Composable () -> Unit,
+): Unit = CompositionLocalProvider(LocalDI provides di) { content() }
 
 /**
  * Attaches a DI context to the underlying [Composable] tree
@@ -47,9 +60,13 @@ public fun withDI(di: DI, content: @Composable () -> Unit): Unit =
  */
 @Suppress("FunctionName")
 @Composable
-public fun OnDIContext(context: DIContext<*>, content: @Composable () -> Unit) {
+public inline fun OnDIContext(
+    context: DIContext<*>,
+    crossinline content: @Composable () -> Unit,
+) {
     val di = localDI()
-    CompositionLocalProvider(LocalDI provides di.On(context)) { content() }
+    val ctx = remember(di, context) { di.On(context) }
+    CompositionLocalProvider(LocalDI provides ctx) { content() }
 }
 
 /**
@@ -61,5 +78,9 @@ public fun OnDIContext(context: DIContext<*>, content: @Composable () -> Unit) {
 @Composable
 public inline fun <reified C : Any> onDIContext(
     context: C,
-    crossinline content: @Composable () -> Unit
-): Unit = OnDIContext(diContext(context)) { content() }
+    crossinline content: @Composable () -> Unit,
+) {
+    val di = localDI()
+    val ctx = remember(di, context) { di.On(diContext(context)) }
+    CompositionLocalProvider(LocalDI provides ctx) { content() }
+}

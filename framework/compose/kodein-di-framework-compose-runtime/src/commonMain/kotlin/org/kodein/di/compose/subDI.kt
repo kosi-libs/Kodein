@@ -4,6 +4,9 @@ package org.kodein.di.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import org.kodein.di.Copy
 import org.kodein.di.DI
 
@@ -20,14 +23,17 @@ import org.kodein.di.DI
  * @param content underlying [Composable] tree that will be able to consume the [DI] container
  */
 @Composable
-public fun subDI(
+public inline fun subDI(
     parentDI: DI,
     allowSilentOverride: Boolean = false,
     copy: Copy = Copy.NonCached,
-    diBuilder: DI.MainBuilder.() -> Unit,
-    content: @Composable () -> Unit
+    noinline diBuilder: DI.MainBuilder.() -> Unit,
+    crossinline content: @Composable () -> Unit
 ) {
-    val di = org.kodein.di.subDI(parentDI, allowSilentOverride, copy) { diBuilder() }
+    val currentBuilder by rememberUpdatedState(diBuilder)
+    val di = remember(parentDI, allowSilentOverride, copy) {
+        org.kodein.di.subDI(parentDI, allowSilentOverride, copy) { currentBuilder() }
+    }
     CompositionLocalProvider(LocalDI provides di) { content() }
 }
 
@@ -43,9 +49,9 @@ public fun subDI(
  * @param content underlying [Composable] tree that will be able to consume the [DI] container
  */
 @Composable
-public fun subDI(
+public inline fun subDI(
     allowSilentOverride: Boolean = false,
     copy: Copy = Copy.NonCached,
-    diBuilder: DI.MainBuilder.() -> Unit,
-    content: @Composable () -> Unit
+    noinline diBuilder: DI.MainBuilder.() -> Unit,
+    crossinline content: @Composable () -> Unit
 ): Unit = subDI(localDI(), allowSilentOverride, copy, diBuilder, content)

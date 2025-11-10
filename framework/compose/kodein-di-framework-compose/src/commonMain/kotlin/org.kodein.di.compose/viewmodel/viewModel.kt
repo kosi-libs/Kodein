@@ -14,7 +14,7 @@ import org.kodein.type.generic
  *
  * @param VM the type of the ViewModel to be remembered.
  * @param tag an optional tag to filter the bindings in the DI container.
- *
+ * If changed during composition, a new instance will be created.
  * @return ViewModelLazy<VM> an instance of ViewModelLazy with the specified ViewModel type.
  * @throws IllegalStateException if no DI container is attached to the Composable tree.
  */
@@ -25,7 +25,7 @@ public inline fun <reified VM : ViewModel> rememberViewModel(
     val viewModelStoreOwner = LocalViewModelStoreOwner.current
         ?: error("ViewModelStoreOwner is missing for LocalViewModelStoreOwner.")
 
-    remember {
+    remember(di, tag) {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { viewModelStoreOwner.viewModelStore },
@@ -40,8 +40,10 @@ public inline fun <reified VM : ViewModel> rememberViewModel(
  *
  * @param A The type of argument to be passed to the ViewModel constructor.
  * @param VM The type of ViewModel to be created.
- * @param tag The optional tag to be used for resolving ViewModel instance from DI container.
+ * @param tag The optional tag to be used for resolving ViewModel instance from DI container. If changed during
+ * composition, a new instance will be created
  * @param arg The argument value to be passed to the ViewModel constructor.
+ * If changed during composition, a new instance will be created.
  * @return [ViewModelLazy] instance representing the remembered ViewModel.
  * @throws [error] if ViewModelStoreOwner is missing for LocalViewModelStoreOwner.
  */
@@ -53,7 +55,7 @@ public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
     val viewModelStoreOwner = LocalViewModelStoreOwner.current
         ?: error("ViewModelStoreOwner is missing for LocalViewModelStoreOwner.")
 
-    remember {
+    remember(tag, arg, di) {
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { viewModelStoreOwner.viewModelStore },
