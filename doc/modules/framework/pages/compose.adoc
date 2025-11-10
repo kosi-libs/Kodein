@@ -370,6 +370,53 @@ fun ContentView() {
 
 TIP: the `rememberX` functions will preserve the retrieved instance on every composition.
 
+==== Reactive dependency re-injection
+
+All `rememberX` functions follow Compose's reactive principles:
+*when the DI container, tag, or argument parameters change during composition, a new instance will be retrieved*.
+This ensures that your dependencies stay synchronized with your UI state.
+
+IMPORTANT: Changing a `tag` or `arg` parameter will drop the previous instance and retrieve a new one matching the updated values.
+
+[source,kotlin]
+.Example: Re-injection when parameters change
+----
+@Composable
+fun UserView(userId: String) {
+    val userRepo: UserRepository by rememberInstance(arg = userId) // <1>
+}
+
+@Composable
+fun ThemeView(isDarkMode: Boolean) {
+    val tag = if (isDarkMode) "dark" else "light"
+    val themeConfig: ThemeConfig by rememberInstance(tag = tag) // <2>
+}
+----
+
+<1> When `userId` changes, a new `UserRepository` instance is retrieved with the new ID.
+<2> When `isDarkMode` changes, a different `ThemeConfig` instance is retrieved based on the new tag.
+
+===== Lambda arguments: `fArg`
+
+When using the lambda form `fArg`, the lambda is evaluated at *first usage* and then cached.
+Changing variables captured by `fArg` will *not* cause re-injection.
+
+[source,kotlin]
+.Example: Lambda argument behavior
+----
+@Composable
+fun DataView(currentFilter: String) {
+    val data: Data by rememberInstance(fArg = { currentFilter }) // <1>
+    val data2: Data by rememberInstance(arg = currentFilter) // <2>
+}
+----
+
+<1> `fArg` captures `currentFilter` but does *not* re-inject when it changes.
+<2> `arg` directly uses `currentFilter` and *will* re-inject when it changes.
+
+TIP: Use `arg` when you need reactive re-injection.
+Use `fArg` only when you want to capture the initial value without re-injection.
+
 == Working with Compose ViewModels in a `@Composable`
 
 NOTE: This functionality is only available in the `kodein-di-framework-compose` module, not in the `kodein-di-framework-compose-runtime` module.
@@ -391,6 +438,25 @@ fun App() {
 
 <1> Retrieves the `MyViewModel` from the DI container.
 <2> Consume a `state` property of the `MyViewModel`.
+
+=== Reactive ViewModel re-creation
+
+ViewModels follow the same reactive principles as other bindings.
+When the DI container, `tag`, or `arg` parameters change, a *new ViewModel instance* will be created.
+
+[source,kotlin]
+.Example: ViewModel with arguments
+----
+@Composable
+fun DetailsScreen(itemId: String) {
+    val viewModel: DetailsViewModel by rememberViewModel(arg = itemId) // <1>
+}
+----
+
+<1> When `itemId` changes, a new `DetailsViewModel` instance is created with the new ID.
+
+WARNING: Changing parameters creates a new ViewModel instance, meaning the previous ViewModel's state is lost.
+Ensure this matches your intended behavior.
 
 == Android specific usage
 
@@ -447,3 +513,19 @@ composable("/details/{id}") { backStackEntry ->
 
 <1> Retrieves the `MyViewModel` from the DI container.
 In both cases, it is the same instance of `MyViewModel`.
+
+Navigation ViewModels also support reactive re-creation when using `tag` or `arg` parameters:
+
+[source,kotlin]
+.ViewModel with navigation arguments
+----
+composable("/details/{id}") { backStackEntry ->
+    val itemId = backStackEntry.arguments?.getString("id") ?: ""
+    val viewModel: DetailsViewModel by backStackEntry.navGraphViewModel(
+        navHostController = navHostController,
+        arg = itemId // <1>
+    )
+}
+----
+
+<1> When `itemId` changes during navigation, a new `DetailsViewModel` instance is created.
