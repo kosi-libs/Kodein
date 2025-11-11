@@ -7,17 +7,17 @@ android-appcompat = "28.0.0"
 androidx-appcompat = "1.7.1"
 androidx-fragment = "1.8.9"
 androidx-lifecycle = "2.9.4"
-androidx-compose = "2.9.4"
-compose-bom = "2025.09.00"
+androidx-compose = "2.9.6"
+compose-bom = "2025.11.00"
 # Compose Multiplatform
-compose-multiplatform = "1.9.0"
-cmp-lifecycle = "2.9.4"
-cmp-navigation = "2.9.0"
+compose-multiplatform = "1.9.3"
+cmp-lifecycle = "2.9.6"
+cmp-navigation = "2.9.1"
 # KSP
 kotlinpoet = "2.2.0"
 ksp = "1.9.20-1.0.14"
 # Ktor
-ktor = "3.3.0"
+ktor = "3.3.2"
 # JxInject
 javax-inject = "1"
 # TornadoFX

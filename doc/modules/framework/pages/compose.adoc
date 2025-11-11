@@ -18,6 +18,14 @@ Here is a table containing the version compatibility:
 |JetBrains Compose
 |Kotlin
 
+|7.29.0
+|Compose 1.9.3
+|2.2.21
+
+|7.28.0
+|Compose 1.9.0
+|2.2.20
+
 |7.27.0
 |Compose 1.8.2
 |2.2.0
