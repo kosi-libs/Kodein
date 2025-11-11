@@ -2,10 +2,10 @@
 
 ## What's Changed
 * Fixed DSL receiver scope issue (#478): Applied `@DslMarker` to DSL receiver interfaces to prevent accidental calls to outer receiver methods
-* Added convenience methods to `SetBinder` and `ArgSetBinder` for cleaner syntax:
-  * `SetBinder`: `addSingleton()`, `addProvider()`, `addInstance()`
-  * `ArgSetBinder`: `addFactory()`, `addMultiton()`
-  * Example: `addSingleton { Foo() }` instead of `add { singleton { Foo() } }`
+* Added convenience methods for multi-binding:
+    * `add*` methods (set-only): `addSingleton`, `addProvider`, `addInstance`, `addFactory`, `addMultiton`
+    * `bind*` methods (set + container): `bindSingleton`, `bindProvider`, `bindInstance`, `bindFactory`, `bindMultiton`
+    * `bind*` methods support tag and overrides parameters for individual retrieval from container
 * Updated multi-binding documentation with new convenience methods examples
 
 #### 7.29.0 (2025-11-11)
@@ -265,7 +265,7 @@ We will re-enable it in 7.13.1 as soon as a new version of compiler plugin will 
 #### 7.11.0 (2022-02-18)
 
   - CORE
-    * Documentation improvements (thanks to the contributors!).
+    * Documentation improvements (thanks to the contributors!).  
     * Deprecation cycle
   - COMPOSE
     * JB Compose 1.1.0 Alpha5

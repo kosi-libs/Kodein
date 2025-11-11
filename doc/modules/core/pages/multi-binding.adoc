@@ -19,13 +19,13 @@ To have multiple bindings in a set, you need to:
 ----
 val di = DI {
     bindSet<Configuration> { // <1>
-        add { provider { FooConfiguration() } } // <2>
+        add { provider{ FooConfiguration() } } // <2>
         bind { singleton { BarConfiguration() } } // <3>
     }
 }
 ----
 <1> Creating a set binding of `Configuration`.
-<2> adds a `Configuration` binding implementation.
+<2> adds a `Configuration` binding implementation using the convenience method.
 <3> adds a `Configuration` binding and attaches it to the DI container.
 
 [NOTE]
@@ -36,13 +36,67 @@ You can:
 * Add bindings to the same set in different modules if the set has been declared first.
 ====
 
+==== Convenience Methods
+
+_Kodein-DI_ provides two types of convenience methods for adding bindings to sets:
+
+===== add* Methods
+
+The `add*` methods add bindings only to the set:
+
+[source,kotlin]
+.Example using add* convenience methods.
+----
+val di = DI {
+    bindSet<Configuration> {
+        addSingleton { FooConfiguration() }   // <1>
+        addProvider { BarConfiguration() }    // <2>
+        addInstance(existingConfig)           // <3>
+    }
+}
+----
+<1> Adds a singleton binding to the set (equivalent to `add { singleton { FooConfiguration() } }`).
+<2> Adds a provider binding to the set (equivalent to `add { provider { BarConfiguration() } }`).
+<3> Adds an instance binding to the set (equivalent to `add { instance(existingConfig) }`).
+
+===== bind* Methods
+
+The `bind*` methods add bindings to both the set AND the DI container, allowing retrieval by tag:
+
+[source,kotlin]
+.Example using bind* convenience methods with tags.
+----
+val di = DI {
+    bindSet<Configuration> {
+        bindSingleton(tag = "foo") { FooConfiguration() }      // <1>
+        bindProvider(tag = "bar") { BarConfiguration() }       // <2>
+        bindInstance(tag = "existing", instance = existingConfig) // <3>
+    }
+}
+
+// Retrieve from set
+val allConfigs: Set<Configuration> by di.instance()
+
+// Also retrieve individually by tag
+val fooConfig: Configuration by di.instance(tag = "foo")
+val barConfig: Configuration by di.instance(tag = "bar")
+----
+<1> Adds a singleton to the set AND registers it in the container with tag "foo".
+<2> Adds a provider to the set AND registers it in the container with tag "bar".
+<3> Adds an instance to the set AND registers it in the container with tag "existing".
+
+[TIP]
+====
+Use `add*` methods when you only need set bindings. Use `bind*` methods when you want both set membership and individual retrieval by tag.
+====
+
 [source,kotlin]
 .Example creating a set of `Configuration` bindings and populates it from modules.
 ----
 val module1 by DI.Module {
     inBindSet<Configuration> {
-        add { provider { FooConfiguration() } } // <2>
-        add { singleton { BarConfiguration() } } // <2>
+        addProvider { FooConfiguration() } // <2>
+        addSingleton { BarConfiguration() } // <2>
     }
 }
 val di = DI {
@@ -51,22 +105,43 @@ val di = DI {
 }
 ----
 <1> Creating a set binding of `Configuration`.
-<2> add multiple `Configuration` binding implementation.
+<2> add multiple `Configuration` binding implementation using convenience methods.
 
 You can also bind multiple bindings with arguments (such as `factory` or `multiton`) in a set *as long as all bindings share the same argument type*.
 
 [source,kotlin]
-.Example creating a set of `Result` bindings.
+.Example creating a set of `Result` bindings with add* methods.
 ----
 val di = DI {
     bindArgSet<Query, Result> { // <1>
-        add { factory { q: Query -> Foo.query(q) } } // <2>
-        add { multiton { q: Query -> Bar.query(q) } } // <2>
+        addFactory { q: Query -> Foo.query(q) } // <2>
+        addMultiton { q: Query -> Bar.query(q) } // <3>
     }
 }
 ----
 <1> Creating an argument set binding of `Result` for arguments of type `Query`.
-<2> Binding multiple `Result` factories implementations.
+<2> Adds a factory binding using convenience method (equivalent to `add { factory { q: Query -> Foo.query(q) } }`).
+<3> Adds a multiton binding using convenience method (equivalent to `add { multiton { q: Query -> Bar.query(q) } }`).
+
+[source,kotlin]
+.Example using bind* methods with argument sets for tagged retrieval.
+----
+val di = DI {
+    bindArgSet<Query, Result> {
+        bindFactory(tag = "foo") { q: Query -> Foo.query(q) }     // <1>
+        bindMultiton(tag = "bar") { q: Query -> Bar.query(q) }    // <2>
+    }
+}
+
+// Retrieve from set
+val results: Set<Result> by di.instance(arg = Query("SELECT * FROM USER;"))
+
+// Also retrieve individually by tag
+val fooFactory: (Query) -> Result by di.factory(tag = "foo")
+val barMultiton: (Query) -> Result by di.factory(tag = "bar")
+----
+<1> Adds a factory to the set AND registers it in the container with tag "foo".
+<2> Adds a multiton to the set AND registers it in the container with tag "bar".
 
 === Retrieving from a Set
 

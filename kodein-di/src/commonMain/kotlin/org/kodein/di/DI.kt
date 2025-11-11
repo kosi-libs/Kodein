@@ -2,9 +2,12 @@
 
 package org.kodein.di
 
+import org.kodein.di.bindings.BindingDI
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.DIBinding
 import org.kodein.di.bindings.ExternalSource
+import org.kodein.di.bindings.NoArgBindingDI
+import org.kodein.di.bindings.RefMaker
 import org.kodein.di.bindings.Scope
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
@@ -234,6 +237,7 @@ public interface DI : DIAware {
          *
          * @param T The type to bind.
          */
+        @DIDsl
         public interface TypeBinder<T : Any> {
 
             /**
@@ -248,6 +252,7 @@ public interface DI : DIAware {
         /**
          * Left part of the delegate-binding syntax (`delegate(tag)`).
          */
+        @DIDsl
         public abstract class DelegateBinder<T : Any> {
 
             /**
@@ -281,6 +286,7 @@ public interface DI : DIAware {
          * Left part of the constant-binding syntax (`constant(tag)`).
          *
          */
+        @DIDsl
         public interface ConstantBinder {
 
             /**
@@ -298,7 +304,8 @@ public interface DI : DIAware {
         /**
          * Manage multiple bindings in a [Set]
          */
-        public interface SetBinder<T : Any> {
+        @DIDsl
+        public interface SetBinder<T : Any> : BindBuilder.WithScope<Any> {
 
             /**
              * Add a binding in the [Set] of type [T]
@@ -315,12 +322,65 @@ public interface DI : DIAware {
              * @param createBinding The builder that should add binding in the set.
              */
             public fun bind(tag: Any? = null, overrides: Boolean? = null, createBinding: () -> DIBinding<*, *, out T>)
+
+            /**
+             * Adds a singleton binding to the set.
+             *
+             * @param ref The reference maker to use (defaults to strong reference if null).
+             * @param sync Whether the singleton should be thread-safe.
+             * @param creator The function that creates the singleton instance.
+             */
+            public fun addSingleton(ref: RefMaker? = null, sync: Boolean = true, creator: NoArgBindingDI<Any>.() -> T)
+
+            /**
+             * Adds a provider binding to the set.
+             *
+             * @param creator The function that creates a new instance each time.
+             */
+            public fun addProvider(creator: NoArgBindingDI<Any>.() -> T)
+
+            /**
+             * Adds an instance binding to the set.
+             *
+             * @param instance The instance to add.
+             */
+            public fun addInstance(instance: T)
+
+            /**
+             * Binds a singleton to both the set and the DI container.
+             *
+             * @param tag The tag to bind in the DI container.
+             * @param overrides Whether this bind must or must not override an existing binding.
+             * @param ref The reference maker to use (null for eager singleton).
+             * @param sync Whether the singleton should be thread-safe.
+             * @param creator The function that creates the singleton instance.
+             */
+            public fun bindSingleton(tag: Any? = null, overrides: Boolean? = null, ref: RefMaker? = null, sync: Boolean = true, creator: NoArgBindingDI<Any>.() -> T)
+
+            /**
+             * Binds a provider to both the set and the DI container.
+             *
+             * @param tag The tag to bind in the DI container.
+             * @param overrides Whether this bind must or must not override an existing binding.
+             * @param creator The function that creates a new instance each time.
+             */
+            public fun bindProvider(tag: Any? = null, overrides: Boolean? = null, creator: NoArgBindingDI<Any>.() -> T)
+
+            /**
+             * Binds an instance to both the set and the DI container.
+             *
+             * @param tag The tag to bind in the DI container.
+             * @param overrides Whether this bind must or must not override an existing binding.
+             * @param instance The instance to bind.
+             */
+            public fun bindInstance(tag: Any? = null, overrides: Boolean? = null, instance: T)
         }
 
         /**
          * Manage multiple bindings, with type argument, in a [Set]
          */
-        public interface ArgSetBinder<A : Any, T : Any> {
+        @DIDsl
+        public interface ArgSetBinder<A : Any, T : Any> : BindBuilder.WithScope<Any> {
 
             /**
              * Add a binding in the [Set] of type [T]
@@ -341,6 +401,42 @@ public interface DI : DIAware {
                 overrides: Boolean? = null,
                 createBinding: () -> DIBinding<*, in A, out T>,
             )
+
+            /**
+             * Adds a factory binding to the set.
+             *
+             * @param creator The function that creates a new instance each time with an argument.
+             */
+            public fun addFactory(creator: BindingDI<Any>.(A) -> T)
+
+            /**
+             * Adds a multiton binding to the set.
+             *
+             * @param ref The reference maker to use.
+             * @param sync Whether the multiton should be thread-safe.
+             * @param creator The function that creates an instance for each unique argument.
+             */
+            public fun addMultiton(ref: RefMaker? = null, sync: Boolean = true, creator: BindingDI<Any>.(A) -> T)
+
+            /**
+             * Binds a factory to both the set and the DI container.
+             *
+             * @param tag The tag to bind in the DI container.
+             * @param overrides Whether this bind must or must not override an existing binding.
+             * @param creator The function that creates a new instance each time with an argument.
+             */
+            public fun bindFactory(tag: Any? = null, overrides: Boolean? = null, creator: BindingDI<Any>.(A) -> T)
+
+            /**
+             * Binds a multiton to both the set and the DI container.
+             *
+             * @param tag The tag to bind in the DI container.
+             * @param overrides Whether this bind must or must not override an existing binding.
+             * @param ref The reference maker to use.
+             * @param sync Whether the multiton should be thread-safe.
+             * @param creator The function that creates an instance for each unique argument.
+             */
+            public fun bindMultiton(tag: Any? = null, overrides: Boolean? = null, ref: RefMaker? = null, sync: Boolean = true, creator: BindingDI<Any>.(A) -> T)
         }
 
         /**

@@ -7,14 +7,20 @@ import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.bindings.ArgSetBinding
 import org.kodein.di.bindings.BaseMultiBinding
+import org.kodein.di.bindings.BindingDI
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.DIBinding
 import org.kodein.di.bindings.ExternalSource
+import org.kodein.di.bindings.Factory
 import org.kodein.di.bindings.InstanceBinding
+import org.kodein.di.bindings.Multiton
+import org.kodein.di.bindings.NoArgBindingDI
 import org.kodein.di.bindings.NoScope
 import org.kodein.di.bindings.Provider
+import org.kodein.di.bindings.RefMaker
 import org.kodein.di.bindings.Scope
 import org.kodein.di.bindings.SetBinding
+import org.kodein.di.bindings.Singleton
 import org.kodein.type.TypeToken
 import org.kodein.type.erasedComp
 
@@ -42,7 +48,7 @@ internal open class DIBuilderImpl internal constructor(
         override infix fun <C : Any, A> with(binding: DIBinding<in C, in A, out T>) = containerBuilder.bind(
             DI.Key(binding.contextType, binding.argType, type, tag),
             binding,
-            moduleName,
+            this@DIBuilderImpl.moduleName,
             overrides
         )
     }
@@ -70,7 +76,7 @@ internal open class DIBuilderImpl internal constructor(
     inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) :
         DI.Builder.ConstantBinder {
         override fun <T : Any> With(valueType: TypeToken<out T>, value: T) =
-            Bind(tag = _tag, overrides = _overrides, binding = InstanceBinding(valueType, value))
+            this@DIBuilderImpl.Bind(tag = _tag, overrides = _overrides, binding = InstanceBinding(valueType, value))
     }
 
     @Suppress("unchecked_cast")
@@ -81,11 +87,15 @@ internal open class DIBuilderImpl internal constructor(
         addSetBindingToContainer: Boolean = true,
     ) : DI.Builder.SetBinder<T> {
 
+        override val contextType: TypeToken<Any> get() = this@DIBuilderImpl.contextType
+        override val scope: Scope<Any?> get() = this@DIBuilderImpl.scope
+        override val explicitContext: Boolean get() = this@DIBuilderImpl.explicitContext
+
         private val setBinding: BaseMultiBinding<*, *, T> by lazy {
             val setType = erasedComp(Set::class, setBindingType) as TypeToken<Set<T>>
             val setKey = DI.Key(TypeToken.Any, TypeToken.Unit, setType, setBindingTag)
 
-            val setBinding = containerBuilder.bindingsMap[setKey]?.first()
+            val setBinding = this@DIBuilderImpl.containerBuilder.bindingsMap[setKey]?.first()
                 ?: throw IllegalStateException("No set binding to $setKey")
             setBinding.binding as? BaseMultiBinding<*, *, T>
                 ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
@@ -93,7 +103,7 @@ internal open class DIBuilderImpl internal constructor(
 
         init {
             if (addSetBindingToContainer) {
-                Bind(
+                this@DIBuilderImpl.Bind(
                     tag = setBindingTag,
                     overrides = setBindingOverrides,
                     binding = SetBinding(
@@ -114,7 +124,31 @@ internal open class DIBuilderImpl internal constructor(
             val binding = createBinding()
             (setBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
 
-            Bind(tag = tag, overrides = overrides, binding = binding)
+            this@DIBuilderImpl.Bind(tag = tag, overrides = overrides, binding = binding)
+        }
+
+        override fun addSingleton(ref: RefMaker?, sync: Boolean, creator: NoArgBindingDI<Any>.() -> T) {
+            add { Singleton(scope, contextType, explicitContext, setBindingType, ref, sync, creator) }
+        }
+
+        override fun addProvider(creator: NoArgBindingDI<Any>.() -> T) {
+            add { Provider(contextType, setBindingType, creator) }
+        }
+
+        override fun addInstance(instance: T) {
+            add { InstanceBinding(setBindingType, instance) }
+        }
+
+        override fun bindSingleton(tag: Any?, overrides: Boolean?, ref: RefMaker?, sync: Boolean, creator: NoArgBindingDI<Any>.() -> T) {
+            bind(tag, overrides) { Singleton(scope, contextType, explicitContext, setBindingType, ref, sync, creator) }
+        }
+
+        override fun bindProvider(tag: Any?, overrides: Boolean?, creator: NoArgBindingDI<Any>.() -> T) {
+            bind(tag, overrides) { Provider(contextType, setBindingType, creator) }
+        }
+
+        override fun bindInstance(tag: Any?, overrides: Boolean?, instance: T) {
+            bind(tag, overrides) { InstanceBinding(setBindingType, instance) }
         }
     }
 
@@ -127,11 +161,15 @@ internal open class DIBuilderImpl internal constructor(
         addSetBindingToContainer: Boolean = true,
     ) : DI.Builder.ArgSetBinder<A, T> {
 
+        override val contextType: TypeToken<Any> get() = this@DIBuilderImpl.contextType
+        override val scope: Scope<Any?> get() = this@DIBuilderImpl.scope
+        override val explicitContext: Boolean get() = this@DIBuilderImpl.explicitContext
+
         private val setBinding: BaseMultiBinding<*, in A, out T> by lazy {
             val setType = erasedComp(Set::class, setBindingType) as TypeToken<Set<T>>
             val setKey = DI.Key(TypeToken.Any, setBindingArgType, setType, setBindingTag)
 
-            val setBinding = containerBuilder.bindingsMap[setKey]?.first()
+            val setBinding = this@DIBuilderImpl.containerBuilder.bindingsMap[setKey]?.first()
                 ?: throw IllegalStateException("No set binding to $setKey")
             setBinding.binding as? BaseMultiBinding<*, A, T>
                 ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
@@ -139,7 +177,7 @@ internal open class DIBuilderImpl internal constructor(
 
         init {
             if (addSetBindingToContainer) {
-                Bind(
+                this@DIBuilderImpl.Bind(
                     tag = setBindingTag,
                     overrides = setBindingOverrides,
                     binding = ArgSetBinding(
@@ -161,7 +199,23 @@ internal open class DIBuilderImpl internal constructor(
             val binding = createBinding()
             (setBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
 
-            Bind(tag = tag, overrides = overrides, binding = binding)
+            this@DIBuilderImpl.Bind(tag = tag, overrides = overrides, binding = binding)
+        }
+
+        override fun addFactory(creator: BindingDI<Any>.(A) -> T) {
+            add { Factory(contextType, setBindingArgType, setBindingType, creator) }
+        }
+
+        override fun addMultiton(ref: RefMaker?, sync: Boolean, creator: BindingDI<Any>.(A) -> T) {
+            add { Multiton(scope, contextType, explicitContext, setBindingArgType, setBindingType, ref, sync, creator) }
+        }
+
+        override fun bindFactory(tag: Any?, overrides: Boolean?, creator: BindingDI<Any>.(A) -> T) {
+            bind(tag, overrides) { Factory(contextType, setBindingArgType, setBindingType, creator) }
+        }
+
+        override fun bindMultiton(tag: Any?, overrides: Boolean?, ref: RefMaker?, sync: Boolean, creator: BindingDI<Any>.(A) -> T) {
+            bind(tag, overrides) { Multiton(scope, contextType, explicitContext, setBindingArgType, setBindingType, ref, sync, creator) }
         }
     }
 
