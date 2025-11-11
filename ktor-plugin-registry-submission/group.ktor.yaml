@@ -1,0 +1,14 @@
+name: KOSI-libs
+description: |
+  KOSI-libs maintains Kodein-DI, a straightforward and powerful dependency injection framework
+  for Kotlin Multiplatform. Our mission is to provide painless, idiomatic dependency injection
+  that works seamlessly across all Kotlin targets including JVM, Android, iOS, JavaScript, and Native.
+website: https://kosi-libs.org
+github: https://github.com/kosi-libs
+logo_url: https://kosi-libs.org/kodein/kodein-logo.svg
+social_links:
+  - platform: github
+    url: https://github.com/kosi-libs/Kodein
+  - platform: website
+    url: https://kosi-libs.org/kodein/
+email: contact@kodein.net

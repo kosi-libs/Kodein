@@ -1,0 +1,10 @@
+# Version compatibility mapping for Kodein-DI with Ktor
+# Format: ktor_version: plugin_version
+
+# Ktor 3.x compatibility
+3.3.2: 7.30.0
+3.3.1: 7.30.0
+3.3.0: 7.30.0
+3.2.0: 7.29.0
+3.1.0: 7.29.0
+3.0.0: 7.24.0

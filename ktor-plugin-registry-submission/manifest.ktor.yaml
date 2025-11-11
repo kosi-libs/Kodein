@@ -1,0 +1,32 @@
+id: kodein-di-ktor
+name: Kodein-DI
+version: 7.30.0
+ktor_version: 3.3.2
+short_description: Painless Kotlin Dependency Injection for Ktor applications
+long_description: |
+  Kodein-DI is a straightforward and powerful dependency injection framework for Kotlin Multiplatform.
+  This plugin provides seamless integration with Ktor, offering features like:
+  - DIPlugin for global DI container management
+  - closestDI() pattern for retrieving dependencies anywhere in your application
+  - Session-scoped and call-scoped dependencies
+  - Sub-DI for route-specific bindings
+  - MVC-style controllers with built-in DI support
+vendor:
+  name: KOSI-libs
+  url: https://kosi-libs.org
+  email: contact@kodein.net
+maven:
+  group_id: org.kodein.di
+  artifact_id: kodein-di-framework-ktor-server-controller-jvm
+category: dependency-injection
+repository: https://github.com/kosi-libs/Kodein
+documentation: https://kosi-libs.org/kodein/
+license:
+  name: MIT License
+  url: https://github.com/kosi-libs/Kodein/blob/master/LICENSE.txt
+required_feature_flags: []
+install_recipe: install.kt
+gradle_install:
+  - group_id: org.kodein.di
+    artifact_id: kodein-di-framework-ktor-server-controller-jvm
+    version: 7.30.0
