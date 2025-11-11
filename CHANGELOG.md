@@ -1,7 +1,271 @@
-#### 7.11.0 (18-02-2022)
+#### 7.30.0 (TBD)
+
+## What's Changed
+* Fixed DSL receiver scope issue (#478): Applied `@DslMarker` to DSL receiver interfaces to prevent accidental calls to outer receiver methods
+* Added convenience methods to `SetBinder` and `ArgSetBinder` for cleaner syntax:
+  * `SetBinder`: `addSingleton()`, `addProvider()`, `addInstance()`
+  * `ArgSetBinder`: `addFactory()`, `addMultiton()`
+  * Example: `addSingleton { Foo() }` instead of `add { singleton { Foo() } }`
+* Updated multi-binding documentation with new convenience methods examples
+
+#### 7.29.0 (2025-11-11)
+
+## What's Changed
+* Kotlin 2.2.21 + Compose 1.9.3
+* feat: add reified helper functions for `NoArgBindingDI`, update tests to use these methods by @romainbsl in https://github.com/kosi-libs/Kodein/pull/492
+* feat(#470): add module name verification option to DI by @romainbsl in https://github.com/kosi-libs/Kodein/pull/494
+* #467: Improvements to compose injection by @Nek-12 in https://github.com/kosi-libs/Kodein/pull/479
+* docs: document reactive compose injection behavior by @Nek-12 in https://github.com/kosi-libs/Kodein/pull/497
+
+**Full Changelog**: https://github.com/kosi-libs/Kodein/compare/v7.28.0...v7.29.0
+
+#### 7.28.0 (2025-09-30)
+
+> ℹ️  Due to a wrong manipulation this is the same as 7.27.0
+
+## What's Changed
+* Kotlin 2.2.20
+* refactor: restructure and modularize Compose runtime to a specific module by @romainbsl in https://github.com/kosi-libs/Kodein/pull/486
+* feat(#449): add support for KClass bindings by @romainbsl in https://github.com/kosi-libs/Kodein/pull/487
+* Deprecate TornadoFX support and recommend migration to Compose
+* chore: migrate workflows to use Central Portal authentication
+
+**Full Changelog**: https://github.com/kosi-libs/Kodein/compare/v7.26.0...v7.28.0
+
+#### 7.27.0 (2025-09-30)
+
+## What's Changed
+* Kotlin 2.2.20
+* refactor: restructure and modularize Compose runtime to a specific module by @romainbsl in https://github.com/kosi-libs/Kodein/pull/486
+* feat(#449): add support for KClass bindings by @romainbsl in https://github.com/kosi-libs/Kodein/pull/487
+* Deprecate TornadoFX support and recommend migration to Compose
+* chore: migrate workflows to use Central Portal authentication
+
+**Full Changelog**: https://github.com/kosi-libs/Kodein/compare/v7.26.0...v7.27.0
+
+#### 7.26.1 (2025-05-12)
+
+- fix: downgrade to Kotlin 2.1.20
+
+**Full Changelog**: https://github.com/kosi-libs/Kodein/compare/v7.26.0...v7.26.1
+
+#### 7.26.0 (2025-05-03)
+
+## What's Changed
+* #469: Add parameterized new support by @Nek-12 in https://github.com/kosi-libs/Kodein/pull/476
+* Compose Multiplatform 1.8.0-rc01
+* Kotlin 2.1.21-rc02
+* Remove Gradle JVM toolchains
+## New Contributors
+* @Nek-12 made their first contribution in https://github.com/kosi-libs/Kodein/pull/476
+
+**Full Changelog**: https://github.com/kosi-libs/Kodein/compare/v7.25.0...v7.26.0
+
+#### 7.25.0 (2025-01-19)
+
+# Compose
+
+- **JS**: Re-enable lost JS target
+
+#### 7.24.1 (2025-01-08)
+
+# Frameworks
+
+- Compose Multiplatform 1.7.3
+- Compose  compiler 2.1.0
+
+#### 7.24.0 (2025-01-07)
+
+# Core
+
+- Kotlin 2.1.0
+- Gradle 8.11.1
+- Replace `ScopeClosable` by Kotlin's `AutoCloseable` #463
+
+# Frameworks
+
+- Migrate to **Ktor 3.+**
+
+# Bug fixes
+
+- Use **kotlinx-atomicfu** to synchronize scopes on each platform #460
+
+#### 7.23.1 (2024-12-02)
+
+chore: revert deprecation on Compose Multiplatform APIs.
+
+#### 7.23.0 (2024-12-01)
+
+- Jetpack Compose : remove deprecated annotations to avoid warning on users
+
+#### 7.22.0 (2024-05-23)
+
+- Kotlin 2.0 !!!
+
+**Full Changelog**: https://github.com/kosi-libs/Kodein/compare/v7.21.2...v7.22.0
+
+#### 7.21.2 (2024-01-12)
+
+## Compose Multiplatform
+ - `1.6.0-alpha01`
+ - Fix Kotlin/Wasm targets
+
+#### 7.21.1 (2023-12-01)
+
+- Kotlin 1.9.21
+
+#### 7.21.0 (2023-11-17)
+
+## Core
+- Kotlin `1.9.20`
+
+## Android
+- AGP `8.2.0-rc03`
+
+## Compose Multiplatform
+ - `1.5.10-dev-wasm02`
+
+**Full Changelog**: https://github.com/kosi-libs/Kodein/compare/7.20.2...7.21.0
+
+#### 7.20.2 (2023-06-26)
+
+### Jetpack Compose
+
+- Fixed #435 : generics were erased while retrieving Android ViewModel on Compose.
+
+#### 7.20.1 (2023-04-04)
+
+⚠️ 7.20.0 Has been badly published, Please use THIS version instead!
+
+- Jetpack Compose
+Creation of 1 modules to handle AndroidX ViewModel retrieval, eventually scoped within the NavGraph.
+
+`kodein-di-framework-android-x-compose` : Works with AndroidX ViewModel and Navigation extensions.
+
+#### 7.20.0 (2023-04-03)
+
+⚠️ DO NOT USE : the new modules have been wrongly published.
+
+Use **7.20.1** instead!
+
+- Jetpack Compose
+Creation of 2 modules to handle AndroidX ViewModel retrieval, eventually scoped within the NavGraph.
+
+`kodein-di-framework-compose-android`: Works with **AndroidX ViewModel**
+
+`kodein-di-framework-compose-android-navigation` Works with **AndroidX ViewModel** AND **Jetpack Compose Navigation**
+
+#### 7.19.1 (2023-03-31)
+
+- Compose
+    - Add a rememberViewModel factory retrieval function
+
+#### 7.19.0 (2023-03-26)
+
+- Core
+   - Kotlin 1.8.10
+- Compose
+   - Multiplatform Compose 1.3.1
+   - MacOS targets
+
+#### 7.18.0 (2023-01-13)
+
+Enable Compose Multiplatform `1.3.0-rc2` with Kotlin `1.8.0` compatibility.
+
+#### 7.17.0 (2022-12-29)
+
+- **Kotlin** 1.8.0
+- **Ktor** 2.2.1
+- **JS**: Since Legacy backend as been deprecated, Kodein will only support IR.
+
+⚠️ Compose capabilities are disable as the compiler plugin has not been released yet.
+We should be able to re-enable it in 7.18.0 as soon as a new version of compiler plugin will be released.
+
+#### 7.16.0 (2022-11-14)
+
+- Compose 1.2.1 with Kotlin/JS
+- New multi-binding API (see documentation http://kosi-libs.org/kodein/7.16/core/multi-binding.html)
+```kotlin
+val di = DI {
+    bindSet<Configuration> {
+        add { provider { FooConfiguration() } }
+        bind { singleton { BarConfiguration() } }
+    }
+}
+```
+
+#### 7.15.1 (2022-11-04)
+
+Enable Compose Multiplatform 1.2.0.
+
+⚠️ Compose Multiplatform 1.2.0 is not compatible with **Kotlin/JS 1.7.20**, but you can use it with **Kotlin 1.7.10.**
+
+#### 7.15.0 (2022-09-29)
+
+- Kotlin 1.7.20
+
+⚠️ Compose capabilities are disable as the compiler plugin has not been released yet.
+We should be able to re-enable it in 7.15.1 as soon as a new version of compiler plugin will be released.
+
+#### 7.14.0 (2022-07-18)
+
+- Gradle 7.5
+- Kotlin 1.7.10
+- Enable compatibility with non-hierarchical projects
+
+#### 7.13.1 (2022-07-15)
+
+Compose Multiplatform `1.2.0-alpha01-dev745` with **Kotlin 1.7** compatibility
+
+#### 7.13.0 (2022-06-21)
+
+CORE:
+    - Kotlin 1.7.0
+    - Deprecation cycle
+
+⚠️ **Compose** capabilities are disable as the compiler plugin has not been released yet.
+We will re-enable it in 7.13.1 as soon as a new version of compiler plugin will be released.
+
+#### 7.12.0 (2022-05-31)
+
+- CORE
+    - Kotlin `1.6.21`
+    - Constructor reference based binding (#408 thanks to @rocketraman)
+    ```kotlin
+    DI {
+        bindSingleton { new(::PersonService) }
+    }
+    ```
+
+    - Delegate binding (#406)
+    ```kotlin
+    DI {
+        bindSingleton { Cls() }
+        delegate<Cls>().to<Cls>()
+    }
+    ```
+    - Create modules with delegate (#393)
+    ```kotlin
+    val myModule by Module { // implicitly named "myModule"
+        bind { singleton { Cls() } }
+    }
+    ```
+
+- KTOR
+    - Moved to `2.0`: This has no impact for you, all the breaking changes are internals.
+
+- COMPOSE
+    - Upgrade to `1.2.0-alpha01-dev683`
+
+- EXTENSION:
+    - Improve `ConfigurableDI` (#395 & #396)
+
+- Documentation fixes
+
+#### 7.11.0 (2022-02-18)
 
   - CORE
-    * Documentation improvements (thanks to the contributors!).  
+    * Documentation improvements (thanks to the contributors!).
     * Deprecation cycle
   - COMPOSE
     * JB Compose 1.1.0 Alpha5
