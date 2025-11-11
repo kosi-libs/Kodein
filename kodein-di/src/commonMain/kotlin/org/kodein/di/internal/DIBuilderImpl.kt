@@ -42,7 +42,7 @@ internal open class DIBuilderImpl internal constructor(
         override infix fun <C : Any, A> with(binding: DIBinding<in C, in A, out T>) = containerBuilder.bind(
             DI.Key(binding.contextType, binding.argType, type, tag),
             binding,
-            moduleName,
+            this@DIBuilderImpl.moduleName,
             overrides
         )
     }
@@ -70,7 +70,7 @@ internal open class DIBuilderImpl internal constructor(
     inner class ConstantBinder internal constructor(private val _tag: Any, private val _overrides: Boolean?) :
         DI.Builder.ConstantBinder {
         override fun <T : Any> With(valueType: TypeToken<out T>, value: T) =
-            Bind(tag = _tag, overrides = _overrides, binding = InstanceBinding(valueType, value))
+            this@DIBuilderImpl.Bind(tag = _tag, overrides = _overrides, binding = InstanceBinding(valueType, value))
     }
 
     @Suppress("unchecked_cast")
@@ -81,11 +81,15 @@ internal open class DIBuilderImpl internal constructor(
         addSetBindingToContainer: Boolean = true,
     ) : DI.Builder.SetBinder<T> {
 
+        override val contextType: TypeToken<Any> get() = this@DIBuilderImpl.contextType
+        override val scope: Scope<Any?> get() = this@DIBuilderImpl.scope
+        override val explicitContext: Boolean get() = this@DIBuilderImpl.explicitContext
+
         private val setBinding: BaseMultiBinding<*, *, T> by lazy {
             val setType = erasedComp(Set::class, setBindingType) as TypeToken<Set<T>>
             val setKey = DI.Key(TypeToken.Any, TypeToken.Unit, setType, setBindingTag)
 
-            val setBinding = containerBuilder.bindingsMap[setKey]?.first()
+            val setBinding = this@DIBuilderImpl.containerBuilder.bindingsMap[setKey]?.first()
                 ?: throw IllegalStateException("No set binding to $setKey")
             setBinding.binding as? BaseMultiBinding<*, *, T>
                 ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
@@ -93,7 +97,7 @@ internal open class DIBuilderImpl internal constructor(
 
         init {
             if (addSetBindingToContainer) {
-                Bind(
+                this@DIBuilderImpl.Bind(
                     tag = setBindingTag,
                     overrides = setBindingOverrides,
                     binding = SetBinding(
@@ -114,7 +118,7 @@ internal open class DIBuilderImpl internal constructor(
             val binding = createBinding()
             (setBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
 
-            Bind(tag = tag, overrides = overrides, binding = binding)
+            this@DIBuilderImpl.Bind(tag = tag, overrides = overrides, binding = binding)
         }
     }
 
@@ -127,11 +131,15 @@ internal open class DIBuilderImpl internal constructor(
         addSetBindingToContainer: Boolean = true,
     ) : DI.Builder.ArgSetBinder<A, T> {
 
+        override val contextType: TypeToken<Any> get() = this@DIBuilderImpl.contextType
+        override val scope: Scope<Any?> get() = this@DIBuilderImpl.scope
+        override val explicitContext: Boolean get() = this@DIBuilderImpl.explicitContext
+
         private val setBinding: BaseMultiBinding<*, in A, out T> by lazy {
             val setType = erasedComp(Set::class, setBindingType) as TypeToken<Set<T>>
             val setKey = DI.Key(TypeToken.Any, setBindingArgType, setType, setBindingTag)
 
-            val setBinding = containerBuilder.bindingsMap[setKey]?.first()
+            val setBinding = this@DIBuilderImpl.containerBuilder.bindingsMap[setKey]?.first()
                 ?: throw IllegalStateException("No set binding to $setKey")
             setBinding.binding as? BaseMultiBinding<*, A, T>
                 ?: throw IllegalStateException("$setKey is associated to a ${setBinding.binding.factoryName()} while it should be associated with bindingSet")
@@ -139,7 +147,7 @@ internal open class DIBuilderImpl internal constructor(
 
         init {
             if (addSetBindingToContainer) {
-                Bind(
+                this@DIBuilderImpl.Bind(
                     tag = setBindingTag,
                     overrides = setBindingOverrides,
                     binding = ArgSetBinding(
@@ -161,7 +169,7 @@ internal open class DIBuilderImpl internal constructor(
             val binding = createBinding()
             (setBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
 
-            Bind(tag = tag, overrides = overrides, binding = binding)
+            this@DIBuilderImpl.Bind(tag = tag, overrides = overrides, binding = binding)
         }
     }
 

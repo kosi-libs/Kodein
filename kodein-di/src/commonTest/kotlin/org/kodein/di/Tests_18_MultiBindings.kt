@@ -349,4 +349,35 @@ class Tests_18_MultiBindings {
 
         assertSame(persons.last(), salomon)
     }
+
+    @Test
+    fun test_16_DslMarker_enforces_correct_receiver_scope() {
+        // This test demonstrates the fix for issue #478:
+        // The @DIDsl marker prevents calling methods on outer receivers (DI.Builder)
+        // when inside inner DSL contexts (SetBinder).
+        //
+        // Before the fix, code like this would compile but fail:
+        //   inBindSet<IPerson> { bindSingleton { Person("Wrong") } }
+        // where bindSingleton would incorrectly call DI.Builder.bindSingleton
+        // instead of SetBinder's method (which didn't exist).
+        //
+        // After the fix, only the correct SetBinder methods are in scope.
+
+        val di = DI {
+            bindSet<IPerson>()
+
+            inBindSet<IPerson> {
+                // These calls are now restricted to SetBinder's scope only.
+                // Attempting to call DI.Builder methods here will cause a compilation error.
+                add { singleton { Person("Salomon") } }
+                add { provider { Person("Laila") } }
+            }
+        }
+
+        val persons: Set<IPerson> by di.instance()
+
+        assertTrue(Person("Salomon") in persons)
+        assertTrue(Person("Laila") in persons)
+        assertEquals(2, persons.size)
+    }
 }

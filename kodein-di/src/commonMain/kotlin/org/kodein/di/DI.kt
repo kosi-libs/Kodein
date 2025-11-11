@@ -234,6 +234,7 @@ public interface DI : DIAware {
          *
          * @param T The type to bind.
          */
+        @DIDsl
         public interface TypeBinder<T : Any> {
 
             /**
@@ -248,6 +249,7 @@ public interface DI : DIAware {
         /**
          * Left part of the delegate-binding syntax (`delegate(tag)`).
          */
+        @DIDsl
         public abstract class DelegateBinder<T : Any> {
 
             /**
@@ -281,6 +283,7 @@ public interface DI : DIAware {
          * Left part of the constant-binding syntax (`constant(tag)`).
          *
          */
+        @DIDsl
         public interface ConstantBinder {
 
             /**
@@ -298,7 +301,8 @@ public interface DI : DIAware {
         /**
          * Manage multiple bindings in a [Set]
          */
-        public interface SetBinder<T : Any> {
+        @DIDsl
+        public interface SetBinder<T : Any> : BindBuilder.WithScope<Any> {
 
             /**
              * Add a binding in the [Set] of type [T]
@@ -320,7 +324,8 @@ public interface DI : DIAware {
         /**
          * Manage multiple bindings, with type argument, in a [Set]
          */
-        public interface ArgSetBinder<A : Any, T : Any> {
+        @DIDsl
+        public interface ArgSetBinder<A : Any, T : Any> : BindBuilder.WithScope<Any> {
 
             /**
              * Add a binding in the [Set] of type [T]
