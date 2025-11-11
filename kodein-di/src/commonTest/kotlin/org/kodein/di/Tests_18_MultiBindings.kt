@@ -459,4 +459,55 @@ class Tests_18_MultiBindings {
         // Multiton should cache per argument
         assertSame(laila1, laila2)
     }
+
+    @Test
+    fun test_20_MultiSet_with_bind_convenience_methods() {
+        // Test bind* methods that add to both set AND container
+        val existingPerson = Person("Romain")
+        val di = DI {
+            bindSet<IPerson> {
+                bindInstance(tag = "romain", instance = existingPerson)
+                bindSingleton(tag = "salomon") { Person("Salomon") }
+                bindProvider(tag = "laila") { Person("Laila") }
+            }
+
+            bindArgSet<String, IPerson> {
+                bindFactory(tag = "withLastName") { lastName: String -> Person("Factory $lastName") }
+                bindMultiton(tag = "cachedPerson") { lastName: String -> Person("Cached $lastName") }
+            }
+        }
+
+        // Verify set binding works
+        val persons: Set<IPerson> by di.instance()
+        assertEquals(3, persons.size)
+        assertTrue(existingPerson in persons)
+
+        // Verify container binding works with tags
+        val romain: IPerson by di.instance(tag = "romain")
+        assertSame(existingPerson, romain)
+
+        val salomon1: IPerson by di.instance(tag = "salomon")
+        val salomon2: IPerson by di.instance(tag = "salomon")
+        assertSame(salomon1, salomon2)  // Singleton
+
+        val laila1: IPerson by di.instance(tag = "laila")
+        val laila2: IPerson by di.instance(tag = "laila")
+        assertNotSame(laila1, laila2)  // Provider
+
+        // Verify arg set binding works
+        val personsWithArg: Set<IPerson> by di.instance(arg = "BRYS")
+        assertEquals(2, personsWithArg.size)
+
+        // Verify container binding works for factory
+        val factory: (String) -> IPerson by di.factory(tag = "withLastName")
+        val person1 = factory("BRYS")
+        val person2 = factory("BRYS")
+        assertNotSame(person1, person2)  // Factory creates new instances
+
+        // Verify container binding works for multiton
+        val multiton: (String) -> IPerson by di.factory(tag = "cachedPerson")
+        val cached1 = multiton("BRYS")
+        val cached2 = multiton("BRYS")
+        assertSame(cached1, cached2)  // Multiton caches per argument
+    }
 }

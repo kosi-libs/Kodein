@@ -345,6 +345,35 @@ public interface DI : DIAware {
              * @param instance The instance to add.
              */
             public fun addInstance(instance: T)
+
+            /**
+             * Binds a singleton to both the set and the DI container.
+             *
+             * @param tag The tag to bind in the DI container.
+             * @param overrides Whether this bind must or must not override an existing binding.
+             * @param ref The reference maker to use (null for eager singleton).
+             * @param sync Whether the singleton should be thread-safe.
+             * @param creator The function that creates the singleton instance.
+             */
+            public fun bindSingleton(tag: Any? = null, overrides: Boolean? = null, ref: RefMaker? = null, sync: Boolean = true, creator: NoArgBindingDI<Any>.() -> T)
+
+            /**
+             * Binds a provider to both the set and the DI container.
+             *
+             * @param tag The tag to bind in the DI container.
+             * @param overrides Whether this bind must or must not override an existing binding.
+             * @param creator The function that creates a new instance each time.
+             */
+            public fun bindProvider(tag: Any? = null, overrides: Boolean? = null, creator: NoArgBindingDI<Any>.() -> T)
+
+            /**
+             * Binds an instance to both the set and the DI container.
+             *
+             * @param tag The tag to bind in the DI container.
+             * @param overrides Whether this bind must or must not override an existing binding.
+             * @param instance The instance to bind.
+             */
+            public fun bindInstance(tag: Any? = null, overrides: Boolean? = null, instance: T)
         }
 
         /**
@@ -388,6 +417,26 @@ public interface DI : DIAware {
              * @param creator The function that creates an instance for each unique argument.
              */
             public fun addMultiton(ref: RefMaker? = null, sync: Boolean = true, creator: BindingDI<Any>.(A) -> T)
+
+            /**
+             * Binds a factory to both the set and the DI container.
+             *
+             * @param tag The tag to bind in the DI container.
+             * @param overrides Whether this bind must or must not override an existing binding.
+             * @param creator The function that creates a new instance each time with an argument.
+             */
+            public fun bindFactory(tag: Any? = null, overrides: Boolean? = null, creator: BindingDI<Any>.(A) -> T)
+
+            /**
+             * Binds a multiton to both the set and the DI container.
+             *
+             * @param tag The tag to bind in the DI container.
+             * @param overrides Whether this bind must or must not override an existing binding.
+             * @param ref The reference maker to use.
+             * @param sync Whether the multiton should be thread-safe.
+             * @param creator The function that creates an instance for each unique argument.
+             */
+            public fun bindMultiton(tag: Any? = null, overrides: Boolean? = null, ref: RefMaker? = null, sync: Boolean = true, creator: BindingDI<Any>.(A) -> T)
         }
 
         /**

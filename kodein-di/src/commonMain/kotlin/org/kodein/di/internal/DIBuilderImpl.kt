@@ -138,6 +138,18 @@ internal open class DIBuilderImpl internal constructor(
         override fun addInstance(instance: T) {
             add { InstanceBinding(setBindingType, instance) }
         }
+
+        override fun bindSingleton(tag: Any?, overrides: Boolean?, ref: RefMaker?, sync: Boolean, creator: NoArgBindingDI<Any>.() -> T) {
+            bind(tag, overrides) { Singleton(scope, contextType, explicitContext, setBindingType, ref, sync, creator) }
+        }
+
+        override fun bindProvider(tag: Any?, overrides: Boolean?, creator: NoArgBindingDI<Any>.() -> T) {
+            bind(tag, overrides) { Provider(contextType, setBindingType, creator) }
+        }
+
+        override fun bindInstance(tag: Any?, overrides: Boolean?, instance: T) {
+            bind(tag, overrides) { InstanceBinding(setBindingType, instance) }
+        }
     }
 
     @Suppress("unchecked_cast")
@@ -196,6 +208,14 @@ internal open class DIBuilderImpl internal constructor(
 
         override fun addMultiton(ref: RefMaker?, sync: Boolean, creator: BindingDI<Any>.(A) -> T) {
             add { Multiton(scope, contextType, explicitContext, setBindingArgType, setBindingType, ref, sync, creator) }
+        }
+
+        override fun bindFactory(tag: Any?, overrides: Boolean?, creator: BindingDI<Any>.(A) -> T) {
+            bind(tag, overrides) { Factory(contextType, setBindingArgType, setBindingType, creator) }
+        }
+
+        override fun bindMultiton(tag: Any?, overrides: Boolean?, ref: RefMaker?, sync: Boolean, creator: BindingDI<Any>.(A) -> T) {
+            bind(tag, overrides) { Multiton(scope, contextType, explicitContext, setBindingArgType, setBindingType, ref, sync, creator) }
         }
     }
 
