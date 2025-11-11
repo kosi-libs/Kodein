@@ -19,13 +19,13 @@ To have multiple bindings in a set, you need to:
 ----
 val di = DI {
     bindSet<Configuration> { // <1>
-        add { provider { FooConfiguration() } } // <2>
+        addProvider { FooConfiguration() } // <2>
         bind { singleton { BarConfiguration() } } // <3>
     }
 }
 ----
 <1> Creating a set binding of `Configuration`.
-<2> adds a `Configuration` binding implementation.
+<2> adds a `Configuration` binding implementation using the convenience method.
 <3> adds a `Configuration` binding and attaches it to the DI container.
 
 [NOTE]
@@ -36,13 +36,39 @@ You can:
 * Add bindings to the same set in different modules if the set has been declared first.
 ====
 
+==== Convenience Methods
+
+_Kodein-DI_ provides convenience methods that simplify the syntax for adding common binding types to sets:
+
+[source,kotlin]
+.Example using convenience methods for cleaner syntax.
+----
+val di = DI {
+    bindSet<Configuration> {
+        addSingleton { FooConfiguration() }   // <1>
+        addProvider { BarConfiguration() }    // <2>
+        addInstance(existingConfig)           // <3>
+    }
+}
+----
+<1> Adds a singleton binding (equivalent to `add { singleton { FooConfiguration() } }`).
+<2> Adds a provider binding (equivalent to `add { provider { BarConfiguration() } }`).
+<3> Adds an instance binding (equivalent to `add { instance(existingConfig) }`).
+
+These convenience methods reduce nesting and make the DSL more concise.
+
+[TIP]
+====
+The convenience methods are scoped to the `SetBinder` receiver, so IDE autocomplete will only show relevant methods within the `bindSet` or `inBindSet` blocks.
+====
+
 [source,kotlin]
 .Example creating a set of `Configuration` bindings and populates it from modules.
 ----
 val module1 by DI.Module {
     inBindSet<Configuration> {
-        add { provider { FooConfiguration() } } // <2>
-        add { singleton { BarConfiguration() } } // <2>
+        addProvider { FooConfiguration() } // <2>
+        addSingleton { BarConfiguration() } // <2>
     }
 }
 val di = DI {
@@ -51,7 +77,7 @@ val di = DI {
 }
 ----
 <1> Creating a set binding of `Configuration`.
-<2> add multiple `Configuration` binding implementation.
+<2> add multiple `Configuration` binding implementation using convenience methods.
 
 You can also bind multiple bindings with arguments (such as `factory` or `multiton`) in a set *as long as all bindings share the same argument type*.
 
@@ -60,13 +86,14 @@ You can also bind multiple bindings with arguments (such as `factory` or `multit
 ----
 val di = DI {
     bindArgSet<Query, Result> { // <1>
-        add { factory { q: Query -> Foo.query(q) } } // <2>
-        add { multiton { q: Query -> Bar.query(q) } } // <2>
+        addFactory { q: Query -> Foo.query(q) } // <2>
+        addMultiton { q: Query -> Bar.query(q) } // <3>
     }
 }
 ----
 <1> Creating an argument set binding of `Result` for arguments of type `Query`.
-<2> Binding multiple `Result` factories implementations.
+<2> Adds a factory binding using convenience method (equivalent to `add { factory { q: Query -> Foo.query(q) } }`).
+<3> Adds a multiton binding using convenience method (equivalent to `add { multiton { q: Query -> Bar.query(q) } }`).
 
 === Retrieving from a Set
 

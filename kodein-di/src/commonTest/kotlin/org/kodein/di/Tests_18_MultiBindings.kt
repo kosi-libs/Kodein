@@ -352,10 +352,6 @@ class Tests_18_MultiBindings {
 
     @Test
     fun test_16_DslMarker_enforces_correct_receiver_scope() {
-        // This test demonstrates the fix for issue #478:
-        // The @DIDsl marker prevents calling methods on outer receivers (DI.Builder)
-        // when inside inner DSL contexts (SetBinder).
-        //
         // Before the fix, code like this would compile but fail:
         //   inBindSet<IPerson> { bindSingleton { Person("Wrong") } }
         // where bindSingleton would incorrectly call DI.Builder.bindSingleton
