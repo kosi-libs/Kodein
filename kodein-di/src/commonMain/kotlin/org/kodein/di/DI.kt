@@ -326,7 +326,7 @@ public interface DI : DIAware {
             /**
              * Adds a singleton binding to the set.
              *
-             * @param ref The reference maker to use (null for eager singleton).
+             * @param ref The reference maker to use (defaults to strong reference if null).
              * @param sync Whether the singleton should be thread-safe.
              * @param creator The function that creates the singleton instance.
              */
