@@ -2,9 +2,12 @@
 
 package org.kodein.di
 
+import org.kodein.di.bindings.BindingDI
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.DIBinding
 import org.kodein.di.bindings.ExternalSource
+import org.kodein.di.bindings.NoArgBindingDI
+import org.kodein.di.bindings.RefMaker
 import org.kodein.di.bindings.Scope
 import org.kodein.di.internal.DIImpl
 import org.kodein.type.TypeToken
@@ -319,6 +322,29 @@ public interface DI : DIAware {
              * @param createBinding The builder that should add binding in the set.
              */
             public fun bind(tag: Any? = null, overrides: Boolean? = null, createBinding: () -> DIBinding<*, *, out T>)
+
+            /**
+             * Adds a singleton binding to the set.
+             *
+             * @param ref The reference maker to use (null for eager singleton).
+             * @param sync Whether the singleton should be thread-safe.
+             * @param creator The function that creates the singleton instance.
+             */
+            public fun addSingleton(ref: RefMaker? = null, sync: Boolean = true, creator: NoArgBindingDI<Any>.() -> T)
+
+            /**
+             * Adds a provider binding to the set.
+             *
+             * @param creator The function that creates a new instance each time.
+             */
+            public fun addProvider(creator: NoArgBindingDI<Any>.() -> T)
+
+            /**
+             * Adds an instance binding to the set.
+             *
+             * @param instance The instance to add.
+             */
+            public fun addInstance(instance: T)
         }
 
         /**
@@ -346,6 +372,22 @@ public interface DI : DIAware {
                 overrides: Boolean? = null,
                 createBinding: () -> DIBinding<*, in A, out T>,
             )
+
+            /**
+             * Adds a factory binding to the set.
+             *
+             * @param creator The function that creates a new instance each time with an argument.
+             */
+            public fun addFactory(creator: BindingDI<Any>.(A) -> T)
+
+            /**
+             * Adds a multiton binding to the set.
+             *
+             * @param ref The reference maker to use.
+             * @param sync Whether the multiton should be thread-safe.
+             * @param creator The function that creates an instance for each unique argument.
+             */
+            public fun addMultiton(ref: RefMaker? = null, sync: Boolean = true, creator: BindingDI<Any>.(A) -> T)
         }
 
         /**

@@ -7,14 +7,20 @@ import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.bindings.ArgSetBinding
 import org.kodein.di.bindings.BaseMultiBinding
+import org.kodein.di.bindings.BindingDI
 import org.kodein.di.bindings.ContextTranslator
 import org.kodein.di.bindings.DIBinding
 import org.kodein.di.bindings.ExternalSource
+import org.kodein.di.bindings.Factory
 import org.kodein.di.bindings.InstanceBinding
+import org.kodein.di.bindings.Multiton
+import org.kodein.di.bindings.NoArgBindingDI
 import org.kodein.di.bindings.NoScope
 import org.kodein.di.bindings.Provider
+import org.kodein.di.bindings.RefMaker
 import org.kodein.di.bindings.Scope
 import org.kodein.di.bindings.SetBinding
+import org.kodein.di.bindings.Singleton
 import org.kodein.type.TypeToken
 import org.kodein.type.erasedComp
 
@@ -120,6 +126,18 @@ internal open class DIBuilderImpl internal constructor(
 
             this@DIBuilderImpl.Bind(tag = tag, overrides = overrides, binding = binding)
         }
+
+        override fun addSingleton(ref: RefMaker?, sync: Boolean, creator: NoArgBindingDI<Any>.() -> T) {
+            add { Singleton(scope, contextType, explicitContext, setBindingType, ref, sync, creator) }
+        }
+
+        override fun addProvider(creator: NoArgBindingDI<Any>.() -> T) {
+            add { Provider(contextType, setBindingType, creator) }
+        }
+
+        override fun addInstance(instance: T) {
+            add { InstanceBinding(setBindingType, instance) }
+        }
     }
 
     @Suppress("unchecked_cast")
@@ -170,6 +188,14 @@ internal open class DIBuilderImpl internal constructor(
             (setBinding.set as MutableSet<DIBinding<*, *, *>>).add(binding)
 
             this@DIBuilderImpl.Bind(tag = tag, overrides = overrides, binding = binding)
+        }
+
+        override fun addFactory(creator: BindingDI<Any>.(A) -> T) {
+            add { Factory(contextType, setBindingArgType, setBindingType, creator) }
+        }
+
+        override fun addMultiton(ref: RefMaker?, sync: Boolean, creator: BindingDI<Any>.(A) -> T) {
+            add { Multiton(scope, contextType, explicitContext, setBindingArgType, setBindingType, ref, sync, creator) }
         }
     }
 
