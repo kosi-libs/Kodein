@@ -392,6 +392,26 @@ val di = DI {
 <1> Binding of `Dice`. It gets its transitive dependencies.
 
 Those tricks are limited to 0 to 10 constructor parameters.
+
+==== Mixing manual and auto-resolved constructor arguments
+
+You can also specify some constructor arguments manually while letting Kodein-DI auto-resolve the others:
+
+[source, kotlin]
+.Example: mixing manual and auto-resolved arguments
+----
+class GameEngine(val dice: Dice, val maxPlayers: Int, val gameName: String)
+
+val di = DI {
+    bindSingleton<Dice> { RandomDice(6) }
+    bindSingleton<GameEngine> {
+        new(::GameEngine, a2 = 4, a3 = "Rolling Dice") // <1>
+    }
+}
+----
+<1> The `dice` parameter is auto-resolved from the container, while `maxPlayers` and `gameName` are provided manually.
+
+You can specify any combination of arguments using their position (`a1`, `a2`, `a3`, etc.), and all non-specified arguments will be automatically retrieved from the DI container.
 ====
 
 The binding functions are in the same environment as the `newInstance` function described in the <<injection, dependency injection section>>.

@@ -116,7 +116,46 @@ val di = DI {
 
 This function is available for classes with up to 22 constructor parameters.
 
-This function also supports using arguments, such as those in `bindFactory` or `bindMultiton` functions.
+==== Mixing manual and auto-resolved arguments
+
+You can also provide specific constructor arguments manually while letting the rest be auto-resolved from the DI container.
+This is useful when you need to pass configuration values or runtime parameters:
+
+[source,kotlin]
+----
+class GameEngine(val dice: Dice, val maxPlayers: Int, val gameName: String)
+
+val di = DI {
+    bind<Dice> { singleton { RandomDice(6) } }
+    bind<GameEngine> {
+        singleton {
+            new(::GameEngine, a2 = 4, a3 = "Poker") // <1>
+        }
+    }
+}
+----
+<1> The `dice` parameter (position 1) is auto-resolved, while `maxPlayers` (position 2) and `gameName` (position 3) are provided manually.
+
+You can specify any combination of arguments using their position (`a1`, `a2`, `a3`, etc.):
+
+[source,kotlin]
+----
+class Config(val host: String, val port: Int, val db: Database, val timeout: Int)
+
+val di = DI {
+    bindSingleton<Database> { PostgresDB() }
+    bindSingleton<Config> {
+        new(::Config, a1 = "localhost", a2 = 8080, a4 = 30) // <1>
+    }
+}
+----
+<1> Parameters 1, 2, and 4 are provided manually, while parameter 3 (`db`) is auto-resolved from the container.
+
+NOTE: All non-specified arguments will be automatically retrieved from the DI container using `instance()`.
+
+==== Using factory/multiton arguments with `new`
+
+This function also supports using arguments from `bindFactory` or `bindMultiton` functions.
 For them, provide your argument type in the lambda parameter (that way you don't need to specify type arguments),
 and then pass it as the first parameter to the `new` function:
 
