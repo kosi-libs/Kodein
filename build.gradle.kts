@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     group = "org.kodein.di"
-    version = "7.30.0"
+    version = "7.31.0"
 }
 
 kodeinUploadRoot {
