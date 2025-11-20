@@ -7,6 +7,12 @@
     * `bind*` methods (set + container): `bindSingleton`, `bindProvider`, `bindInstance`, `bindFactory`, `bindMultiton`
     * `bind*` methods support tag and overrides parameters for individual retrieval from container
 * Updated multi-binding documentation with new convenience methods examples
+* **Enhanced `new()` function with named argument support** (#500):
+    * Added ability to specify constructor arguments by position: `new(::MyClass, a1 = value1, a2 = value2, ...)`
+    * Mix manual and auto-resolved arguments: provide specific values while letting DI auto-resolve others
+    * Support for up to 10 constructor parameters with named arguments
+    * Example: `bindSingleton { new(::GameEngine, a2 = 4, a3 = "Poker") }` - auto-resolves `a1` from container
+    * Comprehensive documentation and unit tests added
 
 #### 7.29.0 (2025-11-11)
 
