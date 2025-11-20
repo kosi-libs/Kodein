@@ -1,7 +1,7 @@
 name: kodein
 title: Kodein
-version: '7.29'
-display_version: '7.29.0'
+version: '7.30'
+display_version: '7.30.0'
 nav:
   - modules/ROOT/nav.adoc
   - modules/core/nav.adoc
@@ -10,7 +10,7 @@ nav:
   - modules/migration/nav.adoc
 asciidoc:
   attributes:
-    branch: '7.29'
-    version: '7.29.0'
+    branch: '7.30'
+    version: '7.30.0'
     kotlin: '2.2.21'
     jdk: '17'
