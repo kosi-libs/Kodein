@@ -26,6 +26,7 @@ Kodein-DI provides convenient property delegation for dependency retrieval:
 
 ```kotlin
 import io.ktor.server.application.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.kodein.di.*
 import org.kodein.di.ktor.closestDI
