@@ -13,9 +13,10 @@ import org.kodein.di.ktor.di
 
 fun Application.module() {
     // Install Kodein-DI
+    // The Application instance is automatically bound
     di {
-        bindSingleton { this@module }
         // Add your bindings here
+        bindSingleton<MyService> { MyServiceImpl() }
     }
 }
 ```
