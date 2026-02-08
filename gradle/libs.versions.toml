@@ -17,7 +17,7 @@ cmp-navigation = "2.9.1"
 kotlinpoet = "2.2.0"
 ksp = "1.9.20-1.0.14"
 # Ktor
-ktor = "3.3.2"
+ktor = "3.4.0"
 # JxInject
 javax-inject = "1"
 # TornadoFX
