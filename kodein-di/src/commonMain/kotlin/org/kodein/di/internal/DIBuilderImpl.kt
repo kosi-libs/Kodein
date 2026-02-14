@@ -87,9 +87,9 @@ internal open class DIBuilderImpl internal constructor(
         addSetBindingToContainer: Boolean = true,
     ) : DI.Builder.SetBinder<T> {
 
-        override val contextType: TypeToken<Any> get() = this@DIBuilderImpl.contextType
-        override val scope: Scope<Any?> get() = this@DIBuilderImpl.scope
-        override val explicitContext: Boolean get() = this@DIBuilderImpl.explicitContext
+        val contextType: TypeToken<Any> get() = this@DIBuilderImpl.contextType
+        val scope: Scope<Any?> get() = this@DIBuilderImpl.scope
+        val explicitContext: Boolean get() = this@DIBuilderImpl.explicitContext
 
         private val setBinding: BaseMultiBinding<*, *, T> by lazy {
             val setType = erasedComp(Set::class, setBindingType) as TypeToken<Set<T>>
@@ -161,9 +161,9 @@ internal open class DIBuilderImpl internal constructor(
         addSetBindingToContainer: Boolean = true,
     ) : DI.Builder.ArgSetBinder<A, T> {
 
-        override val contextType: TypeToken<Any> get() = this@DIBuilderImpl.contextType
-        override val scope: Scope<Any?> get() = this@DIBuilderImpl.scope
-        override val explicitContext: Boolean get() = this@DIBuilderImpl.explicitContext
+        val contextType: TypeToken<Any> get() = this@DIBuilderImpl.contextType
+        val scope: Scope<Any?> get() = this@DIBuilderImpl.scope
+        val explicitContext: Boolean get() = this@DIBuilderImpl.explicitContext
 
         private val setBinding: BaseMultiBinding<*, in A, out T> by lazy {
             val setType = erasedComp(Set::class, setBindingType) as TypeToken<Set<T>>
