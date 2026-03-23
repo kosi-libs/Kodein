@@ -8,9 +8,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import org.kodein.di.compose.localDI
-import org.kodein.di.compose.viewmodel.KodeinViewModelScopedFactory
-import org.kodein.di.compose.viewmodel.KodeinViewModelScopedSingleton
-import org.kodein.type.erased
+import org.kodein.di.compose.android.KodeinViewModelScopedFactory
+import org.kodein.di.compose.android.KodeinViewModelScopedSingleton
+import org.kodein.type.generic
 
 /**
  * Gets an instance of a [VM] as an android [ViewModel], scoped on a [NavGraph], for the given [tag].
@@ -32,7 +32,7 @@ public inline fun <reified VM : ViewModel> NavBackStackEntry.rememberNavGraphVie
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { navHostController.getBackStackEntry(getParentId()).viewModelStore },
-            factoryProducer = { KodeinViewModelScopedSingleton(di = this, tag = tag) }
+            factoryProducer = { KodeinViewModelScopedSingleton(di = this, vmType = generic<VM>(), tag = tag) }
         )
     }
 }
@@ -61,7 +61,7 @@ public inline fun <reified VM : ViewModel> NavBackStackEntry.navGraphViewModel(
     remember(this@navGraphViewModel, di, tag) {
         val provider = ViewModelProvider(
             navHostController.getBackStackEntry(getParentId()).viewModelStore,
-            KodeinViewModelScopedSingleton(di = di, tag = tag)
+            KodeinViewModelScopedSingleton(di = di, vmType = generic<VM>(), tag = tag)
         )
         if (tag == null) {
             provider[VM::class.java]
@@ -99,7 +99,8 @@ public inline fun <reified A : Any, reified VM : ViewModel> NavBackStackEntry.re
             factoryProducer = {
                 KodeinViewModelScopedFactory(
                     di = di,
-                    argType = erased<A>(),
+                    argType = generic<A>(),
+                    vmType = generic<VM>(),
                     arg = arg,
                     tag = tag,
                 )
@@ -139,7 +140,8 @@ public inline fun <reified A : Any, reified VM : ViewModel> NavBackStackEntry.na
             navHostController.getBackStackEntry(getParentId()).viewModelStore,
             KodeinViewModelScopedFactory(
                 di = di,
-                argType = erased<A>(),
+                argType = generic<A>(),
+                vmType = generic<VM>(),
                 arg = arg,
                 tag = tag,
             )

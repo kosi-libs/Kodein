@@ -29,7 +29,7 @@ public inline fun <reified VM : ViewModel> rememberViewModel(
         ViewModelLazy(
             viewModelClass = VM::class,
             storeProducer = { viewModelStoreOwner.viewModelStore },
-            factoryProducer = { KodeinViewModelScopedSingleton(di = di, tag = tag) }
+            factoryProducer = { KodeinViewModelScopedSingleton(di = di, vmType = generic<VM>(), tag = tag) }
         )
     }
 }
@@ -63,6 +63,7 @@ public inline fun <reified A : Any, reified VM : ViewModel> rememberViewModel(
                 KodeinViewModelScopedFactory(
                     di = di,
                     argType = generic<A>(),
+                    vmType = generic<VM>(),
                     arg = arg,
                     tag = tag
                 )
