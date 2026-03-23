@@ -440,4 +440,70 @@ class Tests_13_Scope {
         assertTrue(c.closed)
     }
 
+    @Test
+    fun test_18_ScopedSetBindingSingleton() {
+        val registries = mapOf("a" to SingleItemScopeRegistry(), "b" to SingleItemScopeRegistry())
+        val myScope = object : Scope<String> {
+            override fun getRegistry(context: String) = registries[context]!!
+        }
+
+        val di = DI {
+            bindSet<IPerson> {
+                add { scoped(myScope).singleton { Person("Salomon") } }
+                add { scoped(myScope).singleton { Person("Laila") } }
+            }
+        }
+
+        val personsA: Set<IPerson> by di.on(context = "a").instance()
+        val personsB: Set<IPerson> by di.on(context = "b").instance()
+
+        assertEquals(2, personsA.size)
+        assertEquals(2, personsB.size)
+
+        val personsA2: Set<IPerson> by di.on(context = "a").instance()
+        assertEquals(personsA, personsA2)
+
+        registries["a"]!!.clear()
+        val personsA3: Set<IPerson> by di.on(context = "a").instance()
+        assertTrue(personsA.none { a -> personsA3.any { b -> a === b } })
+    }
+
+    @Test
+    fun test_19_NonScopedSetBindingConvenienceMethods() {
+        val di = DI {
+            bindSet<IPerson> {
+                addSingleton { Person("Salomon") }
+                addProvider { Person("Laila") }
+                addInstance(Person("Mary"))
+            }
+        }
+
+        val persons: Set<IPerson> by di.instance()
+        assertEquals(3, persons.size)
+        assertTrue(Person("Salomon") in persons)
+        assertTrue(Person("Laila") in persons)
+        assertTrue(Person("Mary") in persons)
+    }
+
+    @Test
+    fun test_20_ScopedArgSetBindingMultiton() {
+        val registries = mapOf("a" to SingleItemScopeRegistry(), "b" to SingleItemScopeRegistry())
+        val myScope = object : Scope<String> {
+            override fun getRegistry(context: String) = registries[context]!!
+        }
+
+        val di = DI {
+            bindArgSet<String, IPerson> {
+                add { scoped(myScope).multiton { name: String -> Person(name) } }
+            }
+        }
+
+        val personsA: Set<IPerson> by di.on(context = "a").instance(arg = "Salomon")
+        assertEquals(1, personsA.size)
+        assertTrue(Person("Salomon") in personsA)
+
+        val personsA2: Set<IPerson> by di.on(context = "a").instance(arg = "Salomon")
+        assertEquals(personsA, personsA2)
+    }
+
 }

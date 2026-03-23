@@ -304,8 +304,7 @@ public interface DI : DIAware {
         /**
          * Manage multiple bindings in a [Set]
          */
-        @DIDsl
-        public interface SetBinder<T : Any> : BindBuilder.WithScope<Any> {
+        public interface SetBinder<T : Any> {
 
             /**
              * Add a binding in the [Set] of type [T]
@@ -379,8 +378,7 @@ public interface DI : DIAware {
         /**
          * Manage multiple bindings, with type argument, in a [Set]
          */
-        @DIDsl
-        public interface ArgSetBinder<A : Any, T : Any> : BindBuilder.WithScope<Any> {
+        public interface ArgSetBinder<A : Any, T : Any> {
 
             /**
              * Add a binding in the [Set] of type [T]
