@@ -9,37 +9,48 @@ import org.kodein.type.TypeToken
 import org.kodein.type.erased
 import kotlin.reflect.KClass
 
-/**
- * Factory class for creating ViewModel instances using Kodein dependency injection.
- *
- * @param A The type of argument to be passed to the ViewModel constructor.
- * @property di The instance of the Kodein DI container.
- * @property argType The TypeToken of the argument type.
- * @property arg The argument value to be passed to the ViewModel constructor.
- * @property tag The optional tag to be used for resolving ViewModel instance from DI container.
- */
-public class KodeinViewModelScopedFactory<A : Any>(
+@PublishedApi
+internal class KodeinViewModelScopedFactory<A : Any>(
     private val di: DI,
     private val argType: TypeToken<A>,
+    private val vmType: TypeToken<*>,
     private val arg: A,
     private val tag: String? = null,
 ) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T =
-        di.direct.Factory(argType, erased(modelClass), tag).invoke(arg)
+        di.direct.Factory(argType, vmType as TypeToken<T>, tag).invoke(arg)
 }
 
-/**
- * Factory class used to create ViewModel instances with Kodein DI container
- * @param di The Kodein DI container instance
- * @param tag An optional tag to filter the bindings
- *
- * @throws DI.NotFoundException if ViewModel class binding is not found in the DI container
- * @see ViewModelProvider.Factory
- */
-public class KodeinViewModelScopedSingleton(
+@PublishedApi
+internal class KodeinViewModelScopedSingleton(
     private val di: DI,
+    private val vmType: TypeToken<*>,
     private val tag: String? = null,
 ) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T =
+        di.direct.Instance(type = vmType as TypeToken<T>, tag = tag)
+}
+
+@Deprecated("Use rememberViewModel instead.", level = DeprecationLevel.WARNING)
+@Suppress("FunctionName")
+public fun KodeinViewModelScopedSingleton(
+    di: DI,
+    tag: String? = null,
+): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T =
         di.direct.Instance(type = erased(modelClass), tag = tag)
+}
+
+@Deprecated("Use rememberViewModel instead.", level = DeprecationLevel.WARNING)
+@Suppress("FunctionName")
+public fun <A : Any> KodeinViewModelScopedFactory(
+    di: DI,
+    argType: TypeToken<A>,
+    arg: A,
+    tag: String? = null,
+): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T =
+        di.direct.Factory(argType, erased(modelClass), tag).invoke(arg)
 }
