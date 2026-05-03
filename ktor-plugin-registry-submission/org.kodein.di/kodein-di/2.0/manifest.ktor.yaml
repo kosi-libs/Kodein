@@ -1,0 +1,7 @@
+name: Kodein-DI
+description: Painless Kotlin Dependency Injection
+vcsLink: https://github.com/kosi-libs/Kodein
+license: MIT
+category: Frameworks
+installation:
+  default: install.kt
