@@ -1,7 +1,3 @@
-@file:OptIn(ExperimentalComposeLibrary::class)
-
-import org.jetbrains.compose.ExperimentalComposeLibrary
-
 plugins {
     kodein.library.mppWithAndroid
     alias(kodeinGlobals.plugins.kotlin.plugin.compose)
@@ -13,13 +9,15 @@ kotlin.kodein {
     allComposeRuntime()
 
     common.mainDependencies {
-        implementation(kotlin.compose.runtime)
+        implementation(libs.jetbrains.compose.runtime)
         api(projects.kodeinDi)
     }
 
     android {
+        target.namespace = "org.kodein.di.compose.runtime"
+
         sources.mainDependencies {
-            implementation(kotlin.compose.ui)
+            implementation(libs.jetbrains.compose.ui)
             api(projects.framework.android.kodeinDiFrameworkAndroidX)
         }
     }
@@ -28,18 +26,6 @@ kotlin.kodein {
         sources.testDependencies {
             implementation(kotlin.compose.desktop.currentOs)
         }
-    }
-}
-
-dependencies {
-    androidTestImplementation(libs.ui.test.junit4.android)
-    debugImplementation(libs.ui.test.manifest)
-}
-
-android {
-    namespace = "org.kodein.di.compose.runtime"
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
 

@@ -1,6 +1,6 @@
 [versions]
 # Core
-kaverit = "2.12.0"
+kaverit = "2.13.0"
 atomicfu = "0.29.0"
 # Android
 android-appcompat = "28.0.0"
@@ -10,7 +10,7 @@ androidx-lifecycle = "2.9.4"
 androidx-compose = "2.9.6"
 compose-bom = "2025.11.00"
 # Compose Multiplatform
-compose-multiplatform = "1.9.3"
+compose-multiplatform = "1.10.3"
 cmp-lifecycle = "2.9.6"
 cmp-navigation = "2.9.1"
 # KSP
@@ -48,6 +48,11 @@ android-compose-runtime = { module = "androidx.compose.runtime:runtime" }
 # Compose Multiplatform
 jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "cmp-lifecycle" }
 jetbrains-compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "cmp-navigation" }
+jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-multiplatform" }
+jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
+jetbrains-compose-ui-test = { module = "org.jetbrains.compose.ui:ui-test", version.ref = "compose-multiplatform" }
 # KSP
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
