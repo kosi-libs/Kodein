@@ -138,6 +138,31 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
             }
     }
 
+    /**
+     * Returns the members produced by [accessor] (typically [Class.getDeclaredFields] or
+     * [Class.getDeclaredMethods]), or an empty array if resolving them throws a [LinkageError].
+     *
+     * `Class.getDeclaredMethods` / `getDeclaredFields` eagerly resolve the types referenced by every member's
+     * signature — on the JVM as well as on Android's ART. When a member references a type that is absent at
+     * runtime, for instance a platform class introduced in a newer API level than the device runs on, the
+     * whole enumeration throws a [NoClassDefFoundError], even if that member is not annotated with `@Inject`.
+     * Being lenient here lets injection keep working for the rest of the class hierarchy instead of failing
+     * entirely.
+     *
+     * The fallback is class-granular: the runtime resolves every member signature in a single call, so a
+     * class whose members cannot be enumerated is skipped as a whole. In the reported case the unresolvable
+     * type lives on a framework super-class that carries no `@Inject` members; were an `@Inject` member's own
+     * type genuinely missing, its injection would be silently skipped rather than reported.
+     *
+     * See [#508](https://github.com/kosi-libs/Kodein/issues/508).
+     */
+    private inline fun <reified M : AccessibleObject> declaredMembersOrEmpty(accessor: () -> Array<M>): Array<M> =
+        try {
+            accessor()
+        } catch (linkageError: LinkageError) {
+            emptyArray()
+        }
+
     private tailrec fun fillMembersSetters(cls: Class<*>, setters: MutableList<DirectDI.(Any) -> Any>) {
         if (cls == Any::class.java)
             return
@@ -155,7 +180,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
         }
 
         fillSetters(
-            members = cls.declaredFields,
+            members = declaredMembersOrEmpty { cls.declaredFields },
             elements = { arrayOf(FieldElement(this)) },
             call = { receiver, values -> set(receiver, values[0]) },
             setters = setters
@@ -169,7 +194,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
         }
 
         fillSetters(
-            members = cls.declaredMethods,
+            members = declaredMembersOrEmpty { cls.declaredMethods },
             elements = { (0 until parameterTypes.size).map { ParameterElement(this, it) }.toTypedArray() },
             call = { receiver, values -> invoke(receiver, *values) },
             setters = setters
