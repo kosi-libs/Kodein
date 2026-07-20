@@ -17,6 +17,45 @@ CAUTION: Every-thing that is described here is *a lot less performant* than usin
          Kittens *will* die painfully if you do!
 
 
+[[hierarchy]]
+== What gets visited
+
+`inject` does not look at the receiver's class alone: it walks the *entire* class hierarchy up to `Object` and enumerates every declared field and method of each level, looking for those annotated with `@Inject`.
+
+Two consequences are worth knowing:
+
+- The cost grows with inheritance depth, including superclasses you do not own.
+- A class level whose members cannot be introspected is *skipped*, and injection continues with the rest of the hierarchy.
+  This happens when a member's signature references a type that is absent at run-time, whether or not that member is annotated with `@Inject`.
+  An `@Inject` member on such a level is not injected, and no exception is raised.
+
+The typical case is Android, where a framework class compiled against a recent SDK may reference a platform type that does not exist on the device's API level.
+
+Because the failure is precisely the inability to enumerate members, Kodein-DI cannot know whether the skipped level declared any `@Inject` member.
+It therefore logs a `WARNING` on the `org.kodein.di.jxinject` logger, using `java.util.logging`:
+
+[source]
+----
+WARNING: Could not introspect the methods of androidx.activity.ComponentActivity: any @Inject member it
+declares will NOT be injected. This usually means a member signature references a type that is absent at
+runtime.
+----
+
+On Android this reaches logcat as a `WARN` entry tagged `org.kodein.di.jxinject`.
+
+If the skipped level is a framework class you do not own, the warning is expected and there is nothing to fix; you can silence it through the standard `java.util.logging` configuration.
+
+[source,properties]
+.Example: silencing the warning
+----
+org.kodein.di.jxinject.level = OFF
+----
+
+CAUTION: On Android, do not use JSR-330 injection on framework components (`Activity`, `Fragment`, `Service`...).
+         Their hierarchy is deep and entirely outside of your control, so every injection pays to walk it and is subject to the behaviour described above.
+         Use Kodein-DI's standard retrieval instead (`by instance()`), which uses no member reflexivity at all: see xref:framework:android.adoc[Android].
+
+
 [[install]]
 == Install
 
