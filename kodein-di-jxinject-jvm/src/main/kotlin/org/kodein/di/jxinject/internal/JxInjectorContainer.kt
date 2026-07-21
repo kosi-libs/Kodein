@@ -7,10 +7,23 @@ import org.kodein.type.typeToken
 import java.lang.reflect.*
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.logging.Level
+import java.util.logging.Logger
 import javax.inject.Inject
 import javax.inject.Provider
 
 internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
+    internal companion object {
+        /**
+         * Deliberately a literal rather than this class' name: [JxInjectorContainer] is internal and its FQN is an
+         * implementation detail, whereas this name is documented for users to configure. It is also 22 characters, so
+         * Android's `AndroidHandler` uses it verbatim as the logcat tag (it truncates anything longer than 23).
+         */
+        private const val LOGGER_NAME: String = "org.kodein.di.jxinject"
+
+        private val logger: Logger = Logger.getLogger(LOGGER_NAME)
+    }
+
     internal class Qualifier(val cls: Class<out Annotation>, val tagProvider: (Annotation) -> Any)
 
     private val _qualifiers = qualifiers.associate { it.cls to it.tagProvider }
@@ -138,6 +151,29 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
             }
     }
 
+    /**
+     * Enumerating declared members eagerly resolves the types referenced by every member's signature, whether or not
+     * that member is annotated with [Inject]. A signature referencing a type that is absent at runtime therefore makes
+     * the whole enumeration fail. This happens on Android, where a class compiled against a recent SDK may reference a
+     * platform type that does not exist on an older device (see https://github.com/kosi-libs/Kodein/issues/508).
+     *
+     * Such a level is skipped and the walk up the hierarchy continues. Because the failure *is* the inability to
+     * enumerate, we cannot know whether the level declared any [Inject] member, so this is reported as a possibility
+     * rather than as a fact.
+     */
+    private inline fun <reified M> declaredMembersOrEmpty(cls: Class<*>, kind: String, members: () -> Array<M>): Array<M> =
+        try {
+            members()
+        } catch (error: LinkageError) {
+            logger.log(
+                Level.WARNING,
+                "Could not introspect the $kind of ${cls.name}: any @Inject member it declares will NOT be injected. " +
+                    "This usually means a member signature references a type that is absent at runtime.",
+                error
+            )
+            emptyArray()
+        }
+
     private tailrec fun fillMembersSetters(cls: Class<*>, setters: MutableList<DirectDI.(Any) -> Any>) {
         if (cls == Any::class.java)
             return
@@ -155,7 +191,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
         }
 
         fillSetters(
-            members = cls.declaredFields,
+            members = declaredMembersOrEmpty(cls, "fields") { cls.declaredFields },
             elements = { arrayOf(FieldElement(this)) },
             call = { receiver, values -> set(receiver, values[0]) },
             setters = setters
@@ -169,7 +205,7 @@ internal class JxInjectorContainer(qualifiers: Set<Qualifier>) {
         }
 
         fillSetters(
-            members = cls.declaredMethods,
+            members = declaredMembersOrEmpty(cls, "methods") { cls.declaredMethods },
             elements = { (0 until parameterTypes.size).map { ParameterElement(this, it) }.toTypedArray() },
             call = { receiver, values -> invoke(receiver, *values) },
             setters = setters

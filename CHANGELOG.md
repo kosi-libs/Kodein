@@ -1,4 +1,26 @@
-#### 7.30.0 (TBD)
+#### 7.33.0 (TBD)
+
+## What's Changed
+* **Fixed `NoClassDefFoundError` during JSR-330 injection** (#508):
+    * Injecting into a class whose hierarchy declares a member referencing a type absent at runtime no longer fails
+    * Notably affected any `ComponentActivity` subclass below API 31 since `androidx.activity` 1.13.0, which declares `onPictureInPictureUiStateChanged(android.app.PictureInPictureUiState)` (an API 31 type)
+    * Such a class level is now skipped and injection continues up the hierarchy; documented in the JSR-330 page
+    * The skip is reported as a `WARNING` on the `org.kodein.di.jxinject` `java.util.logging` logger (logcat tag `org.kodein.di.jxinject` on Android), silenceable with `org.kodein.di.jxinject.level = OFF`
+* Kotlin 2.4.0 / KIGP 9.2.0 / Kaverit 2.13.0 / Gradle 9.3.1 / Compose 1.10.3
+* Migrated the Android Compose namespace to the target API
+
+#### 7.32.0 (2026-03-25)
+
+## What's Changed
+* Fixed `KodeinViewModelScopedFactory` and `KodeinViewModelScopedSingleton` to use generic types (#506)
+* Brought back scope on `SetBinder` and `ArgSetBinder` (#504)
+
+#### 7.31.0 (2026-02-08)
+
+## What's Changed
+* Upgraded Ktor dependency from 3.3.2 to 3.4.0 (#503)
+
+#### 7.30.0 (2025-11-20)
 
 ## What's Changed
 * Fixed DSL receiver scope issue (#478): Applied `@DslMarker` to DSL receiver interfaces to prevent accidental calls to outer receiver methods
