@@ -5,9 +5,20 @@ on:
     types: [published]
 
 jobs:
+  version-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kosi-libs/kodein-internal-github-actions/setup@v1.1.0
+        with:
+          konan: 'false'
+      - uses: KodeinKoders/kodein-github-actions/version-check@v0.2
+        with:
+          release-name: ${{ github.event.release.name }}
   unit-tests:
+    needs: [version-check]
     uses: kosi-libs/kodein-internal-github-actions/.github/workflows/unit-tests.yml@v1.1.0
   instrumentation-tests:
+    needs: [version-check]
     uses: kosi-libs/kodein-internal-github-actions/.github/workflows/check-with-android.yml@v1.1.0
 
   build-upload:
@@ -24,3 +35,12 @@ jobs:
       - name: Upload
         run: ./gradlew publishAggregationToCentralPortal
         shell: bash
+
+  release-branch:
+    needs: [build-upload]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release branch
+        uses: KodeinKoders/kodein-github-actions/release-branches@v0.2
+        with:
+          release-name: ${{ github.event.release.name }}
