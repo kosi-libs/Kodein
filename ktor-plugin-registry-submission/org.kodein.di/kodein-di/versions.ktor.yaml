@@ -1,0 +1,2 @@
+"[2.0,)":
+  - org.kodein.di:kodein-di-framework-ktor-server-jvm:$kodein_di
