@@ -188,6 +188,10 @@ Support is held in the [Kodein Slack channel](https://kotlinlang.slack.com/messa
 
 If you are using KODEIN, please [let us know](mailto:contact@kodein.net)!
 
+## Developped by
+
+[![Kodein Koders logo.](https://kodein-koders.com/app/uploads/2026/11/colored-invert.svg)](https://kodein-koders.com)
+
 ## Supported by
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
