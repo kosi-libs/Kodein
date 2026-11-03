@@ -1,3 +1,20 @@
+> [!IMPORTANT]
+> ## Kodein DI is now in maintenance mode
+>
+> **Kodein DI will no longer receive new features.** We will keep maintaining the current version and fix issues when necessary, but nothing more.
+>
+> ### What we are focusing on: Inara
+>
+> Our focus is now on [**Inara**](https://github.com/kosi-libs/Inara), a Kotlin Symbol Processor that brings compile-time dependency injection to Kotlin Multiplatform, with no runtime overhead.
+>
+> - 📖 [Inara documentation](https://kosi-libs.org/inara)
+> - ✍️ [Read the announcement: Inara: Inject your dependencies at compile time](https://kodein-koders.com/en/blog/inara-inject-your-dependencies-at-compile-time/)
+>
+> ### Moving to Koin
+>
+> If you like how Kodein works, we warmly encourage you to migrate to [Koin](https://insert-koin.io). It supports everything Kodein does, and much more. See [Introducing the Koin migration skills](https://blog.insert-koin.io/introducing-the-koin-migration-skills-0b4be9c819cc) to get started.
+> 
+
 [![Maven Central](https://img.shields.io/maven-central/v/org.kodein.di/kodein-di)](https://mvnrepository.com/artifact/org.kodein.di/kodein-di)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.21-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 ![Github Actions](https://github.com/kosi-libs/Kodein/actions/workflows/snapshot.yml/badge.svg)
